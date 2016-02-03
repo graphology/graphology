@@ -10,11 +10,6 @@ The idea here is to create a concise JavaScript object looking much like the nat
 
 The data structure must be scalable but remain straightforward in its use.
 
-### Naming
-
-1. What name should we give to the library?
-2. Under which organization should we publish the code?
-
 ### Instantiation
 
 ```js
@@ -45,6 +40,7 @@ What about different graph types? By default, `Graph` would be mixed and dynami
 
 ```js
 var graph = new DirectedGraph();
+var immutableGraph = new ImmutableGraph();
 // etc.
 ```
 
@@ -52,8 +48,8 @@ var graph = new DirectedGraph();
 
 Nodes & edges should be objects (we could accept scalar values but it would probably be more annoying than anything).
 
-A node is at least {id: 'string|number'}.
-An edge should be at least {source: 'string|number', target: 'string|number'} and can have and id.
+A node is at least `{id: 'string|number'}`.
+An edge should be at least `{source: 'string|number', target: 'string|number'}` and can have and id.
 
 ### Properties
 
