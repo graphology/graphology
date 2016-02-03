@@ -21,8 +21,17 @@ The data structure must be scalable but remain straightforward in its use.
 // Empty graph
 var graph = new Graph();
 
-// Hydratation (polymorphisms)
-var graph = new Graph({nodes:[...], edges:[...]});
+// Hydratation
+var graph = new Graph({nodes: [...], edges: [...]});
+
+// Hydratation should accept some polymorphisms, notably:
+var graph = new Graph({nodes: {...}, edges: {...}});
+
+// Or even
+var graph = new Graph([[...], [...]]);
+var graph = new Graph([[...]]);
+var graph = new Graph([{...}, {...}]);
+var graph = new Graph([{...}]);
 
 // And to mimick ES6 classes
 var graph = Graph.from(...);
@@ -32,7 +41,7 @@ var graph = new Graph({...}, {option: true});
 var graph = new Graph(null, {option: true});
 ```
 
-What about different graph types?
+What about different graph types? By default, `Graph` would be mixed and dynamic.
 
 ```js
 var graph = new DirectedGraph();
@@ -53,7 +62,49 @@ graph.size
 
 ### Methods
 
+Note that methods exposed below try to follow as closely as possible the native ES6 objects' naming.
+
 #### Read
+
+##### #.get
+
+Retrieve a node by id.
+
+```js
+// node is the original object
+var node = graph.get(id);
+>>> {
+  id: 45,
+  label: 'Book'
+}
+```
+
+##### #.degree
+
+Retrieve the degree of a node by id.
+
+```js
+var degree = graph.degree(id);
+>>> 3
+```
+
+##### #.outDegree
+
+Retrieve the out degree of a node by id.
+
+```js
+var outDegree = graph.outDegree(id);
+>>> 1
+```
+
+##### #.inDegree
+
+Retrieve the in degree of a node by id.
+
+```js
+var inDegree = graph.inDegree(id);
+>>> 1
+```
 
 ##### #.connectedComponents
 
@@ -64,7 +115,54 @@ graph.connectedComponents();
 >>> [component1, component2, ...]
 ```
 
+The result should be cached. (We could be using a ES5 getter rather than a method here).
+
 #### Write
+
+##### #.add
+
+Add a node to the graph.
+
+```js
+graph.add(key, nodeData);
+>>> undefined
+```
+
+##### #.delete
+
+Delete a node by key.
+
+```js
+graph.delete(key);
+>>> 'false' if key doesn't exist
+>>> 'true' if key exists
+```
+
+##### #.relate
+
+Add a edge between two node ids.
+
+```js
+graph.relate(source, target, edgeData);
+```
+
+##### #.clear
+
+Clear the graph of both nodes & edges.
+
+```js
+graph.order
+>>> 2
+graph.size
+>>> 1
+
+graph.clear();
+
+graph.order
+>>> 0
+graph.size
+>>> 0
+```
 
 ## Internals
 
@@ -75,6 +173,35 @@ Internals should be kept private and shouldn't be editable.
 However, provided nodes and edges should be mutable and shouldn't be overloaded by the internal of the object.
 
 This said, the nodes and edges arrays shouldn't be mutated by the user.
+
+```js
+// Very basic explanation of the above
+function Graph(nodes, edges) {
+  this.nodes = Array.from(nodes);
+  this.edges = Array.from(edges);
+
+  this.internalNodeProperties = {};
+  this.internalEdgeProperties = {};
+}
+
+var graph = new Graph([{id: 1}, {id: 2}], [{from: 1, to: 2}]);
+
+// The internal nodes & edges array shouldn't be mutated or accessed
+// BAD!
+graph.nodes.push(whatever);
+// ALSO BAD!
+graph.edges.splice(0, 1);
+
+// One can access the nodes
+var node = graph.get(1);
+// You can mutate node freely
+node.label = 'Book';
+
+// The graph object will never mutate the node & edges objects
+// It'll use an internal mask instead with the relevant properties
+```
+
+Ids should be coerced to strings.
 
 ### About ES6 iterables
 
