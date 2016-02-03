@@ -10,6 +10,11 @@ The idea here is to create a concise JavaScript object looking much like the nat
 
 The data structure must be scalable but remain straightforward in its use.
 
+### Naming
+
+1. What name should we give to the library?
+2. Under which organization should we publish the code?
+
 ### Instantiation
 
 ```js
@@ -48,7 +53,9 @@ graph.size
 
 ### Methods
 
-#### #.connectedComponents
+#### Read
+
+##### #.connectedComponents
 
 Retrieve an array of subgraphs (or straight array of nodes?).
 
@@ -56,6 +63,8 @@ Retrieve an array of subgraphs (or straight array of nodes?).
 graph.connectedComponents();
 >>> [component1, component2, ...]
 ```
+
+#### Write
 
 ## Internals
 
@@ -66,6 +75,10 @@ Internals should be kept private and shouldn't be editable.
 However, provided nodes and edges should be mutable and shouldn't be overloaded by the internal of the object.
 
 This said, the nodes and edges arrays shouldn't be mutated by the user.
+
+### About ES6 iterables
+
+The library should, as much as possible, implement ES6 iterables that can be used through `for ... of`.
 
 ### Indexes
 
@@ -84,7 +97,9 @@ This said, the nodes and edges arrays shouldn't be mutated by the user.
 
 ## Modularity & use cases
 
-What about algorithms that should not strictly be within the scope of this object.
+What about algorithms that should not strictly be within the scope of this object?
+
+Where do we draw the line between what should be in the core prototype and what should be modularized?
 
 ### Example n°1 - Louvain modularity
 
