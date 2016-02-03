@@ -65,6 +65,12 @@ graph.order
 
 // Number of edges (read-only)
 graph.size
+
+// Nodes (array, read-only)
+graph.nodes
+
+// Edges (array, read-only)
+graph.edges
 ```
 
 ### Methods
@@ -122,32 +128,6 @@ Retrieve the in degree of a node by id.
 var inDegree = graph.inDegree(id);
 >>> 1
 ```
-
-##### #.forEach
-
-Iterate over the graph's nodes.
-
-Here we need to discuss whether we should have forEachNodes or implicitly assert that where it's not specified, we always act upon the nodes.
-
-```js
-graph.forEach(function(node, key, nodes) {
-  console.log(node);
-});
-```
-
-##### #.forEachEdges
-
-Iterate over the graph's edges.
-
-##### Additional iterators?
-
-* map
-* filter
-* reduce
-* reduceRight
-* some
-* every
-* etc.
 
 ##### #.connectedComponents
 
