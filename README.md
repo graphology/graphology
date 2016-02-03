@@ -271,7 +271,7 @@ The library should, as much as possible, implement ES6 iterables that can be use
 
 @jacomyma
 
-## Modularity & use cases
+## Modules & use cases
 
 What about algorithms that should not strictly be within the scope of this object?
 
