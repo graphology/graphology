@@ -19,7 +19,7 @@ As such, we could pass it to functions rather than extending the prototype or pe
 var graph = new Graph();
 
 // Hydratation (polymorphisms)
-var graph = new Graph({nodes: ..., edge: ...});
+var graph = new Graph({nodes:[...], edges:[...]});
 
 // And to mimick ES6 classes
 var graph = Graph.from(...);
