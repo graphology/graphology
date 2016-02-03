@@ -6,11 +6,9 @@ Discussions about a simple graph library for JavaScript.
 
 ### Rationale
 
-The idea here is to create a concise JavaScript object looking like the ES6 [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) or [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map).
+The idea here is to create a concise JavaScript object looking much like the native ES6 objects such as [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) or [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map).
 
 The data structure must be scalable but remain straightforward in its use.
-
-As such, we could pass it to functions rather than extending the prototype or perform side effects?
 
 ### Instantiation
 
