@@ -48,6 +48,13 @@ var graph = new DirectedGraph();
 // etc.
 ```
 
+### On nodes & edges
+
+Nodes & edges should be objects (we could accept scalar values but it would probably be more annoying than anything).
+
+A node is at least {id: 'string|number'}.
+An edge should be at least {source: 'string|number', target: 'string|number'} and can have and id.
+
 ### Properties
 
 Naming is to be discussed. Concept names come from [here](https://en.wikipedia.org/wiki/Graph_theory).
@@ -79,6 +86,16 @@ var node = graph.get(id);
 }
 ```
 
+##### #.has
+
+Checks whether the given id exists
+
+```js
+var exists = graph.has(id);
+>>> true
+>>> false
+```
+
 ##### #.degree
 
 Retrieve the degree of a node by id.
@@ -105,6 +122,32 @@ Retrieve the in degree of a node by id.
 var inDegree = graph.inDegree(id);
 >>> 1
 ```
+
+##### #.forEach
+
+Iterate over the graph's nodes.
+
+Here we need to discuss whether we should have forEachNodes or implicitly assert that where it's not specified, we always act upon the nodes.
+
+```js
+graph.forEach(function(node, key, nodes) {
+  console.log(node);
+});
+```
+
+##### #.forEachEdges
+
+Iterate over the graph's edges.
+
+##### Additional iterators?
+
+* map
+* filter
+* reduce
+* reduceRight
+* some
+* every
+* etc.
 
 ##### #.connectedComponents
 
@@ -134,8 +177,10 @@ Delete a node by key.
 
 ```js
 graph.delete(key);
->>> 'false' if key doesn't exist
->>> 'true' if key exists
+// if key doesn't exist
+>>> 'false'
+// if key exists
+>>> 'true'
 ```
 
 ##### #.relate
@@ -145,6 +190,10 @@ Add a edge between two node ids.
 ```js
 graph.relate(source, target, edgeData);
 ```
+
+##### #.unrelate
+
+We should discuss this point. By id? What if the edge has no id? By source & target? What if there are parallel edges?
 
 ##### #.clear
 
@@ -212,7 +261,7 @@ The library should, as much as possible, implement ES6 iterables that can be use
 #### Standard
 
 * Index of nodes by id.
-* Index of edges by id (if given).
+* Index of edges by id (edges without ids would be given an internal one through ES6 `Symbol`).
 * Index of neighbours (directed if the graph is etc.).
 
 #### Opt-in
