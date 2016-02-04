@@ -123,43 +123,6 @@ var inDegree = graph.inDegree(id);
 >>> 1
 ```
 
-##### #.forEach
-
-Iterate over the graph's nodes.
-
-Here we need to discuss whether we should have forEachNodes or implicitly assert that where it's not specified, we always act upon the nodes.
-
-```js
-graph.forEach(function(node, key, nodes) {
-  console.log(node);
-});
-```
-
-##### #.forEachEdges
-
-Iterate over the graph's edges.
-
-##### Additional iterators?
-
-* map
-* filter
-* reduce
-* reduceRight
-* some
-* every
-* etc.
-
-##### #.connectedComponents
-
-Retrieve an array of subgraphs (or straight array of nodes?).
-
-```js
-graph.connectedComponents();
->>> [component1, component2, ...]
-```
-
-The result should be cached. (We could be using a ES5 getter rather than a method here).
-
 #### Write
 
 ##### #.add
