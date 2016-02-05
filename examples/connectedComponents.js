@@ -1,3 +1,12 @@
+/**
+ * Connected Components Example
+ * =============================
+ *
+ * @Yomguithereal
+ * Finding a graph's connected components. The function will return an array
+ * of subgraphs.
+ */
+
 // Using solution n°1 from issue #8
 function connectedComponents(graph) {
   const visitedNodes = new Set(),
