@@ -6,7 +6,12 @@
  *
  * Building a network of terms based on a list of expressions. Once the
  * network is built, we need to drop some useless components and apply
- * some community detection using the Louvain algorithm.
+ * community detection using the Louvain algorithm.
+ *
+ * Expressions are tokenized into terms ("a new thing" => ["a", "new" "thing"]),
+ * with a black-list for common words such as "a" or not.
+ *
+ * The idea is to build a network of terms so we can visualize it hereafter.
  *
  * The original algorithm needs ~150 locs without comments. This example
  * is way more concise and understandable.
