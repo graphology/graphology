@@ -44,13 +44,6 @@ var immutableGraph = new ImmutableGraph();
 // etc.
 ```
 
-### On nodes & edges
-
-Nodes & edges should be objects (we could accept scalar values but it would probably be more annoying than anything).
-
-A node is at least `{id: 'string|number'}`.
-An edge should be at least `{source: 'string|number', target: 'string|number'}` and can have and id.
-
 ### Properties
 
 Naming is to be discussed. Concept names come from [here](https://en.wikipedia.org/wiki/Graph_theory).
@@ -67,115 +60,6 @@ graph.nodes
 
 // Edges (array, read-only)
 graph.edges
-```
-
-### Methods
-
-Note that methods exposed below try to follow as closely as possible the native ES6 objects' naming.
-
-#### Read
-
-##### #.get
-
-Retrieve a node by id.
-
-```js
-// node is the original object
-var node = graph.get(id);
->>> {
-  id: 45,
-  label: 'Book'
-}
-```
-
-##### #.has
-
-Checks whether the given id exists
-
-```js
-var exists = graph.has(id);
->>> true
->>> false
-```
-
-##### #.degree
-
-Retrieve the degree of a node by id.
-
-```js
-var degree = graph.degree(id);
->>> 3
-```
-
-##### #.outDegree
-
-Retrieve the out degree of a node by id.
-
-```js
-var outDegree = graph.outDegree(id);
->>> 1
-```
-
-##### #.inDegree
-
-Retrieve the in degree of a node by id.
-
-```js
-var inDegree = graph.inDegree(id);
->>> 1
-```
-
-#### Write
-
-##### #.add
-
-Add a node to the graph.
-
-```js
-graph.add(key, nodeData);
->>> undefined
-```
-
-##### #.delete
-
-Delete a node by key.
-
-```js
-graph.delete(key);
-// if key doesn't exist
->>> 'false'
-// if key exists
->>> 'true'
-```
-
-##### #.relate
-
-Add a edge between two node ids.
-
-```js
-graph.relate(source, target, edgeData);
-```
-
-##### #.unrelate
-
-We should discuss this point. By id? What if the edge has no id? By source & target? What if there are parallel edges?
-
-##### #.clear
-
-Clear the graph of both nodes & edges.
-
-```js
-graph.order
->>> 2
-graph.size
->>> 1
-
-graph.clear();
-
-graph.order
->>> 0
-graph.size
->>> 0
 ```
 
 ## Internals
@@ -216,10 +100,6 @@ node.label = 'Book';
 ```
 
 Ids should be coerced to strings.
-
-### About ES6 iterables
-
-The library should, as much as possible, implement ES6 iterables that can be used through `for ... of`.
 
 ### Indexes
 
