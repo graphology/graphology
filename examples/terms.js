@@ -38,6 +38,7 @@ export default function(rows) {
     if (row.terms.length <= 1)
       return;
 
+    // Iterating over the row's terms
     row.terms.forEach((term, position, terms) => {
 
       // 1 term = 1 node
