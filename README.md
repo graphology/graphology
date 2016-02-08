@@ -1,6 +1,6 @@
 # graphlib
 
-[Discussions](/issues) about a simple graph library for JavaScript.
+[Discussions](https://github.com/medialab/graphlib/issues) about a simple graph library for JavaScript.
 
 ## API proposition
 
