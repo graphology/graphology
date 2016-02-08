@@ -52,7 +52,7 @@ export default function(rows) {
         });
       }
 
-      const node = graph.get(term);
+      const node = graph.getNode(term);
 
       // Updating position (we only keep the one nearest from start)
       node.position = Math.min(node.position, position);
@@ -65,7 +65,7 @@ export default function(rows) {
         return;
 
       // Retrieving the node of the last term
-      const lastNode = graph.get(terms[terms.length - 1]);
+      const lastNode = graph.getNode(terms[terms.length - 1]);
 
       // If there is no edge between `node` and `lastNode`, we create one
       if (!graph.hasEdge(node, lastNode)) {

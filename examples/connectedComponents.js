@@ -21,14 +21,14 @@ function connectedComponents(graph) {
     const component = new Graph();
 
     visitedNodes.add(node);
-    component.add(node);
+    component.addNode(node);
 
     const walk = neighbour => {
       if (visitedNodes.has(neighbour))
         return;
 
       visitedNodes.add(neighbour);
-      component.add(neighbour);
+      component.addNode(neighbour);
       graph.neighbours(neighbour).forEach(walk);
     };
 
@@ -53,14 +53,14 @@ function connectedComponents(graph) {
     const component = new Graph();
 
     visitedNodes.add(node);
-    component.add(node);
+    component.addNode(node);
 
     const walk = neighbour => {
       if (visitedNodes.has(neighbour))
         return;
 
       visitedNodes.add(neighbour);
-      component.add(neighbour);
+      component.addNode(neighbour);
       neighbour.neighbours().forEach(walk);
     };
 
