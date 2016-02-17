@@ -1,12 +1,12 @@
 # API Specs Proposition n°1
 
-This first proposition will make assume that we allow anything as nodes & edges' value (solution n°2 of issue #18).
+This first proposition will assume that we allow anything as nodes & edges' value (solution n°2 of issue #18).
 
-*Note*
+## Note
 
 This is a WIP draft.
 
-*Post-Scriptum*
+## Post Scriptum
 
 After writing this proposition, here is one additional remark about the "everything can be a node etc.": it makes querying the graph through ids difficult. For instance, there is no way to retrieve n nodes in the graph by id in `O(1)` or to check if a node exists in the graph by id. So, if your nodes are scalars, it's not a problem but it's quite rarely the case.
 
