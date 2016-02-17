@@ -10,7 +10,7 @@ This is a WIP draft.
 
 After writing this proposition, here is one additional remark about the "everything can be a node etc.": it makes querying the graph through ids difficult. For instance, there is no way to retrieve n nodes in the graph by id in `O(1)` or to check if a node exists in the graph by id. So, if your nodes are scalars, it's not a problem but it's quite rarely the case.
 
-One alternative is to add nodes by providing both a key and their value like `graph.addNode(key, value)` where it can be polymorphic `graph.addNode(key)` if the key and the value are the same thing (because scalar).
+One alternative is to add nodes by providing both a key and their value like `graph.addNode(key, value)` where it can be polymorphic `graph.addNode(key)` if the key and the value are the same thing (because scalar). Note that this is actually [networkx](http://networkx.readthedocs.org/en/networkx-1.11/tutorial/tutorial.html)'s solution.
 
 ## Instantiation
 
@@ -302,3 +302,7 @@ var graph = Graph.from(iterable);
 * Method to import batch (similar to constructor polymorphism).
 * Method to import batch nodes.
 * Method to import batch edges.
+* Adjacency.
+* Setting attributes to the graph itself?
+
+* Some static methods for common sub/sur/graphing operations? Or move to package?
