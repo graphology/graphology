@@ -313,12 +313,11 @@ However, I am not sure this method would serve a purpose if the constructor is p
 var graph = Graph.from(iterable);
 ```
 
-## ToDo
+## Miscellaneous ideas
 
 * Method to import batch (similar to constructor polymorphism).
 * Method to import batch nodes.
 * Method to import batch edges.
 * Adjacency.
+* Density.
 * Setting attributes to the graph itself?
-
-* Some static methods for common sub/sur/graphing operations? Or move to package?
