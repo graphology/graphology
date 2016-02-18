@@ -259,6 +259,22 @@ Is emitted whenever an edge is added to the graph.
 graph.on('addEdge', (source, target, value) => {});
 ```
 
+#### dropNode
+
+Is emitted whenever a node is dropped from the graph.
+
+```js
+graph.on('dropNode', (node) => {});
+```
+
+#### dropEdge
+
+Is emitted whenever an edge is dropped from the graph.
+
+```js
+graph.on('dropEdge', (source, target, value) => {});
+```
+
 #### clear
 
 Is emitted whenever the graph is cleared.
