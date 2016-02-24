@@ -4,8 +4,8 @@
 
 This proposition will assume the following:
 
-* A node is the combination of an `key` which can be anything, and an optional `value` which is a key-value store whose integrity should be managed by the graph itself.
-* An edge is also the combination of an `key` which can be anything, and an optinal `value` which is a key-value store whose integrity should be managed by the graph itself. Oviously, an edge has to go from a source node (by id) to a target node (by id).
+* A node is the combination of a `key` which can be anything, and an optional `value` which is a key-value store whose integrity should be managed by the graph itself.
+* An edge is also the combination of a `key` which can be anything, and an optinal `value` which is a key-value store whose integrity should be managed by the graph itself. Oviously, an edge has to go from a source node (by id) to a target node (by id).
 
 **Node**: `(key) => value`
 
