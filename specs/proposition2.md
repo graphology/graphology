@@ -53,6 +53,8 @@ const directedGraph: DirectedGraph = new DirectedGraph([data: any, options: Obje
 
 ### Properties
 
+*Note*: @jacomyal raises a valid point by saying those should probably be accessed through methods.
+
 ### #.order
 
 Number of nodes in the graph (read-only).
@@ -67,14 +69,6 @@ Number of edges in the graph (read-only).
 
 ```ts
 const size: number = graph.size;
-```
-
-### #.directed
-
-Is the graph directed (read-only).
-
-```ts
-const directed: boolean = graph.directed;
 ```
 
 ### Mutation
@@ -114,3 +108,13 @@ const graph: Graph = graph.dropEdge(key: any);
 ```ts
 const graph: Graph = graph.clear();
 ```
+
+### Getters
+
+#### #.degree
+
+```ts
+const degree: number = graph.degree(key: any, [selfLoops: boolean]);
+```
+
+### Iterators
