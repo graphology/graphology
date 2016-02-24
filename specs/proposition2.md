@@ -27,3 +27,9 @@ This proposition will assume the following:
 ## Loose questions
 
 * Should we use `property` or `attribute` to design the key-value pairs of the nodes' & edges' values?
+
+## Graph types
+
+The default graph should be mixed (both directed & undirected edges), support self-loops & parallel edges.
+
+There should probably be subtypes of graph enabling the implementation to perform optimizations if the user can declare beforehand the type of their graph.
