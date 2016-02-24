@@ -204,6 +204,8 @@ const attr: any = graph.getEdgeAttr(key: any, name: string);
 
 *Note2*: Iterated values' format should be discussed.
 
+*Note3*: For some methods, it would be a good thing to provide an iterator on multiple targets.
+
 #### #.forEachNode
 
 ```ts
@@ -234,4 +236,16 @@ interface NodeData {
 }
 
 graph.forEachNeighbor(key: any, callback: (node: NodeData, index: number), [selfLoops: boolean]);
+```
+
+### #.forEachInEdge / #.forEachOutEdge / #.forEachUndirectedEdge
+
+```ts
+interface EdgeData {
+  key: any;
+  source: any;
+  target: any;
+}
+
+graph.forEachInEdge(key: any, callback: (edge: EdgeData, index: number));
 ```
