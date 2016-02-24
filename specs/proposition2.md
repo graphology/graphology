@@ -111,10 +111,22 @@ const graph: Graph = graph.clear();
 
 ### Getters
 
-#### #.degree
+#### #.degree / #.inDegree / #.outDegree
 
 ```ts
 const degree: number = graph.degree(key: any, [selfLoops: boolean]);
 ```
 
 ### Iterators
+
+#### #.forEachNode
+
+```ts
+graph.forEachNode(callback: (key: any, attributes: Object, index: number), thisArg: any);
+```
+
+#### #.forEachEdge
+
+```ts
+graph.forEachEdge(callback: (key: any, source: any, target: any, attributes: Object, index: number), thisArg: any);
+```
