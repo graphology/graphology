@@ -42,13 +42,13 @@ There should probably be subtypes of graph enabling the implementation to perfor
 The constructor should accept a variety of data to hydrate the graph. All those polymorphisms should be decided later on.
 
 ```ts
-const graph: Graph = new Graph([data: any, options: object]);
+const graph: Graph = new Graph([data: any, options: Object]);
 ```
 
 It should be possible to use different typed constructors to give performance hints to the underlying implementation. Those alternative constructors should be decided later on.
 
 ```ts
-const directedGraph: DirectedGraph = new DirectedGraph([data: any, options: object]);
+const directedGraph: DirectedGraph = new DirectedGraph([data: any, options: Object]);
 ```
 
 ### Mutation
@@ -56,11 +56,11 @@ const directedGraph: DirectedGraph = new DirectedGraph([data: any, options: obje
 #### #.addNode
 
 ```ts
-const graph: Graph = graph.addNode(key: any, [value: object]);
+const graph: Graph = graph.addNode(key: any, [value: Object]);
 ```
 
 #### #.addEdge
 
 ```ts
-const graph: Graph = graph.addEdge(key: any, source: any, target: any, [value: object]);
+const graph: Graph = graph.addEdge(key: any, source: any, target: any, [value: Object]);
 ```
