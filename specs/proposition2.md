@@ -119,6 +119,8 @@ const degree: number = graph.degree(key: any, [selfLoops: boolean]);
 
 ### Iterators
 
+*Note*: Each `.forEach*` method should be considered as having its `map`, `filter` etc. counterparts.
+
 #### #.forEachNode
 
 ```ts
