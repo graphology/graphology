@@ -79,12 +79,20 @@ const size: number = graph.size;
 const graph: Graph = graph.addNode(key: any, [attributes: Object]);
 ```
 
-#### #.addEdge
+#### #.addEdge / #.addDirectedEdge
 
 Will throw if either the source or the target key is not found in the graph.
 
 ```ts
 const graph: Graph = graph.addEdge(key: any, sourceKey: any, targetKey: any, [attributes: Object]);
+```
+
+#### #.addUndirectedEdge
+
+Will throw if either the source or the target key is not found in the graph.
+
+```ts
+const graph: Graph = graph.addUndirectedEdge(key: any, sourceKey: any, targetKey: any, [attributes: Object]);
 ```
 
 #### #.dropNode
@@ -117,6 +125,16 @@ const graph: Graph = graph.setNodeAttr(key: any, name: string, fn: (attr: any) =
 
 // Otherwise
 const graph: Graph = graph.setNodeAttr(key: any, name: string, value: any);
+```
+
+#### #.setEdgeAttr
+
+```ts
+// Using a function to swap the value
+const graph: Graph = graph.setEdgeAttr(key: any, name: string, fn: (attr: any) => any);
+
+// Otherwise
+const graph: Graph = graph.setEdgeAttr(key: any, name: string, value: any);
 ```
 
 ### Getters
