@@ -145,6 +145,29 @@ const graph: Graph = graph.setEdgeAttr(key: any, name: string, value: any);
 const degree: number = graph.degree(key: any, [selfLoops: boolean]);
 ```
 
+#### #.source
+
+```ts
+const node: any = graph.source(key: any);
+```
+
+#### #.target
+
+```ts
+const node: any = graph.target(key: any);
+```
+
+#### #.extremities
+
+```ts
+interface Extremities {
+  source: any;
+  target: any;
+}
+
+const extremities: Extremities = graph.extremities(key: any);
+```
+
 #### #.getNodeAttr
 
 ```ts
@@ -168,7 +191,7 @@ interface NodeData {
   key: any;
 }
 
-graph.forEachNode(callback: (node: NodeData, index: number), thisArg: any);
+graph.forEachNode(callback: (node: NodeData, index: number));
 ```
 
 #### #.forEachEdge
@@ -180,5 +203,15 @@ interface EdgeData {
   target: any;
 }
 
-graph.forEachEdge(callback: (edge: EdgeData, index: number), thisArg: any);
+graph.forEachEdge(callback: (edge: EdgeData, index: number));
+```
+
+### #.forEachNeighbor / #.forEachInNeighbor / #.forEachOutNeighbor
+
+```ts
+interface NodeData {
+  key: any;
+}
+
+graph.forEachNeighbor(key: any, callback: (node: NodeData, index: number), [selfLoops: boolean]);
 ```
