@@ -33,4 +33,34 @@ There should probably be subtypes of graph enabling the implementation to perfor
 
 ## Loose questions
 
-* Should an edge be added with non-existent source or target: should we throw or add the missing nodes?
+* Should an edge be added with non-existent source or target: should we throw or add the missing nodes? (throw)
+
+## API
+
+### Instantiation
+
+The constructor should accept a variety of data to hydrate the graph. All those polymorphisms should be decided later on.
+
+```ts
+const graph: Graph = new Graph([data: any, options: object]);
+```
+
+It should be possible to use different typed constructors to give performance hints to the underlying implementation. Those alternative constructors should be decided later on.
+
+```ts
+const directedGraph: DirectedGraph = new DirectedGraph([data: any, options: object]);
+```
+
+### Mutation
+
+#### #.addNode
+
+```ts
+const graph: Graph = graph.addNode(key: any, [value: object]);
+```
+
+#### #.addEdge
+
+```ts
+const graph: Graph = graph.addEdge(key: any, source: any, target: any, [value: object]);
+```
