@@ -33,7 +33,7 @@ There should probably be subtypes of graph enabling the implementation to perfor
 
 ## Loose questions
 
-* Should an edge be added with non-existent source or target: should we throw or add the missing nodes? (throw)
+* What about nested mutability.
 
 ## API
 
@@ -200,7 +200,9 @@ const attr: any = graph.getEdgeAttr(key: any, name: string);
 
 ### Iterators
 
-*Note*: Each `.forEach*` method should be considered as having its `map`, `filter` etc. counterparts.
+*Note1*: Each `.forEach*` method should be considered as having its `map`, `filter` etc. counterparts.
+
+*Note2*: Iterated values' format should be discussed.
 
 #### #.forEachNode
 
