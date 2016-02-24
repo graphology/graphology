@@ -31,6 +31,14 @@ The default graph should be mixed (both directed & undirected edges), support se
 
 There should probably be subtypes of graph enabling the implementation to perform optimizations if the user can declare beforehand the type of their graph.
 
+**Suggestions**
+
+```js
+DirectedGraph
+SimpleGraph
+SimpleDirectedGraph
+```
+
 ## Loose questions
 
 * What about nested mutability.
