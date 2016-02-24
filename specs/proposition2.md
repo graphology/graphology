@@ -5,7 +5,7 @@
 This proposition will assume the following:
 
 * A node is the combination of a `key` which can be anything, and an optional `value` which is a key-value store whose integrity should be managed by the graph itself.
-* An edge is also the combination of a `key` which can be anything, and an optinal `value` which is a key-value store whose integrity should be managed by the graph itself. Oviously, an edge has to go from a source node (by id) to a target node (by id).
+* An edge is also the combination of a `key` which can be anything, and an optinal `value` which is a key-value store whose integrity should be managed by the graph itself. Oviously, an edge has to go from a source node (by key) to a target node (by key).
 
 **Node**: `(key) => value`
 
@@ -22,7 +22,7 @@ This proposition will assume the following:
 * The keys of nodes & edges can be absolutely anything (scalar or not) and can be mutated *ad lib* without altering the structure of the graph.
 * Serialization should somewhat be fairly easy to do.
 * Once again, this implementation's rationale is very inspired by [networkx](https://networkx.github.io/).
-* The reason why we have to split the concepts using both `key` and `value` is mostly because it's the only way to have both a data structure oblivious of what you give as "nodes" at the same time as keeping the possibility to query the graph by `id` in a performant way (namely `O(1)`).
+* The reason why we have to split the concepts using both `key` and `value` is mostly because it's the only way to have both a data structure oblivious of what you give as "nodes" at the same time as keeping the possibility to query the graph by `key` in a performant way (namely `O(1)`).
 
 ## Graph types
 
