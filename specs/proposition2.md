@@ -61,6 +61,8 @@ const graph: Graph = graph.addNode(key: any, [value: Object]);
 
 #### #.addEdge
 
+Will throw if either the source or the target key is not found in the graph.
+
 ```ts
-const graph: Graph = graph.addEdge(key: any, source: any, target: any, [value: Object]);
+const graph: Graph = graph.addEdge(key: any, sourceKey: any, targetKey: any, [value: Object]);
 ```
