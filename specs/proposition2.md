@@ -124,11 +124,21 @@ const degree: number = graph.degree(key: any, [selfLoops: boolean]);
 #### #.forEachNode
 
 ```ts
-graph.forEachNode(callback: (key: any, attributes: Object, index: number), thisArg: any);
+interface NodeData {
+  key: any;
+}
+
+graph.forEachNode(callback: (node: NodeData, index: number), thisArg: any);
 ```
 
 #### #.forEachEdge
 
 ```ts
-graph.forEachEdge(callback: (key: any, source: any, target: any, attributes: Object, index: number), thisArg: any);
+interface EdgeData {
+  key: any;
+  source: any;
+  target: any;
+}
+
+graph.forEachEdge(callback: (edge: EdgeData, index: number), thisArg: any);
 ```
