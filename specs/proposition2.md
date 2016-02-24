@@ -92,3 +92,25 @@ Will throw if either the source or the target key is not found in the graph.
 ```ts
 const graph: Graph = graph.addEdge(key: any, sourceKey: any, targetKey: any, [attributes: Object]);
 ```
+
+#### #.dropNode
+
+Will throw if the node doesn't exist in the graph.
+
+```ts
+const graph: Graph = graph.dropNode(key: any);
+```
+
+#### #.dropEdge
+
+Will throw if the edge isn't in the graph.
+
+```ts
+const graph: Graph = graph.dropEdge(key: any);
+```
+
+#### #.clear
+
+```ts
+const graph: Graph = graph.clear();
+```
