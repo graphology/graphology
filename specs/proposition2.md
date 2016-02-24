@@ -257,3 +257,49 @@ interface EdgeData {
 
 graph.forEachInEdge(key: any, callback: (edge: EdgeData, index: number));
 ```
+
+### Events
+
+The `Graph` class should be an event emitter that one can listen. We should probably stick to the [node](https://nodejs.org/api/events.html) event module to do so.
+
+#### addNode
+
+```ts
+graph.on('addNode', (key: any));
+```
+
+#### addEdge
+
+```ts
+graph.on('addEdge', (key: any, source: any, target: any));
+```
+
+#### dropNode
+
+```ts
+graph.on('dropNode', (key: any));
+```
+
+#### dropEdge
+
+```ts
+graph.on('dropEdge', (key: any, source: any, target: any));
+```
+
+#### clear
+
+```ts
+graph.on('clear', ());
+```
+
+#### setNodeAttr
+
+```ts
+graph.on('setNodeAttr', (key: any, name: string, value: any));
+```
+
+#### setEdgeAttr
+
+```ts
+graph.on('setEdgeAttr', (key: any, name: string, value: any));
+```
