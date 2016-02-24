@@ -303,3 +303,39 @@ graph.on('setNodeAttr', (key: any, name: string, value: any));
 ```ts
 graph.on('setEdgeAttr', (key: any, name: string, value: any));
 ```
+
+### Commodities
+
+#### #.toString
+
+Used by JavaScript for string coercion.
+
+```ts
+const stringRepresentation: string = graph.toString();
+```
+
+Should return something useful such as:
+
+```js
+'Graph<14 nodes, 45 edges>'
+```
+
+#### #.toJSON
+
+Should return a serialized version of the graph.
+
+Used by JavaScript when using `JSON.stringify`.
+
+```ts
+const serializedGraph: Object = graph.toJSON();
+```
+
+#### #.inspect
+
+Should return an overview of the graph as a string.
+
+Used by node to display objects when printing them through the console.
+
+```ts
+const inspected: string = graph.inspect();
+```
