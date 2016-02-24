@@ -139,6 +139,24 @@ const graph: Graph = graph.setEdgeAttr(key: any, name: string, value: any);
 
 ### Getters
 
+#### #.hasNode
+
+```ts
+const isNodeInGraph: boolean = graph.hasNode(key: any);
+```
+
+#### #.hasEdge
+
+```ts
+const isEdgeInGraph: boolean = graph.hasEdge(key: any);
+```
+
+#### #.hasEdgeBetween
+
+```ts
+cons suchEdgeExist: boolean = graph.hasEdgeBetween(source: any, target: any);
+```
+
 #### #.degree / #.inDegree / #.outDegree
 
 ```ts
