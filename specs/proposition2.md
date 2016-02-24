@@ -13,7 +13,7 @@ This proposition will assume the following:
 
 ## Note
 
-* This proposition assumes a very strict position about the value of the nodes as a protected properties store for the following reasons:
+* This proposition assumes a very strict position about the value of the nodes as a protected attributes store for the following reasons:
   * Possibility of localized events (needed by rendering engines to perform some kind of incremental updates).
   * Underlying implementation freedom (you want to use a FloatArray as storage, well you can).
   * Possibility to implement attributes' indexes very easily.
@@ -23,6 +23,7 @@ This proposition will assume the following:
 * Serialization should somewhat be fairly easy to do.
 * Once again, this implementation's rationale is very inspired by [networkx](https://networkx.github.io/).
 * The reason why we have to split the concepts using both `key` and `value` is mostly because it's the only way to have both a data structure oblivious of what you give as "nodes" at the same time as keeping the possibility to query the graph by `key` in a performant way (namely `O(1)`).
+* We will use `attributes` rather than `properties` to designate the nodes' & edges' `key=>value` pairs stored as value to remain consistent with `gexf`, `networkx` and many other plus staying away from JavaScript naming about object property.
 
 ## Graph types
 
@@ -33,4 +34,3 @@ There should probably be subtypes of graph enabling the implementation to perfor
 ## Loose questions
 
 * Should an edge be added with non-existent source or target: should we throw or add the missing nodes?
-* Should we use `property` or `attribute` to design the key-value pairs of the nodes' & edges' values?
