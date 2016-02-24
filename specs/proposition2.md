@@ -330,6 +330,40 @@ Used by JavaScript when using `JSON.stringify`.
 const serializedGraph: Object = graph.toJSON();
 ```
 
+**Proposition n°1**
+
+```ts
+interface SerializedNode {
+  key: any;
+  attributes: Object;
+}
+
+interface SerializedEdge {
+  key: any,
+  source: any,
+  target: any,
+  attributes: Object;
+}
+
+interface SerializedGraph {
+  nodes: Array<SerializedNode>,
+  edges: Array<SerializedEdge>
+}
+```
+
+The advantage here is that you may easily serialize any kind of graph (but if your keys are objects, you will need some work to rebind the edges to the correct references).
+
+**Proposition n°2**
+
+```ts
+interface SerializedGraph {
+  nodes: Object,
+  edges: Object
+}
+```
+
+Serializes the graph as key/value objects but will lose the nodes' whose keys are not serializable.
+
 #### #.inspect
 
 Should return an overview of the graph as a string.
