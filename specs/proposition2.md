@@ -56,7 +56,7 @@ const directedGraph: DirectedGraph = new DirectedGraph([data: any, options: Obje
 #### #.addNode
 
 ```ts
-const graph: Graph = graph.addNode(key: any, [value: Object]);
+const graph: Graph = graph.addNode(key: any, [attributes: Object]);
 ```
 
 #### #.addEdge
@@ -64,5 +64,5 @@ const graph: Graph = graph.addNode(key: any, [value: Object]);
 Will throw if either the source or the target key is not found in the graph.
 
 ```ts
-const graph: Graph = graph.addEdge(key: any, sourceKey: any, targetKey: any, [value: Object]);
+const graph: Graph = graph.addEdge(key: any, sourceKey: any, targetKey: any, [attributes: Object]);
 ```
