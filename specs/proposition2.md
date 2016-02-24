@@ -24,12 +24,13 @@ This proposition will assume the following:
 * Once again, this implementation's rationale is very inspired by [networkx](https://networkx.github.io/).
 * The reason why we have to split the concepts using both `key` and `value` is mostly because it's the only way to have both a data structure oblivious of what you give as "nodes" at the same time as keeping the possibility to query the graph by `id` in a performant way (namely `O(1)`).
 
-## Loose questions
-
-* Should we use `property` or `attribute` to design the key-value pairs of the nodes' & edges' values?
-
 ## Graph types
 
 The default graph should be mixed (both directed & undirected edges), support self-loops & parallel edges.
 
 There should probably be subtypes of graph enabling the implementation to perform optimizations if the user can declare beforehand the type of their graph.
+
+## Loose questions
+
+* Should an edge be added with non-existent source or target: should we throw or add the missing nodes?
+* Should we use `property` or `attribute` to design the key-value pairs of the nodes' & edges' values?
