@@ -51,6 +51,32 @@ It should be possible to use different typed constructors to give performance hi
 const directedGraph: DirectedGraph = new DirectedGraph([data: any, options: Object]);
 ```
 
+### Properties
+
+### #.order
+
+Number of nodes in the graph (read-only).
+
+```ts
+const order: number = graph.order;
+```
+
+### #.size
+
+Number of edges in the graph (read-only).
+
+```ts
+const size: number = graph.size;
+```
+
+### #.directed
+
+Is the graph directed (read-only).
+
+```ts
+const directed: boolean = graph.directed;
+```
+
 ### Mutation
 
 #### #.addNode
