@@ -109,12 +109,34 @@ const graph: Graph = graph.dropEdge(key: any);
 const graph: Graph = graph.clear();
 ```
 
+#### #.setNodeAttr
+
+```ts
+// Using a function to swap the value
+const graph: Graph = graph.setNodeAttr(key: any, name: string, fn: (attr: any) => any);
+
+// Otherwise
+const graph: Graph = graph.setNodeAttr(key: any, name: string, value: any);
+```
+
 ### Getters
 
 #### #.degree / #.inDegree / #.outDegree
 
 ```ts
 const degree: number = graph.degree(key: any, [selfLoops: boolean]);
+```
+
+#### #.getNodeAttr
+
+```ts
+const attr: any = graph.getNodeAttr(key: any, name: string);
+```
+
+#### #.getEdgeAttr
+
+```ts
+const attr: any = graph.getEdgeAttr(key: any, name: string);
 ```
 
 ### Iterators
