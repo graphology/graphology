@@ -369,12 +369,12 @@ Serializes the graph as key/value objects but will lose the nodes' whose keys ar
 Following the methods one could use to serialize an ES6 Map ([reference n°1](http://www.2ality.com/2015/08/es6-map-json.html), [reference n°2](https://github.com/DavidBruant/Map-Set.prototype.toJSON)):
 
 ```ts
-interface SerializedNode {
+interface SerializedNode<any|Object> {
   0: any;    // Key
   1: Object; // Attributes
 }
 
-interface SerializedEdge {
+interface SerializedEdge<any|Object> {
   0: any;    // Key
   1: any;    // Source
   2: any;    // Target
