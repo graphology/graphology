@@ -339,15 +339,15 @@ interface SerializedNode {
 }
 
 interface SerializedEdge {
-  key: any,
-  source: any,
-  target: any,
+  key: any;
+  source: any;
+  target: any;
   attributes: Object;
 }
 
 interface SerializedGraph {
-  nodes: Array<SerializedNode>,
-  edges: Array<SerializedEdge>
+  nodes: Array<SerializedNode>;
+  edges: Array<SerializedEdge>;
 }
 ```
 
@@ -357,8 +357,8 @@ The advantage here is that you may easily serialize any kind of graph (but if yo
 
 ```ts
 interface SerializedGraph {
-  nodes: Object,
-  edges: Object
+  nodes: Object;
+  edges: Object;
 }
 ```
 
