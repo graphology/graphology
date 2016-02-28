@@ -125,24 +125,48 @@ const graph: Graph = graph.dropEdge(key: any);
 const graph: Graph = graph.clear();
 ```
 
-#### #.setNodeAttr
+#### #.setNodeAttribute
 
 ```ts
 // Using a function to swap the value
-const graph: Graph = graph.setNodeAttr(key: any, name: string, fn: (attr: any) => any);
+const graph: Graph = graph.setNodeAttribute(key: any, name: string, fn: (attr: any) => any);
 
 // Otherwise
-const graph: Graph = graph.setNodeAttr(key: any, name: string, value: any);
+const graph: Graph = graph.setNodeAttribute(key: any, name: string, value: any);
 ```
 
-#### #.setEdgeAttr
+#### #.replaceNodeAttributes
+
+```ts
+const graph: Graph = graph.replaceNodeAttributes(key: any, attributes: Object);
+```
+
+#### #.mergeNodeAttributes
+
+```ts
+const graph: Graph = graph.mergeNodeAttributes(key: any, attributes: Object);
+```
+
+#### #.setEdgeAttribute
 
 ```ts
 // Using a function to swap the value
-const graph: Graph = graph.setEdgeAttr(key: any, name: string, fn: (attr: any) => any);
+const graph: Graph = graph.setEdgeAttribute(key: any, name: string, fn: (attr: any) => any);
 
 // Otherwise
-const graph: Graph = graph.setEdgeAttr(key: any, name: string, value: any);
+const graph: Graph = graph.setEdgeAttribute(key: any, name: string, value: any);
+```
+
+#### #.replaceEdgeAttributes
+
+```ts
+const graph: Graph = graph.replaceEdgeAttributes(key: any, attributes: Object);
+```
+
+#### #.mergeEdgeAttributes
+
+```ts
+const graph: Graph = graph.mergeEdgeAttributes(key: any, attributes: Object);
 ```
 
 ### Getters
@@ -304,16 +328,16 @@ graph.on('dropEdge', (key: any, source: any, target: any));
 graph.on('clear', ());
 ```
 
-#### setNodeAttr
+#### setNodeAttribute
 
 ```ts
-graph.on('setNodeAttr', (key: any, name: string, value: any));
+graph.on('setNodeAttribute', (key: any, name: string, value: any));
 ```
 
-#### setEdgeAttr
+#### setEdgeAttribute
 
 ```ts
-graph.on('setEdgeAttr', (key: any, name: string, value: any));
+graph.on('setEdgeAttribute', (key: any, name: string, value: any));
 ```
 
 ### Commodities
