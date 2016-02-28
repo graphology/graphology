@@ -285,7 +285,7 @@ const attributes: Object = graph.getEdgeAttributes(key: any);
 
 *Note3*: For some methods, it would be a good thing to provide an iterator on multiple targets.
 
-*Latest idea*: iterators should only provide keys and have array-giving counterparts such as `#.neighbors` and `#.inEdge`.
+*Latest idea*: iterators should only provide keys and have array-giving counterparts such as `#.neighbors` and `#.inEdge`. Plus should we support a way to get counts without having to process the lists?
 
 #### #.forEachNode
 
