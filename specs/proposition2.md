@@ -135,6 +135,12 @@ const graph: Graph = graph.setNodeAttribute(key: any, name: string, fn: (attr: a
 const graph: Graph = graph.setNodeAttribute(key: any, name: string, value: any);
 ```
 
+#### #.removeNodeAttribute
+
+```ts
+const graph: Graph = graph.removeNodeAttribute(key: any, name: string);
+```
+
 #### #.replaceNodeAttributes
 
 ```ts
@@ -155,6 +161,12 @@ const graph: Graph = graph.setEdgeAttribute(key: any, name: string, fn: (attr: a
 
 // Otherwise
 const graph: Graph = graph.setEdgeAttribute(key: any, name: string, value: any);
+```
+
+#### #.removeEdgeAttribute
+
+```ts
+const graph: Graph = graph.removeEdgeAttribute(key: any, name: string);
 ```
 
 #### #.replaceEdgeAttributes
