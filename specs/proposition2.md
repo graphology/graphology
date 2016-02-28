@@ -84,6 +84,24 @@ Number of edges in the graph (read-only).
 const size: number = graph.size;
 ```
 
+### #.type
+
+Type of the graph (read-only).
+
+```ts
+enum Type {Directed, Undirected, Mixed};
+
+const type: Type = graph.type;
+```
+
+### #.isMulti / #.isSimple
+
+Is the graph a multigraph?
+
+```ts
+const isMulti: boolean = graph.isMulti;
+```
+
 ### Mutation
 
 #### #.addNode
