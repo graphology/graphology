@@ -74,6 +74,7 @@ export default function(rows) {
       }
 
       // Increasing edge's weight
+      // NOTE: graph.getEdgeBetween doesn't exist right now
       const edge = graph.getEdgeBetween(node, lastNode);
       graph.setEdgeAttribute(edge, weight, nb => nb + 1);
     });
@@ -85,6 +86,8 @@ export default function(rows) {
   // Keeping only larger components' nodes
   const nodesToDrop = _(components)
     .filter(component => component.order < 4)
+
+    // NOTE: need a way to get the nodes
     .map(component => component.nodes())
     .flatten()
     .value();

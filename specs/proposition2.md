@@ -1,15 +1,21 @@
 # API Specs Proposition n°2
 
+## Objectives
+
+Build a specification for a `Graph` object in JavaScript that could serve as a basis for any typical use cases going from graph generation, algorithms (on fairly huge graphs even but never for graphs too big that they would pose memory issues) and even graph rendering.
+
+The idea is to propose a specification with the attached unit tests but not to qenforce a particular implementation (even if we'll propose one with a series of related modules).
+
 ## Rationale
 
 This proposition will assume the following:
 
-* A node is the combination of a `key` which can be anything, and an optional `value` which is a key-value store whose integrity should be managed by the graph itself.
-* An edge is also the combination of a `key` which can be anything, and an optinal `value` which is a key-value store whose integrity should be managed by the graph itself. Oviously, an edge has to go from a source node (by key) to a target node (by key).
+* A node is the combination of a `key` which can be anything, and optional `attributes` which is a key-value store whose integrity should be managed by the graph itself.
+* An edge is also the combination of a `key` which can be anything, and optional `attributes` which is a key-value store whose integrity should be managed by the graph itself. Oviously, an edge has to go from a source node (by key) to a target node (by key).
 
-**Node**: `(key) => value`
+**Node**: `(key) => attributes`
 
-**Edge**: `(key) + (source, target) => value`
+**Edge**: `(key) + (source, target) => attributes`
 
 ## Note
 
@@ -18,7 +24,6 @@ This proposition will assume the following:
   * Underlying implementation freedom (you want to use a FloatArray as storage, well you can).
   * Possibility to implement attributes' indexes very easily.
   * Possibility to enforce some "good practices" about specific node attributes such as checking that an edge's weight, or a node's x or y positions are correctly given as numerical values.
-* It could be possible to make edges' key optional but this create issues concerning parallel edges.
 * The keys of nodes & edges can be absolutely anything (scalar or not) and can be mutated *ad lib* without altering the structure of the graph.
 * Serialization should somewhat be fairly easy to do.
 * Once again, this implementation's rationale is very inspired by [networkx](https://networkx.github.io/).
@@ -42,10 +47,6 @@ SimpleGraph
 MultiGraph
 // ... Then all combinations of the two criteria above
 ```
-
-## Loose questions
-
-* What about nested mutability.
 
 ## API
 

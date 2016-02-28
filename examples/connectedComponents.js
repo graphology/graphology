@@ -8,12 +8,14 @@
  * of subgraphs.
  */
 
-// Using solution n°1 from issue #8
-function connectedComponents(graph) {
+// Using proposition n°2
+// NOTE: this version does not copy attributes into the components
+export default function connectedComponents(graph) {
   const visitedNodes = new Set(),
         components = [];
 
-  graph.nodes.forEach(node => {
+  // NOTE: attempting this iterator scheme
+  graph.forEachNode(node => {
 
     if (visitedNodes.has(node))
       return;
@@ -23,50 +25,38 @@ function connectedComponents(graph) {
     visitedNodes.add(node);
     component.addNode(node);
 
-    const walk = neighbour => {
-      if (visitedNodes.has(neighbour))
+    graph.forEachOutEdge(node, edge => {
+
+      // NOTE: This feels somewhat clunky
+      component.addEdge(
+        edge,
+        graph.source(edge),
+        graph.target(edge)
+      );
+    });
+
+    const walk = neighbor => {
+      if (visitedNodes.has(neighbor))
         return;
 
-      visitedNodes.add(neighbour);
-      component.addNode(neighbour);
-      graph.neighbours(neighbour).forEach(walk);
+      visitedNodes.add(neighbor);
+      component.addNode(node);
+
+      graph.forEachOutEdge(node, edge => {
+
+        // NOTE: This feels somewhat clunky
+        component.addEdge(
+          edge,
+          graph.source(edge),
+          graph.target(edge)
+        );
+      });
+
+      graph.forEachNeighbor(walk);
     };
 
-    graph.neighbours(node).forEach(walk);
-
-    components.push(component);
-  });
-
-  return components;
-}
-
-// Using solution n°3 from issue #8
-function connectedComponents(graph) {
-  const visitedNodes = new Set(),
-        components = [];
-
-  graph.nodes.forEach(node => {
-
-    if (visitedNodes.has(node))
-      return;
-
-    const component = new Graph();
-
-    visitedNodes.add(node);
-    component.addNode(node);
-
-    const walk = neighbour => {
-      if (visitedNodes.has(neighbour))
-        return;
-
-      visitedNodes.add(neighbour);
-      component.addNode(neighbour);
-      neighbour.neighbours().forEach(walk);
-    };
-
-    node.neighbours().forEach(walk);
-
-    components.push(component);
+    graph.forEachNeighbor(walk);
+    components.push(components);
   });
 
   return components;
