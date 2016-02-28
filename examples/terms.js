@@ -44,49 +44,38 @@ export default function(rows) {
       // 1 term = 1 node
       if (!graph.hasNode(term)) {
 
-        // We just need an id, occurrences and the term position in the expression
-        graph.addNode({
-          id: term,
+        // We add the term as node an keep two attributes:
+        //   1) occurrences of this particular term
+        //   2) top position of this term in expressions where it is found
+        graph.addNode(term, {
           occurrences: 0,
           position
         });
       }
 
-      const node = graph.getNode(term);
-
       // Updating position (we only keep the one nearest from start)
-      node.position = Math.min(node.position, position);
+      graph.setNodeAttribute('position', currentPosition => Math.min(currentPosition, position));
 
       // Updating occurrences of the term
-      node.occurrences++;
+      graph.setNodeAttribute('occurrences', nb => nb + 1);
 
       // If we are the first term of the expression, we break here
       if (!position)
         return;
 
       // Retrieving the node of the last term
-      const lastNode = graph.getNode(terms[terms.length - 1]);
+      const lastNode = terms[position - 1];
 
       // If there is no edge between `node` and `lastNode`, we create one
-      if (!graph.hasEdge(node, lastNode)) {
+      if (!graph.hasEdgeBetween(node, lastNode)) {
 
-        // NOTE: here we see that we should discuss the `addEdge` specs
-        // NOTE: should the weight be handled by the user or the Graph?
-        // NOTE: should add methods return the created object or the graph?
-        graph.addEdge({
-          id: edgeId,
-          source: node.id,
-          target: lastNode.id,
-          weight: 0
-        });
+        // We only need to track the weight here
+        graph.addEdge(edgeId++, node, lastNode, {weight: 0});
       }
 
       // Increasing edge's weight
-      // NOTE: graph.get & graph.getEdge or graph.getNode & graph.getNode
-      const edge = graph.getEdge(edgeId);
-      edge.weight++;
-
-      edgeId++;
+      const edge = graph.getEdgeBetween(node, lastNode);
+      graph.setEdgeAttribute(edge, weight, nb => nb + 1);
     });
   });
 
@@ -96,7 +85,7 @@ export default function(rows) {
   // Keeping only larger components' nodes
   const nodesToDrop = _(components)
     .filter(component => component.order < 4)
-    .map(component => component.nodes)
+    .map(component => component.nodes())
     .flatten()
     .value();
 
@@ -105,6 +94,6 @@ export default function(rows) {
   // Detecting communities
   louvain.assign(graph);
 
-  // Now our nodes have a .community property we can use
+  // Now our nodes a community attribute we can use
   return graph;
 }

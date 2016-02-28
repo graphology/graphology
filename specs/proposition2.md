@@ -202,7 +202,7 @@ const isEdgeInGraph: boolean = graph.hasEdge(key: any);
 #### #.hasEdgeBetween
 
 ```ts
-cons suchEdgeExist: boolean = graph.hasEdgeBetween(source: any, target: any);
+const suchEdgeExist: boolean = graph.hasEdgeBetween(source: any, target: any);
 ```
 
 #### #.degree / #.inDegree / #.outDegree
