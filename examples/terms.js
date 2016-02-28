@@ -17,8 +17,8 @@
  * is way more concise and understandable.
  */
 import Graph from 'graph';
-import connectedComponents from 'graph-connected-components';
-import louvain from 'graph-louvain';
+import connectedComponents from 'graph/connected-components';
+import louvain from 'graph/modularity/louvain';
 import _ from 'lodash';
 
 export default function(rows) {

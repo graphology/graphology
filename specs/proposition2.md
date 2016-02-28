@@ -34,9 +34,13 @@ There should probably be subtypes of graph enabling the implementation to perfor
 **Suggestions**
 
 ```js
+Graph => MultiMixedGraph
 DirectedGraph
+UndirectedGraph
+MixedGraph
 SimpleGraph
-SimpleDirectedGraph
+MultiGraph
+// ... Then all combinations of the two criteria above
 ```
 
 ## Loose questions
@@ -261,6 +265,8 @@ const attributes: Object = graph.getEdgeAttributes(key: any);
 *Note2*: Iterated values' format should be discussed.
 
 *Note3*: For some methods, it would be a good thing to provide an iterator on multiple targets.
+
+*Latest idea*: iterators should only provide keys and have array-giving counterparts such as `#.neighbors` and `#.inEdge`.
 
 #### #.forEachNode
 
