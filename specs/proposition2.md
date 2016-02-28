@@ -294,7 +294,7 @@ interface NodeData {
 graph.forEachNeighbor(key: any, callback: (node: NodeData, index: number), [selfLoops: boolean]);
 ```
 
-### #.forEachInEdge / #.forEachOutEdge / #.forEachUndirectedEdge
+### #.forEachRelatedEdge / #.forEachInEdge / #.forEachOutEdge / #.forEachUndirectedEdge
 
 ```ts
 interface EdgeData {
