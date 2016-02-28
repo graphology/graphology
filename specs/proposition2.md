@@ -194,16 +194,28 @@ interface Extremities {
 const extremities: Extremities = graph.extremities(key: any);
 ```
 
-#### #.getNodeAttr
+#### #.getNodeAttribute
 
 ```ts
-const attr: any = graph.getNodeAttr(key: any, name: string);
+const attribute: any = graph.getNodeAttribute(key: any, name: string);
 ```
 
-#### #.getEdgeAttr
+#### #.getNodeAttributes
 
 ```ts
-const attr: any = graph.getEdgeAttr(key: any, name: string);
+const attributes: Object = graph.getNodeAttributes(key: any);
+```
+
+#### #.getEdgeAttribute
+
+```ts
+const attribute: any = graph.getEdgeAttribute(key: any, name: string);
+```
+
+#### #.getEdgeAttributes
+
+```ts
+const attributes: Object = graph.getEdgeAttributes(key: any);
 ```
 
 ### Iterators
