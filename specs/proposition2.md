@@ -283,7 +283,7 @@ const attributes: Object = graph.getEdgeAttributes(key: any);
 
 *Note2*: Iterated values' format should be discussed.
 
-*Note3*: For some methods, it would be a good thing to provide an iterator on multiple targets.
+*Note3*: For some methods, it would be a good thing to provide an iterator on multiple targets (*à la* networkx nbunch & ebunch).
 
 *Latest idea*: iterators should only provide keys and have array-giving counterparts such as `#.neighbors` and `#.inEdge`. Plus should we support a way to get counts without having to process the lists?
 
