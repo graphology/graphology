@@ -36,7 +36,7 @@ The default `Graph` object is therefore be an observable, mutable, mixed multi g
 
 Then the user would be able to hint about the structure of the graph using the constructor or relying on some handy shortcuts.
 
-```js
+```ts
 const graph = new Graph();
 const graph = new Graph(null, {type: 'directed'});
 const graph = new DirectedGraph();
@@ -49,7 +49,7 @@ const graph = new ImmutableGraph();
 
 The graph holds **nodes** and **edges** both being represented by a key and respectively storing attributes.
 
-```js
+```ts
 (node): key => attributes
 (edge): key + [sourceKey, targetKey] => attributes
 ```
@@ -61,10 +61,14 @@ Like a JS `Map`, nodes & edges' keys can be anything, even references.
 * [Instantiation](#instantiation)
 * [Properties](#properties)
 * [Mutations](#mutations)
+* [Getters](#getters)
+* [Iteration](#iteration)
+* [Events](#events)
+* [Utilities](#utilities)
 
 ### Instantiation
 
-```js
+```ts
 const graph = new Graph(data, options);
 ```
 
@@ -154,10 +158,296 @@ graph.addUndirectedEdge(key: any, source: any, target: any, [attributes: Object]
 
 Will throw if either the source or target not were not to be found in the graph.
 
+#### #.dropNode
+
+Drops the given node.
+
+```ts
+graph.dropNode(key: any);
+```
+
+Will throw if the node is not found in the graph.
+
+#### #.dropEdge
+
+Drops the given edge.
+
+```ts
+graph.dropEdge(key: any);
+```
+
+Will throw if the edge is not found in the graph.
+
 #### #.clear
 
 Drops every nodes & edges from the graph, leaving it blank.
 
 ```ts
 graph.clear();
+```
+
+### Getters
+
+#### #.hasNode
+
+Checks whether a node exists in the graph.
+
+```ts
+const isNodeInGraph: boolean = graph.hasNode(key: any);
+```
+
+#### #.hasEdge
+
+Checks whether an edge exists in the graph.
+
+```ts
+// By id
+const isEdgeInGraph: boolean = graph.hasEdge(key: any);
+
+// By source, target
+const isEdgeInGraph: boolean = graph.hasEdge(source: any, target: any);
+```
+
+#### #.getEdge / #.getFirstEdge
+
+Retrieves the first edge between two nodes.
+
+```ts
+const edge = graph.getEdge(source: any, target: any);
+```
+
+#### #.degree / #.inDegree / #.outDegree
+
+Retrieves the degree of the given node.
+
+```ts
+const degree: number = graph.degree(key: any, [selfLoops: boolean]);
+```
+
+Will throw if the node is not found in the graph.
+
+#### #.source
+
+Retrieves the source of the given edge.
+
+```ts
+const sourceNode = graph.source(key: any);
+```
+
+Will throw if the edge is not in the graph.
+
+#### #.target
+
+Retrieves the target of the given edge.
+
+```ts
+const targetNode = graph.target(key: any);
+```
+
+Will throw if the edge is not in the graph.
+
+#### #.extremities
+
+Retrieves the extremities of the given edge.
+
+```ts
+interface Extremities {
+  source: any;
+  target: any;
+}
+
+const extremities: Extremities = graph.extremities(key: any);
+```
+
+Will throw if the edge is not in the graph.
+
+#### #.getNodeAttribute
+
+```ts
+const attribute: any = graph.getNodeAttribute(key: any, name: string);
+```
+
+Will throw if the node is not found in the graph.
+
+#### #.getNodeAttributes
+
+```ts
+const attributes: Object = graph.getNodeAttributes(key: any);
+```
+
+Will throw if the node is not found in the graph.
+
+#### #.getEdgeAttribute
+
+```ts
+const attribute: any = graph.getEdgeAttribute(key: any, name: string);
+```
+
+Will throw if the edge is not in the graph.
+
+#### #.getEdgeAttributes
+
+```ts
+const attributes: Object = graph.getEdgeAttributes(key: any);
+```
+
+Will throw if the edge is not in the graph.
+
+### Iteration
+
+Iteration methods should assume the following stances:
+
+* `forEach` iterators.
+* Generators.
+* Array-giving methods.
+* Counting methods.
+
+Iteration targets are:
+
+* Nodes
+* Edges
+* A node or bunch of nodes' neighbors
+* A node or bunch of nodes' edges
+
+Iterations methods always only give access to nodes' & edges' keys and not attributes. The getter methods should be used to retrieve attributes during iteration.
+
+#### Nodes
+
+```
+#.nodes()
+#.forEachNode()
+#.createNodeIterator()
+```
+
+#### Edges
+
+```
+#.edges()
+#.forEachEdge()
+#.createEdgeIterator()
+
+#.inEdges()
+...
+#.outEdges()
+...
+#.undirectedEdges()
+...
+#.directedEdges()
+...
+```
+
+#### Neighbours
+
+```
+#.neighbors()
+#.forEachNeighbor()
+#.createNeighborIterator()
+
+#.inNeighbors()
+...
+#.outNeighbors()
+...
+```
+
+### Events
+
+The `Graph` class should be an event emitter that one can listen. We should probably stick to the [node](https://nodejs.org/api/events.html) event module to do so.
+
+#### addNode
+
+```ts
+graph.on('addNode', (key: any));
+```
+
+#### addEdge
+
+```ts
+graph.on('addEdge', (key: any, source: any, target: any));
+```
+
+#### dropNode
+
+```ts
+graph.on('dropNode', (key: any));
+```
+
+#### dropEdge
+
+```ts
+graph.on('dropEdge', (key: any, source: any, target: any));
+```
+
+#### clear
+
+```ts
+graph.on('clear', ());
+```
+
+#### setNodeAttribute
+
+```ts
+graph.on('setNodeAttribute', (key: any, name: string, value: any));
+```
+
+#### setEdgeAttribute
+
+```ts
+graph.on('setEdgeAttribute', (key: any, name: string, value: any));
+```
+
+### Utilities
+
+#### #.toString
+
+Used by JavaScript for string coercion.
+
+```ts
+const stringRepresentation: string = graph.toString();
+```
+
+Should return something useful such as:
+
+```js
+'Graph<14 nodes, 45 edges>'
+```
+
+#### #.toJSON
+
+Should return a serialized version of the graph.
+
+Used by JavaScript when using `JSON.stringify`.
+
+```ts
+const serializedGraph: Object = graph.toJSON();
+```
+
+Following the methods one could use to serialize an ES6 Map ([reference n°1](http://www.2ality.com/2015/08/es6-map-json.html), [reference n°2](https://github.com/DavidBruant/Map-Set.prototype.toJSON)):
+
+```ts
+interface SerializedNode<any|Object> {
+  0: any;    // Key
+  1: Object; // Attributes
+}
+
+interface SerializedEdge<any|Object> {
+  0: any;    // Key
+  1: any;    // Source
+  2: any;    // Target
+  3: Object; // Attributes
+}
+
+interface SerializedGraph {
+  nodes: Array<SerializedNode>;
+  edges: Array<SerializedEdge>;
+}
+```
+
+#### #.inspect
+
+Should return an overview of the graph as a string.
+
+Used by node to display objects when printing them through the console.
+
+```ts
+const inspected: string = graph.inspect();
 ```
