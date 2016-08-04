@@ -66,13 +66,40 @@ Like a JS `Map`, nodes & edges' keys can be anything, even references.
 * [Events](#events)
 * [Utilities](#utilities)
 
+**Concerning bunches**
+
+As in networkx, some methods can read from various iterables understood as node & edges bunches.
+
+As a general rule, if the iterable is list-like (Array, Set), the values will be understood as keys. Whereas, if the iterable is key-value-like (Object, Map), then, the keys will be understood as keys and the values as attributes.
+
 ### Instantiation
 
 ```ts
 const graph = new Graph(data, options);
 ```
 
-TODO: input data & options
+The input data may only be the following:
+
+```ts
+interface SerializedNode<any|Object> {
+  0: any;    // Key
+  1: Object; // Attributes
+}
+
+interface SerializedEdge<any|Object> {
+  0: any;    // Key
+  1: any;    // Source
+  2: any;    // Target
+  3: Object; // Attributes
+}
+
+interface SerializedGraph {
+  nodes: Array<SerializedNode>;
+  edges: Array<SerializedEdge>;
+}
+```
+
+TODO: options
 
 ### Properties
 
@@ -138,6 +165,18 @@ Adds a single node to the graph.
 graph.addNode(key: any, [attributes: Object]);
 ```
 
+#### #.importNode / #.importNodes
+
+Adding serialized nodes.
+
+#### #.addNodesFrom
+
+Adds nodes from an iterable.
+
+```ts
+graph.addNodesFrom(nodes: iterable);
+```
+
 #### #.addEdge, #.addDirectedEdge
 
 Adds a single directed edge to the graph.
@@ -147,6 +186,10 @@ graph.addEdge(key: any, source: any, target: any, [attributes: Object]);
 ```
 
 Will throw if either the source or target not were not to be found in the graph.
+
+#### #.importEdge / #.importEdges
+
+Adds serialized edges.
 
 #### #.addUndirectedEdge
 
@@ -168,6 +211,16 @@ graph.dropNode(key: any);
 
 Will throw if the node is not found in the graph.
 
+#### #.dropNodes
+
+Drops the given node bunch.
+
+```ts
+graph.dropNodes(keys: iterable);
+```
+
+Will throw if any of the nodes is not found in the graph.
+
 #### #.dropEdge
 
 Drops the given edge.
@@ -178,6 +231,16 @@ graph.dropEdge(key: any);
 
 Will throw if the edge is not found in the graph.
 
+#### #.dropEdges
+
+Drops the given edge bunch.
+
+```ts
+graph.dropEdges(keys: iterable);
+```
+
+Will throw if any of the edges is not found in the graph.
+
 #### #.clear
 
 Drops every nodes & edges from the graph, leaving it blank.
@@ -185,6 +248,45 @@ Drops every nodes & edges from the graph, leaving it blank.
 ```ts
 graph.clear();
 ```
+
+#### #.setNodeAttribute
+
+```ts
+graph.setNodeAttribute(key: any, name: string, value: any);
+```
+
+#### #.updateNodeAttribute
+
+```ts
+graph.updateNodeAttribute(key: any, name: string, updater: function);
+```
+
+#### #.replaceNodeAttributes
+
+```ts
+graph.replaceNodeAttributes(key: any, attributes: Object);
+```
+
+#### #.mergeNodeAttributes
+
+```ts
+graph.mergeNodeAttributes(key: any, data: Object);
+```
+
+#### #.setEdgeAttribute
+
+```ts
+graph.setEdgeAttribute(key: any, name: string, value: any);
+
+// Or, if you provide 4 arguments, it will update the first matching edge:
+graph.setEdgeAttribute(source: any, target: any, name: string, value: any);
+```
+
+#### #.updateEdgeAttribute
+
+#### #.replaceEdgeAttributes
+
+#### #.mergeEdgeAttributes
 
 ### Getters
 
@@ -214,6 +316,24 @@ Retrieves the first edge between two nodes.
 
 ```ts
 const edge = graph.getEdge(source: any, target: any);
+```
+
+#### #.exportNode / #.exportNodes
+
+Exports a node bunch in a serialized way.
+
+```ts
+const serializedNode: SerializedNode = graph.exportNode(key: any);
+const serializedNodes: Array<SerializedNode> = graph.exportNodes(keys: iterable);
+```
+
+#### #.exportEdge / #.exportEdges
+
+Exports a node bunch in a serialized way.
+
+```ts
+const serializedEdge: SerializedEdge = graph.exportEdge(key: any);
+const serializedEdges: Array<SerializedEdge> = graph.exportEdges(keys: iterable);
 ```
 
 #### #.degree / #.inDegree / #.outDegree
@@ -297,7 +417,7 @@ Will throw if the edge is not in the graph.
 
 Iteration methods should assume the following stances:
 
-* `forEach` iterators.
+* `forEach` iterators (optionally combined with other typical reducers).
 * Generators.
 * Array-giving methods.
 * Counting methods.
@@ -317,6 +437,7 @@ Iterations methods always only give access to nodes' & edges' keys and not attri
 #.nodes()
 #.forEachNode()
 #.createNodeIterator()
+#.order
 ```
 
 #### Edges
@@ -325,8 +446,10 @@ Iterations methods always only give access to nodes' & edges' keys and not attri
 #.edges()
 #.forEachEdge()
 #.createEdgeIterator()
+#.size
 
 #.inEdges()
+#.countInEdges()
 ...
 #.outEdges()
 ...
@@ -342,6 +465,7 @@ Iterations methods always only give access to nodes' & edges' keys and not attri
 #.neighbors()
 #.forEachNeighbor()
 #.createNeighborIterator()
+#.countNeighbors()
 
 #.inNeighbors()
 ...
@@ -422,25 +546,6 @@ const serializedGraph: Object = graph.toJSON();
 ```
 
 Following the methods one could use to serialize an ES6 Map ([reference n°1](http://www.2ality.com/2015/08/es6-map-json.html), [reference n°2](https://github.com/DavidBruant/Map-Set.prototype.toJSON)):
-
-```ts
-interface SerializedNode<any|Object> {
-  0: any;    // Key
-  1: Object; // Attributes
-}
-
-interface SerializedEdge<any|Object> {
-  0: any;    // Key
-  1: any;    // Source
-  2: any;    // Target
-  3: Object; // Attributes
-}
-
-interface SerializedGraph {
-  nodes: Array<SerializedNode>;
-  edges: Array<SerializedEdge>;
-}
-```
 
 #### #.inspect
 
