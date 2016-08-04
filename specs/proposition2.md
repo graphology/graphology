@@ -4,7 +4,7 @@
 
 Build a specification for a `Graph` object in JavaScript that could serve as a basis for any typical use cases going from graph generation, algorithms (on fairly huge graphs even but never for graphs too big that they would pose memory issues) and even graph rendering.
 
-The idea is to propose a specification with the attached unit tests but not to qenforce a particular implementation (even if we'll propose one with a series of related modules).
+The idea is to propose a specification with the attached unit tests but not to enforce a particular implementation (even if we'll propose one with a series of related modules).
 
 ## Rationale
 
