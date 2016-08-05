@@ -16,6 +16,9 @@
  * The original algorithm needs ~150 locs without comments. This example
  * is way more concise and understandable.
  */
+
+// NOTE: to be refined with spec 3
+
 import Graph from 'graph';
 import connectedComponents from 'graph/connected-components';
 import louvain from 'graph/modularity/louvain';

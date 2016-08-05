@@ -7,6 +7,9 @@
  * Highlighting neighbors of the clicked node using a rendering engine such
  * as sigma.
  */
+
+// NOTE: to be refined with spec3
+
 import Graph from 'graph';
 import sigma from 'sigma';
 

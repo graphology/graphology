@@ -78,7 +78,7 @@ As a general rule, if the iterable is list-like (Array, Set), the values will be
 const graph = new Graph(data, options);
 ```
 
-The input data may only be the following:
+The input data may only be the following or another graph instance.
 
 ```ts
 interface SerializedNode<any|Object> {
@@ -86,6 +86,8 @@ interface SerializedNode<any|Object> {
   1: Object; // Attributes
 }
 
+// Note: should we add a fifth information
+// showing whether the edge is directed?
 interface SerializedEdge<any|Object> {
   0: any;    // Key
   1: any;    // Source
@@ -99,7 +101,7 @@ interface SerializedGraph {
 }
 ```
 
-TODO: options
+TODO: options regarding performance hints & index generation.
 
 ### Properties
 
@@ -164,6 +166,10 @@ Adds a single node to the graph.
 ```ts
 graph.addNode(key: any, [attributes: Object]);
 ```
+
+#### #.import
+
+Adding a serialized graph.
 
 #### #.importNode / #.importNodes
 
@@ -318,6 +324,10 @@ Retrieves the first edge between two nodes.
 const edge = graph.getEdge(source: any, target: any);
 ```
 
+#### #.export
+
+Exports the serialized graph. (Used by #.toJSON).
+
 #### #.exportNode / #.exportNodes
 
 Exports a node bunch in a serialized way.
@@ -377,6 +387,16 @@ interface Extremities {
 }
 
 const extremities: Extremities = graph.extremities(key: any);
+```
+
+Will throw if the edge is not in the graph.
+
+#### #.directed
+
+Checks whether the given edge is directed or not.
+
+```ts
+const isTheEdgeDirected: boolean = graph.directed(key: any);
 ```
 
 Will throw if the edge is not in the graph.
@@ -441,6 +461,8 @@ Iterations methods always only give access to nodes' & edges' keys and not attri
 ```
 
 #### Edges
+
+TODO: define a way for mixed directed/undirected iteration?
 
 ```
 #.edges()
