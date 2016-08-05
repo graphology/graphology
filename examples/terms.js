@@ -16,7 +16,7 @@
  * The original algorithm needs ~150 locs without comments. This example
  * is way more concise and understandable.
  */
-import Graph from 'graph';
+import {SimpleDirectedGraph} from 'graph';
 import connectedComponents from 'graph/connected-components';
 import louvain from 'graph/modularity/louvain';
 import _ from 'lodash';

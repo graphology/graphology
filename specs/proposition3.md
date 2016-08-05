@@ -63,6 +63,7 @@ Like a JS `Map`, nodes & edges' keys can be anything, even references.
 * [Getters](#getters)
 * [Iteration](#iteration)
 * [Events](#events)
+* [Indexes](#indexes)
 * [Utilities](#utilities)
 
 **Concerning bunches**
@@ -102,12 +103,21 @@ interface SerializedGraph {
 #### Options
 
 * *allowSelfLoops* `boolean` [`true`]: Should the graph accept self loops?
-* *indexes* `object`: Handling the index' configuration (lazyness, precomputation etc.)
 * *type* `string` [`mixed`]: Type of the graph. One of `directed`, `undirected` or `mixed`.
 * *map* `boolean` [`false`]: Should the graph accept references as keys like a `Map`?
 * *multi* `boolean` [`true`]: Should the graph accept parallel edges.
 * *edgeIdGenerator* `function`: Function the graph will use to generate edges' added through the #.addSingleEdge method (probably using uuid v4 compressed through base64 or base91).
 * *hashDelimiter* `string`: String delimiter used to compose string hashes when required.
+* *indexes* `object`: Handling the index' configuration (lazyness, precomputation etc.)
+
+#### Note on indexes
+
+Indexes are the following:
+
+* Neighbors
+* RelatedEdges
+
+They can be computed ahead of time and lazily synchronized. But, by default, they should be computed lazily and synchronized.
 
 #### Facet naming
 
@@ -575,7 +585,27 @@ graph.on('setNodeAttribute', (key: any, name: string, value: any));
 graph.on('setEdgeAttribute', (key: any, name: string, value: any));
 ```
 
+### Indexes
+
+#### #.computeNeighborsIndex
+
+#### #.clearNeighborsIndex
+
+#### #.computeRelateEdgesIndex
+
+#### #.clearRelatedEdgesIndex
+
 ### Utilities
+
+#### #.createEmptyCopy
+
+Returns a new empty graph with the exact same options as the current instance but merged with the optional given ones.
+
+This is useful to functions needing to return subgraphs or near identical copies of a graph such as reversed graph or graph converted to another type altogether.
+
+```ts
+const emptyGraph: Graph = graph.createEmptyCopy([options: Object]);
+```
 
 #### #.toString
 
