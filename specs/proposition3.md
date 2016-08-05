@@ -175,14 +175,6 @@ Is the graph accepting self loops?
 const hasSelfLoops: boolean = graph.selfLoops;
 ```
 
-#### #.observable
-
-Is the graph observable?
-
-```ts
-const isObservable: boolean = graph.observable;
-```
-
 ### Mutations
 
 #### #.addNode
