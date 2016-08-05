@@ -67,14 +67,16 @@ export default function(rows) {
       const lastNode = terms[position - 1];
 
       // If there is no edge between `node` and `lastNode`, we create one
-      if (!graph.hasEdge(node, lastNode)) {
+      if (!graph.hasEdge(lastNode, node)) {
 
         // We only need to track the weight here
         graph.addEdge(edgeId++, node, lastNode, {weight: 0});
       }
 
+      // Retrieving the relevant edge
+      const edge = graph.getEdge(lastNode, node);
+
       // Increasing edge's weight
-      const edge = edgeId - 1;
       graph.setEdgeAttribute(edge, 'weight', nb => nb + 1);
     });
   });
