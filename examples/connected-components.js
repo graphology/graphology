@@ -29,7 +29,7 @@ export default function connectedComponents(graph) {
         return;
 
       visitedNodes.add(neighbor);
-      component.push(node);
+      component.push(neighbor);
 
       graph.forEachNeighbor(neighbor, walk);
     };

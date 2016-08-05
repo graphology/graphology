@@ -393,6 +393,14 @@ const extremities: Extremities = graph.extremities(key: any);
 
 Will throw if the edge is not in the graph.
 
+#### #.relatedNode
+
+Retrieves the other end of and edge given the first node.
+
+```ts
+const otherEnd = graph.relatedNode(node: any, edge: any);
+```
+
 #### #.directed
 
 Checks whether the given edge is directed or not.
@@ -492,8 +500,10 @@ Iterations methods always only give access to nodes' & edges' keys and not attri
 #.countNeighbors()
 
 #.inNeighbors()
+#.inboundNeighbors()
 ...
 #.outNeighbors()
+#.outboundNeighbors()
 ...
 ```
 
