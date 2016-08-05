@@ -131,6 +131,7 @@ To see potential facets, see [this](#facets).
 Graph
 DirectedGraph
 UndirectedGraph
+
 SimpleGraph
 SimpleDirectedGraph
 SimpleUndirectedGraph
@@ -138,6 +139,7 @@ SimpleUndirectedGraph
 GraphMap
 DirectedGraphMap
 UndirectedGraphMap
+
 SimpleGraphMap
 SimpleDirectedGraphMap
 SimpleUndirectedGraphMap
@@ -554,7 +556,7 @@ Iterations methods always only give access to nodes' & edges' keys and not attri
 
 ```
 // Possible arguments are:
-(node: Iterable) => over the given nodes' neighbors (but not themselves)
+(nodes: Iterable) => over the given nodes' neighbors (but not themselves)
 (node: any) => over the neighbors of the node
 
 #.neighbors()
