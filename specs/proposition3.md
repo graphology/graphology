@@ -106,7 +106,7 @@ interface SerializedGraph {
 * *type* `string` [`mixed`]: Type of the graph. One of `directed`, `undirected` or `mixed`.
 * *map* `boolean` [`false`]: Should the graph accept references as keys like a `Map`?
 * *multi* `boolean` [`true`]: Should the graph accept parallel edges.
-* *edgeIdGenerator* `function`: Function the graph will use to generate edges' added through the #.addSingleEdge method.
+* *edgeIdGenerator* `function`: Function the graph will use to generate edges' added through the #.addSingleEdge method (probably a uuid system by default).
 * *hashDelimiter* `string`: String delimiter used to compose string hashes when required.
 
 #### Facet naming
@@ -348,7 +348,7 @@ const isEdgeInGraph: boolean = graph.hasEdge(key: any);
 const isEdgeInGraph: boolean = graph.hasEdge(source: any, target: any);
 ```
 
-#### #.getEdge / #.getFirstEdge
+#### #.getEdge / #.getDirectedEdge / #.getUndirectedEdge
 
 Retrieves the first edge between two nodes.
 
