@@ -28,10 +28,8 @@ Facets are the multiple criteria that one could provide as performance hints to 
 
 * **Directedness**: Is the graph allowing `directed` edges, `undirected` edges or both?
 * **Multi**: Does the graph allow parallel edges?
-* **Self-links**: Does the graph allow self links?
-* **Observable**: Can one react to the changes of the graph.
-* **Mutable**: Should the graph be mutable or not (tmtc @DavidBruant)
 * **Map**: Should the graph accept references as keys?
+* **?Mutable**: Should the graph be mutable or not (tmtc @DavidBruant) (outside of the standard spec)
 
 The default `Graph` object is therefore be an observable, mutable, mixed multi graph allowing self links.
 
@@ -101,7 +99,35 @@ interface SerializedGraph {
 }
 ```
 
-TODO: options regarding performance hints & index generation.
+#### Options
+
+* *allowSelfLoops* `boolean` [`true`]: Should the graph accept self loops?
+* *indexes* `object`: Handling the index' configuration (lazyness, precomputation etc.)
+* *type* `string` [`mixed`]: Type of the graph. One of `directed`, `undirected` or `mixed`.
+* *map* `boolean` [`false`]: Should the graph accept references as keys like a `Map`?
+* *multi* `boolean` [`true`]: Should the graph accept parallel edges.
+* *edgeIdGenerator* `function`: Function the graph will use to generate edges' added through the #.addSingleEdge method.
+* *hashDelimiter* `string`: String delimiter used to compose string hashes when required.
+
+#### Facet naming
+
+To see potential facets, see [this](#facets).
+
+```ts
+Graph
+DirectedGraph
+UndirectedGraph
+SimpleGraph
+SimpleDirectedGraph
+SimpleUndirectedGraph
+
+GraphMap
+DirectedGraphMap
+UndirectedGraphMap
+SimpleGraphMap
+SimpleDirectedGraphMap
+SimpleUndirectedGraphMap
+```
 
 ### Properties
 
@@ -185,29 +211,31 @@ graph.addNodesFrom(nodes: iterable);
 
 #### #.addEdge, #.addDirectedEdge
 
-Adds a single directed edge to the graph.
+Adds a directed edge to the graph. Its id will be generated through the `edgeIdGenerator` function.
 
 ```ts
-graph.addEdge(key: any, source: any, target: any, [attributes: Object]);
+graph.addEdge(source: any, target: any, [attributes: Object]);
 ```
 
 Will throw if either the source or target not were not to be found in the graph.
+
+
+#### #.addMultiEdge, #.addDirectedMultiEdge
+
+Adds a directed edge to the graph.
+
+```ts
+graph.addMultiEdge(key: any, source: any, target: any, [attributes: Object]);
+```
+
+Will throw if either the source or target not were not to be found in the graph.
+
+#### #.addUndirectedEdge
+#### #.addUndirectedMultiEdge
 
 #### #.importEdge / #.importEdges
 
 Adds serialized edges.
-
-#### #.addUndirectedEdge
-
-Adds a single undirected edge to the graph.
-
-```ts
-graph.addUndirectedEdge(key: any, node1: any, node2: any, [attributes: Object]);
-```
-
-Will throw if either the source or target not were not to be found in the graph.
-
-Note that under the hood, both nodes will be mapped to ids and stored sorted so that, not matter the order you put them in, the memory structure will never change.
 
 #### #.dropNode
 
@@ -395,7 +423,7 @@ Will throw if the edge is not in the graph.
 
 #### #.relatedNode
 
-Retrieves the other end of and edge given the first node.
+Retrieves the other end of an edge given the first node.
 
 ```ts
 const otherEnd = graph.relatedNode(node: any, edge: any);
