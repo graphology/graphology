@@ -31,6 +31,7 @@ Facets are the multiple criteria that one could provide as performance hints to 
 * **Self-links**: Does the graph allow self links?
 * **Observable**: Can one react to the changes of the graph.
 * **Mutable**: Should the graph be mutable or not (tmtc @DavidBruant)
+* **Map**: Should the graph accept references as keys?
 
 The default `Graph` object is therefore be an observable, mutable, mixed multi graph allowing self links.
 
@@ -338,7 +339,7 @@ const serializedNode: SerializedNode = graph.exportNode(key: any);
 const serializedNodes: Array<SerializedNode> = graph.exportNodes(keys: iterable);
 ```
 
-#### #.exportEdge / #.exportEdges
+#### #.exportEdge / #.exportEdges / #.exportDirectedEdges / #.exportUndirectedEdges
 
 Exports a node bunch in a serialized way.
 

@@ -14,9 +14,7 @@ export default function reverse(graph) {
   reversed.importNodes(graph.exportNodes());
 
   // Undirected edge should be added as is
-  graph.forEachUndirectedEdges(edge => {
-    reversed.addUndirectedEdge(edge, graph.getEdgeAttributes(edge));
-  });
+  graph.importEdges(graph.exportUndirectedEdges());
 
   // Directed edge should be reversed
   graph.forEachDirectedEdge(edge => {
