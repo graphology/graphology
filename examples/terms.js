@@ -16,9 +16,6 @@
  * The original algorithm needs ~150 locs without comments. This example
  * is way more concise and understandable.
  */
-
-// NOTE: to be refined with spec 3
-
 import Graph from 'graph';
 import connectedComponents from 'graph/connected-components';
 import louvain from 'graph/modularity/louvain';
@@ -57,10 +54,10 @@ export default function(rows) {
       }
 
       // Updating position (we only keep the one nearest from start)
-      graph.setNodeAttribute('position', currentPosition => Math.min(currentPosition, position));
+      graph.updateNodeAttribute(term, 'position', currentPosition => Math.min(currentPosition, position));
 
       // Updating occurrences of the term
-      graph.setNodeAttribute('occurrences', nb => nb + 1);
+      graph.updateNodeAttribute(term, 'occurrences', nb => nb + 1);
 
       // If we are the first term of the expression, we break here
       if (!position)
@@ -70,16 +67,15 @@ export default function(rows) {
       const lastNode = terms[position - 1];
 
       // If there is no edge between `node` and `lastNode`, we create one
-      if (!graph.hasEdgeBetween(node, lastNode)) {
+      if (!graph.hasEdge(node, lastNode)) {
 
         // We only need to track the weight here
         graph.addEdge(edgeId++, node, lastNode, {weight: 0});
       }
 
       // Increasing edge's weight
-      // NOTE: graph.getEdgeBetween doesn't exist right now
-      const edge = graph.getEdgeBetween(node, lastNode);
-      graph.setEdgeAttribute(edge, weight, nb => nb + 1);
+      const edge = edgeId - 1;
+      graph.setEdgeAttribute(edge, 'weight', nb => nb + 1);
     });
   });
 
@@ -89,17 +85,15 @@ export default function(rows) {
   // Keeping only larger components' nodes
   const nodesToDrop = _(components)
     .filter(component => component.order < 4)
-
-    // NOTE: need a way to get the nodes
     .map(component => component.nodes())
     .flatten()
     .value();
 
-  nodesToDrop.forEach(graph.dropNode);
+  graph.dropNodes(nodesToDrop);
 
   // Detecting communities
-  louvain.assign(graph);
+  louvain.assign('community', graph);
 
-  // Now our nodes a community attribute we can use
+  // Now our nodes have a community attribute we can use
   return graph;
 }

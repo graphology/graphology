@@ -220,7 +220,7 @@ Will throw if the node is not found in the graph.
 
 #### #.dropNodes
 
-Drops the given node bunch.
+Drops the given node bunch & all the edges related to this node.
 
 ```ts
 graph.dropNodes(keys: iterable);
@@ -305,7 +305,7 @@ Checks whether a node exists in the graph.
 const isNodeInGraph: boolean = graph.hasNode(key: any);
 ```
 
-#### #.hasEdge
+#### #.hasEdge / #.hasDirectedEdge / #.hasUndirectedEdge
 
 Checks whether an edge exists in the graph.
 
