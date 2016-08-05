@@ -59,7 +59,7 @@ Like a JS `Map`, nodes & edges' keys can be anything, even references.
 
 * [Instantiation](#instantiation)
 * [Properties](#properties)
-* [Mutations](#mutations)
+* [Mutation](#mutation)
 * [Getters](#getters)
 * [Iteration](#iteration)
 * [Events](#events)
@@ -72,21 +72,25 @@ As in networkx, some methods can read from various iterables understood as node 
 
 As a general rule, if the iterable is list-like (Array, Set), the values will be understood as keys. Whereas, if the iterable is key-value-like (Object, Map), then, the keys will be understood as keys and the values as attributes.
 
+**Concerning chaining**
+
+By convention, if the methods' examples don't seem to return a value, then the method returns the instance itself for chaining purposes.
+
 ### Instantiation
 
 ```ts
-const graph = new Graph(data, options);
+const graph: Graph = new Graph(data: SerializedGraph|Graph, options: Object);
 ```
 
 The input data may only be the following or another graph instance.
 
 ```ts
-interface SerializedNode<any> {
+interface SerializedNode<any|Object> {
   0: any;    // Key
   1: Object; // Attributes
 }
 
-interface SerializedEdge<any> {
+interface SerializedEdge<any|Object|boolean> {
   0: any;    // Key
   1: any;    // Source
   2: any;    // Target
@@ -185,7 +189,7 @@ Is the graph accepting self loops?
 const hasSelfLoops: boolean = graph.selfLoops;
 ```
 
-### Mutations
+### Mutation
 
 #### #.addNode
 
@@ -199,18 +203,27 @@ Note: the node is the same as the key but is likewise for consistency. We drop c
 
 #### #.import
 
-Adding a serialized graph.
+Importing a serialized graph.
+
+```ts
+graph.import(data: SerializedGraph);
+```
 
 #### #.importNode / #.importNodes
 
-Adding serialized nodes.
+Importing serialized nodes.
+
+```ts
+graph.importNode(data: SerializedNode);
+graph.importNodes(data: Array<SerializedNode>);
+```
 
 #### #.addNodesFrom
 
 Adds nodes from an iterable.
 
 ```ts
-graph.addNodesFrom(nodes: iterable);
+graph.addNodesFrom(nodes: Iterable);
 ```
 
 #### #.addEdge, #.addDirectedEdge
@@ -239,7 +252,12 @@ Will throw if either the source or target not were not to be found in the graph.
 
 #### #.importEdge / #.importEdges
 
-Adds serialized edges.
+Importing serialized edges.
+
+```ts
+graph.importEdge(data: SerializedEdge);
+graph.importEdges(data: Array<SerializedEdge>);
+```
 
 #### #.dropNode
 
@@ -256,7 +274,7 @@ Will throw if the node is not found in the graph.
 Drops the given node bunch & all the edges related to this node.
 
 ```ts
-graph.dropNodes(keys: iterable);
+graph.dropNodes(keys: Iterable);
 ```
 
 Will throw if any of the nodes is not found in the graph.
@@ -276,7 +294,7 @@ Will throw if the edge is not found in the graph.
 Drops the given edge bunch.
 
 ```ts
-graph.dropEdges(keys: iterable);
+graph.dropEdges(keys: Iterable);
 ```
 
 Will throw if any of the edges is not found in the graph.
@@ -355,7 +373,7 @@ const isEdgeInGraph: boolean = graph.hasEdge(source: any, target: any);
 Retrieves the first edge between two nodes.
 
 ```ts
-const edge = graph.getEdge(source: any, target: any);
+const edge: any | null = graph.getEdge(source: any, target: any);
 ```
 
 #### #.export
@@ -368,7 +386,7 @@ Exports a node bunch in a serialized way.
 
 ```ts
 const serializedNode: SerializedNode = graph.exportNode(key: any);
-const serializedNodes: Array<SerializedNode> = graph.exportNodes(keys: iterable);
+const serializedNodes: Array<SerializedNode> = graph.exportNodes(keys: Iterable);
 ```
 
 #### #.exportEdge / #.exportEdges / #.exportDirectedEdges / #.exportUndirectedEdges
@@ -377,7 +395,7 @@ Exports a node bunch in a serialized way.
 
 ```ts
 const serializedEdge: SerializedEdge = graph.exportEdge(key: any);
-const serializedEdges: Array<SerializedEdge> = graph.exportEdges(keys: iterable);
+const serializedEdges: Array<SerializedEdge> = graph.exportEdges(keys: Iterable);
 ```
 
 #### #.degree / #.inDegree / #.outDegree
@@ -491,11 +509,14 @@ Iteration targets are:
 * A node or bunch of nodes' neighbors
 * A node or bunch of nodes' edges
 
-Iterations methods always only give access to nodes' & edges' keys and not attributes. The getter methods should be used to retrieve attributes during iteration.
+Iterations methods always only give access to nodes' & edges' keys and not attributes. The getter methods should be used to retrieve attributes during iteration. This is designed thusly for performance reasons and to enforce good practices regarding the use of the attributes' setters.
 
 #### Nodes
 
 ```
+// Possible arguments are:
+() => over every nodes
+
 #.nodes()
 #.forEachNode()
 #.createNodeIterator()
@@ -505,6 +526,12 @@ Iterations methods always only give access to nodes' & edges' keys and not attri
 #### Edges
 
 ```
+// Possible arguments are:
+() => over every edges
+(nodes: Iterable) => over the given nodes' relevant edges (only once per edge)
+(node: any) => over the node's relevant edges
+(source: any, target: any) => over relevant edges for the path
+
 #.edges()
 #.forEachEdge()
 #.createEdgeIterator()
@@ -526,6 +553,10 @@ Iterations methods always only give access to nodes' & edges' keys and not attri
 #### Neighbours
 
 ```
+// Possible arguments are:
+(node: Iterable) => over the given nodes' neighbors (but not themselves)
+(node: any) => over the neighbors of the node
+
 #.neighbors()
 #.forEachNeighbor()
 #.createNeighborIterator()
@@ -573,19 +604,21 @@ graph.on('dropEdge', (key: any, source: any, target: any));
 graph.on('clear', ());
 ```
 
-#### setNodeAttribute
+#### updateNode
 
 ```ts
-graph.on('setNodeAttribute', (key: any, name: string, value: any));
+graph.on('updateNode', (key: any, type: string, meta: Object));
 ```
 
-#### setEdgeAttribute
+#### updateEdge
 
 ```ts
-graph.on('setEdgeAttribute', (key: any, name: string, value: any));
+graph.on('updateEdge', (key: any, type: string, meta: Object));
 ```
 
 ### Indexes
+
+Advanced functions that should probably not be used by the common peddler and regarding indexes' memory management.
 
 #### #.computeNeighborsIndex
 
