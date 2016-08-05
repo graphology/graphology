@@ -24,7 +24,7 @@ import _ from 'lodash';
 export default function(rows) {
 
   // Creating our graph
-  const graph = new Graph();
+  const graph = new SimpleDirectedGraph();
 
   let edgeId = 0;
 
@@ -66,18 +66,17 @@ export default function(rows) {
       // Retrieving the node of the last term
       const lastNode = terms[position - 1];
 
+      let edge = graph.getEdge(lastNode, node);
+
       // If there is no edge between `node` and `lastNode`, we create one
-      if (!graph.hasEdge(lastNode, node)) {
+      if (!edge) {
 
         // We only need to track the weight here
-        graph.addEdge(edgeId++, node, lastNode, {weight: 0});
+        edge = graph.addEdge(lastNode, node, {weight: 0});
       }
 
-      // Retrieving the relevant edge
-      const edge = graph.getEdge(lastNode, node);
-
       // Increasing edge's weight
-      graph.setEdgeAttribute(edge, 'weight', nb => nb + 1);
+      graph.updateEdgeAttribute(edge, 'weight', nb => nb + 1);
     });
   });
 

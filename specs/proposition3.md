@@ -190,8 +190,10 @@ const isObservable: boolean = graph.observable;
 Adds a single node to the graph.
 
 ```ts
-graph.addNode(key: any, [attributes: Object]);
+const node: any = graph.addNode(key: any, [attributes: Object]);
 ```
+
+Note: the node is the same as the key but is likewise for consistency. We drop chaining but chaining is seldom useful in real usecases we came across.
 
 #### #.import
 
@@ -214,7 +216,7 @@ graph.addNodesFrom(nodes: iterable);
 Adds a directed edge to the graph. Its id will be generated through the `edgeIdGenerator` function.
 
 ```ts
-graph.addEdge(source: any, target: any, [attributes: Object]);
+const edge: any = graph.addEdge(source: any, target: any, [attributes: Object]);
 ```
 
 Will throw if either the source or target not were not to be found in the graph.
@@ -225,7 +227,7 @@ Will throw if either the source or target not were not to be found in the graph.
 Adds a directed edge to the graph.
 
 ```ts
-graph.addMultiEdge(key: any, source: any, target: any, [attributes: Object]);
+const edge: any = graph.addMultiEdge(key: any, source: any, target: any, [attributes: Object]);
 ```
 
 Will throw if either the source or target not were not to be found in the graph.
