@@ -10,7 +10,7 @@
 import Graph from 'graph';
 import subgraph from 'graph/subgraph';
 
-export default function connectedComponents(graph) {
+export function connectedComponentsNodes(graph) {
   const visitedNodes = new Set(),
         components = [];
 
@@ -38,5 +38,11 @@ export default function connectedComponents(graph) {
     components.push(component);
   });
 
-  return components.map(nodes => subgraph(nodes));
+  return components;
+}
+
+export default function connectedComponents(graph) {
+  const components = connectedComponentsNodes(graph);
+
+  return components.map(nodes => subgraph(graph, nodes));
 }

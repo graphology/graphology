@@ -6,10 +6,8 @@
  *
  * Function returning a subgraph from the given graph and set of nodes.
  */
-import Graph from 'graph';
-
 export default function subgraph(graph, nodes) {
-  const sub = new Graph(),
+  const sub = graph.createEmptyCopy(),
         nodeSet = new Set(nodes),
         edges = [];
 

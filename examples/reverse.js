@@ -6,10 +6,8 @@
  *
  * Function taking a graph and returning its reversed version.
  */
-import Graph from 'graph';
-
 export default function reverse(graph) {
-  const reversed = new Graph();
+  const reversed = graph.createEmptyCopy();
 
   reversed.importNodes(graph.exportNodes());
 
