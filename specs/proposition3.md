@@ -81,18 +81,17 @@ const graph = new Graph(data, options);
 The input data may only be the following or another graph instance.
 
 ```ts
-interface SerializedNode<any|Object> {
+interface SerializedNode<any> {
   0: any;    // Key
   1: Object; // Attributes
 }
 
-// Note: should we add a fifth information
-// showing whether the edge is directed?
-interface SerializedEdge<any|Object> {
+interface SerializedEdge<any> {
   0: any;    // Key
   1: any;    // Source
   2: any;    // Target
   3: Object; // Attributes
+  4: boolean // Is directed?
 }
 
 interface SerializedGraph {
@@ -202,10 +201,12 @@ Adds serialized edges.
 Adds a single undirected edge to the graph.
 
 ```ts
-graph.addUndirectedEdge(key: any, source: any, target: any, [attributes: Object]);
+graph.addUndirectedEdge(key: any, node1: any, node2: any, [attributes: Object]);
 ```
 
 Will throw if either the source or target not were not to be found in the graph.
+
+Note that under the hood, both nodes will be mapped to ids and stored sorted so that, not matter the order you put them in, the memory structure will never change.
 
 #### #.dropNode
 
@@ -381,9 +382,9 @@ Will throw if the edge is not in the graph.
 Retrieves the extremities of the given edge.
 
 ```ts
-interface Extremities {
-  source: any;
-  target: any;
+interface Extremities<any> {
+  0: any; // Node n°1
+  1: any; // Node n°2
 }
 
 const extremities: Extremities = graph.extremities(key: any);
@@ -462,8 +463,6 @@ Iterations methods always only give access to nodes' & edges' keys and not attri
 
 #### Edges
 
-TODO: define a way for mixed directed/undirected iteration?
-
 ```
 #.edges()
 #.forEachEdge()
@@ -471,9 +470,11 @@ TODO: define a way for mixed directed/undirected iteration?
 #.size
 
 #.inEdges()
+#.inboundEdges()
 #.countInEdges()
 ...
 #.outEdges()
+#.outboundEdges()
 ...
 #.undirectedEdges()
 ...

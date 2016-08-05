@@ -7,9 +7,6 @@
  * Highlighting neighbors of the clicked node using a rendering engine such
  * as sigma.
  */
-
-// NOTE: to be refined with spec3
-
 import Graph from 'graph';
 import sigma from 'sigma';
 
@@ -27,11 +24,9 @@ const sigInst = new sigma(graph, {
 function clickHandler({data: {node}}) {
 
   // Creating a set of the node & its neighbors
-  // NOTE: using the non-iterator addition
   const nodesToHighlight = new Set([node].concat(graph.neighbors(node)));
 
   // Iterating through nodes
-  // NOTE: should we add someting along #.forEachNonNeighbor?
   graph.forEachNode(node => {
     const color = nodesToHighlight.has(node) ?
       graph.getNodeAttribute(node, 'originalColor') :

@@ -14,7 +14,6 @@ export default function connectedComponents(graph) {
   const visitedNodes = new Set(),
         components = [];
 
-
   graph.forEachNode(node => {
 
     if (visitedNodes.has(node))
@@ -25,54 +24,19 @@ export default function connectedComponents(graph) {
     visitedNodes.add(node);
     component.push(node);
 
-    graph.forEach
+    const walk = neighbor => {
+      if (visitedNodes.has(neighbor))
+        return;
+
+      visitedNodes.add(neighbor);
+      component.push(node);
+
+      graph.forEachNeighbor(neighbor, walk);
+    };
+
+    graph.forEachNeighbor(node, walk);
+    components.push(component);
   });
 
-
-//   // NOTE: attempting this iterator scheme
-//   graph.forEachNode(node => {
-
-//     if (visitedNodes.has(node))
-//       return;
-
-//     const component = new Graph();
-
-//     visitedNodes.add(node);
-//     component.addNode(node);
-
-//     graph.forEachOutEdge(node, edge => {
-
-//       // NOTE: This feels somewhat clunky
-//       component.addEdge(
-//         edge,
-//         graph.source(edge),
-//         graph.target(edge)
-//       );
-//     });
-
-//     const walk = neighbor => {
-//       if (visitedNodes.has(neighbor))
-//         return;
-
-//       visitedNodes.add(neighbor);
-//       component.addNode(node);
-
-//       graph.forEachOutEdge(node, edge => {
-
-//         // NOTE: This feels somewhat clunky
-//         component.addEdge(
-//           edge,
-//           graph.source(edge),
-//           graph.target(edge)
-//         );
-//       });
-
-//       graph.forEachNeighbor(walk);
-//     };
-
-//     graph.forEachNeighbor(walk);
-//     components.push(components);
-//   });
-
-//   return components;
-// }
+  return components.map(nodes => subgraph(nodes));
+}

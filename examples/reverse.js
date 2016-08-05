@@ -20,7 +20,7 @@ export default function reverse(graph) {
 
   // Directed edge should be reversed
   graph.forEachDirectedEdge(edge => {
-    const {source, target} = graph.extremities(edge);
+    const [source, target] = graph.extremities(edge);
 
     reversed.addEdge(
       edge
