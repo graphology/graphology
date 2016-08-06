@@ -28,7 +28,7 @@ Facets are the multiple criteria that one could provide as performance hints to 
 
 * **Directedness**: Is the graph allowing `directed` edges, `undirected` edges or both?
 * **Multi**: Does the graph allow parallel edges?
-* **Map**: Should the graph accept references as keys?
+* **Map**: Should the graph accept references as keys? (should probably be default anyway, to keep order & to simplify underlying implementation)
 * **?Mutable**: Should the graph be mutable or not (tmtc @DavidBruant) (outside of the standard spec)
 
 The default `Graph` object is therefore be an observable, mutable, mixed multi graph allowing self links.
@@ -79,6 +79,10 @@ By convention, if the methods' examples don't seem to return a value, then the m
 **Concerning errors**
 
 One should expect the graph instance not to fail silently and to throw errors with a useful message (I cannot stress this part enough) whenever someone tries to do something inconsistent like acting on a node or and edge that doesn't exist in the graph or when going against the performance hints given to the constructor.
+
+**Concerning order**
+
+The implementation should keep both nodes & edges in their insertion order.
 
 ### Instantiation
 
@@ -207,23 +211,6 @@ const node: any = graph.addNode(key: any, [attributes: Object]);
 
 Note: the node is the same as the key but is likewise for consistency. We drop chaining but chaining is seldom useful in real usecases we came across.
 
-#### #.import
-
-Importing a serialized graph.
-
-```ts
-graph.import(data: SerializedGraph);
-```
-
-#### #.importNode / #.importNodes
-
-Importing serialized nodes.
-
-```ts
-graph.importNode(data: SerializedNode);
-graph.importNodes(data: Array<SerializedNode>);
-```
-
 #### #.addNodesFrom
 
 Adds nodes from an iterable.
@@ -251,15 +238,6 @@ const edge: any = graph.addEdgeWithKey(key: any, source: any, target: any, [attr
 
 #### #.addUndirectedEdge
 #### #.addUndirectedEdgeWithKey
-
-#### #.importEdge / #.importEdges
-
-Importing serialized edges.
-
-```ts
-graph.importEdge(data: SerializedEdge);
-graph.importEdges(data: Array<SerializedEdge>);
-```
 
 #### #.dropNode
 
@@ -370,34 +348,12 @@ Retrieves the first edge between two nodes.
 const edge: any | null = graph.getEdge(source: any, target: any);
 ```
 
-#### #.export
-
-Exports the serialized graph. (Used by #.toJSON).
-
-#### #.exportNode / #.exportNodes
-
-Exports a node bunch in a serialized way.
-
-```ts
-const serializedNode: SerializedNode = graph.exportNode(key: any);
-const serializedNodes: Array<SerializedNode> = graph.exportNodes(keys: Iterable);
-```
-
-#### #.exportEdge / #.exportEdges / #.exportDirectedEdges / #.exportUndirectedEdges
-
-Exports a node bunch in a serialized way.
-
-```ts
-const serializedEdge: SerializedEdge = graph.exportEdge(key: any);
-const serializedEdges: Array<SerializedEdge> = graph.exportEdges(keys: Iterable);
-```
-
 #### #.degree / #.inDegree / #.outDegree
 
 Retrieves the degree of the given node.
 
 ```ts
-const degree: number = graph.degree(key: any, [selfLoops: boolean]);
+const degree: number = graph.degree(key: any, [selfLoops: boolean = true]);
 ```
 
 #### #.source
@@ -552,46 +508,46 @@ Note that for GraphMap types, some polymorphisms will require a single lookup to
 
 The `Graph` class should be an event emitter that one can listen. We should probably stick to the [node](https://nodejs.org/api/events.html) event module to do so.
 
-#### addNode
+#### nodeAdded
 
 ```ts
-graph.on('addNode', (key: any));
+graph.on('nodeAdded', (key: any));
 ```
 
-#### addEdge
+#### edgeAdded
 
 ```ts
-graph.on('addEdge', (key: any, source: any, target: any));
+graph.on('edgeAdded', (key: any, source: any, target: any));
 ```
 
-#### dropNode
+#### nodeDropped
 
 ```ts
-graph.on('dropNode', (key: any));
+graph.on('nodeDropped', (key: any));
 ```
 
-#### dropEdge
+#### edgeDropped
 
 ```ts
-graph.on('dropEdge', (key: any, source: any, target: any));
+graph.on('edgeDropped', (key: any, source: any, target: any));
 ```
 
-#### clear
+#### cleared
 
 ```ts
-graph.on('clear', ());
+graph.on('cleared', ());
 ```
 
-#### updateNode
+#### nodeUpdated
 
 ```ts
-graph.on('updateNode', (key: any, type: string, meta: Object));
+graph.on('nodeUpdated', (key: any, type: string, meta: Object));
 ```
 
-#### updateEdge
+#### edgeUpdated
 
 ```ts
-graph.on('updateEdge', (key: any, type: string, meta: Object));
+graph.on('edgeUpdated', (key: any, type: string, meta: Object));
 ```
 
 ### Indexes
@@ -618,18 +574,52 @@ This is useful to functions needing to return subgraphs or near identical copies
 const emptyGraph: Graph = graph.createEmptyCopy([options: Object]);
 ```
 
-#### #.toString
+#### #.export
 
-Used by JavaScript for string coercion.
+Exports the serialized graph. (Used by #.toJSON).
+
+#### #.exportNode / #.exportNodes
+
+Exports a node bunch in a serialized way.
 
 ```ts
-const stringRepresentation: string = graph.toString();
+const serializedNode: SerializedNode = graph.exportNode(key: any);
+const serializedNodes: Array<SerializedNode> = graph.exportNodes(keys: Iterable);
 ```
 
-Should return something useful such as:
+#### #.exportEdge / #.exportEdges / #.exportDirectedEdges / #.exportUndirectedEdges
 
-```js
-'Graph<14 nodes, 45 edges>'
+Exports a node bunch in a serialized way.
+
+```ts
+const serializedEdge: SerializedEdge = graph.exportEdge(key: any);
+const serializedEdges: Array<SerializedEdge> = graph.exportEdges(keys: Iterable);
+```
+
+#### #.import
+
+Importing a serialized graph.
+
+```ts
+graph.import(data: SerializedGraph);
+```
+
+#### #.importNode / #.importNodes
+
+Importing serialized nodes.
+
+```ts
+graph.importNode(data: SerializedNode);
+graph.importNodes(data: Array<SerializedNode>);
+```
+
+#### #.importEdge / #.importEdges
+
+Importing serialized edges.
+
+```ts
+graph.importEdge(data: SerializedEdge);
+graph.importEdges(data: Array<SerializedEdge>);
 ```
 
 #### #.toJSON
@@ -643,6 +633,20 @@ const serializedGraph: Object = graph.toJSON();
 ```
 
 Following the methods one could use to serialize an ES6 Map ([reference n°1](http://www.2ality.com/2015/08/es6-map-json.html), [reference n°2](https://github.com/DavidBruant/Map-Set.prototype.toJSON)):
+
+#### #.toString
+
+Used by JavaScript for string coercion.
+
+```ts
+const stringRepresentation: string = graph.toString();
+```
+
+Should return something useful such as:
+
+```js
+'Graph<14 nodes, 45 edges>'
+```
 
 #### #.inspect
 
