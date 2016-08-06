@@ -133,7 +133,7 @@ They can be computed ahead of time and lazily synchronized. But, by default, the
 
 #### Facet naming
 
-To see potential facets, see [this](#facets).
+To see potential facets, see [this](#facets). Maybe go back to simple graph as default.
 
 ```ts
 Graph
