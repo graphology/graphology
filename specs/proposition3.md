@@ -28,7 +28,7 @@ Facets are the multiple criteria that one could provide as performance hints to 
 
 * **Directedness**: Is the graph allowing `directed` edges, `undirected` edges or both?
 * **Multi**: Does the graph allow parallel edges?
-* **Map**: Should the graph accept references as keys? (should probably be default anyway, to keep order & to simplify underlying implementation)
+* **Map**: Should the graph accept references as keys?
 * **?Mutable**: Should the graph be mutable or not (tmtc @DavidBruant) (outside of the standard spec)
 
 The default `Graph` object is therefore be an observable, mutable, mixed multi graph allowing self links.
