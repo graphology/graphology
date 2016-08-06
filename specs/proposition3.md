@@ -49,8 +49,8 @@ const graph = new ImmutableGraph();
 The graph holds **nodes** and **edges** both being represented by a key and respectively storing attributes.
 
 ```ts
-(node): key => attributes
-(edge): key + [sourceKey, targetKey] => attributes
+[node]: (key) => attributes
+[edge]: (key) + {sourceKey, targetKey} => attributes
 ```
 
 Like a JS `Map`, nodes & edges' keys can be anything, even references.
@@ -75,6 +75,10 @@ As a general rule, if the iterable is list-like (Array, Set), the values will be
 **Concerning chaining**
 
 By convention, if the methods' examples don't seem to return a value, then the method returns the instance itself for chaining purposes.
+
+**Concerning errors**
+
+One should expect the graph instance not to fail silently and to throw errors with a useful message (I cannot stress this part enough) whenever someone tries to do something inconsistent like acting on a node or and edge that doesn't exist in the graph or when going against the performance hints given to the constructor.
 
 ### Instantiation
 
@@ -110,7 +114,7 @@ interface SerializedGraph {
 * *type* `string` [`mixed`]: Type of the graph. One of `directed`, `undirected` or `mixed`.
 * *map* `boolean` [`false`]: Should the graph accept references as keys like a `Map`?
 * *multi* `boolean` [`true`]: Should the graph accept parallel edges.
-* *edgeIdGenerator* `function`: Function the graph will use to generate edges' added through the #.addSingleEdge method (probably using uuid v4 compressed through base64 or base91).
+* *edgeIdGenerator* `function`: Function used by the graph to generate id for the edges' added through the #.addEdge method (probably using uuid v4 compressed through base64 or base91).
 * *hashDelimiter* `string`: String delimiter used to compose string hashes when required.
 * *indexes* `object`: Handling the index' configuration (lazyness, precomputation etc.)
 
@@ -230,27 +234,23 @@ graph.addNodesFrom(nodes: Iterable);
 
 #### #.addEdge, #.addDirectedEdge
 
-Adds a directed edge to the graph. Its id will be generated through the `edgeIdGenerator` function.
+Adds an edge (whose type is directed by default unless the graph is specifically said to be undirected) to the graph. Its id will be generated through the `edgeIdGenerator` function.
 
 ```ts
 const edge: any = graph.addEdge(source: any, target: any, [attributes: Object]);
 ```
 
-Will throw if either the source or target not were not to be found in the graph.
 
+#### #.addEdgeWithKey, #.addDirectedEdgeWithKey
 
-#### #.addMultiEdge, #.addDirectedMultiEdge
-
-Adds a directed edge to the graph.
+Adds an edge (whose type is directed by default unless the graph is specifically said to be undirected) to the graph with the associated key.
 
 ```ts
-const edge: any = graph.addMultiEdge(key: any, source: any, target: any, [attributes: Object]);
+const edge: any = graph.addEdgeWithKey(key: any, source: any, target: any, [attributes: Object]);
 ```
 
-Will throw if either the source or target not were not to be found in the graph.
-
 #### #.addUndirectedEdge
-#### #.addUndirectedMultiEdge
+#### #.addUndirectedEdgeWithKey
 
 #### #.importEdge / #.importEdges
 
@@ -269,8 +269,6 @@ Drops the given node.
 graph.dropNode(key: any);
 ```
 
-Will throw if the node is not found in the graph.
-
 #### #.dropNodes
 
 Drops the given node bunch & all the edges related to this node.
@@ -278,8 +276,6 @@ Drops the given node bunch & all the edges related to this node.
 ```ts
 graph.dropNodes(keys: Iterable);
 ```
-
-Will throw if any of the nodes is not found in the graph.
 
 #### #.dropEdge
 
@@ -289,8 +285,6 @@ Drops the given edge.
 graph.dropEdge(key: any);
 ```
 
-Will throw if the edge is not found in the graph.
-
 #### #.dropEdges
 
 Drops the given edge bunch.
@@ -298,8 +292,6 @@ Drops the given edge bunch.
 ```ts
 graph.dropEdges(keys: Iterable);
 ```
-
-Will throw if any of the edges is not found in the graph.
 
 #### #.clear
 
@@ -408,8 +400,6 @@ Retrieves the degree of the given node.
 const degree: number = graph.degree(key: any, [selfLoops: boolean]);
 ```
 
-Will throw if the node is not found in the graph.
-
 #### #.source
 
 Retrieves the source of the given edge.
@@ -418,8 +408,6 @@ Retrieves the source of the given edge.
 const sourceNode = graph.source(key: any);
 ```
 
-Will throw if the edge is not in the graph.
-
 #### #.target
 
 Retrieves the target of the given edge.
@@ -427,8 +415,6 @@ Retrieves the target of the given edge.
 ```ts
 const targetNode = graph.target(key: any);
 ```
-
-Will throw if the edge is not in the graph.
 
 #### #.extremities
 
@@ -442,8 +428,6 @@ interface Extremities<any> {
 
 const extremities: Extremities = graph.extremities(key: any);
 ```
-
-Will throw if the edge is not in the graph.
 
 #### #.relatedNode
 
@@ -461,15 +445,11 @@ Checks whether the given edge is directed or not.
 const isTheEdgeDirected: boolean = graph.directed(key: any);
 ```
 
-Will throw if the edge is not in the graph.
-
 #### #.getNodeAttribute
 
 ```ts
 const attribute: any = graph.getNodeAttribute(key: any, name: string);
 ```
-
-Will throw if the node is not found in the graph.
 
 #### #.getNodeAttributes
 
@@ -477,23 +457,17 @@ Will throw if the node is not found in the graph.
 const attributes: Object = graph.getNodeAttributes(key: any);
 ```
 
-Will throw if the node is not found in the graph.
-
 #### #.getEdgeAttribute
 
 ```ts
 const attribute: any = graph.getEdgeAttribute(key: any, name: string);
 ```
 
-Will throw if the edge is not in the graph.
-
 #### #.getEdgeAttributes
 
 ```ts
 const attributes: Object = graph.getEdgeAttributes(key: any);
 ```
-
-Will throw if the edge is not in the graph.
 
 ### Iteration
 
@@ -512,6 +486,8 @@ Iteration targets are:
 * A node or bunch of nodes' edges
 
 Iterations methods always only give access to nodes' & edges' keys and not attributes. The getter methods should be used to retrieve attributes during iteration. This is designed thusly for performance reasons and to enforce good practices regarding the use of the attributes' setters.
+
+Note that for GraphMap types, some polymorphisms will require a single lookup to be solved (O(1)).
 
 #### Nodes
 
