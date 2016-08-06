@@ -8,7 +8,7 @@
  * network is built, we need to drop some useless components and apply
  * community detection using the Louvain algorithm.
  *
- * Expressions are tokenized into terms ("a new thing" => ["a", "new" "thing"]),
+ * Expressions are tokenized into terms ("a new thing" => ["a", "new", "thing"]),
  * with a black-list for common words such as "a" or not.
  *
  * The idea is to build a network of terms so we can visualize it hereafter.
