@@ -42,3 +42,6 @@ const children = graph
 
 console.log(children);
 ```
+
+TODO: api throws
+TODO: define generator function

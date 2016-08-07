@@ -11,6 +11,8 @@
 * [Setters](docs/setters.md)
   * [#.addNode](docs/setters.md#addnode)
   * [#.addEdge](docs/setters.md#addedge)
+  * [#.addDirectedEdge](docs/setters.md#adddirectededge)
+  * [#.addUndirectedEdge](docs/setters.md#addundirectededge)
 * [Getters](docs/getters.md)
 * [Iteration](docs/iteration.md)
 * [Events](docs/events.md)
