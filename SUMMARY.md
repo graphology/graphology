@@ -1,8 +1,13 @@
 # Summary
 
 * [Introduction](README.md)
+* [Examples](docs/examples.md)
 * [Instantiation](docs/instantiation.md)
 * [Properties](docs/properties.md)
+  * [#.order](docs/properties.md#order)
+  * [#.size](docs/properties.md#size)
+  * [#.type](docs/properties.md#type)
+  * [#.multi](docs/properties.md#multi)
 * [Setters](docs/setters.md)
   * [#.addNode](docs/setters.md#addnode)
   * [#.addEdge](docs/setters.md#addedge)
