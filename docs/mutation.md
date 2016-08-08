@@ -1,5 +1,7 @@
 # Mutation
 
+TODO: decide whether providing inexisting nodes to the edge-adding method should throw or create the nodes.
+
 ## #.addNode
 
 Adds a single node to the graph with optional attributes and returns the node.

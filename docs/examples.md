@@ -64,6 +64,8 @@ projects.forEach(project => {
 console.log(graph);
 ```
 
+For a simpler way to handle seemingly duplicate nodes & edges and easily weight them etc. you can head towards the description of the `onDuplicateNode` & `onDuplicateEdge` option [here](instantiation.md#duplicate-elements).
+
 ## Creating a subgraph
 
 ```js
