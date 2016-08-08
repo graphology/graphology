@@ -217,6 +217,6 @@ graph.clear();
 console.log(graph.order, graph.size);
 >>> 0, 0
 
-console.log(graph.hasNode('John'));
+graph.hasNode('John');
 >>> false
 ```

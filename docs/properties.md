@@ -12,7 +12,7 @@ const graph = new Graph();
 graph.addNode('John');
 graph.addNode('Jack');
 
-console.log(graph.order);
+graph.order;
 >>> 2
 ```
 
@@ -30,7 +30,7 @@ graph.addNode('Jack');
 
 graph.addEdge('John', 'Jack');
 
-console.log(graph.size);
+graph.size;
 >>> 1
 ```
 
@@ -42,11 +42,11 @@ Type of the graph. One of `mixed`, `directed` or `undirected`.
 
 ```js
 const graph = new Graph();
-console.log(graph.type);
+graph.type;
 >>> 'mixed'
 
 const directedGraph = new DirectedGraph();
-console.log(directedGraph.type);
+directedGraph.type;
 >>> 'directed'
 ```
 
@@ -58,10 +58,10 @@ Whether the graph accepts parallel edges or not.
 
 ```js
 const graph = new Graph();
-console.log(graph.multi);
+graph.multi;
 >>> false
 
 const multiGraph = new MultiGraph();
-console.log(multiGraph.multi)
+multiGraph.multi;
 >>> true
 ```
