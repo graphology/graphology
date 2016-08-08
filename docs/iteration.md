@@ -183,13 +183,15 @@ All the typical reducers are not listed below for time's sake but you can consid
   * **node** <span class="code">any</span>: the related node's key.
 3. **Using a [bunch](concept.md#bunches) of nodes**: will iterate over the nodes' relevant attached edges, but only once each.
   * **bunch** <span class="code">bunch</span>: bunch of related nodes.
-4. **Using source & target**:
+4. **Using source & target**: will iterate over the relevant edges going from source to target.
   * **source** <span class="code">any</span>: the source node's key.
   * **target** <span class="code">any</span>: the target node's key.
 
 **Getting the total number of edges**
 
 You can simply use the [`#.size`](properties.md#size) property.
+
+TODO: question boo
 
 ## Neighbors
 
