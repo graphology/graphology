@@ -1,5 +1,7 @@
 # Attributes
 
+TODO: discuss partial application.
+
 ## #.getNodeAttribute
 
 Returns the desired node's attribute.
@@ -29,7 +31,7 @@ Returns the desired node's attributes or `undefined` if not found.
 ```js
 graph.addNode('Martha', {age: 34, eyes: 'blue'});
 
-graph.getNodeAttribute('Martha');
+graph.getNodeAttributes('Martha');
 >>> {
   age: 34,
   eyes: 'blue'
