@@ -1,7 +1,16 @@
 .code {
-  color: #f5871f;
+  color: #DD4A68;
 }
 
 .default {
-  color: #c397d8;
+  color: #07a
+}
+
+.color-theme-2 pre .token.operator {
+  background: none !important;
+  color: #07a !important;
+}
+
+.token.number {
+  color: #DD4A68 !important;
 }

@@ -4,11 +4,11 @@
   "description": "RDD about a graph library for JavaScript.",
   "main": "index.js",
   "scripts": {
-    "docs:build": "cd docs && npm run docs:prepare && gitbook build",
-    "docs:clean": "rimraf ./docs/_book",
-    "docs:prepare": "cd docs && gitbook install",
-    "docs:publish": "npm run docs:clean && npm run docs:build && cd docs/_book && git init && git commit --allow-empty -m 'Updating docs' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'Updating docs' && git push git@github.com:medialab/graphlib gh-pages --force",
-    "docs:serve": "cd docs && npm run docs:prepare && gitbook serve"
+    "docs:build": "npm run docs:prepare && gitbook build",
+    "docs:clean": "rimraf _book",
+    "docs:prepare": "gitbook install",
+    "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'Updating docs' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'Updating docs' && git push git@github.com:medialab/graphlib gh-pages --force",
+    "docs:serve": "npm run docs:prepare && gitbook serve"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   "homepage": "https://github.com/medialab/graphlib#readme",
   "devDependencies": {
     "gitbook-cli": "^2.3.0",
+    "gitbook-plugin-prism": "^1.0.0",
     "rimraf": "^2.5.4"
   }
 }
