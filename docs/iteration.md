@@ -95,10 +95,10 @@ These methods iterate over the graph instance's edges.
 const graph = new Graph();
 
 graph.addNodesFrom(['Thomas', 'Rosaline', 'Emmett', 'Catherine', 'John', 'Daniel']);
-graph.addEdgeWithKey('T->R' 'Thomas', 'Rosaline');
+graph.addEdgeWithKey('T->R', 'Thomas', 'Rosaline');
 graph.addEdgeWithKey('T->E', 'Thomas', 'Emmett');
 graph.addEdgeWithKey('C->T', 'Catherine', 'Thomas');
-graph.addEdgeWithKey('R->C' 'Rosaline', 'Catherine');
+graph.addEdgeWithKey('R->C', 'Rosaline', 'Catherine');
 graph.addEdgeWithKey('J->D1', 'John', 'Daniel');
 graph.addEdgeWithKey('J->D2', 'John', 'Daniel');
 
@@ -191,7 +191,7 @@ All the typical reducers are not listed below for time's sake but you can consid
 
 You can simply use the [`#.size`](properties.md#size) property.
 
-TODO: question boo
+TODO: question boo (commonEdges)
 
 ## Neighbors
 
@@ -203,12 +203,12 @@ These methods iterate over the neighbors of the given node or nodes.
 const graph = new Graph();
 
 graph.addNodesFrom(['Thomas', 'Rosaline', 'Emmett', 'Catherine', 'John', 'Daniel']);
-graph.addEdgeWithKey('T->R' 'Thomas', 'Rosaline');
-graph.addEdgeWithKey('T->E', 'Thomas', 'Emmett');
-graph.addEdgeWithKey('C->T', 'Catherine', 'Thomas');
-graph.addEdgeWithKey('R->C' 'Rosaline', 'Catherine');
-graph.addEdgeWithKey('J->D1', 'John', 'Daniel');
-graph.addEdgeWithKey('J->D2', 'John', 'Daniel');
+graph.addEdge('Thomas', 'Rosaline');
+graph.addEdge('Thomas', 'Emmett');
+graph.addEdge('Catherine', 'Thomas');
+graph.addEdge('Rosaline', 'Catherine');
+graph.addEdge('John', 'Daniel');
+graph.addEdge('John', 'Daniel');
 
 // Using the array-returning methods:
 graph.neighbors('Thomas');
@@ -274,4 +274,4 @@ All the typical reducers are not listed below for time's sake but you can consid
 2. **Using a [bunch](concept.md#bunches) of nodes**: will iterate over the nodes' relevant neighbors, but only once each & never themselves.
   * **bunch** <span class="code">bunch</span>: bunch of related nodes.
 
-TODO: question boo
+TODO: question boo (commonNeighbors)
