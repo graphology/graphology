@@ -125,6 +125,79 @@ graph.dropNode('Martha');
 
 * **node** <span class="code">any</span>: the node to drop.
 
+## #.dropNodes
+
+Drops a [bunch](concepts.md#bunches) of nodes & all their attached edges from the graph.
+
+*Example*
+
+```js
+graph.addNode('John');
+graph.addNode('Martha');
+
+graph.dropNodes(['John', 'Martha']);
+```
+
+*Arguments*
+
+* **bunch** <span class="code">bunch</span>: the nodes to drop.
+
+## #.dropEdge
+
+Drops a single edge from the graph.
+
+*Example*
+
+```js
+graph.addNode('John');
+graph.addNode('Martha');
+
+const edge = graph.addEdge('John', 'Martha');
+
+// Dropping the edge using its key:
+graph.dropEdge(edge);
+
+// Dropping the first matching edge between John & Martha
+graph.dropEdge('John', 'Martha');
+```
+
+*Arguments*
+
+1. Using the key:
+  * **edge** <span class="code">any</span>: the edge to drop.
+2. Using the source & target:
+  * **source** <span class="code">any</span>: source node of the edge to drop.
+  * **target** <span class="code">any</span>: target node of the edge to drop.
+
+## #.dropEdges
+
+Drops a [bunch](concepts.md#bunches) of edges from the graph, or all the edges related to the given source & target.
+
+*Example*
+
+```js
+graph.addNode('John');
+graph.addNode('Martha');
+graph.addNode('Catherine');
+
+const johnMartha = graph.addEdge('John', 'Martha');
+const johnCatherine = graph.addEdge('John', 'Catherine');
+
+// Dropping a bunch of edges
+graph.dropEdges([johnMartha, johnCatherine]);
+
+// Dropping all the edges between John & Martha
+graph.dropEdges('John', 'Martha');
+```
+
+*Arguments*
+
+1. Using a bunch:
+  * **edge** <span class="code">bunch</span>: bunch of edges to drop.
+2. Using the source & target:
+  * **source** <span class="code">any</span>: source node of the edge to drop.
+  * **target** <span class="code">any</span>: target node of the edge to drop.
+
 ## #.clear
 
 Drop every node & every edge from the graph, leaving it empty.
