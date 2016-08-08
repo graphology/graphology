@@ -49,4 +49,28 @@ const graph = new Graph(null, {indexes: configuration});
 
 #### #.computeIndex
 
+Forces the computation of the desired index.
+
+*Example*
+
+```js
+graph.computeIndex('neighbors');
+```
+
+*Arguments*
+
+* **name** <span class="code">string</span>: name of the index to compute.
+
 #### #.clearIndex
+
+Release the desired index from memory.
+
+*Example*
+
+```js
+graph.clearIndex('relatedEdges');
+```
+
+*Arguments*
+
+* **name** <span class="code">string</span>: name of the index to clear.

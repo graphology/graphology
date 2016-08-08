@@ -52,6 +52,6 @@
 * [Events](events.md)
 * [Utilities](utilities.md)
   * [Import/Export](utilities.md#importexport)
-  * [Known properties](utilities.md#knowproperties)
+  * [Known properties](utilities.md#known-properties)
 * [Advanced](advanced.md)
 * [Running the unit tests](unittests.md)
