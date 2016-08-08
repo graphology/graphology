@@ -42,6 +42,3 @@ const children = graph
 
 console.log(children);
 ```
-
-TODO: define generator function
-TODO: discuss boo drop non-existing
