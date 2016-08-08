@@ -191,8 +191,6 @@ All the typical reducers are not listed below for time's sake but you can consid
 
 You can simply use the [`#.size`](properties.md#size) property.
 
-TODO: question boo (commonEdges)
-
 ## Neighbors
 
 These methods iterate over the neighbors of the given node or nodes.
@@ -273,5 +271,3 @@ All the typical reducers are not listed below for time's sake but you can consid
   * **node** <span class="code">any</span>: the node's key.
 2. **Using a [bunch](concept.md#bunches) of nodes**: will iterate over the nodes' relevant neighbors, but only once each & never themselves.
   * **bunch** <span class="code">bunch</span>: bunch of related nodes.
-
-TODO: question boo (commonNeighbors)

@@ -1,8 +1,5 @@
 # Attributes
 
-TODO: discuss partial application.
-TODO: decide what the updated should do if the key does not exist.
-
 ## #.getNodeAttribute
 
 Returns the desired node's attribute.

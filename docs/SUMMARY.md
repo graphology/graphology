@@ -58,4 +58,3 @@
   * [Import/Export](utilities.md#importexport)
   * [Known properties](utilities.md#known-properties)
 * [Advanced](advanced.md)
-* [Standard library](standard-library.md)
