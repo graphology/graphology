@@ -22,7 +22,7 @@ console.log(age);
 
 ## #.getNodeAttributes
 
-Returns the desired node's attributes.
+Returns the desired node's attributes or `undefined` if not found.
 
 *Example*
 
@@ -38,7 +38,7 @@ graph.getNodeAttribute('Martha');
 
 ## #.getEdgeAttribute
 
-Returns the desired edge's attribute.
+Returns the desired edge's attribute or `undefined` if not found.
 
 *Example*
 

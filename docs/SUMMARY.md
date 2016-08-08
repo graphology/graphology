@@ -51,6 +51,7 @@
   * [Neighbors](iteration.md#neighbors)
 * [Events](events.md)
 * [Utilities](utilities.md)
+  * [Import/Export](utilities.md#importexport)
+  * [Known properties](utilities.md#knowproperties)
 * [Advanced](advanced.md)
-  * [Indexes](advanced.md#indexes)
 * [Running the unit tests](unittests.md)
