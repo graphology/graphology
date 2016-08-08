@@ -13,7 +13,7 @@ For a better flexibility, the library usually enables the developer to iterate t
 * Methods returning arrays.
 * `forEach` methods & typical reducers (`map`, `filter`, `reduce`, `some`, `find`, `findIndex`, `every`).
 * Methods creating iterators for more complex, even asynchronous iteration.
-* Counting methods sometimes, when the implementation is able to return a number without iteration.
+* Counting methods when the implementation is able to return a number without iteration.
 
 **On what do we iterate?**
 
