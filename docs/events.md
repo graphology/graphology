@@ -4,17 +4,7 @@ The `Graph` instance is a node.js-like event emitter. As such, you can listen to
 
 Documentation about node.js event emitters can be found [here](https://nodejs.org/api/events.html).
 
-Note that the emitted payload will always be an object.
-
-Here is the list of the events you can listen:
-
-* [nodeAdded](#nodeadded)
-* [edgeAdded](#edgeadded)
-* [nodeDropped](#nodedropped)
-* [edgeDropped](#edgedropped)
-* [cleared](#cleared)
-* [nodeUpdated](#nodeupdated)
-* [edgeUpdated](#edgeupdated)
+Note that the emitted payload is always an object with various keys.
 
 ## nodeAdded
 

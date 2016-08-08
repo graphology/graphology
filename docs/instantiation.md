@@ -44,10 +44,10 @@ import {MultiDirectedGraph} from 'graphology';
 const myCustomGraph = new MultiDirectedGraph();
 ```
 
-Here are the different naming "components" that you can use to find the correct constructor:
+By default, the `Graph` object is a simple mixed graph, but here are the different naming "components" that you can use to instantiate a more complex graph:
 
-* **Type of the graph?**: `Mixed` (same as none), `Directed`, `Undirected`.
-* **Graph with parallel edges?**: `Multi` or `Simple` (same as none).
+* **Type of the graph?**: `Directed`, `Undirected` or none (mixed graph).
+* **Graph with parallel edges?**: `Multi` or none (simple graph).
 * **Graph accepting references as keys?**: `Map` or none.
 
 Then to build the name, one must order the components likewise:
@@ -62,8 +62,10 @@ Multi? + Type? + Graph + Map?
 MultiGraph
 DirectedGraphMap
 MultiUndirectedGraphMap
-...
+(...)
 ```
+
+---
 
 ## Edge key generator function
 

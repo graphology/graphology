@@ -4,21 +4,6 @@
 
 Methods used to import or export data in a serialized way to avoid the need for data conversion along the way. Those methods should only be used by utilities developer designing subgraph or conversion utilities.
 
-* [#.import](#import)
-* [#.importNode](#importnode)
-* [#.importNodes](#importnodes)
-* [#.importEdge](#importedge)
-* [#.importEdges](#importedges)
-* [#.export](#export)
-* [#.exportNode](#exportnode)
-* [#.exportNodes](#exportnodes)
-* [#.exportEdge](#exportedge)
-* [#.exportEdges](#exportedges)
-* [#.exportDirectedEdges](#exportdirectededges)
-* [#.exportUndirectedEdges](#exportundirectededges)
-* [#.copy](#copy)
-* [#.emptyCopy](#emptycopy)
-
 ### Regarding graph serialization
 
 **Node**
