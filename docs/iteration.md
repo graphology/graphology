@@ -42,7 +42,7 @@ graph.nodes();
 >>> ['Thomas', 'Elizabeth']
 
 // Using the `forEach` methods:
-graph.forEach(function(node) {
+graph.forEachNode(function(node) {
   console.log(node);
 });
 >>> 'Thomas'
