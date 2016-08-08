@@ -1,11 +1,11 @@
 # Summary
 
 * [Introduction](README.md)
-* [Concepts](concepts.md)
 * [Examples](examples.md)
-  * [Creating a co-occurrence graph](examples.md#creating-a-co-occurrence-graph)
-  * [Creating a subgraph](examples.md#creating-a-subgraph)
-  * [Reversing a graph](examples.md#reversing-a-graph)
+  * [Creating a co-occurrence graph](examples/co-occurrence.md)
+  * [Creating a subgraph](examples/subgraph.md)
+  * [Reversing a graph](examples/reverse.md)
+* [Concepts](concepts.md)
 * [Instantiation](instantiation.md)
 * [Properties](properties.md)
   * [#.order](properties.md#order)

@@ -181,7 +181,7 @@ All the typical reducers are not listed below for time's sake but you can consid
 1. **None**: iterate over every edge.
 2. **Using a node's key**: will iterate over the node's relevant attached edges.
   * **node** <span class="code">any</span>: the related node's key.
-3. **Using a [bunch](concept.md#bunches) of nodes**: will iterate over the nodes' relevant attached edges, but only once each.
+3. **Using a [bunch](concept.md#bunches) of nodes**: will iterate over the union of the nodes' relevant attached edge.
   * **bunch** <span class="code">bunch</span>: bunch of related nodes.
 4. **Using source & target**: will iterate over the relevant edges going from source to target.
   * **source** <span class="code">any</span>: the source node's key.
@@ -269,5 +269,5 @@ All the typical reducers are not listed below for time's sake but you can consid
 
 1. **Using a node's key**: will iterate over the node's relevant neighbors.
   * **node** <span class="code">any</span>: the node's key.
-2. **Using a [bunch](concept.md#bunches) of nodes**: will iterate over the nodes' relevant neighbors, but only once each & never themselves.
+2. **Using a [bunch](concept.md#bunches) of nodes**: will iterate over the union of the nodes' relevant neighbors.
   * **bunch** <span class="code">bunch</span>: bunch of related nodes.

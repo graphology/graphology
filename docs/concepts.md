@@ -56,7 +56,7 @@ By convention, you can assume that if the documentation does not tell you what a
 
 One might note that, contrary to some other libraries, `graphology` returns the node or edge on the `#.addNode` & `#.addEdge` method rather than enabling chaining methods. This was made so that the "get/has" pattern remains usable and to avoid unnecessary reads of the graph when building one:
 
-You can see an example of this pattern in the ["Creating a co-occurrence graph"](examples.md#creating-a-co-occurrence-graph) example.
+You can see an example of this pattern in the ["Creating a co-occurrence graph"](examples/co-occurrence.md) example.
 
 ## Concerning order
 

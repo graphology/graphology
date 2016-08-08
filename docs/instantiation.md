@@ -8,7 +8,7 @@ import Graph from 'graphology';
 // Here you go:
 const graph = new Graph();
 
-// With some pre-existing dtaa:
+// With some pre-existing data:
 const graph = new Graph(data);
 
 // With options:
@@ -20,7 +20,7 @@ const graph = new Graph(data, options);
 
 ## Arguments
 
-* **data** <span class="code">[Graph|SerializedGraph]</span>: pre-existing data to give to the constructor. This data can either be an existing `Graph` instance, and in this case both nodes & edges will be imported from the given graph, or a serialized graph such as the one you may retrieve from the [`#.export`](./utilities.md#export) method.
+* **data** <span class="code">[Graph|SerializedGraph]</span>: pre-existing data to give to the constructor. This data can either be an existing `Graph` instance, and in this case both nodes & edges will be imported from the given graph, or a serialized graph whose format is described [here](utilities.md#regarding-graph-serialization).
 * **options** <span class="code">[object]</span>: options to customize the behavior of the graph & performance hints:
   * **allowSelfLoops** <span class="code">[boolean]</span> <span class="default">true</span>: should the graph allow self-loops?
   * **defaultEdgeAttributes** <span class="code">[object]</span>: default edge attributes.

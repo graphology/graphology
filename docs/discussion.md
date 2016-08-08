@@ -1,7 +1,15 @@
 # Discussion
 
-* Decide whether providing inexisting nodes to the edge-adding method should throw or create the nodes.
 * Discuss awkward currying of some attribute-related methods?
-* Decide what the updaters should do if the key is not found.
-* edge iterators -> commonEdge for union?
-* neighbor iterators -> commonNeighbor for union?
+* Make the graph Directed by default?
+
+* [NO] Decide whether providing inexisting nodes to the edge-adding method should throw or create the nodes. (prévoir options?)
+* [NO] edge iterators -> commonEdge for intersection?
+* [NO] neighbor iterators -> commonNeighbor for intersection?
+
+
+## ToDo
+
+* Collapsible menu (with collapse all?)
+* Add full TOC?
+* Precise the alternative constructor

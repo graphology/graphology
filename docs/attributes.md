@@ -119,6 +119,8 @@ Update the attribute of a node using the provided function.
 
 This method is very useful when performing tasks such as incrementing an attribute so you don't have to first fetch the former value to compute the next one.
 
+Note that if the attribute is not yet setted, the passed value will be `undefined`.
+
 *Example*
 
 ```js
@@ -208,6 +210,8 @@ graph.setEdgeAttribute('Martha', 'Jack', 'type', 'LIKES');
 Update the attribute of an edge using the provided function.
 
 This method is very useful when performing tasks such as incrementing an attribute so you don't have to first fetch the former value to compute the next one.
+
+Note that if the attribute is not yet setted, the passed value will be `undefined`.
 
 *Example*
 
