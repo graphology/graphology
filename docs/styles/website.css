@@ -21,3 +21,7 @@ pre .token.operator {
 .summary > .chapter > a {
   font-weight: bold !important;
 }
+
+.custom-input:focus {
+  border: 1px solid black !important;
+}
