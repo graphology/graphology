@@ -25,7 +25,7 @@ const graph = new Graph(data, options);
   * **allowSelfLoops** <span class="code">[boolean]</span> <span class="default">true</span>: should the graph allow self-loops?
   * **defaultEdgeAttributes** <span class="code">[object]</span>: default edge attributes.
   * **defaultNodeAttributes** <span class="code">[object]</span>: default node attributes.
-  * **edgeKeyGenerator** <span class="code">[function]</span>: Function used internally by the graph to produce keys for key-less edges. By default, the graph will produce keys as UUID v4 compressed through base91.
+  * **edgeKeyGenerator** <span class="code">[function]</span>: Function used internally by the graph to produce keys for key-less edges. By default, the graph will produce keys as UUID v4 compressed through base91. For more information concerning the function you can provide, see [this](#edge-key-generator-function).
   * **hashDelimiter** <span class="code">[string]</span>: string used as hash delimiter for storing some data internally (undirected edges, typically).
   * **indexes** <span class="code">[object]</span>: Options regarding index computation. For more information, see [this](./advanced.md#indexes).
   * **map** <span class="code">[boolean]</span> <span class="default">false</span>: Should the graph allow references as key like a JavaScript `Map` object?
@@ -61,4 +61,32 @@ MultiGraph
 DirectedGraphMap
 MultiUndirectedGraphMap
 ...
+```
+
+## Edge key generator function
+
+The provided function takes several arguments:
+
+* **source**: the source of the edge.
+* **target**: the target of the edge.
+* **attributes**: optional attributes.
+
+*Example*
+
+```js
+// To have an incremental id, for instance:
+const generator = (function() {
+  let id = 0;
+
+  return () => id++;
+})();
+
+const graph = new Graph(null, {edgeKeyGenerator: generator});
+
+// To build the id based on the nodes:
+const generator = function(source, target, attributes) {
+  return `${source}->${target}`;
+};
+
+const graph = new Graph(null, {edgeKeyGenerator: generator});
 ```
