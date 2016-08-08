@@ -1,7 +1,5 @@
 # Utilities
 
-TODO: import/export plural to take a list of keys.
-
 ## Import/Export
 
 Methods used to import or export data in a serialized way to avoid the need for data conversion along the way. Those methods should only be used by utilities developer designing subgraph or conversion utilities.
@@ -205,7 +203,7 @@ graph.exportNode('Thomas');
 
 ### #.exportNodes
 
-Exports every node from the graph.
+Exports every node or only a bunch of nodes from the graph.
 
 *Example*
 
@@ -220,7 +218,16 @@ graph.exportNodes();
   ['Thomas', {age: 34}],
   ['Martha', {age: 26}]
 ]
+
+graph.exportNodes(['Thomas']);
+>>> [
+  ['Thomas', {age: 34}]
+]
 ```
+
+*Arguments*
+
+* **nodes** <span class="code">[bunch]</span>: bunch of nodes to export. If not provided, every node will be exported.
 
 ### #.exportEdge
 
@@ -238,7 +245,7 @@ graph.exportEdge('T->M');
 
 ### #.exportEdges
 
-Exports every edge from the graph.
+Exports every edge or only a bunch of edges from the graph.
 
 *Example*
 
@@ -252,11 +259,20 @@ graph.exportEdges();
   ['T->M', 'Thomas', 'Martha', {type: 'KNOWS'}, false],
   ['M->E', 'Martha', 'Eric', {type: 'KNOWS'}, false]
 ]
+
+graph.exportEdges(['T->M']);
+>>> [
+  ['T->M', 'Thomas', 'Martha', {type: 'KNOWS'}, false]
+]
 ```
+
+*Arguments*
+
+* **edges** <span class="code">[bunch]</span>: bunch of edges to export. If not provided, every edge will be exported.
 
 ### #.exportDirectedEdges
 
-Exports every directed edge from the graph.
+Exports every directed edge or only a bunch of directed edges from the graph.
 
 *Example*
 
@@ -271,11 +287,20 @@ graph.exportDirectedEdges();
   ['T->M', 'Thomas', 'Martha', {type: 'KNOWS'}, false],
   ['M->E', 'Martha', 'Eric', {type: 'KNOWS'}, false]
 ]
+
+graph.exportEdges(['T->M']);
+>>> [
+  ['T->M', 'Thomas', 'Martha', {type: 'KNOWS'}, false]
+]
 ```
+
+*Arguments*
+
+* **edges** <span class="code">[bunch]</span>: bunch of directed edges to export. If not provided, every directed edge will be exported.
 
 ### #.exportUndirectedEdges
 
-Exports every undirected edge from the graph.
+Exports every undirected edge or only a bunch of undirected edges from the graph.
 
 *Example*
 
@@ -289,7 +314,16 @@ graph.exportUndirectedEdges();
 >>> [
   ['A', 'Thomas', 'Eric', {}, true]
 ]
+
+graph.exportUndirectedEdges(['A']);
+>>> [
+  ['A', 'Thomas', 'Eric', {}, true]
+]
 ```
+
+*Arguments*
+
+* **edges** <span class="code">[bunch]</span>: bunch of undirected edges to export. If not provided, every undirected edge will be exported.
 
 ### #.copy
 
