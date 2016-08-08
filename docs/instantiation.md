@@ -23,6 +23,8 @@ const graph = new Graph(data, options);
 * **data** <span class="code">[Graph|SerializedGraph]</span>: pre-existing data to give to the constructor. This data can either be an existing `Graph` instance, and in this case both nodes & edges will be imported from the given graph, or a serialized graph such as the one you may retrieve from the [`#.export`](./utilities.md#export) method.
 * **options** <span class="code">[object]</span>: options to customize the behavior of the graph & performance hints:
   * **allowSelfLoops** <span class="code">[boolean]</span> <span class="default">true</span>: should the graph allow self-loops?
+  * **defaultEdgeAttributes** <span class="code">[object]</span>: default edge attributes.
+  * **defaultNodeAttributes** <span class="code">[object]</span>: default node attributes.
   * **edgeKeyGenerator** <span class="code">[function]</span>: Function used internally by the graph to produce keys for key-less edges. By default, the graph will produce keys as UUID v4 compressed through base91.
   * **hashDelimiter** <span class="code">[string]</span>: string used as hash delimiter for storing some data internally (undirected edges, typically).
   * **indexes** <span class="code">[object]</span>: Options regarding index computation. For more information, see [this](./advanced.md#indexes).

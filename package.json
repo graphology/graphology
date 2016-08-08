@@ -4,7 +4,7 @@
   "description": "RDD about a graph library for JavaScript.",
   "main": "index.js",
   "scripts": {
-    "start": "gitbook serve"
+    "start": "cd docs && gitbook serve"
   },
   "repository": {
     "type": "git",

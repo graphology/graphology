@@ -118,7 +118,7 @@ graph.addNode('John');
 graph.dropNode('John');
 
 graph.dropNode('Martha');
->>> Error <Martha not in the graph>
+>>> Error "Martha not in the graph"
 ```
 
 *Arguments*
