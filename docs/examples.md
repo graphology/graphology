@@ -9,7 +9,7 @@ import {UndirectedGraph} from 'graph';
 
 const graph = new UndirectedGraph();
 
-// The projects's data is a collection of the following structure:
+// The projects's data is a collection of the following structure
 const projects = [
   {
     name: 'Rivia',
@@ -25,7 +25,39 @@ const projects = [
 
 // Now let's iterate on the projects to fill our graph with students:
 projects.forEach(project => {
-  // TODO...
+
+  // Adding the students to the graph first
+  project.team.forEach(student => {
+
+    // If the student is not yet in the graph, we add him/her
+    // (we'll use its id as the node's key)
+    if (!graph.hasNode(student.id))
+      graph.addNode(student.id, {
+        fullname: student.name + ' ' + student.surname,
+        projects: 0
+      });
+
+    // Then we increment the number of projects the student worked on
+    graph.updateNodeAttribute(student.id, 'projects', x => x + 1);
+  });
+
+  // Now let's link the students to one another when since they work on the same project
+  graph.team.forEach((student, i) => {
+
+    graph.team.slice(i + 1).forEach(colleague => {
+
+      const edge = graph.getEdge(student.id, colleague.id);
+
+      // If the edge does not exist yet, we create it
+      if (!edge)
+        edge = graph.addEdge(student.id, colleague.id, {
+          weight: 0
+        });
+
+      // Increasing the weight of the relation between both students
+      graph.updateEdgeAttribute(edge, 'weight', x => x + 1);
+    });
+  });
 });
 
 // Let's print our graph!
