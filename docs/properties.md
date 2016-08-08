@@ -65,3 +65,17 @@ const multiGraph = new MultiGraph();
 multiGraph.multi;
 >>> true
 ```
+
+## #.selfLoops
+
+Whether the graph accepts self loops or not.
+
+```js
+const graph = new Graph();
+graph.selfLoops;
+>>> true
+
+const otherGraph = new Graph(null, {allowSelfLoops: false});
+graph.selfLoops;
+>>> false
+```

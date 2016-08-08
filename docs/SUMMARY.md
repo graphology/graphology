@@ -12,6 +12,7 @@
   * [#.size](properties.md#size)
   * [#.type](properties.md#type)
   * [#.multi](properties.md#multi)
+  * [#.selfLoops](properties.md#selfloops)
 * [Read](read.md)
   * [#.hasNode](read.md#hasnode)
   * [#.hasEdge](read.md#hasedge)
@@ -57,3 +58,4 @@
   * [Import/Export](utilities.md#importexport)
   * [Known properties](utilities.md#known-properties)
 * [Advanced](advanced.md)
+* [Standard library](standard-library.md)
