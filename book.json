@@ -2,5 +2,10 @@
   "gitbook": "3.2.0",
   "title": "graphology",
   "root": "./docs",
-  "plugins": ["-sharing", "prism", "-highlight"]
+  "plugins": ["-sharing", "prism", "-highlight", "github"],
+  "pluginsConfig": {
+    "github": {
+      "url": "https://github.com/medialab/graphlib"
+    }
+  }
 }
