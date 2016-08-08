@@ -14,3 +14,7 @@
 .token.number {
   color: #DD4A68 !important;
 }
+
+.summary > .chapter > a {
+  font-weight: bold;
+}
