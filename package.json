@@ -4,7 +4,10 @@
   "description": "RDD about a graph library for JavaScript.",
   "main": "index.js",
   "scripts": {
-    "start": "cd docs && gitbook serve"
+    "docs:build": "cd docs && npm run docs:prepare && gitbook build",
+    "docs:clean": "rimraf ./docs/_book",
+    "docs:prepare": "cd docs && gitbook install",
+    "start": "cd docs && npm run docs:prepare && gitbook serve"
   },
   "repository": {
     "type": "git",
@@ -17,6 +20,7 @@
   },
   "homepage": "https://github.com/medialab/graphlib#readme",
   "devDependencies": {
-    "gitbook-cli": "^2.3.0"
+    "gitbook-cli": "^2.3.0",
+    "rimraf": "^2.5.4"
   }
 }

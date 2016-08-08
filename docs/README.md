@@ -27,8 +27,8 @@ import Graph from 'graphology';
 
 const graph = new Graph();
 
-graph.addNode('John', {age: 13});
 graph.addNode('Jack', {age: 56});
+graph.addNode('John', {age: 13});
 graph.addNode('Catherine', {age: 15});
 graph.addNode('Martha', {age: 94});
 
@@ -40,5 +40,6 @@ const children = graph
   .filterEdges('Jack', edge => edge.type === 'FATHER_OF')
   .map(edge => return graph.relatedNode('Jack', edge));
 
-console.log(children);
+children
+>>> ['John', 'Catherine']
 ```
