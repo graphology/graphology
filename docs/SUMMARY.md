@@ -85,3 +85,7 @@
     * [#.inspect](utilities.md#inspect)
 * [Advanced](advanced.md)
   * [Indexes](advanced.md#indexes)
+* [Conclave](discussion.md)
+  * [Discussion](discussion.md)
+  * [Standard library](standard-library.md)
+  * [Concerning sigma](sigma.md)

@@ -28,7 +28,7 @@ require([
 
       $(SELECTOR).show();
 
-      if (INPUT.length < 3)
+      if (INPUT.length < 2)
         return;
 
       $(SELECTOR).each(function() {
