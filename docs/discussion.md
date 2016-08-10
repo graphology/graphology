@@ -5,7 +5,7 @@ Issues can be found [here](https://github.com/medialab/graphlib/issues).
 | Status | Precisions | Description |
 | :---: | :---: | --- |
 | [?] | [link](#curry) | Discuss awkward currying of some attribute-related methods? |
-| [?] | [link](#adjacency) | Discuss the adjacency iteration. |
+| [?] | [link](#adj) | Discuss the adjacency iteration. |
 | [X] | [link](#directed) | Make the graph Directed by default? |
 | [X] | [link](#404) | Decide whether providing not found nodes to the edge-adding method should throw or create the nodes. (Option?) |
 
@@ -29,7 +29,7 @@ const lables = graph.mapNodes(graph.getNodeAttribute('label'));
 
 The question is therefore: do we introduce some kind of akward currying by creating another signature of arity one to those function, taking the name of the attribute as lone argument and returning a function taking the node afterwards; or do we let external libraries & utilities tackle the problem?
 
-<h2 id="adjacency">Adjacency iteration</h2>
+<h2 id="adj">Adjacency iteration</h2>
 
 What of it? What arguments will it take & on what exactly will we iterate?
 

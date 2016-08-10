@@ -54,8 +54,11 @@ renderer.mergeState({action: 'highlight'});
 ```js
 // Function whose goal is to take graph data & renderer state
 // and return display information
-function nodeReducer(node, nodeState, rendererState) {
-  if (rendererState.action === 'highlight') {
+function nodeReducer(graph, renderer, node) {
+  const currentAction = renderer.getState().action,
+        nodeState = renderer.getNodeState();
+
+  if (currentAction === 'highlight') {
     return {
       color: nodeState.highlighted ? 'red' : 'gray'
     };
