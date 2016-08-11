@@ -1,5 +1,8 @@
 # Read
 
+TODO: add a method taking two nodes & returning whether they are neighbors (#.areNeighbors).
+TODO: add a method taking a node + an edge & returning whether the edge is attached to the node (#.attached).
+
 ## #.hasNode
 
 Returns whether the given node is found in the graph.

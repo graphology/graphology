@@ -73,3 +73,122 @@ function nodeReducer(graph, renderer, node) {
 Another use case that pinpoint a potential use of this is manylines' category minimaps. They render the same data but have to tweak the internal macro-renderer just to be sure to avoid the map's state to change their display.
 
 With this, rendering state is tied to a renderer & not to the graph's data.
+
+## Draft
+
+```js
+import Graph from 'graph';
+import Sigma, {Camera} from 'sigma';
+
+// Renderers (DOM is auto-detect 'canvas' or 'webgl')
+import DOMRenderer from 'sigma/dom';
+import CanvasRenderer from 'sigma/canvas';
+import WebglRenderer from 'sigma/webgl';
+import SVGRenderer from 'sigma/svg';
+
+const graph = new Graph();
+
+const sigma = new Sigma(graph, {
+
+  // Optional camera, if none provided, the instance will create its own
+  camera: new Camera(),
+
+  // Providing the renderer class
+  renderer: new DOMRenderer('#container'),
+
+  // Reducers (they are all merged into one another)
+  nodeReducers: [
+    function(graph, node) {
+      const state = this.getState(),
+            nodeState = this.getNodeState(node);
+
+      let color;
+
+      if (state.highlighting)
+        color = nodeState.highlighted ? 'red' : 'gray';
+      else
+        color = graph.getNodeAttribute('color');
+
+      return {
+        label: node,
+        x: graph.getNodeAttribute(node, 'x'),
+        y: graph.getNodeAttribute(node, 'y'),
+        color
+      };
+    }
+  ]
+
+  // Usual settings
+  settings: {
+    maxNodeSize: 34
+  }
+});
+
+// Alternatively
+const sigma = new Sigma(graph, DOMRenderer);
+
+// Retrieving various things:
+const graph = sigma.getGraph();
+const camera = sigma.getCamera();
+const renderer = sigma.getRenderer();
+
+// Setting state
+sigma.setState('highlighting', true);
+sigma.setNodeState(node, 'highlighted', false);
+
+// Refreshing manually
+sigma.refresh();
+
+// Handling camera
+camera.goTo();
+camera.getState();
+
+// Binding events (do this at renderer level?)
+sigma.on('clickNode', function(node) {
+  sigma.setNodeState(node, 'highlighted', true);
+});
+
+// Extending sigma to provide high-level methods:
+class MySigma extends Sigma {
+  highlightNode(node) {
+    this.setEveryNodeState(node, 'highlighted', false);
+    this.setNodeState(node, 'highlighted', true);
+    this.setState('highlighting', true);
+  }
+
+  reset() {
+    this.setEveryNodeState('highlighted', false);
+    this.setState('highlighting', false);
+  }
+}
+
+const mySigma = new MySigma();
+
+mySigma.on('clickNode', mySigma.highlightNode);
+mySigma.on('clickStage', mySigma.reset);
+
+// Extending a renderer (you can also create one from scratch following a known interface)
+// Or you can provide options to the basic canvas renderer instead
+class CustomCanvasRenderer extends CanvasRenderer {
+
+  // Those methods are specific to each renderer (webgl doesn't need same as canvas)
+  drawNode(canvas, data, settings) {
+
+    // Here, camera translations & middlewares are already processed
+
+    // Do canvas magic...
+    canvas.rect(...);
+  }
+}
+
+// The rendering pipe should be described in the renderer itself (webgl process for instance
+// should be handled in the renderer & not in the sigma instance).
+
+// Process: (react on data or state update)
+//   1. Reducers (data + state) => info
+//   2. Middlewares => pre-rendering data
+//   3. Camera view + Renderer display => rendering state
+
+// Accessing actual rendered state
+renderer.getRenderingState(node);
+```
