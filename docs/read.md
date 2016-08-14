@@ -1,7 +1,9 @@
 # Read
 
-* TODO: add a method taking two nodes & returning whether they are neighbors (#.areNeighbors).
+* TODO: add a method taking two nodes & returning whether they are neighbors (#.neighbors polymorphism).
 * TODO: add a method taking a node + an edge & returning whether the edge is attached to the node (#.attached).
+* TODO: make graph an iterable over node?
+* TODO: is prefix for boolean?
 
 ## #.hasNode
 
