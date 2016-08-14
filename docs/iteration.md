@@ -58,6 +58,12 @@ for (const node of iterator)
   console.log(node);
 >>> 'Thomas'
 >>> 'Elizabeth'
+
+// Note that the graph itself is an iterator over nodes
+for (const node of graph)
+  console.log(node);
+>>> 'Thomas'
+>>> 'Elizabeth'
 ```
 
 **Methods**
@@ -271,3 +277,6 @@ All the typical reducers are not listed below for time's sake but you can consid
   * **node** <span class="code">any</span>: the node's key.
 2. **Using a [bunch](concept.md#bunches) of nodes**: will iterate over the union of the nodes' relevant neighbors.
   * **bunch** <span class="code">bunch</span>: bunch of related nodes.
+3. **Using two nodes' keys**: will return whether the two given nodes are neighbors.
+  * **node1** <span class="code">any</span>: first node.
+  * **node2** <span class="code">any</span>: second node.

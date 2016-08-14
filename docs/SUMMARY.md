@@ -14,6 +14,7 @@
   * [#.size](properties.md#size)
   * [#.type](properties.md#type)
   * [#.multi](properties.md#multi)
+  * [#.map](properties.md#map)
   * [#.selfLoops](properties.md#selfloops)
 * [Read](read.md)
   * [#.hasNode](read.md#hasnode)
