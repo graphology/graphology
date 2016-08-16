@@ -9,6 +9,7 @@ import properties from './properties';
 import read from './read';
 import mutation from './mutation';
 import attributes from './attributes';
+import knownMethods from './known-methods';
 
 /**
  * Returning the unit tests to run.
@@ -23,10 +24,11 @@ export default function specs(path) {
         Graph = implementation.default;
 
   return {
-    Instantiation: instantiation(Graph),
-    Properties: properties(Graph),
-    Read: read(Graph),
-    Mutation: mutation(Graph),
-    Attributes: attributes(Graph)
+    'Instantiation': instantiation(Graph),
+    'Properties': properties(Graph),
+    'Read': read(Graph),
+    'Mutation': mutation(Graph),
+    'Attributes': attributes(Graph),
+    'Known Methods': knownMethods(Graph)
   };
 }

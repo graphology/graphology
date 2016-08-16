@@ -226,11 +226,10 @@ export default class Graph {
    * @return {string} - String representation of the graph.
    */
   toString() {
-    const order = this.order,
-          size = this.size;
+    const pluralOrder = this.order > 1 || this.order === 0,
+          pluralSize = this.size > 1 || this.size === 0;
 
-    // TODO: check grammar
-    return `Graph<${order} node${order > 1 ? 's' : ''}, ${size} edge${size > 1 ? 's' : ''}>`;
+    return `Graph<${this.order} node${pluralOrder ? 's' : ''}, ${this.size} edge${pluralSize ? 's' : ''}>`;
   }
 
   /**
