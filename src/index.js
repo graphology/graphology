@@ -4,7 +4,11 @@
  *
  * Reference implementation of the graphology specs.
  */
-import {privateProperty, readOnlyProperty} from './utils';
+import {
+  privateProperty,
+  readOnlyProperty,
+  uuid
+} from './utils';
 
 /**
  * Enums.
@@ -15,6 +19,7 @@ const TYPES = new Set(['directed', 'undirected', 'mixed']);
  * Default options.
  */
 const DEFAULTS = {
+  edgeKeyGenerator: uuid,
   map: false,
   multi: false,
   type: 'mixed'
@@ -36,11 +41,15 @@ export default class Graph {
     options = options || {};
 
     //-- Solving options
-    const map = options.map || DEFAULTS.map,
+    const edgeKeyGenerator = options.edgeKeyGenerator || DEFAULTS.edgeKeyGenerator,
+          map = options.map || DEFAULTS.map,
           multi = options.multi || DEFAULTS.multi,
           type = options.type || DEFAULTS.type;
 
     // Enforcing options validity
+    if (typeof edgeKeyGenerator !== 'function')
+      throw Error(`Graph.constructor: invalid 'edgeKeyGenerator' option. Expecting a function but got "${map}".`);
+
     if (typeof map !== 'boolean')
       throw Error(`Graph.constructor: invalid 'map' option. Expecting a boolean but got "${map}".`);
 
@@ -59,6 +68,11 @@ export default class Graph {
     // Indexes
     privateProperty(this, '_nodes', map ? new Map() : {});
     privateProperty(this, '_edges', map ? new Map() : {});
+
+    // Options
+    privateProperty(this, '_options', {
+      edgeKeyGenerator
+    });
 
     //-- Properties readers
     readOnlyProperty(this, 'order', () => this._order);
@@ -104,22 +118,70 @@ export default class Graph {
    *
    * @throws {Error} - Will throw if the given attributes are not an object.
    */
-  addNode(node, attributes = {}) {
+  addNode(node, attributes) {
     if (arguments.length > 1 && typeof attributes !== 'object')
       throw Error(`Graph.addNode: invalid attributes. Expecting an object but got "${attributes}"`);
 
     attributes = attributes || {};
 
+    const data = {
+      degree: 0,
+      attributes
+    };
+
     // Adding the node to internal register
     if (this.map)
-      this._nodes.set(node, attributes);
+      this._nodes.set(node, data);
     else
-      this._nodes[node] = attributes;
+      this._nodes[node] = data;
 
     // Incrementing order
     this._order++;
 
     return node;
+  }
+
+  /**
+   * Method used to add a directed edge to the graph.
+   *
+   * @param  {any}    source       - The source node.
+   * @param  {any}    target       - The target node.
+   * @param  {object} [attributes] - Optional attributes.
+   * @return {any}                 - The edge.
+   *
+   * @throws {Error} - Will throw if the graph is undirected.
+   * @throws {Error} - Will throw if the given attributes are not an object.
+   * @throws {Error} - Will throw if any of the nodes doesn't exist.
+   */
+  addDirectedEdge(source, target, attributes) {
+    if (this.type === 'undirected')
+      throw Error('Graph.addDirectedEdge: you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.');
+
+    if (arguments.length > 2 && typeof attributes !== 'object')
+      throw Error(`Graph.addDirectedEdge: invalid attributes. Expecting an object but got "${attributes}"`);
+
+    if (!graph.hasNode(source))
+      throw Error(`Graph.addDirectedEdge: source node ("${source}") not found.`);
+
+    if (!graph.hasNode(target))
+      throw Error(`Graph.addDirectedEdge: target node ("${target}") not found.`);
+
+    // Generating an id
+    const edge = this._options.edgeKeyGenerator(source, target, attributes);
+
+    const data = {
+      type: 'directed',
+      attributes,
+      source,
+      target
+    };
+
+    if (this.map)
+      this._nodes.set(edge, data);
+    else
+      this._nodes[edge] = data;
+
+    return edge;
   }
 
   /**---------------------------------------------------------------------------
@@ -137,17 +199,17 @@ export default class Graph {
    * @throws {Error} - Will throw if the given node doesn't exist.
    */
   getNodeAttribute(node, name) {
-    let attributes;
+    let data;
 
     if (this.map)
-      attributes = this._nodes.get(node);
+      data = this._nodes.get(node);
     else
-      attributes = this._nodes[node];
+      data = this._nodes[node];
 
-    if (!attributes)
+    if (!data)
       throw Error(`Graph.getNodeAttribute: the "${node}" wasn't found in the graph.`);
 
-    const value = attributes[name];
+    const value = data.attributes[name];
 
     return value;
   }
@@ -178,7 +240,12 @@ export default class Graph {
    */
   inspect() {
 
-    // TODO: this is temporary
-    return {nodes: this._nodes};
+    // TODO: finish this up
+    const data = {
+      order: this.order,
+      size: this.size
+    };
+
+    return 'Graph ' + JSON.stringify(data, null, 2);
   }
 }

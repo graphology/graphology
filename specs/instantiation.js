@@ -11,6 +11,18 @@ export default function instantiation(Graph) {
     'Options': {
 
       /**
+       * edgeKeyGenerator
+       */
+      'edgeKeyGenerator': {
+
+        'providing something other than a function should throw.': function() {
+          assert.throws(function() {
+            const graph = new Graph(null, {edgeKeyGenerator: 'test'});
+          });
+        }
+      },
+
+      /**
        * map
        */
       'map': {

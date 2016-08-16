@@ -36,3 +36,15 @@ export function readOnlyProperty(target, name, getter) {
     get: getter
   });
 }
+
+/**
+ * Simple uuid v4 function.
+ *
+ * @return {string} - The uuid.
+ */
+
+// TODO: this is just a temporary auto-increment
+let incrementalId = 0;
+export function uuid() {
+  return incrementalId++;
+}
