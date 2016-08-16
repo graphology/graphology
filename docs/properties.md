@@ -1,5 +1,7 @@
 # Properties
 
+All the following properties are read-only and may not be changed by the user.
+
 ## #.order
 
 Number of nodes in the graph.

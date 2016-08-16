@@ -4,10 +4,13 @@ Issues can be found [here](https://github.com/medialab/graphlib/issues).
 
 | Status | Precisions | Description |
 | :---: | :---: | --- |
-| [?] | [link](#curry) | Discuss awkward currying of some attribute-related methods? |
+| [X] | [link](#curry) | Discuss awkward currying of some attribute-related methods? |
 | [?] | [link](#adj) | Discuss the adjacency iteration. |
 | [X] | [link](#directed) | Make the graph Directed by default? |
-| [X] | [link](#404) | Decide whether providing not found nodes to the edge-adding method should throw or create the nodes. (Option?) |
+| [O] | [link](#404) | Decide whether providing not found nodes to the edge-adding method should throw or create the nodes. |
+| [?] | [link](#neighbors) | Decide of a method to assert whether two nodes are neighbors. |
+| [X] | [link](#attributes) | Decide whether to add batch methods for attributes. |
+| [?] | [link](#transactions) | Transaction methods. |
 
 <h2 id="curry">Currying on attribute-releated method</h2>
 
@@ -49,4 +52,40 @@ graph.addEdge('source', 'target', {weight: 1});
 // We could add a very cumbersome arity to tackle the issue:
 // (array-polymorphism can't work since we can have arrays as nodes, remember?)
 graph.addEdge('source', sourceAttr, 'target', targetAttr, {weight: 1});
+```
+
+We could probably add an option to enable this case (`addNotFoundNodes`, defaulting to `false`).
+
+<h2 id="neigbors">Method to assert whether two nodes are neighbors</h2>
+
+The current solution is a polymorphism on the `#.neighbors` method:
+
+```js
+graph.neighbors(node1, node2);
+```
+
+The issue is that it introduces a polymorphism returning a boolean value on an iteration method.
+
+We could fallback to some `#.areNeighbors` function but this would mean to enforce a `is/are` naming across the whole library for consistency.
+
+<h2 id="attributes">Batch methods for attributes</h2>
+
+We could add methods to perform batch attribute operations like so:
+
+```js
+graph.setNodesAttribute(bunch, 'x', 0);
+```
+
+But this is only sugar (probably no internal performance boost), and would likely lead people to typos.
+
+<h2 id="transactions">Transaction methods</h2>
+
+Some use cases (typically rendering & layout) might beneficiate from transaction methods.
+
+```js
+graph.begin();
+
+graph.forEachNode(node => graph.setNodeAttribute(node, 'x', 0));
+
+graph.commit();
 ```

@@ -86,6 +86,8 @@ graph.getEdge('Clarice', 'Franck');
 
 Returns the degree of the given node.
 
+Will throw if the node is not found in the graph.
+
 *Example*
 
 ```js
