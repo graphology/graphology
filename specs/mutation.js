@@ -15,7 +15,7 @@ export default function mutation(Graph) {
 
         assert.throws(function() {
           graph.addNode('test', true);
-        }, /addNode/);
+        }, /attributes/);
       },
 
       'it should return the added node.': function() {
@@ -25,15 +25,23 @@ export default function mutation(Graph) {
       }
     },
 
-    '#.addEdge': {
+    '#.addDirectedEdge': {
 
       'it should throw if given attributes is not an object.': function() {
         const graph = new Graph();
 
         assert.throws(function() {
-          graph.addEdge('source', 'target', true);
-        }, /addEdge/);
+          graph.addDirectedEdge('source', 'target', true);
+        }, /attributes/);
+      },
+
+      'it should throw if the graph is undirected.': function() {
+        const graph = new Graph(null, {type: 'undirected'});
+
+        assert.throws(function() {
+          graph.addDirectedEdge('source', 'target');
+        }, /undirected/);
       }
-    }
+    },
   };
 }

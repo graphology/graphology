@@ -151,7 +151,7 @@ export default class Graph {
    *
    * @throws {Error} - Will throw if the graph is undirected.
    * @throws {Error} - Will throw if the given attributes are not an object.
-   * @throws {Error} - Will throw if any of the nodes doesn't exist.
+   * @throws {Error} - Will throw if source or target doesn't exist.
    */
   addDirectedEdge(source, target, attributes) {
     if (this.type === 'undirected')
@@ -167,7 +167,12 @@ export default class Graph {
       throw Error(`Graph.addDirectedEdge: target node ("${target}") not found.`);
 
     // Generating an id
-    const edge = this._options.edgeKeyGenerator(source, target, attributes);
+    const edge = this._options.edgeKeyGenerator(
+      'undirected',
+      source,
+      target,
+      attributes
+    );
 
     const data = {
       type: 'directed',
