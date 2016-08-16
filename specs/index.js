@@ -6,6 +6,7 @@
  */
 import instantiation from './instantiation';
 import properties from './properties';
+import read from './read';
 import mutation from './mutation';
 import attributes from './attributes';
 
@@ -24,6 +25,7 @@ export default function specs(path) {
   return {
     Instantiation: instantiation(Graph),
     Properties: properties(Graph),
+    Read: read(Graph),
     Mutation: mutation(Graph),
     Attributes: attributes(Graph)
   };

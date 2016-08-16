@@ -42,13 +42,13 @@ export default class Graph {
 
     // Enforcing options validity
     if (typeof map !== 'boolean')
-      throw Error(`Graph.constructor: invalid 'map' option. Expecting a boolean and got "${map}".`);
+      throw Error(`Graph.constructor: invalid 'map' option. Expecting a boolean but got "${map}".`);
 
     if (typeof multi !== 'boolean')
-      throw Error(`Graph.constructor: invalid 'multi' option. Expecting a boolean and got "${multi}".`);
+      throw Error(`Graph.constructor: invalid 'multi' option. Expecting a boolean but got "${multi}".`);
 
     if (!TYPES.has(type))
-      throw Error(`Graph.constructor: invalid 'type' option. Should be one of "mixed", "directed" or "undirected" and got "${type}".`);
+      throw Error(`Graph.constructor: invalid 'type' option. Should be one of "mixed", "directed" or "undirected" but got "${type}".`);
 
     //-- Private properties
 
@@ -69,6 +69,28 @@ export default class Graph {
   }
 
   /**---------------------------------------------------------------------------
+   * Read
+   **---------------------------------------------------------------------------
+   */
+
+  /**
+   * Method returning whether the given node is found in the graph.
+   *
+   * @param  {any}     node         - The node.
+   * @return {boolean}
+   */
+  hasNode(node) {
+    let nodeInGraph = false;
+
+    if (this.map)
+      nodeInGraph = this._nodes.has(node);
+    else
+      nodeInGraph = node in this._nodes;
+
+    return nodeInGraph;
+  }
+
+  /**---------------------------------------------------------------------------
    * Mutation
    **---------------------------------------------------------------------------
    */
@@ -84,9 +106,9 @@ export default class Graph {
    */
   addNode(node, attributes = {}) {
     if (arguments.length > 1 && typeof attributes !== 'object')
-      throw Error(`Graph.addNode: invalid attributes. Expecting an object, and got "${attributes}"`);
+      throw Error(`Graph.addNode: invalid attributes. Expecting an object but got "${attributes}"`);
 
-    attributes = attributes || {};
+    attributes = attributes || {};
 
     // Adding the node to internal register
     if (this.map)
@@ -128,5 +150,35 @@ export default class Graph {
     const value = attributes[name];
 
     return value;
+  }
+
+  /**---------------------------------------------------------------------------
+   * Known methods
+   **---------------------------------------------------------------------------
+   */
+
+  /**
+   * Method used to perform string coercion and returning useful information
+   * about the Graph instance.
+   *
+   * @return {string} - String representation of the graph.
+   */
+  toString() {
+    const order = this.order,
+          size = this.size;
+
+    // TODO: check grammar
+    return `Graph<${order} node${order > 1 ? 's' : ''}, ${size} edge${size > 1 ? 's' : ''}>`;
+  }
+
+  /**
+   * Method used internally by node's console to display a custom object.
+   *
+   * @return {string} - String reprensation of the graph.
+   */
+  inspect() {
+
+    // TODO: this is temporary
+    return {nodes: this._nodes};
   }
 }

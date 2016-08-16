@@ -1,8 +1,8 @@
 /**
  * Graphology Attributes Specs
- * ===============================
+ * ============================
  *
- * Testing the attributes methods of the graph.
+ * Testing the attributes-related methods of the graph.
  */
 import assert from 'assert';
 
