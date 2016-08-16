@@ -5,5 +5,6 @@
  * Running the unit tests for the reference implementation.
  */
 import specs from './specs';
+import path from 'path';
 
-export default specs();
+module.exports = specs(path.join(__dirname, 'src'));
