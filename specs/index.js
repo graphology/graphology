@@ -6,6 +6,8 @@
  */
 import instantiation from './instantiation';
 import properties from './properties';
+import mutation from './mutation';
+import attributes from './attributes';
 
 /**
  * Returning the unit tests to run.
@@ -20,7 +22,9 @@ export default function specs(path) {
         Graph = implementation.default;
 
   return {
-    Instantiation: instantiation(Graph, implementation),
-    Properties: properties(Graph, implementation)
+    Instantiation: instantiation(Graph),
+    Properties: properties(Graph),
+    Mutation: mutation(Graph),
+    Attributes: attributes(Graph)
   };
 }

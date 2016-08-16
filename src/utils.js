@@ -12,10 +12,11 @@
  * @param {object}   target - Target object.
  * @param {string}   name   - Member name.
  */
-export function privateProperty(target, name, value = null) {
+export function privateProperty(target, name, value) {
   Object.defineProperty(target, name, {
     enumerable: false,
     configurable: false,
+    writable: true,
     value
   });
 }

@@ -15,7 +15,7 @@ const PROPERTIES = [
   // 'selfLoops'
 ];
 
-export default function properties(Graph, implementation) {
+export default function properties(Graph) {
 
   return {
 
@@ -52,6 +52,13 @@ export default function properties(Graph, implementation) {
       'it should be 0 if the graph is empty.': function() {
         const graph = new Graph();
         assert.strictEqual(graph.order, 0);
+      },
+
+      'it should increase when one adds nodes.': function() {
+        const graph = new Graph();
+        graph.addNode('John');
+        graph.addNode('Jack');
+        assert.strictEqual(graph.order, 2);
       }
     },
 

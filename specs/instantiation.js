@@ -6,7 +6,7 @@
  */
 import assert from 'assert';
 
-export default function instantiation(Graph, implementation) {
+export default function instantiation(Graph) {
   return {
     'Options': {
 

@@ -11,6 +11,7 @@ Issues can be found [here](https://github.com/medialab/graphlib/issues).
 | [?] | [link](#neighbors) | Decide of a method to assert whether two nodes are neighbors. |
 | [X] | [link](#attributes) | Decide whether to add batch methods for attributes. |
 | [?] | [link](#transactions) | Transaction methods. |
+| [?] | [link](#node) | Already existing node. |
 
 <h2 id="curry">Currying on attribute-releated method</h2>
 
@@ -89,3 +90,7 @@ graph.forEachNode(node => graph.setNodeAttribute(node, 'x', 0));
 
 graph.commit();
 ```
+
+<h2 id="node">Adding an already existing node</h2>
+
+In the case we add an already existing node and if no `onDuplicateNode` was defined, should we go on or throw?
