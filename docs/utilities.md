@@ -63,7 +63,7 @@ Imports a whole serialized graph into the graph.
 
 ```js
 graph.import({
-  nodes: [['Thomas', 'Eric']],
+  nodes: [['Thomas'], ['Eric']],
   edges: [[null, 'Thomas', 'Eric']]
 });
 
