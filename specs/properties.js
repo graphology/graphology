@@ -10,12 +10,12 @@ const PROPERTIES = [
   'order',
   'size',
   'type',
-  'multi',
+  // 'multi',
   'map',
-  'selfLoops'
+  // 'selfLoops'
 ];
 
-export default function(Graph, implementation) {
+export default function properties(Graph, implementation) {
 
   return {
 
@@ -25,11 +25,22 @@ export default function(Graph, implementation) {
     'misc': {
 
       'all expected properties should be set.': function() {
+        const graph = new Graph();
 
+        PROPERTIES.forEach(property => {
+          assert(property in graph, property);
+        });
       },
 
       'properties should be read-only.': function() {
+        const graph = new Graph();
 
+        // Attempting to mutate the properties
+        PROPERTIES.forEach(property => {
+          assert.throws(function() {
+            graph[property] = 'test';
+          }, TypeError);
+        });
       }
     },
 
@@ -40,9 +51,51 @@ export default function(Graph, implementation) {
 
       'it should be 0 if the graph is empty.': function() {
         const graph = new Graph();
-
-        assert(typeof graph.order === 'number');
         assert.strictEqual(graph.order, 0);
+      }
+    },
+
+    /**
+     * Size.
+     */
+    '#.size': {
+
+      'it should be 0 if the graph is empty.': function() {
+        const graph = new Graph();
+        assert.strictEqual(graph.size, 0);
+      }
+    },
+
+    /**
+     * Map.
+     */
+    '#.map': {
+
+      'it should be false by default.': function() {
+        const graph = new Graph();
+        assert.strictEqual(graph.map, false);
+      }
+    },
+
+    /**
+     * Multi.
+     */
+    '#.multi': {
+
+      'it should be false by default.': function() {
+        const graph = new Graph();
+        assert.strictEqual(graph.multi, false);
+      }
+    },
+
+    /**
+     * Type.
+     */
+    '#.type': {
+
+      'it should be "mixed" by default.': function() {
+        const graph = new Graph();
+        assert.strictEqual(graph.type, 'mixed');
       }
     }
   };

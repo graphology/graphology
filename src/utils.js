@@ -30,6 +30,7 @@ export function privateProperty(target, name, value = null) {
  */
 export function readOnlyProperty(target, name, getter) {
   Object.defineProperty(target, name, {
+    enumerable: true,
     configurable: false,
     get: getter
   });

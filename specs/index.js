@@ -4,6 +4,7 @@
  *
  * Unit tests factory taking the Graph object implementation.
  */
+import instantiation from './instantiation';
 import properties from './properties';
 
 /**
@@ -19,6 +20,7 @@ export default function specs(path) {
         Graph = implementation.default;
 
   return {
-    Properties: properties(Graph)
+    Instantiation: instantiation(Graph, implementation),
+    Properties: properties(Graph, implementation)
   };
 }
