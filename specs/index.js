@@ -4,7 +4,6 @@
  *
  * Unit tests factory taking the Graph object implementation.
  */
-import assert from 'assert';
 import properties from './properties';
 
 /**
@@ -20,6 +19,6 @@ export default function specs(path) {
         Graph = implementation.default;
 
   return {
-    'Properties': properties(Graph)
+    Properties: properties(Graph)
   };
 }

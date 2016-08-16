@@ -9,6 +9,7 @@
     "docs:prepare": "gitbook install",
     "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'Updating docs' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'Updating docs' && git push git@github.com:medialab/graphlib gh-pages --force",
     "docs:serve": "npm run docs:prepare && gitbook serve",
+    "lint": "eslint specs src test.js",
     "test": "mocha -u exports --compilers js:babel-core/register ./test.js"
   },
   "repository": {
@@ -40,5 +41,11 @@
   },
   "babel": {
     "presets": ["es2015"]
+  },
+  "eslintConfig": {
+    "extends": ["@yomguithereal/eslint-config/es6"],
+    "rules": {
+      "object-shorthand": 0
+    }
   }
 }
