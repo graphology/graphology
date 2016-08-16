@@ -232,7 +232,7 @@ export default class Graph {
    */
   toString() {
     const pluralOrder = this.order > 1 || this.order === 0,
-          pluralSize = this.size > 1 || this.size === 0;
+          pluralSize = this.size > 1 || this.size === 0;
 
     return `Graph<${this.order} node${pluralOrder ? 's' : ''}, ${this.size} edge${pluralSize ? 's' : ''}>`;
   }
@@ -242,14 +242,32 @@ export default class Graph {
    *
    * @return {string} - String reprensation of the graph.
    */
-  inspect() {
 
-    // TODO: finish this up
-    const data = {
+  // TODO: finish this when possible
+  inspect() {
+    let nodes;
+
+    if (this.map) {
+      nodes = new Map();
+      this._nodes.forEach(function(value, key) {
+        nodes.set(key, value.attributes);
+      });
+    }
+    else {
+      nodes = {};
+
+      for (const k in this._nodes)
+        nodes[k] = this._nodes[k].attributes;
+    }
+
+    const dummy = {
       order: this.order,
-      size: this.size
+      size: this.size,
+      nodes
     };
 
-    return 'Graph ' + JSON.stringify(data, null, 2);
+    privateProperty(dummy, 'constructor', this.constructor);
+
+    return dummy;
   }
 }
