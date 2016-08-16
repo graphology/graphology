@@ -4,7 +4,7 @@
  *
  * Reference implementation of the graphology specs.
  */
-import {readOnly} from './utils';
+import {privateProperty, readOnlyProperty} from './utils';
 
 /**
  * Graph class
@@ -17,5 +17,9 @@ export default function Graph() {
   const order = 0;
 
   // Properties readers
-  readOnly(this, 'order', () => order);
+  readOnlyProperty(this, 'order', () => order);
+
+  // Private properties
+  privateProperty(this, '_nodes', {});
+  privateProperty(this, '_edges', {});
 }
