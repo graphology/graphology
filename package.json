@@ -8,23 +8,37 @@
     "docs:clean": "rimraf _book",
     "docs:prepare": "gitbook install",
     "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'Updating docs' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'Updating docs' && git push git@github.com:medialab/graphlib gh-pages --force",
-    "docs:serve": "npm run docs:prepare && gitbook serve"
+    "docs:serve": "npm run docs:prepare && gitbook serve",
+    "test": "mocha -u exports --compilers js:babel-core/register ./test.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/medialab/graphlib.git"
   },
-  "author": "yomguithereal <kropotkinepiotr@gmail.com>",
+  "contributors": [
+    {
+      "name": "Guillaume Plique",
+      "url": "http://github.com/Yomguithereal"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/medialab/graphlib/issues"
   },
   "homepage": "https://github.com/medialab/graphlib#readme",
   "devDependencies": {
+    "@yomguithereal/eslint-config": "^3.0.0",
+    "babel-core": "^6.13.2",
+    "babel-preset-es2015": "^6.13.2",
+    "eslint": "^3.3.1",
     "gitbook-cli": "^2.3.0",
     "gitbook-plugin-addcssjs": "^1.0.2",
     "gitbook-plugin-github": "^2.0.0",
     "gitbook-plugin-prism": "^1.0.0",
+    "mocha": "^3.0.2",
     "rimraf": "^2.5.4"
+  },
+  "babel": {
+    "presets": ["es2015"]
   }
 }
