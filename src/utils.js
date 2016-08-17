@@ -55,27 +55,36 @@ export class BasicSet {
 /**
  * Checks whether the given value is a potential bunch.
  *
- * @param  {mixed}  value - Target value.
+ * @param  {mixed}   value - Target value.
  * @return {boolean}
  */
 export function isBunch(value) {
   return (
-    value &&
+    !!value &&
     typeof value === 'object' &&
-    !(value instanceof Date) &&
-    !(value instanceof RegExp)
+    (
+      (
+        Array.isArray(value) ||
+        (typeof Map === 'function' && value instanceof Map) ||
+        (typeof Set === 'function' && value instanceof Set)
+      ) ||
+      (
+        !(value instanceof Date) &&
+        !(value instanceof RegExp)
+      )
+    )
   );
 }
 
 /**
  * Checks whether the given value is a plain object.
  *
- * @param  {mixed}  value - Target value.
+ * @param  {mixed}   value - Target value.
  * @return {boolean}
  */
 export function isPlainObject(value) {
   return (
-    value &&
+    !!value &&
     typeof value === 'object' &&
     !Array.isArray(value) &&
     !(value instanceof Date) &&
@@ -83,6 +92,41 @@ export function isPlainObject(value) {
     !(typeof Map === 'function' && value instanceof Map) &&
     !(typeof Set === 'function' && value instanceof Set)
   );
+}
+
+/**
+ * Iterates over the provided bunch.
+ *
+ * @param {object}   bunch    - Target bunch.
+ * @param {function} callback - Function to call.
+ */
+
+// TODO: error management
+// TODO: support ES6 Maps as attributes
+export function overBunch(bunch, callback) {
+
+  // Array
+  if (Array.isArray(bunch)) {
+    for (let i = 0, l = bunch.length; i < l; i++)
+      callback(null, bunch[i], {});
+  }
+
+  else if (typeof bunch.forEach === 'function') {
+    bunch.forEach(function(v, k) {
+      if (v === k)
+        callback(null, v, {});
+      else
+        callback(null, k, v);
+    });
+  }
+
+  // Plain object
+  else {
+    for (const key in bunch) {
+      const attributes = bunch[key];
+      callback(null, key, attributes);
+    }
+  }
 }
 
 /**
@@ -107,7 +151,6 @@ export function prettyPrint(integer) {
 
   return prettyString;
 }
-
 
 /**
  * Creates a "private" property for the given member name by concealing it

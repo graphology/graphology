@@ -11,7 +11,9 @@ import {EventEmitter} from 'events';
 import {
   assign,
   BasicSet,
+  isBunch,
   isPlainObject,
+  overBunch,
   prettyPrint,
   privateProperty,
   readOnlyProperty,
@@ -23,6 +25,8 @@ import {
 // TODO: adjust degree docs
 // TODO: adjust index docs
 // TODO: add method to check if edge is self loop?
+// TODO: mixed graph edge duplicate discussion?
+// TODO: remettre le directed default en discussion
 
 /**
  * Enums.
@@ -528,6 +532,25 @@ export default class Graph extends EventEmitter {
     this._order++;
 
     return node;
+  }
+
+  /**
+   * Method used to add a nodes from a bunch.
+   *
+   * @param  {bunch}  bunch - The node.
+   * @return {Graph}        - Returns itself for chaining.
+   *
+   * @throws {Error} - Will throw if the given bunch is not valid.
+   */
+  addNodesFrom(bunch) {
+    if (!isBunch(bunch))
+      throw Error(`Graph.addNodesFrom: invalid bunch provided ("${bunch}").`);
+
+    overBunch(bunch, (error, node, attributes) => {
+      this.addNode(node, attributes);
+    });
+
+    return this;
   }
 
   /**

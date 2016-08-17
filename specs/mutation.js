@@ -6,6 +6,20 @@
  */
 import assert from 'assert';
 
+const BUNCHES = [
+  [],
+  new Set(),
+  {},
+  new Map()
+];
+
+const NON_BUNCHES = [
+  null,
+  false,
+  'test',
+  14
+];
+
 export default function mutation(Graph) {
   return {
     '#.addNode': {
@@ -31,6 +45,61 @@ export default function mutation(Graph) {
         const graph = new Graph();
 
         assert.strictEqual(graph.addNode('John'), 'John');
+      }
+    },
+
+    '#.addNodesFrom': {
+
+      'it should throw if the given bunch is not valid.': function() {
+        const graph = new Graph();
+
+        BUNCHES.forEach(bunch => {
+          assert.doesNotThrow(() => graph.addNodesFrom(bunch));
+        });
+
+        NON_BUNCHES.forEach(bunch => {
+          assert.throws(() => graph.addNodesFrom(bunch), /invalid/);
+        });
+      },
+
+      'it should be possible to add nodes from an array.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['Eliot', 'Jasmin']);
+
+        assert(graph.order, 2);
+        assert(graph.hasNode('Eliot'));
+        assert(graph.hasNode('Jasmin'));
+      },
+
+      'it should be possible to add nodes from a set.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(new Set(['Eliot', 'Jasmin']));
+
+        assert(graph.order, 2);
+        assert(graph.hasNode('Eliot'));
+        assert(graph.hasNode('Jasmin'));
+      },
+
+      'it should be possible to add nodes from an object.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom({Eliot: {age: 34}, Jasmin: {age: 25}});
+
+        assert(graph.order, 2);
+        assert(graph.hasNode('Eliot'));
+        assert(graph.hasNode('Jasmin'));
+        assert.strictEqual(graph.getNodeAttribute('Eliot', 'age'), 34);
+        assert.strictEqual(graph.getNodeAttribute('Jasmin', 'age'), 25);
+      },
+
+      'it should be possible to add nodes from a map.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(new Map([['Eliot', {age: 34}], ['Jasmin', {age: 25}]]));
+
+        assert(graph.order, 2);
+        assert(graph.hasNode('Eliot'));
+        assert(graph.hasNode('Jasmin'));
+        assert.strictEqual(graph.getNodeAttribute('Eliot', 'age'), 34);
+        assert.strictEqual(graph.getNodeAttribute('Jasmin', 'age'), 25);
       }
     },
 
