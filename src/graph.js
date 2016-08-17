@@ -27,21 +27,60 @@ import {
 // TODO: add method to check if edge is self loop?
 // TODO: mixed graph edge duplicate discussion?
 // TODO: remettre le directed default en discussion
+// TODO: reinstate that keys have the same problem that JS objects
+// TODO: indicate that iterator will only work on recent engines
 
 /**
  * Enums.
  */
 const TYPES = new BasicSet(['directed', 'undirected', 'mixed']),
-      INDEXES = new BasicSet(['relations']);
+      INDEXES = new BasicSet(['relations']),
+      EMITTER_PROPS = new BasicSet(['domain', '_events', '_eventsCount', '_maxListeners']);
+
+const identity = x => x,
+      createArray = () => ([]),
+      reducerName = name => element => name + element;
 
 const REDUCERS = [
-  {name: 'forEach', plural: false},
-  {name: 'map', plural: true},
-  {name: 'filter', plural: true},
-  {name: 'reduce', plural: true},
-  {name: 'find', plural: false},
-  {name: element => `find${element}Index`, plural: false},
-  {name: 'every', plural: false}
+  {
+    name: reducerName('forEach'),
+    plural: false,
+    value: identity,
+    reducer(callback, current, element, index, graph) {
+      callback(element, index, graph);
+      return current;
+    }
+  },
+  {
+    name: reducerName('map'),
+    plural: true,
+    value: createArray
+  },
+  {
+    name: reducerName('filter'),
+    plural: true,
+    value: createArray
+  },
+  {
+    name: reducerName('find'),
+    plural: false,
+    value: undefined
+  },
+  {
+    name: reducerName('some'),
+    plural: false,
+    value: false
+  },
+  {
+    name: element => `find${element}Index`,
+    plural: false,
+    value: -1
+  },
+  {
+    name: reducerName('every'),
+    plural: false,
+    value: true
+  }
 ];
 
 /**
@@ -812,7 +851,62 @@ export default class Graph extends EventEmitter {
   }
 
   /**---------------------------------------------------------------------------
-   * Indexes-related methods.
+   * Iteration-related methods
+   **---------------------------------------------------------------------------
+   */
+
+  /**
+   * Method returning the list of the graph's nodes.
+   *
+   * @return {Array} - The nodes.
+   */
+  nodes() {
+
+    if (this.map)
+      return [...this._nodes.keys()];
+
+    return Object.keys(this._nodes);
+  }
+
+  /**
+   * Node reduce iterator.
+   *
+   * @param  {function} callback       - The reducing function.
+   * @param  {mixed}    [initialValue] - Optional initial value.
+   * @return {mixed}
+   *
+   * @throws {Error} - Will throw if the given callback is not a function.
+   */
+  reduceNodes(callback, initialValue) {
+    if (typeof callback !== 'function')
+      throw Error('Graph.reduceNodes: the provided callback is not a function.');
+
+    const initialValueProvided = arguments.length > 1;
+
+    let current = initialValue,
+        i = 0;
+
+    if (this.map) {
+
+    }
+    else {
+      for (const k in this._nodes) {
+        if (!i && !initialValueProvided) {
+          current = k;
+        }
+        else {
+          current = callback(current, k, i, this);
+        }
+
+        i++;
+      }
+    }
+
+    return current;
+  }
+
+  /**---------------------------------------------------------------------------
+   * Indexes-related methods
    **---------------------------------------------------------------------------
    */
 
@@ -838,7 +932,7 @@ export default class Graph extends EventEmitter {
       index.computed = true;
 
       if (this.map) {
-        this._edges.keys().forEach(edge => this.updateIndex(name, edge));
+        this._edges.forEach((_, edge) => this.updateIndex(name, edge));
       }
       else {
         for (const edge in this._edges)
@@ -1000,17 +1094,24 @@ export default class Graph extends EventEmitter {
         nodes[k] = this._nodes[k].attributes;
     }
 
-    const dummy = {
-      order: this.order,
-      size: this.size,
-      nodes
-    };
+    const dummy = {};
+
+    for (const k in this) {
+      if (this.hasOwnProperty(k) && !EMITTER_PROPS.has(k))
+        dummy[k] = this[k];
+    }
+
+    dummy.nodes = nodes;
 
     privateProperty(dummy, 'constructor', this.constructor);
 
     return dummy;
   }
 }
+
+/**
+ * Attaching reducers to the prototype.
+ */
 
 /**
  * Alternative constructors.
