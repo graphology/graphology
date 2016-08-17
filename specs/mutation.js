@@ -91,6 +91,10 @@ export default function mutation(Graph) {
           graph.addDirectedEdgeWithKey('T->M', 'Thomas', 'Martha');
         }, /exist/);
       }
+    },
+
+    '#.addUndirectedEdgeWithKey': {
+
     }
   };
 }

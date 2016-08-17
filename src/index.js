@@ -274,6 +274,40 @@ export default class Graph extends EventEmitter {
     return [this.source(edge), this.target(edge)];
   }
 
+  /**
+   * Method returning whether the given edge is undirected.
+   *
+   * @param  {any}     edge - The edge's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the edge isn't in the graph.
+   */
+  undirected(edge) {
+    if (!this.hasEdge(edge))
+      throw Error(`Graph.undirected: could not find the "${edge}" edge in the graph.`);
+
+    const undirected = this.map ?
+      this._edges.get(edge).undirected :
+      this._edges[edge].undirected;
+
+    return undirected;
+  }
+
+  /**
+   * Method returning whether the given edge is directed.
+   *
+   * @param  {any}     edge - The edge's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the edge isn't in the graph.
+   */
+  directed(edge) {
+    if (!this.hasEdge(edge))
+      throw Error(`Graph.directed: could not find the "${edge}" edge in the graph.`);
+
+    return !this.undirected(edge);
+  }
+
   /**---------------------------------------------------------------------------
    * Mutation
    **---------------------------------------------------------------------------
@@ -334,8 +368,11 @@ export default class Graph extends EventEmitter {
   _addEdge(name, undirected, edge, source, target, attributes) {
     attributes = attributes || {};
 
-    if (this.type === 'undirected')
+    if (!undirected && this.type === 'undirected')
       throw Error(`Graph.${name}: you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.`);
+
+    if (undirected && this.type === 'directed')
+      throw Error(`Graph.${name}: you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.`);
 
     if (arguments.length > 3 && !isPlainObject(attributes))
       throw Error(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
@@ -389,6 +426,26 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method used to add an undirected edge to the graph using the given key.
+   *
+   * @param  {any}    edge         - The edge's key.
+   * @param  {any}    source       - The source node.
+   * @param  {any}    target       - The target node.
+   * @param  {object} [attributes] - Optional attributes.
+   * @return {any}                 - The edge.
+   */
+  addUndirectedEdgeWithKey(edge, source, target, attributes) {
+    return this._addEdge(
+      'addUndirectedEdgeWithKey',
+      true,
+      edge,
+      source,
+      target,
+      attributes
+    );
+  }
+
+  /**
    * Method used to add a directed edge to the graph.
    *
    * @param  {any}    source       - The source node.
@@ -409,6 +466,34 @@ export default class Graph extends EventEmitter {
     return this._addEdge(
       'addDirectedEdge',
       false,
+      edge,
+      source,
+      target,
+      attributes
+    );
+  }
+
+  /**
+   * Method used to add an undirected edge to the graph.
+   *
+   * @param  {any}    source       - The source node.
+   * @param  {any}    target       - The target node.
+   * @param  {object} [attributes] - Optional attributes.
+   * @return {any}                 - The edge.
+   */
+  addUndirectedEdge(source, target, attributes) {
+
+    // Generating an id
+    const edge = this._options.edgeKeyGenerator(
+      false,
+      source,
+      target,
+      attributes
+    );
+
+    return this._addEdge(
+      'addUndirectedEdge',
+      true,
       edge,
       source,
       target,
