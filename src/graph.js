@@ -831,7 +831,7 @@ export default class Graph extends EventEmitter {
    *
    * @throws {Error} - Will throw if the given callback is not a function.
    */
-  reduceNodes(callback, initialValue) {
+  reduceNodes(callback, initialValue) {
     if (typeof callback !== 'function')
       throw Error('Graph.reduceNodes: the provided callback is not a function.');
 
@@ -1079,9 +1079,23 @@ export default class Graph extends EventEmitter {
  * to the Graph class prototype rather than writing a lot of custom methods
  * one by one.
  */
-function createNodeDerivedReducer(Class, description) {
+
+/**
+ * Attach a single derived reducer (map, filter etc.) for nodes to the target
+ * class' prototype.
+ *
+ * @param {function} Class       - Target class.
+ * @param {object}   description - Reducer's description.
+ */
+function attachNodeDerivedReducer(Class, description) {
   const name = description.name('Node');
 
+  /**
+   * Node derived reducer.
+   *
+   * @param  {function} callback - Iteration callback.
+   * @return {mixed}
+   */
   Class.prototype[name] = function(callback) {
     if (typeof callback !== 'function')
       throw Error(`Graph.${name}: the provided callback is not a function.`);
@@ -1093,16 +1107,28 @@ function createNodeDerivedReducer(Class, description) {
   };
 }
 
-REDUCERS.forEach(description => createNodeDerivedReducer(Graph, description));
+/**
+ * Attaching the nodes derived reducers.
+ */
+REDUCERS.forEach(description => attachNodeDerivedReducer(Graph, description));
 
-function nodeFinder(graph, name, callback, reverse = false) {
+/**
+ * Finder (breakable reducer) for nodes.
+ *
+ * @param  {Graph}    graph     - Graph instance.
+ * @param  {string}   name      - Name of the method.
+ * @param  {function} predicate - Predicate.
+ * @param  {boolean}  reversed  - Should we reverse the predicate?
+ * @return {mixed}
+ */
+function nodeFinder(graph, name, predicate, reversed = false) {
   let i = 0;
 
   if (graph.map) {
     for (const node of graph._nodes.keys()) {
-      let found = callback(node, i++, graph);
+      let found = predicate(node, i++, graph);
 
-      if (reverse)
+      if (reversed)
         found = !found;
 
       if (found)
@@ -1111,9 +1137,9 @@ function nodeFinder(graph, name, callback, reverse = false) {
   }
   else {
     for (const node in graph._nodes) {
-      let found = callback(node, i++, graph);
+      let found = predicate(node, i++, graph);
 
-      if (reverse)
+      if (reversed)
         found = !found;
 
       if (found)
@@ -1124,17 +1150,30 @@ function nodeFinder(graph, name, callback, reverse = false) {
   return [undefined, -1];
 }
 
-function createDerivedNodeFinder(Class, description) {
+/**
+ * Attach a single derived reducer (find, some etc.) for nodes to the target
+ * class' prototype.
+ *
+ * @param {function} Class       - Target class.
+ * @param {object}   description - Reducer's description.
+ */
+function attachNodeDerivedFinder(Class, description) {
   const name = description.name('Node');
 
-  Class.prototype[name] = function(callback) {
-    if (typeof callback !== 'function')
+  /**
+   * Node derived finder.
+   *
+   * @param  {function} predicate - Predicate.
+   * @return {mixed}
+   */
+  Class.prototype[name] = function(predicate) {
+    if (typeof predicate !== 'function')
       throw Error(`Graph.${name}: the provided predicate is not a function.`);
 
     const result = nodeFinder(
       this,
       name,
-      callback,
+      predicate,
       !!description.reversed
     );
 
@@ -1142,4 +1181,7 @@ function createDerivedNodeFinder(Class, description) {
   };
 }
 
-FINDERS.forEach(description => createDerivedNodeFinder(Graph, description));
+/**
+ * Attaching the nodes derived finders.
+ */
+FINDERS.forEach(description => attachNodeDerivedFinder(Graph, description));

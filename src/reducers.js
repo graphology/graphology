@@ -10,7 +10,7 @@
  */
 const identity = x => x,
       array = () => ([]),
-      name = (name, plural) => element => name + element + (plural ? 's' : '');
+      name = (method, plural) => element => method + element + (plural ? 's' : '');
 
 /**
  * Standard reducers.
@@ -53,11 +53,11 @@ export const FINDERS = [
   },
   {
     name: name('some', false),
-    value: ([_, index]) => index !== -1
+    value: ([, index]) => index !== -1
   },
   {
     name: name('every', false),
-    value: ([_, index]) => index === -1,
+    value: ([, index]) => index === -1,
     reversed: true
   }
 ];
