@@ -10,7 +10,7 @@ const PROPERTIES = [
   'order',
   'size',
   'type',
-  // 'multi',
+  'multi',
   'map',
   // 'selfLoops'
 ];

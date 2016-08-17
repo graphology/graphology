@@ -38,6 +38,7 @@ export default function read(Graph) {
         graph.addDirectedEdgeWithKey('M->C', 'Martha', 'Catherine');
         graph.addUndirectedEdge('Catherine', 'John');
 
+        graph.getDirectedEdge('Martha', 'Catherine');
         assert.strictEqual(graph.getDirectedEdge('Martha', 'Catherine'), 'M->C');
         assert.strictEqual(graph.getDirectedEdge('Catherine', 'John'), undefined);
       }

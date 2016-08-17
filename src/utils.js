@@ -1,3 +1,4 @@
+/* eslint no-nested-ternary: 0 */
 /**
  * Graphology Utilities
  * =====================
@@ -30,18 +31,24 @@ export function assign(...objects) {
  */
 export class BasicSet {
   constructor(values) {
-    this.store = {};
+    this.entries = {};
 
-    for (let i = 0, l = values.length; i < l; i++)
-      this.store[values[i]] = true;
+    if (values) {
+      for (let i = 0, l = values.length; i < l; i++)
+        this.entries[values[i]] = true;
+    }
   }
 
   add(value) {
-    this.store[value] = true;
+    this.entries[value] = true;
   }
 
   has(value) {
-    return value in this.store;
+    return value in this.entries;
+  }
+
+  values() {
+    return Object.keys(this.entries);
   }
 }
 
@@ -77,8 +84,6 @@ export function isPlainObject(value) {
     !(typeof Set === 'function' && value instanceof Set)
   );
 }
-
-;
 
 /**
  * Pretty prints the given integer.
@@ -142,18 +147,18 @@ export function readOnlyProperty(target, name, getter) {
  * @return {string} - The uuid.
  */
 export function uuid() {
-  let uuid = '',
+  let id = '',
       random,
       i;
 
   for (i = 0; i < 32; i++) {
     random = Math.random() * 16 | 0;
 
-    if (i === 8 || i === 12 || i === 16 || i === 20) {
-      uuid += '-';
+    if (i === 8 || i === 12 || i === 16 || i === 20) {
+      id += '-';
     }
-    uuid += (i === 12 ? 4 : (i === 16 ? (random & 3 | 8): random)).toString(16);
+    id += (i === 12 ? 4 : (i === 16 ? (random & 3 | 8) : random)).toString(16);
   }
 
-  return uuid;
+  return id;
 }

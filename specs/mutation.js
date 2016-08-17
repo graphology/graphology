@@ -72,7 +72,7 @@ export default function mutation(Graph) {
 
         const edge = graph.addDirectedEdge('Thomas', 'Martha');
 
-        assert(typeof edge === 'string' || typeof edge === 'number');
+        assert(typeof edge === 'string' || typeof edge === 'number');
         assert(!(edge instanceof Graph));
       }
     },

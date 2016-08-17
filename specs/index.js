@@ -26,8 +26,8 @@ export default function specs(path) {
   return {
     'Instantiation': instantiation(Graph, implementation),
     'Properties': properties(Graph),
-    'Read': read(Graph),
     'Mutation': mutation(Graph),
+    'Read': read(Graph),
     'Attributes': attributes(Graph),
     'Known Methods': knownMethods(Graph)
   };

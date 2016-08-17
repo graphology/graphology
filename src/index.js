@@ -25,18 +25,30 @@ import {
 // TODO: store better indexes for multi graph in order to avoid
 // O(n) queries in worst cases
 
+// TODO: need to clean up index naming
+
+// TODO: build partial index on get/has methods
+
 /**
  * Function creating the minimal entry for the related edges index.
  *
- * @param  {string} type - Type of the graph.
- * @return {object}      - The entry.
+ * @param  {string}  type - Type of the graph.
+ * @param  {boolean} map  - Whether the graph accepts references as keys.
+ * @return {object}       - The entry.
  */
-function createRelatedEdgesEntry(type) {
-  if (type === 'mixed')
-    return {in: [], out: [], undirected: []};
-  else if (type === 'directed')
-    return {in: [], out: []};
-  return {undirected: []};
+function createRelatedEdgesEntry(type, map) {
+  const entry = {};
+
+  if (type === 'mixed' || type === 'directed') {
+    entry.in = map ? new Map() : {};
+    entry.out = map ? new Map() : {};
+  }
+
+  if (type === 'mixed' || type === 'undirected') {
+    entry.undirected = map ? new Map() : {};
+  }
+
+  return entry;
 }
 
 /**
@@ -177,18 +189,11 @@ export default class Graph extends EventEmitter {
     if (this.map ? !index.has(source) : !(source in index))
       return;
 
-    const relevantEdges = this.map ? index.get(source).out : index[source].out;
+    // Is there a directed edge pointing towards target?
+    const out = this.map ? index.get(source).out : index[source].out,
+          edges = (this.map ? out.get(target) : out[target]) || [];
 
-    // Trying directed edges
-    for (let i = 0, l = relevantEdges.length; i < l; i++) {
-      const edge = relevantEdges[i],
-            edgeTarget = this.target(edge);
-
-      if (edgeTarget === target)
-        return edge;
-    }
-
-    return;
+    return edges[0];
   }
 
   /**
@@ -210,20 +215,11 @@ export default class Graph extends EventEmitter {
     if (this.map ? !index.has(source) : !(source in index))
       return;
 
-    const relevantEdges = this.map ?
-      index.get(source).undirected :
-      index[source].undirected;
+    // Is there an undirected edge pointing towards target?
+    const undirected = this.map ? index.get(source).undirected : index[source].undirected,
+          edges = (this.map ? undirected.get(target) : undirected[target]) || [];
 
-    // Trying undirected edges
-    for (let i = 0, l = relevantEdges.length; i < l; i++) {
-      const edge = relevantEdges[i],
-            [node1, node2] = this.extremities(edge);
-
-      if (node1 === target || node2 === target)
-        return edge;
-    }
-
-    return;
+    return edges[0];
   }
 
   /**
@@ -284,18 +280,11 @@ export default class Graph extends EventEmitter {
       if (this.map ? !index.has(source) : !(source in index))
         return false;
 
-      const relevantEdges = this.map ? index.get(source).out : index[source].out;
+      // Is there a directed edge pointing towards target?
+      const out = this.map ? index.get(source).out : index[source].out,
+            edges = (this.map ? out.get(target) : out[target]) || [];
 
-      // Trying directed edges
-      for (let i = 0, l = relevantEdges.length; i < l; i++) {
-        const edge = relevantEdges[i],
-              edgeTarget = this.target(edge);
-
-        if (edgeTarget === target)
-          return true;
-      }
-
-      return false;
+      return !!edges.length;
     }
 
     throw Error(`Graph.hasDirectedEdge: invalid arity (${arguments.length}, instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.`);
@@ -335,20 +324,11 @@ export default class Graph extends EventEmitter {
       if (this.map ? !index.has(source) : !(source in index))
         return false;
 
-      const relevantEdges = this.map ?
-        index.get(source).undirected :
-        index[source].undirected;
+      // Is there an undirected edge pointing towards target?
+      const undirected = this.map ? index.get(source).undirected : index[source].undirected,
+            edges = (this.map ? undirected.get(target) : undirected[target]) || [];
 
-      // Trying undirected edges
-      for (let i = 0, l = relevantEdges.length; i < l; i++) {
-        const edge = relevantEdges[i],
-              [node1, node2] = this.extremities(edge);
-
-        if (node1 === target || node2 === target)
-          return true;
-      }
-
-      return false;
+      return !!edges.length;
     }
 
     throw Error(`Graph.hasDirectedEdge: invalid arity (${arguments.length}, instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.`);
@@ -530,7 +510,7 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the edge already exist.
    */
   _addEdge(name, undirected, edge, source, target, attributes) {
-    attributes = attributes || {};
+    attributes = attributes || {};
 
     if (!undirected && this.type === 'undirected')
       throw Error(`Graph.${name}: you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.`);
@@ -720,30 +700,39 @@ export default class Graph extends EventEmitter {
         return this;
 
       if (this.map) {
-        this._edges.forEach(function(value, edge) {
+
+        this._edges.forEach((value, edge) => {
           const {
             undirected,
             source,
             target
           } = value;
 
-          // Initializing
           if (!index.data.has(source))
-            index.data.set(source, createRelatedEdgesEntry(this.type));
+            index.data.set(source, createRelatedEdgesEntry(this.type, this.map));
           if (!index.data.has(target))
-            index.data.set(target, createRelatedEdgesEntry(this.type));
+            index.data.set(target, createRelatedEdgesEntry(this.type, this.map));
 
-          const sourceEdges = index.data.get(source),
-                targetEdges = index.data.get(target);
+          const sourceData = index.data.get(source),
+                targetData = index.data.get(target);
 
-          if (undirected) {
-            sourceEdges.undirected.push(edge);
-            targetEdges.undirected.push(edge);
-          }
-          else {
-            sourceEdges.out.push(edge);
-            targetEdges.in.push(edge);
-          }
+          // Building indexes for source
+          const sourceRegister = undirected ?
+            sourceData.undirected :
+            sourceData.out;
+
+          if (!sourceRegister.has(target))
+            sourceRegister.set(target, []);
+          sourceRegister.get(target).push(edge);
+
+          // Building indexes for target
+          const targetRegister = undirected ?
+            targetData.undirected :
+            targetData.in;
+
+          if (!targetRegister.has(source))
+            targetRegister.set(source, []);
+          targetRegister.get(source).push(edge);
         });
       }
       else {
@@ -755,21 +744,30 @@ export default class Graph extends EventEmitter {
           } = this._edges[edge];
 
           if (!(source in index.data))
-            index.data[source] = createRelatedEdgesEntry(this.type);
+            index.data[source] = createRelatedEdgesEntry(this.type, this.map);
           if (!(target in index.data))
-            index.data[target] = createRelatedEdgesEntry(this.type);
+            index.data[target] = createRelatedEdgesEntry(this.type, this.map);
 
-          const sourceEdges = index.data[source],
-                targetEdges = index.data[target];
+          const sourceData = index.data[source],
+                targetData = index.data[target];
 
-          if (undirected) {
-            sourceEdges.undirected.push(edge);
-            targetEdges.undirected.push(edge);
-          }
-          else {
-            sourceEdges.out.push(edge);
-            targetEdges.in.push(edge);
-          }
+          // Building indexes for source
+          const sourceRegister = undirected ?
+            sourceData.undirected :
+            sourceData.out;
+
+          if (!(target in sourceRegister))
+            sourceRegister[target] = [];
+          sourceRegister[target].push(edge);
+
+          // Building indexes for target
+          const targetRegister = undirected ?
+            targetData.undirected :
+            targetData.in;
+
+          if (!(source in targetRegister))
+            targetRegister[source] = [];
+          targetRegister[source].push(edge);
         }
       }
 
@@ -788,7 +786,7 @@ export default class Graph extends EventEmitter {
    *
    * @throw  {Error} - Will throw if the index doesn't exist.
    */
-  updateIndex(name) {
+  updateIndex(name) {
     if (!INDEXES.has(name))
       throw Error(`Graph.computeIndex: unknown "${name}" index.`);
   }
