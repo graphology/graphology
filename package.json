@@ -40,19 +40,6 @@
     "mocha": "^3.0.2",
     "rimraf": "^2.5.4"
   },
-  "babel": {
-    "presets": [
-      "es2015"
-    ],
-    "plugins": [
-      [
-        "transform-es2015-destructuring",
-        {
-          "loose": true
-        }
-      ]
-    ]
-  },
   "eslintConfig": {
     "extends": [
       "@yomguithereal/eslint-config/es6"

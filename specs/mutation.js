@@ -65,6 +65,38 @@ export default function mutation(Graph) {
         }, /target/);
       },
 
+      'it should throw if the edge is a loop and the graph does not allow it.': function() {
+        const graph = new Graph(null, {allowSelfLoops: false});
+
+        graph.addNode('Thomas');
+
+        assert.throws(function() {
+          graph.addDirectedEdge('Thomas', 'Thomas');
+        }, /allowSelfLoops/);
+      },
+
+      'it should be possible to add self loops.': function() {
+        const graph = new Graph();
+
+        graph.addNode('Thomas');
+
+        const loop = graph.addDirectedEdge('Thomas', 'Thomas');
+
+        assert.deepEqual(graph.extremities(loop), ['Thomas', 'Thomas']);
+      },
+
+      'it should throw if the graph is not multi & we try to add twice the same edge.': function() {
+        const graph = new Graph();
+        graph.addNode('Thomas');
+        graph.addNode('Martha');
+
+        graph.addDirectedEdge('Thomas', 'Martha');
+
+        assert.throws(function() {
+          graph.addDirectedEdge('Thomas', 'Martha');
+        }, /exist/);
+      },
+
       'it should return the generated edge\'s key.': function() {
         const graph = new Graph();
         graph.addNode('Thomas');

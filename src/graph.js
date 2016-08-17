@@ -18,9 +18,38 @@ import {
   uuid
 } from './utils';
 
-// TODO: need to clean up index naming
+// TODO: create template tag to properly display object references
 // TODO: build partial index on get/has methods
 // TODO: adjust degree docs
+// TODO: adjust index docs
+// TODO: add method to check if edge is self loop?
+
+/**
+ * Enums.
+ */
+const TYPES = new BasicSet(['directed', 'undirected', 'mixed']),
+      INDEXES = new BasicSet(['relations']);
+
+const REDUCERS = [
+  {name: 'forEach', plural: false},
+  {name: 'map', plural: true},
+  {name: 'filter', plural: true},
+  {name: 'reduce', plural: true},
+  {name: 'find', plural: false},
+  {name: element => `find${element}Index`, plural: false},
+  {name: 'every', plural: false}
+];
+
+/**
+ * Default options.
+ */
+const DEFAULTS = {
+  allowSelfLoops: true,
+  edgeKeyGenerator: uuid,
+  map: false,
+  multi: false,
+  type: 'mixed'
+};
 
 /**
  * Helpers.
@@ -70,33 +99,6 @@ function createRelatedEdgesEntry(type, map) {
 }
 
 /**
- * Enums.
- */
-const TYPES = new BasicSet(['directed', 'undirected', 'mixed']),
-      INDEXES = new BasicSet(['relatedEdges']);
-
-const REDUCERS = [
-  {name: 'forEach', plural: false},
-  {name: 'map', plural: true},
-  {name: 'filter', plural: true},
-  {name: 'reduce', plural: true},
-  {name: 'find', plural: false},
-  {name: element => `find${element}Index`, plural: false},
-  {name: 'every', plural: false}
-];
-
-/**
- * Default options.
- */
-const DEFAULTS = {
-  allowSelfLoops: true,
-  edgeKeyGenerator: uuid,
-  map: false,
-  multi: false,
-  type: 'mixed'
-};
-
-/**
  * Graph class
  *
  * @constructor
@@ -136,7 +138,7 @@ export default class Graph extends EventEmitter {
       throw Error(`Graph.constructor: invalid 'type' option. Should be one of "mixed", "directed" or "undirected" but got "${type}".`);
 
     if (typeof selfLoops !== 'boolean')
-      throw Error(`Graph.constructor: invalid 'allowSelfLoops' option. Expecting a boolean but got "${selfLoops}".`)
+      throw Error(`Graph.constructor: invalid 'allowSelfLoops' option. Expecting a boolean but got "${selfLoops}".`);
 
     //-- Private properties
 
@@ -148,7 +150,7 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_nodes', map ? new Map() : {});
     privateProperty(this, '_edges', map ? new Map() : {});
     privateProperty(this, '_indexes', {
-      relatedEdges: {
+      relations: {
         computed: false,
         synchronized: true,
         full: true,
@@ -205,11 +207,11 @@ export default class Graph extends EventEmitter {
    */
   getDirectedEdge(source, target) {
 
-    // We need to compute the 'relatedEdges' index for this
-    this.computeIndex('relatedEdges');
+    // We need to compute the 'relations' index for this
+    this.computeIndex('relations');
 
     // Retrieving relevant edges
-    const index = this._indexes.relatedEdges.data;
+    const index = this._indexes.relations.data;
 
     if (this.map ? !index.has(source) : !(source in index))
       return;
@@ -231,11 +233,11 @@ export default class Graph extends EventEmitter {
    */
   getUndirectedEdge(source, target) {
 
-    // We need to compute the 'relatedEdges' index for this
-    this.computeIndex('relatedEdges');
+    // We need to compute the 'relations' index for this
+    this.computeIndex('relations');
 
     // Retrieving relevant edges
-    const index = this._indexes.relatedEdges.data;
+    const index = this._indexes.relations.data;
 
     if (this.map ? !index.has(source) : !(source in index))
       return;
@@ -296,11 +298,11 @@ export default class Graph extends EventEmitter {
     }
     else if (arguments.length === 2) {
 
-      // We need to compute the 'relatedEdges' index for this
-      this.computeIndex('relatedEdges');
+      // We need to compute the 'relations' index for this
+      this.computeIndex('relations');
 
       // Retrieving relevant edges
-      const index = this._indexes.relatedEdges.data;
+      const index = this._indexes.relations.data;
 
       if (this.map ? !index.has(source) : !(source in index))
         return false;
@@ -340,11 +342,11 @@ export default class Graph extends EventEmitter {
     }
     else if (arguments.length === 2) {
 
-      // We need to compute the 'relatedEdges' index for this
-      this.computeIndex('relatedEdges');
+      // We need to compute the 'relations' index for this
+      this.computeIndex('relations');
 
       // Retrieving relevant edges
-      const index = this._indexes.relatedEdges.data;
+      const index = this._indexes.relations.data;
 
       if (this.map ? !index.has(source) : !(source in index))
         return false;
@@ -510,7 +512,7 @@ export default class Graph extends EventEmitter {
       throw Error(`Graph.addNode: invalid attributes. Expecting an object but got "${attributes}"`);
 
     if (this.hasNode(node))
-      throw Error(`Graph.addNode: the "${node}" node already exist in the graph.`);
+      throw Error(`Graph.addNode: the "${node}" node already exist in the graph. You might want to check out the 'onDuplicateNode' option.`);
 
     attributes = attributes || {};
 
@@ -565,10 +567,11 @@ export default class Graph extends EventEmitter {
     if (this.hasEdge(edge))
       throw Error(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
 
-    // TODO: cases when you don't want duplicates
-
     if (!this.selfLoops && source === target)
       throw Error(`Graph.${name}: source & target are the same, thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
+
+    if (!this.multi && this.hasEdge(source, target))
+      throw Error(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option. The 'onDuplicateEdge' option might also interest you.`);
 
     // Storing some data
     const data = {
@@ -585,6 +588,25 @@ export default class Graph extends EventEmitter {
 
     // Incrementing size
     this._size++;
+
+    // Incrementing node counters
+    const sourceData = this.map ? this._nodes.get(source) : this._nodes[source],
+          targetData = this.map ? this._nodes.get(target) : this._nodes[target];
+
+    if (undirected) {
+      sourceData.undirectedDegree++;
+      targetData.undirectedDegree++;
+    }
+    else {
+      sourceData.outDegree++;
+      targetData.inDegree++;
+    }
+
+    if (source === target)
+      sourceData.selfLoops++;
+
+    // Updating relevant indexes
+    this.updateIndex('relations', edge);
 
     return edge;
   }
@@ -784,85 +806,21 @@ export default class Graph extends EventEmitter {
     if (!INDEXES.has(name))
       throw Error(`Graph.computeIndex: unknown "${name}" index.`);
 
-    if (name === 'relatedEdges') {
-      const index = this._indexes.relatedEdges;
+    if (name === 'relations') {
+      const index = this._indexes.relations;
 
       if (index.computed)
         return this;
 
+      index.computed = true;
+
       if (this.map) {
-
-        this._edges.forEach((value, edge) => {
-          const {
-            undirected,
-            source,
-            target
-          } = value;
-
-          if (!index.data.has(source))
-            index.data.set(source, createRelatedEdgesEntry(this.type, this.map));
-          if (!index.data.has(target))
-            index.data.set(target, createRelatedEdgesEntry(this.type, this.map));
-
-          const sourceData = index.data.get(source),
-                targetData = index.data.get(target);
-
-          // Building indexes for source
-          const sourceRegister = undirected ?
-            sourceData.undirected :
-            sourceData.out;
-
-          if (!sourceRegister.has(target))
-            sourceRegister.set(target, []);
-          sourceRegister.get(target).push(edge);
-
-          // Building indexes for target
-          const targetRegister = undirected ?
-            targetData.undirected :
-            targetData.in;
-
-          if (!targetRegister.has(source))
-            targetRegister.set(source, []);
-          targetRegister.get(source).push(edge);
-        });
+        this._edges.keys().forEach(edge => this.updateIndex(name, edge));
       }
       else {
-        for (const edge in this._edges) {
-          const {
-            undirected,
-            source,
-            target
-          } = this._edges[edge];
-
-          if (!(source in index.data))
-            index.data[source] = createRelatedEdgesEntry(this.type, this.map);
-          if (!(target in index.data))
-            index.data[target] = createRelatedEdgesEntry(this.type, this.map);
-
-          const sourceData = index.data[source],
-                targetData = index.data[target];
-
-          // Building indexes for source
-          const sourceRegister = undirected ?
-            sourceData.undirected :
-            sourceData.out;
-
-          if (!(target in sourceRegister))
-            sourceRegister[target] = [];
-          sourceRegister[target].push(edge);
-
-          // Building indexes for target
-          const targetRegister = undirected ?
-            targetData.undirected :
-            targetData.in;
-
-          if (!(source in targetRegister))
-            targetRegister[source] = [];
-          targetRegister[source].push(edge);
-        }
+        for (const edge in this._edges)
+          this.updateIndex(name, edge);
       }
-
-      index.computed = true;
     }
 
     return this;
@@ -877,9 +835,105 @@ export default class Graph extends EventEmitter {
    *
    * @throw  {Error} - Will throw if the index doesn't exist.
    */
-  updateIndex(name) {
+  updateIndex(name, edge) {
     if (!INDEXES.has(name))
-      throw Error(`Graph.computeIndex: unknown "${name}" index.`);
+      throw Error(`Graph.updateIndex: unknown "${name}" index.`);
+
+    if (name === 'relations') {
+      const index = this._indexes.relations;
+
+      if (!index.computed)
+        return this;
+
+      if (this.map) {
+        const {
+          undirected,
+          source,
+          target
+        } = this._edges.get(edge);
+
+        if (!index.data.has(source))
+          index.data.set(source, createRelatedEdgesEntry(this.type, this.map));
+        if (!index.data.has(target))
+          index.data.set(target, createRelatedEdgesEntry(this.type, this.map));
+
+        const sourceData = index.data.get(source),
+              targetData = index.data.get(target);
+
+        // Building indexes for source
+        const sourceRegister = undirected ?
+          sourceData.undirected :
+          sourceData.out;
+
+        if (!sourceRegister.has(target))
+          sourceRegister.set(target, []);
+        sourceRegister.get(target).push(edge);
+
+        // Building indexes for target
+        const targetRegister = undirected ?
+          targetData.undirected :
+          targetData.in;
+
+        if (!targetRegister.has(source))
+          targetRegister.set(source, []);
+        targetRegister.get(source).push(edge);
+      }
+      else {
+        const {
+          undirected,
+          source,
+          target
+        } = this._edges[edge];
+
+        if (!(source in index.data))
+          index.data[source] = createRelatedEdgesEntry(this.type, this.map);
+        if (!(target in index.data))
+          index.data[target] = createRelatedEdgesEntry(this.type, this.map);
+
+        const sourceData = index.data[source],
+              targetData = index.data[target];
+
+        // Building indexes for source
+        const sourceRegister = undirected ?
+          sourceData.undirected :
+          sourceData.out;
+
+        if (!(target in sourceRegister))
+          sourceRegister[target] = [];
+        sourceRegister[target].push(edge);
+
+        // Building indexes for target
+        const targetRegister = undirected ?
+          targetData.undirected :
+          targetData.in;
+
+        if (!(source in targetRegister))
+          targetRegister[source] = [];
+        targetRegister[source].push(edge);
+      }
+    }
+  }
+
+  /**
+   * Method used to clear the desired index to clear memory.
+   *
+   * @param  {string} name - Name of the index to compute.
+   * @return {Graph}       - Returns itself for chaining.
+   *
+   * @throw  {Error} - Will throw if the index doesn't exist.
+   */
+  clearIndex(name) {
+    if (!INDEXES.has(name))
+      throw Error(`Graph.clearIndex: unknown "${name}" index.`);
+
+    if (name === 'relations') {
+      const index = this._indexes.relations;
+
+      index.data = this.map ? new Map() : {};
+      index.computed = false;
+    }
+
+    return this;
   }
 
   /**---------------------------------------------------------------------------
