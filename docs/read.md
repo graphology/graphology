@@ -57,7 +57,7 @@ graph.hasEdge('Clarice', 'John');
 
 ## #.getEdge
 
-Returns the first matching edge linking the given source & target, or `undefined` if it does not exist.
+Returns the first matching edge linking the given source & target (starting with directed edges & then with undirected ones), or `undefined` if it does not exist.
 
 *Example*
 

@@ -6,11 +6,27 @@
  */
 
 /**
+ * Checks whether the given value is a plain object.
+ *
+ * @param  {mixed}  value - Target value.
+ * @return {boolean}
+ */
+
+// NOTE: this function remains simplist. Might be a good idea to improve it.
+export function isPlainObject(value) {
+  return (
+    value &&
+    typeof value === 'object' &&
+    !Array.isArray(value)
+  );
+}
+
+/**
  * Creates a "private" property for the given member name by concealing it
  * using the `enumerable` option.
  *
- * @param {object}   target - Target object.
- * @param {string}   name   - Member name.
+ * @param {object} target - Target object.
+ * @param {string} name   - Member name.
  */
 export function privateProperty(target, name, value) {
   Object.defineProperty(target, name, {
@@ -42,9 +58,19 @@ export function readOnlyProperty(target, name, getter) {
  *
  * @return {string} - The uuid.
  */
-
-// TODO: this is just a temporary auto-increment
-let incrementalId = 0;
 export function uuid() {
-  return incrementalId++;
+  let uuid = '',
+      random,
+      i;
+
+  for (i = 0; i < 32; i++) {
+    random = Math.random() * 16 | 0;
+
+    if (i === 8 || i === 12 || i === 16 || i === 20) {
+      uuid += '-';
+    }
+    uuid += (i === 12 ? 4 : (i === 16 ? (random & 3 | 8): random)).toString(16);
+  }
+
+  return uuid;
 }

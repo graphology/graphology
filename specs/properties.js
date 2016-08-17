@@ -54,7 +54,7 @@ export default function properties(Graph) {
         assert.strictEqual(graph.order, 0);
       },
 
-      'it should increase when one adds nodes.': function() {
+      'adding nodes should increase order.': function() {
         const graph = new Graph();
         graph.addNode('John');
         graph.addNode('Jack');
@@ -70,6 +70,14 @@ export default function properties(Graph) {
       'it should be 0 if the graph is empty.': function() {
         const graph = new Graph();
         assert.strictEqual(graph.size, 0);
+      },
+
+      'adding edges should increase size.': function() {
+        const graph = new Graph();
+        graph.addNode('John');
+        graph.addNode('Jack');
+        graph.addDirectedEdge('John', 'Jack');
+        assert.strictEqual(graph.size, 1);
       }
     },
 

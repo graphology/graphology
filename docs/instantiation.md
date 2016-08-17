@@ -71,10 +71,10 @@ MultiUndirectedGraphMap
 
 The provided function takes several arguments:
 
-* **type**: the type of the edge.
-* **source**: the source of the edge.
-* **target**: the target of the edge.
-* **attributes**: optional attributes.
+* **undirected** <span class="code">boolean</span>: whether the edge is undirected.
+* **source** <span class="code">any</span>: the source of the edge.
+* **target** <span class="code">any</span>: the target of the edge.
+* **attributes** <span class="code">object</span>: optional attributes.
 
 *Example*
 
@@ -89,7 +89,7 @@ const generator = (function() {
 const graph = new Graph(null, {edgeKeyGenerator: generator});
 
 // To build the id based on the nodes:
-const generator = function(type, source, target, attributes) {
+const generator = function(undirected, source, target, attributes) {
   return `${source}->${target}`;
 };
 

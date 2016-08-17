@@ -30,6 +30,7 @@
   "devDependencies": {
     "@yomguithereal/eslint-config": "^3.0.0",
     "babel-core": "^6.13.2",
+    "babel-plugin-transform-es2015-destructuring": "^6.9.0",
     "babel-preset-es2015": "^6.13.2",
     "eslint": "^3.3.1",
     "gitbook-cli": "^2.3.0",
@@ -40,13 +41,28 @@
     "rimraf": "^2.5.4"
   },
   "babel": {
-    "presets": ["es2015"]
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      [
+        "transform-es2015-destructuring",
+        {
+          "loose": true
+        }
+      ]
+    ]
   },
   "eslintConfig": {
-    "extends": ["@yomguithereal/eslint-config/es6"],
+    "extends": [
+      "@yomguithereal/eslint-config/es6"
+    ],
     "rules": {
       "object-shorthand": 0,
       "quote-props": 0
     }
+  },
+  "dependencies": {
+    "events": "^1.1.1"
   }
 }
