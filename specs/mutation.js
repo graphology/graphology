@@ -77,6 +77,34 @@ export default function mutation(Graph) {
       }
     },
 
+    '#.addEdge': {
+      'it should add a directed edge if the graph is directed or mixed.': function() {
+        const graph = new Graph(),
+              directedGraph = new Graph(null, {type: 'directed'});
+
+        graph.addNode('John');
+        graph.addNode('Martha');
+        const mixedEdge = graph.addEdge('John', 'Martha');
+
+        directedGraph.addNode('John');
+        directedGraph.addNode('Martha');
+        const directedEdge = directedGraph.addEdge('John', 'Martha');
+
+        assert(graph.directed(mixedEdge));
+        assert(directedGraph.directed(directedEdge));
+      },
+
+      'it should add an undirected edge if the graph is undirected.': function() {
+        const graph = new Graph(null, {type: 'undirected'});
+
+        graph.addNode('John');
+        graph.addNode('Martha');
+        const edge = graph.addEdge('John', 'Martha');
+
+        assert(graph.undirected(edge));
+      }
+    },
+
     '#.addDirectedEdgeWithKey': {
 
       'it should throw if an edge with the same key already exists.': function() {
@@ -115,6 +143,34 @@ export default function mutation(Graph) {
         assert.throws(function() {
           graph.addDirectedEdgeWithKey('T<->M', 'Thomas', 'Martha');
         }, /exist/);
+      }
+    },
+
+    '#.addEdgeWithKey': {
+      'it should add a directed edge if the graph is directed or mixed.': function() {
+        const graph = new Graph(),
+              directedGraph = new Graph(null, {type: 'directed'});
+
+        graph.addNode('John');
+        graph.addNode('Martha');
+        const mixedEdge = graph.addEdgeWithKey('J->M', 'John', 'Martha');
+
+        directedGraph.addNode('John');
+        directedGraph.addNode('Martha');
+        const directedEdge = directedGraph.addEdgeWithKey('J->M', 'John', 'Martha');
+
+        assert(graph.directed(mixedEdge));
+        assert(directedGraph.directed(directedEdge));
+      },
+
+      'it should add an undirected edge if the graph is undirected.': function() {
+        const graph = new Graph(null, {type: 'undirected'});
+
+        graph.addNode('John');
+        graph.addNode('Martha');
+        const edge = graph.addEdgeWithKey('J<->M', 'John', 'Martha');
+
+        assert(graph.undirected(edge));
       }
     }
   };

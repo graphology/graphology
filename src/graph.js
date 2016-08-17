@@ -565,6 +565,11 @@ export default class Graph extends EventEmitter {
     if (this.hasEdge(edge))
       throw Error(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
 
+    // TODO: cases when you don't want duplicates
+
+    if (!this.selfLoops && source === target)
+      throw Error(`Graph.${name}: source & target are the same, thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
+
     // Storing some data
     const data = {
       undirected,
@@ -582,6 +587,27 @@ export default class Graph extends EventEmitter {
     this._size++;
 
     return edge;
+  }
+
+  /**
+   * Method used to add an edge of the type of the graph or directed if the
+   * graph is mixed using the given key.
+   *
+   * @param  {any}    edge         - The edge's key.
+   * @param  {any}    source       - The source node.
+   * @param  {any}    target       - The target node.
+   * @param  {object} [attributes] - Optional attributes.
+   * @return {any}                 - The edge.
+   */
+  addEdgeWithKey(edge, source, target, attributes) {
+    return this._addEdge(
+      'addEdgeWithKey',
+      this.type === 'undirected',
+      edge,
+      source,
+      target,
+      attributes
+    );
   }
 
   /**
@@ -625,7 +651,36 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method used to add a directed edge to the graph.
+   * Method used to add an edge of the type of the graph or directed if the
+   * graph is mixed. An id will automatically be created for it using the
+   * 'edgeKeyGenerator' option.
+   *
+   * @param  {any}    source       - The source node.
+   * @param  {any}    target       - The target node.
+   * @param  {object} [attributes] - Optional attributes.
+   * @return {any}                 - The edge.
+   */
+  addEdge(source, target, attributes) {
+    const edge = this._options.edgeKeyGenerator(
+      this.type === 'undirected',
+      source,
+      target,
+      attributes
+    );
+
+    return this._addEdge(
+      'addEdge',
+      this.type === 'undirected',
+      edge,
+      source,
+      target,
+      attributes
+    );
+  }
+
+  /**
+   * Method used to add a directed edge to the graph. An id will automatically
+   * be created for it using the 'edgeKeyGenerator' option.
    *
    * @param  {any}    source       - The source node.
    * @param  {any}    target       - The target node.
@@ -653,7 +708,8 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method used to add an undirected edge to the graph.
+   * Method used to add an undirected edge to the graph. An id will automatically
+   * be created for it using the 'edgeKeyGenerator' option.
    *
    * @param  {any}    source       - The source node.
    * @param  {any}    target       - The target node.
