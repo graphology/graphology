@@ -30,17 +30,34 @@ export function assign(...objects) {
  */
 export class BasicSet {
   constructor(values) {
+    this.store = {};
+
     for (let i = 0, l = values.length; i < l; i++)
-      this[values[i]] = true;
+      this.store[values[i]] = true;
   }
 
   add(value) {
-    this[value] = true;
+    this.store[value] = true;
   }
 
   has(value) {
-    return value in this;
+    return value in this.store;
   }
+}
+
+/**
+ * Checks whether the given value is a potential bunch.
+ *
+ * @param  {mixed}  value - Target value.
+ * @return {boolean}
+ */
+export function isBunch(value) {
+  return (
+    value &&
+    typeof value === 'object' &&
+    !(value instanceof Date) &&
+    !(value instanceof RegExp)
+  );
 }
 
 /**
@@ -49,15 +66,19 @@ export class BasicSet {
  * @param  {mixed}  value - Target value.
  * @return {boolean}
  */
-
-// NOTE: this function remains simplist. Might be a good idea to improve it.
 export function isPlainObject(value) {
   return (
     value &&
     typeof value === 'object' &&
-    !Array.isArray(value)
+    !Array.isArray(value) &&
+    !(value instanceof Date) &&
+    !(value instanceof RegExp) &&
+    !(typeof Map === 'function' && value instanceof Map) &&
+    !(typeof Set === 'function' && value instanceof Set)
   );
 }
+
+;
 
 /**
  * Pretty prints the given integer.

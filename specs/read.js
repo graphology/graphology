@@ -23,6 +23,47 @@ export default function read(Graph) {
       }
     },
 
+    '#.getDirectedEdge': {
+      'it should return undefined if no matching edge is found.': function() {
+        const graph = new Graph();
+
+        assert.strictEqual(graph.getDirectedEdge('John', 'Catherine'), undefined);
+      },
+
+      'it should return the first matching edge.': function() {
+        const graph = new Graph();
+        graph.addNode('Martha');
+        graph.addNode('Catherine');
+        graph.addNode('John');
+        graph.addDirectedEdgeWithKey('M->C', 'Martha', 'Catherine');
+        graph.addUndirectedEdge('Catherine', 'John');
+
+        assert.strictEqual(graph.getDirectedEdge('Martha', 'Catherine'), 'M->C');
+        assert.strictEqual(graph.getDirectedEdge('Catherine', 'John'), undefined);
+      }
+    },
+
+    '#.getUndirectedEdge': {
+      'it should return undefined if no matching edge is found.': function() {
+        const graph = new Graph();
+
+        assert.strictEqual(graph.getUndirectedEdge('John', 'Catherine'), undefined);
+      },
+
+      'it should return the first matching edge.': function() {
+        const graph = new Graph();
+        graph.addNode('Martha');
+        graph.addNode('Catherine');
+        graph.addNode('John');
+        graph.addDirectedEdge('Catherine', 'John');
+        graph.addUndirectedEdgeWithKey('M<->C', 'Martha', 'Catherine');
+
+        assert.strictEqual(graph.getUndirectedEdge('Catherine', 'John'), undefined);
+        assert.strictEqual(graph.getUndirectedEdge('Martha', 'Catherine'), 'M<->C');
+        assert.strictEqual(graph.getUndirectedEdge('Catherine', 'Martha'), 'M<->C');
+      }
+    },
+
     '#.getEdge': {
       'it should return undefined if no matching edge is found.': function() {
         const graph = new Graph();
@@ -37,6 +78,76 @@ export default function read(Graph) {
         graph.addDirectedEdgeWithKey('M->C', 'Martha', 'Catherine');
 
         assert.strictEqual(graph.getEdge('Martha', 'Catherine'), 'M->C');
+      },
+
+      'it should return a directed edge before an undirected one.': function() {
+        const graph = new Graph();
+        graph.addNode('Martha');
+        graph.addNode('Catherine');
+        graph.addNode('John');
+
+        graph.addDirectedEdgeWithKey('M->C', 'Martha', 'Catherine');
+        graph.addUndirectedEdgeWithKey('M<->C', 'Martha', 'Catherine');
+        graph.addUndirectedEdgeWithKey('C<->J', 'Catherine', 'John');
+
+        assert.strictEqual(graph.getEdge('Martha', 'Catherine'), 'M->C');
+        assert.strictEqual(graph.getEdge('Catherine', 'John'), 'C<->J');
+      }
+    },
+
+    '#.hasDirectedEdge': {
+
+      'it should throw if invalid arguments are provided.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.hasDirectedEdge(1, 2, 3);
+        }, /arity/);
+      },
+
+      'it should correctly return whether a matching edge exists in the graph.': function() {
+        const graph = new Graph();
+        graph.addNode('Martha');
+        graph.addNode('Catherine');
+        graph.addNode('John');
+        graph.addDirectedEdgeWithKey('M->C', 'Martha', 'Catherine');
+        graph.addUndirectedEdgeWithKey('C<->J', 'Catherine', 'John');
+
+        assert.strictEqual(graph.hasDirectedEdge('M->C'), true);
+        assert.strictEqual(graph.hasDirectedEdge('C<->J'), false);
+        assert.strictEqual(graph.hasDirectedEdge('test'), false);
+        assert.strictEqual(graph.hasDirectedEdge('Martha', 'Catherine'), true);
+        assert.strictEqual(graph.hasDirectedEdge('Martha', 'Thomas'), false);
+        assert.strictEqual(graph.hasDirectedEdge('Catherine', 'John'), false);
+        assert.strictEqual(graph.hasDirectedEdge('John', 'Catherine'), false);
+      }
+    },
+
+    '#.hasUndirectedEdge': {
+
+      'it should throw if invalid arguments are provided.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.hasUndirectedEdge(1, 2, 3);
+        }, /arity/);
+      },
+
+      'it should correctly return whether a matching edge exists in the graph.': function() {
+        const graph = new Graph();
+        graph.addNode('Martha');
+        graph.addNode('Catherine');
+        graph.addNode('John');
+        graph.addDirectedEdgeWithKey('M->C', 'Martha', 'Catherine');
+        graph.addUndirectedEdgeWithKey('C<->J', 'Catherine', 'John');
+
+        assert.strictEqual(graph.hasUndirectedEdge('M->C'), false);
+        assert.strictEqual(graph.hasUndirectedEdge('C<->J'), true);
+        assert.strictEqual(graph.hasUndirectedEdge('test'), false);
+        assert.strictEqual(graph.hasUndirectedEdge('Martha', 'Catherine'), false);
+        assert.strictEqual(graph.hasUndirectedEdge('Martha', 'Thomas'), false);
+        assert.strictEqual(graph.hasUndirectedEdge('Catherine', 'John'), true);
+        assert.strictEqual(graph.hasUndirectedEdge('John', 'Catherine'), true);
       }
     },
 
@@ -54,12 +165,17 @@ export default function read(Graph) {
         const graph = new Graph();
         graph.addNode('Martha');
         graph.addNode('Catherine');
+        graph.addNode('John');
         graph.addDirectedEdgeWithKey('M->C', 'Martha', 'Catherine');
+        graph.addUndirectedEdgeWithKey('C<->J', 'Catherine', 'John');
 
         assert.strictEqual(graph.hasEdge('M->C'), true);
+        assert.strictEqual(graph.hasEdge('C<->J'), true);
         assert.strictEqual(graph.hasEdge('test'), false);
         assert.strictEqual(graph.hasEdge('Martha', 'Catherine'), true);
         assert.strictEqual(graph.hasEdge('Martha', 'Thomas'), false);
+        assert.strictEqual(graph.hasEdge('Catherine', 'John'), true);
+        assert.strictEqual(graph.hasEdge('John', 'Catherine'), true);
       }
     },
 

@@ -22,6 +22,9 @@ import {
  * Helpers.
  */
 
+// TODO: store better indexes for multi graph in order to avoid
+// O(n) queries in worst cases
+
 /**
  * Function creating the minimal entry for the related edges index.
  *
@@ -41,6 +44,16 @@ function createRelatedEdgesEntry(type) {
  */
 const TYPES = new BasicSet(['directed', 'undirected', 'mixed']),
       INDEXES = new BasicSet(['relatedEdges']);
+
+const REDUCERS = [
+  {name: 'forEach', plural: false},
+  {name: 'map', plural: true},
+  {name: 'filter', plural: true},
+  {name: 'reduce', plural: true},
+  {name: 'find', plural: false},
+  {name: element => `find${element}Index`, plural: false},
+  {name: 'every', plural: false}
+];
 
 /**
  * Default options.
@@ -113,8 +126,6 @@ export default class Graph extends EventEmitter {
     });
 
     // Methods
-    privateProperty(this, '_getEdge', this._getEdge);
-    privateProperty(this, '_hasEdge', this._hasEdge);
     privateProperty(this, '_addEdge', this._addEdge);
 
     //-- Properties readers
@@ -148,6 +159,74 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Internal method returning a matching directed edge or undefined if no
+   * matching edge was found.
+   *
+   * @param  {any}     source - The edge's source.
+   * @param  {any}     target - The edge's target.
+   * @return {any|undefined}
+   */
+  getDirectedEdge(source, target) {
+
+    // We need to compute the 'relatedEdges' index for this
+    this.computeIndex('relatedEdges');
+
+    // Retrieving relevant edges
+    const index = this._indexes.relatedEdges.data;
+
+    if (this.map ? !index.has(source) : !(source in index))
+      return;
+
+    const relevantEdges = this.map ? index.get(source).out : index[source].out;
+
+    // Trying directed edges
+    for (let i = 0, l = relevantEdges.length; i < l; i++) {
+      const edge = relevantEdges[i],
+            edgeTarget = this.target(edge);
+
+      if (edgeTarget === target)
+        return edge;
+    }
+
+    return;
+  }
+
+  /**
+   * Internal method returning a matching undirected edge or undefined if no
+   * matching edge was found.
+   *
+   * @param  {any}     source - The edge's source.
+   * @param  {any}     target - The edge's target.
+   * @return {any|undefined}
+   */
+  getUndirectedEdge(source, target) {
+
+    // We need to compute the 'relatedEdges' index for this
+    this.computeIndex('relatedEdges');
+
+    // Retrieving relevant edges
+    const index = this._indexes.relatedEdges.data;
+
+    if (this.map ? !index.has(source) : !(source in index))
+      return;
+
+    const relevantEdges = this.map ?
+      index.get(source).undirected :
+      index[source].undirected;
+
+    // Trying undirected edges
+    for (let i = 0, l = relevantEdges.length; i < l; i++) {
+      const edge = relevantEdges[i],
+            [node1, node2] = this.extremities(edge);
+
+      if (node1 === target || node2 === target)
+        return edge;
+    }
+
+    return;
+  }
+
+  /**
    * Method returning a matching edge (note that it will return the first
    * matching edge, starting with directed one then undirected), or undefined
    * if no matching edge was found.
@@ -156,40 +235,123 @@ export default class Graph extends EventEmitter {
    * @param  {any}     target - The edge's target.
    * @return {any|undefined}
    */
-
-  // TODO: decompose this into two methods
   getEdge(source, target) {
+    let edge;
 
-    // We need to compute the 'relatedEdges' index for this
-    this.computeIndex('relatedEdges');
+    // First we try to find a directed edge
+    edge = this.getDirectedEdge(source, target);
 
-    // Retrieving relevant edges
-    const index = this._indexes.relatedEdges.data;
+    if (edge)
+      return edge;
 
-    const data = this.map ? index.get(source) : index[source];
+    // Second we try to find an undirected edge
+    edge = this.getUndirectedEdge(source, target);
 
-    if (!data)
-      return;
+    return edge;
+  }
 
-    // Trying directed edges
-    for (let i = 0, l = data.out.length; i < l; i++) {
-      const edge = data.out[i],
-            edgeTarget = this.target(edge);
+  /**
+   * Method returning whether the given directed edge is found in the graph.
+   *
+   * Arity 1:
+   * @param  {any}     edge - The edge's key.
+   *
+   * Arity 2:
+   * @param  {any}     source - The edge's source.
+   * @param  {any}     target - The edge's target.
+   *
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the arguments are invalid.
+   */
+  hasDirectedEdge(source, target) {
+    if (arguments.length === 1) {
+      const edge = source;
 
-      if (edgeTarget === target)
-        return edge;
+      return (
+        this.map ? this._edges.has(edge) : edge in this._edges &&
+        this.directed(edge)
+      );
+    }
+    else if (arguments.length === 2) {
+
+      // We need to compute the 'relatedEdges' index for this
+      this.computeIndex('relatedEdges');
+
+      // Retrieving relevant edges
+      const index = this._indexes.relatedEdges.data;
+
+      if (this.map ? !index.has(source) : !(source in index))
+        return false;
+
+      const relevantEdges = this.map ? index.get(source).out : index[source].out;
+
+      // Trying directed edges
+      for (let i = 0, l = relevantEdges.length; i < l; i++) {
+        const edge = relevantEdges[i],
+              edgeTarget = this.target(edge);
+
+        if (edgeTarget === target)
+          return true;
+      }
+
+      return false;
     }
 
-    // Trying undirected edges
-    for (let i = 0, l = data.undirected.length; i < l; i++) {
-      const edge = data.undirected[i],
-            [edgeSource, edgeTarget] = this.extremities(edge);
+    throw Error(`Graph.hasDirectedEdge: invalid arity (${arguments.length}, instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.`);
+  }
 
-      if (edgeSource === target || edgeTarget === target)
-        return edge;
+  /**
+   * Method returning whether the given undirected edge is found in the graph.
+   *
+   * Arity 1:
+   * @param  {any}     edge - The edge's key.
+   *
+   * Arity 2:
+   * @param  {any}     source - The edge's source.
+   * @param  {any}     target - The edge's target.
+   *
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the arguments are invalid.
+   */
+  hasUndirectedEdge(source, target) {
+    if (arguments.length === 1) {
+      const edge = source;
+
+      return (
+        this.map ? this._edges.has(edge) : edge in this._edges &&
+        this.undirected(edge)
+      );
+    }
+    else if (arguments.length === 2) {
+
+      // We need to compute the 'relatedEdges' index for this
+      this.computeIndex('relatedEdges');
+
+      // Retrieving relevant edges
+      const index = this._indexes.relatedEdges.data;
+
+      if (this.map ? !index.has(source) : !(source in index))
+        return false;
+
+      const relevantEdges = this.map ?
+        index.get(source).undirected :
+        index[source].undirected;
+
+      // Trying undirected edges
+      for (let i = 0, l = relevantEdges.length; i < l; i++) {
+        const edge = relevantEdges[i],
+              [node1, node2] = this.extremities(edge);
+
+        if (node1 === target || node2 === target)
+          return true;
+      }
+
+      return false;
     }
 
-    return;
+    throw Error(`Graph.hasDirectedEdge: invalid arity (${arguments.length}, instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.`);
   }
 
   /**
@@ -214,12 +376,10 @@ export default class Graph extends EventEmitter {
       return this.map ? this._edges.has(edge) : edge in this._edges;
     }
     else if (arguments.length === 2) {
-
-      // Attempting to get a relevant edge
-      // TODO: change that, what if the edge key is undefined?
-      const edge = this.getEdge(source, target);
-
-      return !!edge;
+      return (
+        this.hasDirectedEdge(source, target) ||
+        this.hasUndirectedEdge(source, target)
+      );
     }
 
     throw Error(`Graph.hasEdge: invalid arity (${arguments.length}, instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.`);
