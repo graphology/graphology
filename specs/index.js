@@ -9,6 +9,7 @@ import properties from './properties';
 import read from './read';
 import mutation from './mutation';
 import attributes from './attributes';
+import iteration from './iteration';
 import knownMethods from './known-methods';
 
 /**
@@ -29,6 +30,7 @@ export default function specs(path) {
     'Mutation': mutation(Graph),
     'Read': read(Graph),
     'Attributes': attributes(Graph),
+    'Iteration': iteration(Graph),
     'Known Methods': knownMethods(Graph)
   };
 }

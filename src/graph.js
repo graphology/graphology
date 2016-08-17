@@ -18,16 +18,34 @@ import {
   uuid
 } from './utils';
 
+// TODO: need to clean up index naming
+// TODO: build partial index on get/has methods
+// TODO: adjust degree docs
+
 /**
  * Helpers.
  */
 
-// TODO: store better indexes for multi graph in order to avoid
-// O(n) queries in worst cases
+/**
+ * Function creating the minimal entry for storing node data.
+ *
+ * @param  {string}  type       - Type of the graph.
+ * @param  {object}  attributes - Node's attributes.
+ * @return {object}             - The entry.
+ */
+function createNodeEntry(type, attributes) {
+  const entry = {attributes, selfLoops: 0};
 
-// TODO: need to clean up index naming
+  if (type === 'mixed' || type === 'directed') {
+    entry.inDegree = 0;
+    entry.outDegree = 0;
+  }
+  if (type === 'mixed' || type === 'undirected') {
+    entry.undirectedDegree = 0;
+  }
 
-// TODO: build partial index on get/has methods
+  return entry;
+}
 
 /**
  * Function creating the minimal entry for the related edges index.
@@ -71,6 +89,7 @@ const REDUCERS = [
  * Default options.
  */
 const DEFAULTS = {
+  allowSelfLoops: true,
   edgeKeyGenerator: uuid,
   map: false,
   multi: false,
@@ -83,9 +102,10 @@ const DEFAULTS = {
  * @constructor
  * @param  {Graph|Array<Array>} [data]    - Hydratation data.
  * @param  {object}             [options] - Options:
- * @param  {string}               [type]  - Type of the graph.
- * @param  {boolean}              [map]   - Allow references as keys?
- * @param  {boolean}              [multi] - Allow parallel edges?
+ * @param  {boolean}              [allowSelfLoops] - Allow self loops?
+ * @param  {string}               [type]           - Type of the graph.
+ * @param  {boolean}              [map]            - Allow references as keys?
+ * @param  {boolean}              [multi]          - Allow parallel edges?
  *
  * @throws {Error} - Will throw if the arguments are not valid.
  */
@@ -99,7 +119,8 @@ export default class Graph extends EventEmitter {
     const edgeKeyGenerator = options.edgeKeyGenerator || DEFAULTS.edgeKeyGenerator,
           map = options.map || DEFAULTS.map,
           multi = options.multi || DEFAULTS.multi,
-          type = options.type || DEFAULTS.type;
+          type = options.type || DEFAULTS.type,
+          selfLoops = 'allowSelfLoops' in options ? options.allowSelfLoops : DEFAULTS.allowSelfLoops;
 
     // Enforcing options validity
     if (typeof edgeKeyGenerator !== 'function')
@@ -113,6 +134,9 @@ export default class Graph extends EventEmitter {
 
     if (!TYPES.has(type))
       throw Error(`Graph.constructor: invalid 'type' option. Should be one of "mixed", "directed" or "undirected" but got "${type}".`);
+
+    if (typeof selfLoops !== 'boolean')
+      throw Error(`Graph.constructor: invalid 'allowSelfLoops' option. Expecting a boolean but got "${selfLoops}".`)
 
     //-- Private properties
 
@@ -146,6 +170,7 @@ export default class Graph extends EventEmitter {
     readOnlyProperty(this, 'map', () => map);
     readOnlyProperty(this, 'multi', () => multi);
     readOnlyProperty(this, 'type', () => type);
+    readOnlyProperty(this, 'selfLoops', () => selfLoops);
   }
 
   /**---------------------------------------------------------------------------
@@ -366,6 +391,19 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method returning the given node's in degree.
+   *
+   * @param  {any}     node      - The node's key.
+   * @param  {boolean} selfLoosp - Count self-loops?
+   * @return {number}            - The node's in degree.
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  inDegree(node, selfLoops) {
+
+  }
+
+  /**
    * Method returning the given edge's source.
    *
    * @param  {any} edge - The edge's key.
@@ -476,10 +514,7 @@ export default class Graph extends EventEmitter {
 
     attributes = attributes || {};
 
-    const data = {
-      degree: 0,
-      attributes
-    };
+    const data = createNodeEntry(this.type, attributes);
 
     // Adding the node to internal register
     if (this.map)
@@ -518,7 +553,7 @@ export default class Graph extends EventEmitter {
     if (undirected && this.type === 'directed')
       throw Error(`Graph.${name}: you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.`);
 
-    if (arguments.length > 3 && !isPlainObject(attributes))
+    if (arguments.length > 5 && !isPlainObject(attributes))
       throw Error(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
 
     if (!this.hasNode(source))

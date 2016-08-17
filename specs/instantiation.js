@@ -41,7 +41,7 @@ export default function instantiation(Graph, inmplementation) {
         'providing something other than a function should throw.': function() {
           assert.throws(function() {
             const graph = new Graph(null, {edgeKeyGenerator: 'test'});
-          });
+          }, /edgeKeyGenerator/);
         }
       },
 
@@ -53,7 +53,7 @@ export default function instantiation(Graph, inmplementation) {
         'providing a non-boolean value should throw.': function() {
           assert.throws(function() {
             const graph = new Graph(null, {map: 'test'});
-          }, /constructor/);
+          }, /map/);
         }
       },
 
@@ -65,7 +65,7 @@ export default function instantiation(Graph, inmplementation) {
         'providing a non-boolean value should throw.': function() {
           assert.throws(function() {
             const graph = new Graph(null, {multi: 'test'});
-          }, /constructor/);
+          }, /multi/);
         }
       },
 
@@ -77,7 +77,19 @@ export default function instantiation(Graph, inmplementation) {
         'providing an invalid type should throw.': function() {
           assert.throws(function() {
             const graph = new Graph(null, {type: 'test'});
-          }, /constructor/);
+          }, /type/);
+        }
+      },
+
+      /**
+       * selfLoops
+       */
+      'selfLoops': {
+
+        'providing a non-boolean value should throw.': function() {
+          assert.throws(function() {
+            const graph = new Graph(null, {allowSelfLoops: 'test'});
+          }, /allowSelfLoops/);
         }
       }
     },

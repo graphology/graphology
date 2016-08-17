@@ -7,4 +7,4 @@
 import specs from './specs';
 import path from 'path';
 
-module.exports = specs(path.join(__dirname, 'src'));
+module.exports = specs(path.join(__dirname, 'src', 'graph'));

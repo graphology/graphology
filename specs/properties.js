@@ -12,7 +12,7 @@ const PROPERTIES = [
   'type',
   'multi',
   'map',
-  // 'selfLoops'
+  'selfLoops'
 ];
 
 export default function properties(Graph) {
@@ -111,6 +111,17 @@ export default function properties(Graph) {
       'it should be "mixed" by default.': function() {
         const graph = new Graph();
         assert.strictEqual(graph.type, 'mixed');
+      }
+    },
+
+    /**
+     * Self loops.
+     */
+    '#.selfLoops': {
+
+      'it should be true by default.': function() {
+        const graph = new Graph();
+        assert.strictEqual(graph.selfLoops, true);
       }
     }
   };
