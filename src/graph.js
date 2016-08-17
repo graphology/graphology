@@ -8,8 +8,8 @@
  * over the object/map manipulation, it does not for performance reasons.
  */
 import {EventEmitter} from 'events';
+import {FINDERS, REDUCERS} from './reducers';
 import {
-  assign,
   BasicSet,
   isBunch,
   isPlainObject,
@@ -36,52 +36,6 @@ import {
 const TYPES = new BasicSet(['directed', 'undirected', 'mixed']),
       INDEXES = new BasicSet(['relations']),
       EMITTER_PROPS = new BasicSet(['domain', '_events', '_eventsCount', '_maxListeners']);
-
-const identity = x => x,
-      createArray = () => ([]),
-      reducerName = name => element => name + element;
-
-const REDUCERS = [
-  {
-    name: reducerName('forEach'),
-    plural: false,
-    value: identity,
-    reducer(callback, current, element, index, graph) {
-      callback(element, index, graph);
-      return current;
-    }
-  },
-  {
-    name: reducerName('map'),
-    plural: true,
-    value: createArray
-  },
-  {
-    name: reducerName('filter'),
-    plural: true,
-    value: createArray
-  },
-  {
-    name: reducerName('find'),
-    plural: false,
-    value: undefined
-  },
-  {
-    name: reducerName('some'),
-    plural: false,
-    value: false
-  },
-  {
-    name: element => `find${element}Index`,
-    plural: false,
-    value: -1
-  },
-  {
-    name: reducerName('every'),
-    plural: false,
-    value: true
-  }
-];
 
 /**
  * Default options.
@@ -887,15 +841,24 @@ export default class Graph extends EventEmitter {
         i = 0;
 
     if (this.map) {
-
-    }
-    else {
-      for (const k in this._nodes) {
+      this._nodes.forEach((_, node) => {
         if (!i && !initialValueProvided) {
-          current = k;
+          current = node;
         }
         else {
-          current = callback(current, k, i, this);
+          current = callback(current, node, i, this);
+        }
+
+        i++;
+      });
+    }
+    else {
+      for (const node in this._nodes) {
+        if (!i && !initialValueProvided) {
+          current = node;
+        }
+        else {
+          current = callback(current, node, i, this);
         }
 
         i++;
@@ -1111,83 +1074,72 @@ export default class Graph extends EventEmitter {
 
 /**
  * Attaching reducers to the prototype.
+ *
+ * Here, we create reducers for every kind of iteration by attaching them
+ * to the Graph class prototype rather than writing a lot of custom methods
+ * one by one.
  */
+function createNodeDerivedReducer(Class, description) {
+  const name = description.name('Node');
 
-/**
- * Alternative constructors.
- */
-class DirectedGraph extends Graph {
-  constructor(data, options) {
-    super(
-      data,
-      assign({}, {type: 'directed'}, options)
-    );
-  }
-}
-class UndirectedGraph extends Graph {
-  constructor(data, options) {
-    super(
-      data,
-      assign({}, {type: 'undirected'}, options)
-    );
-  }
-}
-class MultiDirectedGraph extends Graph {
-  constructor(data, options) {
-    super(
-      data,
-      assign({}, {multi: true, type: 'directed'}, options)
-    );
-  }
-}
-class MultiUndirectedGraph extends Graph {
-  constructor(data, options) {
-    super(
-      data,
-      assign({}, {multi: true, type: 'undirected'}, options)
-    );
-  }
-}
-class DirectedGraphMap extends Graph {
-  constructor(data, options) {
-    super(
-      data,
-      assign({}, {map: true, type: 'directed'}, options)
-    );
-  }
-}
-class UndirectedGraphMap extends Graph {
-  constructor(data, options) {
-    super(
-      data,
-      assign({}, {map: true, type: 'undirected'}, options)
-    );
-  }
-}
-class MultiDirectedGraphMap extends Graph {
-  constructor(data, options) {
-    super(
-      data,
-      assign({}, {map: true, multi: true, type: 'directed'}, options)
-    );
-  }
-}
-class MultiUndirectedGraphMap extends Graph {
-  constructor(data, options) {
-    super(
-      data,
-      assign({}, {map: true, multi: true, type: 'undirected'}, options)
-    );
-  }
+  Class.prototype[name] = function(callback) {
+    if (typeof callback !== 'function')
+      throw Error(`Graph.${name}: the provided callback is not a function.`);
+
+    const initialValue = description.value(this),
+          reducer = description.reducer(callback);
+
+    return this.reduceNodes(reducer, initialValue);
+  };
 }
 
-export {
-  DirectedGraph,
-  UndirectedGraph,
-  MultiDirectedGraph,
-  MultiUndirectedGraph,
-  DirectedGraphMap,
-  UndirectedGraphMap,
-  MultiDirectedGraphMap,
-  MultiUndirectedGraphMap
-};
+REDUCERS.forEach(description => createNodeDerivedReducer(Graph, description));
+
+function nodeFinder(graph, name, callback, reverse = false) {
+  let i = 0;
+
+  if (graph.map) {
+    for (const node of graph._nodes.keys()) {
+      let found = callback(node, i++, graph);
+
+      if (reverse)
+        found = !found;
+
+      if (found)
+        return [node, i];
+    }
+  }
+  else {
+    for (const node in graph._nodes) {
+      let found = callback(node, i++, graph);
+
+      if (reverse)
+        found = !found;
+
+      if (found)
+        return [node, i];
+    }
+  }
+
+  return [undefined, -1];
+}
+
+function createDerivedNodeFinder(Class, description) {
+  const name = description.name('Node');
+
+  Class.prototype[name] = function(callback) {
+    if (typeof callback !== 'function')
+      throw Error(`Graph.${name}: the provided predicate is not a function.`);
+
+    const result = nodeFinder(
+      this,
+      name,
+      callback,
+      !!description.reversed
+    );
+
+    return description.value(result);
+  };
+}
+
+FINDERS.forEach(description => createDerivedNodeFinder(Graph, description));

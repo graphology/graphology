@@ -11,7 +11,7 @@ Using a `Graph` instance, it is possible to iterate on the three following thing
 For a better flexibility, the library usually enables the developer to iterate through many ways:
 
 * Methods returning arrays.
-* `forEach` methods & typical reducers (`map`, `filter`, `reduce`, `some`, `find`, `findIndex`, `every`).
+* `forEach` methods & typical reducers (`map`, `filter`, `reduce`, `some`, `find`, `every`).
 * Methods creating iterators for more complex, even asynchronous iteration.
 * Counting methods when the implementation is able to return a number without iteration.
 
