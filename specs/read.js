@@ -241,6 +241,33 @@ export default function read(Graph) {
       }
     },
 
+    '#.relatedNode': {
+
+      'it should throw if either the node or the edge is not found in the graph.': function() {
+        const graph = new Graph();
+        graph.addNode('Thomas');
+
+        assert.throws(function() {
+          graph.relatedNode('Jeremy', 'T->J');
+        }, /node/);
+
+        assert.throws(function() {
+          graph.relatedNode('Thomas', 'T->J');
+        });
+      },
+
+      'it should return the correct node.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['Thomas', 'Estelle']);
+        const edge = graph.addEdge('Thomas', 'Estelle');
+
+        assert.strictEqual(
+          graph.relatedNode('Thomas', edge),
+          'Estelle'
+        );
+      }
+    },
+
     '#.directed': {
 
       'it should throw if the edge is not in the graph.': function() {

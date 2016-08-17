@@ -26,9 +26,10 @@ import {
 // TODO: adjust index docs
 // TODO: add method to check if edge is self loop?
 // TODO: mixed graph edge duplicate discussion?
-// TODO: remettre le directed default en discussion
+// TODO: remettre le directed default en discussion?
 // TODO: reinstate that keys have the same problem that JS objects
 // TODO: indicate that iterator will only work on recent engines
+// TODO: create test abstraction to test bunches & iterators
 
 /**
  * Enums.
@@ -453,6 +454,27 @@ export default class Graph extends EventEmitter {
       throw Error(`Graph.extremities: could not find the "${edge}" edge in the graph.`);
 
     return [this.source(edge), this.target(edge)];
+  }
+
+  /**
+   * Given a node & an edge, returns the other extremity of the edge.
+   *
+   * @param  {any}   node - The node's key.
+   * @param  {any}   edge - The edge's key.
+   * @return {any}        - The related node.
+   *
+   * @throws {Error} - Will throw if either the node or the edge isn't in the graph.
+   */
+  relatedNode(node, edge) {
+    if (!this.hasNode(node))
+      throw Error(`Graph.relatedNode: could not find the "${node}" node in the graph.`);
+
+    if (!this.hasEdge(edge))
+      throw Error(`Graph.relatedNode: could not find the "${edge}" edge in the graph.`);
+
+    const [node1, node2] = this.extremities(edge);
+
+    return node === node1 ? node2 : node1;
   }
 
   /**
