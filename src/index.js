@@ -110,6 +110,9 @@ export default class Graph extends EventEmitter {
       edgeKeyGenerator
     });
 
+    // Methods
+    privateProperty(this, '_addEdge', this._addEdge);
+
     //-- Properties readers
     readOnlyProperty(this, 'order', () => this._order);
     readOnlyProperty(this, 'size', () => this._size);
@@ -313,40 +316,42 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method used to add a directed edge to the graph using the given key.
+   * Internal method used to add an arbitrary edge to the graph.
    *
-   * @param  {any}    edge         - The edge's key.
-   * @param  {any}    source       - The source node.
-   * @param  {any}    target       - The target node.
-   * @param  {object} [attributes] - Optional attributes.
-   * @return {any}                 - The edge.
+   * @param  {string}  name         - Name of the child method for errors.
+   * @param  {boolean} undirected   - Whether the edge is undirected.
+   * @param  {any}     edge         - The edge's key.
+   * @param  {any}     source       - The source node.
+   * @param  {any}     target       - The target node.
+   * @param  {object}  [attributes] - Optional attributes.
+   * @return {any}                  - The edge.
    *
    * @throws {Error} - Will throw if the graph is undirected.
    * @throws {Error} - Will throw if the given attributes are not an object.
    * @throws {Error} - Will throw if source or target doesn't exist.
    * @throws {Error} - Will throw if the edge already exist.
    */
-  addDirectedEdgeWithKey(edge, source, target, attributes) {
+  _addEdge(name, undirected, edge, source, target, attributes) {
     attributes = attributes || {};
 
     if (this.type === 'undirected')
-      throw Error('Graph.addDirectedEdge: you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.');
+      throw Error(`Graph.${name}: you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.`);
 
     if (arguments.length > 3 && !isPlainObject(attributes))
-      throw Error(`Graph.addDirectedEdge: invalid attributes. Expecting an object but got "${attributes}"`);
+      throw Error(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
 
     if (!this.hasNode(source))
-      throw Error(`Graph.addDirectedEdge: source node "${source}" not found.`);
+      throw Error(`Graph.${name}: source node "${source}" not found.`);
 
     if (!this.hasNode(target))
-      throw Error(`Graph.addDirectedEdge: target node "${target}" not found.`);
+      throw Error(`Graph.${name}: target node "${target}" not found.`);
 
     if (this.hasEdge(edge))
-      throw Error(`Graph.addDirectedEdge: the "${edge}" edge already exists in the graph.`);
+      throw Error(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
 
     // Storing some data
     const data = {
-      undirected: false,
+      undirected,
       attributes,
       source,
       target
@@ -361,6 +366,26 @@ export default class Graph extends EventEmitter {
     this._size++;
 
     return edge;
+  }
+
+  /**
+   * Method used to add a directed edge to the graph using the given key.
+   *
+   * @param  {any}    edge         - The edge's key.
+   * @param  {any}    source       - The source node.
+   * @param  {any}    target       - The target node.
+   * @param  {object} [attributes] - Optional attributes.
+   * @return {any}                 - The edge.
+   */
+  addDirectedEdgeWithKey(edge, source, target, attributes) {
+    return this._addEdge(
+      'addDirectedEdgeWithKey',
+      false,
+      edge,
+      source,
+      target,
+      attributes
+    );
   }
 
   /**
@@ -381,9 +406,14 @@ export default class Graph extends EventEmitter {
       attributes
     );
 
-    this.addDirectedEdgeWithKey(edge, source, target, attributes);
-
-    return edge;
+    return this._addEdge(
+      'addDirectedEdge',
+      false,
+      edge,
+      source,
+      target,
+      attributes
+    );
   }
 
   /**---------------------------------------------------------------------------
