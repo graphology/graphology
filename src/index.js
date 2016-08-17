@@ -10,6 +10,7 @@
 import {EventEmitter} from 'events';
 import {
   isPlainObject,
+  prettyPrint,
   privateProperty,
   readOnlyProperty,
   uuid
@@ -524,13 +525,11 @@ export default class Graph extends EventEmitter {
    *
    * @return {string} - String representation of the graph.
    */
-
-  // TODO: pretty print numbers
   toString() {
     const pluralOrder = this.order > 1 || this.order === 0,
           pluralSize = this.size > 1 || this.size === 0;
 
-    return `Graph<${this.order} node${pluralOrder ? 's' : ''}, ${this.size} edge${pluralSize ? 's' : ''}>`;
+    return `Graph<${prettyPrint(this.order)} node${pluralOrder ? 's' : ''}, ${prettyPrint(this.size)} edge${pluralSize ? 's' : ''}>`;
   }
 
   /**

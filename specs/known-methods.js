@@ -21,6 +21,15 @@ export default function knownMethods(Graph) {
         graph.addNode('John');
 
         assert.strictEqual(graph.toString(), 'Graph<1 node, 0 edges>');
+      },
+
+      'it should pretty print the numbers.': function() {
+        const graph = new Graph();
+
+        for (let i = 0; i < 1000; i++)
+          graph.addNode(i);
+
+        assert.strictEqual(graph.toString(), 'Graph<1,000 nodes, 0 edges>');
       }
     }
   };
