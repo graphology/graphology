@@ -6,6 +6,44 @@
  */
 
 /**
+ * Very simple Object.assign-like function.
+ *
+ * @param  {object} [...objects] - Target objects.
+ * @return {object}
+ */
+export function assign(...objects) {
+  const o = objects[0];
+
+  for (let i = 1, l = objects.length; i < l; i++) {
+    for (const k in objects[i])
+      o[k] = objects[i][k];
+  }
+
+  return o;
+}
+
+/**
+ * Class emulating a Set object & used internally to reduce memory footprint &
+ * ensure ES5 compatibility.
+ *
+ * @constructor
+ */
+export class BasicSet {
+  constructor(values) {
+    for (let i = 0, l = values.length; i < l; i++)
+      this[values[i]] = true;
+  }
+
+  add(value) {
+    this[value] = true;
+  }
+
+  has(value) {
+    return value in this;
+  }
+}
+
+/**
  * Checks whether the given value is a plain object.
  *
  * @param  {mixed}  value - Target value.

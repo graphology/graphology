@@ -24,7 +24,7 @@ export default function specs(path) {
         Graph = implementation.default;
 
   return {
-    'Instantiation': instantiation(Graph),
+    'Instantiation': instantiation(Graph, implementation),
     'Properties': properties(Graph),
     'Read': read(Graph),
     'Mutation': mutation(Graph),

@@ -9,6 +9,8 @@
  */
 import {EventEmitter} from 'events';
 import {
+  assign,
+  BasicSet,
   isPlainObject,
   prettyPrint,
   privateProperty,
@@ -37,8 +39,8 @@ function createRelatedEdgesEntry(type) {
 /**
  * Enums.
  */
-const TYPES = new Set(['directed', 'undirected', 'mixed']),
-      INDEXES = new Set(['relatedEdges']);
+const TYPES = new BasicSet(['directed', 'undirected', 'mixed']),
+      INDEXES = new BasicSet(['relatedEdges']);
 
 /**
  * Default options.
@@ -111,6 +113,8 @@ export default class Graph extends EventEmitter {
     });
 
     // Methods
+    privateProperty(this, '_getEdge', this._getEdge);
+    privateProperty(this, '_hasEdge', this._hasEdge);
     privateProperty(this, '_addEdge', this._addEdge);
 
     //-- Properties readers
@@ -681,3 +685,82 @@ export default class Graph extends EventEmitter {
     return dummy;
   }
 }
+
+/**
+ * Alternative constructors.
+ */
+class DirectedGraph extends Graph {
+  constructor(data, options) {
+    super(
+      data,
+      assign({}, {type: 'directed'}, options)
+    );
+  }
+}
+class UndirectedGraph extends Graph {
+  constructor(data, options) {
+    super(
+      data,
+      assign({}, {type: 'undirected'}, options)
+    );
+  }
+}
+class MultiDirectedGraph extends Graph {
+  constructor(data, options) {
+    super(
+      data,
+      assign({}, {multi: true, type: 'directed'}, options)
+    );
+  }
+}
+class MultiUndirectedGraph extends Graph {
+  constructor(data, options) {
+    super(
+      data,
+      assign({}, {multi: true, type: 'undirected'}, options)
+    );
+  }
+}
+class DirectedGraphMap extends Graph {
+  constructor(data, options) {
+    super(
+      data,
+      assign({}, {map: true, type: 'directed'}, options)
+    );
+  }
+}
+class UndirectedGraphMap extends Graph {
+  constructor(data, options) {
+    super(
+      data,
+      assign({}, {map: true, type: 'undirected'}, options)
+    );
+  }
+}
+class MultiDirectedGraphMap extends Graph {
+  constructor(data, options) {
+    super(
+      data,
+      assign({}, {map: true, multi: true, type: 'directed'}, options)
+    );
+  }
+}
+class MultiUndirectedGraphMap extends Graph {
+  constructor(data, options) {
+    super(
+      data,
+      assign({}, {map: true, multi: true, type: 'undirected'}, options)
+    );
+  }
+}
+
+export {
+  DirectedGraph,
+  UndirectedGraph,
+  MultiDirectedGraph,
+  MultiUndirectedGraph,
+  DirectedGraphMap,
+  UndirectedGraphMap,
+  MultiDirectedGraphMap,
+  MultiUndirectedGraphMap
+};

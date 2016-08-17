@@ -90,11 +90,32 @@ export default function mutation(Graph) {
         assert.throws(function() {
           graph.addDirectedEdgeWithKey('T->M', 'Thomas', 'Martha');
         }, /exist/);
+
+        assert.throws(function() {
+          graph.addUndirectedEdgeWithKey('T->M', 'Thomas', 'Martha');
+        }, /exist/);
+
       }
     },
 
     '#.addUndirectedEdgeWithKey': {
 
+      'it should throw if an edge with the same key already exists.': function() {
+        const graph = new Graph();
+
+        graph.addNode('Thomas');
+        graph.addNode('Martha');
+
+        graph.addUndirectedEdgeWithKey('T<->M', 'Thomas', 'Martha');
+
+        assert.throws(function() {
+          graph.addUndirectedEdgeWithKey('T<->M', 'Thomas', 'Martha');
+        }, /exist/);
+
+        assert.throws(function() {
+          graph.addDirectedEdgeWithKey('T<->M', 'Thomas', 'Martha');
+        }, /exist/);
+      }
     }
   };
 }
