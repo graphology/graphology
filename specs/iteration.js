@@ -156,6 +156,62 @@ export default function iteration(Graph) {
               undefined
             );
           }
+        },
+
+        '#.someNode': {
+          'it should throw if a non-function is passed.': function() {
+            const graph = new Graph();
+
+            assert.throws(function() {
+              graph.someNode(true);
+            }, /Graph/);
+          },
+
+          'it should correctly find node or return undefined.': function() {
+            const graph = new Graph();
+            graph.addNodesFrom({
+              one: {age: 1},
+              two: {age: 2}
+            });
+
+            assert.strictEqual(
+              graph.someNode(node => graph.getNodeAttribute(node, 'age') === 2),
+              true
+            );
+
+            assert.strictEqual(
+              graph.someNode(node => graph.getNodeAttribute(node, 'age') === 3),
+              false
+            );
+          }
+        },
+
+        '#.everyNode': {
+          'it should throw if a non-function is passed.': function() {
+            const graph = new Graph();
+
+            assert.throws(function() {
+              graph.everyNode(true);
+            }, /Graph/);
+          },
+
+          'it should correctly find node or return undefined.': function() {
+            const graph = new Graph();
+            graph.addNodesFrom({
+              one: {age: 1, value: 2},
+              two: {age: 2, value: 2}
+            });
+
+            assert.strictEqual(
+              graph.everyNode(node => graph.getNodeAttribute(node, 'age') === 2),
+              false
+            );
+
+            assert.strictEqual(
+              graph.everyNode(node => graph.getNodeAttribute(node, 'value') === 2),
+              true
+            );
+          }
         }
       }
     }
