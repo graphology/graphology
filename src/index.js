@@ -524,6 +524,8 @@ export default class Graph extends EventEmitter {
    *
    * @return {string} - String representation of the graph.
    */
+
+  // TODO: pretty print numbers
   toString() {
     const pluralOrder = this.order > 1 || this.order === 0,
           pluralSize = this.size > 1 || this.size === 0;

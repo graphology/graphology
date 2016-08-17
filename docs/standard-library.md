@@ -10,3 +10,5 @@ WIP: reflexions on a standard library roadmap & structure.
   * `reverse`
 * `utils`
   * `subgraph`
+
+* NOTE: `equals`
