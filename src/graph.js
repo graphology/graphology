@@ -18,7 +18,6 @@ import {
   prettyPrint,
   privateProperty,
   readOnlyProperty,
-  setFromBunch,
   uuid
 } from './utils';
 
@@ -1473,7 +1472,7 @@ function edgeArrayCreatorForBunch(name, graph, type, direction, bunch) {
 
   const edges = graph.map ? new Set() : new BasicSet;
 
-  if (graph.map) {
+  if (graph.map) {
 
     return [...edges];
   }

@@ -1,7 +1,7 @@
 {
   "name": "graphlib",
   "version": "0.0.1",
-  "description": "A Graph object for JavaScript.",
+  "description": "A robust Graph object for JavaScript.",
   "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf dist specs",

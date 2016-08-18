@@ -33,6 +33,23 @@ export function deepMerge(...objects) {
 }
 
 /**
+ * Checking that two arrays have the same members.
+ */
+export function sameMembers(a1, a2) {
+  if (a1.length !== a2.length)
+    return false;
+
+  const set = new Set(a1);
+
+  for (let i = 0, l = a2.length; i < l; i++) {
+    if (!set.has(a2[i]))
+      return false;
+  }
+
+  return true;
+}
+
+/**
  * Bunches constants.
  */
 export const BUNCH_TYPES = [
@@ -72,10 +89,10 @@ export function testBunches(target, fn) {
     }
 
     bunches = [
-      [false, 'array', target],
-      [false, 'set', set],
-      [true, 'object', object],
-      [true, 'map', map]
+      [target, false, 'array'],
+      [set, false, 'set'],
+      [object, true, 'object'],
+      [map, true, 'map']
     ];
   }
   else {
@@ -90,10 +107,10 @@ export function testBunches(target, fn) {
     }
 
     bunches = [
-      [false, 'array', array],
-      [false, 'set', set],
-      [true, 'object', target],
-      [true, 'map', map]
+      [array, false, 'array'],
+      [set, false, 'set'],
+      [target, true, 'object'],
+      [map, true, 'map']
     ];
   }
 

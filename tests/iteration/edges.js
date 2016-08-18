@@ -5,7 +5,7 @@
  * Testing the edges iteration-related methods of the graph.
  */
 import assert from 'assert';
-import {deepMerge, testBunches} from '../helpers';
+import {deepMerge, sameMembers, testBunches} from '../helpers';
 
 const METHODS = [
   'edges',
@@ -37,205 +37,98 @@ export default function edgesIteration(Graph) {
   graph.addUndirectedEdgeWithKey('J<->R', 'John', 'Roger');
   graph.addUndirectedEdgeWithKey('T<->M', 'Thomas', 'Martha');
 
+  const TEST_DATA = {
+    edges: {
+      all: [
+        'J->T',
+        'J->M',
+        'C->J',
+        'M<->R',
+        'M<->J',
+        'J<->R',
+        'T<->M'
+      ],
+      node: {
+        key: 'John',
+        edges: [
+          'C->J',
+          'J->T',
+          'J->M',
+          'M<->J',
+          'J<->R'
+        ]
+      },
+      bunch: {
+        keys: ['Martha', 'Roger'],
+        edges: [
+          'J->M',
+          'M<->R',
+          'M<->J',
+          'T<->M',
+          'J<->R'
+        ]
+      }
+    }
+  };
+
   function commonTests(name) {
     return {
-      'it should throw if too many arguments are provided.': function() {
-        assert.throws(function() {
-          graph[name](1, 2, 3);
-        }, /many/);
-      },
+      ['#.' + name]: {
+        'it should throw if too many arguments are provided.': function() {
+          assert.throws(function() {
+            graph[name](1, 2, 3);
+          }, /many/);
+        },
 
-      'it should throw when the node is not found.': function() {
-        assert.throws(function() {
-          graph[name]('Test');
-        }, /node/);
-      },
+        'it should throw when the node is not found.': function() {
+          assert.throws(function() {
+            graph[name]('Test');
+          }, /node/);
+        },
 
-      'it should throw if any of the provided bunch node is not found.': function() {
-        assert.throws(function() {
-          graph[name](['Test']);
-        }, /bunch/);
+        'it should throw if any of the provided bunch node is not found.': function() {
+          assert.throws(function() {
+            graph[name](['Test']);
+          }, /bunch/);
+        }
       }
     };
   }
 
-  const testsToMerge = {};
-  METHODS.forEach(name => testsToMerge['#.' + name] = commonTests(name));
+  function specificTests(name, data) {
+    return {
+      ['#.' + name]: {
+        'it should return all the relevant edges.': function() {
+          const edges = graph[name]();
 
-  return deepMerge(testsToMerge, {
-    '#.edges': {
+          assert.deepEqual(edges, data.all);
+        },
 
-      'it can return every edge\'s key.': function() {
-        const edges = graph.edges();
+        'it should return a node\'s relevant edges.': function() {
+          const edges = graph[name](data.node.key);
 
-        assert.deepEqual(edges, [
-          'J->T',
-          'J->M',
-          'C->J',
-          'M<->R',
-          'M<->J',
-          'J<->R',
-          'T<->M'
-        ]);
-      },
+          assert.deepEqual(edges, data.node.edges);
+        },
 
-      'it should return a node\'s edges.': function() {
-        assert.deepEqual(graph.edges('John'), [
-          'C->J',
-          'J->T',
-          'J->M',
-          'M<->J',
-          'J<->R'
-        ]);
+        'it should return a bunch of nodes\' relevant edges.': function() {
+          testBunches(data.bunch.keys, bunch => {
+            const edges = graph[name](bunch);
 
-        assert.deepEqual(graph.edges('Alone'), []);
-      },
-
-      'it can return the union of a bunch of nodes\' edges.': function() {
-        const edges = graph.edges([]);
+            assert(sameMembers(edges, data.bunch.edges));
+          });
+        }
       }
-    },
+    };
+  }
 
-    '#.inEdges': {
+  const tests = {};
 
-      'it can return every directed edge\'s key.': function() {
-        const edges = graph.inEdges();
+  // Common tests
+  METHODS.forEach(name => deepMerge(tests, commonTests(name)));
 
-        assert.deepEqual(edges, [
-          'J->T',
-          'J->M',
-          'C->J'
-        ]);
-      },
+  // Specific tests
+  for (const name in TEST_DATA)
+    deepMerge(tests, specificTests(name, TEST_DATA[name]));
 
-      'it should return a node\'s in edges.': function() {
-        assert.deepEqual(graph.inEdges('John'), [
-          'C->J',
-        ]);
-
-        assert.deepEqual(graph.inEdges('Alone'), []);
-      }
-    },
-
-    '#.outEdges': {
-
-      'it can return every directed edge\'s key.': function() {
-        const edges = graph.outEdges();
-
-        assert.deepEqual(edges, [
-          'J->T',
-          'J->M',
-          'C->J'
-        ]);
-      },
-
-      'it should return a node\'s out edges.': function() {
-        assert.deepEqual(graph.outEdges('John'), [
-          'J->T',
-          'J->M'
-        ]);
-
-        assert.deepEqual(graph.outEdges('Alone'), []);
-      }
-    },
-
-    '#.inboundEdges': {
-
-      'it can return every edge\'s key.': function() {
-        const edges = graph.inboundEdges();
-
-        assert.deepEqual(edges, [
-          'J->T',
-          'J->M',
-          'C->J',
-          'M<->R',
-          'M<->J',
-          'J<->R',
-          'T<->M'
-        ]);
-      },
-
-      'it should return a node\'s outbound edges.': function() {
-        assert.deepEqual(graph.inboundEdges('John'), [
-          'C->J',
-          'M<->J'
-        ]);
-
-        assert.deepEqual(graph.inboundEdges('Alone'), []);
-      }
-    },
-
-    '#.outboundEdges': {
-
-      'it can return every edge\'s key.': function() {
-        const edges = graph.outboundEdges();
-
-        assert.deepEqual(edges, [
-          'J->T',
-          'J->M',
-          'C->J',
-          'M<->R',
-          'M<->J',
-          'J<->R',
-          'T<->M'
-        ]);
-      },
-
-      'it should return a node\'s outbound edges.': function() {
-        assert.deepEqual(graph.outboundEdges('John'), [
-          'J->T',
-          'J->M',
-          'J<->R'
-        ]);
-
-        assert.deepEqual(graph.outboundEdges('Alone'), []);
-      }
-    },
-
-    '#.directedEdges': {
-
-      'it can return every directed edge\'s key.': function() {
-        const edges = graph.directedEdges();
-
-        assert.deepEqual(edges, [
-          'J->T',
-          'J->M',
-          'C->J'
-        ]);
-      },
-
-      'it should return a node\'s directed edges.': function() {
-        assert.deepEqual(graph.directedEdges('John'), [
-          'C->J',
-          'J->T',
-          'J->M'
-        ]);
-
-        assert.deepEqual(graph.directedEdges('Alone'), []);
-      }
-    },
-
-    '#.undirectedEdges': {
-
-      'it can return every undirected edge\'s key.': function() {
-        const edges = graph.undirectedEdges();
-
-        assert.deepEqual(edges, [
-          'M<->R',
-          'M<->J',
-          'J<->R',
-          'T<->M'
-        ]);
-      },
-
-      'it should return a node\'s undirected edges.': function() {
-        assert.deepEqual(graph.undirectedEdges('John'), [
-          'M<->J',
-          'J<->R'
-        ]);
-
-        assert.deepEqual(graph.undirectedEdges('Alone'), []);
-      }
-    }
-  });
+  return tests;
 }

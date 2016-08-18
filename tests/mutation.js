@@ -51,7 +51,7 @@ export default function mutation(Graph) {
 
       'it should be possible to add nodes from various bunches.': function() {
 
-        testBunches({Eliot: {age: 34}, Jasmin: {age: 25}}, (attr, type, bunch) => {
+        testBunches({Eliot: {age: 34}, Jasmin: {age: 25}}, (bunch, attr) => {
           const graph = new Graph();
           graph.addNodesFrom(bunch);
 
