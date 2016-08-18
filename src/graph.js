@@ -40,6 +40,7 @@ import {
 // TODO: create own errors
 // TODO: relations index should be only about existence or count of edges
 // TODO: hasEdge has changed heuristics
+// TODO: discuss Directed === s -> t plus t -> s possible?
 
 /**
  * Enums.
@@ -1392,7 +1393,7 @@ function attachNodeDerivedFinder(Class, description) {
  */
 FINDERS.forEach(description => attachNodeDerivedFinder(Graph, description));
 
-function edgeArrayCreator(graph, type) {
+function createEdgeArray(graph, type) {
   if (graph.map) {
     if (type === 'mixed')
       return [...graph._edges.keys()];
@@ -1438,7 +1439,7 @@ function collectEdges(object) {
   return edges;
 }
 
-function edgeArrayCreatorForNode(graph, type, direction, node) {
+function createEdgeArrayForNode(graph, type, direction, node) {
 
   // For this, we need to compute the "relations" index
   graph.computeIndex('relations');
@@ -1513,7 +1514,7 @@ function mergeEdges(set, object) {
   }
 }
 
-function edgeArrayCreatorForBunch(name, graph, type, direction, bunch) {
+function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
 
   // For this, we need to compute the "relations" index
   graph.computeIndex('relations');
@@ -1523,6 +1524,7 @@ function edgeArrayCreatorForBunch(name, graph, type, direction, bunch) {
 
   if (graph.map) {
 
+    // TODO
     return [...edges];
   }
   else {
@@ -1557,6 +1559,42 @@ function edgeArrayCreatorForBunch(name, graph, type, direction, bunch) {
   }
 }
 
+function createEdgeArrayForPath(graph, type, source, target) {
+
+  // For this, we need to compute the "relations" index
+  graph.computeIndex('relations');
+  const indexData = graph._indexes.relations.data;
+
+  if (graph.map) {
+
+    // TODO
+    return [];
+  }
+  else {
+
+    if (!(source in indexData))
+      return [];
+
+    const sourceData = indexData[source];
+
+    let edges = [];
+
+    if (type === 'mixed' || type === 'directed') {
+      edges = edges
+        .concat(sourceData.in[target] || [])
+        .concat(sourceData.out[target] || []);
+    }
+
+    if (type === 'mixed' || type === 'undirected') {
+      edges = edges
+        .concat(sourceData.undirectedIn[target] || [])
+        .concat(sourceData.undirectedOut[target] || []);
+    }
+
+    return edges;
+  }
+}
+
 function attachEdgeArrayCreator(Class, description) {
   const {
     name,
@@ -1566,7 +1604,7 @@ function attachEdgeArrayCreator(Class, description) {
 
   Class.prototype[name] = function(...args) {
     if (!args.length)
-      return edgeArrayCreator(this, type);
+      return createEdgeArray(this, type);
 
     if (args.length === 1) {
       const nodeOrBunch = args[0];
@@ -1574,12 +1612,23 @@ function attachEdgeArrayCreator(Class, description) {
       if (this.hasNode(nodeOrBunch)) {
 
         // Iterating over a node's edges
-        return edgeArrayCreatorForNode(this, type, direction, nodeOrBunch);
+        return createEdgeArrayForNode(
+          this,
+          type,
+          direction,
+          nodeOrBunch
+        );
       }
       else if (isBunch(nodeOrBunch)) {
 
         // Iterating over the union of a node's edges
-        return edgeArrayCreatorForBunch(name, this, type, direction, nodeOrBunch);
+        return createEdgeArrayForBunch(
+          name,
+          this,
+          type,
+          direction,
+          nodeOrBunch
+        );
       }
       else {
         throw Error(`Graph.${name}: could not find the "${nodeOrBunch}" node in the graph.`);
@@ -1596,7 +1645,23 @@ function attachEdgeArrayCreator(Class, description) {
         throw Error(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
 
       // Iterating over the edges between source & target
-      return;
+      let hasEdge;
+
+      if (type === 'mixed' || type === 'directed')
+        hasEdge = this.hasDirectedEdge(source, target);
+      else
+        hasEdge = this.hasUndirectedEdge(source, target);
+
+      // If no such edge exist, we'll stop right there.
+      if (!hasEdge)
+        return [];
+
+      return createEdgeArrayForPath(
+        this,
+        type,
+        source,
+        target
+      );
     }
 
     throw Error(`Graph.${name}: too many arguments (expecting 1 or 2 and got ${args.length}).`);
@@ -1614,7 +1679,7 @@ EDGES_ITERATION.forEach(description => attachEdgeArrayCreator(Graph, description
  * @return {boolean}       - The entry.
  */
 Graph.isGraph = function(value) {
-  if (!value || typeof value !== 'object')
+  if (!value || typeof value !== 'object')
     return false;
 
   for (let i = 0, l = IDENTITY_KEYS.length; i < l; i++) {

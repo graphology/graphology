@@ -84,6 +84,14 @@ export default function edgesIteration(Graph) {
           'T<->M',
           'J<->R'
         ]
+      },
+      path: {
+        source: 'John',
+        target: 'Martha',
+        edges: [
+          'J->M',
+          'M<->J'
+        ]
       }
     },
     inEdges: {
@@ -99,6 +107,13 @@ export default function edgesIteration(Graph) {
         edges: [
           'J->T',
           'C->J'
+        ]
+      },
+      path: {
+        source: 'John',
+        target: 'Martha',
+        edges: [
+          'J->M'
         ]
       }
     },
@@ -118,6 +133,13 @@ export default function edgesIteration(Graph) {
           'J->M',
           'C->J'
         ]
+      },
+      path: {
+        source: 'John',
+        target: 'Martha',
+        edges: [
+          'J->M'
+        ]
       }
     },
     inboundEdges: {
@@ -134,6 +156,14 @@ export default function edgesIteration(Graph) {
         edges: [
           'J->T',
           'C->J',
+          'M<->J'
+        ]
+      },
+      path: {
+        source: 'John',
+        target: 'Martha',
+        edges: [
+          'J->M',
           'M<->J'
         ]
       }
@@ -157,6 +187,14 @@ export default function edgesIteration(Graph) {
           'M<->R',
           'M<->J'
         ]
+      },
+      path: {
+        source: 'John',
+        target: 'Martha',
+        edges: [
+          'J->M',
+          'M<->J'
+        ]
       }
     },
     directedEdges: {
@@ -174,6 +212,13 @@ export default function edgesIteration(Graph) {
         edges: [
           'C->J',
           'J->T',
+          'J->M'
+        ]
+      },
+      path: {
+        source: 'John',
+        target: 'Martha',
+        edges: [
           'J->M'
         ]
       }
@@ -194,6 +239,13 @@ export default function edgesIteration(Graph) {
           'M<->J',
           'J<->R',
           'T<->M',
+        ]
+      },
+      path: {
+        source: 'John',
+        target: 'Martha',
+        edges: [
+          'M<->J'
         ]
       }
     }
@@ -218,6 +270,16 @@ export default function edgesIteration(Graph) {
           assert.throws(function() {
             graph[name](['Test']);
           }, /bunch/);
+        },
+
+        'it should throw if either source or target is not found.': function() {
+          assert.throws(function() {
+            graph[name]('Test', 'Alone');
+          }, /find/);
+
+          assert.throws(function() {
+            graph[name]('Alone', 'Test');
+          }, /find/);
         }
       }
     };
@@ -246,6 +308,17 @@ export default function edgesIteration(Graph) {
             assert(sameMembers(edges, data.bunch.edges));
             assert.deepEqual(graph[name](['Forever', 'Alone']), []);
           });
+        },
+
+        'it should return all the relevant edges between source & target.': function() {
+          // TEMP
+          if (!data.path)
+            return;
+
+          const edges = graph[name](data.path.source, data.path.target);
+
+          assert(sameMembers(edges, data.path.edges));
+          assert.deepEqual(graph[name]('Forever', 'Alone'), []);
         }
       }
     };
