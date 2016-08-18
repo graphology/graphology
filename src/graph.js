@@ -1465,8 +1465,9 @@ function createEdgeArrayForNode(graph, type, direction, node) {
 
     if (type === 'mixed' || type === 'directed') {
 
-      if (!direction || direction === 'in')
+      if (!direction || direction === 'in') {
         edges = edges.concat(collectEdges(nodeData.in));
+      }
       if (!direction || direction === 'out')
         edges = edges.concat(collectEdges(nodeData.out));
     }
