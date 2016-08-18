@@ -8,6 +8,7 @@
  * over the object/map manipulation, it does not for performance reasons.
  */
 import {EventEmitter} from 'events';
+import {EDGES_ITERATION} from './iteration';
 import {FINDERS, REDUCERS} from './reducers';
 import {
   BasicSet,
@@ -31,6 +32,7 @@ import {
 // TODO: indicate that iterator will only work on recent engines
 // TODO: create test abstraction to test bunches & iterators
 // TODO: drop createiterator from docs
+// TODO: possibility to optimize edge iteration by stocking in separated indexes for directed etc.
 
 /**
  * Enums.
@@ -905,6 +907,18 @@ export default class Graph extends EventEmitter {
     );
   }
 
+  /**
+   * Method used to drop a single node & all its attached edges from the graph.
+   *
+   * @param  {any}    node - The node.
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if the node doesn't exist.
+   */
+  dropNode() {
+
+  }
+
   /**---------------------------------------------------------------------------
    * Attributes
    **---------------------------------------------------------------------------
@@ -1247,12 +1261,11 @@ REDUCERS.forEach(description => attachNodeDerivedReducer(Graph, description));
  * Finder (breakable reducer) for nodes.
  *
  * @param  {Graph}    graph     - Graph instance.
- * @param  {string}   name      - Name of the method.
  * @param  {function} predicate - Predicate.
  * @param  {boolean}  reversed  - Should we reverse the predicate?
  * @return {mixed}
  */
-function nodeFinder(graph, name, predicate, reversed = false) {
+function nodeFinder(graph, predicate, reversed = false) {
   let i = 0;
 
   if (graph.map) {
@@ -1303,7 +1316,6 @@ function attachNodeDerivedFinder(Class, description) {
 
     const result = nodeFinder(
       this,
-      name,
       predicate,
       !!description.reversed
     );
@@ -1316,3 +1328,76 @@ function attachNodeDerivedFinder(Class, description) {
  * Attaching the nodes derived finders.
  */
 FINDERS.forEach(description => attachNodeDerivedFinder(Graph, description));
+
+function edgeArrayCreator(graph, predicate) {
+  if (graph.map) {
+    if (predicate === null)
+      return [...graph._edges.keys()];
+
+    const list = [];
+
+    graph._edges.forEach((data, edge) => {
+
+      const keep = predicate(data);
+
+      if (keep)
+        list.push(edge);
+    });
+  }
+  else {
+    if (predicate === null)
+      return Object.keys(graph._edges);
+
+    const list = [];
+
+    for (const edge in graph._edges) {
+      const keep = predicate(graph._edges[edge]);
+
+      if (keep)
+        list.push(edge);
+    }
+
+    return list;
+  }
+}
+
+function attachEdgeArrayCreator(Class, description) {
+  const {
+    name,
+    predicate
+  } = description;
+
+  Class.prototype[name] = function(...args) {
+    if (!args.length)
+      return edgeArrayCreator(this, predicate);
+
+    if (args.length === 1) {
+      const nodeOrBunch = args[0];
+
+      if (this.hasNode(nodeOrBunch)) {
+
+        // Iterating over a node's edges
+        return;
+      }
+      else if (isBunch(nodeOrBunch)) {
+
+        // Iterating over the union of a node's edges
+        return;
+      }
+      else {
+        throw Error(`Graph.${name}:  could not find the "${nodeOrBunch}" node in the graph.`);
+      }
+    }
+
+    if (args.length === 2) {
+      const [source, target] = args;
+
+      // Iterating over the edges between source & target
+      return;
+    }
+
+    throw Error(`Graph.${name}: too many arguments (expecting 1 or 2 and got ${args.length}).`);
+  };
+}
+
+EDGES_ITERATION.forEach(description => attachEdgeArrayCreator(Graph, description));
