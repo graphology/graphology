@@ -30,6 +30,7 @@ import {
 // TODO: reinstate that keys have the same problem that JS objects
 // TODO: indicate that iterator will only work on recent engines
 // TODO: create test abstraction to test bunches & iterators
+// TODO: drop createiterator from docs
 
 /**
  * Enums.
@@ -394,13 +395,119 @@ export default class Graph extends EventEmitter {
    * Method returning the given node's in degree.
    *
    * @param  {any}     node      - The node's key.
-   * @param  {boolean} selfLoosp - Count self-loops?
+   * @param  {boolean} selfLoops - Count self-loops?
    * @return {number}            - The node's in degree.
    *
+   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
    * @throws {Error} - Will throw if the node isn't in the graph.
    */
-  inDegree(node, selfLoops) {
+  inDegree(node, selfLoops = true) {
+    if (typeof selfLoops !== 'boolean')
+      throw Error(`Graph.inDegree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`);
 
+    if (!this.hasNode(node))
+      throw Error(`Graph.inDegree: could not find the "${node}" node in the graph.`);
+
+    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+
+    return data.inDegree + (selfLoops ? data.selfLoops : 0);
+  }
+
+  /**
+   * Method returning the given node's out degree.
+   *
+   * @param  {any}     node      - The node's key.
+   * @param  {boolean} selfLoops - Count self-loops?
+   * @return {number}            - The node's out degree.
+   *
+   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  outDegree(node, selfLoops = true) {
+    if (typeof selfLoops !== 'boolean')
+      throw Error(`Graph.outDegree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`);
+
+    if (!this.hasNode(node))
+      throw Error(`Graph.outDegree: could not find the "${node}" node in the graph.`);
+
+    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+
+    return data.outDegree + (selfLoops ? data.selfLoops : 0);
+  }
+
+  /**
+   * Method returning the given node's directed degree.
+   *
+   * @param  {any}     node      - The node's key.
+   * @param  {boolean} selfLoops - Count self-loops?
+   * @return {number}            - The node's directed degree.
+   *
+   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  directedDegree(node, selfLoops = true) {
+    if (typeof selfLoops !== 'boolean')
+      throw Error(`Graph.directedDegree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`);
+
+    if (!this.hasNode(node))
+      throw Error(`Graph.directedDegree: could not find the "${node}" node in the graph.`);
+
+    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+
+    return (
+      data.outDegree + data.inDegree +
+      (selfLoops ? data.selfLoops : 0)
+    );
+  }
+
+  /**
+   * Method returning the given node's undirected degree.
+   *
+   * @param  {any}     node      - The node's key.
+   * @param  {boolean} selfLoops - Count self-loops?
+   * @return {number}            - The node's undirected degree.
+   *
+   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  undirectedDegree(node, selfLoops = true) {
+    if (typeof selfLoops !== 'boolean')
+      throw Error(`Graph.undirectedDegree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`);
+
+    if (!this.hasNode(node))
+      throw Error(`Graph.undirectedDegree: could not find the "${node}" node in the graph.`);
+
+    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+
+    return (
+      data.undirectedDegree +
+      (selfLoops ? data.selfLoops : 0)
+    );
+  }
+
+  /**
+   * Method returning the given node's degree.
+   *
+   * @param  {any}     node      - The node's key.
+   * @param  {boolean} selfLoops - Count self-loops?
+   * @return {number}            - The node's degree.
+   *
+   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  degree(node, selfLoops = true) {
+    if (typeof selfLoops !== 'boolean')
+      throw Error(`Graph.degree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`);
+
+    if (!this.hasNode(node))
+      throw Error(`Graph.degree: could not find the "${node}" node in the graph.`);
+
+    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+
+    return (
+      data.outDegree + data.inDegree + data.undirectedDegree +
+      (selfLoops ? data.selfLoops : 0)
+    );
   }
 
   /**
@@ -631,17 +738,19 @@ export default class Graph extends EventEmitter {
     const sourceData = this.map ? this._nodes.get(source) : this._nodes[source],
           targetData = this.map ? this._nodes.get(target) : this._nodes[target];
 
-    if (undirected) {
-      sourceData.undirectedDegree++;
-      targetData.undirectedDegree++;
+    if (source === target) {
+      sourceData.selfLoops++;
     }
     else {
-      sourceData.outDegree++;
-      targetData.inDegree++;
+      if (undirected) {
+        sourceData.undirectedDegree++;
+        targetData.undirectedDegree++;
+      }
+      else {
+        sourceData.outDegree++;
+        targetData.inDegree++;
+      }
     }
-
-    if (source === target)
-      sourceData.selfLoops++;
 
     // Updating relevant indexes
     this.updateIndex('relations', edge);

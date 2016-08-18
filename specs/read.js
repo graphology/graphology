@@ -314,6 +314,187 @@ export default function read(Graph) {
         assert.strictEqual(graph.undirected(directedEdge), false);
         assert.strictEqual(graph.undirected(undirectedEdge), true);
       }
+    },
+
+    'Degree': {
+      '#.inDegree': {
+
+        'it should throw if the second argument is not boolean.': function() {
+          const graph = new Graph();
+          graph.addNode('Rahn');
+
+          assert.throws(function() {
+            graph.inDegree('Rahn', 'test');
+          }, /boolean/);
+        },
+
+        'it should throw if the node is not found in the graph.': function() {
+          const graph = new Graph();
+
+          assert.throws(function() {
+            graph.inDegree('Test');
+          }, /node/);
+        },
+
+        'it should return the correct in degree.': function() {
+          const graph = new Graph();
+          graph.addNodesFrom(['Helen', 'Sue', 'William', 'John']);
+          graph.addDirectedEdge('Helen', 'Sue');
+          graph.addDirectedEdge('William', 'Sue');
+
+          assert.strictEqual(graph.inDegree('Sue'), 2);
+
+          graph.addDirectedEdge('Sue', 'Sue');
+
+          assert.strictEqual(graph.inDegree('Sue'), 3);
+          assert.strictEqual(graph.inDegree('Sue', false), 2);
+        }
+      },
+
+      '#.outDegree': {
+        'it should throw if the second argument is not boolean.': function() {
+          const graph = new Graph();
+          graph.addNode('Rahn');
+
+          assert.throws(function() {
+            graph.outDegree('Rahn', 'test');
+          }, /boolean/);
+        },
+
+        'it should throw if the node is not found in the graph.': function() {
+          const graph = new Graph();
+
+          assert.throws(function() {
+            graph.outDegree('Test');
+          }, /node/);
+        },
+
+        'it should return the correct out degree.': function() {
+          const graph = new Graph();
+          graph.addNodesFrom(['Helen', 'Sue', 'William', 'John']);
+          graph.addDirectedEdge('Helen', 'Sue');
+          graph.addDirectedEdge('Helen', 'William');
+
+          assert.strictEqual(graph.outDegree('Helen'), 2);
+
+          graph.addDirectedEdge('Helen', 'Helen');
+
+          assert.strictEqual(graph.outDegree('Helen'), 3);
+          assert.strictEqual(graph.outDegree('Helen', false), 2);
+        }
+      },
+
+      '#.directedDegree': {
+        'it should throw if the second argument is not boolean.': function() {
+          const graph = new Graph();
+          graph.addNode('Rahn');
+
+          assert.throws(function() {
+            graph.directedDegree('Rahn', 'test');
+          }, /boolean/);
+        },
+
+        'it should throw if the node is not found in the graph.': function() {
+          const graph = new Graph();
+
+          assert.throws(function() {
+            graph.directedDegree('Test');
+          }, /node/);
+        },
+
+        'it should return the correct directed degree.': function() {
+          const graph = new Graph();
+          graph.addNodesFrom(['Helen', 'Sue', 'William', 'John', 'Martha']);
+          graph.addDirectedEdge('Helen', 'Sue');
+          graph.addDirectedEdge('Helen', 'William');
+          graph.addDirectedEdge('Martha', 'Helen');
+          graph.addUndirectedEdge('Helen', 'John');
+
+          assert.strictEqual(graph.directedDegree('Helen'), 3);
+          assert.strictEqual(
+            graph.directedDegree('Helen'),
+            graph.inDegree('Helen') + graph.outDegree('Helen')
+          );
+
+          graph.addDirectedEdge('Helen', 'Helen');
+
+          assert.strictEqual(graph.directedDegree('Helen'), 4);
+          assert.strictEqual(graph.directedDegree('Helen', false), 3);
+        }
+      },
+
+      '#.undirectedDegree': {
+        'it should throw if the second argument is not boolean.': function() {
+          const graph = new Graph();
+          graph.addNode('Rahn');
+
+          assert.throws(function() {
+            graph.undirectedDegree('Rahn', 'test');
+          }, /boolean/);
+        },
+
+        'it should throw if the node is not found in the graph.': function() {
+          const graph = new Graph();
+
+          assert.throws(function() {
+            graph.undirectedDegree('Test');
+          }, /node/);
+        },
+
+        'it should return the correct undirected degree.': function() {
+          const graph = new Graph();
+          graph.addNodesFrom(['Helen', 'Sue', 'William', 'John']);
+          graph.addDirectedEdge('Helen', 'Sue');
+          graph.addDirectedEdge('Helen', 'William');
+          graph.addUndirectedEdge('Helen', 'John');
+
+          assert.strictEqual(graph.undirectedDegree('Helen'), 1);
+
+          graph.addUndirectedEdge('Helen', 'Helen');
+
+          assert.strictEqual(graph.undirectedDegree('Helen'), 2);
+          assert.strictEqual(graph.undirectedDegree('Helen', false), 1);
+        }
+      },
+
+      '#.degree': {
+        'it should throw if the second argument is not boolean.': function() {
+          const graph = new Graph();
+          graph.addNode('Rahn');
+
+          assert.throws(function() {
+            graph.degree('Rahn', 'test');
+          }, /boolean/);
+        },
+
+        'it should throw if the node is not found in the graph.': function() {
+          const graph = new Graph();
+
+          assert.throws(function() {
+            graph.degree('Test');
+          }, /node/);
+        },
+
+        'it should return the correct degree.': function() {
+          const graph = new Graph();
+          graph.addNodesFrom(['Helen', 'Sue', 'William', 'John', 'Martha']);
+          graph.addDirectedEdge('Helen', 'Sue');
+          graph.addDirectedEdge('Helen', 'William');
+          graph.addDirectedEdge('Martha', 'Helen');
+          graph.addUndirectedEdge('Helen', 'John');
+
+          assert.strictEqual(graph.degree('Helen'), 4);
+          assert.strictEqual(
+            graph.degree('Helen'),
+            graph.directedDegree('Helen') + graph.undirectedDegree('Helen')
+          );
+
+          graph.addUndirectedEdge('Helen', 'Helen');
+
+          assert.strictEqual(graph.degree('Helen'), 5);
+          assert.strictEqual(graph.degree('Helen', false), 4);
+        }
+      }
     }
   };
 }

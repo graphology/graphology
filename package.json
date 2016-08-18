@@ -2,8 +2,9 @@
   "name": "graphlib",
   "version": "0.0.1",
   "description": "RDD about a graph library for JavaScript.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "dist": "babel src --out-dir dist",
     "docs:build": "npm run docs:prepare && gitbook build",
     "docs:clean": "rimraf _book",
     "docs:prepare": "gitbook install",
@@ -29,6 +30,7 @@
   "homepage": "https://github.com/medialab/graphlib#readme",
   "devDependencies": {
     "@yomguithereal/eslint-config": "^3.0.0",
+    "babel-cli": "^6.11.4",
     "babel-core": "^6.13.2",
     "babel-plugin-transform-es2015-destructuring": "^6.9.0",
     "babel-preset-es2015": "^6.13.2",
