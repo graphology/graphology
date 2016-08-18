@@ -348,6 +348,13 @@ export default function edgesIteration(Graph) {
             assert.strictEqual(graph[counterName](bunch), data.bunch.edges.length);
             assert.deepEqual(graph[counterName](['Forever', 'Alone']), 0);
           });
+        },
+
+        'it should count all the relevant edges between source & target.': function() {
+          const nb = graph[counterName](data.path.source, data.path.target);
+
+          assert.strictEqual(nb, data.path.edges.length);
+          assert.deepEqual(graph[counterName]('Forever', 'Alone'), 0);
         }
       }
     };

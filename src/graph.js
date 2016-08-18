@@ -40,6 +40,7 @@ import {
 // TODO: relations index should be only about existence or count of edges
 // TODO: hasEdge has changed heuristics
 // TODO: discuss Directed === s -> t plus t -> s possible?
+// TODO: possible to optimize the index by flattening to matrices
 
 /**
  * Enums.
@@ -1433,17 +1434,26 @@ function createEdgeArray(count, graph, type) {
   return count ? nb : list;
 }
 
-function collectEdges(object) {
+function collectEdges(object, key) {
   const edges = [];
 
+  const hasKey = arguments.length > 1;
+
   if (typeof Map === 'function' && object instanceof Map) {
+    if (hasKey)
+      return (object.get(key) || []);
+
     object.forEach(function(value) {
       edges.push.apply(edges, value);
     });
   }
   else {
-    for (const node in object)
+    if (hasKey)
+      return (object[key] || []);
+
+    for (const node in object) {
       edges.push.apply(edges, object[node]);
+    }
   }
 
   return edges;
@@ -1464,13 +1474,21 @@ function mergeEdges(set, object) {
   }
 }
 
-function countEdges(object) {
+function countEdges(object, key) {
   let nb = 0;
 
-  if (typeof Map === 'function' && object instanceof Map)
+  const hasKey = arguments.length > 1;
+
+  if (typeof Map === 'function' && object instanceof Map) {
+    if (hasKey)
+      return (object.get(key) || []).length;
     nb += object.size;
-  else
+  }
+  else {
+    if (hasKey)
+      return (object[key] || []).length;
     nb += Object.keys(object).length;
+  }
 
   return nb;
 }
@@ -1507,7 +1525,7 @@ function createEdgeArrayForNode(count, graph, type, direction, node) {
     }
     if (!direction || direction === 'out') {
       if (count)
-        nb += countEdges(nodeData.out)
+        nb += countEdges(nodeData.out);
       else
         edges = edges.concat(collectEdges(nodeData.out));
     }
@@ -1523,7 +1541,7 @@ function createEdgeArrayForNode(count, graph, type, direction, node) {
     }
     if (!direction || direction === 'out') {
       if (count)
-        nb += countEdges(nodeData.undirectedOut)
+        nb += countEdges(nodeData.undirectedOut);
       else
         edges = edges.concat(collectEdges(nodeData.undirectedOut));
     }
@@ -1577,40 +1595,54 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
   return edges.values();
 }
 
-function createEdgeArrayForPath(graph, type, source, target) {
+function createEdgeArrayForPath(count, graph, type, source, target) {
 
   // For this, we need to compute the "relations" index
   graph.computeIndex('relations');
   const indexData = graph._indexes.relations.data;
 
-  let edges = [];
+  let edges = [],
+      nb = 0;
+
+  let sourceData;
 
   if (graph.map) {
-
-    // TODO
-    return [];
+    if (!indexData.has(source))
+      return count ? nb : edges;
+    sourceData = indexData.get(source);
   }
   else {
-
     if (!(source in indexData))
-      return [];
+      return count ? nb : edges;
+    sourceData = indexData[source];
+  }
 
-    const sourceData = indexData[source];
+  if (type === 'mixed' || type === 'directed') {
 
-    if (type === 'mixed' || type === 'directed') {
-      edges = edges
-        .concat(sourceData.in[target] || [])
-        .concat(sourceData.out[target] || []);
+    if (count) {
+      nb += countEdges(sourceData.in, target);
+      nb += countEdges(sourceData.out, target);
     }
-
-    if (type === 'mixed' || type === 'undirected') {
+    else {
       edges = edges
-        .concat(sourceData.undirectedIn[target] || [])
-        .concat(sourceData.undirectedOut[target] || []);
+        .concat(collectEdges(sourceData.in, target))
+        .concat(collectEdges(sourceData.out, target));
     }
   }
 
-  return edges;
+  if (type === 'mixed' || type === 'undirected') {
+    if (count) {
+      nb += countEdges(sourceData.undirectedIn, target);
+      nb += countEdges(sourceData.undirectedOut, target);
+    }
+    else {
+      edges = edges
+        .concat(collectEdges(sourceData.undirectedIn, target))
+        .concat(collectEdges(sourceData.undirectedOut, target));
+    }
+  }
+
+  return count ? nb : edges;
 }
 
 function attachEdgeArrayCreator(Class, counter, description) {
@@ -1619,7 +1651,7 @@ function attachEdgeArrayCreator(Class, counter, description) {
     direction
   } = description;
 
-  let name = counter ? description.counter : description.name;
+  const name = counter ? description.counter : description.name;
 
   Class.prototype[name] = function(...args) {
     if (!args.length)
@@ -1680,9 +1712,10 @@ function attachEdgeArrayCreator(Class, counter, description) {
 
       // If no such edge exist, we'll stop right there.
       if (!hasEdge)
-        return [];
+        return counter ? 0 : [];
 
       return createEdgeArrayForPath(
+        counter,
         this,
         type,
         source,
@@ -1695,6 +1728,6 @@ function attachEdgeArrayCreator(Class, counter, description) {
 }
 
 EDGES_ITERATION.forEach(description => {
-  attachEdgeArrayCreator(Graph, false, description),
-  attachEdgeArrayCreator(Graph, true, description)
+  attachEdgeArrayCreator(Graph, false, description);
+  attachEdgeArrayCreator(Graph, true, description);
 });
