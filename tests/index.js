@@ -10,7 +10,8 @@ import read from './read';
 import mutation from './mutation';
 import attributes from './attributes';
 import iteration from './iteration';
-import knownMethods from './known-methods';
+import knownMethods from './known';
+import staticMethods from './static';
 
 /**
  * Returning the unit tests to run.
@@ -31,6 +32,7 @@ export default function specs(path) {
     'Read': read(Graph),
     'Attributes': attributes(Graph),
     'Iteration': iteration(Graph),
-    'Known Methods': knownMethods(Graph)
+    'Known Methods': knownMethods(Graph),
+    'Static': staticMethods(Graph)
   };
 }

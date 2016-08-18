@@ -19,6 +19,7 @@ const METHODS = [
 
 export default function edgesIteration(Graph) {
   const graph = new Graph(null, {multi: true});
+
   graph.addNodesFrom([
     'John',
     'Thomas',
