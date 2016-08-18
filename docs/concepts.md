@@ -106,6 +106,7 @@ While the present specification doesn't cover the case of an immutable graph, it
 * Make all the mutating methods returns the new graph.
 * Add a boolean `#.immutable` property to the object.
 * Make sure that the `onNodeDuplicate` & `onEdgeDuplicate` options return the new graph rather than mutating it.
+* Probably disable the event system since the reference will change whenever the graph is edited.
 
 ```js
 import ImmutableGraph from 'graphology-immutable';

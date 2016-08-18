@@ -35,6 +35,11 @@ import {
 // TODO: possibility to optimize edge iteration by stocking in separated indexes for directed etc.
 // TODO: precise order of iteration in both edges & neighbors (in -> out -> undirected)
 // TODO: document how to run the specs
+// TODO: change property name selfLoops
+// TODO: add Graph.isGraph
+// TODO: create own errors
+// TODO: relations index should be only about existence or count of edges
+// TODO: hasEdge has changed heuristics
 
 /**
  * Enums.
@@ -249,7 +254,7 @@ export default class Graph extends EventEmitter {
     if (this.map ? !index.has(source) : !(source in index))
       return;
 
-    // Is there an undirected edge pointing towards target?
+    // Is there an undirected edge linking our source & target
     const undirectedIn = this.map ? index.get(source).undirectedIn : index[source].undirectedIn,
           undirectedOut = this.map ? index.get(source).undirectedOut : index[source].undirectedOut,
           edges = (
@@ -274,6 +279,11 @@ export default class Graph extends EventEmitter {
 
     // First we try to find a directed edge
     edge = this.getDirectedEdge(source, target);
+
+    if (edge)
+      return edge;
+
+    edge = this.getDirectedEdge(target, source);
 
     if (edge)
       return edge;
@@ -400,6 +410,7 @@ export default class Graph extends EventEmitter {
     else if (arguments.length === 2) {
       return (
         this.hasDirectedEdge(source, target) ||
+        this.hasDirectedEdge(target, source) ||
         this.hasUndirectedEdge(source, target)
       );
     }
@@ -1198,22 +1209,58 @@ export default class Graph extends EventEmitter {
    *
    * @return {string} - String reprensation of the graph.
    */
-
-  // TODO: finish this when possible
   inspect() {
-    let nodes;
+    let nodes,
+        edges;
 
     if (this.map) {
       nodes = new Map();
       this._nodes.forEach(function(value, key) {
-        nodes.set(key, value.attributes);
+        const attributes = value.attributes;
+
+        nodes.set(key, Object.keys(attributes).length ? attributes : '<empty>');
+      });
+
+      edges = [];
+      this._edges.forEach(function(value, key) {
+
+        const formatted = [
+          key,
+          value.source,
+          value.undirected ? '<->' : '->',
+          value.target
+        ];
+
+        if (Object.keys(value.attributes).length)
+          formatted.push(value.attributes);
+
+        edges.push(formatted);
       });
     }
     else {
       nodes = {};
+      edges = [];
 
-      for (const k in this._nodes)
-        nodes[k] = this._nodes[k].attributes;
+      for (const k in this._nodes) {
+        const attributes = this._nodes[k].attributes;
+        nodes[k] = Object.keys(attributes).length ? attributes : '<empty>';
+      }
+
+      for (const k in this._edges) {
+        const value = this._edges[k];
+
+        const formatted = [
+          k,
+          value.source,
+          value.undirected ? '<->' : '->',
+          value.target
+        ];
+
+        if (Object.keys(value.attributes).length)
+          formatted.push(value.attributes);
+
+        edges.push(formatted);
+      }
     }
 
     const dummy = {};
@@ -1224,6 +1271,7 @@ export default class Graph extends EventEmitter {
     }
 
     dummy.nodes = nodes;
+    dummy.edges = edges;
 
     privateProperty(dummy, 'constructor', this.constructor);
 

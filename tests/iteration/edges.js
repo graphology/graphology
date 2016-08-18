@@ -18,7 +18,7 @@ const METHODS = [
 ];
 
 export default function edgesIteration(Graph) {
-  const graph = new Graph();
+  const graph = new Graph(null, {multi: true});
   graph.addNodesFrom([
     'John',
     'Thomas',
@@ -37,17 +37,32 @@ export default function edgesIteration(Graph) {
   graph.addUndirectedEdgeWithKey('J<->R', 'John', 'Roger');
   graph.addUndirectedEdgeWithKey('T<->M', 'Thomas', 'Martha');
 
+  const ALL_EDGES = [
+    'J->T',
+    'J->M',
+    'C->J',
+    'M<->R',
+    'M<->J',
+    'J<->R',
+    'T<->M'
+  ];
+
+  const ALL_DIRECTED_EDGES = [
+    'J->T',
+    'J->M',
+    'C->J'
+  ];
+
+  const ALL_UNDIRECTED_EDGES = [
+    'M<->R',
+    'M<->J',
+    'J<->R',
+    'T<->M'
+  ];
+
   const TEST_DATA = {
     edges: {
-      all: [
-        'J->T',
-        'J->M',
-        'C->J',
-        'M<->R',
-        'M<->J',
-        'J<->R',
-        'T<->M'
-      ],
+      all: ALL_EDGES,
       node: {
         key: 'John',
         edges: [

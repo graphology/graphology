@@ -128,6 +128,18 @@ export default function mutation(Graph) {
         assert.throws(function() {
           graph.addDirectedEdge('Thomas', 'Martha');
         }, /exist/);
+
+        assert.throws(function() {
+          graph.addUndirectedEdge('Thomas', 'Martha');
+        }, /exist/);
+
+        assert.throws(function() {
+          graph.addDirectedEdgeWithKey('T->M', 'Thomas', 'Martha');
+        }, /exist/);
+
+        assert.throws(function() {
+          graph.addUndirectedEdgeWithKey('T<->M', 'Thomas', 'Martha');
+        }, /exist/);
       },
 
       'it should return the generated edge\'s key.': function() {
