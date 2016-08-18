@@ -945,6 +945,29 @@ export default class Graph extends EventEmitter {
 
   }
 
+  /**
+   * Method used to remove every edge & every node from the graph.
+   *
+   * @return {Graph}
+   */
+  clear() {
+
+    // Dropping edges
+    this._edges = this.map ? new Map() : {};
+
+    // Dropping nodes
+    this._nodes = this.map ? new Map() : {};
+
+    // Clearing index
+    this.clearIndex('relations');
+
+    // Resetting counters
+    this._order = 0;
+    this._size = 0;
+
+    // TODO: if index precomputed, activate it
+  }
+
   /**---------------------------------------------------------------------------
    * Attributes
    **---------------------------------------------------------------------------

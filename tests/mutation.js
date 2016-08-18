@@ -249,6 +249,42 @@ export default function mutation(Graph) {
 
         assert(graph.undirected(edge));
       }
+    },
+
+    '#.clear': {
+
+      'it should empty the graph.': function() {
+        const graph = new Graph();
+
+        graph.addNodesFrom(['Lindsay', 'Martha']);
+        const edge = graph.addEdge('Lindsay', 'Martha');
+
+        graph.clear();
+
+        assert.strictEqual(graph.order, 0);
+        assert.strictEqual(graph.size, 0);
+        assert.strictEqual(graph.hasNode('Lindsay'), false);
+        assert.strictEqual(graph.hasNode('Martha'), false);
+        assert.strictEqual(graph.hasEdge(edge), false);
+      },
+
+      'it should be possible to use the graph normally afterwards.': function() {
+        const graph = new Graph();
+
+        graph.addNodesFrom(['Lindsay', 'Martha']);
+        graph.addEdge('Lindsay', 'Martha');
+
+        graph.clear();
+
+        graph.addNodesFrom(['Lindsay', 'Martha']);
+        const edge = graph.addEdge('Lindsay', 'Martha');
+
+        assert.strictEqual(graph.order, 2);
+        assert.strictEqual(graph.size, 1);
+        assert.strictEqual(graph.hasNode('Lindsay'), true);
+        assert.strictEqual(graph.hasNode('Martha'), true);
+        assert.strictEqual(graph.hasEdge(edge), true);
+      }
     }
   };
 }
