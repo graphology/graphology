@@ -25,7 +25,8 @@ export default function edgesIteration(Graph) {
     'Martha',
     'Roger',
     'Catherine',
-    'Alone'
+    'Alone',
+    'Forever'
   ]);
 
   graph.addDirectedEdgeWithKey('J->T', 'John', 'Thomas');
@@ -83,6 +84,117 @@ export default function edgesIteration(Graph) {
           'J<->R'
         ]
       }
+    },
+    inEdges: {
+      all: ALL_DIRECTED_EDGES,
+      node: {
+        key: 'John',
+        edges: [
+          'C->J'
+        ]
+      },
+      bunch: {
+        keys: ['Thomas', 'John'],
+        edges: [
+          'J->T',
+          'C->J'
+        ]
+      }
+    },
+    outEdges: {
+      all: ALL_DIRECTED_EDGES,
+      node: {
+        key: 'John',
+        edges: [
+          'J->T',
+          'J->M'
+        ]
+      },
+      bunch: {
+        keys: ['John', 'Catherine'],
+        edges: [
+          'J->T',
+          'J->M',
+          'C->J'
+        ]
+      }
+    },
+    inboundEdges: {
+      all: ALL_EDGES,
+      node: {
+        key: 'John',
+        edges: [
+          'C->J',
+          'M<->J'
+        ]
+      },
+      bunch: {
+        keys: ['Thomas', 'John'],
+        edges: [
+          'J->T',
+          'C->J',
+          'M<->J'
+        ]
+      }
+    },
+    outboundEdges: {
+      all: ALL_EDGES,
+      node: {
+        key: 'John',
+        edges: [
+          'J->T',
+          'J->M',
+          'J<->R'
+        ]
+      },
+      bunch: {
+        keys: ['John', 'Martha'],
+        edges: [
+          'J->T',
+          'J->M',
+          'J<->R',
+          'M<->R',
+          'M<->J'
+        ]
+      }
+    },
+    directedEdges: {
+      all: ALL_DIRECTED_EDGES,
+      node: {
+        key: 'John',
+        edges: [
+          'C->J',
+          'J->T',
+          'J->M'
+        ]
+      },
+      bunch: {
+        keys: ['John', 'Catherine'],
+        edges: [
+          'C->J',
+          'J->T',
+          'J->M'
+        ]
+      }
+    },
+    undirectedEdges: {
+      all: ALL_UNDIRECTED_EDGES,
+      node: {
+        key: 'John',
+        edges: [
+          'M<->J',
+          'J<->R'
+        ]
+      },
+      bunch: {
+        keys: ['John', 'Martha'],
+        edges: [
+          'M<->R',
+          'M<->J',
+          'J<->R',
+          'T<->M',
+        ]
+      }
     }
   };
 
@@ -123,6 +235,7 @@ export default function edgesIteration(Graph) {
           const edges = graph[name](data.node.key);
 
           assert.deepEqual(edges, data.node.edges);
+          assert.deepEqual(graph[name]('Alone'), []);
         },
 
         'it should return a bunch of nodes\' relevant edges.': function() {
@@ -130,6 +243,7 @@ export default function edgesIteration(Graph) {
             const edges = graph[name](bunch);
 
             assert(sameMembers(edges, data.bunch.edges));
+            assert.deepEqual(graph[name](['Forever', 'Alone']), []);
           });
         }
       }
