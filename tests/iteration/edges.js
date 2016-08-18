@@ -333,6 +333,21 @@ export default function edgesIteration(Graph) {
           const nb = graph[counterName]();
 
           assert.strictEqual(nb, data.all.length);
+        },
+
+        'it should count all the relevant edges of a node.': function() {
+          const nb = graph[counterName](data.node.key);
+
+          assert.strictEqual(nb, data.node.edges.length);
+          assert.deepEqual(graph[counterName]('Alone'), 0);
+        },
+
+        'it should count a bunch of nodes\' relevant edges.': function() {
+          testBunches(data.bunch.keys, bunch => {
+
+            assert.strictEqual(graph[counterName](bunch), data.bunch.edges.length);
+            assert.deepEqual(graph[counterName](['Forever', 'Alone']), 0);
+          });
         }
       }
     };

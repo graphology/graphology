@@ -1471,6 +1471,8 @@ function countEdges(object) {
     nb += object.size;
   else
     nb += Object.keys(object).length;
+
+  return nb;
 }
 
 function createEdgeArrayForNode(count, graph, type, direction, node) {
@@ -1640,13 +1642,19 @@ function attachEdgeArrayCreator(Class, counter, description) {
       else if (isBunch(nodeOrBunch)) {
 
         // Iterating over the union of a node's edges
-        return createEdgeArrayForBunch(
+
+        // Note: since we need to keep track of the traversed values
+        // to perform union, we can't optimize further and we have to
+        // create this intermediary array and return its length when counting.
+        const edges = createEdgeArrayForBunch(
           name,
           this,
           type,
           direction,
           nodeOrBunch
         );
+
+        return counter ? edges.length : edges;
       }
       else {
         throw Error(`Graph.${name}: could not find the "${nodeOrBunch}" node in the graph.`);
