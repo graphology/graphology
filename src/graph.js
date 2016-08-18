@@ -1455,13 +1455,13 @@ function createEdgeArrayForNode(graph, type, direction, node) {
   graph.computeIndex('relations');
   const indexData = graph._indexes.relations.data;
 
+  let edges = [];
+
   if (graph.map) {
     if (!indexData.has(node))
       return [];
 
     const nodeData = indexData.get(node);
-
-    let edges = [];
 
     if (type === 'mixed' || type === 'directed') {
 
@@ -1478,8 +1478,6 @@ function createEdgeArrayForNode(graph, type, direction, node) {
       if (!direction || direction === 'out')
         edges = edges.concat(collectEdges(nodeData.undirectedOut));
     }
-
-    return edges;
   }
   else {
     if (!(node in indexData))
@@ -1487,8 +1485,6 @@ function createEdgeArrayForNode(graph, type, direction, node) {
 
     const nodeData = indexData[node];
 
-    let edges = [];
-
     if (type === 'mixed' || type === 'directed') {
 
       if (!direction || direction === 'in')
@@ -1504,9 +1500,9 @@ function createEdgeArrayForNode(graph, type, direction, node) {
       if (!direction || direction === 'out')
         edges = edges.concat(collectEdges(nodeData.undirectedOut));
     }
-
-    return edges;
   }
+
+  return edges;
 }
 
 function mergeEdges(set, object) {
@@ -1564,9 +1560,9 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
           mergeEdges(edges, nodeData.undirectedOut);
       }
     });
-
-    return edges.values();
   }
+
+  return edges.values();
 }
 
 function createEdgeArrayForPath(graph, type, source, target) {
@@ -1574,6 +1570,8 @@ function createEdgeArrayForPath(graph, type, source, target) {
   // For this, we need to compute the "relations" index
   graph.computeIndex('relations');
   const indexData = graph._indexes.relations.data;
+
+  let edges = [];
 
   if (graph.map) {
 
@@ -1587,8 +1585,6 @@ function createEdgeArrayForPath(graph, type, source, target) {
 
     const sourceData = indexData[source];
 
-    let edges = [];
-
     if (type === 'mixed' || type === 'directed') {
       edges = edges
         .concat(sourceData.in[target] || [])
@@ -1600,9 +1596,9 @@ function createEdgeArrayForPath(graph, type, source, target) {
         .concat(sourceData.undirectedIn[target] || [])
         .concat(sourceData.undirectedOut[target] || []);
     }
-
-    return edges;
   }
+
+  return edges;
 }
 
 function attachEdgeArrayCreator(Class, counter, description) {
