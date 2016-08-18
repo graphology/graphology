@@ -1,6 +1,10 @@
+# Common
 .DS_Store
 node_modules
 *.log
 _book
 Notes.md
+
+# Transpiled folders
 dist
+specs

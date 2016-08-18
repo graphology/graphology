@@ -12,8 +12,14 @@
     "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'Updating docs' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'Updating docs' && git push git@github.com:medialab/graphlib gh-pages --force",
     "docs:serve": "npm run docs:prepare && gitbook serve",
     "lint": "eslint src tests test.js",
+    "postpublish": "npm run clean",
+    "prepublish": "npm run dist",
     "test": "mocha -u exports --compilers js:babel-core/register ./test.js"
   },
+  "files": [
+    "dist",
+    "specs"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/medialab/graphlib.git"
