@@ -107,24 +107,37 @@ export function overBunch(bunch, callback) {
 
   // Array
   if (Array.isArray(bunch)) {
-    for (let i = 0, l = bunch.length; i < l; i++)
-      callback(null, bunch[i], {});
+    for (let i = 0, l = bunch.length; i < l; i++) {
+      const shouldBreak = callback(null, bunch[i], {}) === false;
+
+      if (shouldBreak)
+        break;
+    }
   }
 
   else if (typeof bunch.forEach === 'function') {
-    bunch.forEach(function(v, k) {
+    for (const [k, v] of bunch.entries()) {
+      let shouldBreak = false;
+
       if (v === k)
-        callback(null, v, {});
+        shouldBreak = callback(null, v, {}) === false;
       else
-        callback(null, k, v);
-    });
+        shouldBreak = callback(null, k, v) === false;
+
+      if (shouldBreak)
+        break;
+    }
   }
 
   // Plain object
   else {
     for (const key in bunch) {
       const attributes = bunch[key];
-      callback(null, key, attributes);
+
+      const shouldBreak = callback(null, key, attributes);
+
+      if (shouldBreak)
+        break;
     }
   }
 }

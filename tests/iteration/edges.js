@@ -5,6 +5,17 @@
  * Testing the edges iteration-related methods of the graph.
  */
 import assert from 'assert';
+import {deepMerge, testBunches} from '../helpers';
+
+const METHODS = [
+  'edges',
+  'inEdges',
+  'outEdges',
+  'inboundEdges',
+  'outboundEdges',
+  'directedEdges',
+  'undirectedEdges'
+];
 
 export default function edgesIteration(Graph) {
   const graph = new Graph();
@@ -26,14 +37,33 @@ export default function edgesIteration(Graph) {
   graph.addUndirectedEdgeWithKey('J<->R', 'John', 'Roger');
   graph.addUndirectedEdgeWithKey('T<->M', 'Thomas', 'Martha');
 
-  return {
-    '#.edges': {
-
+  function commonTests(name) {
+    return {
       'it should throw if too many arguments are provided.': function() {
         assert.throws(function() {
-          graph.edges(1, 2, 3);
+          graph[name](1, 2, 3);
         }, /many/);
       },
+
+      'it should throw when the node is not found.': function() {
+        assert.throws(function() {
+          graph[name]('Test');
+        }, /node/);
+      },
+
+      'it should throw if any of the provided bunch node is not found.': function() {
+        assert.throws(function() {
+          graph[name](['Test']);
+        }, /bunch/);
+      }
+    };
+  }
+
+  const testsToMerge = {};
+  METHODS.forEach(name => testsToMerge['#.' + name] = commonTests(name));
+
+  return deepMerge(testsToMerge, {
+    '#.edges': {
 
       'it can return every edge\'s key.': function() {
         const edges = graph.edges();
@@ -49,12 +79,6 @@ export default function edgesIteration(Graph) {
         ]);
       },
 
-      'it should throw when the node is not found.': function() {
-        assert.throws(function() {
-          graph.edges('Test');
-        }, /node/);
-      },
-
       'it should return a node\'s edges.': function() {
         assert.deepEqual(graph.edges('John'), [
           'C->J',
@@ -65,15 +89,14 @@ export default function edgesIteration(Graph) {
         ]);
 
         assert.deepEqual(graph.edges('Alone'), []);
+      },
+
+      'it can return the union of a bunch of nodes\' edges.': function() {
+        const edges = graph.edges([]);
       }
     },
 
     '#.inEdges': {
-      'it should throw if too many arguments are provided.': function() {
-        assert.throws(function() {
-          graph.inEdges(1, 2, 3);
-        }, /many/);
-      },
 
       'it can return every directed edge\'s key.': function() {
         const edges = graph.inEdges();
@@ -83,12 +106,6 @@ export default function edgesIteration(Graph) {
           'J->M',
           'C->J'
         ]);
-      },
-
-      'it should throw when the node is not found.': function() {
-        assert.throws(function() {
-          graph.inEdges('Test');
-        }, /node/);
       },
 
       'it should return a node\'s in edges.': function() {
@@ -101,11 +118,6 @@ export default function edgesIteration(Graph) {
     },
 
     '#.outEdges': {
-      'it should throw if too many arguments are provided.': function() {
-        assert.throws(function() {
-          graph.outEdges(1, 2, 3);
-        }, /many/);
-      },
 
       'it can return every directed edge\'s key.': function() {
         const edges = graph.outEdges();
@@ -115,12 +127,6 @@ export default function edgesIteration(Graph) {
           'J->M',
           'C->J'
         ]);
-      },
-
-      'it should throw when the node is not found.': function() {
-        assert.throws(function() {
-          graph.outEdges('Test');
-        }, /node/);
       },
 
       'it should return a node\'s out edges.': function() {
@@ -134,11 +140,6 @@ export default function edgesIteration(Graph) {
     },
 
     '#.inboundEdges': {
-      'it should throw if too many arguments are provided.': function() {
-        assert.throws(function() {
-          graph.inboundEdges(1, 2, 3);
-        }, /many/);
-      },
 
       'it can return every edge\'s key.': function() {
         const edges = graph.inboundEdges();
@@ -154,12 +155,6 @@ export default function edgesIteration(Graph) {
         ]);
       },
 
-      'it should throw when the node is not found.': function() {
-        assert.throws(function() {
-          graph.inboundEdges('Test');
-        }, /node/);
-      },
-
       'it should return a node\'s outbound edges.': function() {
         assert.deepEqual(graph.inboundEdges('John'), [
           'C->J',
@@ -171,11 +166,6 @@ export default function edgesIteration(Graph) {
     },
 
     '#.outboundEdges': {
-      'it should throw if too many arguments are provided.': function() {
-        assert.throws(function() {
-          graph.outboundEdges(1, 2, 3);
-        }, /many/);
-      },
 
       'it can return every edge\'s key.': function() {
         const edges = graph.outboundEdges();
@@ -191,12 +181,6 @@ export default function edgesIteration(Graph) {
         ]);
       },
 
-      'it should throw when the node is not found.': function() {
-        assert.throws(function() {
-          graph.outboundEdges('Test');
-        }, /node/);
-      },
-
       'it should return a node\'s outbound edges.': function() {
         assert.deepEqual(graph.outboundEdges('John'), [
           'J->T',
@@ -209,11 +193,6 @@ export default function edgesIteration(Graph) {
     },
 
     '#.directedEdges': {
-      'it should throw if too many arguments are provided.': function() {
-        assert.throws(function() {
-          graph.directedEdges(1, 2, 3);
-        }, /many/);
-      },
 
       'it can return every directed edge\'s key.': function() {
         const edges = graph.directedEdges();
@@ -223,12 +202,6 @@ export default function edgesIteration(Graph) {
           'J->M',
           'C->J'
         ]);
-      },
-
-      'it should throw when the node is not found.': function() {
-        assert.throws(function() {
-          graph.directedEdges('Test');
-        }, /node/);
       },
 
       'it should return a node\'s directed edges.': function() {
@@ -243,11 +216,6 @@ export default function edgesIteration(Graph) {
     },
 
     '#.undirectedEdges': {
-      'it should throw if too many arguments are provided.': function() {
-        assert.throws(function() {
-          graph.undirectedEdges(1, 2, 3);
-        }, /many/);
-      },
 
       'it can return every undirected edge\'s key.': function() {
         const edges = graph.undirectedEdges();
@@ -260,12 +228,6 @@ export default function edgesIteration(Graph) {
         ]);
       },
 
-      'it should throw when the node is not found.': function() {
-        assert.throws(function() {
-          graph.undirectedEdges('Test');
-        }, /node/);
-      },
-
       'it should return a node\'s undirected edges.': function() {
         assert.deepEqual(graph.undirectedEdges('John'), [
           'M<->J',
@@ -275,5 +237,5 @@ export default function edgesIteration(Graph) {
         assert.deepEqual(graph.undirectedEdges('Alone'), []);
       }
     }
-  };
+  });
 }

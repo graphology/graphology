@@ -18,6 +18,7 @@ import {
   prettyPrint,
   privateProperty,
   readOnlyProperty,
+  setFromBunch,
   uuid
 } from './utils';
 
@@ -34,6 +35,7 @@ import {
 // TODO: drop createiterator from docs
 // TODO: possibility to optimize edge iteration by stocking in separated indexes for directed etc.
 // TODO: precise order of iteration in both edges & neighbors (in -> out -> undirected)
+// TODO: document how to run the specs
 
 /**
  * Enums.
@@ -133,6 +135,9 @@ export default class Graph extends EventEmitter {
 
     if (typeof map !== 'boolean')
       throw Error(`Graph.constructor: invalid 'map' option. Expecting a boolean but got "${map}".`);
+
+    if (map && typeof Map !== 'function')
+      throw Error('Graph.constructor: it seems you created a GraphMap instance while your current JavaScript engine does not support ES2015 Map objects.');
 
     if (typeof multi !== 'boolean')
       throw Error(`Graph.constructor: invalid 'multi' option. Expecting a boolean but got "${multi}".`);
@@ -1373,7 +1378,7 @@ function collectEdges(object) {
   const edges = [];
 
   if (typeof Map === 'function' && object instanceof Map) {
-    edges.forEach(function(value) {
+    object.forEach(function(value) {
       edges.push.apply(edges, value);
     });
   }
@@ -1445,6 +1450,65 @@ function edgeArrayCreatorForNode(graph, type, direction, node) {
   }
 }
 
+function mergeEdges(set, object) {
+  if (typeof Map === 'function' && object instanceof Map) {
+    object.forEach(function(key, value) {
+      for (let i = 0, l = value.length; i < l; i++)
+        set.add(value[i]);
+    });
+  }
+  else {
+    for (const k in object) {
+      for (let i = 0, l = object[k].length; i < l; i++)
+        set.add(object[k][i]);
+    }
+  }
+}
+
+function edgeArrayCreatorForBunch(name, graph, type, direction, bunch) {
+
+  // For this, we need to compute the "relations" index
+  graph.computeIndex('relations');
+  const indexData = graph._indexes.relations.data;
+
+  const edges = graph.map ? new Set() : new BasicSet;
+
+  if (graph.map) {
+
+    return [...edges];
+  }
+  else {
+
+    overBunch(bunch, (error, node) => {
+      if (!graph.hasNode(node))
+        throw Error(`Graph.${name}: could not find the "${node}" node in the graph in the given bunch.`);
+
+      if (!(node in indexData))
+        return false;
+
+      const nodeData = indexData[node];
+
+      if (type === 'mixed' || type === 'directed') {
+
+        if (!direction || direction === 'in')
+          mergeEdges(edges, nodeData.in);
+        if (!direction || direction === 'out')
+          mergeEdges(edges, nodeData.out);
+      }
+
+      if (type === 'mixed' || type === 'undirected') {
+
+        if (!direction || direction === 'in')
+          mergeEdges(edges, nodeData.undirectedIn);
+        if (!direction || direction === 'out')
+          mergeEdges(edges, nodeData.undirectedOut);
+      }
+    });
+
+    return edges.values();
+  }
+}
+
 function attachEdgeArrayCreator(Class, description) {
   const {
     name,
@@ -1467,10 +1531,10 @@ function attachEdgeArrayCreator(Class, description) {
       else if (isBunch(nodeOrBunch)) {
 
         // Iterating over the union of a node's edges
-        return;
+        return edgeArrayCreatorForBunch(name, this, type, direction, nodeOrBunch);
       }
       else {
-        throw Error(`Graph.${name}:  could not find the "${nodeOrBunch}" node in the graph.`);
+        throw Error(`Graph.${name}: could not find the "${nodeOrBunch}" node in the graph.`);
       }
     }
 
