@@ -5,7 +5,12 @@
  * Testing the edges iteration-related methods of the graph.
  */
 import assert from 'assert';
-import {deepMerge, sameMembers, testBunches} from '../helpers';
+import {
+  capitalize,
+  deepMerge,
+  sameMembers,
+  testBunches
+} from '../helpers';
 
 const METHODS = [
   'edges',
@@ -286,7 +291,11 @@ export default function edgesIteration(Graph) {
   }
 
   function specificTests(name, data) {
+    const counterName = 'count' + capitalize(name);
+
     return {
+
+      // Array-creators
       ['#.' + name]: {
         'it should return all the relevant edges.': function() {
           const edges = graph[name]();
@@ -311,14 +320,19 @@ export default function edgesIteration(Graph) {
         },
 
         'it should return all the relevant edges between source & target.': function() {
-          // TEMP
-          if (!data.path)
-            return;
-
           const edges = graph[name](data.path.source, data.path.target);
 
           assert(sameMembers(edges, data.path.edges));
           assert.deepEqual(graph[name]('Forever', 'Alone'), []);
+        }
+      },
+
+      // Counters
+      ['#.' + counterName]: {
+        'it should count all the relevant edges.': function() {
+          const nb = graph[counterName]();
+
+          assert.strictEqual(nb, data.all.length);
         }
       }
     };
@@ -328,6 +342,7 @@ export default function edgesIteration(Graph) {
 
   // Common tests
   METHODS.forEach(name => deepMerge(tests, commonTests(name)));
+  METHODS.forEach(name => deepMerge(tests, commonTests('count' + capitalize(name))));
 
   // Specific tests
   for (const name in TEST_DATA)

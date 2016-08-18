@@ -1391,34 +1391,46 @@ function attachNodeDerivedFinder(Class, description) {
  */
 FINDERS.forEach(description => attachNodeDerivedFinder(Graph, description));
 
-function createEdgeArray(graph, type) {
+function createEdgeArray(count, graph, type) {
+  if (count && type === 'mixed')
+    return graph.size;
+
+  const list = [];
+  let nb = 0;
+
   if (graph.map) {
     if (type === 'mixed')
       return [...graph._edges.keys()];
 
-    const list = [];
-
     graph._edges.forEach((data, edge) => {
 
-      if (data.undirected === (type === 'undirected'))
-        list.push(edge);
+      if (data.undirected === (type === 'undirected')) {
+
+        if (!count)
+          list.push(edge);
+
+        nb++;
+      }
     });
   }
   else {
     if (type === 'mixed')
       return Object.keys(graph._edges);
 
-    const list = [];
-
     for (const edge in graph._edges) {
       const data = graph._edges[edge];
 
-      if (data.undirected === (type === 'undirected'))
-        list.push(edge);
-    }
+      if (data.undirected === (type === 'undirected')) {
 
-    return list;
+        if (!count)
+          list.push(edge);
+
+        nb++;
+      }
+    }
   }
+
+  return count ? nb : list;
 }
 
 function collectEdges(object) {
@@ -1593,16 +1605,17 @@ function createEdgeArrayForPath(graph, type, source, target) {
   }
 }
 
-function attachEdgeArrayCreator(Class, description) {
+function attachEdgeArrayCreator(Class, counter, description) {
   const {
-    name,
     type,
     direction
   } = description;
 
+  let name = counter ? description.counter : description.name;
+
   Class.prototype[name] = function(...args) {
     if (!args.length)
-      return createEdgeArray(this, type);
+      return createEdgeArray(counter, this, type);
 
     if (args.length === 1) {
       const nodeOrBunch = args[0];
@@ -1666,4 +1679,7 @@ function attachEdgeArrayCreator(Class, description) {
   };
 }
 
-EDGES_ITERATION.forEach(description => attachEdgeArrayCreator(Graph, description));
+EDGES_ITERATION.forEach(description => {
+  attachEdgeArrayCreator(Graph, false, description),
+  attachEdgeArrayCreator(Graph, true, description)
+});

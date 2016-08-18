@@ -6,6 +6,13 @@
  */
 
 /**
+ * Capitalize function.
+ */
+export function capitalize(string) {
+  return string[0].toUpperCase() + string.slice(1);
+}
+
+/**
  * Simplistic deep merger function.
  */
 export function deepMerge(...objects) {
