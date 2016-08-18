@@ -12,44 +12,40 @@ export const EDGES_ITERATION = [
   {
     name: 'edges',
     element: 'Edge',
-    predicate: null
+    type: 'mixed'
   },
   {
     name: 'inEdges',
     element: 'InEdge',
-    predicate(edge) {
-      return !edge.undirected;
-    }
+    type: 'directed',
+    direction: 'in'
   },
   {
     name: 'outEdges',
     element: 'OutEdge',
-    predicate(edge) {
-      return !edge.undirected;
-    }
+    type: 'directed',
+    direction: 'out'
   },
   {
     name: 'inboundEdges',
     element: 'InboundEdge',
-    predicate: null
+    type: 'mixed',
+    direction: 'in'
   },
   {
     name: 'outboundEdges',
     element: 'OutbounEdge',
-    predicate: null
+    type: 'mixed',
+    direction: 'out'
   },
   {
     name: 'directedEdges',
     element: 'DirectedEdge',
-    predicate(edge) {
-      return !edge.undirected;
-    }
+    type: 'directed'
   },
   {
     name: 'undirectedEdges',
     element: 'UndirectedEdge',
-    predicate(edge) {
-      return edge.undirected;
-    }
+    type: 'undirected'
   }
 ];

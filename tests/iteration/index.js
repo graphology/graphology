@@ -4,7 +4,6 @@
  *
  * Testing the iteration-related methods of the graph.
  */
-import assert from 'assert';
 import nodes from './nodes';
 import edges from './edges';
 

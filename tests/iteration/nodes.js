@@ -6,7 +6,7 @@
  */
 import assert from 'assert';
 
-export default function nodes(Graph) {
+export default function nodesIteration(Graph) {
   return {
     '#.nodes': {
       'it should return the list of nodes of the graph.': function() {

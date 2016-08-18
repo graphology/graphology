@@ -33,6 +33,7 @@ import {
 // TODO: create test abstraction to test bunches & iterators
 // TODO: drop createiterator from docs
 // TODO: possibility to optimize edge iteration by stocking in separated indexes for directed etc.
+// TODO: precise order of iteration in both edges & neighbors (in -> out -> undirected)
 
 /**
  * Enums.
@@ -93,7 +94,8 @@ function createRelatedEdgesEntry(type, map) {
   }
 
   if (type === 'mixed' || type === 'undirected') {
-    entry.undirected = map ? new Map() : {};
+    entry.undirectedIn = map ? new Map() : {};
+    entry.undirectedOut = map ? new Map() : {};
   }
 
   return entry;
@@ -244,8 +246,12 @@ export default class Graph extends EventEmitter {
       return;
 
     // Is there an undirected edge pointing towards target?
-    const undirected = this.map ? index.get(source).undirected : index[source].undirected,
-          edges = (this.map ? undirected.get(target) : undirected[target]) || [];
+    const undirectedIn = this.map ? index.get(source).undirectedIn : index[source].undirectedIn,
+          undirectedOut = this.map ? index.get(source).undirectedOut : index[source].undirectedOut,
+          edges = (
+            (this.map ? undirectedIn.get(target) : undirectedIn[target]) ||
+            (this.map ? undirectedOut.get(target) : undirectedOut[target])
+          ) || [];
 
     return edges[0];
   }
@@ -353,8 +359,12 @@ export default class Graph extends EventEmitter {
         return false;
 
       // Is there an undirected edge pointing towards target?
-      const undirected = this.map ? index.get(source).undirected : index[source].undirected,
-            edges = (this.map ? undirected.get(target) : undirected[target]) || [];
+      const undirectedIn = this.map ? index.get(source).undirectedIn : index[source].undirectedIn,
+            undirectedOut = this.map ? index.get(source).undirectedOut : index[source].undirectedOut,
+            edges = (
+              (this.map ? undirectedIn.get(target) : undirectedIn[target]) ||
+              (this.map ? undirectedOut.get(target) : undirectedOut[target])
+            ) || [];
 
       return !!edges.length;
     }
@@ -1087,7 +1097,7 @@ export default class Graph extends EventEmitter {
 
         // Building indexes for source
         const sourceRegister = undirected ?
-          sourceData.undirected :
+          sourceData.undirectedOut :
           sourceData.out;
 
         if (!sourceRegister.has(target))
@@ -1096,7 +1106,7 @@ export default class Graph extends EventEmitter {
 
         // Building indexes for target
         const targetRegister = undirected ?
-          targetData.undirected :
+          targetData.undirectedIn :
           targetData.in;
 
         if (!targetRegister.has(source))
@@ -1120,7 +1130,7 @@ export default class Graph extends EventEmitter {
 
         // Building indexes for source
         const sourceRegister = undirected ?
-          sourceData.undirected :
+          sourceData.undirectedOut :
           sourceData.out;
 
         if (!(target in sourceRegister))
@@ -1129,7 +1139,7 @@ export default class Graph extends EventEmitter {
 
         // Building indexes for target
         const targetRegister = undirected ?
-          targetData.undirected :
+          targetData.undirectedIn :
           targetData.in;
 
         if (!(source in targetRegister))
@@ -1329,31 +1339,29 @@ function attachNodeDerivedFinder(Class, description) {
  */
 FINDERS.forEach(description => attachNodeDerivedFinder(Graph, description));
 
-function edgeArrayCreator(graph, predicate) {
+function edgeArrayCreator(graph, type) {
   if (graph.map) {
-    if (predicate === null)
+    if (type === 'mixed')
       return [...graph._edges.keys()];
 
     const list = [];
 
     graph._edges.forEach((data, edge) => {
 
-      const keep = predicate(data);
-
-      if (keep)
+      if (data.undirected === (type === 'undirected'))
         list.push(edge);
     });
   }
   else {
-    if (predicate === null)
+    if (type === 'mixed')
       return Object.keys(graph._edges);
 
     const list = [];
 
     for (const edge in graph._edges) {
-      const keep = predicate(graph._edges[edge]);
+      const data = graph._edges[edge];
 
-      if (keep)
+      if (data.undirected === (type === 'undirected'))
         list.push(edge);
     }
 
@@ -1361,15 +1369,92 @@ function edgeArrayCreator(graph, predicate) {
   }
 }
 
+function collectEdges(object) {
+  const edges = [];
+
+  if (typeof Map === 'function' && object instanceof Map) {
+    edges.forEach(function(value) {
+      edges.push.apply(edges, value);
+    });
+  }
+  else {
+    for (const node in object)
+      edges.push.apply(edges, object[node]);
+  }
+
+  return edges;
+}
+
+function edgeArrayCreatorForNode(graph, type, direction, node) {
+
+  // For this, we need to compute the "relations" index
+  graph.computeIndex('relations');
+  const indexData = graph._indexes.relations.data;
+
+  if (graph.map) {
+    if (!indexData.has(node))
+      return [];
+
+    const nodeData = indexData.get(node);
+
+    let edges = [];
+
+    if (type === 'mixed' || type === 'directed') {
+
+      if (!direction || direction === 'in')
+        edges = edges.concat(collectEdges(nodeData.in));
+      if (!direction || direction === 'out')
+        edges = edges.concat(collectEdges(nodeData.out));
+    }
+
+    if (type === 'mixed' || type === 'undirected') {
+
+      if (!direction || direction === 'in')
+        edges = edges.concat(collectEdges(nodeData.undirectedIn));
+      if (!direction || direction === 'out')
+        edges = edges.concat(collectEdges(nodeData.undirectedOut));
+    }
+
+    return edges;
+  }
+  else {
+    if (!(node in indexData))
+      return [];
+
+    const nodeData = indexData[node];
+
+    let edges = [];
+
+    if (type === 'mixed' || type === 'directed') {
+
+      if (!direction || direction === 'in')
+        edges = edges.concat(collectEdges(nodeData.in));
+      if (!direction || direction === 'out')
+        edges = edges.concat(collectEdges(nodeData.out));
+    }
+
+    if (type === 'mixed' || type === 'undirected') {
+
+      if (!direction || direction === 'in')
+        edges = edges.concat(collectEdges(nodeData.undirectedIn));
+      if (!direction || direction === 'out')
+        edges = edges.concat(collectEdges(nodeData.undirectedOut));
+    }
+
+    return edges;
+  }
+}
+
 function attachEdgeArrayCreator(Class, description) {
   const {
     name,
-    predicate
+    type,
+    direction
   } = description;
 
   Class.prototype[name] = function(...args) {
     if (!args.length)
-      return edgeArrayCreator(this, predicate);
+      return edgeArrayCreator(this, type);
 
     if (args.length === 1) {
       const nodeOrBunch = args[0];
@@ -1377,7 +1462,7 @@ function attachEdgeArrayCreator(Class, description) {
       if (this.hasNode(nodeOrBunch)) {
 
         // Iterating over a node's edges
-        return;
+        return edgeArrayCreatorForNode(this, type, direction, nodeOrBunch);
       }
       else if (isBunch(nodeOrBunch)) {
 
@@ -1391,6 +1476,12 @@ function attachEdgeArrayCreator(Class, description) {
 
     if (args.length === 2) {
       const [source, target] = args;
+
+      if (!this.hasNode(source))
+        throw Error(`Graph.${name}:  could not find the "${source}" source node in the graph.`);
+
+      if (!this.hasNode(target))
+        throw Error(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
 
       // Iterating over the edges between source & target
       return;
