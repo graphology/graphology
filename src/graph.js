@@ -1449,63 +1449,6 @@ function collectEdges(object) {
   return edges;
 }
 
-function createEdgeArrayForNode(graph, type, direction, node) {
-
-  // For this, we need to compute the "relations" index
-  graph.computeIndex('relations');
-  const indexData = graph._indexes.relations.data;
-
-  let edges = [];
-
-  if (graph.map) {
-    if (!indexData.has(node))
-      return [];
-
-    const nodeData = indexData.get(node);
-
-    if (type === 'mixed' || type === 'directed') {
-
-      if (!direction || direction === 'in') {
-        edges = edges.concat(collectEdges(nodeData.in));
-      }
-      if (!direction || direction === 'out')
-        edges = edges.concat(collectEdges(nodeData.out));
-    }
-
-    if (type === 'mixed' || type === 'undirected') {
-
-      if (!direction || direction === 'in')
-        edges = edges.concat(collectEdges(nodeData.undirectedIn));
-      if (!direction || direction === 'out')
-        edges = edges.concat(collectEdges(nodeData.undirectedOut));
-    }
-  }
-  else {
-    if (!(node in indexData))
-      return [];
-
-    const nodeData = indexData[node];
-
-    if (type === 'mixed' || type === 'directed') {
-
-      if (!direction || direction === 'in')
-        edges = edges.concat(collectEdges(nodeData.in));
-      if (!direction || direction === 'out')
-        edges = edges.concat(collectEdges(nodeData.out));
-    }
-
-    if (type === 'mixed' || type === 'undirected') {
-
-      if (!direction || direction === 'in')
-        edges = edges.concat(collectEdges(nodeData.undirectedIn));
-      if (!direction || direction === 'out')
-        edges = edges.concat(collectEdges(nodeData.undirectedOut));
-    }
-  }
-
-  return edges;
-}
-
 function mergeEdges(set, object) {
   if (typeof Map === 'function' && object instanceof Map) {
     object.forEach(function(key, value) {
@@ -1519,6 +1462,72 @@ function mergeEdges(set, object) {
         set.add(object[k][i]);
     }
   }
+}
+
+function countEdges(object) {
+  let nb = 0;
+
+  if (typeof Map === 'function' && object instanceof Map)
+    nb += object.size;
+  else
+    nb += Object.keys(object).length;
+}
+
+function createEdgeArrayForNode(count, graph, type, direction, node) {
+
+  // For this, we need to compute the "relations" index
+  graph.computeIndex('relations');
+  const indexData = graph._indexes.relations.data;
+
+  let edges = [],
+      nb = 0;
+
+  let nodeData;
+
+  if (graph.map) {
+    if (!indexData.has(node))
+      return count ? nb : edges;
+    nodeData = indexData.get(node);
+  }
+  else {
+    if (!(node in indexData))
+      return count ? nb : edges;
+    nodeData = indexData[node];
+  }
+
+  if (type === 'mixed' || type === 'directed') {
+
+    if (!direction || direction === 'in') {
+      if (count)
+        nb += countEdges(nodeData.in);
+      else
+        edges = edges.concat(collectEdges(nodeData.in));
+    }
+    if (!direction || direction === 'out') {
+      if (count)
+        nb += countEdges(nodeData.out)
+      else
+        edges = edges.concat(collectEdges(nodeData.out));
+    }
+  }
+
+  if (type === 'mixed' || type === 'undirected') {
+
+    if (!direction || direction === 'in') {
+      if (count)
+        nb += countEdges(nodeData.undirectedIn);
+      else
+        edges = edges.concat(collectEdges(nodeData.undirectedIn));
+    }
+    if (!direction || direction === 'out') {
+      if (count)
+        nb += countEdges(nodeData.undirectedOut)
+      else
+        edges = edges.concat(collectEdges(nodeData.undirectedOut));
+    }
+  }
+
+  return count ? nb : edges;
 }
 
 function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
@@ -1621,6 +1630,7 @@ function attachEdgeArrayCreator(Class, counter, description) {
 
         // Iterating over a node's edges
         return createEdgeArrayForNode(
+          counter,
           this,
           type,
           direction,
