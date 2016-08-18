@@ -36,7 +36,6 @@ import {
 // TODO: precise order of iteration in both edges & neighbors (in -> out -> undirected)
 // TODO: document how to run the specs
 // TODO: change property name selfLoops
-// TODO: add Graph.isGraph
 // TODO: create own errors
 // TODO: relations index should be only about existence or count of edges
 // TODO: hasEdge has changed heuristics
@@ -47,8 +46,7 @@ import {
  */
 const TYPES = new BasicSet(['directed', 'undirected', 'mixed']),
       INDEXES = new BasicSet(['relations']),
-      EMITTER_PROPS = new BasicSet(['domain', '_events', '_eventsCount', '_maxListeners']),
-      IDENTITY_KEYS = ['addUndirectedEdgeWithKey', 'undirectedDegree'];
+      EMITTER_PROPS = new BasicSet(['domain', '_events', '_eventsCount', '_maxListeners']);
 
 /**
  * Default options.
@@ -1669,23 +1667,3 @@ function attachEdgeArrayCreator(Class, description) {
 }
 
 EDGES_ITERATION.forEach(description => attachEdgeArrayCreator(Graph, description));
-
-/**
- * Static function of the Graph class serving the same purpose as the
- * `Array.isArray` static method to detect that the given value is indeed
- * a graph, and this across potentially different implementations etc.
- *
- * @param  {mixed}   value - Value to check.
- * @return {boolean}       - The entry.
- */
-Graph.isGraph = function(value) {
-  if (!value || typeof value !== 'object')
-    return false;
-
-  for (let i = 0, l = IDENTITY_KEYS.length; i < l; i++) {
-    if (!(IDENTITY_KEYS[i] in value))
-      return false;
-  }
-
-  return true;
-};
