@@ -4,13 +4,14 @@
   "description": "RDD about a graph library for JavaScript.",
   "main": "dist/index.js",
   "scripts": {
-    "dist": "babel src --out-dir dist",
+    "clean": "rimraf dist specs",
+    "dist": "npm run clean && babel src --out-dir dist && babel tests --out-dir specs",
     "docs:build": "npm run docs:prepare && gitbook build",
     "docs:clean": "rimraf _book",
     "docs:prepare": "gitbook install",
     "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'Updating docs' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'Updating docs' && git push git@github.com:medialab/graphlib gh-pages --force",
     "docs:serve": "npm run docs:prepare && gitbook serve",
-    "lint": "eslint specs src test.js",
+    "lint": "eslint src tests test.js",
     "test": "mocha -u exports --compilers js:babel-core/register ./test.js"
   },
   "repository": {
@@ -28,6 +29,9 @@
     "url": "https://github.com/medialab/graphlib/issues"
   },
   "homepage": "https://github.com/medialab/graphlib#readme",
+  "dependencies": {
+    "events": "^1.1.1"
+  },
   "devDependencies": {
     "@yomguithereal/eslint-config": "^3.0.0",
     "babel-cli": "^6.11.4",
@@ -42,6 +46,19 @@
     "mocha": "^3.0.2",
     "rimraf": "^2.5.4"
   },
+  "babel": {
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      [
+        "transform-es2015-destructuring",
+        {
+          "loose": true
+        }
+      ]
+    ]
+  },
   "eslintConfig": {
     "extends": [
       "@yomguithereal/eslint-config/es6"
@@ -50,8 +67,5 @@
       "object-shorthand": 0,
       "quote-props": 0
     }
-  },
-  "dependencies": {
-    "events": "^1.1.1"
   }
 }
