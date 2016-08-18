@@ -1558,39 +1558,40 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
 
   const edges = graph.map ? new Set() : new BasicSet;
 
-  if (graph.map) {
+  // Iterating over the bunch
+  overBunch(bunch, (error, node) => {
+    if (!graph.hasNode(node))
+      throw Error(`Graph.${name}: could not find the "${node}" node in the graph in the given bunch.`);
 
-    // TODO
-    return [...edges];
-  }
-  else {
+    let nodeData;
 
-    overBunch(bunch, (error, node) => {
-      if (!graph.hasNode(node))
-        throw Error(`Graph.${name}: could not find the "${node}" node in the graph in the given bunch.`);
-
+    if (graph.map) {
+      if (!indexData.has(node))
+        return false;
+      nodeData = indexData.get(node);
+    }
+    else {
       if (!(node in indexData))
         return false;
+      nodeData = indexData[node];
+    }
 
-      const nodeData = indexData[node];
+    if (type === 'mixed' || type === 'directed') {
 
-      if (type === 'mixed' || type === 'directed') {
+      if (!direction || direction === 'in')
+        mergeEdges(edges, nodeData.in);
+      if (!direction || direction === 'out')
+        mergeEdges(edges, nodeData.out);
+    }
 
-        if (!direction || direction === 'in')
-          mergeEdges(edges, nodeData.in);
-        if (!direction || direction === 'out')
-          mergeEdges(edges, nodeData.out);
-      }
+    if (type === 'mixed' || type === 'undirected') {
 
-      if (type === 'mixed' || type === 'undirected') {
-
-        if (!direction || direction === 'in')
-          mergeEdges(edges, nodeData.undirectedIn);
-        if (!direction || direction === 'out')
-          mergeEdges(edges, nodeData.undirectedOut);
-      }
-    });
-  }
+      if (!direction || direction === 'in')
+        mergeEdges(edges, nodeData.undirectedIn);
+      if (!direction || direction === 'out')
+        mergeEdges(edges, nodeData.undirectedOut);
+    }
+  });
 
   return edges.values();
 }
