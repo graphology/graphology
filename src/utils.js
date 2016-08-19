@@ -105,7 +105,7 @@ export function isPlainObject(value) {
 // TODO: support ES6 Maps as attributes
 export function overBunch(bunch, callback) {
 
-  // Array
+  // Array iteration
   if (Array.isArray(bunch)) {
     for (let i = 0, l = bunch.length; i < l; i++) {
       const shouldBreak = callback(null, bunch[i], {}) === false;
@@ -115,6 +115,7 @@ export function overBunch(bunch, callback) {
     }
   }
 
+  // Map & Set iteration
   else if (typeof bunch.forEach === 'function') {
     for (const [k, v] of bunch.entries()) {
       let shouldBreak = false;
@@ -129,7 +130,7 @@ export function overBunch(bunch, callback) {
     }
   }
 
-  // Plain object
+  // Plain object iteration
   else {
     for (const key in bunch) {
       const attributes = bunch[key];

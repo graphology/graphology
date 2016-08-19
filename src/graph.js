@@ -9,7 +9,7 @@
  */
 import {EventEmitter} from 'events';
 import {EDGES_ITERATION} from './iteration';
-import {FINDERS, REDUCERS} from './reducers';
+import {REDUCERS, FINDERS, abstractReducer, abstractFinder} from './reducers';
 import {
   BasicSet,
   isBunch,
@@ -1018,52 +1018,6 @@ export default class Graph extends EventEmitter {
     return Object.keys(this._nodes);
   }
 
-  /**
-   * Node reduce iterator.
-   *
-   * @param  {function} callback       - The reducing function.
-   * @param  {mixed}    [initialValue] - Optional initial value.
-   * @return {mixed}
-   *
-   * @throws {Error} - Will throw if the given callback is not a function.
-   */
-  reduceNodes(callback, initialValue) {
-    if (typeof callback !== 'function')
-      throw Error('Graph.reduceNodes: the provided callback is not a function.');
-
-    const initialValueProvided = arguments.length > 1;
-
-    let current = initialValue,
-        i = 0;
-
-    if (this.map) {
-      this._nodes.forEach((_, node) => {
-        if (!i && !initialValueProvided) {
-          current = node;
-        }
-        else {
-          current = callback(current, node, i, this);
-        }
-
-        i++;
-      });
-    }
-    else {
-      for (const node in this._nodes) {
-        if (!i && !initialValueProvided) {
-          current = node;
-        }
-        else {
-          current = callback(current, node, i, this);
-        }
-
-        i++;
-      }
-    }
-
-    return current;
-  }
-
   /**---------------------------------------------------------------------------
    * Indexes-related methods
    **---------------------------------------------------------------------------
@@ -1188,13 +1142,13 @@ export default class Graph extends EventEmitter {
     }
   }
 
-  clearNodeFromIndex(node) {
+  clearNodeFromIndex(name) {
     if (!INDEXES.has(name))
       throw Error(`Graph.updateIndex: unknown "${name}" index.`);
   }
 
-  clearEdgeFromIndex(edge) {
-    if (!INDEXES.has(name))q
+  clearEdgeFromIndex(name) {
+    if (!INDEXES.has(name))
       throw Error(`Graph.updateIndex: unknown "${name}" index.`);
   }
 
@@ -1349,44 +1303,17 @@ function attachNodeDerivedReducer(Class, description) {
 /**
  * Attaching the nodes derived reducers.
  */
+Graph.prototype.reduceNodes = function(callback, initialValue) {
+  if (typeof callback !== 'function')
+    throw Error('Graph.reduceNodes: the provided callback is not a function.');
+
+  if (arguments.length > 1)
+    return abstractReducer.call(this, this._nodes, callback, initialValue);
+  else
+    return abstractReducer.call(this, this._nodes, callback);
+};
+
 REDUCERS.forEach(description => attachNodeDerivedReducer(Graph, description));
-
-/**
- * Finder (breakable reducer) for nodes.
- *
- * @param  {Graph}    graph     - Graph instance.
- * @param  {function} predicate - Predicate.
- * @param  {boolean}  reversed  - Should we reverse the predicate?
- * @return {mixed}
- */
-function nodeFinder(graph, predicate, reversed = false) {
-  let i = 0;
-
-  if (graph.map) {
-    for (const node of graph._nodes.keys()) {
-      let found = predicate(node, i++, graph);
-
-      if (reversed)
-        found = !found;
-
-      if (found)
-        return [node, i];
-    }
-  }
-  else {
-    for (const node in graph._nodes) {
-      let found = predicate(node, i++, graph);
-
-      if (reversed)
-        found = !found;
-
-      if (found)
-        return [node, i];
-    }
-  }
-
-  return [undefined, -1];
-}
 
 /**
  * Attach a single derived reducer (find, some etc.) for nodes to the target
@@ -1408,8 +1335,9 @@ function attachNodeDerivedFinder(Class, description) {
     if (typeof predicate !== 'function')
       throw Error(`Graph.${name}: the provided predicate is not a function.`);
 
-    const result = nodeFinder(
+    const result = abstractFinder.call(
       this,
+      this._nodes,
       predicate,
       !!description.reversed
     );

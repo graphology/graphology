@@ -16,7 +16,7 @@ class DirectedGraph extends Graph {
   constructor(data, options) {
     super(
       data,
-      assign({}, {type: 'directed'}, options)
+      assign({type: 'directed'}, options)
     );
   }
 }
@@ -24,7 +24,7 @@ class UndirectedGraph extends Graph {
   constructor(data, options) {
     super(
       data,
-      assign({}, {type: 'undirected'}, options)
+      assign({type: 'undirected'}, options)
     );
   }
 }
@@ -32,7 +32,7 @@ class MultiDirectedGraph extends Graph {
   constructor(data, options) {
     super(
       data,
-      assign({}, {multi: true, type: 'directed'}, options)
+      assign({multi: true, type: 'directed'}, options)
     );
   }
 }
@@ -40,7 +40,7 @@ class MultiUndirectedGraph extends Graph {
   constructor(data, options) {
     super(
       data,
-      assign({}, {multi: true, type: 'undirected'}, options)
+      assign({multi: true, type: 'undirected'}, options)
     );
   }
 }
@@ -48,7 +48,7 @@ class DirectedGraphMap extends Graph {
   constructor(data, options) {
     super(
       data,
-      assign({}, {map: true, type: 'directed'}, options)
+      assign({map: true, type: 'directed'}, options)
     );
   }
 }
@@ -56,7 +56,7 @@ class UndirectedGraphMap extends Graph {
   constructor(data, options) {
     super(
       data,
-      assign({}, {map: true, type: 'undirected'}, options)
+      assign({map: true, type: 'undirected'}, options)
     );
   }
 }
@@ -64,7 +64,7 @@ class MultiDirectedGraphMap extends Graph {
   constructor(data, options) {
     super(
       data,
-      assign({}, {map: true, multi: true, type: 'directed'}, options)
+      assign({map: true, multi: true, type: 'directed'}, options)
     );
   }
 }
@@ -72,7 +72,7 @@ class MultiUndirectedGraphMap extends Graph {
   constructor(data, options) {
     super(
       data,
-      assign({}, {map: true, multi: true, type: 'undirected'}, options)
+      assign({map: true, multi: true, type: 'undirected'}, options)
     );
   }
 }
