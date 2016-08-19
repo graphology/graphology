@@ -12,6 +12,12 @@ import attributes from './attributes';
 import iteration from './iteration';
 import knownMethods from './known';
 
+const createErrorChecker = name => () => {
+  return function(error) {
+    return error && error.name === name;
+  };
+};
+
 /**
  * Returning the unit tests to run.
  *
@@ -24,13 +30,24 @@ export default function specs(path) {
   const implementation = require(path),
         Graph = implementation.default;
 
+  const errors = [
+    ['invalid', 'InvalidArgumentsGraphError'],
+    ['notFound', 'NotFoundGraphError'],
+    ['usage', 'UsageGraphError']
+  ];
+
+  // Building error checkers
+  const errorCheckers = {};
+
+  errors.forEach(([fn, name]) => (errorCheckers[fn] = createErrorChecker(name)));
+
   return {
-    'Instantiation': instantiation(Graph, implementation),
-    'Properties': properties(Graph),
-    'Mutation': mutation(Graph),
-    'Read': read(Graph),
-    'Attributes': attributes(Graph),
-    'Iteration': iteration(Graph),
-    'Known Methods': knownMethods(Graph)
+    'Instantiation': instantiation(Graph, implementation, errorCheckers),
+    'Properties': properties(Graph, errors),
+    'Mutation': mutation(Graph, errors),
+    'Read': read(Graph, errors),
+    'Attributes': attributes(Graph, errors),
+    'Iteration': iteration(Graph, errors),
+    'Known Methods': knownMethods(Graph, errors)
   };
 }

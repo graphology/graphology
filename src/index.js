@@ -6,8 +6,10 @@
  */
 import {assign} from './utils';
 import Graph from './graph';
+import * as errors from './errors';
 
 export default Graph;
+export {errors};
 
 /**
  * Alternative constructors.

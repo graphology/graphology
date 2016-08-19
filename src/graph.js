@@ -9,7 +9,17 @@
  */
 import {EventEmitter} from 'events';
 import {EDGES_ITERATION} from './iteration';
-import {REDUCERS, FINDERS, abstractReducer, abstractFinder} from './reducers';
+import {
+  InvalidArgumentsGraphError,
+  NotFoundGraphError,
+  UsageGrapError
+} from './errors';
+import {
+  REDUCERS,
+  FINDERS,
+  abstractReducer,
+  abstractFinder
+} from './reducers';
 import {
   BasicSet,
   isBunch,
@@ -43,6 +53,7 @@ import {
 // TODO: possible to optimize the index by flattening to matrices
 // TODO: self iterator should be adjacency if we make it
 // TODO: differentiate index structure for simple/multi for performance
+// TODO: at the end, make an optimization run
 
 /**
  * Enums.
@@ -138,22 +149,22 @@ export default class Graph extends EventEmitter {
 
     // Enforcing options validity
     if (typeof edgeKeyGenerator !== 'function')
-      throw Error(`Graph.constructor: invalid 'edgeKeyGenerator' option. Expecting a function but got "${map}".`);
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'edgeKeyGenerator' option. Expecting a function but got "${map}".`);
 
     if (typeof map !== 'boolean')
-      throw Error(`Graph.constructor: invalid 'map' option. Expecting a boolean but got "${map}".`);
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'map' option. Expecting a boolean but got "${map}".`);
 
     if (map && typeof Map !== 'function')
-      throw Error('Graph.constructor: it seems you created a GraphMap instance while your current JavaScript engine does not support ES2015 Map objects.');
+      throw new InvalidArgumentsGraphError('Graph.constructor: it seems you created a GraphMap instance while your current JavaScript engine does not support ES2015 Map objects.');
 
     if (typeof multi !== 'boolean')
-      throw Error(`Graph.constructor: invalid 'multi' option. Expecting a boolean but got "${multi}".`);
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'multi' option. Expecting a boolean but got "${multi}".`);
 
     if (!TYPES.has(type))
-      throw Error(`Graph.constructor: invalid 'type' option. Should be one of "mixed", "directed" or "undirected" but got "${type}".`);
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'type' option. Should be one of "mixed", "directed" or "undirected" but got "${type}".`);
 
     if (typeof selfLoops !== 'boolean')
-      throw Error(`Graph.constructor: invalid 'allowSelfLoops' option. Expecting a boolean but got "${selfLoops}".`);
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'allowSelfLoops' option. Expecting a boolean but got "${selfLoops}".`);
 
     //-- Private properties
 
