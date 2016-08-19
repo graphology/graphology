@@ -41,6 +41,8 @@ import {
 // TODO: hasEdge has changed heuristics
 // TODO: discuss Directed === s -> t plus t -> s possible?
 // TODO: possible to optimize the index by flattening to matrices
+// TODO: self iterator should be adjacency if we make it
+// TODO: differentiate index structure for simple/multi for performance
 
 /**
  * Enums.
@@ -92,7 +94,7 @@ function createNodeEntry(type, attributes) {
  * @param  {boolean} map  - Whether the graph accepts references as keys.
  * @return {object}       - The entry.
  */
-function createRelatedEdgesEntry(type, map) {
+function createRelationEntry(type, map) {
   const entry = {};
 
   if (type === 'mixed' || type === 'directed') {
@@ -1113,79 +1115,87 @@ export default class Graph extends EventEmitter {
     if (!INDEXES.has(name))
       throw Error(`Graph.updateIndex: unknown "${name}" index.`);
 
-    if (name === 'relations') {
-      const index = this._indexes.relations;
+    const index = this._indexes.relations;
 
-      if (!index.computed)
-        return this;
+    if (!index.computed)
+      return this;
 
-      if (this.map) {
-        const {
-          undirected,
-          source,
-          target
-        } = this._edges.get(edge);
+    if (this.map) {
+      const {
+        undirected,
+        source,
+        target
+      } = this._edges.get(edge);
 
-        if (!index.data.has(source))
-          index.data.set(source, createRelatedEdgesEntry(this.type, this.map));
-        if (!index.data.has(target))
-          index.data.set(target, createRelatedEdgesEntry(this.type, this.map));
+      if (!index.data.has(source))
+        index.data.set(source, createRelationEntry(this.type, this.map));
+      if (!index.data.has(target))
+        index.data.set(target, createRelationEntry(this.type, this.map));
 
-        const sourceData = index.data.get(source),
-              targetData = index.data.get(target);
+      const sourceData = index.data.get(source),
+            targetData = index.data.get(target);
 
-        // Building indexes for source
-        const sourceRegister = undirected ?
-          sourceData.undirectedOut :
-          sourceData.out;
+      // Building indexes for source
+      const sourceRegister = undirected ?
+        sourceData.undirectedOut :
+        sourceData.out;
 
-        if (!sourceRegister.has(target))
-          sourceRegister.set(target, []);
-        sourceRegister.get(target).push(edge);
+      if (!sourceRegister.has(target))
+        sourceRegister.set(target, []);
+      sourceRegister.get(target).push(edge);
 
-        // Building indexes for target
-        const targetRegister = undirected ?
-          targetData.undirectedIn :
-          targetData.in;
+      // Building indexes for target
+      const targetRegister = undirected ?
+        targetData.undirectedIn :
+        targetData.in;
 
-        if (!targetRegister.has(source))
-          targetRegister.set(source, []);
-        targetRegister.get(source).push(edge);
-      }
-      else {
-        const {
-          undirected,
-          source,
-          target
-        } = this._edges[edge];
-
-        if (!(source in index.data))
-          index.data[source] = createRelatedEdgesEntry(this.type, this.map);
-        if (!(target in index.data))
-          index.data[target] = createRelatedEdgesEntry(this.type, this.map);
-
-        const sourceData = index.data[source],
-              targetData = index.data[target];
-
-        // Building indexes for source
-        const sourceRegister = undirected ?
-          sourceData.undirectedOut :
-          sourceData.out;
-
-        if (!(target in sourceRegister))
-          sourceRegister[target] = [];
-        sourceRegister[target].push(edge);
-
-        // Building indexes for target
-        const targetRegister = undirected ?
-          targetData.undirectedIn :
-          targetData.in;
-
-        if (!(source in targetRegister))
-          targetRegister[source] = [];
-        targetRegister[source].push(edge);
-      }
+      if (!targetRegister.has(source))
+        targetRegister.set(source, []);
+      targetRegister.get(source).push(edge);
     }
+    else {
+      const {
+        undirected,
+        source,
+        target
+      } = this._edges[edge];
+
+      if (!(source in index.data))
+        index.data[source] = createRelationEntry(this.type, this.map);
+      if (!(target in index.data))
+        index.data[target] = createRelationEntry(this.type, this.map);
+
+      const sourceData = index.data[source],
+            targetData = index.data[target];
+
+      // Building indexes for source
+      const sourceRegister = undirected ?
+        sourceData.undirectedOut :
+        sourceData.out;
+
+      if (!(target in sourceRegister))
+        sourceRegister[target] = [];
+      sourceRegister[target].push(edge);
+
+      // Building indexes for target
+      const targetRegister = undirected ?
+        targetData.undirectedIn :
+        targetData.in;
+
+      if (!(source in targetRegister))
+        targetRegister[source] = [];
+      targetRegister[source].push(edge);
+    }
+  }
+
+  clearNodeFromIndex(node) {
+    if (!INDEXES.has(name))
+      throw Error(`Graph.updateIndex: unknown "${name}" index.`);
+  }
+
+  clearEdgeFromIndex(edge) {
+    if (!INDEXES.has(name))q
+      throw Error(`Graph.updateIndex: unknown "${name}" index.`);
   }
 
   /**
@@ -1200,12 +1210,10 @@ export default class Graph extends EventEmitter {
     if (!INDEXES.has(name))
       throw Error(`Graph.clearIndex: unknown "${name}" index.`);
 
-    if (name === 'relations') {
-      const index = this._indexes.relations;
+    const index = this._indexes.relations;
 
-      index.data = this.map ? new Map() : {};
-      index.computed = false;
-    }
+    index.data = this.map ? new Map() : {};
+    index.computed = false;
 
     return this;
   }
