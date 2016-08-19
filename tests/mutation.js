@@ -7,7 +7,13 @@
 import assert from 'assert';
 import {BUNCH_TYPES, NON_BUNCH_TYPES, testBunches} from './helpers';
 
-export default function mutation(Graph) {
+export default function mutation(Graph, checkers) {
+  const {
+    invalid,
+    notFound,
+    usage
+  } = checkers;
+
   return {
     '#.addNode': {
 
@@ -16,7 +22,7 @@ export default function mutation(Graph) {
 
         assert.throws(function() {
           graph.addNode('test', true);
-        }, /attributes/);
+        }, invalid());
       },
 
       'it should throw if the given node already exist.': function() {
@@ -25,7 +31,7 @@ export default function mutation(Graph) {
 
         assert.throws(function() {
           graph.addNode('Martha');
-        }, /exist/);
+        }, usage());
       },
 
       'it should return the added node.': function() {
@@ -74,7 +80,7 @@ export default function mutation(Graph) {
 
         assert.throws(function() {
           graph.addDirectedEdge('source', 'target', true);
-        }, /attributes/);
+        }, invalid());
       },
 
       'it should throw if the graph is undirected.': function() {
@@ -82,7 +88,7 @@ export default function mutation(Graph) {
 
         assert.throws(function() {
           graph.addDirectedEdge('source', 'target');
-        }, /undirected/);
+        }, usage());
       },
 
       'it should throw if either the source or the target does not exist.': function() {
@@ -91,11 +97,11 @@ export default function mutation(Graph) {
 
         assert.throws(function() {
           graph.addDirectedEdge('Thomas', 'Eric');
-        }, /source/);
+        }, notFound());
 
         assert.throws(function() {
           graph.addDirectedEdge('Martha', 'Eric');
-        }, /target/);
+        }, notFound());
       },
 
       'it should throw if the edge is a loop and the graph does not allow it.': function() {
@@ -105,7 +111,7 @@ export default function mutation(Graph) {
 
         assert.throws(function() {
           graph.addDirectedEdge('Thomas', 'Thomas');
-        }, /allowSelfLoops/);
+        }, usage());
       },
 
       'it should be possible to add self loops.': function() {
@@ -127,19 +133,19 @@ export default function mutation(Graph) {
 
         assert.throws(function() {
           graph.addDirectedEdge('Thomas', 'Martha');
-        }, /exist/);
+        }, usage());
 
         assert.throws(function() {
           graph.addUndirectedEdge('Thomas', 'Martha');
-        }, /exist/);
+        }, usage());
 
         assert.throws(function() {
           graph.addDirectedEdgeWithKey('T->M', 'Thomas', 'Martha');
-        }, /exist/);
+        }, usage());
 
         assert.throws(function() {
           graph.addUndirectedEdgeWithKey('T<->M', 'Thomas', 'Martha');
-        }, /exist/);
+        }, usage());
       },
 
       'it should return the generated edge\'s key.': function() {
@@ -194,11 +200,11 @@ export default function mutation(Graph) {
 
         assert.throws(function() {
           graph.addDirectedEdgeWithKey('T->M', 'Thomas', 'Martha');
-        }, /exist/);
+        }, usage());
 
         assert.throws(function() {
           graph.addUndirectedEdgeWithKey('T->M', 'Thomas', 'Martha');
-        }, /exist/);
+        }, usage());
 
       }
     },
@@ -215,11 +221,11 @@ export default function mutation(Graph) {
 
         assert.throws(function() {
           graph.addUndirectedEdgeWithKey('T<->M', 'Thomas', 'Martha');
-        }, /exist/);
+        }, usage());
 
         assert.throws(function() {
           graph.addDirectedEdgeWithKey('T<->M', 'Thomas', 'Martha');
-        }, /exist/);
+        }, usage());
       }
     },
 

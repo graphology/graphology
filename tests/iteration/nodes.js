@@ -6,7 +6,11 @@
  */
 import assert from 'assert';
 
-export default function nodesIteration(Graph) {
+export default function nodesIteration(Graph, checkers) {
+  const {
+    invalid
+  } = checkers;
+
   return {
     '#.nodes': {
       'it should return the list of nodes of the graph.': function() {
@@ -24,7 +28,7 @@ export default function nodesIteration(Graph) {
 
           assert.throws(function() {
             graph.reduceNodes(true);
-          }, /Graph/);
+          }, invalid());
         },
 
         'it should correctly reduce the nodes of the graph.': function() {
@@ -64,7 +68,7 @@ export default function nodesIteration(Graph) {
 
           assert.throws(function() {
             graph.forEachNode(true);
-          }, /Graph/);
+          }, invalid());
         },
 
         'it should correctly iterate over the nodes of the graph.': function() {
@@ -87,7 +91,7 @@ export default function nodesIteration(Graph) {
 
           assert.throws(function() {
             graph.mapNodes(true);
-          }, /Graph/);
+          }, invalid());
         },
 
         'it should correctly map the nodes of the graph.': function() {
@@ -111,7 +115,7 @@ export default function nodesIteration(Graph) {
 
           assert.throws(function() {
             graph.filterNodes(true);
-          }, /Graph/);
+          }, invalid());
         },
 
         'it should correctly filter the nodes of the graph.': function() {
@@ -135,7 +139,7 @@ export default function nodesIteration(Graph) {
 
           assert.throws(function() {
             graph.findNode(true);
-          }, /Graph/);
+          }, invalid());
         },
 
         'it should correctly find node or return undefined.': function() {
@@ -163,7 +167,7 @@ export default function nodesIteration(Graph) {
 
           assert.throws(function() {
             graph.someNode(true);
-          }, /Graph/);
+          }, invalid());
         },
 
         'it should correctly find node or return undefined.': function() {
@@ -191,7 +195,7 @@ export default function nodesIteration(Graph) {
 
           assert.throws(function() {
             graph.everyNode(true);
-          }, /Graph/);
+          }, invalid());
         },
 
         'it should correctly find node or return undefined.': function() {

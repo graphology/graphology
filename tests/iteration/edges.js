@@ -22,7 +22,12 @@ const METHODS = [
   'undirectedEdges'
 ];
 
-export default function edgesIteration(Graph) {
+export default function edgesIteration(Graph, checkers) {
+  const {
+    invalid,
+    notFound
+  } = checkers;
+
   const graph = new Graph(null, {multi: true});
 
   graph.addNodesFrom([
@@ -262,29 +267,29 @@ export default function edgesIteration(Graph) {
         'it should throw if too many arguments are provided.': function() {
           assert.throws(function() {
             graph[name](1, 2, 3);
-          }, /many/);
+          }, invalid());
         },
 
         'it should throw when the node is not found.': function() {
           assert.throws(function() {
             graph[name]('Test');
-          }, /node/);
+          }, notFound());
         },
 
         'it should throw if any of the provided bunch node is not found.': function() {
           assert.throws(function() {
             graph[name](['Test']);
-          }, /bunch/);
+          }, notFound());
         },
 
         'it should throw if either source or target is not found.': function() {
           assert.throws(function() {
             graph[name]('Test', 'Alone');
-          }, /find/);
+          }, notFound());
 
           assert.throws(function() {
             graph[name]('Alone', 'Test');
-          }, /find/);
+          }, notFound());
         }
       }
     };

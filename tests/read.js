@@ -6,7 +6,12 @@
  */
 import assert from 'assert';
 
-export default function read(Graph) {
+export default function read(Graph, checkers) {
+  const {
+    invalid,
+    notFound
+  } = checkers;
+
   return {
     '#.hasNode': {
 
@@ -109,7 +114,7 @@ export default function read(Graph) {
 
         assert.throws(function() {
           graph.hasDirectedEdge(1, 2, 3);
-        }, /arity/);
+        }, invalid());
       },
 
       'it should correctly return whether a matching edge exists in the graph.': function() {
@@ -137,7 +142,7 @@ export default function read(Graph) {
 
         assert.throws(function() {
           graph.hasUndirectedEdge(1, 2, 3);
-        }, /arity/);
+        }, invalid());
       },
 
       'it should correctly return whether a matching edge exists in the graph.': function() {
@@ -165,7 +170,7 @@ export default function read(Graph) {
 
         assert.throws(function() {
           graph.hasEdge(1, 2, 3);
-        }, /arity/);
+        }, invalid());
       },
 
       'it should correctly return whether a matching edge exists in the graph.': function() {
@@ -201,7 +206,7 @@ export default function read(Graph) {
 
         assert.throws(function() {
           graph.source('test');
-        }, /find/);
+        }, notFound());
       },
 
       'it should return the correct source.': function() {
@@ -222,7 +227,7 @@ export default function read(Graph) {
 
         assert.throws(function() {
           graph.target('test');
-        }, /find/);
+        }, notFound());
       },
 
       'it should return the correct target.': function() {
@@ -243,7 +248,7 @@ export default function read(Graph) {
 
         assert.throws(function() {
           graph.extremities('test');
-        }, /find/);
+        }, notFound());
       },
 
       'it should return the correct extremities.': function() {
@@ -265,11 +270,11 @@ export default function read(Graph) {
 
         assert.throws(function() {
           graph.relatedNode('Jeremy', 'T->J');
-        }, /node/);
+        }, notFound());
 
         assert.throws(function() {
           graph.relatedNode('Thomas', 'T->J');
-        });
+        }, notFound());
       },
 
       'it should return the correct node.': function() {
@@ -291,7 +296,7 @@ export default function read(Graph) {
 
         assert.throws(function() {
           graph.directed('test');
-        }, /find/);
+        }, notFound());
       },
 
       'it should correctly return whether the edge is directed or not.': function() {
@@ -315,7 +320,7 @@ export default function read(Graph) {
 
         assert.throws(function() {
           graph.undirected('test');
-        }, /find/);
+        }, notFound());
       },
 
       'it should correctly return whether the edge is undirected or not.': function() {
@@ -341,7 +346,7 @@ export default function read(Graph) {
 
           assert.throws(function() {
             graph.inDegree('Rahn', 'test');
-          }, /boolean/);
+          }, invalid());
         },
 
         'it should throw if the node is not found in the graph.': function() {
@@ -349,7 +354,7 @@ export default function read(Graph) {
 
           assert.throws(function() {
             graph.inDegree('Test');
-          }, /node/);
+          }, notFound());
         },
 
         'it should return the correct in degree.': function() {
@@ -374,7 +379,7 @@ export default function read(Graph) {
 
           assert.throws(function() {
             graph.outDegree('Rahn', 'test');
-          }, /boolean/);
+          }, invalid());
         },
 
         'it should throw if the node is not found in the graph.': function() {
@@ -382,7 +387,7 @@ export default function read(Graph) {
 
           assert.throws(function() {
             graph.outDegree('Test');
-          }, /node/);
+          }, notFound());
         },
 
         'it should return the correct out degree.': function() {
@@ -407,7 +412,7 @@ export default function read(Graph) {
 
           assert.throws(function() {
             graph.directedDegree('Rahn', 'test');
-          }, /boolean/);
+          }, invalid());
         },
 
         'it should throw if the node is not found in the graph.': function() {
@@ -415,7 +420,7 @@ export default function read(Graph) {
 
           assert.throws(function() {
             graph.directedDegree('Test');
-          }, /node/);
+          }, notFound());
         },
 
         'it should return the correct directed degree.': function() {
@@ -446,7 +451,7 @@ export default function read(Graph) {
 
           assert.throws(function() {
             graph.undirectedDegree('Rahn', 'test');
-          }, /boolean/);
+          }, invalid());
         },
 
         'it should throw if the node is not found in the graph.': function() {
@@ -454,7 +459,7 @@ export default function read(Graph) {
 
           assert.throws(function() {
             graph.undirectedDegree('Test');
-          }, /node/);
+          }, notFound());
         },
 
         'it should return the correct undirected degree.': function() {
@@ -480,7 +485,7 @@ export default function read(Graph) {
 
           assert.throws(function() {
             graph.degree('Rahn', 'test');
-          }, /boolean/);
+          }, invalid());
         },
 
         'it should throw if the node is not found in the graph.': function() {
@@ -488,7 +493,7 @@ export default function read(Graph) {
 
           assert.throws(function() {
             graph.degree('Test');
-          }, /node/);
+          }, notFound());
         },
 
         'it should return the correct degree.': function() {

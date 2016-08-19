@@ -7,9 +7,9 @@
 import nodes from './nodes';
 import edges from './edges';
 
-export default function iteration(Graph) {
+export default function iteration(Graph, checkers) {
   return {
-    Nodes: nodes(Graph),
-    Edges: edges(Graph)
+    Nodes: nodes(Graph, checkers),
+    Edges: edges(Graph, checkers)
   };
 }

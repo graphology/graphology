@@ -6,7 +6,11 @@
  */
 import assert from 'assert';
 
-export default function attributes(Graph) {
+export default function attributes(Graph, checkers) {
+  const {
+    notFound
+  } = checkers;
+
   return {
     '#.getNodeAttribute': {
 
@@ -15,7 +19,7 @@ export default function attributes(Graph) {
 
         assert.throws(function() {
           graph.getNodeAttribute('John', 'test');
-        }, /getNodeAttribute/);
+        }, notFound());
       },
 
       'it should return the correct value.': function() {

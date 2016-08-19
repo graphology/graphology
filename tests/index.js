@@ -43,11 +43,11 @@ export default function specs(path) {
 
   return {
     'Instantiation': instantiation(Graph, implementation, errorCheckers),
-    'Properties': properties(Graph, errors),
-    'Mutation': mutation(Graph, errors),
-    'Read': read(Graph, errors),
-    'Attributes': attributes(Graph, errors),
-    'Iteration': iteration(Graph, errors),
-    'Known Methods': knownMethods(Graph, errors)
+    'Properties': properties(Graph, errorCheckers),
+    'Mutation': mutation(Graph, errorCheckers),
+    'Read': read(Graph, errorCheckers),
+    'Attributes': attributes(Graph, errorCheckers),
+    'Iteration': iteration(Graph, errorCheckers),
+    'Known Methods': knownMethods(Graph, errorCheckers)
   };
 }
