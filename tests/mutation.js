@@ -257,6 +257,58 @@ export default function mutation(Graph, checkers) {
       }
     },
 
+    '#.dropEdge': {
+
+      'it should throw if the edge is not found in the graph.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.dropEdge('Test');
+        }, notFound());
+      },
+
+      'it should correctly remove the given edge from the graph.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Margaret']);
+        const edge = graph.addEdge('John', 'Margaret');
+
+        graph.dropEdge(edge);
+
+        assert.strictEqual(graph.order, 2);
+        assert.strictEqual(graph.size, 0);
+        assert.strictEqual(graph.degree('John'), 0);
+        assert.strictEqual(graph.degree('Margaret'), 0);
+        assert.strictEqual(graph.hasEdge(edge), false);
+        assert.strictEqual(graph.hasDirectedEdge('John', 'Margaret'), false);
+      }
+    },
+
+    '#.dropNode': {
+
+      'it should throw if the edge is not found in the graph.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.dropNode('Test');
+        }, notFound());
+      },
+
+      'it should correctly remove the given edge from the graph.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Margaret']);
+        const edge = graph.addEdge('John', 'Margaret');
+
+        graph.dropNode('Margaret');
+
+        assert.strictEqual(graph.order, 1);
+        assert.strictEqual(graph.size, 0);
+        assert.strictEqual(graph.hasNode('Margaret'), false);
+        assert.strictEqual(graph.hasEdge(edge), false);
+        assert.strictEqual(graph.degree('John'), 0);
+        assert.strictEqual(graph.hasDirectedEdge('John', 'Margaret'), false);
+      }
+    },
+
     '#.clear': {
 
       'it should empty the graph.': function() {

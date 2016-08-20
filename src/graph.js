@@ -174,7 +174,6 @@ export default class Graph extends EventEmitter {
       relations: {
         computed: false,
         synchronized: true,
-        full: true,
         data: map ? new Map() : {}
       }
     });
@@ -186,6 +185,9 @@ export default class Graph extends EventEmitter {
 
     // Methods
     privateProperty(this, '_addEdge', this._addEdge);
+    privateProperty(this, 'updateIndex', this.updateIndex);
+    privateProperty(this, 'clearNodeFromIndex', this.clearNodeFromIndex);
+    privateProperty(this, 'clearEdgeFromIndex', this.clearEdgeFromIndex);
 
     //-- Properties readers
     readOnlyProperty(this, 'order', () => this._order);
@@ -949,8 +951,72 @@ export default class Graph extends EventEmitter {
    *
    * @throws {Error} - Will throw if the node doesn't exist.
    */
-  dropNode() {
+  dropNode(node) {
+    if (!this.hasNode(node))
+      throw new NotFoundGraphError(`Graph.dropNode: could not find the "${node}" node in the graph.`);
 
+    // Removing attached edges
+    const edges = this.edges(node);
+
+    // NOTE: we could go faster here
+    for (let i = 0, l = edges.length; i < l; i++)
+      this.dropEdge(edges[i]);
+
+    // Dropping the node from the register
+    if (this.map)
+      this._nodes.delete(node);
+    else
+      delete this._nodes[node];
+
+    // Decrementing order
+    this._order--;
+
+    // Clearing index
+    this.clearNodeFromIndex('relations', node);
+  }
+
+  /**
+   * Method used to drop a single edge from the graph.
+   *
+   * @param  {any}    edge - The edge.
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if the edge doesn't exist.
+   */
+  dropEdge(edge) {
+    if (!this.hasEdge(edge))
+      throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${edge}" edge in the graph.`);
+
+    const data = this.map ? this._edges.get(edge) : this._edges[edge];
+
+    // Dropping the edge from the register
+    if (this.map)
+      this._edges.delete(edge);
+    else
+      delete this._edges[edge];
+
+    // Decrementing size
+    this._size--;
+
+    // Updating related degrees
+    const {source, target, undirected} = data;
+
+    const sourceData = this.map ? this._nodes.get(source) : this._nodes[source],
+          targetData = this.map ? this._nodes.get(target) : this._nodes[target];
+
+    if (undirected) {
+      sourceData.undirectedDegree--;
+      targetData.undirectedDegree--;
+    }
+    else {
+      sourceData.outDegree--;
+      targetData.inDegree--;
+    }
+
+    // Clearing index
+    this.clearEdgeFromIndex('relations', edge, data);
+
+    return this;
   }
 
   /**
@@ -1148,14 +1214,79 @@ export default class Graph extends EventEmitter {
     }
   }
 
-  clearNodeFromIndex(name) {
+  clearNodeFromIndex(name, node) {
     if (!INDEXES.has(name))
       throw new InvalidArgumentsGraphError(`Graph.updateIndex: unknown "${name}" index.`);
+
+    const index = this._indexes.relations,
+          indexData = index.data;
+
+    if (!index.computed)
+      return this;
+
+    // NOTE: when arriving here, all attached edges should have been dropped
+    if (this.map)
+      indexData.delete(node);
+    else
+      delete indexData[node];
+
+    return this;
   }
 
-  clearEdgeFromIndex(name) {
+  /**
+   * Method clearing data related to a single edge.
+   *
+   * @param  {string} name     - Name of the index to compute.
+   * @param  {any}    edge     - The edge to remove.
+   * @param  {object} edgeData - Data of the removed edge.
+   * @return {Graph}           - Returns itself for chaining.
+   *
+   * @throw  {Error} - Will throw if the index doesn't exist.
+   */
+  clearEdgeFromIndex(name, edge, edgeData) {
     if (!INDEXES.has(name))
       throw new InvalidArgumentsGraphError(`Graph.updateIndex: unknown "${name}" index.`);
+
+    const index = this._indexes.relations,
+          indexData = index.data;
+
+    if (!index.computed)
+      return this;
+
+    const {source, target, undirected} = edgeData;
+
+    const sourceData = this.map ? indexData.get(source) : indexData[source],
+          targetData = this.map ? indexData.get(target) : indexData[target];
+
+    let sourceRegister,
+        targetRegister;
+
+    if (undirected) {
+      sourceRegister = sourceData.undirectedOut;
+      targetRegister = targetData.undirectedIn;
+    }
+    else {
+      sourceRegister = sourceData.out;
+      targetRegister = targetData.in;
+    }
+
+    sourceRegister = this.map ?
+      sourceRegister.get(target) :
+      sourceRegister[target];
+
+    targetRegister = this.map ?
+      targetRegister.get(source) :
+      targetRegister[source];
+
+    // NOTE: This method could prove out-of-line performance-wise for large
+    // multi-graphs. This solution is to store the edges in sets or linked lists
+    const sourceIndex = sourceRegister.indexOf(edge),
+          targetIndex = targetRegister.indexOf(edge);
+
+    sourceRegister.splice(sourceIndex, 1);
+    targetRegister.splice(targetIndex, 1);
+
+    return this;
   }
 
   /**
