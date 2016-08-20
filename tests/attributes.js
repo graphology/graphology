@@ -62,6 +62,58 @@ export default function attributes(Graph, checkers) {
 
         assert.strictEqual(graph.getEdgeAttribute(edge, 'weight'), undefined);
       }
+    },
+
+    '#.getNodeAttributes': {
+
+      'it should throw if the node is not found in the graph.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.getNodeAttributes('John');
+        }, notFound());
+      },
+
+      'it should return the correct value.': function() {
+        const graph = new Graph();
+        graph.addNode('Martha', {age: 34});
+
+        assert.deepEqual(graph.getNodeAttributes('Martha'), {age: 34});
+      },
+
+      'it should return an empty object if the node does not have attributes.': function() {
+        const graph = new Graph();
+        graph.addNode('Martha');
+
+        assert.deepEqual(graph.getNodeAttributes('Martha'), {});
+      }
+    },
+
+    '#.getEdgeAttributes': {
+      'it should throw if the edge is not found in the graph.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.getEdgeAttributes('J->M');
+        }, notFound());
+      },
+
+      'it should return the correct value.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Thomas']);
+        const edge = graph.addEdge('John', 'Thomas', {weight: 2});
+
+
+        assert.deepEqual(graph.getEdgeAttributes(edge), {weight: 2});
+      },
+
+      'it should return undefined if the edge does not have attributes.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Thomas']);
+        const edge = graph.addEdge('John', 'Thomas');
+
+        assert.deepEqual(graph.getEdgeAttributes(edge), {});
+      }
     }
   };
 }
