@@ -49,6 +49,7 @@ import {
 // TODO: differentiate index structure for simple/multi for performance
 // TODO: at the end, make an optimization run
 // TODO: drop the reducers from implem, benefits are too small vs. implementation cost
+// TODO: bug in edges(source, target)
 
 /**
  * Enums.

@@ -6,5 +6,6 @@ _book
 Notes.md
 
 # Transpiled folders
+build
 dist
 specs

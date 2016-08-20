@@ -4,6 +4,7 @@
   "description": "A robust Graph object for JavaScript.",
   "main": "dist/index.js",
   "scripts": {
+    "build": "webpack --colors --progress && webpack --colors --progress -p",
     "clean": "rimraf dist specs",
     "dist": "npm run clean && babel src --out-dir dist && babel tests --out-dir specs",
     "docs:build": "npm run docs:prepare && gitbook build",
@@ -39,6 +40,7 @@
   },
   "homepage": "https://github.com/medialab/graphlib#readme",
   "dependencies": {
+    "babel-loader": "^6.2.5",
     "events": "^1.1.1"
   },
   "devDependencies": {
@@ -54,7 +56,8 @@
     "gitbook-plugin-prism": "^1.0.0",
     "lodash": "^4.15.0",
     "mocha": "^3.0.2",
-    "rimraf": "^2.5.4"
+    "rimraf": "^2.5.4",
+    "webpack": "^1.13.2"
   },
   "babel": {
     "presets": [
