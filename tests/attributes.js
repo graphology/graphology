@@ -35,6 +35,33 @@ export default function attributes(Graph, checkers) {
 
         assert.strictEqual(graph.getNodeAttribute('Martha', 'age'), undefined);
       }
+    },
+
+    '#.getEdgeAttribute': {
+      'it should throw if the edge is not found in the graph.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.getEdgeAttribute('J->M', 'test');
+        }, notFound());
+      },
+
+      'it should return the correct value.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Thomas']);
+        const edge = graph.addEdge('John', 'Thomas', {weight: 2});
+
+
+        assert.strictEqual(graph.getEdgeAttribute(edge, 'weight'), 2);
+      },
+
+      'it should return undefined if the attribute does not exist.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Thomas']);
+        const edge = graph.addEdge('John', 'Thomas');
+
+        assert.strictEqual(graph.getEdgeAttribute(edge, 'weight'), undefined);
+      }
     }
   };
 }

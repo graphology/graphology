@@ -1058,6 +1058,9 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the given node doesn't exist.
    */
   getNodeAttribute(node, name) {
+    if (!this.hasNode(node))
+      throw new NotFoundGraphError(`Graph.getNodeAttribute: could not find the "${node}" node in the graph.`);
+
     let data;
 
     if (this.map)
@@ -1065,8 +1068,30 @@ export default class Graph extends EventEmitter {
     else
       data = this._nodes[node];
 
-    if (!data)
-      throw new NotFoundGraphError(`Graph.getNodeAttribute: the "${node}" wasn't found in the graph.`);
+    const value = data.attributes[name];
+
+    return value;
+  }
+
+  /**
+   * Method used to retrieve an edge attribute's value.
+   *
+   * @param  {any}    edge - The edge.
+   * @param  {string} name - The attribute's name.
+   * @return {any}         - The attribute's value or undefined if not found.
+   *
+   * @throws {Error} - Will throw if the given edge doesn't exist.
+   */
+  getEdgeAttribute(edge, name) {
+    if (!this.hasEdge(edge))
+      throw new NotFoundGraphError(`Graph.getEdgeAttribute: could not find the "${edge}" edge in the graph.`);
+
+    let data;
+
+    if (this.map)
+      data = this._edges.get(edge);
+    else
+      data = this._edges[edge];
 
     const value = data.attributes[name];
 
