@@ -9,11 +9,18 @@
  */
 import {EventEmitter} from 'events';
 import {EDGES_ITERATION} from './iteration';
+
 import {
   InvalidArgumentsGraphError,
   NotFoundGraphError,
   UsageGraphError
 } from './errors';
+
+import {
+  attachAttributeGetter,
+  attachAttributesGetter
+} from './attributes';
+
 import {
   BasicSet,
   isBunch,
@@ -50,6 +57,7 @@ import {
 // TODO: at the end, make an optimization run
 // TODO: drop the reducers from implem, benefits are too small vs. implementation cost
 // TODO: bug in edges(source, target)
+// TODO: move iterations functions below in iteration
 
 /**
  * Enums.
@@ -1044,105 +1052,6 @@ export default class Graph extends EventEmitter {
   }
 
   /**---------------------------------------------------------------------------
-   * Attributes
-   **---------------------------------------------------------------------------
-   */
-
-  /**
-   * Method used to retrieve a node attribute's value.
-   *
-   * @param  {any}    node - The node.
-   * @param  {string} name - The attribute's name.
-   * @return {any}         - The attribute's value or undefined if not found.
-   *
-   * @throws {Error} - Will throw if the given node doesn't exist.
-   */
-  getNodeAttribute(node, name) {
-    if (!this.hasNode(node))
-      throw new NotFoundGraphError(`Graph.getNodeAttribute: could not find the "${node}" node in the graph.`);
-
-    let data;
-
-    if (this.map)
-      data = this._nodes.get(node);
-    else
-      data = this._nodes[node];
-
-    const value = data.attributes[name];
-
-    return value;
-  }
-
-  /**
-   * Method used to retrieve a node's attributes.
-   *
-   * @param  {any}    node - The node.
-   * @return {object}      - The attached attributes.
-   *
-   * @throws {Error} - Will throw if the given node doesn't exist.
-   */
-  getNodeAttributes(node) {
-    if (!this.hasNode(node))
-      throw new NotFoundGraphError(`Graph.getNodeAttributes: could not find the "${node}" node in the graph.`);
-
-    let data;
-
-    if (this.map)
-      data = this._nodes.get(node);
-    else
-      data = this._nodes[node];
-
-    return data.attributes;
-  }
-
-  /**
-   * Method used to retrieve an edge attribute's value.
-   *
-   * @param  {any}    edge - The edge.
-   * @param  {string} name - The attribute's name.
-   * @return {any}         - The attribute's value or undefined if not found.
-   *
-   * @throws {Error} - Will throw if the given edge doesn't exist.
-   */
-  getEdgeAttribute(edge, name) {
-    if (!this.hasEdge(edge))
-      throw new NotFoundGraphError(`Graph.getEdgeAttribute: could not find the "${edge}" edge in the graph.`);
-
-    let data;
-
-    if (this.map)
-      data = this._edges.get(edge);
-    else
-      data = this._edges[edge];
-
-    const value = data.attributes[name];
-
-    return value;
-  }
-
-  /**
-   * Method used to retrieve an edge's attributes.
-   *
-   * @param  {any}    edge - The edge.
-   * @return {object}      - The attached attributes.
-   *
-   * @throws {Error} - Will throw if the given edge doesn't exist.
-   */
-  getEdgeAttributes(edge) {
-    if (!this.hasEdge(edge))
-      throw new NotFoundGraphError(`Graph.getEdgeAttributes: could not find the "${edge}" edge in the graph.`);
-
-    let data;
-
-    if (this.map)
-      data = this._edges.get(edge);
-    else
-      data = this._edges[edge];
-
-    return data.attributes;
-  }
-
-  /**---------------------------------------------------------------------------
    * Iteration-related methods
    **---------------------------------------------------------------------------
    */
@@ -1479,6 +1388,38 @@ export default class Graph extends EventEmitter {
  * them to the Graph class prototype rather than writing a lot of custom methods
  * one by one.
  */
+
+/**
+ * Attributes-related.
+ */
+attachAttributeGetter(
+  Graph,
+  'getNodeAttribute',
+  '_nodes',
+  'node',
+  'hasNode'
+);
+attachAttributeGetter(
+  Graph,
+  'getEdgeAttribute',
+  '_edges',
+  'edge',
+  'hasEdge'
+);
+attachAttributesGetter(
+  Graph,
+  'getNodeAttributes',
+  '_nodes',
+  'node',
+  'hasNode'
+);
+attachAttributesGetter(
+  Graph,
+  'getEdgeAttributes',
+  '_edges',
+  'edge',
+  'hasEdge'
+);
 
 function createEdgeArray(count, graph, type) {
   if (count && type === 'mixed')
