@@ -5,22 +5,42 @@
  * Testing the attributes-related methods of the graph.
  */
 import assert from 'assert';
+import {deepMerge} from './helpers';
+
+const METHODS = [
+  'getNodeAttribute',
+  'getNodeAttributes',
+  'getEdgeAttribute',
+  'getEdgeAttributes',
+  'setNodeAttribute',
+  'setEdgeAttribute'
+];
 
 export default function attributes(Graph, checkers) {
   const {
     notFound
   } = checkers;
 
-  return {
+  function commonTests(method) {
+    return {
+      ['#.' + method]: {
+        'it should throw if the element is not found in the graph.': function() {
+          const graph = new Graph();
+
+          assert.throws(function() {
+            graph[method]('Test');
+          }, notFound());
+        }
+      }
+    };
+  }
+
+  const tests = {};
+
+  METHODS.forEach(method => deepMerge(tests, commonTests(method)));
+
+  return deepMerge(tests, {
     '#.getNodeAttribute': {
-
-      'it should throw if the node is not found in the graph.': function() {
-        const graph = new Graph();
-
-        assert.throws(function() {
-          graph.getNodeAttribute('John', 'test');
-        }, notFound());
-      },
 
       'it should return the correct value.': function() {
         const graph = new Graph();
@@ -38,13 +58,6 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.getEdgeAttribute': {
-      'it should throw if the edge is not found in the graph.': function() {
-        const graph = new Graph();
-
-        assert.throws(function() {
-          graph.getEdgeAttribute('J->M', 'test');
-        }, notFound());
-      },
 
       'it should return the correct value.': function() {
         const graph = new Graph();
@@ -66,14 +79,6 @@ export default function attributes(Graph, checkers) {
 
     '#.getNodeAttributes': {
 
-      'it should throw if the node is not found in the graph.': function() {
-        const graph = new Graph();
-
-        assert.throws(function() {
-          graph.getNodeAttributes('John');
-        }, notFound());
-      },
-
       'it should return the correct value.': function() {
         const graph = new Graph();
         graph.addNode('Martha', {age: 34});
@@ -90,13 +95,6 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.getEdgeAttributes': {
-      'it should throw if the edge is not found in the graph.': function() {
-        const graph = new Graph();
-
-        assert.throws(function() {
-          graph.getEdgeAttributes('J->M');
-        }, notFound());
-      },
 
       'it should return the correct value.': function() {
         const graph = new Graph();
@@ -114,6 +112,28 @@ export default function attributes(Graph, checkers) {
 
         assert.deepEqual(graph.getEdgeAttributes(edge), {});
       }
+    },
+
+    '#.setNodeAttribute': {
+
+      'it should correctly set the node\'s attribute.': function() {
+        const graph = new Graph();
+        graph.addNode('John', {age: 20});
+
+        graph.setNodeAttribute('John', 'age', 45);
+        assert.strictEqual(graph.getNodeAttribute('John', 'age'), 45);
+      }
+    },
+
+    '#.setEdgeAttribute': {
+      'it should correctly set the edge\'s attribute.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Martha']);
+        const edge = graph.addEdge('John', 'Martha', {weigth: 3});
+
+        graph.setEdgeAttribute(edge, 'weigth', 40);
+        assert.strictEqual(graph.getEdgeAttribute(edge, 'weigth'), 40);
+      }
     }
-  };
+  });
 }

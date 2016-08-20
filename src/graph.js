@@ -18,7 +18,8 @@ import {
 
 import {
   attachAttributeGetter,
-  attachAttributesGetter
+  attachAttributesGetter,
+  attachAttributeSetter
 } from './attributes';
 
 import {
@@ -58,6 +59,7 @@ import {
 // TODO: drop the reducers from implem, benefits are too small vs. implementation cost
 // TODO: bug in edges(source, target)
 // TODO: move iterations functions below in iteration
+// TODO: finish JSDocs
 
 /**
  * Enums.
@@ -1416,6 +1418,20 @@ attachAttributesGetter(
 attachAttributesGetter(
   Graph,
   'getEdgeAttributes',
+  '_edges',
+  'edge',
+  'hasEdge'
+);
+attachAttributeSetter(
+  Graph,
+  'setNodeAttribute',
+  '_nodes',
+  'node',
+  'hasNode'
+);
+attachAttributeSetter(
+  Graph,
+  'setEdgeAttribute',
   '_edges',
   'edge',
   'hasEdge'
