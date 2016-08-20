@@ -15,12 +15,6 @@ import {
   UsageGraphError
 } from './errors';
 import {
-  REDUCERS,
-  FINDERS,
-  abstractReducer,
-  abstractFinder
-} from './reducers';
-import {
   BasicSet,
   isBunch,
   isPlainObject,
@@ -54,6 +48,7 @@ import {
 // TODO: self iterator should be adjacency if we make it
 // TODO: differentiate index structure for simple/multi for performance
 // TODO: at the end, make an optimization run
+// TODO: drop the reducers from implem, benefits are too small vs. implementation cost
 
 /**
  * Enums.
@@ -1277,90 +1272,12 @@ export default class Graph extends EventEmitter {
 }
 
 /**
- * Attaching reducers to the prototype.
+ * Attaching iteration methods to the prototype.
  *
- * Here, we create reducers for every kind of iteration by attaching them
- * to the Graph class prototype rather than writing a lot of custom methods
+ * Here, we create iteration methods for every kind of iteration by attaching
+ * them to the Graph class prototype rather than writing a lot of custom methods
  * one by one.
  */
-
-/**
- * Attach a single derived reducer (map, filter etc.) for nodes to the target
- * class' prototype.
- *
- * @param {function} Class       - Target class.
- * @param {object}   description - Reducer's description.
- */
-function attachNodeDerivedReducer(Class, description) {
-  const name = description.name('Node');
-
-  /**
-   * Node derived reducer.
-   *
-   * @param  {function} callback - Iteration callback.
-   * @return {mixed}
-   */
-  Class.prototype[name] = function(callback) {
-    if (typeof callback !== 'function')
-      throw new InvalidArgumentsGraphError(`Graph.${name}: the provided callback is not a function.`);
-
-    const initialValue = description.value(this),
-          reducer = description.reducer(callback);
-
-    return this.reduceNodes(reducer, initialValue);
-  };
-}
-
-/**
- * Attaching the nodes derived reducers.
- */
-Graph.prototype.reduceNodes = function(callback, initialValue) {
-  if (typeof callback !== 'function')
-    throw new InvalidArgumentsGraphError('Graph.reduceNodes: the provided callback is not a function.');
-
-  if (arguments.length > 1)
-    return abstractReducer.call(this, this._nodes, callback, initialValue);
-  else
-    return abstractReducer.call(this, this._nodes, callback);
-};
-
-REDUCERS.forEach(description => attachNodeDerivedReducer(Graph, description));
-
-/**
- * Attach a single derived reducer (find, some etc.) for nodes to the target
- * class' prototype.
- *
- * @param {function} Class       - Target class.
- * @param {object}   description - Reducer's description.
- */
-function attachNodeDerivedFinder(Class, description) {
-  const name = description.name('Node');
-
-  /**
-   * Node derived finder.
-   *
-   * @param  {function} predicate - Predicate.
-   * @return {mixed}
-   */
-  Class.prototype[name] = function(predicate) {
-    if (typeof predicate !== 'function')
-      throw new InvalidArgumentsGraphError(`Graph.${name}: the provided predicate is not a function.`);
-
-    const result = abstractFinder.call(
-      this,
-      this._nodes,
-      predicate,
-      !!description.reversed
-    );
-
-    return description.value(result);
-  };
-}
-
-/**
- * Attaching the nodes derived finders.
- */
-FINDERS.forEach(description => attachNodeDerivedFinder(Graph, description));
 
 function createEdgeArray(count, graph, type) {
   if (count && type === 'mixed')
@@ -1702,3 +1619,11 @@ EDGES_ITERATION.forEach(description => {
   attachEdgeArrayCreator(Graph, false, description);
   attachEdgeArrayCreator(Graph, true, description);
 });
+
+function collectNeighbors(object) {
+
+  if (typeof Map === 'function' && object instanceof Map)
+    return [...object.keys()];
+  else
+    return Object.keys(object);
+}
