@@ -1074,6 +1074,28 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method used to retrieve a node's attributes.
+   *
+   * @param  {any}    node - The node.
+   * @return {object}      - The attached attributes.
+   *
+   * @throws {Error} - Will throw if the given node doesn't exist.
+   */
+  getNodeAttributes(node) {
+    if (!this.hasNode(node))
+      throw new NotFoundGraphError(`Graph.getNodeAttributes: could not find the "${node}" node in the graph.`);
+
+    let data;
+
+    if (this.map)
+      data = this._nodes.get(node);
+    else
+      data = this._nodes[node];
+
+    return data.attributes;
+  }
+
+  /**
    * Method used to retrieve an edge attribute's value.
    *
    * @param  {any}    edge - The edge.
@@ -1096,6 +1118,28 @@ export default class Graph extends EventEmitter {
     const value = data.attributes[name];
 
     return value;
+  }
+
+  /**
+   * Method used to retrieve an edge's attributes.
+   *
+   * @param  {any}    edge - The edge.
+   * @return {object}      - The attached attributes.
+   *
+   * @throws {Error} - Will throw if the given edge doesn't exist.
+   */
+  getEdgeAttributes(edge) {
+    if (!this.hasEdge(edge))
+      throw new NotFoundGraphError(`Graph.getEdgeAttributes: could not find the "${edge}" edge in the graph.`);
+
+    let data;
+
+    if (this.map)
+      data = this._edges.get(edge);
+    else
+      data = this._edges[edge];
+
+    return data.attributes;
   }
 
   /**---------------------------------------------------------------------------
