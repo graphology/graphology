@@ -208,6 +208,37 @@ export default function serialization(Graph, checkers) {
           ]);
         });
       }
+    },
+
+    '#.export': {
+      'it should correctly return the serialized graph.': function() {
+        const graph = new Graph(null, {multi: true});
+        graph.addNodesFrom(['John', 'Jack', 'Martha']);
+        graph.setNodeAttribute('John', 'age', 34);
+        graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
+        graph.addEdgeWithKey('J->J•2', 'John', 'Jack', {weight: 2});
+        graph.addEdgeWithKey('J->J•3', 'John', 'Jack');
+        graph.addUndirectedEdgeWithKey('J<->J•1', 'John', 'Jack');
+        graph.addUndirectedEdgeWithKey('J<->J•2', 'John', 'Jack', {weight: 3});
+
+        assert.deepEqual(
+          graph.export(),
+          {
+            nodes: [
+              ['John', {age: 34}],
+              ['Jack'],
+              ['Martha']
+            ],
+            edges: [
+              ['J->J•1', 'John', 'Jack'],
+              ['J->J•2', 'John', 'Jack', {weight: 2}],
+              ['J->J•3', 'John', 'Jack'],
+              ['J<->J•1', 'John', 'Jack', {}, true],
+              ['J<->J•2', 'John', 'Jack', {weight: 3}, true]
+            ]
+          }
+        );
+      }
     }
   };
 }

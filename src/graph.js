@@ -1249,6 +1249,18 @@ export default class Graph extends EventEmitter {
     );
   }
 
+  /**
+   * Method used to export the whole graph.
+   *
+   * @return {object} - The serialized graph.
+   */
+  export() {
+    return {
+      nodes: this.exportNodes(),
+      edges: this.exportEdges()
+    };
+  }
+
   /**---------------------------------------------------------------------------
    * Indexes-related methods
    **---------------------------------------------------------------------------
@@ -1478,6 +1490,15 @@ export default class Graph extends EventEmitter {
    * Known methods
    **---------------------------------------------------------------------------
    */
+
+  /**
+   * Method used by JavaScript to perform JSON serialization.
+   *
+   * @return {object} - The serialized graph.
+   */
+  toJSON() {
+    return this.export();
+  }
 
   /**
    * Method used to perform string coercion and returning useful information

@@ -8,6 +8,21 @@ import assert from 'assert';
 
 export default function knownMethods(Graph) {
   return {
+    '#.toJSON': {
+      'it should return the serialized graph.': function() {
+        const graph = new Graph(null, {multi: true});
+        graph.addNodesFrom(['John', 'Jack', 'Martha']);
+        graph.setNodeAttribute('John', 'age', 34);
+        graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
+        graph.addEdgeWithKey('J->J•2', 'John', 'Jack', {weight: 2});
+        graph.addEdgeWithKey('J->J•3', 'John', 'Jack');
+        graph.addUndirectedEdgeWithKey('J<->J•1', 'John', 'Jack');
+        graph.addUndirectedEdgeWithKey('J<->J•2', 'John', 'Jack', {weight: 3});
+
+        assert.deepEqual(graph.toJSON(), graph.export());
+      }
+    },
+
     '#.toString': {
 
       'it should return a useful string.': function() {
