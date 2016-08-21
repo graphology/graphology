@@ -202,6 +202,7 @@ export default class Graph extends EventEmitter {
 
     // Methods
     privateProperty(this, '_addEdge', this._addEdge);
+    privateProperty(this, '_exportEdges', this._exportEdges);
     privateProperty(this, 'updateIndex', this.updateIndex);
     privateProperty(this, 'clearNodeFromIndex', this.clearNodeFromIndex);
     privateProperty(this, 'clearEdgeFromIndex', this.clearEdgeFromIndex);
@@ -1122,7 +1123,7 @@ export default class Graph extends EventEmitter {
    * @param  {mixed}   [bunch] - Target nodes.
    * @return {array[]}         - The serialized nodes.
    *
-   ** @throws {Error} - Will throw if any of the nodes is not found.
+   * @throws {Error} - Will throw if any of the nodes is not found.
    */
   exportNodes(bunch) {
     let nodes = [];
@@ -1154,31 +1155,40 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method exporting every edges or the bunch ones.
+   * Internal method abstracting edges export.
    *
-   * @param  {mixed}   [bunch] - Target edges.
-   * @return {array[]}         - The serialized edges.
+   * @param  {string}   name      - Child method name.
+   * @param  {function} predicate - Predicate to filter the bunch's edges.
+   * @param  {mixed}    [bunch]   - Target edges.
+   * @return {array[]}            - The serialized edges.
    *
-   ** @throws {Error} - Will throw if any of the edges is not found.
+   * @throws {Error} - Will throw if any of the edges is not found.
    */
-  exportEdges(bunch) {
+  _exportEdges(name, predicate, bunch) {
     let edges = [];
 
-    if (!arguments.length) {
+    if (!bunch) {
 
-      // Exporting every edge
-      edges = this.edges();
+      // Exporting every edges of the given type
+      if (name === 'exportEdges')
+        edges = this.edges();
+      else if (name === 'exportDirectedEdges')
+        edges = this.directedEdges();
+      else
+        edges = this.undirectedEdges();
     }
     else {
 
       // Exporting the bunch
       if (!isBunch(bunch))
-        throw new InvalidArgumentsGraphError('Graph.exportEdges: invalid bunch.');
+        throw new InvalidArgumentsGraphError(`Graph.${name}: invalid bunch.`);
 
       overBunch(bunch, (error, edge) => {
         if (!this.hasEdge(edge))
-          throw new NotFoundGraphError(`Graph.exportEdges: could not find the "${edge}" edge from the bunch in the graph.`);
-        edges.push(edge);
+          throw new NotFoundGraphError(`Graph.${name}: could not find the "${edge}" edge from the bunch in the graph.`);
+
+        if (!predicate || predicate(edge))
+          edges.push(edge);
       });
     }
 
@@ -1188,6 +1198,55 @@ export default class Graph extends EventEmitter {
       serializedNodes[i] = this.exportEdge(edges[i]);
 
     return serializedNodes;
+  }
+
+  /**
+   * Method exporting every edges or the bunch ones.
+   *
+   * @param  {mixed}   [bunch] - Target edges.
+   * @return {array[]}         - The serialized edges.
+   *
+   * @throws {Error} - Will throw if any of the edges is not found.
+   */
+  exportEdges(bunch) {
+    return this._exportEdges(
+      'exportEdges',
+      null,
+      bunch
+    );
+  }
+
+  /**
+   * Method exporting every directed edges or the bunch ones which are directed.
+   *
+   * @param  {mixed}   [bunch] - Target edges.
+   * @return {array[]}         - The serialized edges.
+   *
+   * @throws {Error} - Will throw if any of the edges is not found.
+   */
+  exportDirectedEdges(bunch) {
+    return this._exportEdges(
+      'exportDirectedEdges',
+      edge => this.directed(edge),
+      bunch
+    );
+  }
+
+  /**
+   * Method exporting every unddirected edges or the bunch ones which are
+   * undirected
+   *
+   * @param  {mixed}   [bunch] - Target edges.
+   * @return {array[]}         - The serialized edges.
+   *
+   * @throws {Error} - Will throw if any of the edges is not found.
+   */
+  exportUndirectedEdges(bunch) {
+    return this._exportEdges(
+      'exportUndirectedEdges',
+      edge => this.undirected(edge),
+      bunch
+    );
   }
 
   /**---------------------------------------------------------------------------

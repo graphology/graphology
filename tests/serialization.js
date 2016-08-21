@@ -125,6 +125,89 @@ export default function serialization(Graph, checkers) {
           ]);
         });
       }
+    },
+
+    '#.exportDirectedEdges': {
+      'it should throw if any of the provided edges does not exist.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.exportDirectedEdges(['Test']);
+        }, notFound());
+      },
+
+      'it should return all the directed edges serialized if no arguments are provided.': function() {
+        const graph = new Graph(null, {multi: true});
+        graph.addNode('John');
+        graph.addNode('Jack');
+        graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
+        graph.addEdgeWithKey('J->J•2', 'John', 'Jack', {weight: 2});
+        graph.addUndirectedEdgeWithKey('J<->J•1', 'John', 'Jack');
+        graph.addUndirectedEdgeWithKey('J<->J•2', 'John', 'Jack');
+
+        assert.deepEqual(graph.exportDirectedEdges(), [
+          ['J->J•1', 'John', 'Jack'],
+          ['J->J•2', 'John', 'Jack', {weight: 2}]
+        ]);
+      },
+
+      'it should return the serialized directed edges from the given bunch.': function() {
+        const graph = new Graph(null, {multi: true});
+        graph.addNodesFrom(['John', 'Jack', 'Martha']);
+        graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
+        graph.addEdgeWithKey('J->J•2', 'John', 'Jack', {weight: 2});
+        graph.addEdgeWithKey('J->J•3', 'John', 'Jack');
+        graph.addUndirectedEdgeWithKey('J<->J•1', 'John', 'Jack');
+        graph.addUndirectedEdgeWithKey('J<->J•2', 'John', 'Jack');
+
+        testBunches(['J->J•1', 'J->J•3', 'J<->J•2'], bunch => {
+          assert.deepEqual(graph.exportDirectedEdges(bunch), [
+            ['J->J•1', 'John', 'Jack'],
+            ['J->J•3', 'John', 'Jack']
+          ]);
+        });
+      }
+    },
+
+    '#.exportUndirectedEdges': {
+      'it should throw if any of the provided edges does not exist.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.exportUndirectedEdges(['Test']);
+        }, notFound());
+      },
+
+      'it should return all the undirected edges serialized if no arguments are provided.': function() {
+        const graph = new Graph(null, {multi: true});
+        graph.addNode('John');
+        graph.addNode('Jack');
+        graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
+        graph.addEdgeWithKey('J->J•2', 'John', 'Jack', {weight: 2});
+        graph.addUndirectedEdgeWithKey('J<->J•1', 'John', 'Jack');
+        graph.addUndirectedEdgeWithKey('J<->J•2', 'John', 'Jack');
+
+        assert.deepEqual(graph.exportUndirectedEdges(), [
+          ['J<->J•1', 'John', 'Jack', {}, true],
+          ['J<->J•2', 'John', 'Jack', {}, true]
+        ]);
+      },
+
+      'it should return the serialized undirected edges from the given bunch.': function() {
+        const graph = new Graph(null, {multi: true});
+        graph.addNodesFrom(['John', 'Jack', 'Martha']);
+        graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
+        graph.addEdgeWithKey('J->J•2', 'John', 'Jack', {weight: 2});
+        graph.addEdgeWithKey('J->J•3', 'John', 'Jack');
+        graph.addUndirectedEdgeWithKey('J<->J•1', 'John', 'Jack');
+        graph.addUndirectedEdgeWithKey('J<->J•2', 'John', 'Jack');
+
+        testBunches(['J->J•1', 'J->J•3', 'J<->J•2'], bunch => {
+          assert.deepEqual(graph.exportUndirectedEdges(bunch), [
+            ['J<->J•2', 'John', 'Jack', {}, true]
+          ]);
+        });
+      }
     }
   };
 }
