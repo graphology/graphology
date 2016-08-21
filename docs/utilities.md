@@ -38,7 +38,7 @@ graph.exportEdge('T->E');
 
 A graph is serializd as an object containing a `nodes` key & a `edges` key:
   * <span class="code">array</span> `nodes`: containing a list of serialized nodes.
-  * <span class="code">array</span> `edges`: containing a list of serialized edges.
+  * <span class="code">array</span> `edges`: containing a list of serialized edges (can be omitted).
 
 ```js
 graph.addNodesFrom(['Thomas', 'Eric']);

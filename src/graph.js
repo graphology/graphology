@@ -20,6 +20,11 @@ import {attachEdgeIterationMethods} from './iteration/edges';
 import {attachNeighborIterationMethods} from './iteration/neighbors';
 
 import {
+  serializeNode,
+  serializeEdge
+} from './serialization';
+
+import {
   BasicSet,
   isBunch,
   isPlainObject,
@@ -1068,6 +1073,28 @@ export default class Graph extends EventEmitter {
       return [...this._nodes.keys()];
 
     return Object.keys(this._nodes);
+  }
+
+  /**---------------------------------------------------------------------------
+   * Import / Export
+   **---------------------------------------------------------------------------
+   */
+  exportNode(node) {
+    if (!this.hasNode(node))
+      throw new NotFoundGraphError(`Graph.exportNode: could not find the "${node}" node in the graph.`);
+
+    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+
+    return serializeNode(node, data);
+  }
+
+  exportEdge(edge) {
+    if (!this.hasEdge(edge))
+      throw new NotFoundGraphError(`Graph.exportEdge: could not find the "${edge}" edge in the graph.`);
+
+    const data = this.map ? this._edges.get(edge) : this._edges[edge];
+
+    return serializeEdge(edge, data);
   }
 
   /**---------------------------------------------------------------------------
