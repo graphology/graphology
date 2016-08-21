@@ -16,7 +16,8 @@ import {
 } from './errors';
 
 import {attachAttributesMethods} from './attributes';
-import {attachEdgeIterationMethods} from './iteration';
+import {attachEdgeIterationMethods} from './iteration/edges';
+import {attachNeighborIterationMethods} from './iteration/neighbors';
 
 import {
   BasicSet,
@@ -1080,6 +1081,12 @@ export default class Graph extends EventEmitter {
    * @return {Graph}       - Returns itself for chaining.
    *
    * @throw  {Error} - Will throw if the index doesn't exist.
+   *
+   * Note: the 'relations' index works thusly:
+   *   A key for each node with an object storing every edge category:
+   *   'in', 'out', 'undirectedIn', 'undirectedOut', each being an object
+   *   with keys being the related node and each value being an array of the
+   *   relevant edges.
    */
   computeIndex(name) {
 
@@ -1397,3 +1404,8 @@ attachAttributesMethods(Graph);
  * Edge iteration-related.
  */
 attachEdgeIterationMethods(Graph);
+
+/**
+ * Neighbor iteration-related.
+ */
+attachNeighborIterationMethods(Graph);

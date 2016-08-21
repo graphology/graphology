@@ -6,10 +6,12 @@
  */
 import nodes from './nodes';
 import edges from './edges';
+import neighbors from './neighbors';
 
 export default function iteration(Graph, checkers) {
   return {
     Nodes: nodes(Graph, checkers),
-    Edges: edges(Graph, checkers)
+    Edges: edges(Graph, checkers),
+    Neighbors: neighbors(Graph, checkers)
   };
 }
