@@ -14,7 +14,35 @@ import {
   NotFoundGraphError
 } from './errors';
 
+/**
+ * Attach an attribute getter method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
 function attachAttributeGetter(Class, method, key, elementName, checker, finder) {
+
+  /**
+   * Get the desired attribute for the given element (node or edge).
+   *
+   * Arity 2:
+   * @param  {any}    element - Target element.
+   * @param  {string} name    - Attribute's name.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}     source - Source element.
+   * @param  {any}     target - Target element.
+   * @param  {string}  name   - Attribute's name.
+   *
+   * @return {mixed}          - The attribute's value.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
   Class.prototype[method] = function(element, name) {
     if (arguments.length > 2) {
       if (!finder)
@@ -45,7 +73,33 @@ function attachAttributeGetter(Class, method, key, elementName, checker, finder)
   };
 }
 
+/**
+ * Attach an attributes getter method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
 function attachAttributesGetter(Class, method, key, elementName, checker, finder) {
+
+  /**
+   * Retrieves all the target element's attributes.
+   *
+   * Arity 2:
+   * @param  {any}    element - Target element.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}     source - Source element.
+   * @param  {any}     target - Target element.
+   *
+   * @return {object}          - The element's attributes.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
   Class.prototype[method] = function(element) {
     if (arguments.length > 1) {
       if (!finder)
@@ -74,7 +128,37 @@ function attachAttributesGetter(Class, method, key, elementName, checker, finder
   };
 }
 
+/**
+ * Attach an attribute setter method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
 function attachAttributeSetter(Class, method, key, elementName, checker, finder) {
+
+  /**
+   * Set the desired attribute for the given element (node or edge).
+   *
+   * Arity 2:
+   * @param  {any}    element - Target element.
+   * @param  {string} name    - Attribute's name.
+   * @param  {mixed}  value   - New attribute value.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}     source - Source element.
+   * @param  {any}     target - Target element.
+   * @param  {string}  name   - Attribute's name.
+   * @param  {mixed}  value   - New attribute value.
+   *
+   * @return {Graph}          - Returns itself for chaining.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
   Class.prototype[method] = function(element, name, value) {
     if (arguments.length > 3) {
       if (!finder)
@@ -108,7 +192,38 @@ function attachAttributeSetter(Class, method, key, elementName, checker, finder)
   };
 }
 
+/**
+ * Attach an attribute updater method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
 function attachAttributeUpdater(Class, method, key, elementName, checker, finder) {
+
+  /**
+   * Update the desired attribute for the given element (node or edge) using
+   * the provided function.
+   *
+   * Arity 2:
+   * @param  {any}      element - Target element.
+   * @param  {string}   name    - Attribute's name.
+   * @param  {function} updater - Updater function.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}      source  - Source element.
+   * @param  {any}      target  - Target element.
+   * @param  {string}   name    - Attribute's name.
+   * @param  {function} updater - Updater function.
+   *
+   * @return {Graph}            - Returns itself for chaining.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
   Class.prototype[method] = function(element, name, updater) {
     if (arguments.length > 3) {
       if (!finder)
@@ -142,7 +257,35 @@ function attachAttributeUpdater(Class, method, key, elementName, checker, finder
   };
 }
 
+/**
+ * Attach an attribute replacer method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
 function attachAttributesReplacer(Class, method, key, elementName, checker, finder) {
+
+  /**
+   * Replace the attributes for the given element (node or edge).
+   *
+   * Arity 2:
+   * @param  {any}    element    - Target element.
+   * @param  {object} attributes - New attributes.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}     source     - Source element.
+   * @param  {any}     target     - Target element.
+   * @param  {object}  attributes - New attributes.
+   *
+   * @return {Graph}              - Returns itself for chaining.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
   Class.prototype[method] = function(element, attributes) {
     if (arguments.length > 2) {
       if (!finder)
@@ -178,6 +321,9 @@ function attachAttributesReplacer(Class, method, key, elementName, checker, find
   };
 }
 
+/**
+ * List of methods to attach.
+ */
 const ATTRIBUTES_METHODS = [
   {
     name: element => `get${element}Attribute`,
@@ -201,6 +347,11 @@ const ATTRIBUTES_METHODS = [
   }
 ];
 
+/**
+ * Attach every attributes-related methods to a Graph class.
+ *
+ * @param {function} Graph - Target class.
+ */
 export function attachAttributesMethods(Graph) {
   ATTRIBUTES_METHODS.forEach(function({name, attacher}) {
 
