@@ -6,7 +6,11 @@
  * we abstract them here for factorization reasons.
  */
 import {
-  InvalidArgumentsError,
+  isPlainObject
+} from './utils';
+
+import {
+  InvalidArgumentsGraphError,
   NotFoundGraphError
 } from './errors';
 
@@ -14,7 +18,7 @@ function attachAttributeGetter(Class, method, key, elementName, checker, finder)
   Class.prototype[method] = function(element, name) {
     if (arguments.length > 2) {
       if (!finder)
-        throw new InvalidArgumentsError(`Graph.${method}: too many arguments provided.`);
+        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
 
       const source = element,
             target = name;
@@ -45,7 +49,7 @@ function attachAttributesGetter(Class, method, key, elementName, checker, finder
   Class.prototype[method] = function(element) {
     if (arguments.length > 1) {
       if (!finder)
-        throw new InvalidArgumentsError(`Graph.${method}: too many arguments provided.`);
+        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
 
       const source = element,
             target = arguments[1];
@@ -74,7 +78,7 @@ function attachAttributeSetter(Class, method, key, elementName, checker, finder)
   Class.prototype[method] = function(element, name, value) {
     if (arguments.length > 3) {
       if (!finder)
-        throw new InvalidArgumentsError(`Graph.${method}: too many arguments provided.`);
+        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
 
       const source = element,
             target = name;
@@ -108,7 +112,7 @@ function attachAttributeUpdater(Class, method, key, elementName, checker, finder
   Class.prototype[method] = function(element, name, updater) {
     if (arguments.length > 3) {
       if (!finder)
-        throw new InvalidArgumentsError(`Graph.${method}: too many arguments provided.`);
+        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
 
       const source = element,
             target = name;
@@ -138,6 +142,42 @@ function attachAttributeUpdater(Class, method, key, elementName, checker, finder
   };
 }
 
+function attachAttributesReplacer(Class, method, key, elementName, checker, finder) {
+  Class.prototype[method] = function(element, attributes) {
+    if (arguments.length > 2) {
+      if (!finder)
+        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
+
+      const source = element,
+            target = attributes;
+
+      attributes = arguments[2];
+
+      if (!this[checker](source, target))
+        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
+
+      element = this[finder](source, target);
+    }
+
+    if (!this[checker](element))
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
+
+    if (!isPlainObject(attributes))
+      throw new InvalidArgumentsGraphError(`Graph.${method}: provided attributes are not a plain object.`);
+
+    let data;
+
+    if (this.map)
+      data = this[key].get(element);
+    else
+      data = this[key][element];
+
+    data.attributes = attributes;
+
+    return this;
+  };
+}
+
 const ATTRIBUTES_METHODS = [
   {
     name: element => `get${element}Attribute`,
@@ -154,6 +194,10 @@ const ATTRIBUTES_METHODS = [
   {
     name: element => `update${element}Attribute`,
     attacher: attachAttributeUpdater
+  },
+  {
+    name: element => `replace${element}Attributes`,
+    attacher: attachAttributesReplacer
   }
 ];
 

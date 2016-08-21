@@ -15,11 +15,14 @@ const METHODS = [
   'setNodeAttribute',
   'setEdgeAttribute',
   'updateNodeAttribute',
-  'updateEdgeAttribute'
+  'updateEdgeAttribute',
+  'replaceNodeAttributes',
+  'replaceEdgeAttributes'
 ];
 
 export default function attributes(Graph, checkers) {
   const {
+    invalid,
     notFound
   } = checkers;
 
@@ -203,6 +206,48 @@ export default function attributes(Graph, checkers) {
 
         graph.updateEdgeAttribute(edge, 'weight', updater);
         assert.strictEqual(graph.getEdgeAttribute(edge, 'weight'), 10);
+      }
+    },
+
+    '#.replaceNodeAttributes': {
+      'it should throw if given attributes are not a plain object.': function() {
+        const graph = new Graph();
+        graph.addNode('John');
+
+        assert.throws(function() {
+          graph.replaceNodeAttributes('John', true);
+        }, invalid());
+      },
+
+      'it should correctly replace attributes.': function() {
+        const graph = new Graph();
+        graph.addNode('John', {age: 45});
+
+        graph.replaceNodeAttributes('John', {age: 23, eyes: 'blue'});
+
+        assert.deepEqual(graph.getNodeAttributes('John'), {age: 23, eyes: 'blue'});
+      }
+    },
+
+    '#.replaceEdgeAttributes': {
+      'it should throw if given attributes are not a plain object.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Martha']);
+        const edge = graph.addEdge('John', 'Martha');
+
+        assert.throws(function() {
+          graph.replaceEdgeAttributes(edge, true);
+        }, invalid());
+      },
+
+      'it should correctly replace attributes.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Martha']);
+        const edge = graph.addEdge('John', 'Martha', {weigth: 1});
+
+        graph.replaceEdgeAttributes(edge, {weigth: 4, type: 'KNOWS'});
+
+        assert.deepEqual(graph.getEdgeAttributes(edge), {weigth: 4, type: 'KNOWS'});
       }
     }
   });

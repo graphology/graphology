@@ -56,6 +56,7 @@ import {
 // TODO: bug in edges(source, target)
 // TODO: move iterations functions below in iteration
 // TODO: finish JSDocs
+// TODO: decide what to do with merger
 
 /**
  * Enums.
