@@ -64,6 +64,8 @@ import {
 // TODO: finish JSDocs
 // TODO: decide what to do with merger
 // TODO: in the current index, neighbors need to be uniq'd. maybe a separated index for edges & neighbors would simplify this.
+// TODO: better to have one index root or two?
+// TODO: add arity to #.exportDirectedEdges etc.
 
 /**
  * Enums.
@@ -1065,7 +1067,7 @@ export default class Graph extends EventEmitter {
   /**
    * Method returning the list of the graph's nodes.
    *
-   * @return {Array} - The nodes.
+   * @return {array} - The nodes.
    */
   nodes() {
 
@@ -1079,6 +1081,15 @@ export default class Graph extends EventEmitter {
    * Import / Export
    **---------------------------------------------------------------------------
    */
+
+  /**
+   * Method exporting the target node.
+   *
+   * @param  {any}   node - Target node.
+   * @return {array}      - The serialized node.
+   *
+   * @throws {Error} - Will throw if the node is not found.
+   */
   exportNode(node) {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.exportNode: could not find the "${node}" node in the graph.`);
@@ -1088,6 +1099,14 @@ export default class Graph extends EventEmitter {
     return serializeNode(node, data);
   }
 
+  /**
+   * Method exporting the target edge.
+   *
+   * @param  {any}   edge - Target edge.
+   * @return {array}      - The serialized edge.
+   *
+   * @throws {Error} - Will throw if the edge is not found.
+   */
   exportEdge(edge) {
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.exportEdge: could not find the "${edge}" edge in the graph.`);
@@ -1095,6 +1114,80 @@ export default class Graph extends EventEmitter {
     const data = this.map ? this._edges.get(edge) : this._edges[edge];
 
     return serializeEdge(edge, data);
+  }
+
+  /**
+   * Method exporting every nodes or the bunch ones.
+   *
+   * @param  {mixed}   [bunch] - Target nodes.
+   * @return {array[]}         - The serialized nodes.
+   *
+   ** @throws {Error} - Will throw if any of the nodes is not found.
+   */
+  exportNodes(bunch) {
+    let nodes = [];
+
+    if (!arguments.length) {
+
+      // Exporting every node
+      nodes = this.nodes();
+    }
+    else {
+
+      // Exporting the bunch
+      if (!isBunch(bunch))
+        throw new InvalidArgumentsGraphError('Graph.exportNodes: invalid bunch.');
+
+      overBunch(bunch, (error, node) => {
+        if (!this.hasNode(node))
+          throw new NotFoundGraphError(`Graph.exportNodes: could not find the "${node}" node from the bunch in the graph.`);
+        nodes.push(node);
+      });
+    }
+
+    const serializedNodes = new Array(nodes.length);
+
+    for (let i = 0, l = nodes.length; i < l; i++)
+      serializedNodes[i] = this.exportNode(nodes[i]);
+
+    return serializedNodes;
+  }
+
+  /**
+   * Method exporting every edges or the bunch ones.
+   *
+   * @param  {mixed}   [bunch] - Target edges.
+   * @return {array[]}         - The serialized edges.
+   *
+   ** @throws {Error} - Will throw if any of the edges is not found.
+   */
+  exportEdges(bunch) {
+    let edges = [];
+
+    if (!arguments.length) {
+
+      // Exporting every edge
+      edges = this.edges();
+    }
+    else {
+
+      // Exporting the bunch
+      if (!isBunch(bunch))
+        throw new InvalidArgumentsGraphError('Graph.exportEdges: invalid bunch.');
+
+      overBunch(bunch, (error, edge) => {
+        if (!this.hasEdge(edge))
+          throw new NotFoundGraphError(`Graph.exportEdges: could not find the "${edge}" edge from the bunch in the graph.`);
+        edges.push(edge);
+      });
+    }
+
+    const serializedNodes = new Array(edges.length);
+
+    for (let i = 0, l = edges.length; i < l; i++)
+      serializedNodes[i] = this.exportEdge(edges[i]);
+
+    return serializedNodes;
   }
 
   /**---------------------------------------------------------------------------
