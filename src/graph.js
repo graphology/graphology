@@ -16,11 +16,7 @@ import {
   UsageGraphError
 } from './errors';
 
-import {
-  attachAttributeGetter,
-  attachAttributesGetter,
-  attachAttributeSetter
-} from './attributes';
+import {attachAttributesMethods} from './attributes';
 
 import {
   BasicSet,
@@ -1394,48 +1390,7 @@ export default class Graph extends EventEmitter {
 /**
  * Attributes-related.
  */
-attachAttributeGetter(
-  Graph,
-  'getNodeAttribute',
-  '_nodes',
-  'node',
-  'hasNode'
-);
-attachAttributeGetter(
-  Graph,
-  'getEdgeAttribute',
-  '_edges',
-  'edge',
-  'hasEdge'
-);
-attachAttributesGetter(
-  Graph,
-  'getNodeAttributes',
-  '_nodes',
-  'node',
-  'hasNode'
-);
-attachAttributesGetter(
-  Graph,
-  'getEdgeAttributes',
-  '_edges',
-  'edge',
-  'hasEdge'
-);
-attachAttributeSetter(
-  Graph,
-  'setNodeAttribute',
-  '_nodes',
-  'node',
-  'hasNode'
-);
-attachAttributeSetter(
-  Graph,
-  'setEdgeAttribute',
-  '_edges',
-  'edge',
-  'hasEdge'
-);
+attachAttributesMethods(Graph);
 
 function createEdgeArray(count, graph, type) {
   if (count && type === 'mixed')

@@ -24,6 +24,17 @@ export default function attributes(Graph, checkers) {
   function commonTests(method) {
     return {
       ['#.' + method]: {
+        'it should throw if the given path is not found.': function() {
+          if (!~method.indexOf('Edge'))
+            return;
+
+          const graph = new Graph();
+
+          assert.throws(function() {
+            graph[method]('source', 'target', 'name', 'value');
+          }, notFound());
+        },
+
         'it should throw if the element is not found in the graph.': function() {
           const graph = new Graph();
 
@@ -66,6 +77,7 @@ export default function attributes(Graph, checkers) {
 
 
         assert.strictEqual(graph.getEdgeAttribute(edge, 'weight'), 2);
+        assert.strictEqual(graph.getEdgeAttribute('John', 'Thomas', 'weight'), 2);
       },
 
       'it should return undefined if the attribute does not exist.': function() {
@@ -103,6 +115,7 @@ export default function attributes(Graph, checkers) {
 
 
         assert.deepEqual(graph.getEdgeAttributes(edge), {weight: 2});
+        assert.deepEqual(graph.getEdgeAttributes('John', 'Thomas'), {weight: 2});
       },
 
       'it should return undefined if the edge does not have attributes.': function() {
@@ -133,6 +146,9 @@ export default function attributes(Graph, checkers) {
 
         graph.setEdgeAttribute(edge, 'weigth', 40);
         assert.strictEqual(graph.getEdgeAttribute(edge, 'weigth'), 40);
+
+        graph.setEdgeAttribute('John', 'Martha', 'weigth', 60);
+        assert.strictEqual(graph.getEdgeAttribute(edge, 'weigth'), 60);
       }
     }
   });
