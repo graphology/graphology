@@ -13,7 +13,9 @@ const METHODS = [
   'getEdgeAttribute',
   'getEdgeAttributes',
   'setNodeAttribute',
-  'setEdgeAttribute'
+  'setEdgeAttribute',
+  'updateNodeAttribute',
+  'updateEdgeAttribute'
 ];
 
 export default function attributes(Graph, checkers) {
@@ -149,6 +151,58 @@ export default function attributes(Graph, checkers) {
 
         graph.setEdgeAttribute('John', 'Martha', 'weigth', 60);
         assert.strictEqual(graph.getEdgeAttribute(edge, 'weigth'), 60);
+      }
+    },
+
+    '#.updateNodeAttribute': {
+
+      'it should correctly set the node\'s attribute.': function() {
+        const graph = new Graph();
+        graph.addNode('John', {age: 20});
+
+        graph.updateNodeAttribute('John', 'age', x => x + 1);
+        assert.strictEqual(graph.getNodeAttribute('John', 'age'), 21);
+      },
+
+      'the given value should be undefined if not found.': function() {
+        const graph = new Graph();
+        graph.addNode('John');
+
+        const updater = x => {
+          assert.strictEqual(x, undefined);
+          return 10;
+        };
+
+        graph.updateNodeAttribute('John', 'age', updater);
+        assert.strictEqual(graph.getNodeAttribute('John', 'age'), 10);
+      }
+    },
+
+    '#.updateEdgeAttribute': {
+      'it should correctly set the edge\'s attribute.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Martha']);
+        const edge = graph.addEdge('John', 'Martha', {weigth: 3});
+
+        graph.updateEdgeAttribute(edge, 'weigth', x => x + 1);
+        assert.strictEqual(graph.getEdgeAttribute(edge, 'weigth'), 4);
+
+        graph.updateEdgeAttribute('John', 'Martha', 'weigth', x => x + 2);
+        assert.strictEqual(graph.getEdgeAttribute(edge, 'weigth'), 6);
+      },
+
+      'the given value should be undefined if not found.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Martha']);
+        const edge = graph.addEdge('John', 'Martha');
+
+        const updater = x => {
+          assert.strictEqual(x, undefined);
+          return 10;
+        };
+
+        graph.updateEdgeAttribute(edge, 'weight', updater);
+        assert.strictEqual(graph.getEdgeAttribute(edge, 'weight'), 10);
       }
     }
   });

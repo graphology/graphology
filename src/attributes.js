@@ -104,6 +104,40 @@ function attachAttributeSetter(Class, method, key, elementName, checker, finder)
   };
 }
 
+function attachAttributeUpdater(Class, method, key, elementName, checker, finder) {
+  Class.prototype[method] = function(element, name, updater) {
+    if (arguments.length > 3) {
+      if (!finder)
+        throw new InvalidArgumentsError(`Graph.${method}: too many arguments provided.`);
+
+      const source = element,
+            target = name;
+
+      name = arguments[2];
+      updater = arguments[3];
+
+      if (!this[checker](source, target))
+        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
+
+      element = this[finder](source, target);
+    }
+
+    if (!this[checker](element))
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
+
+    let data;
+
+    if (this.map)
+      data = this[key].get(element);
+    else
+      data = this[key][element];
+
+    data.attributes[name] = updater(data.attributes[name]);
+
+    return this;
+  };
+}
+
 const ATTRIBUTES_METHODS = [
   {
     name: element => `get${element}Attribute`,
@@ -116,6 +150,10 @@ const ATTRIBUTES_METHODS = [
   {
     name: element => `set${element}Attribute`,
     attacher: attachAttributeSetter
+  },
+  {
+    name: element => `update${element}Attribute`,
+    attacher: attachAttributeUpdater
   }
 ];
 
