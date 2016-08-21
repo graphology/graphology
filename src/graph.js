@@ -58,6 +58,7 @@ import {
 // TODO: move iterations functions below in iteration
 // TODO: finish JSDocs
 // TODO: decide what to do with merger
+// TODO: in the current index, neighbors need to be uniq'd. maybe a separated index for edges & neighbors would simplify this.
 
 /**
  * Enums.
