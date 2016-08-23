@@ -42,8 +42,6 @@ import {
   uuid
 } from './utils';
 
-// TODO: create template tag to properly display object references
-// TODO: build partial index on get/has methods
 // TODO: adjust degree docs
 // TODO: adjust index docs
 // TODO: add method to check if edge is self loop?

@@ -35,15 +35,16 @@ export class BasicSet {
     this.size = 0;
 
     if (values) {
-      this.size = values.length;
       for (let i = 0, l = values.length; i < l; i++)
-        this.entries[values[i]] = true;
+        this.add(values[i]);
     }
   }
 
   add(value) {
-    this.entries[value] = true;
-    this.size++;
+    if (!(value in this.entries)) {
+      this.entries[value] = true;
+      this.size++;
+    }
   }
 
   delete(value) {

@@ -65,21 +65,33 @@ export default function neighborsIteration(Graph, checkers) {
     outNeighbors: {
       node: {
         key: 'John',
+        neighbors: ['Thomas', 'Martha']
+      }
+    },
+    inboundNeighbors: {
+      node: {
+        key: 'John',
+        neighbors: ['Catherine', 'Martha']
+      }
+    },
+    outboundNeighbors: {
+      node: {
+        key: 'John',
         neighbors: ['Thomas', 'Martha', 'Roger']
       }
     },
-    // inboundNeighbors: {
-
-    // },
-    // outboundNeighbors: {
-
-    // },
-    // directedNeighbors: {
-
-    // },
-    // undirectedNeighbors: {
-
-    // }
+    directedNeighbors: {
+      node: {
+        key: 'John',
+        neighbors: ['Catherine', 'Thomas', 'Martha']
+      }
+    },
+    undirectedNeighbors: {
+      node: {
+        key: 'John',
+        neighbors: ['Martha', 'Roger']
+      }
+    }
   };
 
   function commonTests(name) {
@@ -132,8 +144,8 @@ export default function neighborsIteration(Graph, checkers) {
         'it should return the correct neighbors count.': function() {
           const neighbors = graph[counterName](data.node.key);
 
-          assert.deepEqual(neighbors, data.node.neighbors.length);
-          assert.deepEqual(graph[counterName]('Alone'), 0);
+          assert.strictEqual(neighbors, data.node.neighbors.length);
+          assert.strictEqual(graph[counterName]('Alone'), 0);
         }
       }
     };
@@ -146,8 +158,8 @@ export default function neighborsIteration(Graph, checkers) {
   METHODS.forEach(name => deepMerge(tests, commonTests('count' + capitalize(name))));
 
   // Specific tests
-  // for (const name in TEST_DATA)
-  //   deepMerge(tests, specificTests(name, TEST_DATA[name]));
+  for (const name in TEST_DATA)
+    deepMerge(tests, specificTests(name, TEST_DATA[name]));
 
   return tests;
 }

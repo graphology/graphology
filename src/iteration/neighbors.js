@@ -67,76 +67,54 @@ const NEIGHBORS_ITERATION = [
   }
 ];
 
-function countNeighbors(object) {
-  if (typeof Map === 'function' && object instanceof Map)
-    return [...object.keys()].length;
-  else
-    return Object.keys(object).length;
+function mergeNeighborsFromMap(neighbors, map) {
+  if (!map)
+    return;
+
+  map.forEach(function(_, neighbor) {
+    neighbors.add(neighbor);
+  });
 }
 
-function collectNeighbors(object) {
+function mergeNeighborsFromObject(neighbors, object) {
+  if (!object)
+    return;
 
-  if (typeof Map === 'function' && object instanceof Map)
-    return [...object.keys()];
-  else
-    return Object.keys(object);
+  for (const neighbor in object)
+    neighbors.add(neighbor);
 }
 
-function createNeighborArrayForNode(count, graph, type, direction, node) {
+function createNeighborArrayForNode(graph, type, direction, node) {
+  const mergeNeighbors = graph.map ? mergeNeighborsFromMap : mergeNeighborsFromObject;
 
   // For this, we need to compute the "relations" index
-  graph.computeIndex('relations');
-  const indexData = graph._indexes.relations.data;
+  graph.computeIndex('structure');
 
-  let neighbors = [],
-      nb = 0;
+  const neighbors = graph.map ? new Set() : new BasicSet();
 
-  let nodeData;
-
-  if (graph.map) {
-    if (!indexData.has(node))
-      return count ? nb : neighbors;
-    nodeData = indexData.get(node);
-  }
-  else {
-    if (!(node in indexData))
-      return count ? nb : neighbors;
-    nodeData = indexData[node];
-  }
+  const nodeData = graph.map ? graph._nodes.get(node) : graph._nodes[node];
 
   if (type === 'mixed' || type === 'directed') {
 
     if (!direction || direction === 'in') {
-      if (count)
-        nb += countNeighbors(nodeData.in);
-      else
-        neighbors = neighbors.concat(collectNeighbors(nodeData.in));
+      mergeNeighbors(neighbors, nodeData.in);
     }
     if (!direction || direction === 'out') {
-      if (count)
-        nb += countNeighbors(nodeData.out);
-      else
-        neighbors = neighbors.concat(collectNeighbors(nodeData.out));
+      mergeNeighbors(neighbors, nodeData.out);
     }
   }
 
   if (type === 'mixed' || type === 'undirected') {
 
     if (!direction || direction === 'in') {
-      if (count)
-        nb += countNeighbors(nodeData.undirectedIn);
-      else
-        neighbors = neighbors.concat(collectNeighbors(nodeData.undirectedIn));
+      mergeNeighbors(neighbors, nodeData.undirectedIn);
     }
     if (!direction || direction === 'out') {
-      if (count)
-        nb += countNeighbors(nodeData.undirectedOut);
-      else
-        neighbors = neighbors.concat(collectNeighbors(nodeData.undirectedOut));
+      mergeNeighbors(neighbors, nodeData.undirectedOut);
     }
   }
 
-  return count ? nb : neighbors;
+  return neighbors;
 }
 
 function attachNeighborArrayCreator(Class, counter, description) {
@@ -160,13 +138,17 @@ function attachNeighborArrayCreator(Class, counter, description) {
       if (this.hasNode(nodeOrBunch)) {
 
         // Here, we want to iterate over a node's relevant neighbors
-        return createNeighborArrayForNode(
-          counter,
+        const neighbors = createNeighborArrayForNode(
           this,
           type,
           direction,
           nodeOrBunch
         );
+
+        if (counter)
+          return neighbors.size;
+
+        return this.map ? Array.from(neighbors) : neighbors.values();
       }
       else if (isBunch(nodeOrBunch)) {
 
