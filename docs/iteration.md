@@ -8,12 +8,10 @@ Using a `Graph` instance, it is possible to iterate on the three following thing
 
 **Iteration methods**
 
-For a better flexibility, the library usually enables the developer to iterate through many ways:
+The library basically proposes two ways to iterate:
 
-* Methods returning arrays.
-* `forEach` methods & typical reducers (`map`, `filter`, `reduce`, `some`, `find`, `every`).
-* Methods creating iterators for more complex, even asynchronous iteration.
-* Counting methods when the implementation is able to return a number without iteration.
+* Methods returning arrays of keys.
+* Counting methods when the implementationis able to return a number without creating an array.
 
 **On what do we iterate?**
 
@@ -40,47 +38,12 @@ graph.addNode('Elizabeth');
 // Using the array-returning method:
 graph.nodes();
 >>> ['Thomas', 'Elizabeth']
-
-// Using the `forEach` methods:
-graph.forEachNode(function(node) {
-  console.log(node);
-});
->>> 'Thomas'
->>> 'Elizabeth'
-
-graph.someNode(node => node === 'Thomas');
->>> true
-
-// Using the iterator-returning method:
-const iterator = graph.createNodeIterator();
-
-for (const node of iterator)
-  console.log(node);
->>> 'Thomas'
->>> 'Elizabeth'
-
-// Note that the graph itself is an iterator over nodes
-for (const node of graph)
-  console.log(node);
->>> 'Thomas'
->>> 'Elizabeth'
 ```
 
 **Methods**
 
 ```
 #.nodes
-
-#.forEachNode
-#.mapNodes
-#.filterNodes
-#.reduceNodes
-#.someNode
-#.findNode
-#.findNodeIndex
-#.everyNode
-
-#.createNodesIterator
 ```
 
 **Arguments**
@@ -121,20 +84,6 @@ graph.edges(['Rosaline', 'Catherine']);
 graph.edges('John', 'Daniel');
 >>> ['J->D1', 'J->D2']
 
-// Using the `forEach` methods:
-graph.forEachEdge('Rosaline', function(edge) {
-  console.log(edge);
-});
->>> 'R->C'
-
-// Using the iterator-returning methods:
-const iterator = graph.createEdgesIterator('John', 'Daniel');
-
-for (const edge of iterator)
-  console.log(edge);
->>> 'J->D1'
->>> 'J->D2'
-
 // Using the counting methods
 graph.countEdges('Thomas');
 >>> 3
@@ -146,8 +95,6 @@ graph.countInEdges('Thomas');
 
 **Methods**
 
-All the typical reducers are not listed below for time's sake but you can consider them to exist (`#.mapEdges`, for instance).
-
 ```
 #.edges
 #.inEdges
@@ -156,22 +103,6 @@ All the typical reducers are not listed below for time's sake but you can consid
 #.outboundEdges
 #.directedEdges
 #.undirectedEdges
-
-#.forEachEdge (...)
-#.forEachInEdge (...)
-#.forEachOutEdge (...)
-#.forEachInboundEdge (...)
-#.forEachOutboundEdge (...)
-#.forEachDirectedEdge (...)
-#.forEachUndirectedEdge (...)
-
-#.createEdgesIterator
-#.createInEdgesIterator
-#.createOutEdgesIterator
-#.createInboundEdgesIterator
-#.createOutboundEdgesIterator
-#.createDirectedEdgesIterator
-#.createUndirectedEdgesIterator
 
 #.countEdges
 #.countInEdges
@@ -221,21 +152,6 @@ graph.neighbors('Thomas');
 graph.neighbors(['Rosaline', 'Thomas']);
 >>> ['Emmett', 'Catherine']
 
-// Using the `forEach` methods:
-graph.forEachNeighbor('Rosaline', function(node) {
-  console.log(node);
-});
->>> 'Thomas'
->>> 'Catherine'
-
-// Using the iterator-returning methods:
-const iterator = graph.createEdgesIterator('Rosaline');
-
-for (const edge of iterator)
-  console.log(edge);
->>> 'Thomas'
->>> 'Catherine'
-
 // Using the counting methods
 graph.countNeighbors('Thomas');
 >>> 3
@@ -243,26 +159,12 @@ graph.countNeighbors('Thomas');
 
 **Methods**
 
-All the typical reducers are not listed below for time's sake but you can consider them to exist (`#.mapNeighbors`, for instance).
-
 ```
 #.neighbors
 #.inNeighbors
 #.outNeighbors
 #.inboundNeighbors
 #.outboundNeighbors
-
-#.forEachNeighbor (...)
-#.forEachInNeighbor (...)
-#.forEachOutNeighbor (...)
-#.forEachInboundNeighbor (...)
-#.forEachOutboundNeighbor (...)
-
-#.createNeighborsIterator
-#.createInNeighborsIterator
-#.createOutNeighborsIterator
-#.createInboundNeighborsIterator
-#.createOutboundNeighborsIterator
 
 #.countNeighbors
 #.countInNeighbors

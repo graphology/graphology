@@ -19,13 +19,14 @@ import {isPlainObject} from './utils';
  * @return {boolean}
  */
 export function validateSerializedNode(value) {
-  if (!Array.isArray(value))
-    return {valid: false, reason: 'not-array'};
+  if (!isPlainObject(value))
+    return {valid: false, reason: 'not-object'};
 
-  if (value.length !== 1 && value.length !== 2)
-    return {valid: false, reason: 'invalid-length'};
+  if (!('key' in value))
+    return {valid: false, reason: 'no-key'};
 
-  if (value.length > 1 && value[1] !== null && !isPlainObject(value[1]))
+  if ('attributes' in value &&
+      (!isPlainObject(value.attributes) || value.attributes === null))
     return {valid: false, reason: 'invalid-attributes'};
 
   return {valid: true};
@@ -38,17 +39,25 @@ export function validateSerializedNode(value) {
  * @return {boolean}
  */
 export function validateSerializedEdge(value) {
-  if (!Array.isArray(value))
-    return {valid: false, reason: 'not-array'};
+  if (!isPlainObject(value))
+    return {valid: false, reason: 'not-object'};
 
-  if (value.length !== 3 && value.length !== 4 && value.length !== 5)
-    return {valid: false, reason: 'invalid-length'};
+  if (!('key' in value))
+    return {valid: false, reason: 'no-key'};
 
-  if (value.length > 2 && value[3] !== null && !isPlainObject(value[3]))
+  if (!('source') in value)
+    return {valid: false, reason: 'no-source'};
+
+  if (!('target') in value)
+    return {valid: false, reason: 'no-target'};
+
+  if ('attributes' in value &&
+      (!isPlainObject(value.attributes) || value.attributes === null))
     return {valid: false, reason: 'invalid-attributes'};
 
-  if (value.length > 3 && value[4] !== null && typeof value[4] !== 'boolean')
-    return {valid: false, reason: 'invalid-directedness'};
+  if ('undirected' in value &&
+      (typeof value.undirected !== 'boolean' || value.undirected === null))
+    return {valid: false, reason: 'invalid-attributes'};
 
   return {valid: true};
 }
@@ -80,10 +89,10 @@ export function validateSerializedGraph(value) {
  * @return {array}       - The serialized node.
  */
 export function serializeNode(key, data) {
-  const serialized = [key];
+  const serialized = {key};
 
   if (Object.keys(data.attributes).length)
-    serialized.push(data.attributes);
+    serialized.attributes = data.attributes;
 
   return serialized;
 }
@@ -96,19 +105,17 @@ export function serializeNode(key, data) {
  * @return {array}       - The serialized edge.
  */
 export function serializeEdge(key, data) {
-  const serialized = [
+  const serialized = {
     key,
-    data.source,
-    data.target
-  ];
+    source: data.source,
+    target: data.target
+  };
 
-  if (!data.undirected) {
-    if (Object.keys(data.attributes).length)
-      serialized.push(data.attributes);
-  }
-  else {
-    serialized.push(data.attributes, true);
-  }
+  if (Object.keys(data.attributes).length)
+    serialized.attributes = data.attributes;
+
+  if (data.undirected)
+    serialized.undirected = true;
 
   return serialized;
 }

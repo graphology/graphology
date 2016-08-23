@@ -27,8 +27,8 @@ export default function serialization(Graph, checkers) {
         graph.addNode('John');
         graph.addNode('Jack', {age: 34});
 
-        assert.deepEqual(graph.exportNode('John'), ['John']);
-        assert.deepEqual(graph.exportNode('Jack'), ['Jack', {age: 34}]);
+        assert.deepEqual(graph.exportNode('John'), {key: 'John'});
+        assert.deepEqual(graph.exportNode('Jack'), {key: 'Jack', attributes: {age: 34}});
       }
     },
 
@@ -49,10 +49,10 @@ export default function serialization(Graph, checkers) {
         graph.addUndirectedEdgeWithKey('J<->M•1', 'John', 'Martha');
         graph.addUndirectedEdgeWithKey('J<->M•2', 'John', 'Martha', {weight: 2});
 
-        assert.deepEqual(graph.exportEdge('J->M•1'), ['J->M•1', 'John', 'Martha']);
-        assert.deepEqual(graph.exportEdge('J->M•2'), ['J->M•2', 'John', 'Martha', {weight: 1}]);
-        assert.deepEqual(graph.exportEdge('J<->M•1'), ['J<->M•1', 'John', 'Martha', {}, true]);
-        assert.deepEqual(graph.exportEdge('J<->M•2'), ['J<->M•2', 'John', 'Martha', {weight: 2}, true]);
+        assert.deepEqual(graph.exportEdge('J->M•1'), {key: 'J->M•1', source: 'John', target: 'Martha'});
+        assert.deepEqual(graph.exportEdge('J->M•2'), {key: 'J->M•2', source: 'John', target: 'Martha', attributes: {weight: 1}});
+        assert.deepEqual(graph.exportEdge('J<->M•1'), {key: 'J<->M•1', source: 'John', target: 'Martha', undirected: true});
+        assert.deepEqual(graph.exportEdge('J<->M•2'), {key: 'J<->M•2', source: 'John', target: 'Martha', attributes: {weight: 2}, undirected: true});
       }
     },
 
@@ -71,8 +71,8 @@ export default function serialization(Graph, checkers) {
         graph.addNode('Jack', {age: 34});
 
         assert.deepEqual(graph.exportNodes(), [
-          ['John'],
-          ['Jack', {age: 34}]
+          {key: 'John'},
+          {key: 'Jack', attributes: {age: 34}}
         ]);
       },
 
@@ -82,8 +82,8 @@ export default function serialization(Graph, checkers) {
 
         testBunches(['John', 'Martha'], bunch => {
           assert.deepEqual(graph.exportNodes(bunch), [
-            ['John'],
-            ['Martha']
+            {key: 'John'},
+            {key: 'Martha'}
           ]);
         });
       }
@@ -106,8 +106,8 @@ export default function serialization(Graph, checkers) {
         graph.addEdgeWithKey('J->J•2', 'John', 'Jack', {weight: 2});
 
         assert.deepEqual(graph.exportEdges(), [
-          ['J->J•1', 'John', 'Jack'],
-          ['J->J•2', 'John', 'Jack', {weight: 2}]
+          {key: 'J->J•1', source: 'John', target: 'Jack'},
+          {key: 'J->J•2', source: 'John', target: 'Jack', attributes: {weight: 2}}
         ]);
       },
 
@@ -120,8 +120,8 @@ export default function serialization(Graph, checkers) {
 
         testBunches(['J->J•1', 'J->J•3'], bunch => {
           assert.deepEqual(graph.exportEdges(bunch), [
-            ['J->J•1', 'John', 'Jack'],
-            ['J->J•3', 'John', 'Jack']
+            {key: 'J->J•1', source: 'John', target: 'Jack'},
+            {key: 'J->J•3', source: 'John', target: 'Jack'}
           ]);
         });
       }
@@ -146,8 +146,8 @@ export default function serialization(Graph, checkers) {
         graph.addUndirectedEdgeWithKey('J<->J•2', 'John', 'Jack');
 
         assert.deepEqual(graph.exportDirectedEdges(), [
-          ['J->J•1', 'John', 'Jack'],
-          ['J->J•2', 'John', 'Jack', {weight: 2}]
+          {key: 'J->J•1', source: 'John', target: 'Jack'},
+          {key: 'J->J•2', source: 'John', target: 'Jack', attributes: {weight: 2}}
         ]);
       },
 
@@ -162,8 +162,8 @@ export default function serialization(Graph, checkers) {
 
         testBunches(['J->J•1', 'J->J•3', 'J<->J•2'], bunch => {
           assert.deepEqual(graph.exportDirectedEdges(bunch), [
-            ['J->J•1', 'John', 'Jack'],
-            ['J->J•3', 'John', 'Jack']
+            {key: 'J->J•1', source: 'John', target: 'Jack'},
+            {key: 'J->J•3', source: 'John', target: 'Jack'}
           ]);
         });
       }
@@ -188,8 +188,8 @@ export default function serialization(Graph, checkers) {
         graph.addUndirectedEdgeWithKey('J<->J•2', 'John', 'Jack');
 
         assert.deepEqual(graph.exportUndirectedEdges(), [
-          ['J<->J•1', 'John', 'Jack', {}, true],
-          ['J<->J•2', 'John', 'Jack', {}, true]
+          {key: 'J<->J•1', source: 'John', target: 'Jack', undirected: true},
+          {key: 'J<->J•2', source: 'John', target: 'Jack', undirected: true}
         ]);
       },
 
@@ -204,7 +204,7 @@ export default function serialization(Graph, checkers) {
 
         testBunches(['J->J•1', 'J->J•3', 'J<->J•2'], bunch => {
           assert.deepEqual(graph.exportUndirectedEdges(bunch), [
-            ['J<->J•2', 'John', 'Jack', {}, true]
+            {key: 'J<->J•2', source: 'John', target: 'Jack', undirected: true}
           ]);
         });
       }
@@ -225,16 +225,16 @@ export default function serialization(Graph, checkers) {
           graph.export(),
           {
             nodes: [
-              ['John', {age: 34}],
-              ['Jack'],
-              ['Martha']
+              {key: 'John', attributes: {age: 34}},
+              {key: 'Jack'},
+              {key: 'Martha'}
             ],
             edges: [
-              ['J->J•1', 'John', 'Jack'],
-              ['J->J•2', 'John', 'Jack', {weight: 2}],
-              ['J->J•3', 'John', 'Jack'],
-              ['J<->J•1', 'John', 'Jack', {}, true],
-              ['J<->J•2', 'John', 'Jack', {weight: 3}, true]
+              {key: 'J->J•1', source: 'John', target: 'Jack'},
+              {key: 'J->J•2', source: 'John', target: 'Jack', attributes: {weight: 2}},
+              {key: 'J->J•3', source: 'John', target: 'Jack'},
+              {key: 'J<->J•1', source: 'John', target: 'Jack', undirected: true},
+              {key: 'J<->J•2', source: 'John', target: 'Jack', attributes: {weight: 3}, undirected: true}
             ]
           }
         );

@@ -82,6 +82,7 @@ import {
 // TODO: explain that index API is normalized, but not its number nor type
 // TODO: changer format de sérialisation
 // TODO: hasNodeAttribute
+// TODO: clone attributes at node creation
 
 /**
  * Enums.

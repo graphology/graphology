@@ -50,7 +50,7 @@ export default function specs(path) {
     'Read': read(Graph, errorCheckers),
     'Attributes': attributes(Graph, errorCheckers),
     'Iteration': iteration(Graph, errorCheckers),
-    // 'Serialization': serialization(Graph, errorCheckers),
+    'Serialization': serialization(Graph, errorCheckers),
     'Known Methods': knownMethods(Graph, errorCheckers),
     'Miscellaneous': misc(Graph)
   };

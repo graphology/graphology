@@ -127,7 +127,9 @@ graph.dropNode('Martha');
 
 ## #.dropNodes
 
-Drops a [bunch](concepts.md#bunches) of nodes & all their attached edges from the graph.
+Drops every node or a [bunch](concepts.md#bunches) of nodes & all their attached edges from the graph.
+
+Basically, without arguments, `#.dropNodes` is identical to `#.clear`.
 
 *Example*
 
@@ -135,12 +137,18 @@ Drops a [bunch](concepts.md#bunches) of nodes & all their attached edges from th
 graph.addNode('John');
 graph.addNode('Martha');
 
+// Dropping a bunch of nodes
 graph.dropNodes(['John', 'Martha']);
+
+// Dropping every node
+graph.dropNodes();
 ```
 
 *Arguments*
 
-* **bunch** <span class="code">bunch</span>: the nodes to drop.
+1. **None**: dropping every node.
+2. **Using a bunch**: dropping the provided nodes.
+  * **bunch** <span class="code">bunch</span>: the nodes to drop.
 
 ## #.dropEdge
 
@@ -171,7 +179,7 @@ graph.dropEdge('John', 'Martha');
 
 ## #.dropEdges
 
-Drops a [bunch](concepts.md#bunches) of edges from the graph, or all the edges related to the given source & target.
+Drops every edge or a [bunch](concepts.md#bunches) of edges from the graph, or all the edges related to the given source & target.
 
 *Example*
 
@@ -183,6 +191,9 @@ graph.addNode('Catherine');
 const johnMartha = graph.addEdge('John', 'Martha');
 const johnCatherine = graph.addEdge('John', 'Catherine');
 
+// Dropping every edge
+graph.dropEdges();
+
 // Dropping a bunch of edges
 graph.dropEdges([johnMartha, johnCatherine]);
 
@@ -192,9 +203,10 @@ graph.dropEdges('John', 'Martha');
 
 *Arguments*
 
-1. Using a bunch:
+1. **None**: Dropping every edge.
+2. **Using a bunch**:
   * **edge** <span class="code">bunch</span>: bunch of edges to drop.
-2. Using the source & target:
+3. **Using the source & target**:
   * **source** <span class="code">any</span>: source node of the edge to drop.
   * **target** <span class="code">any</span>: target node of the edge to drop.
 
