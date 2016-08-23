@@ -3,6 +3,10 @@
  * =============================
  *
  * Bunch of functions used to compute or clear indexes.
+ *
+ * By default, the graph can hold two different indexes:
+ *   1. 'structure', holding edges related to their nodes.
+ *   2. 'neighbors', holding nodes' neighbors.
  */
 import {BasicSet} from './utils';
 
@@ -10,6 +14,14 @@ export const INDICES = new BasicSet(['structure', 'neighbors']);
 
 /**
  * Structure.
+ */
+
+/**
+ * Function updating the 'structure' index with the given edge's data.
+ *
+ * @param {Graph}  graph - Target Graph instance.
+ * @param {any}    edge  - Added edge.
+ * @param {object} data  - Attached data.
  */
 export function updateStructureIndex(graph, edge, data) {
   const map = graph.map,
@@ -58,6 +70,13 @@ export function updateStructureIndex(graph, edge, data) {
   }
 }
 
+/**
+ * Function clearing the 'structure' index data related to the given edge.
+ *
+ * @param {Graph}  graph - Target Graph instance.
+ * @param {any}    edge  - Dropped edge.
+ * @param {object} data  - Attached data.
+ */
 export function clearEdgeFromStructureIndex(graph, edge, data) {
   const {source, target, undirected} = data,
         map = graph.map;
@@ -86,6 +105,11 @@ export function clearEdgeFromStructureIndex(graph, edge, data) {
   }
 }
 
+/**
+ * Function clearing the whole 'structure' index.
+ *
+ * @param {Graph} graph - Target Graph instance.
+ */
 export function clearStructureIndex(graph) {
   if (this.map) {
     graph._nodes.forEach(data => {
