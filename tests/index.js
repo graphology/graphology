@@ -12,6 +12,7 @@ import attributes from './attributes';
 import iteration from './iteration';
 import serialization from './serialization';
 import knownMethods from './known';
+import misc from './misc';
 
 const createErrorChecker = name => () => {
   return function(error) {
@@ -46,10 +47,11 @@ export default function specs(path) {
     'Instantiation': instantiation(Graph, implementation, errorCheckers),
     'Properties': properties(Graph, errorCheckers),
     'Mutation': mutation(Graph, errorCheckers),
-    // 'Read': read(Graph, errorCheckers),
+    'Read': read(Graph, errorCheckers),
     // 'Attributes': attributes(Graph, errorCheckers),
     // 'Iteration': iteration(Graph, errorCheckers),
     // 'Serialization': serialization(Graph, errorCheckers),
-    // 'Known Methods': knownMethods(Graph, errorCheckers)
+    // 'Known Methods': knownMethods(Graph, errorCheckers),
+    'Miscellaneous': misc(Graph)
   };
 }

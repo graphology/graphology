@@ -136,15 +136,7 @@ export default function mutation(Graph, checkers) {
         }, usage());
 
         assert.throws(function() {
-          graph.addUndirectedEdge('Thomas', 'Martha');
-        }, usage());
-
-        assert.throws(function() {
           graph.addDirectedEdgeWithKey('T->M', 'Thomas', 'Martha');
-        }, usage());
-
-        assert.throws(function() {
-          graph.addUndirectedEdgeWithKey('T<->M', 'Thomas', 'Martha');
         }, usage());
       },
 

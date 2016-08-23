@@ -175,6 +175,7 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_exportEdges', this._exportEdges);
     privateProperty(this, '_updateIndex', this._updateIndex);
     privateProperty(this, '_clearEdgeFromIndex', this._clearEdgeFromIndex);
+    privateProperty(this, 'internals', this.internals);
 
     //-- Properties readers
     readOnlyProperty(this, 'order', () => this._order);
@@ -221,7 +222,7 @@ export default class Graph extends EventEmitter {
     this.computeIndex('structure');
 
     // If the node source or the target is not in the graph we break
-    if (!this.hasNode(source) || !this.hasNode(target))
+    if (!this.hasNode(source) || !this.hasNode(target))
       return;
 
     // Is there a directed edge pointing towards target?
@@ -229,12 +230,14 @@ export default class Graph extends EventEmitter {
       this._nodes.get(source) :
       this._nodes[source];
 
-    if (!('out' in nodeData))
+    const register = nodeData.out;
+
+    if (!register)
       return;
 
     const edges = this.map ?
-      (nodeData.out.get(target)) :
-      (nodeData.out[target]);
+      (register.get(target)) :
+      (register[target]);
 
     if (!edges)
       return;
@@ -259,7 +262,7 @@ export default class Graph extends EventEmitter {
     this.computeIndex('structure');
 
     // If the node source or the target is not in the graph we break
-    if (!this.hasNode(source) || !this.hasNode(target))
+    if (!this.hasNode(source) || !this.hasNode(target))
       return;
 
     // Is there a directed edge pointing towards target?
@@ -267,17 +270,20 @@ export default class Graph extends EventEmitter {
       this._nodes.get(source) :
       this._nodes[source];
 
-    if (!('undirectedOut' in nodeData) && !('undirectedIn' in nodeData) )
-      return;
+    let register = nodeData.undirectedOut,
+        edges;
 
-    let edges = this.map ?
-      (nodeData.undirectedOut.get(target)) :
-      (nodeData.undirectedOut[target]);
+    if (register)
+      edges = this.map ?
+        (register.get(target)) :
+        (register[target]);
 
-    if (!edges)
-      hasEdge = this.map ?
-        (nodeData.undirectedIn.get(target)) :
-        (nodeData.undirectedIn[target]);
+    register = nodeData.undirectedIn;
+
+    if (!edges && register)
+      edges = this.map ?
+        (register.get(target)) :
+        (register[target]);
 
     if (!edges)
       return;
@@ -308,7 +314,7 @@ export default class Graph extends EventEmitter {
       return edge;
 
     // Then we try to find an undirected edge
-    if (this.type === 'mixed' || this.type === 'undirected')
+    if (this.type === 'mixed' || this.type === 'undirected')
     edge = this.getUndirectedEdge(source, target);
 
     return edge;
@@ -343,7 +349,7 @@ export default class Graph extends EventEmitter {
       this.computeIndex('structure');
 
       // If the node source or the target is not in the graph we break
-      if (!this.hasNode(source) || !this.hasNode(target))
+      if (!this.hasNode(source) || !this.hasNode(target))
         return false;
 
       // Is there a directed edge pointing towards target?
@@ -351,15 +357,17 @@ export default class Graph extends EventEmitter {
         this._nodes.get(source) :
         this._nodes[source];
 
-      if (!('out' in nodeData))
-        return;
+      const register = nodeData.out;
+
+      if (!register)
+        return false;
 
       const edges = this.map ?
-        (nodeData.out.get(target)) :
-        (nodeData.out[target]);
+        (register.get(target)) :
+        (register[target]);
 
       if (!edges)
-        return;
+        return false;
 
       return !!edges.size;
     }
@@ -396,7 +404,7 @@ export default class Graph extends EventEmitter {
       this.computeIndex('structure');
 
       // If the node source or the target is not in the graph we break
-      if (!this.hasNode(source) || !this.hasNode(target))
+      if (!this.hasNode(source) || !this.hasNode(target))
         return false;
 
       // Is there a directed edge pointing towards target?
@@ -404,20 +412,23 @@ export default class Graph extends EventEmitter {
         this._nodes.get(source) :
         this._nodes[source];
 
-      if (!('undirectedOut' in nodeData) && !('undirectedIn' in nodeData) )
+      let register = nodeData.undirectedOut,
+          edges;
+
+      if (register)
+        edges = this.map ?
+          (register.get(target)) :
+          (register[target]);
+
+      register = nodeData.undirectedIn;
+
+      if (!edges && register)
+        edges = this.map ?
+          (register.get(target)) :
+          (register[target]);
+
+      if (!edges)
         return false;
-
-      let edges = this.map ?
-        (nodeData.undirectedOut.get(target)) :
-        (nodeData.undirectedOut[target]);
-
-      if (!edges)
-        hasEdge = this.map ?
-          (nodeData.undirectedIn.get(target)) :
-          (nodeData.undirectedIn[target]);
-
-      if (!edges)
-        return;
 
       return !!edges.size;
     }
@@ -791,7 +802,14 @@ export default class Graph extends EventEmitter {
     if (!this.selfLoops && source === target)
       throw new UsageGraphError(`Graph.${name}: source & target are the same, thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
 
-    if (!this.multi && this.hasEdge(source, target))
+    if (
+      !this.multi &&
+      (
+        undirected ?
+          this.hasUndirectedEdge(source, target) :
+          this.hasDirectedEdge(source, target)
+      )
+    )
       throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option. The 'onDuplicateEdge' option might also interest you.`);
 
     // Storing some data
@@ -1310,11 +1328,11 @@ export default class Graph extends EventEmitter {
       index.computed = true;
 
       if (this.map) {
-        this._edges.forEach((_, edge) => this._updateIndex(name, edge));
+        this._edges.forEach((data, edge) => this._updateIndex(name, edge, data));
       }
       else {
         for (const edge in this._edges)
-          this._updateIndex(name, edge);
+          this._updateIndex(name, edge, this._edges[edge]);
       }
     }
 

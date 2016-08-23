@@ -27,10 +27,10 @@ export function updateStructureIndex(graph, edge, data) {
         targetData = map ? graph._nodes.get(target) : graph._nodes[target];
 
   const outKey = undirected ? 'undirectedOut' : 'out',
-        inKey = undirected ? 'undirectedIn': 'in';
+        inKey = undirected ? 'undirectedIn' : 'in';
 
   // Handling source
-  sourceData[outKey] = sourceData[outKey] || (map ? new Map() : {});
+  sourceData[outKey] = sourceData[outKey] || (map ? new Map() : {});
 
   if (map) {
     if (!sourceData[outKey].has(target))
@@ -44,7 +44,7 @@ export function updateStructureIndex(graph, edge, data) {
   }
 
   // Handling target
-  targetData[inKey] = targetData[inKey] || (map ? new Map() : {});
+  targetData[inKey] = targetData[inKey] || (map ? new Map() : {});
 
   if (map) {
     if (!targetData[inKey].has(source))
@@ -66,11 +66,12 @@ export function clearEdgeFromStructureIndex(graph, edge, data) {
         targetData = map ? graph._nodes.get(target) : graph._nodes[target];
 
   const outKey = undirected ? 'undirectedOut' : 'out',
-        inKey = undirected ? 'undirectedIn': 'in';
+        inKey = undirected ? 'undirectedIn' : 'in';
 
   const sourceIndex = sourceData[outKey],
         targetIndex = targetData[inKey];
 
+  // NOTE: possible to clear empty sets from memory altogether
   if (map) {
     if (sourceIndex.has(target))
       sourceIndex.get(target).delete(edge);

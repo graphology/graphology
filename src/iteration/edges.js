@@ -68,31 +68,77 @@ const EDGES_ITERATION = [
   }
 ];
 
-function collectEdges(object, key) {
+function collectEdgesFromMap(map, key) {
   const edges = [];
 
   const hasKey = arguments.length > 1;
 
-  if (typeof Map === 'function' && object instanceof Map) {
-    if (hasKey)
-      return (object.get(key) || []);
+  if (!map)
+    return edges;
 
-    object.forEach(function(value) {
-      edges.push.apply(edges, value);
-    });
-  }
-  else {
-    if (hasKey)
-      return (object[key] || []);
+  if (hasKey)
+    return Array.from(map.get(key));
 
-    for (const node in object) {
-      edges.push.apply(edges, object[node]);
-    }
-  }
+  map.forEach(set => {
+    edges.push.apply(edges, Array.from(set));
+  });
 
   return edges;
 }
 
+function collectEdgesFromObject(object, key) {
+  const edges = [];
+
+  const hasKey = arguments.length > 1;
+
+  if (!object)
+    return edges;
+
+  if (hasKey)
+    return object[key].values();
+
+  for (const k in object)
+    edges.push.apply(edges, object[k].values());
+
+  return edges;
+}
+
+function countEdgesFromMap(map, key) {
+  let nb = 0;
+
+  const hasKey = arguments.length > 1;
+
+  if (!map)
+    return nb;
+
+  if (hasKey)
+    return map.get(key).size;
+
+  map.forEach(set => {
+    nb += set.size;
+  });
+
+  return nb;
+}
+
+function countEdgesFromObject(object, key) {
+  let nb = 0;
+
+  const hasKey = arguments.length > 1;
+
+  if (!object)
+    return nb;
+
+  if (hasKey)
+    return object[key].size;
+
+  for (const k in object)
+    nb += object[k].size;
+
+  return nb;
+}
+
+// --
 function mergeEdges(set, object) {
   if (typeof Map === 'function' && object instanceof Map) {
     object.forEach(function(key, value) {
@@ -107,25 +153,7 @@ function mergeEdges(set, object) {
     }
   }
 }
-
-function countEdges(object, key) {
-  let nb = 0;
-
-  const hasKey = arguments.length > 1;
-
-  if (typeof Map === 'function' && object instanceof Map) {
-    if (hasKey)
-      return (object.get(key) || []).length;
-    nb += object.size;
-  }
-  else {
-    if (hasKey)
-      return (object[key] || []).length;
-    nb += Object.keys(object).length;
-  }
-
-  return nb;
-}
+// --
 
 function createEdgeArray(count, graph, type) {
   if (count && type === 'mixed')
@@ -136,7 +164,7 @@ function createEdgeArray(count, graph, type) {
 
   if (graph.map) {
     if (type === 'mixed')
-      return [...graph._edges.keys()];
+      return Array.from(graph._edges.keys());
 
     graph._edges.forEach((data, edge) => {
 
@@ -170,26 +198,21 @@ function createEdgeArray(count, graph, type) {
 }
 
 function createEdgeArrayForNode(count, graph, type, direction, node) {
+  const countEdges = graph.map ? countEdgesFromMap : countEdgesFromObject,
+        collectEdges = graph.map ? collectEdgesFromMap : collectEdgesFromObject;
 
-  // For this, we need to compute the "relations" index
+  // For this, we need to compute the "structure" index
   graph.computeIndex('structure');
-  const indexData = graph._indexes.relations.data;
 
   let edges = [],
       nb = 0;
 
   let nodeData;
 
-  if (graph.map) {
-    if (!indexData.has(node))
-      return count ? nb : edges;
-    nodeData = indexData.get(node);
-  }
-  else {
-    if (!(node in indexData))
-      return count ? nb : edges;
-    nodeData = indexData[node];
-  }
+  if (graph.map)
+    nodeData = graph._nodes.get(node);
+  else
+    nodeData = graph._nodes[node];
 
   if (type === 'mixed' || type === 'directed') {
 
@@ -228,7 +251,7 @@ function createEdgeArrayForNode(count, graph, type, direction, node) {
 
 function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
 
-  // For this, we need to compute the "relations" index
+  // For this, we need to compute the "structure" index
   graph.computeIndex('structure');
   const indexData = graph._indexes.relations.data;
 
@@ -274,7 +297,7 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
 
 function createEdgeArrayForPath(count, graph, type, source, target) {
 
-  // For this, we need to compute the "relations" index
+  // For this, we need to compute the "structure" index
   graph.computeIndex('structure');
   const indexData = graph._indexes.relations.data;
 

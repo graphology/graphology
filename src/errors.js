@@ -14,8 +14,9 @@ export class GraphError extends Error {
     this.data = data || {};
 
     // This is V8 specific to enhance stack readability
-    if (typeof Error.captureStackTrace === 'function')
-      Error.captureStackTrace(this, this.constructor);
+    // TODO: tweak this part with real world examples
+    // if (typeof Error.captureStackTrace === 'function')
+    //   Error.captureStackTrace(this, this.constructor);
   }
 }
 

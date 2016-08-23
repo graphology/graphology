@@ -96,14 +96,6 @@ export default function read(Graph, checkers) {
 
         assert.strictEqual(graph.getEdge('Martha', 'Catherine'), 'M->C');
         assert.strictEqual(graph.getEdge('Catherine', 'John'), 'C<->J');
-      },
-
-      'it should return the first edge found independently of directedness.': function() {
-        const graph = new Graph(null);
-        graph.addNodesFrom(['John', 'Mary']);
-        graph.addEdgeWithKey('J->M', 'John', 'Mary');
-
-        assert.strictEqual(graph.getEdge('Mary', 'John'), 'J->M');
       }
     },
 
@@ -188,14 +180,6 @@ export default function read(Graph, checkers) {
         assert.strictEqual(graph.hasEdge('Martha', 'Thomas'), false);
         assert.strictEqual(graph.hasEdge('Catherine', 'John'), true);
         assert.strictEqual(graph.hasEdge('John', 'Catherine'), true);
-      },
-
-      'it should return whether such an edge exist independently of directedness.': function() {
-        const graph = new Graph(null);
-        graph.addNodesFrom(['John', 'Mary']);
-        graph.addEdgeWithKey('J->M', 'John', 'Mary');
-
-        assert.strictEqual(graph.hasEdge('Mary', 'John'), true);
       }
     },
 
