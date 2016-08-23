@@ -73,7 +73,7 @@ function collectEdgesFromMap(map, key) {
 
   const hasKey = arguments.length > 1;
 
-  if (!map)
+  if (!map || (hasKey && !map.get(key)))
     return edges;
 
   if (hasKey)
@@ -91,7 +91,7 @@ function collectEdgesFromObject(object, key) {
 
   const hasKey = arguments.length > 1;
 
-  if (!object)
+  if (!object || (hasKey && !(key in object)))
     return edges;
 
   if (hasKey)
@@ -108,7 +108,7 @@ function countEdgesFromMap(map, key) {
 
   const hasKey = arguments.length > 1;
 
-  if (!map)
+  if (!map || (hasKey && !map.get(key)))
     return nb;
 
   if (hasKey)
@@ -126,7 +126,7 @@ function countEdgesFromObject(object, key) {
 
   const hasKey = arguments.length > 1;
 
-  if (!object)
+  if (!object || (hasKey && !(key in object)))
     return nb;
 
   if (hasKey)
@@ -138,22 +138,24 @@ function countEdgesFromObject(object, key) {
   return nb;
 }
 
-// --
-function mergeEdges(set, object) {
-  if (typeof Map === 'function' && object instanceof Map) {
-    object.forEach(function(key, value) {
-      for (let i = 0, l = value.length; i < l; i++)
-        set.add(value[i]);
-    });
-  }
-  else {
-    for (const k in object) {
-      for (let i = 0, l = object[k].length; i < l; i++)
-        set.add(object[k][i]);
-    }
+function mergeEdgesFromMap(edges, map) {
+  if (!map)
+    return;
+
+  map.forEach(set => {
+    set.forEach(value => (edges.add(value)));
+  });
+}
+
+function mergeEdgesFromObject(edges, object) {
+  if (!object)
+    return;
+
+  for (const k in object) {
+    for (const v in object[k].entries)
+      edges.add(v);
   }
 }
-// --
 
 function createEdgeArray(count, graph, type) {
   if (count && type === 'mixed')
@@ -250,10 +252,10 @@ function createEdgeArrayForNode(count, graph, type, direction, node) {
 }
 
 function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
+  const mergeEdges = graph.map ? mergeEdgesFromMap : mergeEdgesFromObject;
 
   // For this, we need to compute the "structure" index
   graph.computeIndex('structure');
-  const indexData = graph._indexes.relations.data;
 
   const edges = graph.map ? new Set() : new BasicSet;
 
@@ -262,18 +264,7 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
     if (!graph.hasNode(node))
       throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph in the given bunch.`);
 
-    let nodeData;
-
-    if (graph.map) {
-      if (!indexData.has(node))
-        return false;
-      nodeData = indexData.get(node);
-    }
-    else {
-      if (!(node in indexData))
-        return false;
-      nodeData = indexData[node];
-    }
+    const nodeData = graph.map ? graph._nodes.get(node) : graph._nodes[node];
 
     if (type === 'mixed' || type === 'directed') {
 
@@ -292,30 +283,20 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
     }
   });
 
-  return edges.values();
+  return graph.map ? Array.from(edges.values()) : edges.values();
 }
 
 function createEdgeArrayForPath(count, graph, type, source, target) {
+  const countEdges = graph.map ? countEdgesFromMap : countEdgesFromObject,
+        collectEdges = graph.map ? collectEdgesFromMap : collectEdgesFromObject;
 
   // For this, we need to compute the "structure" index
   graph.computeIndex('structure');
-  const indexData = graph._indexes.relations.data;
 
   let edges = [],
       nb = 0;
 
-  let sourceData;
-
-  if (graph.map) {
-    if (!indexData.has(source))
-      return count ? nb : edges;
-    sourceData = indexData.get(source);
-  }
-  else {
-    if (!(source in indexData))
-      return count ? nb : edges;
-    sourceData = indexData[source];
-  }
+  const sourceData = graph.map ? graph._nodes.get(source) : graph._nodes[source];
 
   if (type === 'mixed' || type === 'directed') {
 
