@@ -26,7 +26,7 @@ export function validateSerializedNode(value) {
     return {valid: false, reason: 'no-key'};
 
   if ('attributes' in value &&
-      (!isPlainObject(value.attributes) || value.attributes === null))
+      (!isPlainObject(value.attributes) || value.attributes === null))
     return {valid: false, reason: 'invalid-attributes'};
 
   return {valid: true};
@@ -45,18 +45,18 @@ export function validateSerializedEdge(value) {
   if (!('key' in value))
     return {valid: false, reason: 'no-key'};
 
-  if (!('source') in value)
+  if (!('source' in value))
     return {valid: false, reason: 'no-source'};
 
-  if (!('target') in value)
+  if (!('target' in value))
     return {valid: false, reason: 'no-target'};
 
   if ('attributes' in value &&
-      (!isPlainObject(value.attributes) || value.attributes === null))
+      (!isPlainObject(value.attributes) || value.attributes === null))
     return {valid: false, reason: 'invalid-attributes'};
 
   if ('undirected' in value &&
-      (typeof value.undirected !== 'boolean' || value.undirected === null))
+      (typeof value.undirected !== 'boolean' || value.undirected === null))
     return {valid: false, reason: 'invalid-attributes'};
 
   return {valid: true};

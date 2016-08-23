@@ -68,6 +68,13 @@ const EDGES_ITERATION = [
   }
 ];
 
+/**
+ * Function collecting edges from the given map.
+ *
+ * @param  {Map|undefined} map   - Target map.
+ * @param  {mixed}         [key] - Optional key.
+ * @return {array}               - The found edges.
+ */
 function collectEdgesFromMap(map, key) {
   const edges = [];
 
@@ -86,6 +93,13 @@ function collectEdgesFromMap(map, key) {
   return edges;
 }
 
+/**
+ * Function collecting edges from the given object.
+ *
+ * @param  {object|undefined} object - Target object.
+ * @param  {mixed}            [key]  - Optional key.
+ * @return {array}                   - The found edges.
+ */
 function collectEdgesFromObject(object, key) {
   const edges = [];
 
@@ -103,6 +117,13 @@ function collectEdgesFromObject(object, key) {
   return edges;
 }
 
+/**
+ * Function counting edges from the given map.
+ *
+ * @param  {Map|undefined} map   - Target map.
+ * @param  {mixed}         [key] - Optional key.
+ * @return {number}              - The number of found edges.
+ */
 function countEdgesFromMap(map, key) {
   let nb = 0;
 
@@ -121,6 +142,13 @@ function countEdgesFromMap(map, key) {
   return nb;
 }
 
+/**
+ * Function counting edges from the given object.
+ *
+ * @param  {object|undefined} object - Target object.
+ * @param  {mixed}            [key]  - Optional key.
+ * @return {number}                  - The number of found edges.
+ */
 function countEdgesFromObject(object, key) {
   let nb = 0;
 
@@ -138,6 +166,12 @@ function countEdgesFromObject(object, key) {
   return nb;
 }
 
+/**
+ * Function merging edges found in a map into the given set.
+ *
+ * @param {Set}           edges - Current set of edges.
+ * @param {Map|undefined} map   - Target map.
+ */
 function mergeEdgesFromMap(edges, map) {
   if (!map)
     return;
@@ -147,6 +181,12 @@ function mergeEdgesFromMap(edges, map) {
   });
 }
 
+/**
+ * Function merging edges found in an object into the given set.
+ *
+ * @param {Set}              edges - Current set of edges.
+ * @param {object|undefined} map   - Target object.
+ */
 function mergeEdgesFromObject(edges, object) {
   if (!object)
     return;
@@ -157,6 +197,14 @@ function mergeEdgesFromObject(edges, object) {
   }
 }
 
+/**
+ * Function creating an array of edge for the given type.
+ *
+ * @param  {boolean} count - Should we count or collect?
+ * @param  {Graph}   graph - Target Graph instance.
+ * @param  {string}  type  - Type of edges to retrieve.
+ * @return {array}         - Array of edges.
+ */
 function createEdgeArray(count, graph, type) {
   if (count && type === 'mixed')
     return graph.size;
@@ -199,6 +247,16 @@ function createEdgeArray(count, graph, type) {
   return count ? nb : list;
 }
 
+/**
+ * Function creating an array of edge for the given type & the given node.
+ *
+ * @param  {boolean} count     - Should we count or collect?
+ * @param  {Graph}   graph     - Target Graph instance.
+ * @param  {string}  type      - Type of edges to retrieve.
+ * @param  {string}  direction - In or out?
+ * @param  {any}     node      - Target node.
+ * @return {array}             - Array of edges.
+ */
 function createEdgeArrayForNode(count, graph, type, direction, node) {
   const countEdges = graph.map ? countEdgesFromMap : countEdgesFromObject,
         collectEdges = graph.map ? collectEdgesFromMap : collectEdgesFromObject;
@@ -251,6 +309,16 @@ function createEdgeArrayForNode(count, graph, type, direction, node) {
   return count ? nb : edges;
 }
 
+/**
+ * Function creating an array of edge for the given bunch of nodes.
+ *
+ * @param  {boolean} count     - Should we count or collect?
+ * @param  {Graph}   graph     - Target Graph instance.
+ * @param  {string}  type      - Type of edges to retrieve.
+ * @param  {string}  direction - In or out?
+ * @param  {bunch}   bunch     - Target bunch.
+ * @return {array}             - Array of edges.
+ */
 function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
   const mergeEdges = graph.map ? mergeEdgesFromMap : mergeEdgesFromObject;
 
@@ -286,6 +354,16 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
   return graph.map ? Array.from(edges.values()) : edges.values();
 }
 
+/**
+ * Function creating an array of edge for the given path.
+ *
+ * @param  {boolean} count  - Should we count or collect?
+ * @param  {Graph}   graph  - Target Graph instance.
+ * @param  {string}  type   - Type of edges to retrieve.
+ * @param  {any}     source - Source node.
+ * @param  {any}     target - Target node.
+ * @return {array}          - Array of edges.
+ */
 function createEdgeArrayForPath(count, graph, type, source, target) {
   const countEdges = graph.map ? countEdgesFromMap : countEdgesFromObject,
         collectEdges = graph.map ? collectEdgesFromMap : collectEdgesFromObject;
@@ -326,6 +404,13 @@ function createEdgeArrayForPath(count, graph, type, source, target) {
   return count ? nb : edges;
 }
 
+/**
+ * Function attaching an edge array creator method to the Graph prototype.
+ *
+ * @param {function} Class       - Target class.
+ * @param {boolean}  counter     - Should we count or collect?
+ * @param {object}   description - Method description.
+ */
 function attachEdgeArrayCreator(Class, counter, description) {
   const {
     type,
@@ -334,6 +419,25 @@ function attachEdgeArrayCreator(Class, counter, description) {
 
   const name = counter ? description.counter : description.name;
 
+  /**
+   * Function returning an array or the count of certain edges.
+   *
+   * Arity 0: Return all the relevant edges.
+   *
+   * Arity 1a: Return all of a node's relevant edges.
+   * @param  {any}   node   - Target node.
+   *
+   * Arity 1b: Return the union of the relevant edges of the given bunch of nodes.
+   * @param  {bunch} bunch  - Bunch of nodes.
+   *
+   * Arity 2: Return the relevant edges across the given path.
+   * @param  {any}   source - Source node.
+   * @param  {any}   target - Target node.
+   *
+   * @return {array|number} - The edges or the number of edges.
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
   Class.prototype[name] = function(...args) {
     if (!args.length)
       return createEdgeArray(counter, this, type);
@@ -408,6 +512,11 @@ function attachEdgeArrayCreator(Class, counter, description) {
   };
 }
 
+/**
+ * Function attaching every edge iteration method to the Graph class.
+ *
+ * @param {function} Graph - Graph class.
+ */
 export function attachEdgeIterationMethods(Graph) {
   EDGES_ITERATION.forEach(description => {
     attachEdgeArrayCreator(Graph, false, description);
