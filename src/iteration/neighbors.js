@@ -12,7 +12,8 @@ import {
 
 import {
   BasicSet,
-  isBunch
+  isBunch,
+  overBunch
 } from '../utils';
 
 /**
@@ -84,7 +85,7 @@ function mergeNeighborsFromObject(neighbors, object) {
     neighbors.add(neighbor);
 }
 
-function createNeighborArrayForNode(graph, type, direction, node) {
+function createNeighborSetForNode(graph, type, direction, node) {
   const mergeNeighbors = graph.map ? mergeNeighborsFromMap : mergeNeighborsFromObject;
 
   // For this, we need to compute the "relations" index
@@ -117,6 +118,18 @@ function createNeighborArrayForNode(graph, type, direction, node) {
   return neighbors;
 }
 
+function createNeighborSetForBunch(name, graph, type, direction, bunch) {
+  const mergeNeighbors = graph.map ? mergeNeighborsFromMap : mergeNeighborsFromObject;
+
+  const neighbors = graph.map ? new Set() : new BasicSet();
+
+  overBunch(bunch, (error, node) => {
+    if (!graph.hasNode(node))
+      throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph in the given bunch.`);
+
+  });
+}
+
 function attachNeighborArrayCreator(Class, counter, description) {
     const {
     type,
@@ -140,7 +153,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node2}" node in the graph.`);
 
       // Here, we want to assess whether the two given nodes are neighbors
-      const neighbors = createNeighborArrayForNode(
+      const neighbors = createNeighborSetForNode(
         this,
         type,
         direction,
@@ -155,7 +168,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
       if (this.hasNode(nodeOrBunch)) {
 
         // Here, we want to iterate over a node's relevant neighbors
-        const neighbors = createNeighborArrayForNode(
+        const neighbors = createNeighborSetForNode(
           this,
           type,
           direction,
