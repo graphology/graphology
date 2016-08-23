@@ -15,6 +15,13 @@ import {
   UsageGraphError
 } from './errors';
 
+import {
+  INDICES,
+  updateStructureIndex,
+  clearEdgeFromStructureIndex,
+  clearStructureIndex
+} from './indices';
+
 import {attachAttributesMethods} from './attributes';
 import {attachEdgeIterationMethods} from './iteration/edges';
 import {attachNeighborIterationMethods} from './iteration/neighbors';
@@ -66,12 +73,20 @@ import {
 // TODO: in the current index, neighbors need to be uniq'd. maybe a separated index for edges & neighbors would simplify this.
 // TODO: better to have one index root or two?
 // TODO: add arity to #.exportDirectedEdges etc.
+// TODO: #.import can also take a graph
+// TODO: #.dropNodes without argument clear all nodes (#.clear in fact)
+// TODO: refactor indexes: One single hashmap storing arrays with predetermined lenght and constant positions.
+// {nodeKey: [key, attributes, degrees..., edges..., neighbors...]} (max 13 slots)
+// {edgeKey: [key, source, target, attributes, undirected]} (max 5 slots)
+// speed up export by slicing the already existing array (check slice etc. performance benchmarks)
+// TODO: explain that index API is normalized, but not its number nor type
+// TODO: changer format de sérialisation
+// TODO: hasNodeAttribute
 
 /**
  * Enums.
  */
 const TYPES = new BasicSet(['directed', 'undirected', 'mixed']),
-      INDEXES = new BasicSet(['relations']),
       EMITTER_PROPS = new BasicSet(['domain', '_events', '_eventsCount', '_maxListeners']);
 
 /**
@@ -84,54 +99,6 @@ const DEFAULTS = {
   multi: false,
   type: 'mixed'
 };
-
-/**
- * Helpers.
- */
-
-/**
- * Function creating the minimal entry for storing node data.
- *
- * @param  {string}  type       - Type of the graph.
- * @param  {object}  attributes - Node's attributes.
- * @return {object}             - The entry.
- */
-function createNodeEntry(type, attributes) {
-  const entry = {attributes, selfLoops: 0};
-
-  if (type === 'mixed' || type === 'directed') {
-    entry.inDegree = 0;
-    entry.outDegree = 0;
-  }
-  if (type === 'mixed' || type === 'undirected') {
-    entry.undirectedDegree = 0;
-  }
-
-  return entry;
-}
-
-/**
- * Function creating the minimal entry for the related edges index.
- *
- * @param  {string}  type - Type of the graph.
- * @param  {boolean} map  - Whether the graph accepts references as keys.
- * @return {object}       - The entry.
- */
-function createRelationEntry(type, map) {
-  const entry = {};
-
-  if (type === 'mixed' || type === 'directed') {
-    entry.in = map ? new Map() : {};
-    entry.out = map ? new Map() : {};
-  }
-
-  if (type === 'mixed' || type === 'undirected') {
-    entry.undirectedIn = map ? new Map() : {};
-    entry.undirectedOut = map ? new Map() : {};
-  }
-
-  return entry;
-}
 
 /**
  * Graph class
@@ -188,10 +155,13 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_nodes', map ? new Map() : {});
     privateProperty(this, '_edges', map ? new Map() : {});
     privateProperty(this, '_indexes', {
-      relations: {
+      structure: {
         computed: false,
-        synchronized: true,
-        data: map ? new Map() : {}
+        synchronized: true
+      },
+      neighbors: {
+        computed: false,
+        synchronized: true
       }
     });
 
@@ -203,9 +173,8 @@ export default class Graph extends EventEmitter {
     // Methods
     privateProperty(this, '_addEdge', this._addEdge);
     privateProperty(this, '_exportEdges', this._exportEdges);
-    privateProperty(this, 'updateIndex', this.updateIndex);
-    privateProperty(this, 'clearNodeFromIndex', this.clearNodeFromIndex);
-    privateProperty(this, 'clearEdgeFromIndex', this.clearEdgeFromIndex);
+    privateProperty(this, '_updateIndex', this._updateIndex);
+    privateProperty(this, '_clearEdgeFromIndex', this._clearEdgeFromIndex);
 
     //-- Properties readers
     readOnlyProperty(this, 'order', () => this._order);
@@ -248,20 +217,32 @@ export default class Graph extends EventEmitter {
    */
   getDirectedEdge(source, target) {
 
-    // We need to compute the 'relations' index for this
-    this.computeIndex('relations');
+    // We need to compute the 'structure' index for this
+    this.computeIndex('structure');
 
-    // Retrieving relevant edges
-    const index = this._indexes.relations.data;
-
-    if (this.map ? !index.has(source) : !(source in index))
+    // If the node source or the target is not in the graph we break
+    if (!this.hasNode(source) || !this.hasNode(target))
       return;
 
     // Is there a directed edge pointing towards target?
-    const out = this.map ? index.get(source).out : index[source].out,
-          edges = (this.map ? out.get(target) : out[target]) || [];
+    const nodeData = this.map ?
+      this._nodes.get(source) :
+      this._nodes[source];
 
-    return edges[0];
+    if (!('out' in nodeData))
+      return;
+
+    const edges = this.map ?
+      (nodeData.out.get(target)) :
+      (nodeData.out[target]);
+
+    if (!edges)
+      return;
+
+    if (!edges.size)
+      return;
+
+    return this.map ? edges.values().next().value : edges.first();
   }
 
   /**
@@ -274,24 +255,37 @@ export default class Graph extends EventEmitter {
    */
   getUndirectedEdge(source, target) {
 
-    // We need to compute the 'relations' index for this
-    this.computeIndex('relations');
+    // We need to compute the 'structure' index for this
+    this.computeIndex('structure');
 
-    // Retrieving relevant edges
-    const index = this._indexes.relations.data;
-
-    if (this.map ? !index.has(source) : !(source in index))
+    // If the node source or the target is not in the graph we break
+    if (!this.hasNode(source) || !this.hasNode(target))
       return;
 
-    // Is there an undirected edge linking our source & target
-    const undirectedIn = this.map ? index.get(source).undirectedIn : index[source].undirectedIn,
-          undirectedOut = this.map ? index.get(source).undirectedOut : index[source].undirectedOut,
-          edges = (
-            (this.map ? undirectedIn.get(target) : undirectedIn[target]) ||
-            (this.map ? undirectedOut.get(target) : undirectedOut[target])
-          ) || [];
+    // Is there a directed edge pointing towards target?
+    const nodeData = this.map ?
+      this._nodes.get(source) :
+      this._nodes[source];
 
-    return edges[0];
+    if (!('undirectedOut' in nodeData) && !('undirectedIn' in nodeData) )
+      return;
+
+    let edges = this.map ?
+      (nodeData.undirectedOut.get(target)) :
+      (nodeData.undirectedOut[target]);
+
+    if (!edges)
+      hasEdge = this.map ?
+        (nodeData.undirectedIn.get(target)) :
+        (nodeData.undirectedIn[target]);
+
+    if (!edges)
+      return;
+
+    if (!edges.size)
+      return;
+
+    return this.map ? edges.values().next().value : edges.first();
   }
 
   /**
@@ -307,17 +301,14 @@ export default class Graph extends EventEmitter {
     let edge;
 
     // First we try to find a directed edge
-    edge = this.getDirectedEdge(source, target);
+    if (this.type === 'mixed' || this.type === 'directed')
+      edge = this.getDirectedEdge(source, target);
 
     if (edge)
       return edge;
 
-    edge = this.getDirectedEdge(target, source);
-
-    if (edge)
-      return edge;
-
-    // Second we try to find an undirected edge
+    // Then we try to find an undirected edge
+    if (this.type === 'mixed' || this.type === 'undirected')
     edge = this.getUndirectedEdge(source, target);
 
     return edge;
@@ -348,20 +339,29 @@ export default class Graph extends EventEmitter {
     }
     else if (arguments.length === 2) {
 
-      // We need to compute the 'relations' index for this
-      this.computeIndex('relations');
+      // We need to compute the 'structure' index for this
+      this.computeIndex('structure');
 
-      // Retrieving relevant edges
-      const index = this._indexes.relations.data;
-
-      if (this.map ? !index.has(source) : !(source in index))
+      // If the node source or the target is not in the graph we break
+      if (!this.hasNode(source) || !this.hasNode(target))
         return false;
 
       // Is there a directed edge pointing towards target?
-      const out = this.map ? index.get(source).out : index[source].out,
-            edges = (this.map ? out.get(target) : out[target]) || [];
+      const nodeData = this.map ?
+        this._nodes.get(source) :
+        this._nodes[source];
 
-      return !!edges.length;
+      if (!('out' in nodeData))
+        return;
+
+      const edges = this.map ?
+        (nodeData.out.get(target)) :
+        (nodeData.out[target]);
+
+      if (!edges)
+        return;
+
+      return !!edges.size;
     }
 
     throw new InvalidArgumentsGraphError(`Graph.hasDirectedEdge: invalid arity (${arguments.length}, instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.`);
@@ -392,24 +392,34 @@ export default class Graph extends EventEmitter {
     }
     else if (arguments.length === 2) {
 
-      // We need to compute the 'relations' index for this
-      this.computeIndex('relations');
+      // We need to compute the 'structure' index for this
+      this.computeIndex('structure');
 
-      // Retrieving relevant edges
-      const index = this._indexes.relations.data;
-
-      if (this.map ? !index.has(source) : !(source in index))
+      // If the node source or the target is not in the graph we break
+      if (!this.hasNode(source) || !this.hasNode(target))
         return false;
 
-      // Is there an undirected edge pointing towards target?
-      const undirectedIn = this.map ? index.get(source).undirectedIn : index[source].undirectedIn,
-            undirectedOut = this.map ? index.get(source).undirectedOut : index[source].undirectedOut,
-            edges = (
-              (this.map ? undirectedIn.get(target) : undirectedIn[target]) ||
-              (this.map ? undirectedOut.get(target) : undirectedOut[target])
-            ) || [];
+      // Is there a directed edge pointing towards target?
+      const nodeData = this.map ?
+        this._nodes.get(source) :
+        this._nodes[source];
 
-      return !!edges.length;
+      if (!('undirectedOut' in nodeData) && !('undirectedIn' in nodeData) )
+        return false;
+
+      let edges = this.map ?
+        (nodeData.undirectedOut.get(target)) :
+        (nodeData.undirectedOut[target]);
+
+      if (!edges)
+        hasEdge = this.map ?
+          (nodeData.undirectedIn.get(target)) :
+          (nodeData.undirectedIn[target]);
+
+      if (!edges)
+        return;
+
+      return !!edges.size;
     }
 
     throw new InvalidArgumentsGraphError(`Graph.hasDirectedEdge: invalid arity (${arguments.length}, instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.`);
@@ -439,7 +449,6 @@ export default class Graph extends EventEmitter {
     else if (arguments.length === 2) {
       return (
         this.hasDirectedEdge(source, target) ||
-        this.hasDirectedEdge(target, source) ||
         this.hasUndirectedEdge(source, target)
       );
     }
@@ -698,7 +707,18 @@ export default class Graph extends EventEmitter {
 
     attributes = attributes || {};
 
-    const data = createNodeEntry(this.type, attributes);
+    const data = {
+      attributes,
+      selfLoops: 0
+    };
+
+    if (this.type === 'mixed' || this.type === 'directed') {
+      data.inDegree = 0;
+      data.outDegree = 0;
+    }
+    if (this.type === 'mixed' || this.type === 'undirected') {
+      data.undirectedDegree = 0;
+    }
 
     // Adding the node to internal register
     if (this.map)
@@ -809,7 +829,7 @@ export default class Graph extends EventEmitter {
     }
 
     // Updating relevant indexes
-    this.updateIndex('relations', edge);
+    this._updateIndex('structure', edge, data);
 
     return edge;
   }
@@ -988,9 +1008,6 @@ export default class Graph extends EventEmitter {
 
     // Decrementing order
     this._order--;
-
-    // Clearing index
-    this.clearNodeFromIndex('relations', node);
   }
 
   /**
@@ -1022,17 +1039,22 @@ export default class Graph extends EventEmitter {
     const sourceData = this.map ? this._nodes.get(source) : this._nodes[source],
           targetData = this.map ? this._nodes.get(target) : this._nodes[target];
 
-    if (undirected) {
-      sourceData.undirectedDegree--;
-      targetData.undirectedDegree--;
+    if (source === target) {
+      sourceData.selfLoops--;
     }
     else {
-      sourceData.outDegree--;
-      targetData.inDegree--;
+      if (undirected) {
+        sourceData.undirectedDegree--;
+        targetData.undirectedDegree--;
+      }
+      else {
+        sourceData.outDegree--;
+        targetData.inDegree--;
+      }
     }
 
     // Clearing index
-    this.clearEdgeFromIndex('relations', edge, data);
+    this._clearEdgeFromIndex('structure', edge, data);
 
     return this;
   }
@@ -1050,12 +1072,12 @@ export default class Graph extends EventEmitter {
     // Dropping nodes
     this._nodes = this.map ? new Map() : {};
 
-    // Clearing index
-    this.clearIndex('relations');
-
     // Resetting counters
     this._order = 0;
     this._size = 0;
+
+    for (const name in this._indexes)
+      this._indexes[name].computed = false;
 
     // TODO: if index precomputed, activate it
   }
@@ -1273,20 +1295,14 @@ export default class Graph extends EventEmitter {
    * @return {Graph}       - Returns itself for chaining.
    *
    * @throw  {Error} - Will throw if the index doesn't exist.
-   *
-   * Note: the 'relations' index works thusly:
-   *   A key for each node with an object storing every edge category:
-   *   'in', 'out', 'undirectedIn', 'undirectedOut', each being an object
-   *   with keys being the related node and each value being an array of the
-   *   relevant edges.
    */
   computeIndex(name) {
 
-    if (!INDEXES.has(name))
+    if (!INDICES.has(name))
       throw new InvalidArgumentsGraphError(`Graph.computeIndex: unknown "${name}" index.`);
 
-    if (name === 'relations') {
-      const index = this._indexes.relations;
+    if (name === 'structure') {
+      const index = this._indexes.structure;
 
       if (index.computed)
         return this;
@@ -1294,11 +1310,11 @@ export default class Graph extends EventEmitter {
       index.computed = true;
 
       if (this.map) {
-        this._edges.forEach((_, edge) => this.updateIndex(name, edge));
+        this._edges.forEach((_, edge) => this._updateIndex(name, edge));
       }
       else {
         for (const edge in this._edges)
-          this.updateIndex(name, edge);
+          this._updateIndex(name, edge);
       }
     }
 
@@ -1314,154 +1330,46 @@ export default class Graph extends EventEmitter {
    *
    * @throw  {Error} - Will throw if the index doesn't exist.
    */
-  updateIndex(name, edge) {
-    if (!INDEXES.has(name))
-      throw new InvalidArgumentsGraphError(`Graph.updateIndex: unknown "${name}" index.`);
+  _updateIndex(name, ...args) {
+    if (!INDICES.has(name))
+      throw new InvalidArgumentsGraphError(`Graph._updateIndex: unknown "${name}" index.`);
 
-    const index = this._indexes.relations;
+    if (name === 'structure') {
+      const index = this._indexes.structure;
 
-    if (!index.computed)
-      return this;
+      if (!index.computed)
+        return this;
 
-    if (this.map) {
-      const {
-        undirected,
-        source,
-        target
-      } = this._edges.get(edge);
+      const [edge, data] = args;
 
-      if (!index.data.has(source))
-        index.data.set(source, createRelationEntry(this.type, this.map));
-      if (!index.data.has(target))
-        index.data.set(target, createRelationEntry(this.type, this.map));
-
-      const sourceData = index.data.get(source),
-            targetData = index.data.get(target);
-
-      // Building indexes for source
-      const sourceRegister = undirected ?
-        sourceData.undirectedOut :
-        sourceData.out;
-
-      if (!sourceRegister.has(target))
-        sourceRegister.set(target, []);
-      sourceRegister.get(target).push(edge);
-
-      // Building indexes for target
-      const targetRegister = undirected ?
-        targetData.undirectedIn :
-        targetData.in;
-
-      if (!targetRegister.has(source))
-        targetRegister.set(source, []);
-      targetRegister.get(source).push(edge);
+      updateStructureIndex(this, edge, data);
     }
-    else {
-      const {
-        undirected,
-        source,
-        target
-      } = this._edges[edge];
-
-      if (!(source in index.data))
-        index.data[source] = createRelationEntry(this.type, this.map);
-      if (!(target in index.data))
-        index.data[target] = createRelationEntry(this.type, this.map);
-
-      const sourceData = index.data[source],
-            targetData = index.data[target];
-
-      // Building indexes for source
-      const sourceRegister = undirected ?
-        sourceData.undirectedOut :
-        sourceData.out;
-
-      if (!(target in sourceRegister))
-        sourceRegister[target] = [];
-      sourceRegister[target].push(edge);
-
-      // Building indexes for target
-      const targetRegister = undirected ?
-        targetData.undirectedIn :
-        targetData.in;
-
-      if (!(source in targetRegister))
-        targetRegister[source] = [];
-      targetRegister[source].push(edge);
-    }
-  }
-
-  clearNodeFromIndex(name, node) {
-    if (!INDEXES.has(name))
-      throw new InvalidArgumentsGraphError(`Graph.updateIndex: unknown "${name}" index.`);
-
-    const index = this._indexes.relations,
-          indexData = index.data;
-
-    if (!index.computed)
-      return this;
-
-    // NOTE: when arriving here, all attached edges should have been dropped
-    if (this.map)
-      indexData.delete(node);
-    else
-      delete indexData[node];
 
     return this;
   }
 
   /**
-   * Method clearing data related to a single edge.
+   * Method used to clear an edge from the desired index to clear memory.
    *
-   * @param  {string} name     - Name of the index to compute.
-   * @param  {any}    edge     - The edge to remove.
-   * @param  {object} edgeData - Data of the removed edge.
-   * @return {Graph}           - Returns itself for chaining.
+   * @param  {string} name - Name of the index to update.
+   * @param  {any}    edge - Target edge.
+   * @param  {object} data - Former attached data.
+   * @return {Graph}       - Returns itself for chaining.
    *
    * @throw  {Error} - Will throw if the index doesn't exist.
    */
-  clearEdgeFromIndex(name, edge, edgeData) {
-    if (!INDEXES.has(name))
-      throw new InvalidArgumentsGraphError(`Graph.updateIndex: unknown "${name}" index.`);
+  _clearEdgeFromIndex(name, edge, data) {
+    if (!INDICES.has(name))
+      throw new InvalidArgumentsGraphError(`Graph._clearEdgeFromIndex: unknown "${name}" index.`);
 
-    const index = this._indexes.relations,
-          indexData = index.data;
+    if (name === 'structure') {
+      const index = this._indexes.structure;
 
-    if (!index.computed)
-      return this;
+      if (!index.computed)
+        return this;
 
-    const {source, target, undirected} = edgeData;
-
-    const sourceData = this.map ? indexData.get(source) : indexData[source],
-          targetData = this.map ? indexData.get(target) : indexData[target];
-
-    let sourceRegister,
-        targetRegister;
-
-    if (undirected) {
-      sourceRegister = sourceData.undirectedOut;
-      targetRegister = targetData.undirectedIn;
+      clearEdgeFromStructureIndex(this, edge, data);
     }
-    else {
-      sourceRegister = sourceData.out;
-      targetRegister = targetData.in;
-    }
-
-    sourceRegister = this.map ?
-      sourceRegister.get(target) :
-      sourceRegister[target];
-
-    targetRegister = this.map ?
-      targetRegister.get(source) :
-      targetRegister[source];
-
-    // NOTE: This method could prove out-of-line performance-wise for large
-    // multi-graphs. This solution is to store the edges in sets or linked lists
-    const sourceIndex = sourceRegister.indexOf(edge),
-          targetIndex = targetRegister.indexOf(edge);
-
-    sourceRegister.splice(sourceIndex, 1);
-    targetRegister.splice(targetIndex, 1);
 
     return this;
   }
@@ -1475,13 +1383,18 @@ export default class Graph extends EventEmitter {
    * @throw  {Error} - Will throw if the index doesn't exist.
    */
   clearIndex(name) {
-    if (!INDEXES.has(name))
+    if (!INDICES.has(name))
       throw new InvalidArgumentsGraphError(`Graph.clearIndex: unknown "${name}" index.`);
 
-    const index = this._indexes.relations;
+    if (name === 'structure') {
+      const index = this._indexes.structure;
 
-    index.data = this.map ? new Map() : {};
-    index.computed = false;
+      if (!index.computed)
+        return this;
+
+      clearStructureIndex(this);
+      index.computed = false;
+    }
 
     return this;
   }
@@ -1516,7 +1429,7 @@ export default class Graph extends EventEmitter {
   /**
    * Method used internally by node's console to display a custom object.
    *
-   * @return {string} - String reprensation of the graph.
+   * @return {object} - Formatted object representation of the graph.
    */
   inspect() {
     let nodes,
@@ -1585,6 +1498,18 @@ export default class Graph extends EventEmitter {
     privateProperty(dummy, 'constructor', this.constructor);
 
     return dummy;
+  }
+
+  /**
+   * Method used to inspect the internal data structure holding nodes & edges.
+   *
+   * @return {object} - The internals to show.
+   */
+  internals() {
+    return {
+      nodes: this._nodes,
+      edges: this._edges
+    };
   }
 }
 

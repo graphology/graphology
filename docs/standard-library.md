@@ -9,6 +9,7 @@ WIP: reflexions on a standard library roadmap & structure.
 * `operators`
   * `reverse`
 * `utils`
+  * `equals`
+  * `isGraph`
+  * `lazyIterator`
   * `subgraph`
-
-* NOTE: `equals`

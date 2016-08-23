@@ -32,8 +32,10 @@ export function assign(...objects) {
 export class BasicSet {
   constructor(values) {
     this.entries = {};
+    this.size = 0;
 
     if (values) {
+      this.size = values.length;
       for (let i = 0, l = values.length; i < l; i++)
         this.entries[values[i]] = true;
     }
@@ -41,14 +43,31 @@ export class BasicSet {
 
   add(value) {
     this.entries[value] = true;
+    this.size++;
+  }
+
+  delete(value) {
+    delete this.entries[value];
+    this.size--;
   }
 
   has(value) {
     return value in this.entries;
   }
 
+  first() {
+    for (const value in this.entries)
+      return value;
+  }
+
   values() {
     return Object.keys(this.entries);
+  }
+
+  inspect() {
+    const values = this.values().map(v => JSON.stringify(v)).join(', ');
+
+    return 'BasicSet { ' + values + ' }';
   }
 }
 

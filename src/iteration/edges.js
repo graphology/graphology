@@ -172,7 +172,7 @@ function createEdgeArray(count, graph, type) {
 function createEdgeArrayForNode(count, graph, type, direction, node) {
 
   // For this, we need to compute the "relations" index
-  graph.computeIndex('relations');
+  graph.computeIndex('structure');
   const indexData = graph._indexes.relations.data;
 
   let edges = [],
@@ -229,7 +229,7 @@ function createEdgeArrayForNode(count, graph, type, direction, node) {
 function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
 
   // For this, we need to compute the "relations" index
-  graph.computeIndex('relations');
+  graph.computeIndex('structure');
   const indexData = graph._indexes.relations.data;
 
   const edges = graph.map ? new Set() : new BasicSet;
@@ -275,7 +275,7 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
 function createEdgeArrayForPath(count, graph, type, source, target) {
 
   // For this, we need to compute the "relations" index
-  graph.computeIndex('relations');
+  graph.computeIndex('structure');
   const indexData = graph._indexes.relations.data;
 
   let edges = [],
