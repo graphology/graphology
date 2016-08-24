@@ -46,10 +46,9 @@ import {
   uuid
 } from './utils';
 
-// TODO: add method to check if edge is self loop?
+// TODO: add method to check if edge is self loop & iteration methods etc.
 // TODO: differentiate index structure for simple/multi for performance?
 // TODO: dropEdge & dropEdges arity 2
-// TODO: mergeNodeAttribute
 // TODO: events
 // TODO: finish options
 

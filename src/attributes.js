@@ -6,6 +6,7 @@
  * we abstract them here for factorization reasons.
  */
 import {
+  assign,
   isPlainObject
 } from './utils';
 
@@ -322,6 +323,70 @@ function attachAttributesReplacer(Class, method, key, elementName, checker, find
 }
 
 /**
+ * Attach an attribute merger method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
+function attachAttributesMerger(Class, method, key, elementName, checker, finder) {
+
+  /**
+   * Replace the attributes for the given element (node or edge).
+   *
+   * Arity 2:
+   * @param  {any}    element    - Target element.
+   * @param  {object} attributes - Attributes to merge.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}     source     - Source element.
+   * @param  {any}     target     - Target element.
+   * @param  {object}  attributes - Attributes to merge.
+   *
+   * @return {Graph}              - Returns itself for chaining.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
+  Class.prototype[method] = function(element, attributes) {
+    if (arguments.length > 2) {
+      if (!finder)
+        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
+
+      const source = element,
+            target = attributes;
+
+      attributes = arguments[2];
+
+      if (!this[checker](source, target))
+        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
+
+      element = this[finder](source, target);
+    }
+
+    if (!this[checker](element))
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
+
+    if (!isPlainObject(attributes))
+      throw new InvalidArgumentsGraphError(`Graph.${method}: provided attributes are not a plain object.`);
+
+    let data;
+
+    if (this.map)
+      data = this[key].get(element);
+    else
+      data = this[key][element];
+
+    assign(data.attributes, attributes);
+
+    return this;
+  };
+}
+
+/**
  * List of methods to attach.
  */
 const ATTRIBUTES_METHODS = [
@@ -344,6 +409,10 @@ const ATTRIBUTES_METHODS = [
   {
     name: element => `replace${element}Attributes`,
     attacher: attachAttributesReplacer
+  },
+  {
+    name: element => `merge${element}Attributes`,
+    attacher: attachAttributesMerger
   }
 ];
 
