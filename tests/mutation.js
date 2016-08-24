@@ -322,6 +322,88 @@ export default function mutation(Graph, checkers) {
       }
     },
 
+    '#.dropEdges': {
+
+      'without arguments, it should drop every edge.': function() {
+        const graph = new Graph();
+
+        graph.addNodesFrom(['Lindsay', 'Martha']);
+        const edge = graph.addEdge('Lindsay', 'Martha');
+
+        graph.dropEdges();
+
+        assert.strictEqual(graph.order, 2);
+        assert.strictEqual(graph.size, 0);
+        assert.strictEqual(graph.hasNode('Lindsay'), true);
+        assert.strictEqual(graph.hasNode('Martha'), true);
+        assert.strictEqual(graph.hasEdge(edge), false);
+      },
+
+      'it will throw if supplied with an invalid bunch.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.dropEdges(null);
+        }, invalid());
+      },
+
+      'it should drop the supplied bunch from the graph.': function() {
+        const graph = new Graph();
+
+        graph.addNodesFrom(['Lindsay', 'Martha']);
+        const edge = graph.addEdge('Lindsay', 'Martha');
+
+        graph.dropEdges([edge]);
+
+        assert.strictEqual(graph.order, 2);
+        assert.strictEqual(graph.size, 0);
+        assert.strictEqual(graph.hasNode('Lindsay'), true);
+        assert.strictEqual(graph.hasNode('Martha'), true);
+        assert.strictEqual(graph.hasEdge(edge), false);
+      }
+    },
+
+    '#.dropNodes': {
+
+      'without arguments, it should empty the graph.': function() {
+        const graph = new Graph();
+
+        graph.addNodesFrom(['Lindsay', 'Martha']);
+        const edge = graph.addEdge('Lindsay', 'Martha');
+
+        graph.dropNodes();
+
+        assert.strictEqual(graph.order, 0);
+        assert.strictEqual(graph.size, 0);
+        assert.strictEqual(graph.hasNode('Lindsay'), false);
+        assert.strictEqual(graph.hasNode('Martha'), false);
+        assert.strictEqual(graph.hasEdge(edge), false);
+      },
+
+      'it will throw if supplied with an invalid bunch.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.dropNodes(null);
+        }, invalid());
+      },
+
+      'it should drop the supplied bunch from the graph.': function() {
+        const graph = new Graph();
+
+        graph.addNodesFrom(['Lindsay', 'Martha']);
+        const edge = graph.addEdge('Lindsay', 'Martha');
+
+        graph.dropNodes(['Lindsay', 'Martha']);
+
+        assert.strictEqual(graph.order, 0);
+        assert.strictEqual(graph.size, 0);
+        assert.strictEqual(graph.hasNode('Lindsay'), false);
+        assert.strictEqual(graph.hasNode('Martha'), false);
+        assert.strictEqual(graph.hasEdge(edge), false);
+      }
+    },
+
     '#.clear': {
 
       'it should empty the graph.': function() {

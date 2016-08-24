@@ -49,7 +49,6 @@ import {
 // TODO: add method to check if edge is self loop?
 // TODO: change property name selfLoops
 // TODO: differentiate index structure for simple/multi for performance
-// TODO: #.import can also take a graph
 // TODO: #.dropNodes without argument clear all nodes (#.clear in fact)
 // TODO: create only one set in the index creation to gain memory
 
@@ -1042,6 +1041,62 @@ export default class Graph extends EventEmitter {
 
     // Clearing index
     this._clearEdgeFromIndex('structure', edge, data);
+
+    return this;
+  }
+
+  /**
+   * Method used to drop a bunch of nodes or every node from the graph.
+   *
+   * @param  {bunch} nodes - Bunch of nodes.
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if an invalid bunch is provided.
+   * @throws {Error} - Will throw if any of the nodes doesn't exist.
+   */
+  dropNodes(nodes) {
+    if (!arguments.length)
+      return this.clear();
+
+    if (!isBunch(nodes))
+      throw new InvalidArgumentsGraphError('Graph.dropNodes: invalid bunch.');
+
+    overBunch(nodes, (error, node) => {
+      this.dropNode(node);
+    });
+
+    return this;
+  }
+
+  /**
+   * Method used to drop a bunch of edges or every edges from the graph.
+   *
+   * @param  {bunch} edges - Bunch of edges.
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if an invalid bunch is provided.
+   * @throws {Error} - Will throw if any of the edges doesn't exist.
+   */
+  dropEdges(edges) {
+    if (!arguments.length) {
+
+      // Dropping every edge from the graph
+      this._edges = this.map ? new Map() : {};
+      this._size = 0;
+
+      // Without edges, we've got no 'structure'
+      this.clearIndex('structure');
+
+      // TODO: if index precomputed, activate it here
+      return this;
+    }
+
+    if (!isBunch(edges))
+      throw new InvalidArgumentsGraphError('Graph.dropEdges: invalid bunch.');
+
+    overBunch(edges, (error, edge) => {
+      this.dropEdge(edge);
+    });
 
     return this;
   }

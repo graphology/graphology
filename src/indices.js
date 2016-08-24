@@ -107,7 +107,7 @@ export function clearEdgeFromStructureIndex(graph, edge, data) {
  * @param {Graph} graph - Target Graph instance.
  */
 export function clearStructureIndex(graph) {
-  if (this.map) {
+  if (graph.map) {
     graph._nodes.forEach(data => {
 
       // Clearing properties
