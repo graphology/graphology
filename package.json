@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "webpack --colors --progress && webpack --colors --progress -p",
-    "clean": "rimraf dist specs",
+    "clean": "rimraf _book build dist specs",
     "dist": "npm run clean && babel src --out-dir dist && babel tests --out-dir specs",
     "docs:build": "npm run docs:prepare && gitbook build",
     "docs:clean": "rimraf _book",
