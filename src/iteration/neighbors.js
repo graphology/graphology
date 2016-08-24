@@ -5,8 +5,6 @@
  * Attaching some methods to the Graph class to be able to iterate over
  * neighbors.
  */
-// TODO: finish JSDocs
-
 import {
   InvalidArgumentsGraphError,
   NotFoundGraphError
@@ -17,6 +15,8 @@ import {
   isBunch,
   overBunch
 } from '../utils';
+
+// TODO: use boolean constants for direction & type to optimize?
 
 /**
  * Definitions.
@@ -70,6 +70,12 @@ const NEIGHBORS_ITERATION = [
   }
 ];
 
+/**
+ * Function merging neighbors into the given set iterating over the given map.
+ *
+ * @param {Set} neighbors - Neighbors set.
+ * @param {Map} map       - Target map.
+ */
 function mergeNeighborsFromMap(neighbors, map) {
   if (!map)
     return;
@@ -79,6 +85,12 @@ function mergeNeighborsFromMap(neighbors, map) {
   });
 }
 
+/**
+ * Function merging neighbors into the given set iterating over the given object.
+ *
+ * @param {BasicSet} neighbors - Neighbors set.
+ * @param {object}   object    - Target object.
+ */
 function mergeNeighborsFromObject(neighbors, object) {
   if (!object)
     return;
@@ -87,6 +99,15 @@ function mergeNeighborsFromObject(neighbors, object) {
     neighbors.add(neighbor);
 }
 
+/**
+ * Function creating a set of relevant neighbors for the given node.
+ *
+ * @param  {Graph}        graph     - Target graph.
+ * @param  {string}       type      - Type of neighbors.
+ * @param  {string}       direction - Direction.
+ * @param  {any}          node      - Target node.
+ * @return {Set|BasicSet}           - The neighbors set.
+ */
 function createNeighborSetForNode(graph, type, direction, node) {
   const mergeNeighbors = graph.map ? mergeNeighborsFromMap : mergeNeighborsFromObject;
 
@@ -120,6 +141,16 @@ function createNeighborSetForNode(graph, type, direction, node) {
   return neighbors;
 }
 
+/**
+ * Function creating a set of relevant neighbors for the given bunch of nodes.
+ *
+ * @param  {string}       name      - Name of the calling method.
+ * @param  {Graph}        graph     - Target graph.
+ * @param  {string}       type      - Type of neighbors.
+ * @param  {string}       direction - Direction.
+ * @param  {bunch}        bunch     - Target bunch.
+ * @return {Set|BasicSet}           - The neighbors set.
+ */
 function createNeighborSetForBunch(name, graph, type, direction, bunch) {
   const mergeNeighbors = graph.map ? mergeNeighborsFromMap : mergeNeighborsFromObject;
 
@@ -158,6 +189,13 @@ function createNeighborSetForBunch(name, graph, type, direction, bunch) {
   return neighbors;
 }
 
+/**
+ * Function attaching a neighbors array creator method to the Graph prototype.
+ *
+ * @param {function} Class       - Target class.
+ * @param {boolean}  counter     - Should we count or collect?
+ * @param {object}   description - Method description.
+ */
 function attachNeighborArrayCreator(Class, counter, description) {
     const {
     type,
@@ -166,6 +204,23 @@ function attachNeighborArrayCreator(Class, counter, description) {
 
   const name = counter ? description.counter : description.name;
 
+  /**
+   * Function returning an array or the count of certain neighbors.
+   *
+   * Arity 1a: Return all of a node's relevant neighbors.
+   * @param  {any}   node   - Target node.
+   *
+   * Arity 1b: Return the union of the relevant neighbors of the given bunch of nodes.
+   * @param  {bunch} bunch  - Bunch of nodes.
+   *
+   * Arity 2: Return whether the two nodes are indeed neighbors.
+   * @param  {any}   source - Source node.
+   * @param  {any}   target - Target node.
+   *
+   * @return {array|number} - The neighbors or the number of neighbors.
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
   Class.prototype[name] = function(...args) {
 
     if (args.length === 2) {
@@ -239,6 +294,11 @@ function attachNeighborArrayCreator(Class, counter, description) {
   };
 }
 
+/**
+ * Function attaching every neighbor iteration method to the Graph class.
+ *
+ * @param {function} Graph - Graph class.
+ */
 export function attachNeighborIterationMethods(Graph) {
   NEIGHBORS_ITERATION.forEach(description => {
     attachNeighborArrayCreator(Graph, false, description);

@@ -3,10 +3,6 @@
  * =============================
  *
  * Bunch of functions used to compute or clear indexes.
- *
- * By default, the graph can hold two different indexes:
- *   1. 'structure', holding edges related to their nodes.
- *   2. 'neighbors', holding nodes' neighbors.
  */
 import {BasicSet} from './utils';
 
@@ -133,7 +129,3 @@ export function clearStructureIndex(graph) {
     }
   }
 }
-
-/**
- * Neighbors.
- */
