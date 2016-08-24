@@ -47,7 +47,7 @@ import {
 } from './utils';
 
 // TODO: add method to check if edge is self loop & iteration methods etc.
-// TODO: differentiate index structure for simple/multi for performance?
+// TODO: differentiate index structure simple/multi for performance?
 // TODO: dropEdge & dropEdges arity 2
 // TODO: events
 // TODO: finish options
@@ -999,14 +999,37 @@ export default class Graph extends EventEmitter {
   /**
    * Method used to drop a single edge from the graph.
    *
+   * Arity 1:
    * @param  {any}    edge - The edge.
+   *
+   * Arity 2:
+   * @param  {any}    source - Source node.
+   * @param  {any}    target - Target node.
+   *
    * @return {Graph}
    *
    * @throws {Error} - Will throw if the edge doesn't exist.
    */
   dropEdge(edge) {
-    if (!this.hasEdge(edge))
-      throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${edge}" edge in the graph.`);
+    if (arguments.length > 1) {
+      const source = arguments[0],
+            target = arguments[1];
+
+      if (!this.hasNode(source))
+        throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${source}" source node in the graph.`);
+
+      if (!this.hasNode(target))
+        throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${target}" target node in the graph.`);
+
+      if (!this.hasEdge(source, target))
+        throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${source}" -> "${target}" edge in the graph.`);
+
+      edge = this.getEdge(source, target);
+    }
+    else {
+      if (!this.hasEdge(edge))
+        throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${edge}" edge in the graph.`);
+    }
 
     const data = this.map ? this._edges.get(edge) : this._edges[edge];
 
@@ -1048,7 +1071,13 @@ export default class Graph extends EventEmitter {
   /**
    * Method used to drop a bunch of nodes or every node from the graph.
    *
+   * Arity 1:
    * @param  {bunch} nodes - Bunch of nodes.
+   *
+   * Arity 2:
+   * @param  {any}    source - Source node.
+   * @param  {any}    target - Target node.
+   *
    * @return {Graph}
    *
    * @throws {Error} - Will throw if an invalid bunch is provided.
