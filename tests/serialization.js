@@ -9,6 +9,7 @@ import {testBunches} from './helpers';
 
 export default function serialization(Graph, checkers) {
   const {
+    invalid,
     notFound
   } = checkers;
 
@@ -238,6 +239,80 @@ export default function serialization(Graph, checkers) {
             ]
           }
         );
+      }
+    },
+
+    '#.importNode': {
+      'it should throw if the given serialized node is invalid.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.importNode(false);
+        }, invalid());
+
+        assert.throws(function() {
+          graph.importNode({hello: 'world'});
+        }, invalid());
+
+        assert.throws(function() {
+          graph.importNode({key: 'test', attributes: false});
+        }, invalid());
+      },
+
+      'it should correctly import the given node.': function() {
+        const graph = new Graph();
+        graph.importNode({key: 'John'});
+        graph.importNode({key: 'Jack', attributes: {age: 34}});
+
+        assert.deepEqual(graph.nodes(), ['John', 'Jack']);
+        assert.deepEqual(graph.getNodeAttributes('Jack'), {age: 34});
+      }
+    },
+
+    '#.importEdge': {
+      'it should throw if the given serialized node is invalid.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.importEdge(false);
+        }, invalid());
+
+        assert.throws(function() {
+          graph.importEdge({hello: 'world'});
+        }, invalid());
+
+        assert.throws(function() {
+          graph.importEdge({source: 'John', hello: 'world'});
+        }, invalid());
+
+        assert.throws(function() {
+          graph.importEdge({source: 'John', target: 'Thomas', attributes: false});
+        }, invalid());
+
+        assert.throws(function() {
+          graph.importEdge({source: 'John', target: 'Thomas', undirected: 'test'});
+        }, invalid());
+      },
+
+      'it should correctly import the given edge.': function() {
+        const graph = new Graph(null, {multi: true});
+        graph.addNodesFrom(['John', 'Thomas']);
+
+        graph.importEdge({
+          source: 'John',
+          target: 'Thomas'
+        });
+
+        graph.importEdge({
+          key: 'J<->T',
+          source: 'John',
+          target: 'Thomas',
+          attributes: {weight: 2},
+          undirected: true
+        });
+
+        assert.strictEqual(graph.size, 2);
+        assert.deepEqual(graph.getEdgeAttributes('J<->T'), {weight: 2});
       }
     }
   };

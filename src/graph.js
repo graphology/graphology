@@ -28,13 +28,17 @@ import {attachNeighborIterationMethods} from './iteration/neighbors';
 
 import {
   serializeNode,
-  serializeEdge
+  serializeEdge,
+  validateSerializedGraph,
+  validateSerializedNode,
+  validateSerializedEdge
 } from './serialization';
 
 import {
   assign,
   BasicSet,
   isBunch,
+  isGraph,
   isPlainObject,
   overBunch,
   prettyPrint,
@@ -1269,6 +1273,103 @@ export default class Graph extends EventEmitter {
       nodes: this.exportNodes(),
       edges: this.exportEdges()
     };
+  }
+
+  /**
+   * Method used to import a serialized node.
+   *
+   * @param  {object} data - The serialized node.
+   * @return {Graph}       - Returns itself for chaining.
+   */
+  importNode(data) {
+
+    // Validating
+    const {valid, reason} = validateSerializedNode(data);
+
+    if (!valid) {
+      if (reason === 'not-object')
+        throw new InvalidArgumentsGraphError('Graph.importNode: invalid serialized node. A serialized node should be a plain object with at least a "key" property.');
+      if (reason === 'no-key')
+        throw new InvalidArgumentsGraphError('Graph.importNode: no key provided.');
+      if (reason === 'invalid-attributes')
+        throw new InvalidArgumentsGraphError('Graph.importNode: invalid attributes. Attributes should be a plain object, null or omitted.');
+    }
+
+    // Adding the node
+    const {key, attributes = {}} = data;
+
+    this.addNode(key, attributes);
+
+    return this;
+  }
+
+  /**
+   * Method used to import a serialized edge.
+   *
+   * @param  {object} data - The serialized edge.
+   * @return {Graph}       - Returns itself for chaining.
+   */
+  importEdge(data) {
+
+    // Validating
+    const {valid, reason} = validateSerializedEdge(data);
+
+    if (!valid) {
+      if (reason === 'not-object')
+        throw new InvalidArgumentsGraphError('Graph.importEdge: invalid serialized edge. A serialized edge should be a plain object with at least a "source" & "target" property.');
+      if (reason === 'no-source')
+        throw new InvalidArgumentsGraphError('Graph.importEdge: missing souce.');
+      if (reason === 'no-target')
+        throw new InvalidArgumentsGraphError('Graph.importEdge: missing target');
+      if (reason === 'invalid-attributes')
+        throw new InvalidArgumentsGraphError('Graph.importEdge: invalid attributes. Attributes should be a plain object, null or omitted.');
+      if (reason === 'invalid-undirected')
+        throw new InvalidArgumentsGraphError('Graph.importEdge: invalid undirected. Undirected should be boolean or omitted.');
+    }
+
+    // Adding the edge
+    const {
+      source,
+      target,
+      attributes = {},
+      undirected = false
+    } = data;
+
+    let method;
+
+    if ('key' in data) {
+      method = undirected ? this.addUndirectedEdgeWithKey : this.addEdgeWithKey;
+
+      method.call(
+        this,
+        data.key,
+        source,
+        target,
+        attributes
+      );
+    }
+    else {
+      method = undirected ? this.addUndirectedEdge : this.addDirectedEdge;
+
+      method.call(
+        this,
+        source,
+        target,
+        attributes
+      );
+    }
+
+    return this;
+  }
+
+  /**
+   * Method used to import a serialized graph.
+   *
+   * @param  {object|Graph} data - The serialized graph.
+   * @return {Graph}             - Returns itself for chaining.
+   */
+  import(data) {
+
   }
 
   /**---------------------------------------------------------------------------

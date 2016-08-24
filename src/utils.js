@@ -100,6 +100,21 @@ export function isBunch(value) {
 }
 
 /**
+ * Checks whether the given value is a Graph implementation instance.
+ *
+ * @param  {mixed}   value - Target value.
+ * @return {boolean}
+ */
+export function isGraph(value) {
+  return (
+    !!value &&
+    typeof value === 'object' &&
+    typeof value.addUndirectedEdgeWithKey === 'function' &&
+    typeof value.dropNode === 'function'
+  );
+}
+
+/**
  * Checks whether the given value is a plain object.
  *
  * @param  {mixed}   value - Target value.
