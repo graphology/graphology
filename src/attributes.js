@@ -140,6 +140,7 @@ function attachAttributesGetter(Class, method, key, elementName, checker, finder
  * @param {string}   [finder]    - Name of the finder method to use.
  */
 function attachAttributeSetter(Class, method, key, elementName, checker, finder) {
+  const eventName = elementName === 'node' ? 'nodeUpdated' : 'edgeUpdated';
 
   /**
    * Set the desired attribute for the given element (node or edge).
@@ -189,6 +190,16 @@ function attachAttributeSetter(Class, method, key, elementName, checker, finder)
 
     data.attributes[name] = value;
 
+    // Emitting
+    this.emit(eventName, {
+      key: element,
+      type: 'set',
+      meta: {
+        name,
+        value
+      }
+    });
+
     return this;
   };
 }
@@ -204,6 +215,7 @@ function attachAttributeSetter(Class, method, key, elementName, checker, finder)
  * @param {string}   [finder]    - Name of the finder method to use.
  */
 function attachAttributeUpdater(Class, method, key, elementName, checker, finder) {
+  const eventName = elementName === 'node' ? 'nodeUpdated' : 'edgeUpdated';
 
   /**
    * Update the desired attribute for the given element (node or edge) using
@@ -254,6 +266,16 @@ function attachAttributeUpdater(Class, method, key, elementName, checker, finder
 
     data.attributes[name] = updater(data.attributes[name]);
 
+    // Emitting
+    this.emit(eventName, {
+      key: element,
+      type: 'set',
+      meta: {
+        name,
+        value: data.attributes[name]
+      }
+    });
+
     return this;
   };
 }
@@ -269,6 +291,7 @@ function attachAttributeUpdater(Class, method, key, elementName, checker, finder
  * @param {string}   [finder]    - Name of the finder method to use.
  */
 function attachAttributesReplacer(Class, method, key, elementName, checker, finder) {
+  const eventName = elementName === 'node' ? 'nodeUpdated' : 'edgeUpdated';
 
   /**
    * Replace the attributes for the given element (node or edge).
@@ -316,7 +339,19 @@ function attachAttributesReplacer(Class, method, key, elementName, checker, find
     else
       data = this[key][element];
 
+    const oldAttributes = data.attributes;
+
     data.attributes = attributes;
+
+    // Emitting
+    this.emit(eventName, {
+      key: element,
+      type: 'replace',
+      meta: {
+        before: oldAttributes,
+        after: attributes
+      }
+    });
 
     return this;
   };
@@ -333,6 +368,7 @@ function attachAttributesReplacer(Class, method, key, elementName, checker, find
  * @param {string}   [finder]    - Name of the finder method to use.
  */
 function attachAttributesMerger(Class, method, key, elementName, checker, finder) {
+  const eventName = elementName === 'node' ? 'nodeUpdated' : 'edgeUpdated';
 
   /**
    * Replace the attributes for the given element (node or edge).
@@ -381,6 +417,15 @@ function attachAttributesMerger(Class, method, key, elementName, checker, finder
       data = this[key][element];
 
     assign(data.attributes, attributes);
+
+    // Emitting
+    this.emit(eventName, {
+      key: element,
+      type: 'merge',
+      meta: {
+        data: attributes
+      }
+    });
 
     return this;
   };

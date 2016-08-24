@@ -49,7 +49,6 @@ import {
 // TODO: add method to check if edge is self loop & iteration methods etc.
 // TODO: differentiate index structure simple/multi for performance?
 // TODO: dropEdge & dropEdges arity 2
-// TODO: events
 // TODO: finish options
 // TODO: test GraphMap
 

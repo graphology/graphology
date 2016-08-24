@@ -135,15 +135,13 @@ graph.setNodeAttribute('Thomas', 'age', 54);
 * **type** <span class="code">string</span>: type of the update, one of `set`, `replace` or `merge`.
 * **meta** <span class="code">object</span>: additional information related to the update.
   * `set`
-    * **key** <span class="code">string</span>: edited key.
+    * **name** <span class="code">string</span>: edited attribute's name.
     * **value** <span class="code">string</span>: new value.
   * `replace`
     * **before** <span class="code">object</span>: precedent attributes.
     * **after** <span class="code">object</span>: current attributes.
   * `merge`
     * **data** <span class="code">object</span>: Merged data.
-    * **before** <span class="code">object</span>: precedent attributes.
-    * **after** <span class="code">object</span>: current attributes.
 
 ## edgeUpdated
 
@@ -167,12 +165,10 @@ graph.setEdgeAttribute('T->R', 'type', 'KNOWS');
 * **type** <span class="code">string</span>: type of the update, one of `set`, `replace` or `merge`.
 * **meta** <span class="code">object</span>: additional information related to the update.
   * `set`
-    * **key** <span class="code">string</span>: edited key.
+    * **name** <span class="code">string</span>: edited attribute's name.
     * **value** <span class="code">string</span>: new value.
   * `replace`
     * **before** <span class="code">object</span>: precedent attributes.
     * **after** <span class="code">object</span>: current attributes.
   * `merge`
     * **data** <span class="code">object</span>: Merged data.
-    * **before** <span class="code">object</span>: precedent attributes.
-    * **after** <span class="code">object</span>: current attributes.
