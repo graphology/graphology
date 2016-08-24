@@ -9,21 +9,22 @@
 /**
  * Very simple Object.assign-like function.
  *
- * @param  {object} [...objects] - Target objects.
+ * @param  {object} target       - First object.
+ * @param  {object} [...objects] - Objects to merge.
  * @return {object}
  */
-export function assign(...objects) {
-  const o = objects[0] || {};
+export function assign(target, ...objects) {
+  target = target || {};
 
-  for (let i = 1, l = objects.length; i < l; i++) {
+  for (let i = 0, l = objects.length; i < l; i++) {
     if (!objects[i])
       continue;
 
     for (const k in objects[i])
-      o[k] = objects[i][k];
+      target[k] = objects[i][k];
   }
 
-  return o;
+  return target;
 }
 
 /**

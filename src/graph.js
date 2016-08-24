@@ -62,6 +62,8 @@ const TYPES = new BasicSet(['directed', 'undirected', 'mixed']),
  */
 const DEFAULTS = {
   allowSelfLoops: true,
+  defaultEdgeAttributes: {},
+  defaultNodeAttributes: {},
   edgeKeyGenerator: uuid,
   map: false,
   multi: false,
@@ -106,6 +108,12 @@ export default class Graph extends EventEmitter {
 
     if (typeof options.allowSelfLoops !== 'boolean')
       throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'allowSelfLoops' option. Expecting a boolean but got "${options.allowSelfLoops}".`);
+
+    if (!isPlainObject(options.defaultEdgeAttributes))
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'defaultEdgeAttributes' option. Expecting a plain object but got "${options.defaultEdgeAttributes}".`);
+
+    if (!isPlainObject(options.defaultNodeAttributes))
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'defaultNodeAttributes' option. Expecting a plain object but got "${options.defaultNodeAttributes}".`);
 
     //-- Private properties
 
@@ -685,7 +693,7 @@ export default class Graph extends EventEmitter {
       throw new UsageGraphError(`Graph.addNode: the "${node}" node already exist in the graph. You might want to check out the 'onDuplicateNode' option.`);
 
     // Protecting the attributes
-    attributes = assign({}, attributes);
+    attributes = assign({}, this._options.defaultNodeAttributes, attributes);
 
     const data = {
       attributes,
@@ -787,7 +795,7 @@ export default class Graph extends EventEmitter {
       throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option. The 'onDuplicateEdge' option might also interest you.`);
 
     // Protecting the attributes
-    attributes = assign({}, attributes);
+    attributes = assign({}, this._options.defaultEdgeAttributes, attributes);
 
     // Storing some data
     const data = {

@@ -69,6 +69,64 @@ export default function instantiation(Graph, inmplementation, checkers) {
     'Options': {
 
       /**
+       * defaultEdgeAttributes
+       */
+      'defaultEdgeAttributes': {
+
+        'providing something other than a plain object should throw.': function() {
+          assert.throws(function() {
+            const graph = new Graph(null, {defaultEdgeAttributes: 'test'});
+          }, invalid());
+        },
+
+        'it should set default attributes on edges.': function() {
+          const graph = new Graph(null, {defaultEdgeAttributes: {type: 'KNOWS'}, multi: true});
+
+          graph.addNodesFrom(['John', 'Martha']);
+
+          let edge = graph.addEdge('John', 'Martha');
+
+          assert.deepEqual(graph.getEdgeAttributes(edge), {type: 'KNOWS'});
+
+          edge = graph.addEdge('John', 'Martha', {weight: 3});
+
+          assert.deepEqual(graph.getEdgeAttributes(edge), {weight: 3, type: 'KNOWS'});
+
+          edge = graph.addEdge('John', 'Martha', {type: 'LIKES'});
+
+          assert.deepEqual(graph.getEdgeAttributes(edge), {type: 'LIKES'});
+        }
+      },
+
+      /**
+       * defaultNodeAttributes
+       */
+      'defaultNodeAttributes': {
+
+        'providing something other than a plain object should throw.': function() {
+          assert.throws(function() {
+            const graph = new Graph(null, {defaultNodeAttributes: 'test'});
+          }, invalid());
+        },
+
+        'it should set default attributes on nodes.': function() {
+          const graph = new Graph(null, {defaultNodeAttributes: {eyes: 'blue'}});
+
+          graph.addNode('John');
+
+          assert.deepEqual(graph.getNodeAttributes('John'), {eyes: 'blue'});
+
+          graph.addNode('Thomas', {age: 23});
+
+          assert.deepEqual(graph.getNodeAttributes('Thomas'), {age: 23, eyes: 'blue'});
+
+          graph.addNode('Martha', {eyes: 'green'});
+
+          assert.deepEqual(graph.getNodeAttributes('Martha'), {eyes: 'green'});
+        }
+      },
+
+      /**
        * edgeKeyGenerator
        */
       'edgeKeyGenerator': {
