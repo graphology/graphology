@@ -6,9 +6,13 @@
  * them from internal graph data.
  *
  * Serialized Node:
- * [key, ?attributes]
+ * {key, ?attributes}
  *
  * Serialized Edge:
+ * {key?, source, target, attributes?, undirected?}
+ *
+ * Serialized Graph:
+ * {nodes[], edges?[]}
  */
 import {isPlainObject} from './utils';
 
