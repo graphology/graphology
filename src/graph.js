@@ -47,9 +47,12 @@ import {
 } from './utils';
 
 // TODO: add method to check if edge is self loop?
-// TODO: differentiate index structure for simple/multi for performance
-// TODO: #.dropNodes without argument clear all nodes (#.clear in fact)
+// TODO: differentiate index structure for simple/multi for performance?
 // TODO: create only one set in the index creation to gain memory
+// TODO: dropEdge & dropEdges arity 2
+// TODO: mergeNodeAttribute
+// TODO: events
+// TODO: finish options
 
 /**
  * Enums.

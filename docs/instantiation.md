@@ -25,8 +25,7 @@ const graph = new Graph(data, options);
   * **allowSelfLoops** <span class="code">[boolean]</span> <span class="default">true</span>: should the graph allow self-loops?
   * **defaultEdgeAttributes** <span class="code">[object]</span>: default edge attributes.
   * **defaultNodeAttributes** <span class="code">[object]</span>: default node attributes.
-  * **edgeKeyGenerator** <span class="code">[function]</span>: Function used internally by the graph to produce keys for key-less edges. By default, the graph will produce keys as UUID v4 compressed through base91. For more information concerning the function you can provide, see [this](#edge-key-generator-function).
-  * **hashDelimiter** <span class="code">[string]</span>: string used as hash delimiter for storing some data internally (undirected edges, typically).
+  * **edgeKeyGenerator** <span class="code">[function]</span>: Function used internally by the graph to produce keys for key-less edges. By default, the graph will produce keys as UUID v4. For more information concerning the function you can provide, see [this](#edge-key-generator-function).
   * **indices** <span class="code">[object]</span>: Options regarding index computation. For more information, see [this](./advanced.md#indices).
   * **map** <span class="code">[boolean]</span> <span class="default">false</span>: Should the graph allow references as key like a JavaScript `Map` object?
   * **multi** <span class="code">[boolean]</span> <span class="default">false</span>: Should the graph allow parallel edges?
@@ -69,17 +68,16 @@ MultiUndirectedGraphMap
 
 ## Edge key generator function
 
-The provided function takes several arguments:
+The provided function takes a single object describing the created edge & having the following properties:
 
 * **undirected** <span class="code">boolean</span>: whether the edge is undirected.
 * **source** <span class="code">any</span>: the source of the edge.
 * **target** <span class="code">any</span>: the target of the edge.
 * **attributes** <span class="code">object</span>: optional attributes.
 
-*Example*
+*Example - Incremental id*
 
 ```js
-// To have an incremental id, for instance:
 const generator = (function() {
   let id = 0;
 
@@ -88,12 +86,27 @@ const generator = (function() {
 
 const graph = new Graph(null, {edgeKeyGenerator: generator});
 
-// To build the id based on the nodes:
-const generator = function(undirected, source, target, attributes) {
+graph.addNodesFrom(['John', 'Martha']);
+graph.addEdge('John', 'Martha');
+
+graph.getEdge('John', 'Martha');
+>>> '0'
+```
+
+*Example - Id based on edge data*
+
+```js
+const generator = function({undirected, source, target, attributes}) {
   return `${source}->${target}`;
 };
 
 const graph = new Graph(null, {edgeKeyGenerator: generator});
+
+graph.addNodesFrom(['John', 'Martha']);
+graph.addEdge('John', 'Martha');
+
+graph.getEdge('John', 'Martha');
+>>> 'John->Martha'
 ```
 
 ## Duplicate elements
@@ -109,7 +122,7 @@ The given functions have therefore the opportunity to mutate the graph instead.
 A graph considering duplicate nodes as incrementing the occurrence of said node.
 
 ```js
-const solver = (graph, {node}) => {
+const solver = (graph, {key: node}) => {
 
   // Just incrementing the "occurrences" attribute
   graph.updateNodeAttribute(node, 'occurrences', x => x + 1);
@@ -127,9 +140,9 @@ graph.getNodeAttributes('John');
 *Arguments*
 
 * **graph** <span class="code">Graph</span>: the graph instance.
-* **meta** <span class="code">object</span>: information about the duplicate node:
-  * **node** <span class="code">any</span>: the node's key.
-  * **attributes** <span>object</span>: attributes passed to the `#.addNode` function.
+* **data** <span class="code">object</span>: information about the duplicate node:
+  * **key** <span class="code">any</span>: the node's key.
+  * **attributes** <span class="code">object</span>: attributes passed to the `#.addNode` function.
 
 ### Duplicate edges
 
@@ -138,7 +151,7 @@ A graph considering duplicate edges as incrementing the weight of said edge.
 For multi-graphs, the solving function will only trigger if an edge is added twice with the same key.
 
 ```js
-const solver = (graph, {edge}) => {
+const solver = (graph, {key: edge}) => {
 
   // Just incrementing the "weight" attribute
   graph.updateEdgeAttribute(edge, 'weight', x => x + 1);
@@ -158,5 +171,8 @@ graph.getEdgeAttributes('John', 'Clemence');
 
 * **graph** <span class="code">Graph</span>: the graph instance.
 * **meta** <span class="code">object</span>: information about the duplicate edge:
-  * **edge** <span class="code">any</span>: the edge's key.
-  * **attributes** <span>object</span>: attributes passed to the `#.addNode` function.
+  * **key** <span class="code">any</span>: the edge's key.
+  * **source** <span class="code">any</span>: the edge's source.
+  * **target** <span class="code">any</span>: the edge's target.
+  * **undirected** <span class="code">boolean</span>: whether the edge is undirected.
+  * **attributes** <span class="code">object</span>: attributes passed to the `#.addNode` function.
