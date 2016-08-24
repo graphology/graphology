@@ -67,6 +67,8 @@ const DEFAULTS = {
   edgeKeyGenerator: uuid,
   map: false,
   multi: false,
+  onDuplicateEdge: null,
+  onDuplicateNode: null,
   type: 'mixed'
 };
 
@@ -114,6 +116,12 @@ export default class Graph extends EventEmitter {
 
     if (!isPlainObject(options.defaultNodeAttributes))
       throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'defaultNodeAttributes' option. Expecting a plain object but got "${options.defaultNodeAttributes}".`);
+
+    if (options.onDuplicateEdge && typeof options.onDuplicateEdge !== 'function')
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'onDuplicateEdge' option. Expecting a function but got "${options.onDuplicateEdge}".`);
+
+    if (options.onDuplicateNode && typeof options.onDuplicateNode !== 'function')
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'onDuplicateNode' option. Expecting a function but got "${options.onDuplicateNode}".`);
 
     //-- Private properties
 
@@ -689,21 +697,37 @@ export default class Graph extends EventEmitter {
     if (arguments.length > 1 && !isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(`Graph.addNode: invalid attributes. Expecting an object but got "${attributes}"`);
 
-    if (this.hasNode(node))
-      throw new UsageGraphError(`Graph.addNode: the "${node}" node already exist in the graph. You might want to check out the 'onDuplicateNode' option.`);
-
     // Protecting the attributes
     attributes = assign({}, this._options.defaultNodeAttributes, attributes);
 
+    if (this.hasNode(node)) {
+
+      // Triggering duplicate callback
+      if (typeof this._options.onDuplicateNode === 'function') {
+        this._options.onDuplicateNode(
+          this,
+          {key: node, attributes}
+        );
+
+        return node;
+      }
+      else {
+        throw new UsageGraphError(`Graph.addNode: the "${node}" node already exist in the graph. You might want to check out the 'onDuplicateNode' option.`);
+      }
+    }
+
     const data = {
-      attributes,
-      selfLoops: 0
+      attributes
     };
+
+    if (this.allowSelfLoops)
+      data.selfLoops = 0;
 
     if (this.type === 'mixed' || this.type === 'directed') {
       data.inDegree = 0;
       data.outDegree = 0;
     }
+
     if (this.type === 'mixed' || this.type === 'undirected') {
       data.undirectedDegree = 0;
     }
@@ -778,11 +802,18 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(target))
       throw new NotFoundGraphError(`Graph.${name}: target node "${target}" not found.`);
 
-    if (this.hasEdge(edge))
-      throw new UsageGraphError(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
-
     if (!this.allowSelfLoops && source === target)
       throw new UsageGraphError(`Graph.${name}: source & target are the same, thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
+
+    const canHandleDuplicate = typeof this._options.onDuplicateEdge === 'function';
+    let mustHandleDuplicate = false;
+
+    if (this.hasEdge(edge)) {
+      if (!canHandleDuplicate)
+        throw new UsageGraphError(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
+      else
+        mustHandleDuplicate = true;
+    }
 
     if (
       !this.multi &&
@@ -791,11 +822,34 @@ export default class Graph extends EventEmitter {
           this.hasUndirectedEdge(source, target) :
           this.hasDirectedEdge(source, target)
       )
-    )
-      throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option. The 'onDuplicateEdge' option might also interest you.`);
+    ) {
+      if (!canHandleDuplicate)
+        throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option. The 'onDuplicateEdge' option might also interest you.`);
+      else
+        mustHandleDuplicate = true;
+    }
 
     // Protecting the attributes
     attributes = assign({}, this._options.defaultEdgeAttributes, attributes);
+
+    // Handling duplicates
+    if (mustHandleDuplicate) {
+
+      // TODO: decide whether to stock that id was generated and what to pass
+      // here
+      this._options.onDuplicateEdge(
+        this,
+        {
+          key: edge,
+          attributes,
+          source,
+          target,
+          undirected
+        }
+      );
+
+      return edge;
+    }
 
     // Storing some data
     const data = {

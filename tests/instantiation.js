@@ -6,6 +6,7 @@
  * Testing the instantiation of the graph.
  */
 import assert from 'assert';
+import {spy} from './helpers';
 
 const CONSTRUCTORS = [
   'DirectedGraph',
@@ -67,6 +68,18 @@ export default function instantiation(Graph, inmplementation, checkers) {
     },
 
     'Options': {
+
+      /**
+       * allowSelfLoops
+       */
+      'allowSelfLoops': {
+
+        'providing a non-boolean value should throw.': function() {
+          assert.throws(function() {
+            const graph = new Graph(null, {allowSelfLoops: 'test'});
+          }, invalid());
+        }
+      },
 
       /**
        * defaultEdgeAttributes
@@ -163,6 +176,83 @@ export default function instantiation(Graph, inmplementation, checkers) {
       },
 
       /**
+       * onDuplicateEdge
+       */
+      'onDuplicateEdge': {
+
+        'providing a non-function truthy value should throw.': function() {
+          assert.throws(function() {
+            const graph = new Graph(null, {onDuplicateEdge: 'test'});
+          }, invalid());
+        },
+
+        'the callback should fire if the user add the same edge twice.': function() {
+
+          const callback = spy(function(g, data) {
+            assert(g instanceof Graph);
+            assert.deepEqual(data.attributes, {type: 'KNOWS'});
+            assert.strictEqual(data.source, 'John');
+            assert.strictEqual(data.target, 'Martha');
+            assert.strictEqual(data.undirected, false);
+
+            g.updateEdgeAttribute(data.source, data.target, 'weight', x => (x || 1) + 1);
+          });
+
+          const graph = new Graph(null, {onDuplicateEdge: callback});
+
+          graph.addNodesFrom(['John', 'Martha']);
+
+          const edge = graph.addEdge('John', 'Martha', {type: 'KNOWS'});
+
+          assert.doesNotThrow(function() {
+            graph.addEdge('John', 'Martha', {type: 'KNOWS'});
+          });
+
+          assert.strictEqual(graph.size, 1);
+          assert.deepEqual(graph.getEdgeAttributes('John', 'Martha'), {type: 'KNOWS', weight: 2});
+
+          assert(callback.called);
+          assert(callback.times, 1);
+        }
+      },
+
+      /**
+       * onDuplicateNode
+       */
+      'onDuplicateNode': {
+
+        'providing a non-function truthy value should throw.': function() {
+          assert.throws(function() {
+            const graph = new Graph(null, {onDuplicateNode: 'test'});
+          }, invalid());
+        },
+
+        'the callback should fire if the user add the same node twice.': function() {
+          const callback = spy(function(g, data) {
+            assert(g instanceof Graph);
+            assert.strictEqual(data.key, 'John');
+            assert.deepEqual(data.attributes, {age: 34});
+
+            g.updateNodeAttribute('John', 'occurrences', x => (x || 1) + 1);
+          });
+
+          const graph = new Graph(null, {onDuplicateNode: callback});
+
+          graph.addNode('John', {age: 34});
+
+          assert.doesNotThrow(function() {
+            graph.addNode('John', {age: 34});
+          });
+
+          assert.strictEqual(graph.order, 1);
+          assert.deepEqual(graph.getNodeAttributes('John'), {age: 34, occurrences: 2});
+
+          assert(callback.called);
+          assert(callback.times, 1);
+        }
+      },
+
+      /**
        * type
        */
       'type': {
@@ -170,18 +260,6 @@ export default function instantiation(Graph, inmplementation, checkers) {
         'providing an invalid type should throw.': function() {
           assert.throws(function() {
             const graph = new Graph(null, {type: 'test'});
-          }, invalid());
-        }
-      },
-
-      /**
-       * selfLoops
-       */
-      'selfLoops': {
-
-        'providing a non-boolean value should throw.': function() {
-          assert.throws(function() {
-            const graph = new Graph(null, {allowSelfLoops: 'test'});
           }, invalid());
         }
       }
