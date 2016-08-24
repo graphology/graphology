@@ -82,16 +82,16 @@ graph.map;
 >>> true
 ```
 
-## #.selfLoops
+## #.allowSelfLoops
 
 Whether the graph accepts self loops or not.
 
 ```js
 const graph = new Graph();
-graph.selfLoops;
+graph.allowSelfLoops;
 >>> true
 
 const otherGraph = new Graph(null, {allowSelfLoops: false});
-graph.selfLoops;
+graph.allowSelfLoops;
 >>> false
 ```

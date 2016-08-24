@@ -12,7 +12,7 @@ const PROPERTIES = [
   'type',
   'multi',
   'map',
-  'selfLoops'
+  'allowSelfLoops'
 ];
 
 export default function properties(Graph) {
@@ -117,11 +117,11 @@ export default function properties(Graph) {
     /**
      * Self loops.
      */
-    '#.selfLoops': {
+    '#.allowSelfLoops': {
 
       'it should be true by default.': function() {
         const graph = new Graph();
-        assert.strictEqual(graph.selfLoops, true);
+        assert.strictEqual(graph.allowSelfLoops, true);
       }
     }
   };

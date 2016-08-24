@@ -47,7 +47,6 @@ import {
 } from './utils';
 
 // TODO: add method to check if edge is self loop?
-// TODO: change property name selfLoops
 // TODO: differentiate index structure for simple/multi for performance
 // TODO: #.dropNodes without argument clear all nodes (#.clear in fact)
 // TODO: create only one set in the index creation to gain memory
@@ -144,7 +143,7 @@ export default class Graph extends EventEmitter {
     readOnlyProperty(this, 'map', () => this._options.map);
     readOnlyProperty(this, 'multi', () => this._options.multi);
     readOnlyProperty(this, 'type', () => this._options.type);
-    readOnlyProperty(this, 'selfLoops', () => this._options.allowSelfLoops);
+    readOnlyProperty(this, 'allowSelfLoops', () => this._options.allowSelfLoops);
 
     //-- Hydratation
     if (data)
@@ -436,7 +435,7 @@ export default class Graph extends EventEmitter {
    * Method returning the given node's in degree.
    *
    * @param  {any}     node      - The node's key.
-   * @param  {boolean} selfLoops - Count self-loops?
+   * @param  {boolean} allowSelfLoops - Count self-loops?
    * @return {number}            - The node's in degree.
    *
    * @throws {Error} - Will throw if the selfLoops arg is not boolean.
@@ -764,7 +763,7 @@ export default class Graph extends EventEmitter {
     if (this.hasEdge(edge))
       throw new UsageGraphError(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
 
-    if (!this.selfLoops && source === target)
+    if (!this.allowSelfLoops && source === target)
       throw new UsageGraphError(`Graph.${name}: source & target are the same, thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
 
     if (
