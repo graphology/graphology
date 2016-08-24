@@ -6,10 +6,12 @@
  */
 import {assign} from './utils';
 import Graph from './graph';
-import * as errors from './errors';
 
-export default Graph;
-export {errors};
+import {
+  InvalidArgumentsGraphError,
+  NotFoundGraphError,
+  UsageGraphError
+} from './errors';
 
 /**
  * Alternative constructors.
@@ -46,6 +48,14 @@ class MultiUndirectedGraph extends Graph {
     );
   }
 }
+class GraphMap extends Graph {
+  constructor(data, options) {
+    super(
+      data,
+      assign({map: true}, options)
+    );
+  }
+}
 class DirectedGraphMap extends Graph {
   constructor(data, options) {
     super(
@@ -79,13 +89,21 @@ class MultiUndirectedGraphMap extends Graph {
   }
 }
 
-export {
-  DirectedGraph,
-  UndirectedGraph,
-  MultiDirectedGraph,
-  MultiUndirectedGraph,
-  DirectedGraphMap,
-  UndirectedGraphMap,
-  MultiDirectedGraphMap,
-  MultiUndirectedGraphMap
-};
+/**
+ * Exporting as CommonJS for convenience.
+ */
+Graph.DirectedGraph = DirectedGraph;
+Graph.UndirectedGraph = UndirectedGraph;
+Graph.MultiDirectedGraph = MultiDirectedGraph;
+Graph.MultiUndirectedGraph = MultiUndirectedGraph;
+Graph.GraphMap = GraphMap;
+Graph.DirectedGraphMap = DirectedGraphMap;
+Graph.UndirectedGraphMap = UndirectedGraphMap;
+Graph.MultiDirectedGraphMap = MultiDirectedGraphMap;
+Graph.MultiUndirectedGraphMap = MultiUndirectedGraphMap;
+
+Graph.InvalidArgumentsGraphError = InvalidArgumentsGraphError;
+Graph.NotFoundGraphError = NotFoundGraphError;
+Graph.UsageGraphError = UsageGraphError;
+
+module.exports = Graph;

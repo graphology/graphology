@@ -10,7 +10,7 @@
     "docs:build": "npm run docs:prepare && gitbook build",
     "docs:clean": "rimraf _book",
     "docs:prepare": "gitbook install",
-    "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'Updating docs' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'Updating docs' && git push git@github.com:medialab/graphlib gh-pages --force",
+    "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'Updating docs' && touch .nojekyll && git add . && git commit -am 'Updating docs' && git push git@github.com:graphology/graphology.github.io master --force",
     "docs:serve": "npm run docs:prepare && gitbook serve",
     "lint": "eslint src tests test.js",
     "postpublish": "npm run clean",
