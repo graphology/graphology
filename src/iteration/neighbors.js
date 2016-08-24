@@ -88,7 +88,7 @@ function mergeNeighborsFromObject(neighbors, object) {
 function createNeighborSetForNode(graph, type, direction, node) {
   const mergeNeighbors = graph.map ? mergeNeighborsFromMap : mergeNeighborsFromObject;
 
-  // For this, we need to compute the "relations" index
+  // For this, we need to compute the "structure" index
   graph.computeIndex('structure');
 
   const neighbors = graph.map ? new Set() : new BasicSet();
@@ -121,13 +121,39 @@ function createNeighborSetForNode(graph, type, direction, node) {
 function createNeighborSetForBunch(name, graph, type, direction, bunch) {
   const mergeNeighbors = graph.map ? mergeNeighborsFromMap : mergeNeighborsFromObject;
 
+  // For this, we need to compute the "structure" index
+  graph.computeIndex('structure');
+
   const neighbors = graph.map ? new Set() : new BasicSet();
 
   overBunch(bunch, (error, node) => {
     if (!graph.hasNode(node))
       throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph in the given bunch.`);
 
+    const nodeData = graph.map ? graph._nodes.get(node) : graph._nodes[node];
+
+    if (type === 'mixed' || type === 'directed') {
+
+      if (!direction || direction === 'in') {
+        mergeNeighbors(neighbors, nodeData.in);
+      }
+      if (!direction || direction === 'out') {
+        mergeNeighbors(neighbors, nodeData.out);
+      }
+    }
+
+    if (type === 'mixed' || type === 'undirected') {
+
+      if (!direction || direction === 'in') {
+        mergeNeighbors(neighbors, nodeData.undirectedIn);
+      }
+      if (!direction || direction === 'out') {
+        mergeNeighbors(neighbors, nodeData.undirectedOut);
+      }
+    }
   });
+
+  return neighbors;
 }
 
 function attachNeighborArrayCreator(Class, counter, description) {
@@ -153,6 +179,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node2}" node in the graph.`);
 
       // Here, we want to assess whether the two given nodes are neighbors
+      // NOTE: we could improve performance here
       const neighbors = createNeighborSetForNode(
         this,
         type,
@@ -188,6 +215,18 @@ function attachNeighborArrayCreator(Class, counter, description) {
         // Note: since we need to keep track of the traversed values
         // to perform union, we can't optimize further and we have to
         // create this intermediary array and return its length when counting.
+        const neighbors = createNeighborSetForBunch(
+          name,
+          this,
+          type,
+          direction,
+          nodeOrBunch
+        );
+
+        if (counter)
+          return neighbors.size;
+
+        return this.map ? Array.from(neighbors) : neighbors.values();
       }
       else {
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${nodeOrBunch}" node in the graph.`);
