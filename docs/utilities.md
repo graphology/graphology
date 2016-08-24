@@ -442,7 +442,7 @@ graph.type === newGraph.type
 
 * **options** <span class="code">[object]</span>: options to merge to create a slightly different graph.
 
-## Known properties
+## Known methods
 
 ### #.toJSON
 

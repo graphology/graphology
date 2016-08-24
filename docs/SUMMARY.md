@@ -80,7 +80,7 @@
     * [#.exportUndirectedEdges](utilities.md#exportundirectededges)
     * [#.copy](utilities.md#copy)
     * [#.emptyCopy](utilities.md#emptycopy)
-  * [Known properties](utilities.md#known-properties)
+  * [Known methods](utilities.md#known-methods)
     * [#.toJSON](utilities.md#tojson)
     * [#.toString](utilities.md#tostring)
     * [#.inspect](utilities.md#inspect)
