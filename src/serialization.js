@@ -97,22 +97,3 @@ export function validateSerializedEdge(value) {
 
   return {valid: true};
 }
-
-/**
- * Checks whether the given value is a serialized graph.
- *
- * @param  {mixed} value - Target value.
- * @return {boolean}
- */
-export function validateSerializedGraph(value) {
-  if (!isPlainObject(value))
-    return {valid: false, reason: 'not-object'};
-
-  if (!Array.isArray(value.nodes))
-    return {valid: false, reason: 'invalid-nodes'};
-
-  if ('edges' in value && !Array.isArray(value.edges))
-    return {valid: false, reason: 'invalid-edges'};
-
-  return {valid: true};
-}

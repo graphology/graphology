@@ -371,6 +371,48 @@ export default function serialization(Graph, checkers) {
         assert.strictEqual(graph.size, 2);
         assert.deepEqual(graph.getEdgeAttributes('J<->T'), {weight: 2});
       }
+    },
+
+    '#.import': {
+      'it should throw if the given data is invalid.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.import(true);
+        }, invalid());
+
+        assert.throws(function() {
+          graph.import({hello: 'world'});
+        }, invalid());
+      },
+
+      'it should be possible to import a graph instance.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Thomas']);
+        graph.addEdge('John', 'Thomas');
+
+        const other = new Graph();
+        other.import(graph);
+
+        assert.deepEqual(graph.nodes(), other.nodes());
+        assert.deepEqual(graph.edges(), other.edges());
+      },
+
+      'it should be possible to import a serialized graph.': function() {
+        const graph = new Graph();
+        graph.import({
+          nodes: [
+            {key: 'John'},
+            {key: 'Thomas'}
+          ],
+          edges: [
+            {source: 'John', target: 'Thomas'}
+          ]
+        });
+
+        assert.deepEqual(graph.nodes(), ['John', 'Thomas']);
+        assert.strictEqual(graph.hasEdge('John', 'Thomas'), true);
+      }
     }
   };
 }

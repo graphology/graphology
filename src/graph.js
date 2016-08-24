@@ -29,7 +29,6 @@ import {attachNeighborIterationMethods} from './iteration/neighbors';
 import {
   serializeNode,
   serializeEdge,
-  validateSerializedGraph,
   validateSerializedNode,
   validateSerializedEdge
 } from './serialization';
@@ -1402,6 +1401,23 @@ export default class Graph extends EventEmitter {
    */
   import(data) {
 
+    // Importing a Graph instance
+    if (isGraph(data)) {
+
+      this.import(data.export());
+      return this;
+    }
+
+    // Importing a serialized graph
+    if (!isPlainObject(data) || !data.nodes)
+      throw new InvalidArgumentsGraphError('Graph.import: invalid argument. Expecting an object with at least a "nodes" property or, alternatively, a Graph instance.');
+
+    this.importNodes(data.nodes);
+
+    if (data.edges)
+      this.importEdges(data.edges);
+
+    return this;
   }
 
   /**---------------------------------------------------------------------------
