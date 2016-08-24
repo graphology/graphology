@@ -38,6 +38,16 @@ export default function mutation(Graph, checkers) {
         const graph = new Graph();
 
         assert.strictEqual(graph.addNode('John'), 'John');
+      },
+
+      'attributes should be protected.': function() {
+        const graph = new Graph();
+
+        const attributes = {age: 45};
+
+        graph.addNode('Helen', attributes);
+
+        assert.notStrictEqual(graph.getNodeAttributes('Helen'), attributes);
       }
     },
 
@@ -177,6 +187,17 @@ export default function mutation(Graph, checkers) {
         const edge = graph.addEdge('John', 'Martha');
 
         assert(graph.undirected(edge));
+      },
+
+      'attributes should be protected.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Martha']);
+
+        const attributes = {age: 45};
+
+        const edge = graph.addEdge('John', 'Martha', attributes);
+
+        assert.notStrictEqual(graph.getEdgeAttributes(edge), attributes);
       }
     },
 

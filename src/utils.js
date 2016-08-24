@@ -13,9 +13,12 @@
  * @return {object}
  */
 export function assign(...objects) {
-  const o = objects[0];
+  const o = objects[0] || {};
 
   for (let i = 1, l = objects.length; i < l; i++) {
+    if (!objects[i])
+      continue;
+
     for (const k in objects[i])
       o[k] = objects[i][k];
   }

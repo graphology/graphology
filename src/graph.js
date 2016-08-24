@@ -32,6 +32,7 @@ import {
 } from './serialization';
 
 import {
+  assign,
   BasicSet,
   isBunch,
   isPlainObject,
@@ -47,7 +48,6 @@ import {
 // TODO: differentiate index structure for simple/multi for performance
 // TODO: #.import can also take a graph
 // TODO: #.dropNodes without argument clear all nodes (#.clear in fact)
-// TODO: clone attributes at node creation
 // TODO: create only one set in the index creation to gain memory
 
 /**
@@ -683,7 +683,8 @@ export default class Graph extends EventEmitter {
     if (this.hasNode(node))
       throw new UsageGraphError(`Graph.addNode: the "${node}" node already exist in the graph. You might want to check out the 'onDuplicateNode' option.`);
 
-    attributes = attributes || {};
+    // Protecting the attributes
+    attributes = assign({}, attributes);
 
     const data = {
       attributes,
@@ -746,7 +747,6 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the edge already exist.
    */
   _addEdge(name, undirected, edge, source, target, attributes) {
-    attributes = attributes || {};
 
     if (!undirected && this.type === 'undirected')
       throw new UsageGraphError(`Graph.${name}: you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.`);
@@ -754,7 +754,7 @@ export default class Graph extends EventEmitter {
     if (undirected && this.type === 'directed')
       throw new UsageGraphError(`Graph.${name}: you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.`);
 
-    if (arguments.length > 5 && !isPlainObject(attributes))
+    if (attributes && !isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
 
     if (!this.hasNode(source))
@@ -778,6 +778,9 @@ export default class Graph extends EventEmitter {
       )
     )
       throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option. The 'onDuplicateEdge' option might also interest you.`);
+
+    // Protecting the attributes
+    attributes = assign({}, attributes);
 
     // Storing some data
     const data = {
