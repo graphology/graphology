@@ -42,43 +42,13 @@ import {
   uuid
 } from './utils';
 
-// TODO: adjust degree docs
-// TODO: adjust index docs
 // TODO: add method to check if edge is self loop?
-// TODO: mixed graph edge duplicate discussion?
-// TODO: remettre le directed default en discussion?
-// TODO: reinstate that keys have the same problem that JS objects
-// TODO: indicate that iterator will only work on recent engines
-// TODO: create test abstraction to test bunches & iterators
-// TODO: drop createiterator from docs
-// TODO: possibility to optimize edge iteration by stocking in separated indexes for directed etc.
-// TODO: precise order of iteration in both edges & neighbors (in -> out -> undirected)
-// TODO: document how to run the specs
 // TODO: change property name selfLoops
-// TODO: create own errors
-// TODO: relations index should be only about existence or count of edges
-// TODO: hasEdge has changed heuristics
-// TODO: discuss Directed === s -> t plus t -> s possible?
-// TODO: possible to optimize the index by flattening to matrices
-// TODO: self iterator should be adjacency if we make it
 // TODO: differentiate index structure for simple/multi for performance
-// TODO: at the end, make an optimization run
-// TODO: drop the reducers from implem, benefits are too small vs. implementation cost
-// TODO: bug in edges(source, target)
-// TODO: move iterations functions below in iteration
-// TODO: finish JSDocs
-// TODO: decide what to do with merger
-// TODO: in the current index, neighbors need to be uniq'd. maybe a separated index for edges & neighbors would simplify this.
-// TODO: better to have one index root or two?
-// TODO: add arity to #.exportDirectedEdges etc.
 // TODO: #.import can also take a graph
 // TODO: #.dropNodes without argument clear all nodes (#.clear in fact)
-// TODO: refactor indexes: One single hashmap storing arrays with predetermined lenght and constant positions.
-// {nodeKey: [key, attributes, degrees..., edges..., neighbors...]} (max 13 slots)
-// {edgeKey: [key, source, target, attributes, undirected]} (max 5 slots)
-// speed up export by slicing the already existing array (check slice etc. performance benchmarks)
-// TODO: explain that index API is normalized, but not its number nor type
 // TODO: clone attributes at node creation
+// TODO: create only one set in the index creation to gain memory
 
 /**
  * Enums.
@@ -151,7 +121,7 @@ export default class Graph extends EventEmitter {
     // Indexes
     privateProperty(this, '_nodes', map ? new Map() : {});
     privateProperty(this, '_edges', map ? new Map() : {});
-    privateProperty(this, '_indexes', {
+    privateProperty(this, '_indices', {
       structure: {
         computed: false,
         synchronized: true
@@ -1091,8 +1061,8 @@ export default class Graph extends EventEmitter {
     this._order = 0;
     this._size = 0;
 
-    for (const name in this._indexes)
-      this._indexes[name].computed = false;
+    for (const name in this._indices)
+      this._indices[name].computed = false;
 
     // TODO: if index precomputed, activate it
   }
@@ -1229,12 +1199,12 @@ export default class Graph extends EventEmitter {
       });
     }
 
-    const serializedNodes = new Array(edges.length);
+    const serializedEdges = new Array(edges.length);
 
     for (let i = 0, l = edges.length; i < l; i++)
-      serializedNodes[i] = this.exportEdge(edges[i]);
+      serializedEdges[i] = this.exportEdge(edges[i]);
 
-    return serializedNodes;
+    return serializedEdges;
   }
 
   /**
@@ -1317,7 +1287,7 @@ export default class Graph extends EventEmitter {
       throw new InvalidArgumentsGraphError(`Graph.computeIndex: unknown "${name}" index.`);
 
     if (name === 'structure') {
-      const index = this._indexes.structure;
+      const index = this._indices.structure;
 
       if (index.computed)
         return this;
@@ -1350,7 +1320,7 @@ export default class Graph extends EventEmitter {
       throw new InvalidArgumentsGraphError(`Graph._updateIndex: unknown "${name}" index.`);
 
     if (name === 'structure') {
-      const index = this._indexes.structure;
+      const index = this._indices.structure;
 
       if (!index.computed)
         return this;
@@ -1378,7 +1348,7 @@ export default class Graph extends EventEmitter {
       throw new InvalidArgumentsGraphError(`Graph._clearEdgeFromIndex: unknown "${name}" index.`);
 
     if (name === 'structure') {
-      const index = this._indexes.structure;
+      const index = this._indices.structure;
 
       if (!index.computed)
         return this;
@@ -1402,7 +1372,7 @@ export default class Graph extends EventEmitter {
       throw new InvalidArgumentsGraphError(`Graph.clearIndex: unknown "${name}" index.`);
 
     if (name === 'structure') {
-      const index = this._indexes.structure;
+      const index = this._indices.structure;
 
       if (!index.computed)
         return this;

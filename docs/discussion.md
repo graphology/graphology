@@ -38,6 +38,8 @@ The question is therefore: do we introduce some kind of akward currying by creat
 
 What of it? What arguments will it take & on what exactly will we iterate?
 
+Just noticing that if an adjacency iteration is created and the Graph is an iterator, then it should be an adjacency iterator.
+
 <h2 id="directed">Should the graph be directed by default?</h2>
 
 Letting the graph mixed would let people not worry too much about this.

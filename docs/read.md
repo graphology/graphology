@@ -107,10 +107,15 @@ graph.outDegree('Timothy');
 *Arguments*
 
 * **node** <span class="code">any</span>: node to find.
+* **selfLoops** <span class="code">[boolean]</span> <span class="default">true</span>: whether to keep the self loops when computing the degree.
 
 *Variants*
 
-`#.inDegree`, `#.outDegree`
+* `#.inDegree`
+* `#.outDegree`
+* `#.directedDegree` (`#.inDegree` + `#.outDegree`)
+* `#.undirectedDegree`
+* `#.degree` (`#.directedDegree` + `#.undirectedDegree`)
 
 ## #.source
 

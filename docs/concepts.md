@@ -1,5 +1,11 @@
 # Concepts
 
+## Keys
+
+Both nodes & edges are represented in the graph by keys. Those keys, whether you use a standard `Graph` or a `GraphMap` instance, can be a lot of different things.
+
+This said, the user should have in mind that both classes won't fix JavaScript quirks and should expect the keys of a `Graph` to have the same downsides as any plain object's keys (namely string coercion). The same can be said about `GraphMap` and the ES6 `Map` object.
+
 ## Errors
 
 Rather than failing silently, `graphology` API will often throw errors to notify the developer that something inconsistent was performed so they can fix their code.

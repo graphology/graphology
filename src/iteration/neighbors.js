@@ -5,6 +5,8 @@
  * Attaching some methods to the Graph class to be able to iterate over
  * neighbors.
  */
+// TODO: finish JSDocs
+
 import {
   InvalidArgumentsGraphError,
   NotFoundGraphError

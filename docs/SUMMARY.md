@@ -85,7 +85,7 @@
     * [#.toString](utilities.md#tostring)
     * [#.inspect](utilities.md#inspect)
 * [Advanced](advanced.md)
-  * [Indexes](advanced.md#indexes)
+  * [Indices](advanced.md#indices)
 * [Conclave](discussion.md)
   * [Discussion](discussion.md)
   * [Standard library](standard-library.md)

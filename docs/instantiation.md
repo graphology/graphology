@@ -27,7 +27,7 @@ const graph = new Graph(data, options);
   * **defaultNodeAttributes** <span class="code">[object]</span>: default node attributes.
   * **edgeKeyGenerator** <span class="code">[function]</span>: Function used internally by the graph to produce keys for key-less edges. By default, the graph will produce keys as UUID v4 compressed through base91. For more information concerning the function you can provide, see [this](#edge-key-generator-function).
   * **hashDelimiter** <span class="code">[string]</span>: string used as hash delimiter for storing some data internally (undirected edges, typically).
-  * **indexes** <span class="code">[object]</span>: Options regarding index computation. For more information, see [this](./advanced.md#indexes).
+  * **indices** <span class="code">[object]</span>: Options regarding index computation. For more information, see [this](./advanced.md#indices).
   * **map** <span class="code">[boolean]</span> <span class="default">false</span>: Should the graph allow references as key like a JavaScript `Map` object?
   * **multi** <span class="code">[boolean]</span> <span class="default">false</span>: Should the graph allow parallel edges?
   * **onDuplicateEdge** <span class="code">[function]</span>: Optional function that will solve the addition of a duplicate edge rather than throwing an error. For more information, see [this](#duplicate-elements).
