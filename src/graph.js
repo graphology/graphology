@@ -1286,7 +1286,7 @@ export default class Graph extends EventEmitter {
     // Validating
     const {valid, reason} = validateSerializedNode(data);
 
-    if (!valid) {
+    if (!valid) {
       if (reason === 'not-object')
         throw new InvalidArgumentsGraphError('Graph.importNode: invalid serialized node. A serialized node should be a plain object with at least a "key" property.');
       if (reason === 'no-key')
@@ -1358,6 +1358,38 @@ export default class Graph extends EventEmitter {
         attributes
       );
     }
+
+    return this;
+  }
+
+  /**
+   * Method used to import serialized nodes.
+   *
+   * @param  {array} nodes - The serialized nodes.
+   * @return {Graph}       - Returns itself for chaining.
+   */
+  importNodes(nodes) {
+    if (!Array.isArray(nodes))
+      throw new InvalidArgumentsGraphError('Graph.importNodes: invalid argument. Expecting an array.');
+
+    for (let i = 0, l = nodes.length; i < l; i++)
+      this.importNode(nodes[i]);
+
+    return this;
+  }
+
+  /**
+   * Method used to import serialized edges.
+   *
+   * @param  {array} edges - The serialized edges.
+   * @return {Graph}       - Returns itself for chaining.
+   */
+  importEdges(edges) {
+    if (!Array.isArray(edges))
+      throw new InvalidArgumentsGraphError('Graph.importEdges: invalid argument. Expecting an array.');
+
+    for (let i = 0, l = edges.length; i < l; i++)
+      this.importEdge(edges[i]);
 
     return this;
   }
