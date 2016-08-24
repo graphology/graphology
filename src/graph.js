@@ -50,7 +50,6 @@ import {
 // TODO: differentiate index structure simple/multi for performance?
 // TODO: dropEdge & dropEdges arity 2
 // TODO: finish options
-// TODO: test GraphMap
 
 /**
  * Enums.
@@ -304,7 +303,7 @@ export default class Graph extends EventEmitter {
       const edge = source;
 
       return (
-        this.map ? this._edges.has(edge) : edge in this._edges &&
+        (this.map ? this._edges.has(edge) : edge in this._edges) &&
         this.directed(edge)
       );
     }
@@ -359,7 +358,7 @@ export default class Graph extends EventEmitter {
       const edge = source;
 
       return (
-        this.map ? this._edges.has(edge) : edge in this._edges &&
+        (this.map ? this._edges.has(edge) : edge in this._edges) &&
         this.undirected(edge)
       );
     }
@@ -641,7 +640,7 @@ export default class Graph extends EventEmitter {
       this._edges.get(edge).undirected :
       this._edges[edge].undirected;
 
-    return undirected;
+    return !!undirected;
   }
 
   /**
@@ -656,7 +655,11 @@ export default class Graph extends EventEmitter {
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.directed: could not find the "${edge}" edge in the graph.`);
 
-    return !this.undirected(edge);
+    const undirected = this.map ?
+      this._edges.get(edge).undirected :
+      this._edges[edge].undirected;
+
+    return !undirected;
   }
 
   /**---------------------------------------------------------------------------

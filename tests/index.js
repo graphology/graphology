@@ -14,6 +14,11 @@ import serialization from './serialization';
 import events from './events';
 import knownMethods from './known';
 import misc from './misc';
+import {deepMerge} from './helpers';
+
+const DEFAULTS = {
+  map: true
+};
 
 const createErrorChecker = name => () => {
   return function(error) {
@@ -21,15 +26,14 @@ const createErrorChecker = name => () => {
   };
 };
 
-// TODO: test GraphMap by doubling the tests
-
 /**
  * Returning the unit tests to run.
  *
  * @param  {string} path - Path to the implementation (should be absolute).
  * @return {object}      - The tests to run with Mocha.
  */
-export default function specs(Graph, implementation) {
+export default function specs(Graph, implementation, options) {
+  options = deepMerge({}, DEFAULTS, options);
 
   const errors = [
     ['invalid', 'InvalidArgumentsGraphError'],
@@ -42,16 +46,35 @@ export default function specs(Graph, implementation) {
 
   errors.forEach(([fn, name]) => (errorCheckers[fn] = createErrorChecker(name)));
 
-  return {
-    'Instantiation': instantiation(Graph, implementation, errorCheckers),
-    'Properties': properties(Graph, errorCheckers),
-    'Mutation': mutation(Graph, errorCheckers),
-    'Read': read(Graph, errorCheckers),
-    'Attributes': attributes(Graph, errorCheckers),
-    'Iteration': iteration(Graph, errorCheckers),
-    'Serialization': serialization(Graph, errorCheckers),
-    'Events': events(Graph),
-    'Known Methods': knownMethods(Graph, errorCheckers),
-    'Miscellaneous': misc(Graph)
+  const tests = {
+    'Basic': {
+      'Instantiation': instantiation(Graph, implementation, errorCheckers),
+      'Properties': properties(Graph, errorCheckers),
+      'Mutation': mutation(Graph, errorCheckers),
+      'Read': read(Graph, errorCheckers),
+      'Attributes': attributes(Graph, errorCheckers),
+      'Iteration': iteration(Graph, errorCheckers),
+      'Serialization': serialization(Graph, errorCheckers),
+      'Events': events(Graph),
+      'Known Methods': knownMethods(Graph, errorCheckers),
+      'Miscellaneous': misc(Graph)
+    }
   };
+
+  if (options.map) {
+    const GraphMap = implementation.GraphMap;
+
+    tests.Map = {
+      'Mutation': mutation(GraphMap, errorCheckers),
+      'Read': read(GraphMap, errorCheckers),
+      'Attributes': attributes(GraphMap, errorCheckers),
+      'Iteration': iteration(GraphMap, errorCheckers),
+      'Serialization': serialization(GraphMap, errorCheckers),
+      'Events': events(GraphMap),
+      'Known Methods': knownMethods(GraphMap, errorCheckers),
+      'Miscellaneous': misc(GraphMap)
+    };
+  }
+
+  return tests;
 }
