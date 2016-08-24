@@ -154,6 +154,10 @@ export default class Graph extends EventEmitter {
     readOnlyProperty(this, 'multi', () => multi);
     readOnlyProperty(this, 'type', () => type);
     readOnlyProperty(this, 'selfLoops', () => selfLoops);
+
+    //-- Hydratation
+    if (data)
+      this.import(data);
   }
 
   /**---------------------------------------------------------------------------

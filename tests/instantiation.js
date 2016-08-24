@@ -35,6 +35,35 @@ export default function instantiation(Graph, inmplementation, checkers) {
   } = checkers;
 
   return {
+    'Hydratation': {
+
+      'it should be possible to hydrate from a serialized graph.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Thomas']);
+        graph.addEdge('John', 'Thomas');
+
+        const other = new Graph(graph);
+
+        assert.deepEqual(graph.nodes(), other.nodes());
+        assert.deepEqual(graph.edges(), other.edges());
+      },
+
+      'it should be possible to hydrate from a Graph instance.': function() {
+        const graph = new Graph({
+          nodes: [
+            {key: 'John'},
+            {key: 'Thomas'}
+          ],
+          edges: [
+            {source: 'John', target: 'Thomas'}
+          ]
+        });
+
+        assert.deepEqual(graph.nodes(), ['John', 'Thomas']);
+        assert.strictEqual(graph.hasEdge('John', 'Thomas'), true);
+      }
+    },
+
     'Options': {
 
       /**
