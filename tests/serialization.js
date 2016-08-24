@@ -7,6 +7,13 @@
 import assert from 'assert';
 import {testBunches} from './helpers';
 
+const PROPERTIES = [
+  'type',
+  'multi',
+  'map',
+  'selfLoops'
+];
+
 export default function serialization(Graph, checkers) {
   const {
     invalid,
@@ -412,6 +419,43 @@ export default function serialization(Graph, checkers) {
 
         assert.deepEqual(graph.nodes(), ['John', 'Thomas']);
         assert.strictEqual(graph.hasEdge('John', 'Thomas'), true);
+      }
+    },
+
+    '#.emptyCopy': {
+      'it should create an empty copy of the graph.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Thomas']);
+        graph.addEdge('John', 'Thomas');
+
+        const copy = graph.emptyCopy();
+
+        assert.deepEqual(copy.nodes(), []);
+        assert.strictEqual(copy.order, 0);
+        assert.strictEqual(copy.size, 0);
+
+        PROPERTIES.forEach(property => {
+          assert.strictEqual(graph[property], graph[property]);
+        });
+      }
+    },
+
+    '#.copy': {
+      'it should create an empty copy of the graph.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Thomas']);
+        graph.addEdge('John', 'Thomas');
+
+        const copy = graph.copy();
+
+        assert.deepEqual(copy.nodes(), graph.nodes());
+        assert.deepEqual(copy.edges(), graph.edges());
+        assert.strictEqual(copy.order, 2);
+        assert.strictEqual(copy.size, 1);
+
+        PROPERTIES.forEach(property => {
+          assert.strictEqual(graph[property], graph[property]);
+        });
       }
     }
   };

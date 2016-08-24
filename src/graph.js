@@ -87,33 +87,27 @@ export default class Graph extends EventEmitter {
   constructor(data, options) {
     super();
 
-    options = options || {};
-
     //-- Solving options
-    const edgeKeyGenerator = options.edgeKeyGenerator || DEFAULTS.edgeKeyGenerator,
-          map = options.map || DEFAULTS.map,
-          multi = options.multi || DEFAULTS.multi,
-          type = options.type || DEFAULTS.type,
-          selfLoops = 'allowSelfLoops' in options ? options.allowSelfLoops : DEFAULTS.allowSelfLoops;
+    options = assign({}, DEFAULTS, options);
 
     // Enforcing options validity
-    if (typeof edgeKeyGenerator !== 'function')
-      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'edgeKeyGenerator' option. Expecting a function but got "${map}".`);
+    if (typeof options.edgeKeyGenerator !== 'function')
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'edgeKeyGenerator' option. Expecting a function but got "${options.map}".`);
 
-    if (typeof map !== 'boolean')
-      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'map' option. Expecting a boolean but got "${map}".`);
+    if (typeof options.map !== 'boolean')
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'map' option. Expecting a boolean but got "${options.map}".`);
 
-    if (map && typeof Map !== 'function')
+    if (options.map && typeof Map !== 'function')
       throw new InvalidArgumentsGraphError('Graph.constructor: it seems you created a GraphMap instance while your current JavaScript engine does not support ES2015 Map objects.');
 
-    if (typeof multi !== 'boolean')
-      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'multi' option. Expecting a boolean but got "${multi}".`);
+    if (typeof options.multi !== 'boolean')
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'multi' option. Expecting a boolean but got "${options.multi}".`);
 
-    if (!TYPES.has(type))
-      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'type' option. Should be one of "mixed", "directed" or "undirected" but got "${type}".`);
+    if (!TYPES.has(options.type))
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'type' option. Should be one of "mixed", "directed" or "undirected" but got "${options.type}".`);
 
-    if (typeof selfLoops !== 'boolean')
-      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'allowSelfLoops' option. Expecting a boolean but got "${selfLoops}".`);
+    if (typeof options.allowSelfLoops !== 'boolean')
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'allowSelfLoops' option. Expecting a boolean but got "${options.allowSelfLoops}".`);
 
     //-- Private properties
 
@@ -122,8 +116,8 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_size', 0);
 
     // Indexes
-    privateProperty(this, '_nodes', map ? new Map() : {});
-    privateProperty(this, '_edges', map ? new Map() : {});
+    privateProperty(this, '_nodes', options.map ? new Map() : {});
+    privateProperty(this, '_edges', options.map ? new Map() : {});
     privateProperty(this, '_indices', {
       structure: {
         computed: false,
@@ -136,9 +130,7 @@ export default class Graph extends EventEmitter {
     });
 
     // Options
-    privateProperty(this, '_options', {
-      edgeKeyGenerator
-    });
+    privateProperty(this, '_options', options);
 
     // Methods
     privateProperty(this, '_addEdge', this._addEdge);
@@ -150,10 +142,10 @@ export default class Graph extends EventEmitter {
     //-- Properties readers
     readOnlyProperty(this, 'order', () => this._order);
     readOnlyProperty(this, 'size', () => this._size);
-    readOnlyProperty(this, 'map', () => map);
-    readOnlyProperty(this, 'multi', () => multi);
-    readOnlyProperty(this, 'type', () => type);
-    readOnlyProperty(this, 'selfLoops', () => selfLoops);
+    readOnlyProperty(this, 'map', () => this._options.map);
+    readOnlyProperty(this, 'multi', () => this._options.multi);
+    readOnlyProperty(this, 'type', () => this._options.type);
+    readOnlyProperty(this, 'selfLoops', () => this._options.allowSelfLoops);
 
     //-- Hydratation
     if (data)
@@ -1422,6 +1414,25 @@ export default class Graph extends EventEmitter {
       this.importEdges(data.edges);
 
     return this;
+  }
+
+  /**
+   * Method returning an empty copy of the graph, i.e. a graph without nodes
+   * & edges but with the exact same options.
+   *
+   * @return {Graph} - The empty copy.
+   */
+  emptyCopy() {
+    return new Graph(null, this._options);
+  }
+
+  /**
+   * Method returning an exact copy of the graph.
+   *
+   * @return {Graph} - The copy.
+   */
+  copy() {
+    return new Graph(this, this._options);
   }
 
   /**---------------------------------------------------------------------------

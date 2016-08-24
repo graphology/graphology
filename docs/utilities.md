@@ -21,7 +21,7 @@ graph.exportNode('Thomas');
 **Edge**
 
 An edge is serialized as an object containing the following keys:
-  * **key** <span class="code">any</span> The edge's key (can be omitted or null on import),
+  * **key** <span class="code">[any]</span> The edge's key (can be omitted or null on import),
   * **source** <span class="code">any</span> The edge's source,
   * **target** <span class="code">any</span> The edge's target,
   * **attributes** <span class="code">[object]</span> The edge's attributes (can be omitted or null),
@@ -84,7 +84,7 @@ graph.hasNode('Thomas');
 
 *Arguments*
 
-* **data** <span class="code">serialized graph</span>: graph data to import.
+* **data** <span class="code">serialized graph|Graph</span>: serialized graph data or another Graph instance.
 
 ### #.importNode
 
