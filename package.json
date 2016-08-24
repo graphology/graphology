@@ -48,13 +48,13 @@
   },
   "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
-    "babel-loader": "^6.2.5",
     "events": "^1.1.1"
   },
   "devDependencies": {
     "@yomguithereal/eslint-config": "^3.0.0",
     "babel-cli": "^6.11.4",
     "babel-core": "^6.13.2",
+    "babel-loader": "^6.2.5",
     "babel-plugin-transform-es2015-classes": "^6.9.0",
     "babel-plugin-transform-es2015-destructuring": "^6.9.0",
     "babel-preset-es2015": "^6.13.2",

@@ -51,6 +51,7 @@ import {
 // TODO: dropEdge & dropEdges arity 2
 // TODO: events
 // TODO: finish options
+// TODO: test GraphMap
 
 /**
  * Enums.
@@ -706,6 +707,12 @@ export default class Graph extends EventEmitter {
     // Incrementing order
     this._order++;
 
+    // Emitting
+    this.emit('nodeAdded', {
+      key: node,
+      attributes
+    });
+
     return node;
   }
 
@@ -816,6 +823,15 @@ export default class Graph extends EventEmitter {
 
     // Updating relevant indexes
     this._updateIndex('structure', edge, data);
+
+    // Emitting
+    this.emit('edgeAdded', {
+      key: edge,
+      source,
+      target,
+      attributes,
+      undirected
+    });
 
     return edge;
   }
@@ -986,6 +1002,8 @@ export default class Graph extends EventEmitter {
     for (let i = 0, l = edges.length; i < l; i++)
       this.dropEdge(edges[i]);
 
+    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+
     // Dropping the node from the register
     if (this.map)
       this._nodes.delete(node);
@@ -994,6 +1012,12 @@ export default class Graph extends EventEmitter {
 
     // Decrementing order
     this._order--;
+
+    // Emitting
+    this.emit('nodeDropped', {
+      key: node,
+      attributes: data.attributes
+    });
   }
 
   /**
@@ -1043,7 +1067,7 @@ export default class Graph extends EventEmitter {
     this._size--;
 
     // Updating related degrees
-    const {source, target, undirected} = data;
+    const {source, target, attributes, undirected} = data;
 
     const sourceData = this.map ? this._nodes.get(source) : this._nodes[source],
           targetData = this.map ? this._nodes.get(target) : this._nodes[target];
@@ -1064,6 +1088,15 @@ export default class Graph extends EventEmitter {
 
     // Clearing index
     this._clearEdgeFromIndex('structure', edge, data);
+
+    // Emitting
+    this.emit('edgeDropped', {
+      key: edge,
+      attributes,
+      source,
+      target,
+      undirected
+    });
 
     return this;
   }
@@ -1151,6 +1184,9 @@ export default class Graph extends EventEmitter {
       this._indices[name].computed = false;
 
     // TODO: if index precomputed, activate it
+
+    // Emitting
+    this.emit('cleared');
   }
 
   /**---------------------------------------------------------------------------
