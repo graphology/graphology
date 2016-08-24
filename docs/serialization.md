@@ -1,10 +1,6 @@
-# Utilities
+# Serialization
 
-## Import/Export
-
-Methods used to import or export data in a serialized way to avoid the need for data conversion along the way. Those methods should only be used by utilities developer designing subgraph or conversion utilities.
-
-### Regarding graph serialization
+## Format
 
 **Node**
 
@@ -66,7 +62,7 @@ graph.export();
 }
 ```
 
-### #.import
+## #.import
 
 Imports a whole serialized graph into the graph.
 
@@ -86,7 +82,7 @@ graph.hasNode('Thomas');
 
 * **data** <span class="code">serialized graph|Graph</span>: serialized graph data or another Graph instance.
 
-### #.importNode
+## #.importNode
 
 Imports a single serialized node into the graph.
 
@@ -103,7 +99,7 @@ graph.getNodeAttribute('Thomas', 'eyes');
 
 * **node** <span class="code">serialized node</span>: data of the node to import.
 
-### #.importNodes
+## #.importNodes
 
 Imports a list of serialized nodes into the graph.
 
@@ -123,7 +119,7 @@ graph.getNodeAttribute('Eric', 'age');
 
 * **nodes** <span class="code">array</span>: array of serialized nodes.
 
-### #.importEdge
+## #.importEdge
 
 Imports a single serialized edge into the graph.
 
@@ -146,7 +142,7 @@ graph.hasEdge('Thomas', 'Eric');
 
 * **edge** <span class="code">serialized edge</span>: data of the edge to import.
 
-### #.importEdges
+## #.importEdges
 
 Imports a list of serialized edges into the graph.
 
@@ -178,7 +174,7 @@ graph.edges('Thomas');
 * **edges** <span class="code">array</span>: array of serialized edges.
 
 
-### #.export
+## #.export
 
 Exports the whole instance's data as a serialized graph.
 
@@ -204,7 +200,7 @@ graph.export();
 }
 ```
 
-### #.exportNode
+## #.exportNode
 
 Exports a single node from the graph.
 
@@ -217,7 +213,7 @@ graph.exportNode('Thomas');
 >>> {key: 'Thomas', attributes: {age: 34}}
 ```
 
-### #.exportNodes
+## #.exportNodes
 
 Exports every node or only a bunch of nodes from the graph.
 
@@ -247,7 +243,7 @@ graph.exportNodes(['Thomas']);
 2. **Bunch of nodes**: exporting the given bunch.
   * **nodes** <span class="code">[bunch]</span>: bunch of nodes to export.
 
-### #.exportEdge
+## #.exportEdge
 
 Exports a single edge from the graph.
 
@@ -266,7 +262,7 @@ graph.exportEdge('T->M');
 }
 ```
 
-### #.exportEdges
+## #.exportEdges
 
 Exports every edge or only a bunch of edges from the graph.
 
@@ -309,7 +305,7 @@ graph.exportEdges(['T->M']);
 2. **Bunch of edges**: exporting the given bunch.
   * **edges** <span class="code">[bunch]</span>: bunch of edges to export.
 
-### #.exportDirectedEdges
+## #.exportDirectedEdges
 
 Exports every directed edge or only the directed edges in the provided bunch from the graph.
 
@@ -354,7 +350,7 @@ graph.exportEdges(['T->M', 'A']);
 2. **Bunch of edges**: exporting the given bunch.
   * **edges** <span class="code">[bunch]</span>: bunch of edges to export (undirected will be filtered).
 
-### #.exportUndirectedEdges
+## #.exportUndirectedEdges
 
 Exports every undirected edge or only the undirected edges in the provided bunch from the graph.
 
@@ -394,7 +390,7 @@ graph.exportUndirectedEdges(['A', 'T->M']);
 2. **Bunch of edges**: exporting the given bunch.
   * **edges** <span class="code">[bunch]</span>: bunch of edges to export (directed will be filtered).
 
-### #.copy
+## #.copy
 
 Returns a copy of the current instance.
 
@@ -415,7 +411,7 @@ graph.type === newGraph.type
 >>> true
 ```
 
-### #.emptyCopy
+## #.emptyCopy
 
 Returns an empty copy of the current instance retaining the type & the options of the graph.
 
@@ -441,21 +437,3 @@ graph.type === newGraph.type
 *Arguments*
 
 * **options** <span class="code">[object]</span>: options to merge to create a slightly different graph.
-
-## Known methods
-
-### #.toJSON
-
-Alias of the [`#.export`](#export) method used by JavaScript to serialize the `Graph` instance when using `JSON.stringify`.
-
-### #.toString
-
-Method used by JavaScript to perform string coercion. Will return some informative string about the graph.
-
-```
-Graph<12 nodes, 14 edges>
-```
-
-### #.inspect
-
-Used by node.js to pretty print the object when using `console.log`.

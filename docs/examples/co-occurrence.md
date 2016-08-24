@@ -3,7 +3,7 @@
 In this example, we are going to create a simple co-occurrence graph of students working on projects:
 
 ```js
-import {UndirectedGraph} from 'graph';
+import {UndirectedGraph} from 'graphology';
 
 const graph = new UndirectedGraph();
 
@@ -44,7 +44,7 @@ projects.forEach(project => {
 
     graph.team.slice(i + 1).forEach(colleague => {
 
-      const edge = graph.getEdge(student.id, colleague.id);
+      let edge = graph.getEdge(student.id, colleague.id);
 
       // If the edge does not exist yet, we create it
       if (!edge)

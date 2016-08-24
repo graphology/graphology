@@ -1,6 +1,6 @@
 # Graphology
 
-`graphology` is a generic specification for a JavaScript `Graph` object.
+`graphology` is a generic specification for a robust & multipurpose JavaScript `Graph` object.
 
 While `graphology` proposes a reference implementation, it merely remains a specificiation that anyone is free to implement in their own way.
 
@@ -8,7 +8,7 @@ Along with both its specification & its reference implementation, note finally t
 
 ## Installation
 
-To install the reference implementation along with the standard library:
+To install the reference implementation:
 
 ```bash
 npm install --save graphology
@@ -32,7 +32,7 @@ graph.addEdge('Martha', 'Jack', {type: 'MOTHER_OF'});
 
 const children = graph
   .edges()
-  .filter('Jack', edge => edge.type === 'FATHER_OF')
+  .filter('Jack', edge => graph.getEdgeAttribute('type') === 'FATHER_OF')
   .map(edge => return graph.relatedNode('Jack', edge));
 
 children
