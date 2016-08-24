@@ -1,3 +1,5 @@
 # Graphology
 
-Current spec [here](https://medialab.github.io/graphlib).
+A robust & multipurpose Graph object for JavaScript.
+
+Current spec [here](https://graphology.github.io).

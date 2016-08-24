@@ -1,7 +1,5 @@
 # Discussion
 
-Issues can be found [here](https://github.com/medialab/graphlib/issues).
-
 | Status | Precisions | Description |
 | :---: | :---: | --- |
 | [X] | [link](#curry) | Discuss awkward currying of some attribute-related methods? |

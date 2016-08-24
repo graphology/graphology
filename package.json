@@ -1,7 +1,7 @@
 {
-  "name": "graphlib",
+  "name": "graphology",
   "version": "0.0.1",
-  "description": "A robust Graph object for JavaScript.",
+  "description": "A robust & multipurpose Graph object for JavaScript.",
   "main": "dist/index.js",
   "scripts": {
     "build": "webpack --colors --progress && webpack --colors --progress -p",
@@ -26,9 +26,17 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/medialab/graphlib.git"
+    "url": "git+https://github.com/graphology/graphology.git"
   },
   "contributors": [
+    {
+      "name": "Alexis Jacomy",
+      "url": "http://github.com/jacomyal"
+    },
+    {
+      "name": "Benjamin Ooghe-Tabanou",
+      "url": "http://github.com/boogheta"
+    },
     {
       "name": "Guillaume Plique",
       "url": "http://github.com/Yomguithereal"
@@ -36,9 +44,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/medialab/graphlib/issues"
+    "url": "https://github.com/graphology/graphology/issues"
   },
-  "homepage": "https://github.com/medialab/graphlib#readme",
+  "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
     "babel-loader": "^6.2.5",
     "events": "^1.1.1"
