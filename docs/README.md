@@ -14,12 +14,6 @@ To install the reference implementation along with the standard library:
 npm install --save graphology
 ```
 
-To install the unit tests validating `graphology`'s specifications:
-
-```bash
-npm install --save-dev graphology-specs
-```
-
 ## Quick start
 
 ```js
@@ -37,7 +31,8 @@ graph.addEdge('Jack', 'Catherine', {type: 'FATHER_OF'});
 graph.addEdge('Martha', 'Jack', {type: 'MOTHER_OF'});
 
 const children = graph
-  .filterEdges('Jack', edge => edge.type === 'FATHER_OF')
+  .edges()
+  .filter('Jack', edge => edge.type === 'FATHER_OF')
   .map(edge => return graph.relatedNode('Jack', edge));
 
 children
