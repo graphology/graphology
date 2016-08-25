@@ -73,7 +73,7 @@ const graph = new Graph();
 graph.addNode('First Node');
 graph.addNode('Second Node');
 
-graph.forEachNode(node => {
+graph.nodes().forEach(node => {
   console.log(node);
 });
 >>> 'First Node'

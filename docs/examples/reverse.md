@@ -11,7 +11,7 @@ function reverse(graph) {
   reversed.importEdges(graph.exportUndirectedEdges());
 
   // Reversing directed edges:
-  graph.forEachDirectedEdge(edge => {
+  graph.directedEdges().forEach(edge => {
     const [source, target] = graph.extremities(edge);
 
     reversed.addDirectedEdgeWithKey(

@@ -46,10 +46,10 @@ import {
   uuid
 } from './utils';
 
-// TODO: add method to check if edge is self loop & iteration methods etc.
+// TODO: add method to check if edge is self loop & iteration methods etc. (#.selfLoop(edge), #.selfLoops(nothingOrNodeOrBunch) #.countSelfLoops)
 // TODO: differentiate index structure simple/multi for performance?
 // TODO: dropEdge & dropEdges arity 2
-// TODO: finish options
+// TODO: finish options (indices)
 
 /**
  * Enums.
