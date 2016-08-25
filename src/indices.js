@@ -58,18 +58,17 @@ export function updateStructureIndex(graph, edge, data) {
   if (source === target)
     return;
 
-  // Handling target
+  // Handling target (we won't add the edge because it was already taken
+  // care of with source above)
   targetData[inKey] = targetData[inKey] || (map ? new Map() : {});
 
   if (map) {
     if (!targetData[inKey].has(source))
       targetData[inKey].set(source, commonSet);
-    targetData[inKey].get(source).add(edge);
   }
   else {
     if (!(source in targetData[inKey]))
       targetData[inKey][source] = commonSet;
-    targetData[inKey][source].add(edge);
   }
 }
 

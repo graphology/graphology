@@ -103,6 +103,7 @@ graph.countInEdges('Thomas');
 #.outboundEdges
 #.directedEdges
 #.undirectedEdges
+#.selfLoops
 
 #.countEdges
 #.countInEdges
@@ -111,6 +112,7 @@ graph.countInEdges('Thomas');
 #.countOutboundEdges
 #.countDirectedEdges
 #.countUndirectedEdges
+#.countSelfLoops
 ```
 
 **Arguments**
@@ -144,6 +146,10 @@ graph.addEdge('Catherine', 'Thomas');
 graph.addEdge('Rosaline', 'Catherine');
 graph.addEdge('John', 'Daniel');
 graph.addEdge('John', 'Daniel');
+
+// Asking whether two nodes are neighbors:
+graph.neighbors('Thomas', 'Rosaline');
+>>> true
 
 // Using the array-returning methods:
 graph.neighbors('Thomas');

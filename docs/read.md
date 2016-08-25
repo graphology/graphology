@@ -106,7 +106,7 @@ graph.outDegree('Timothy');
 
 *Arguments*
 
-* **node** <span class="code">any</span>: node to find.
+* **node** <span class="code">any</span>: target node.
 * **selfLoops** <span class="code">[boolean]</span> <span class="default">true</span>: whether to keep the self loops when computing the degree.
 
 *Variants*
@@ -134,7 +134,7 @@ graph.source(edge);
 
 *Arguments*
 
-* **edge** <span class="code">any</span>: edge to find.
+* **edge** <span class="code">any</span>: target edge.
 
 ## #.target
 
@@ -153,11 +153,13 @@ graph.target(edge);
 
 *Arguments*
 
-* **edge** <span class="code">any</span>: edge to find.
+* **edge** <span class="code">any</span>: target edge.
 
 ## #.relatedNode
 
 Given a node & an edge, returns the node at the other end of the relation.
+
+*Example*
 
 ```js
 graph.addNode('Timothy');
@@ -170,12 +172,14 @@ graph.relatedNode('Timothy', edge);
 
 *Arguments*
 
-* **node** <span class="code">any</span>: node to find.
-* **edge** <span class="code">any</span>: edge to find.
+* **node** <span class="code">any</span>: target node.
+* **edge** <span class="code">any</span>: target edge.
 
 ## #.extremities
 
 Returns both extremities of the given edge.
+
+*Example*
 
 ```js
 graph.addNode('Timothy');
@@ -188,11 +192,13 @@ graph.extremities(edge);
 
 *Arguments*
 
-* **edge** <span class="code">any</span>: edge to find.
+* **edge** <span class="code">any</span>: target edge.
 
 ## #.directed
 
 Returns whether the given edge is directed.
+
+*Example*
 
 ```js
 graph.addNode('Timothy');
@@ -208,8 +214,26 @@ graph.directed(undirectedEdge);
 
 *Arguments*
 
-* **edge** <span class="code">any</span>: edge to find.
+* **edge** <span class="code">any</span>: target edge.
 
 *Variants*
 
 `#.undirected`
+
+## #.selfLoop
+
+Returns whether the given edge is a self-loop.
+
+*Example*
+
+```js
+graph.addNode('Timothy');
+const edge = graph.addEdge('Timothy', 'Timothy');
+
+graph.selfLoop(edge);
+>>> true
+```
+
+*Arguments*
+
+* **edge** <span class="code">any</span>: target edge.
