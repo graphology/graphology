@@ -51,7 +51,6 @@ import {
 // TODO: add method to check if edge is self loop & iteration methods etc. (#.selfLoop(edge), #.selfLoops(nothingOrNodeOrBunch) #.countSelfLoops)
 // TODO: differentiate index structure simple/multi for performance?
 // TODO: finish options (indices)
-// TODO: keep RAM by not setting undirected on internal data
 
 /**
  * Enums.
@@ -872,11 +871,14 @@ export default class Graph extends EventEmitter {
 
     // Storing some data
     const data = {
-      undirected,
       attributes,
       source,
       target
     };
+
+    // NOTE: only adding the 'undirected' key if needed
+    if (undirected)
+      data.undirected = true;
 
     if (this.map)
       this._edges.set(edge, data);
@@ -1150,7 +1152,7 @@ export default class Graph extends EventEmitter {
     this._size--;
 
     // Updating related degrees
-    const {source, target, attributes, undirected} = data;
+    const {source, target, attributes, undirected = false} = data;
 
     const sourceData = this.map ? this._nodes.get(source) : this._nodes[source],
           targetData = this.map ? this._nodes.get(target) : this._nodes[target];

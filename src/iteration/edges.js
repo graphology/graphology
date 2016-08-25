@@ -218,7 +218,7 @@ function createEdgeArray(count, graph, type) {
 
       if (
         ((type === 'selfLoops') === (data.source === data.target)) &&
-        (data.undirected === (type === 'undirected'))
+        (!!data.undirected === (type === 'undirected'))
       ) {
 
         if (!count)
@@ -237,7 +237,7 @@ function createEdgeArray(count, graph, type) {
 
       if (
         ((type === 'selfLoops') === (data.source === data.target)) &&
-        (data.undirected === (type === 'undirected'))
+        (!!data.undirected === (type === 'undirected'))
       ) {
 
         if (!count)
