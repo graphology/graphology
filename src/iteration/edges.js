@@ -278,36 +278,45 @@ function createEdgeArrayForNode(count, graph, type, direction, node) {
   else
     nodeData = graph._nodes[node];
 
-  if (type === 'mixed' || type === 'directed') {
+  if (type === 'mixed' || type === 'directed' || type === 'selfLoops') {
 
     if (!direction || direction === 'in') {
-      if (count)
+      if (count && type !== 'selfLoops')
         nb += countEdges(nodeData.in);
       else
         edges = edges.concat(collectEdges(nodeData.in));
     }
     if (!direction || direction === 'out') {
-      if (count)
+      if (count && type !== 'selfLoops')
         nb += countEdges(nodeData.out);
       else
         edges = edges.concat(collectEdges(nodeData.out));
     }
   }
 
-  if (type === 'mixed' || type === 'undirected') {
+  if (type === 'mixed' || type === 'undirected' || type === 'selfLoops') {
 
     if (!direction || direction === 'in') {
-      if (count)
+      if (count && type !== 'selfLoops')
         nb += countEdges(nodeData.undirectedIn);
       else
         edges = edges.concat(collectEdges(nodeData.undirectedIn));
     }
     if (!direction || direction === 'out') {
-      if (count)
+      if (count && type !== 'selfLoops')
         nb += countEdges(nodeData.undirectedOut);
       else
         edges = edges.concat(collectEdges(nodeData.undirectedOut));
     }
+  }
+
+  // NOTE: this is hardly optimal
+  if (type === 'selfLoops') {
+    edges = edges.filter(edge => {
+      return graph.source(edge) === graph.target(edge);
+    });
+
+    nb = edges.length;
   }
 
   return count ? nb : edges;

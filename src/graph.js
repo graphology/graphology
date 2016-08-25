@@ -48,8 +48,7 @@ import {
   uuid
 } from './utils';
 
-// TODO: finish #.selfLoops
-// TODO: finish options (indices)
+// TODO: finish #.selfLoops (bunch iteration only)
 
 /**
  * Enums.
@@ -134,12 +133,8 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_edges', options.map ? new Map() : {});
     privateProperty(this, '_indices', {
       structure: {
-        computed: false,
-        synchronized: true
-      },
-      neighbors: {
-        computed: false,
-        synchronized: true
+        lazy: options.indices && options.indices.structure && options.indices.structure.lazy || false,
+        computed: false
       }
     });
 
@@ -160,6 +155,14 @@ export default class Graph extends EventEmitter {
     readOnlyProperty(this, 'multi', () => this._options.multi);
     readOnlyProperty(this, 'type', () => this._options.type);
     readOnlyProperty(this, 'allowSelfLoops', () => this._options.allowSelfLoops);
+
+    //-- Precomputing indexes?
+    for (const name in this._indices) {
+      const index = this._indices[name];
+
+      if (!index.lazy)
+        index.computed = true;
+    }
 
     //-- Hydratation
     if (data)
@@ -1233,7 +1236,11 @@ export default class Graph extends EventEmitter {
       // Without edges, we've got no 'structure'
       this.clearIndex('structure');
 
-      // TODO: if index precomputed, activate it here
+      const index = this._indices.structure;
+
+      if (!index.lazy)
+        index.computed = true;
+
       return this;
     }
 
@@ -1271,10 +1278,12 @@ export default class Graph extends EventEmitter {
     this._order = 0;
     this._size = 0;
 
-    for (const name in this._indices)
-      this._indices[name].computed = false;
+    for (const name in this._indices) {
+      const index = this._indices[name];
 
-    // TODO: if index precomputed, activate it
+      if (index.lazy)
+        index.computed = false;
+    }
 
     // Emitting
     this.emit('cleared');

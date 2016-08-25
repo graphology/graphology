@@ -399,12 +399,12 @@ export default function edgesIteration(Graph, checkers) {
           assert.deepEqual(edges, data.all);
         },
 
-        // 'it should return a node\'s relevant self-loops.': function() {
-        //   const edges = graphWithSelfLoops[name](data.node.key);
+        'it should return a node\'s relevant self-loops.': function() {
+          const edges = graphWithSelfLoops[name](data.node.key);
 
-        //   assert.deepEqual(edges, data.node.loops);
-        //   assert.deepEqual(graphWithSelfLoops[name]('Alone'), []);
-        // }
+          assert.deepEqual(edges, data.node.loops);
+          assert.deepEqual(graphWithSelfLoops[name]('Alone'), []);
+        }
       },
 
       ['#.' + counterName]: {
@@ -414,12 +414,12 @@ export default function edgesIteration(Graph, checkers) {
           assert.strictEqual(nb, data.all.length);
         },
 
-        // 'it should count all the relevant self-loops of a node.': function() {
-        //   const nb = graphWithSelfLoops[counterName](data.node.key);
+        'it should count all the relevant self-loops of a node.': function() {
+          const nb = graphWithSelfLoops[counterName](data.node.key);
 
-        //   assert.strictEqual(nb, data.node.loops.length);
-        //   assert.deepEqual(graphWithSelfLoops[counterName]('Alone'), 0);
-        // }
+          assert.strictEqual(nb, data.node.loops.length);
+          assert.deepEqual(graphWithSelfLoops[counterName]('Alone'), 0);
+        }
       }
     };
   }

@@ -4,7 +4,7 @@
 
 To be efficient, it is likely that most implementations will rely on internal indices.
 
-But, since this part is likely to be reference-related rather than enforced by the present specifications, we cannot enforce more than some generic methods and a way to provide some configuration if needed.
+But, since this part is likely to be implementation-related rather than enforced by the present specifications, we cannot describe more than some generic methods and a way to provide configuration if needed.
 
 ## Reference implementation
 
@@ -14,19 +14,15 @@ By default, to avoid useless memory consumption, those indices are not computed 
 
 But one remains free to customize the indices behavior to better fit their needs.
 
-By default then, indices are lazily computed, full and synchronized.
-
 To customize an index' behavior, one must provide some configuration to the graph thusly:
 
 ```js
 {
-  precomputed: false,
-  synchronized: false
+  lazy: false
 }
 ```
 
-* **precomputed** <span class="code">[boolean]</span> <span class="default">false</span>: Should the index be computed ahead of time or should it be computed when it becomes necessary?
-* **synchronized** <span class="code">boolean</span> <span class="default">false</span>: Should the index be automatically synchronized when needed after being computed the first time, or should it be lazily synchronized?
+* **lazy** <span class="code">[boolean]</span> <span class="default">false</span>: Should the index be computed ahead of time or should it be computed only when it becomes necessary?
 
 ### Example
 
@@ -35,8 +31,7 @@ Let's customize our graph indices' generation:
 ```js
 const configuration = {
   structure: {
-    precomputed: true,
-    synchronized: true
+    lazy: true
   }
 };
 
