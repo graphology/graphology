@@ -22,6 +22,12 @@ const METHODS = [
   'undirectedEdges'
 ];
 
+const SELF_LOOPS_METHODS = [
+  'selfLoops'
+];
+
+const ALL_METHODS = METHODS.concat(SELF_LOOPS_METHODS);
+
 export default function edgesIteration(Graph, checkers) {
   const {
     invalid,
@@ -261,6 +267,23 @@ export default function edgesIteration(Graph, checkers) {
     }
   };
 
+  const graphWithSelfLoops = new Graph(null, {multi: true});
+  graphWithSelfLoops.addNodesFrom(['John', 'Tabitha', 'Alone']);
+  graphWithSelfLoops.addEdgeWithKey('J->T', 'John', 'Tabitha');
+  graphWithSelfLoops.addEdgeWithKey('J1', 'John', 'John');
+  graphWithSelfLoops.addEdgeWithKey('J2', 'John', 'John');
+  graphWithSelfLoops.addEdgeWithKey('T1', 'Tabitha', 'Tabitha');
+
+  const SELF_LOOPS_TEST_DATA = {
+    selfLoops: {
+      all: ['J1', 'J2', 'T1'],
+      node: {
+        key: 'John',
+        loops: ['J1', 'J2']
+      }
+    }
+  };
+
   function commonTests(name) {
     return {
       ['#.' + name]: {
@@ -365,15 +388,53 @@ export default function edgesIteration(Graph, checkers) {
     };
   }
 
+  function selfLoopsTests(name, data) {
+    const counterName = 'count' + capitalize(name);
+
+    return {
+      ['#.' + name]: {
+        'it should return all the relevant edges.': function() {
+          const edges = graphWithSelfLoops[name]();
+
+          assert.deepEqual(edges, data.all);
+        },
+
+        // 'it should return a node\'s relevant self-loops.': function() {
+        //   const edges = graphWithSelfLoops[name](data.node.key);
+
+        //   assert.deepEqual(edges, data.node.loops);
+        //   assert.deepEqual(graphWithSelfLoops[name]('Alone'), []);
+        // }
+      },
+
+      ['#.' + counterName]: {
+        'it should count all the relevant edges.': function() {
+          const nb = graphWithSelfLoops[counterName]();
+
+          assert.strictEqual(nb, data.all.length);
+        },
+
+        // 'it should count all the relevant self-loops of a node.': function() {
+        //   const nb = graphWithSelfLoops[counterName](data.node.key);
+
+        //   assert.strictEqual(nb, data.node.loops.length);
+        //   assert.deepEqual(graphWithSelfLoops[counterName]('Alone'), 0);
+        // }
+      }
+    };
+  }
+
   const tests = {};
 
   // Common tests
-  METHODS.forEach(name => deepMerge(tests, commonTests(name)));
-  METHODS.forEach(name => deepMerge(tests, commonTests('count' + capitalize(name))));
+  ALL_METHODS.forEach(name => deepMerge(tests, commonTests(name)));
+  ALL_METHODS.forEach(name => deepMerge(tests, commonTests('count' + capitalize(name))));
 
   // Specific tests
   for (const name in TEST_DATA)
     deepMerge(tests, specificTests(name, TEST_DATA[name]));
+  for (const name in SELF_LOOPS_TEST_DATA)
+    deepMerge(tests, selfLoopsTests(name, SELF_LOOPS_TEST_DATA[name]));
 
   return tests;
 }

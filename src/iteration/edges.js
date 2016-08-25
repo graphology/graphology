@@ -58,6 +58,11 @@ const EDGES_ITERATION = [
     name: 'undirectedEdges',
     counter: 'countUndirectedEdges',
     type: 'undirected'
+  },
+  {
+    name: 'selfLoops',
+    counter: 'countSelfLoops',
+    type: 'selfLoops'
   }
 ];
 
@@ -211,7 +216,10 @@ function createEdgeArray(count, graph, type) {
 
     graph._edges.forEach((data, edge) => {
 
-      if (data.undirected === (type === 'undirected')) {
+      if (
+        ((type === 'selfLoops') === (data.source === data.target)) &&
+        (data.undirected === (type === 'undirected'))
+      ) {
 
         if (!count)
           list.push(edge);
@@ -227,7 +235,10 @@ function createEdgeArray(count, graph, type) {
     for (const edge in graph._edges) {
       const data = graph._edges[edge];
 
-      if (data.undirected === (type === 'undirected')) {
+      if (
+        ((type === 'selfLoops') === (data.source === data.target)) &&
+        (data.undirected === (type === 'undirected'))
+      ) {
 
         if (!count)
           list.push(edge);
