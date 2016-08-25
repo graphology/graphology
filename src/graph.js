@@ -6,6 +6,8 @@
  *
  * Note: Even if the implementation could beneficiate from an abstraction
  * over the object/map manipulation, it does not for performance reasons.
+ * Another solution would be to split the classes but this would have quite
+ * a cost on the implementation.
  */
 import {EventEmitter} from 'events';
 
@@ -49,6 +51,7 @@ import {
 // TODO: add method to check if edge is self loop & iteration methods etc. (#.selfLoop(edge), #.selfLoops(nothingOrNodeOrBunch) #.countSelfLoops)
 // TODO: differentiate index structure simple/multi for performance?
 // TODO: finish options (indices)
+// TODO: keep RAM by not setting undirected on internal data
 
 /**
  * Enums.
@@ -675,6 +678,23 @@ export default class Graph extends EventEmitter {
       this._edges[edge].undirected;
 
     return !undirected;
+  }
+
+  /**
+   * Method returning whether the given edge is a self loop.
+   *
+   * @param  {any}     edge - The edge's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the edge isn't in the graph.
+   */
+  selfLoop(edge) {
+    if (!this.hasEdge(edge))
+      throw new NotFoundGraphError(`Graph.selfLoop: could not find the "${edge}" edge in the graph.`);
+
+    const data = this.map ? this._edges.get(edge) : this._edges[edge];
+
+    return data.source === data.target;
   }
 
   /**---------------------------------------------------------------------------

@@ -318,7 +318,29 @@ export default function read(Graph, checkers) {
 
         assert.strictEqual(graph.undirected(directedEdge), false);
         assert.strictEqual(graph.undirected(undirectedEdge), true);
-      }
+      },
+    },
+
+    '#.selfLoop': {
+      'it should throw if the edge is not in the graph.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.selfLoop('test');
+        }, notFound());
+      },
+
+      'it should correctly return whether the edge is a self-loop or not.': function() {
+        const graph = new Graph();
+        graph.addNode('John');
+        graph.addNode('Rachel');
+
+        const selfLoop = graph.addDirectedEdge('John', 'John'),
+              edge = graph.addUndirectedEdge('John', 'Rachel');
+
+        assert.strictEqual(graph.selfLoop(selfLoop), true);
+        assert.strictEqual(graph.selfLoop(edge), false);
+      },
     },
 
     'Degree': {
