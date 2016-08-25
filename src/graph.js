@@ -48,8 +48,7 @@ import {
   uuid
 } from './utils';
 
-// TODO: add method to check if edge is self loop & iteration methods etc. (#.selfLoop(edge), #.selfLoops(nothingOrNodeOrBunch) #.countSelfLoops)
-// TODO: differentiate index structure simple/multi for performance?
+// TODO: finish #.selfLoops
 // TODO: finish options (indices)
 
 /**
