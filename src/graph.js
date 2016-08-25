@@ -48,7 +48,6 @@ import {
 
 // TODO: add method to check if edge is self loop & iteration methods etc. (#.selfLoop(edge), #.selfLoops(nothingOrNodeOrBunch) #.countSelfLoops)
 // TODO: differentiate index structure simple/multi for performance?
-// TODO: dropEdge & dropEdges arity 2
 // TODO: finish options (indices)
 
 /**
@@ -1168,13 +1167,7 @@ export default class Graph extends EventEmitter {
   /**
    * Method used to drop a bunch of nodes or every node from the graph.
    *
-   * Arity 1:
    * @param  {bunch} nodes - Bunch of nodes.
-   *
-   * Arity 2:
-   * @param  {any}    source - Source node.
-   * @param  {any}    target - Target node.
-   *
    * @return {Graph}
    *
    * @throws {Error} - Will throw if an invalid bunch is provided.
@@ -1197,7 +1190,13 @@ export default class Graph extends EventEmitter {
   /**
    * Method used to drop a bunch of edges or every edges from the graph.
    *
+   * Arity 1:
    * @param  {bunch} edges - Bunch of edges.
+   *
+   * Arity 2:
+   * @param  {any}    source - Source node.
+   * @param  {any}    target - Target node.
+   *
    * @return {Graph}
    *
    * @throws {Error} - Will throw if an invalid bunch is provided.
@@ -1215,6 +1214,13 @@ export default class Graph extends EventEmitter {
 
       // TODO: if index precomputed, activate it here
       return this;
+    }
+
+    if (arguments.length === 2) {
+      const source = arguments[0],
+            target = arguments[1];
+
+      edges = this.edges(source, target);
     }
 
     if (!isBunch(edges))

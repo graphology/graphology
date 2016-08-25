@@ -272,11 +272,24 @@ export default function mutation(Graph, checkers) {
 
     '#.dropEdge': {
 
-      'it should throw if the edge is not found in the graph.': function() {
+      'it should throw if the edge or nodes in the path are not found in the graph.': function() {
         const graph = new Graph();
+        graph.addNodesFrom(['John', 'Martha']);
 
         assert.throws(function() {
           graph.dropEdge('Test');
+        }, notFound());
+
+        assert.throws(function() {
+          graph.dropEdge('Forever', 'Alone');
+        }, notFound());
+
+        assert.throws(function() {
+          graph.dropEdge('John', 'Test');
+        }, notFound());
+
+        assert.throws(function() {
+          graph.dropEdge('John', 'Martha');
         }, notFound());
       },
 
@@ -292,6 +305,21 @@ export default function mutation(Graph, checkers) {
         assert.strictEqual(graph.degree('John'), 0);
         assert.strictEqual(graph.degree('Margaret'), 0);
         assert.strictEqual(graph.hasEdge(edge), false);
+        assert.strictEqual(graph.hasDirectedEdge('John', 'Margaret'), false);
+      },
+
+      'it should be possible to remove an edge using source & target.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Margaret']);
+        graph.addEdge('John', 'Margaret');
+
+        graph.dropEdge('John', 'Margaret');
+
+        assert.strictEqual(graph.order, 2);
+        assert.strictEqual(graph.size, 0);
+        assert.strictEqual(graph.degree('John'), 0);
+        assert.strictEqual(graph.degree('Margaret'), 0);
+        assert.strictEqual(graph.hasEdge('John', 'Margaret'), false);
         assert.strictEqual(graph.hasDirectedEdge('John', 'Margaret'), false);
       }
     },
@@ -360,6 +388,23 @@ export default function mutation(Graph, checkers) {
         assert.strictEqual(graph.hasNode('Lindsay'), true);
         assert.strictEqual(graph.hasNode('Martha'), true);
         assert.strictEqual(graph.hasEdge(edge), false);
+      },
+
+      'it should drop every edges between source & target.': function() {
+        const graph = new Graph(null, {multi: true});
+
+        graph.addNodesFrom(['Lindsay', 'Martha']);
+        graph.addEdge('Lindsay', 'Martha');
+        graph.addEdge('Lindsay', 'Martha');
+
+        assert.strictEqual(graph.size, 2);
+        assert.strictEqual(graph.countEdges('Lindsay', 'Martha'), 2);
+
+        graph.dropEdges('Lindsay', 'Martha');
+
+        assert.strictEqual(graph.order, 2);
+        assert.strictEqual(graph.size, 0);
+        assert.strictEqual(graph.countEdges('Lindsay', 'Martha'), 0);
       }
     },
 
