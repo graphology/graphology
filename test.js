@@ -8,6 +8,7 @@ import specs from './tests';
 import util from 'util';
 import Graph from './src';
 
-util.inspect.defaultOptions.depth = null;
+if (util.inspect.defaultOptions)
+  util.inspect.defaultOptions.depth = null;
 
 module.exports = specs(Graph, Graph);
