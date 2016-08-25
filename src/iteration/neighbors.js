@@ -16,8 +16,6 @@ import {
   overBunch
 } from '../utils';
 
-// TODO: use boolean constants for direction & type to optimize?
-
 /**
  * Definitions.
  */
@@ -25,47 +23,40 @@ const NEIGHBORS_ITERATION = [
   {
     name: 'neighbors',
     counter: 'countNeighbors',
-    element: 'Neighbor',
     type: 'mixed'
   },
   {
     name: 'inNeighbors',
     counter: 'countInNeighbors',
-    element: 'InNeighbor',
     type: 'directed',
     direction: 'in'
   },
   {
     name: 'outNeighbors',
     counter: 'countOutNeighbors',
-    element: 'OutNeighbor',
     type: 'directed',
     direction: 'out'
   },
   {
     name: 'inboundNeighbors',
     counter: 'countInboundNeighbors',
-    element: 'InboundNeighbor',
     type: 'mixed',
     direction: 'in'
   },
   {
     name: 'outboundNeighbors',
     counter: 'countOutboundNeighbors',
-    element: 'OutboundNeighbor',
     type: 'mixed',
     direction: 'out'
   },
   {
     name: 'directedNeighbors',
     counter: 'countDirectedNeighbors',
-    element: 'DirectedNeighbor',
     type: 'directed'
   },
   {
     name: 'undirectedNeighbors',
     counter: 'countUndirectedNeighbors',
-    element: 'UndirectedNeighbor',
     type: 'undirected'
   }
 ];
