@@ -52,6 +52,7 @@ import {
 // TODO: check that the degree calculation is legit related to self-loops
 // TODO: explore the hypergraph conundrum
 // TODO: lazily create attributes object
+// TODO: split docs somewhere else
 
 /**
  * Enums.
@@ -381,7 +382,12 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_edges', options.map ? new Map() : {});
     privateProperty(this, '_indices', {
       structure: {
-        lazy: options.indices && options.indices.structure && options.indices.structure.lazy || false,
+        lazy: (
+          options.indices &&
+          options.indices.structure &&
+          options.indices.structure.lazy ||
+          false
+        ),
         computed: false
       }
     });
