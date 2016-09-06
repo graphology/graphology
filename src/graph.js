@@ -49,12 +49,25 @@ import {
 } from './utils';
 
 // TODO: finish #.selfLoops (bunch iteration only)
+// TODO: fix result of #.inspect
+// TODO: check that the degree calculation is legit related to self-loops
+// TODO: explore the hypergraph conundrum
 
 /**
  * Enums.
  */
-const TYPES = new BasicSet(['directed', 'undirected', 'mixed']),
-      EMITTER_PROPS = new BasicSet(['domain', '_events', '_eventsCount', '_maxListeners']);
+const TYPES = new BasicSet([
+  'directed',
+  'undirected',
+  'mixed'
+]);
+
+const EMITTER_PROPS = new BasicSet([
+  'domain',
+  '_events',
+  '_eventsCount',
+  '_maxListeners'
+]);
 
 /**
  * Default options.
@@ -70,6 +83,241 @@ const DEFAULTS = {
   onDuplicateNode: null,
   type: 'mixed'
 };
+
+/**
+ * Abstract functions used by the Graph class for various methods.
+ */
+
+/**
+ * Method updating the desired index.
+ *
+ * @param  {Graph}  graph     - Target graph.
+ * @param  {string} name      - Name of the index to compute.
+ * @param  {mixed}  [...args] - Additional arguments.
+ * @return {Graph}            - Returns itself for chaining.
+ *
+ * @throw  {Error} - Will throw if the index doesn't exist.
+ */
+function updateIndex(graph, name, ...args) {
+  if (name === 'structure') {
+    const index = graph._indices.structure;
+
+    if (!index.computed)
+      return graph;
+
+    const [edge, data] = args;
+
+    updateStructureIndex(graph, edge, data);
+  }
+
+  return graph;
+}
+
+/**
+ * Method used to clear an edge from the desired index to clear memory.
+ *
+ * @param  {Graph}  graph - Target graph.
+ * @param  {string} name  - Name of the index to update.
+ * @param  {any}    edge  - Target edge.
+ * @param  {object} data  - Former attached data.
+ * @return {Graph}        - Returns itself for chaining.
+ *
+ * @throw  {Error} - Will throw if the index doesn't exist.
+ */
+function clearEdgeFromIndex(graph, name, edge, data) {
+  if (name === 'structure') {
+    const index = graph._indices.structure;
+
+    if (!index.computed)
+      return graph;
+
+    clearEdgeFromStructureIndex(graph, edge, data);
+  }
+
+  return graph;
+}
+
+/**
+ * Internal method used to add an arbitrary edge to the given graph.
+ *
+ * @param  {Graph}   graph        - Target graph.
+ * @param  {string}  name         - Name of the child method for errors.
+ * @param  {boolean} undirected   - Whether the edge is undirected.
+ * @param  {any}     edge         - The edge's key.
+ * @param  {any}     source       - The source node.
+ * @param  {any}     target       - The target node.
+ * @param  {object}  [attributes] - Optional attributes.
+ * @return {any}                  - The edge.
+ *
+ * @throws {Error} - Will throw if the graph is of the wrong type.
+ * @throws {Error} - Will throw if the given attributes are not an object.
+ * @throws {Error} - Will throw if source or target doesn't exist.
+ * @throws {Error} - Will throw if the edge already exist.
+ */
+function addEdge(graph, name, undirected, edge, source, target, attributes) {
+
+  if (!undirected && graph.type === 'undirected')
+    throw new UsageGraphError(`Graph.${name}: you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.`);
+
+  if (undirected && graph.type === 'directed')
+    throw new UsageGraphError(`Graph.${name}: you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.`);
+
+  if (attributes && !isPlainObject(attributes))
+    throw new InvalidArgumentsGraphError(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
+
+  if (!graph.hasNode(source))
+    throw new NotFoundGraphError(`Graph.${name}: source node "${source}" not found.`);
+
+  if (!graph.hasNode(target))
+    throw new NotFoundGraphError(`Graph.${name}: target node "${target}" not found.`);
+
+  if (!graph.allowSelfLoops && source === target)
+    throw new UsageGraphError(`Graph.${name}: source & target are the same, thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
+
+  const canHandleDuplicate = typeof graph._options.onDuplicateEdge === 'function';
+  let mustHandleDuplicate = false;
+
+  if (graph.hasEdge(edge)) {
+    if (!canHandleDuplicate)
+      throw new UsageGraphError(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
+    else
+      mustHandleDuplicate = true;
+  }
+
+  if (
+    !graph.multi &&
+    (
+      undirected ?
+        graph.hasUndirectedEdge(source, target) :
+        graph.hasDirectedEdge(source, target)
+    )
+  ) {
+    if (!canHandleDuplicate)
+      throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option. The 'onDuplicateEdge' option might also interest you.`);
+    else
+      mustHandleDuplicate = true;
+  }
+
+  // Protecting the attributes
+  attributes = assign({}, graph._options.defaultEdgeAttributes, attributes);
+
+  // Handling duplicates
+  if (mustHandleDuplicate) {
+
+    // TODO: decide whether to stock that id was generated and what to pass
+    // here
+    graph._options.onDuplicateEdge(
+      graph,
+      {
+        key: edge,
+        attributes,
+        source,
+        target,
+        undirected
+      }
+    );
+
+    return edge;
+  }
+
+  // Storing some data
+  const data = {
+    attributes,
+    source,
+    target
+  };
+
+  // NOTE: only adding the 'undirected' key if needed
+  if (undirected)
+    data.undirected = true;
+
+  if (graph.map)
+    graph._edges.set(edge, data);
+  else
+    graph._edges[edge] = data;
+
+  // Incrementing size
+  graph._size++;
+
+  // Incrementing node counters
+  const sourceData = graph.map ? graph._nodes.get(source) : graph._nodes[source],
+        targetData = graph.map ? graph._nodes.get(target) : graph._nodes[target];
+
+  if (source === target) {
+    sourceData.selfLoops++;
+  }
+  else {
+    if (undirected) {
+      sourceData.undirectedDegree++;
+      targetData.undirectedDegree++;
+    }
+    else {
+      sourceData.outDegree++;
+      targetData.inDegree++;
+    }
+  }
+
+  // Updating relevant indexes
+  updateIndex(graph, 'structure', edge, data);
+
+  // Emitting
+  graph.emit('edgeAdded', {
+    key: edge,
+    source,
+    target,
+    attributes,
+    undirected
+  });
+
+  return edge;
+}
+
+/**
+ * Internal method abstracting edges export.
+ *
+ * @param  {Graph}    graph     - Target graph.
+ * @param  {string}   name      - Child method name.
+ * @param  {function} predicate - Predicate to filter the bunch's edges.
+ * @param  {mixed}    [bunch]   - Target edges.
+ * @return {array[]}            - The serialized edges.
+ *
+ * @throws {Error} - Will throw if any of the edges is not found.
+ */
+function exportEdges(graph, name, predicate, bunch) {
+  let edges = [];
+
+  if (!bunch) {
+
+    // Exporting every edges of the given type
+    if (name === 'exportEdges')
+      edges = graph.edges();
+    else if (name === 'exportDirectedEdges')
+      edges = graph.directedEdges();
+    else
+      edges = graph.undirectedEdges();
+  }
+  else {
+
+    // Exporting the bunch
+    if (!isBunch(bunch))
+      throw new InvalidArgumentsGraphError(`Graph.${name}: invalid bunch.`);
+
+    overBunch(bunch, (error, edge) => {
+      if (!graph.hasEdge(edge))
+        throw new NotFoundGraphError(`Graph.${name}: could not find the "${edge}" edge from the bunch in the graph.`);
+
+      if (!predicate || predicate(edge))
+        edges.push(edge);
+    });
+  }
+
+  const serializedEdges = new Array(edges.length);
+
+  for (let i = 0, l = edges.length; i < l; i++)
+    serializedEdges[i] = graph.exportEdge(edges[i]);
+
+  return serializedEdges;
+}
 
 /**
  * Graph class
@@ -142,10 +390,6 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_options', options);
 
     // Methods
-    privateProperty(this, '_addEdge', this._addEdge);
-    privateProperty(this, '_exportEdges', this._exportEdges);
-    privateProperty(this, '_updateIndex', this._updateIndex);
-    privateProperty(this, '_clearEdgeFromIndex', this._clearEdgeFromIndex);
     privateProperty(this, 'internals', this.internals);
 
     //-- Properties readers
@@ -790,140 +1034,6 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Internal method used to add an arbitrary edge to the graph.
-   *
-   * @param  {string}  name         - Name of the child method for errors.
-   * @param  {boolean} undirected   - Whether the edge is undirected.
-   * @param  {any}     edge         - The edge's key.
-   * @param  {any}     source       - The source node.
-   * @param  {any}     target       - The target node.
-   * @param  {object}  [attributes] - Optional attributes.
-   * @return {any}                  - The edge.
-   *
-   * @throws {Error} - Will throw if the graph is undirected.
-   * @throws {Error} - Will throw if the given attributes are not an object.
-   * @throws {Error} - Will throw if source or target doesn't exist.
-   * @throws {Error} - Will throw if the edge already exist.
-   */
-  _addEdge(name, undirected, edge, source, target, attributes) {
-
-    if (!undirected && this.type === 'undirected')
-      throw new UsageGraphError(`Graph.${name}: you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.`);
-
-    if (undirected && this.type === 'directed')
-      throw new UsageGraphError(`Graph.${name}: you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.`);
-
-    if (attributes && !isPlainObject(attributes))
-      throw new InvalidArgumentsGraphError(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
-
-    if (!this.hasNode(source))
-      throw new NotFoundGraphError(`Graph.${name}: source node "${source}" not found.`);
-
-    if (!this.hasNode(target))
-      throw new NotFoundGraphError(`Graph.${name}: target node "${target}" not found.`);
-
-    if (!this.allowSelfLoops && source === target)
-      throw new UsageGraphError(`Graph.${name}: source & target are the same, thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
-
-    const canHandleDuplicate = typeof this._options.onDuplicateEdge === 'function';
-    let mustHandleDuplicate = false;
-
-    if (this.hasEdge(edge)) {
-      if (!canHandleDuplicate)
-        throw new UsageGraphError(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
-      else
-        mustHandleDuplicate = true;
-    }
-
-    if (
-      !this.multi &&
-      (
-        undirected ?
-          this.hasUndirectedEdge(source, target) :
-          this.hasDirectedEdge(source, target)
-      )
-    ) {
-      if (!canHandleDuplicate)
-        throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option. The 'onDuplicateEdge' option might also interest you.`);
-      else
-        mustHandleDuplicate = true;
-    }
-
-    // Protecting the attributes
-    attributes = assign({}, this._options.defaultEdgeAttributes, attributes);
-
-    // Handling duplicates
-    if (mustHandleDuplicate) {
-
-      // TODO: decide whether to stock that id was generated and what to pass
-      // here
-      this._options.onDuplicateEdge(
-        this,
-        {
-          key: edge,
-          attributes,
-          source,
-          target,
-          undirected
-        }
-      );
-
-      return edge;
-    }
-
-    // Storing some data
-    const data = {
-      attributes,
-      source,
-      target
-    };
-
-    // NOTE: only adding the 'undirected' key if needed
-    if (undirected)
-      data.undirected = true;
-
-    if (this.map)
-      this._edges.set(edge, data);
-    else
-      this._edges[edge] = data;
-
-    // Incrementing size
-    this._size++;
-
-    // Incrementing node counters
-    const sourceData = this.map ? this._nodes.get(source) : this._nodes[source],
-          targetData = this.map ? this._nodes.get(target) : this._nodes[target];
-
-    if (source === target) {
-      sourceData.selfLoops++;
-    }
-    else {
-      if (undirected) {
-        sourceData.undirectedDegree++;
-        targetData.undirectedDegree++;
-      }
-      else {
-        sourceData.outDegree++;
-        targetData.inDegree++;
-      }
-    }
-
-    // Updating relevant indexes
-    this._updateIndex('structure', edge, data);
-
-    // Emitting
-    this.emit('edgeAdded', {
-      key: edge,
-      source,
-      target,
-      attributes,
-      undirected
-    });
-
-    return edge;
-  }
-
-  /**
    * Method used to add an edge of the type of the graph or directed if the
    * graph is mixed using the given key.
    *
@@ -934,7 +1044,8 @@ export default class Graph extends EventEmitter {
    * @return {any}                 - The edge.
    */
   addEdgeWithKey(edge, source, target, attributes) {
-    return this._addEdge(
+    return addEdge(
+      this,
       'addEdgeWithKey',
       this.type === 'undirected',
       edge,
@@ -954,7 +1065,8 @@ export default class Graph extends EventEmitter {
    * @return {any}                 - The edge.
    */
   addDirectedEdgeWithKey(edge, source, target, attributes) {
-    return this._addEdge(
+    return addEdge(
+      this,
       'addDirectedEdgeWithKey',
       false,
       edge,
@@ -974,7 +1086,8 @@ export default class Graph extends EventEmitter {
    * @return {any}                 - The edge.
    */
   addUndirectedEdgeWithKey(edge, source, target, attributes) {
-    return this._addEdge(
+    return addEdge(
+      this,
       'addUndirectedEdgeWithKey',
       true,
       edge,
@@ -1002,7 +1115,8 @@ export default class Graph extends EventEmitter {
       attributes
     );
 
-    return this._addEdge(
+    return addEdge(
+      this,
       'addEdge',
       this.type === 'undirected',
       edge,
@@ -1031,7 +1145,8 @@ export default class Graph extends EventEmitter {
       attributes
     );
 
-    return this._addEdge(
+    return addEdge(
+      this,
       'addDirectedEdge',
       false,
       edge,
@@ -1060,7 +1175,8 @@ export default class Graph extends EventEmitter {
       attributes
     );
 
-    return this._addEdge(
+    return addEdge(
+      this,
       'addUndirectedEdge',
       true,
       edge,
@@ -1174,7 +1290,7 @@ export default class Graph extends EventEmitter {
     }
 
     // Clearing index
-    this._clearEdgeFromIndex('structure', edge, data);
+    clearEdgeFromIndex(this, 'structure', edge, data);
 
     // Emitting
     this.emit('edgeDropped', {
@@ -1384,52 +1500,6 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Internal method abstracting edges export.
-   *
-   * @param  {string}   name      - Child method name.
-   * @param  {function} predicate - Predicate to filter the bunch's edges.
-   * @param  {mixed}    [bunch]   - Target edges.
-   * @return {array[]}            - The serialized edges.
-   *
-   * @throws {Error} - Will throw if any of the edges is not found.
-   */
-  _exportEdges(name, predicate, bunch) {
-    let edges = [];
-
-    if (!bunch) {
-
-      // Exporting every edges of the given type
-      if (name === 'exportEdges')
-        edges = this.edges();
-      else if (name === 'exportDirectedEdges')
-        edges = this.directedEdges();
-      else
-        edges = this.undirectedEdges();
-    }
-    else {
-
-      // Exporting the bunch
-      if (!isBunch(bunch))
-        throw new InvalidArgumentsGraphError(`Graph.${name}: invalid bunch.`);
-
-      overBunch(bunch, (error, edge) => {
-        if (!this.hasEdge(edge))
-          throw new NotFoundGraphError(`Graph.${name}: could not find the "${edge}" edge from the bunch in the graph.`);
-
-        if (!predicate || predicate(edge))
-          edges.push(edge);
-      });
-    }
-
-    const serializedEdges = new Array(edges.length);
-
-    for (let i = 0, l = edges.length; i < l; i++)
-      serializedEdges[i] = this.exportEdge(edges[i]);
-
-    return serializedEdges;
-  }
-
-  /**
    * Method exporting every edges or the bunch ones.
    *
    * @param  {mixed}   [bunch] - Target edges.
@@ -1438,7 +1508,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if any of the edges is not found.
    */
   exportEdges(bunch) {
-    return this._exportEdges(
+    return exportEdges(
+      this,
       'exportEdges',
       null,
       bunch
@@ -1454,7 +1525,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if any of the edges is not found.
    */
   exportDirectedEdges(bunch) {
-    return this._exportEdges(
+    return exportEdges(
+      this,
       'exportDirectedEdges',
       edge => this.directed(edge),
       bunch
@@ -1471,7 +1543,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if any of the edges is not found.
    */
   exportUndirectedEdges(bunch) {
-    return this._exportEdges(
+    return exportEdges(
+      this,
       'exportUndirectedEdges',
       edge => this.undirected(edge),
       bunch
@@ -1682,65 +1755,12 @@ export default class Graph extends EventEmitter {
       index.computed = true;
 
       if (this.map) {
-        this._edges.forEach((data, edge) => this._updateIndex(name, edge, data));
+        this._edges.forEach((data, edge) => updateIndex(this, name, edge, data));
       }
       else {
         for (const edge in this._edges)
-          this._updateIndex(name, edge, this._edges[edge]);
+          updateIndex(this, name, edge, this._edges[edge]);
       }
-    }
-
-    return this;
-  }
-
-  /**
-   * Method updating the desired index.
-   *
-   * @param  {string} name      - Name of the index to compute.
-   * @param  {mixed}  [...args] - Additional arguments.
-   * @return {Graph}            - Returns itself for chaining.
-   *
-   * @throw  {Error} - Will throw if the index doesn't exist.
-   */
-  _updateIndex(name, ...args) {
-    if (!INDICES.has(name))
-      throw new InvalidArgumentsGraphError(`Graph._updateIndex: unknown "${name}" index.`);
-
-    if (name === 'structure') {
-      const index = this._indices.structure;
-
-      if (!index.computed)
-        return this;
-
-      const [edge, data] = args;
-
-      updateStructureIndex(this, edge, data);
-    }
-
-    return this;
-  }
-
-  /**
-   * Method used to clear an edge from the desired index to clear memory.
-   *
-   * @param  {string} name - Name of the index to update.
-   * @param  {any}    edge - Target edge.
-   * @param  {object} data - Former attached data.
-   * @return {Graph}       - Returns itself for chaining.
-   *
-   * @throw  {Error} - Will throw if the index doesn't exist.
-   */
-  _clearEdgeFromIndex(name, edge, data) {
-    if (!INDICES.has(name))
-      throw new InvalidArgumentsGraphError(`Graph._clearEdgeFromIndex: unknown "${name}" index.`);
-
-    if (name === 'structure') {
-      const index = this._indices.structure;
-
-      if (!index.computed)
-        return this;
-
-      clearEdgeFromStructureIndex(this, edge, data);
     }
 
     return this;
