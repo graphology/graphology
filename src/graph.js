@@ -53,6 +53,10 @@ import {
 // TODO: explore the hypergraph conundrum
 // TODO: lazily create attributes object
 // TODO: split docs somewhere else
+// TODO: basic tests concerning event emitter API
+// TODO: add #.removeNodeAttribute, #.hasNodeAttribute
+// TODO: solve the #.merge conundrum
+// TODO: add the option adding nodes when creating edges if non-existent
 
 /**
  * Enums.
@@ -1914,11 +1918,11 @@ export default class Graph extends EventEmitter {
 }
 
 /**
- * Attaching iteration methods to the prototype.
+ * Attaching methods to the prototype.
  *
- * Here, we create iteration methods for every kind of iteration by attaching
- * them to the Graph class prototype rather than writing a lot of custom methods
- * one by one.
+ * Here, we are attaching a wide variety of methods to the Graph class'
+ * prototype when those are very numerous and when their creation is
+ * abstracted.
  */
 
 /**
