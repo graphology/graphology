@@ -49,9 +49,9 @@ import {
 } from './utils';
 
 // TODO: finish #.selfLoops (bunch iteration only)
-// TODO: fix result of #.inspect
 // TODO: check that the degree calculation is legit related to self-loops
 // TODO: explore the hypergraph conundrum
+// TODO: lazily create attributes object
 
 /**
  * Enums.
@@ -1880,7 +1880,9 @@ export default class Graph extends EventEmitter {
     const dummy = {};
 
     for (const k in this) {
-      if (this.hasOwnProperty(k) && !EMITTER_PROPS.has(k))
+      if (this.hasOwnProperty(k) &&
+          !EMITTER_PROPS.has(k) &&
+          typeof this[k] !== 'function')
         dummy[k] = this[k];
     }
 
