@@ -6,7 +6,7 @@
  */
 import {BasicSet} from './utils';
 
-export const INDICES = new BasicSet(['structure', 'neighbors']);
+export const INDICES = new BasicSet(['structure']);
 
 /**
  * Structure.

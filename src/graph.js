@@ -50,9 +50,7 @@ import {
 
 // TODO: finish #.selfLoops (bunch iteration only)
 // TODO: check that the degree calculation is legit related to self-loops
-// TODO: explore the hypergraph conundrum
 // TODO: lazily create attributes object
-// TODO: basic tests concerning event emitter API
 // TODO: add #.removeNodeAttribute, #.hasNodeAttribute
 // TODO: solve the #.merge conundrum
 // TODO: add the option adding nodes when creating edges if non-existent
