@@ -52,7 +52,6 @@ import {
 // TODO: check that the degree calculation is legit related to self-loops
 // TODO: explore the hypergraph conundrum
 // TODO: lazily create attributes object
-// TODO: split docs somewhere else
 // TODO: basic tests concerning event emitter API
 // TODO: add #.removeNodeAttribute, #.hasNodeAttribute
 // TODO: solve the #.merge conundrum
