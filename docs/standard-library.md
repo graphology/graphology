@@ -1,15 +1,20 @@
 # Standard Library
 
-WIP: reflexions on a standard library roadmap & structure.
+Reflexions on the standard library functions to develop & their related namespaces.
 
-## Structure
-
-* `components`
-  * `connectivity`
-* `operators`
+* `graphology-centrality`
+* `graphology-components`
+* `graphology-generators`
+* `graphology-layout`
+  * `forceAtlas2`
+* `graphology-link-analysis`
+  * `hits`
+  * `page-rank`
+* `graphology-operators`
   * `reverse`
-* `utils`
-  * `equals`
+* `graphology-path`
+  * `a-star`
+  * `djikstra`
+* `graphology-utils`
   * `isGraph`
-  * `lazyIterator`
   * `subgraph`
