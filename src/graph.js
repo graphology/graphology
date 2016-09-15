@@ -309,7 +309,7 @@ function exportEdges(graph, name, predicate, bunch) {
     if (!isBunch(bunch))
       throw new InvalidArgumentsGraphError(`Graph.${name}: invalid bunch.`);
 
-    overBunch(bunch, (error, edge) => {
+    overBunch(bunch, edge => {
       if (!graph.hasEdge(edge))
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${edge}" edge from the bunch in the graph.`);
 
@@ -1038,7 +1038,7 @@ export default class Graph extends EventEmitter {
     if (!isBunch(bunch))
       throw new InvalidArgumentsGraphError(`Graph.addNodesFrom: invalid bunch provided ("${bunch}").`);
 
-    overBunch(bunch, (error, node, attributes) => {
+    overBunch(bunch, (node, attributes) => {
       this.addNode(node, attributes);
     });
 
@@ -1332,7 +1332,7 @@ export default class Graph extends EventEmitter {
     if (!isBunch(nodes))
       throw new InvalidArgumentsGraphError('Graph.dropNodes: invalid bunch.');
 
-    overBunch(nodes, (error, node) => {
+    overBunch(nodes, node => {
       this.dropNode(node);
     });
 
@@ -1382,7 +1382,7 @@ export default class Graph extends EventEmitter {
     if (!isBunch(edges))
       throw new InvalidArgumentsGraphError('Graph.dropEdges: invalid bunch.');
 
-    overBunch(edges, (error, edge) => {
+    overBunch(edges, edge => {
       this.dropEdge(edge);
     });
 
@@ -1496,7 +1496,7 @@ export default class Graph extends EventEmitter {
       if (!isBunch(bunch))
         throw new InvalidArgumentsGraphError('Graph.exportNodes: invalid bunch.');
 
-      overBunch(bunch, (error, node) => {
+      overBunch(bunch, node => {
         if (!this.hasNode(node))
           throw new NotFoundGraphError(`Graph.exportNodes: could not find the "${node}" node from the bunch in the graph.`);
         nodes.push(node);

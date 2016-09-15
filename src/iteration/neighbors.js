@@ -150,7 +150,7 @@ function createNeighborSetForBunch(name, graph, type, direction, bunch) {
 
   const neighbors = graph.map ? new Set() : new BasicSet();
 
-  overBunch(bunch, (error, node) => {
+  overBunch(bunch, node => {
     if (!graph.hasNode(node))
       throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph in the given bunch.`);
 

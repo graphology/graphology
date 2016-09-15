@@ -139,15 +139,12 @@ export function isPlainObject(value) {
  * @param {object}   bunch    - Target bunch.
  * @param {function} callback - Function to call.
  */
-
-// TODO: error management
-// TODO: support ES6 Maps as attributes
 export function overBunch(bunch, callback) {
 
   // Array iteration
   if (Array.isArray(bunch)) {
     for (let i = 0, l = bunch.length; i < l; i++) {
-      const shouldBreak = callback(null, bunch[i], {}) === false;
+      const shouldBreak = callback(bunch[i], {}) === false;
 
       if (shouldBreak)
         break;
@@ -160,9 +157,9 @@ export function overBunch(bunch, callback) {
       let shouldBreak = false;
 
       if (v === k)
-        shouldBreak = callback(null, v, {}) === false;
+        shouldBreak = callback(v, {}) === false;
       else
-        shouldBreak = callback(null, k, v) === false;
+        shouldBreak = callback(k, v) === false;
 
       if (shouldBreak)
         break;
@@ -174,7 +171,7 @@ export function overBunch(bunch, callback) {
     for (const key in bunch) {
       const attributes = bunch[key];
 
-      const shouldBreak = callback(null, key, attributes);
+      const shouldBreak = callback(key, attributes);
 
       if (shouldBreak)
         break;

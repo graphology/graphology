@@ -341,7 +341,7 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
   const edges = graph.map ? new Set() : new BasicSet;
 
   // Iterating over the bunch
-  overBunch(bunch, (error, node) => {
+  overBunch(bunch, node => {
     if (!graph.hasNode(node))
       throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph in the given bunch.`);
 
