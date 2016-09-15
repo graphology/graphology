@@ -1874,13 +1874,14 @@ export default class Graph extends EventEmitter {
         nodes[k] = Object.keys(attributes).length ? attributes : '<empty>';
       }
 
+      // TODO: refactor this part when Map refacto is done.
       for (const k in this._edges) {
         const value = this._edges[k];
 
         const formatted = [
           k,
           value.source,
-          value.undirected ? '<->' : '->',
+          value.undirected ? '~' : '->',
           value.target
         ];
 
