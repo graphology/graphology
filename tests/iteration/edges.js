@@ -1,6 +1,6 @@
 /**
  * Graphology Edges Iteration Specs
- * ================================
+ * =================================
  *
  * Testing the edges iteration-related methods of the graph.
  */

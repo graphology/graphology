@@ -1,6 +1,6 @@
 /**
  * Graphology Nodes Iteration Specs
- * ================================
+ * =================================
  *
  * Testing the nodes iteration-related methods of the graph.
  */
