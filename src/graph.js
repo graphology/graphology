@@ -51,9 +51,14 @@ import {
 // TODO: finish #.selfLoops (bunch iteration only)
 // TODO: check that the degree calculation is legit related to self-loops
 // TODO: lazily create attributes object
-// TODO: add #.removeNodeAttribute, #.hasNodeAttribute
 // TODO: solve the #.merge conundrum
 // TODO: add the option adding nodes when creating edges if non-existent
+// TODO: use Object.create(null) for node & edge index
+// TODO: drop map support (don't forget docs)
+// TODO: use writable false for read-only props that never change
+
+// TODO: drop GraphMap. use Map internally. coerce keys to string (what about Symbols). map order & size to internal maps' sizes
+// TODO: neighbor counting method are basically degree
 
 /**
  * Enums.

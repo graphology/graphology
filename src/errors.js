@@ -12,11 +12,6 @@ export class GraphError extends Error {
     this.name = 'GraphError';
     this.message = message || '';
     this.data = data || {};
-
-    // This is V8 specific to enhance stack readability
-    // TODO: tweak this part with real world examples
-    // if (typeof Error.captureStackTrace === 'function')
-    //   Error.captureStackTrace(this, this.constructor);
   }
 }
 
@@ -24,6 +19,10 @@ export class InvalidArgumentsGraphError extends GraphError {
   constructor(message, data) {
     super(message, data);
     this.name = 'InvalidArgumentsGraphError';
+
+    // This is V8 specific to enhance stack readability
+    if (typeof Error.captureStackTrace === 'function')
+      Error.captureStackTrace(this, InvalidArgumentsGraphError.prototype.constructor);
   }
 }
 
@@ -31,6 +30,10 @@ export class NotFoundGraphError extends GraphError {
   constructor(message, data) {
     super(message, data);
     this.name = 'NotFoundGraphError';
+
+    // This is V8 specific to enhance stack readability
+    if (typeof Error.captureStackTrace === 'function')
+      Error.captureStackTrace(this, NotFoundGraphError.prototype.constructor);
   }
 }
 
@@ -38,5 +41,9 @@ export class UsageGraphError extends GraphError {
   constructor(message, data) {
     super(message, data);
     this.name = 'UsageGraphError';
+
+    // This is V8 specific to enhance stack readability
+    if (typeof Error.captureStackTrace === 'function')
+      Error.captureStackTrace(this, UsageGraphError.prototype.constructor);
   }
 }
