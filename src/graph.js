@@ -406,9 +406,6 @@ export default class Graph extends EventEmitter {
     // Options
     privateProperty(this, '_options', options);
 
-    // Methods
-    privateProperty(this, 'internals', this.internals);
-
     //-- Properties readers
     readOnlyProperty(this, 'order', () => this._order);
     readOnlyProperty(this, 'size', () => this._size);
@@ -1909,18 +1906,6 @@ export default class Graph extends EventEmitter {
     privateProperty(dummy, 'constructor', this.constructor);
 
     return dummy;
-  }
-
-  /**
-   * Method used to inspect the internal data structure holding nodes & edges.
-   *
-   * @return {object} - The internals to show.
-   */
-  internals() {
-    return {
-      nodes: this._nodes,
-      edges: this._edges
-    };
   }
 }
 
