@@ -224,14 +224,23 @@ export function privateProperty(target, name, value) {
  *
  * @param {object}   target - Target object.
  * @param {string}   name   - Member name.
- * @param {function} getter - The attached getter function.
+ * @param {mixed}    value  - The attached getter or fixed value.
  */
-export function readOnlyProperty(target, name, getter) {
-  Object.defineProperty(target, name, {
+export function readOnlyProperty(target, name, value) {
+  const descriptor = {
     enumerable: true,
-    configurable: false,
-    get: getter
-  });
+    configurable: false
+  };
+
+  if (typeof value === 'function') {
+    descriptor.get = value;
+  }
+  else {
+    descriptor.value = value;
+    descriptor.writable = false;
+  }
+
+  Object.defineProperty(target, name, descriptor);
 }
 
 /**

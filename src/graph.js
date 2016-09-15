@@ -346,6 +346,11 @@ export default class Graph extends EventEmitter {
     //-- Solving options
     options = assign({}, DEFAULTS, options);
 
+    // Freezing options
+    Object.freeze(options.defaultEdgeAttributes);
+    Object.freeze(options.defaultNodeAttributes);
+    Object.freeze(options);
+
     // Enforcing options validity
     if (typeof options.edgeKeyGenerator !== 'function')
       throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'edgeKeyGenerator' option. Expecting a function but got "${options.map}".`);
@@ -407,10 +412,10 @@ export default class Graph extends EventEmitter {
     //-- Properties readers
     readOnlyProperty(this, 'order', () => this._order);
     readOnlyProperty(this, 'size', () => this._size);
-    readOnlyProperty(this, 'map', () => this._options.map);
-    readOnlyProperty(this, 'multi', () => this._options.multi);
-    readOnlyProperty(this, 'type', () => this._options.type);
-    readOnlyProperty(this, 'allowSelfLoops', () => this._options.allowSelfLoops);
+    readOnlyProperty(this, 'map', this._options.map);
+    readOnlyProperty(this, 'multi', this._options.multi);
+    readOnlyProperty(this, 'type', this._options.type);
+    readOnlyProperty(this, 'allowSelfLoops', this._options.allowSelfLoops);
 
     //-- Precomputing indexes?
     for (const name in this._indices) {
