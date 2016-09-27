@@ -1,6 +1,6 @@
 {
   "name": "graphology",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A robust and multipurpose Graph object for JavaScript.",
   "main": "dist/index.js",
   "scripts": {

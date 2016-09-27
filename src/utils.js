@@ -244,23 +244,69 @@ export function readOnlyProperty(target, name, value) {
 }
 
 /**
- * Simple uuid v4 function.
+ * Function returning uuid v4 compressed into base62 to have 22 characters-long
+ * ids easily copy-pastable or usable in a URL.
  *
  * @return {string} - The uuid.
  */
-export function uuid() {
-  let id = '',
-      random,
-      i;
+const RANDOM_BYTES = new Uint8Array(16);
 
-  for (i = 0; i < 32; i++) {
-    random = Math.random() * 16 | 0;
+const BASE62 = (
+  '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+).split('');
 
-    if (i === 8 || i === 12 || i === 16 || i === 20) {
-      id += '-';
-    }
-    id += (i === 12 ? 4 : (i === 16 ? (random & 3 | 8) : random)).toString(16);
+function rng() {
+  for (let i = 0, r; i < 16; i++) {
+    if ((i & 0x03) === 0)
+      r = Math.random() * 0x100000000;
+    RANDOM_BYTES[i] = r >>> ((i & 0x03) << 3) & 0xff;
   }
 
-  return id;
+  return RANDOM_BYTES;
+}
+
+function uuidBytes() {
+  const random = rng();
+
+  random[6] = (random[6] & 0x0f) | 0x40;
+  random[8] = (random[8] & 0x3f) | 0x80;
+
+  return random;
+}
+
+function toBase62(bytes) {
+  const digits = [0];
+
+  for (let i = 0, l = bytes.length; i < l; i++) {
+    let carry = bytes[i];
+
+    for (let j = 0, m = digits.length; j < m; j++) {
+      carry += digits[j] << 8;
+      digits[j] = carry % 62;
+      carry = (carry / 62) | 0;
+    }
+
+    while (carry > 0) {
+      digits.push(carry % 62);
+      carry = (carry / 62) | 0;
+    }
+  }
+
+  let string = '';
+
+  for (let i = 0, l = bytes.length; bytes[i] === 0 && i < l - 1; i++)
+    string += BASE62[0];
+  for (let i = digits.length - 1; i >= 0; i--)
+    string += BASE62[digits[i]];
+
+  while (string.length < 22)
+    string += '0';
+
+  return string;
+}
+
+export function uuid() {
+  const bytes = uuidBytes();
+
+  return toBase62(bytes);
 }
