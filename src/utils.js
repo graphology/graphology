@@ -152,6 +152,7 @@ export function overBunch(bunch, callback) {
   }
 
   // Map & Set iteration
+  // TODO: use a while loop here!
   else if (typeof bunch.forEach === 'function') {
     for (const [k, v] of bunch.entries()) {
       let shouldBreak = false;
@@ -249,11 +250,8 @@ export function readOnlyProperty(target, name, value) {
  *
  * @return {string} - The uuid.
  */
-const RANDOM_BYTES = new Uint8Array(16);
-
-const BASE62 = (
-  '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-).split('');
+const RANDOM_BYTES = new Uint8Array(16),
+      BASE62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 function rng() {
   for (let i = 0, r; i < 16; i++) {
