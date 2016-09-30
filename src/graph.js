@@ -3,11 +3,6 @@
  * ====================================
  *
  * Reference implementation of the graphology specs.
- *
- * Note: Even if the implementation could beneficiate from an abstraction
- * over the object/map manipulation, it does not for performance reasons.
- * Another solution would be to split the classes but this would have quite
- * a cost on the implementation.
  */
 import {EventEmitter} from 'events';
 
@@ -37,7 +32,7 @@ import {
 
 import {
   assign,
-  BasicSet,
+  firstItemOfSet,
   isBunch,
   isGraph,
   isPlainObject,
@@ -60,16 +55,24 @@ import {
 // TODO: drop GraphMap. use Map internally. coerce keys to string (what about Symbols). map order & size to internal maps' sizes
 // TODO: neighbor counting method are basically degree
 
+// TODO: abstract map for coercion (override, set, get, has) (check construct, & drop/clear)
+// TODO: abstract set storing first element (override add)
+
+// TODO: fix potential bug on #.relatedEdge where the edge & the node are not attached
+// TODO: refactor edge adding methods using a descriptor?
+
+// TODO: performance pass
+
 /**
  * Enums.
  */
-const TYPES = new BasicSet([
+const TYPES = new Set([
   'directed',
   'undirected',
   'mixed'
 ]);
 
-const EMITTER_PROPS = new BasicSet([
+const EMITTER_PROPS = new Set([
   'domain',
   '_events',
   '_eventsCount',
@@ -84,7 +87,6 @@ const DEFAULTS = {
   defaultEdgeAttributes: {},
   defaultNodeAttributes: {},
   edgeKeyGenerator: uuid,
-  map: false,
   multi: false,
   onDuplicateEdge: null,
   onDuplicateNode: null,
@@ -238,17 +240,15 @@ function addEdge(graph, name, undirected, edge, source, target, attributes) {
   if (undirected)
     data.undirected = true;
 
-  if (graph.map)
-    graph._edges.set(edge, data);
-  else
-    graph._edges[edge] = data;
+  // Adding the edge to the internal register
+  graph._edges.set(edge, data);
 
   // Incrementing size
   graph._size++;
 
   // Incrementing node counters
-  const sourceData = graph.map ? graph._nodes.get(source) : graph._nodes[source],
-        targetData = graph.map ? graph._nodes.get(target) : graph._nodes[target];
+  const sourceData = graph._nodes.get(source),
+        targetData = graph._nodes.get(target);
 
   if (source === target) {
     sourceData.selfLoops++;
@@ -347,19 +347,11 @@ export default class Graph extends EventEmitter {
     options = assign({}, DEFAULTS, options);
 
     // Freezing options
-    Object.freeze(options.defaultEdgeAttributes);
-    Object.freeze(options.defaultNodeAttributes);
     Object.freeze(options);
 
     // Enforcing options validity
     if (typeof options.edgeKeyGenerator !== 'function')
-      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'edgeKeyGenerator' option. Expecting a function but got "${options.map}".`);
-
-    if (typeof options.map !== 'boolean')
-      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'map' option. Expecting a boolean but got "${options.map}".`);
-
-    if (options.map && typeof Map !== 'function')
-      throw new InvalidArgumentsGraphError('Graph.constructor: it seems you created a GraphMap instance while your current JavaScript engine does not support ES2015 Map objects.');
+      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'edgeKeyGenerator' option. Expecting a function but got "${options.edgeKeyGenerator}".`);
 
     if (typeof options.multi !== 'boolean')
       throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'multi' option. Expecting a boolean but got "${options.multi}".`);
@@ -389,8 +381,8 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_size', 0);
 
     // Indexes
-    privateProperty(this, '_nodes', options.map ? new Map() : {});
-    privateProperty(this, '_edges', options.map ? new Map() : {});
+    privateProperty(this, '_nodes', new Map());
+    privateProperty(this, '_edges', new Map());
     privateProperty(this, '_indices', {
       structure: {
         lazy: (
@@ -409,7 +401,6 @@ export default class Graph extends EventEmitter {
     //-- Properties readers
     readOnlyProperty(this, 'order', () => this._order);
     readOnlyProperty(this, 'size', () => this._size);
-    readOnlyProperty(this, 'map', this._options.map);
     readOnlyProperty(this, 'multi', this._options.multi);
     readOnlyProperty(this, 'type', this._options.type);
     readOnlyProperty(this, 'allowSelfLoops', this._options.allowSelfLoops);
@@ -439,14 +430,7 @@ export default class Graph extends EventEmitter {
    * @return {boolean}
    */
   hasNode(node) {
-    let nodeInGraph = false;
-
-    if (this.map)
-      nodeInGraph = this._nodes.has(node);
-    else
-      nodeInGraph = node in this._nodes;
-
-    return nodeInGraph;
+    return this._nodes.has(node);
   }
 
   /**
@@ -467,18 +451,13 @@ export default class Graph extends EventEmitter {
       return;
 
     // Is there a directed edge pointing towards target?
-    const nodeData = this.map ?
-      this._nodes.get(source) :
-      this._nodes[source];
-
-    const register = nodeData.out;
+    const nodeData = this._nodes.get(source),
+          register = nodeData.out;
 
     if (!register)
       return;
 
-    const edges = this.map ?
-      (register.get(target)) :
-      (register[target]);
+    const edges = register[target];
 
     if (!edges)
       return;
@@ -486,7 +465,7 @@ export default class Graph extends EventEmitter {
     if (!edges.size)
       return;
 
-    return this.map ? edges.values().next().value : edges.first();
+    return firstItemOfSet(edges);
   }
 
   /**
@@ -507,32 +486,23 @@ export default class Graph extends EventEmitter {
       return;
 
     // Is there a directed edge pointing towards target?
-    const nodeData = this.map ?
-      this._nodes.get(source) :
-      this._nodes[source];
+    const nodeData = this._nodes.get(source);
 
     let register = nodeData.undirectedOut,
         edges;
 
     if (register)
-      edges = this.map ?
-        (register.get(target)) :
-        (register[target]);
+      edges = register[target];
 
     register = nodeData.undirectedIn;
 
     if (!edges && register)
-      edges = this.map ?
-        (register.get(target)) :
-        (register[target]);
+      edges = register[target];
 
-    if (!edges)
+    if (!edges || !edges.size)
       return;
 
-    if (!edges.size)
-      return;
-
-    return this.map ? edges.values().next().value : edges.first();
+    return firstItemOfSet(edges);
   }
 
   /**
@@ -580,7 +550,7 @@ export default class Graph extends EventEmitter {
       const edge = source;
 
       return (
-        (this.map ? this._edges.has(edge) : edge in this._edges) &&
+        this._edges.has(edge) &&
         this.directed(edge)
       );
     }
@@ -594,18 +564,13 @@ export default class Graph extends EventEmitter {
         return false;
 
       // Is there a directed edge pointing towards target?
-      const nodeData = this.map ?
-        this._nodes.get(source) :
-        this._nodes[source];
-
-      const register = nodeData.out;
+      const nodeData = this._nodes.get(source),
+            register = nodeData.out;
 
       if (!register)
         return false;
 
-      const edges = this.map ?
-        (register.get(target)) :
-        (register[target]);
+      const edges = register[target];
 
       if (!edges)
         return false;
@@ -635,7 +600,7 @@ export default class Graph extends EventEmitter {
       const edge = source;
 
       return (
-        (this.map ? this._edges.has(edge) : edge in this._edges) &&
+        this._edges.has(edge) &&
         this.undirected(edge)
       );
     }
@@ -649,24 +614,18 @@ export default class Graph extends EventEmitter {
         return false;
 
       // Is there a directed edge pointing towards target?
-      const nodeData = this.map ?
-        this._nodes.get(source) :
-        this._nodes[source];
+      const nodeData = this._nodes.get(source);
 
       let register = nodeData.undirectedOut,
           edges;
 
       if (register)
-        edges = this.map ?
-          (register.get(target)) :
-          (register[target]);
+        edges = register[target];
 
       register = nodeData.undirectedIn;
 
       if (!edges && register)
-        edges = this.map ?
-          (register.get(target)) :
-          (register[target]);
+        edges = register[target];
 
       if (!edges)
         return false;
@@ -696,7 +655,7 @@ export default class Graph extends EventEmitter {
     if (arguments.length === 1) {
       const edge = source;
 
-      return this.map ? this._edges.has(edge) : edge in this._edges;
+      return this._edges.has(edge);
     }
     else if (arguments.length === 2) {
       return (
@@ -725,7 +684,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.inDegree: could not find the "${node}" node in the graph.`);
 
-    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+    const data = this._nodes.get(node);
 
     return data.inDegree + (selfLoops ? data.selfLoops : 0);
   }
@@ -747,7 +706,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.outDegree: could not find the "${node}" node in the graph.`);
 
-    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+    const data = this._nodes.get(node);
 
     return data.outDegree + (selfLoops ? data.selfLoops : 0);
   }
@@ -769,7 +728,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.directedDegree: could not find the "${node}" node in the graph.`);
 
-    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+    const data = this._nodes.get(node);
 
     return (
       data.outDegree + data.inDegree +
@@ -794,7 +753,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.undirectedDegree: could not find the "${node}" node in the graph.`);
 
-    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+    const data = this._nodes.get(node);
 
     return (
       data.undirectedDegree +
@@ -819,7 +778,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.degree: could not find the "${node}" node in the graph.`);
 
-    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+    const data = this._nodes.get(node);
 
     return (
       data.outDegree + data.inDegree + data.undirectedDegree +
@@ -839,11 +798,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.source: could not find the "${edge}" edge in the graph.`);
 
-    const source = this.map ?
-      this._edges.get(edge).source :
-      this._edges[edge].source;
-
-    return source;
+    return this._edges.get(edge).source;
   }
 
   /**
@@ -858,11 +813,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.target: could not find the "${edge}" edge in the graph.`);
 
-    const target = this.map ?
-      this._edges.get(edge).target :
-      this._edges[edge].target;
-
-    return target;
+    return this._edges.get(edge).target;
   }
 
   /**
@@ -877,7 +828,10 @@ export default class Graph extends EventEmitter {
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.extremities: could not find the "${edge}" edge in the graph.`);
 
-    return [this.source(edge), this.target(edge)];
+    return [
+      this._edges.get(edge).source,
+      this._edges.get(edge).target
+    ];
   }
 
   /**
@@ -913,11 +867,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.undirected: could not find the "${edge}" edge in the graph.`);
 
-    const undirected = this.map ?
-      this._edges.get(edge).undirected :
-      this._edges[edge].undirected;
-
-    return !!undirected;
+    return !!this._edges.get(edge).undirected;
   }
 
   /**
@@ -932,11 +882,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.directed: could not find the "${edge}" edge in the graph.`);
 
-    const undirected = this.map ?
-      this._edges.get(edge).undirected :
-      this._edges[edge].undirected;
-
-    return !undirected;
+    return !this._edges.get(edge).undirected;
   }
 
   /**
@@ -951,7 +897,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.selfLoop: could not find the "${edge}" edge in the graph.`);
 
-    const data = this.map ? this._edges.get(edge) : this._edges[edge];
+    const data = this._edges.get(edge);
 
     return data.source === data.target;
   }
@@ -1011,10 +957,7 @@ export default class Graph extends EventEmitter {
     }
 
     // Adding the node to internal register
-    if (this.map)
-      this._nodes.set(node, data);
-    else
-      this._nodes[node] = data;
+    this._nodes.set(node, data);
 
     // Incrementing order
     this._order++;
@@ -1219,13 +1162,10 @@ export default class Graph extends EventEmitter {
     for (let i = 0, l = edges.length; i < l; i++)
       this.dropEdge(edges[i]);
 
-    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+    const data = this._nodes.get(node);
 
     // Dropping the node from the register
-    if (this.map)
-      this._nodes.delete(node);
-    else
-      delete this._nodes[node];
+    this._nodes.delete(node);
 
     // Decrementing order
     this._order--;
@@ -1272,13 +1212,10 @@ export default class Graph extends EventEmitter {
         throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${edge}" edge in the graph.`);
     }
 
-    const data = this.map ? this._edges.get(edge) : this._edges[edge];
+    const data = this._edges.get(edge);
 
     // Dropping the edge from the register
-    if (this.map)
-      this._edges.delete(edge);
-    else
-      delete this._edges[edge];
+    this._edges.delete(edge);
 
     // Decrementing size
     this._size--;
@@ -1286,8 +1223,8 @@ export default class Graph extends EventEmitter {
     // Updating related degrees
     const {source, target, attributes, undirected = false} = data;
 
-    const sourceData = this.map ? this._nodes.get(source) : this._nodes[source],
-          targetData = this.map ? this._nodes.get(target) : this._nodes[target];
+    const sourceData = this._nodes.get(source),
+          targetData = this._nodes.get(target);
 
     if (source === target) {
       sourceData.selfLoops--;
@@ -1360,7 +1297,7 @@ export default class Graph extends EventEmitter {
     if (!arguments.length) {
 
       // Dropping every edge from the graph
-      this._edges = this.map ? new Map() : {};
+      this._edges = new Map();
       this._size = 0;
 
       // Without edges, we've got no 'structure'
@@ -1399,10 +1336,10 @@ export default class Graph extends EventEmitter {
   clear() {
 
     // Dropping edges
-    this._edges = this.map ? new Map() : {};
+    this._edges = new Map();
 
     // Dropping nodes
-    this._nodes = this.map ? new Map() : {};
+    this._nodes = new Map();
 
     // Resetting counters
     this._order = 0;
@@ -1430,11 +1367,7 @@ export default class Graph extends EventEmitter {
    * @return {array} - The nodes.
    */
   nodes() {
-
-    if (this.map)
-      return [...this._nodes.keys()];
-
-    return Object.keys(this._nodes);
+    return [...this._nodes.keys()];
   }
 
   /**---------------------------------------------------------------------------
@@ -1454,7 +1387,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.exportNode: could not find the "${node}" node in the graph.`);
 
-    const data = this.map ? this._nodes.get(node) : this._nodes[node];
+    const data = this._nodes.get(node);
 
     return serializeNode(node, data);
   }
@@ -1471,7 +1404,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.exportEdge: could not find the "${edge}" edge in the graph.`);
 
-    const data = this.map ? this._edges.get(edge) : this._edges[edge];
+    const data = this._edges.get(edge);
 
     return serializeEdge(edge, data);
   }
@@ -1617,6 +1550,8 @@ export default class Graph extends EventEmitter {
     const {valid, reason} = validateSerializedEdge(data);
 
     if (!valid) {
+
+      // TODO: use a function map to boost.
       if (reason === 'not-object')
         throw new InvalidArgumentsGraphError('Graph.importEdge: invalid serialized edge. A serialized edge should be a plain object with at least a "source" & "target" property.');
       if (reason === 'no-source')
@@ -1768,13 +1703,7 @@ export default class Graph extends EventEmitter {
 
       index.computed = true;
 
-      if (this.map) {
-        this._edges.forEach((data, edge) => updateIndex(this, name, edge, data));
-      }
-      else {
-        for (const edge in this._edges)
-          updateIndex(this, name, edge, this._edges[edge]);
-      }
+      this._edges.forEach((data, edge) => updateIndex(this, name, edge, data));
     }
 
     return this;
@@ -1838,59 +1767,29 @@ export default class Graph extends EventEmitter {
    * @return {object} - Formatted object representation of the graph.
    */
   inspect() {
-    let nodes,
-        edges;
+    const nodes = Object.create(null);
 
-    if (this.map) {
-      nodes = new Map();
-      this._nodes.forEach(function(value, key) {
-        const attributes = value.attributes;
+    this._nodes.forEach(function(value, key) {
+      const attributes = value.attributes;
 
-        nodes.set(key, Object.keys(attributes).length ? attributes : '<empty>');
-      });
+      nodes[key] = Object.keys(attributes).length ? attributes : '<empty>';
+    });
 
-      edges = [];
-      this._edges.forEach(function(value, key) {
+    const edges = [];
+    this._edges.forEach(function(value, key) {
 
-        const formatted = [
-          key,
-          value.source,
-          value.undirected ? '<->' : '->',
-          value.target
-        ];
+      const formatted = [
+        key,
+        value.source,
+        value.undirected ? '<->' : '->',
+        value.target
+      ];
 
-        if (Object.keys(value.attributes).length)
-          formatted.push(value.attributes);
+      if (Object.keys(value.attributes).length)
+        formatted.push(value.attributes);
 
-        edges.push(formatted);
-      });
-    }
-    else {
-      nodes = {};
-      edges = [];
-
-      for (const k in this._nodes) {
-        const attributes = this._nodes[k].attributes;
-        nodes[k] = Object.keys(attributes).length ? attributes : '<empty>';
-      }
-
-      // TODO: refactor this part when Map refacto is done.
-      for (const k in this._edges) {
-        const value = this._edges[k];
-
-        const formatted = [
-          k,
-          value.source,
-          value.undirected ? '~' : '->',
-          value.target
-        ];
-
-        if (Object.keys(value.attributes).length)
-          formatted.push(value.attributes);
-
-        edges.push(formatted);
-      }
-    }
+      edges.push(formatted);
+    });
 
     const dummy = {};
 

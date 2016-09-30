@@ -14,11 +14,6 @@ import serialization from './serialization';
 import events from './events';
 import knownMethods from './known';
 import misc from './misc';
-import {deepMerge} from './helpers';
-
-const DEFAULTS = {
-  map: true
-};
 
 const createErrorChecker = name => () => {
   return function(error) {
@@ -32,8 +27,7 @@ const createErrorChecker = name => () => {
  * @param  {string} path - Path to the implementation (should be absolute).
  * @return {object}      - The tests to run with Mocha.
  */
-export default function specs(Graph, implementation, options) {
-  options = deepMerge({}, DEFAULTS, options);
+export default function specs(Graph, implementation) {
 
   const errors = [
     ['invalid', 'InvalidArgumentsGraphError'],
@@ -60,21 +54,6 @@ export default function specs(Graph, implementation, options) {
       'Miscellaneous': misc(Graph)
     }
   };
-
-  if (options.map) {
-    const GraphMap = implementation.GraphMap;
-
-    tests.Map = {
-      'Mutation': mutation(GraphMap, errorCheckers),
-      'Read': read(GraphMap, errorCheckers),
-      'Attributes': attributes(GraphMap, errorCheckers),
-      'Iteration': iteration(GraphMap, errorCheckers),
-      'Serialization': serialization(GraphMap, errorCheckers),
-      'Events': events(GraphMap),
-      'Known Methods': knownMethods(GraphMap, errorCheckers),
-      'Miscellaneous': misc(GraphMap)
-    };
-  }
 
   return tests;
 }

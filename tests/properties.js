@@ -11,7 +11,6 @@ const PROPERTIES = [
   'size',
   'type',
   'multi',
-  'map',
   'allowSelfLoops'
 ];
 
@@ -78,17 +77,6 @@ export default function properties(Graph) {
         graph.addNode('Jack');
         graph.addDirectedEdge('John', 'Jack');
         assert.strictEqual(graph.size, 1);
-      }
-    },
-
-    /**
-     * Map.
-     */
-    '#.map': {
-
-      'it should be false by default.': function() {
-        const graph = new Graph();
-        assert.strictEqual(graph.map, false);
       }
     },
 

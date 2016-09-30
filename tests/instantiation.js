@@ -12,24 +12,14 @@ const CONSTRUCTORS = [
   'DirectedGraph',
   'UndirectedGraph',
   'MultiDirectedGraph',
-  'MultiUndirectedGraph',
-  'GraphMap',
-  'DirectedGraphMap',
-  'UndirectedGraphMap',
-  'MultiDirectedGraphMap',
-  'MultiUndirectedGraphMap'
+  'MultiUndirectedGraph'
 ];
 
 const OPTIONS = [
-  {map: false, multi: false, type: 'directed'},
-  {map: false, multi: false, type: 'undirected'},
-  {map: false, multi: true, type: 'directed'},
-  {map: false, multi: true, type: 'undirected'},
-  {map: true, multi: false, type: 'mixed'},
-  {map: true, multi: false, type: 'directed'},
-  {map: true, multi: false, type: 'undirected'},
-  {map: true, multi: true, type: 'directed'},
-  {map: true, multi: true, type: 'undirected'}
+  {multi: false, type: 'directed'},
+  {multi: false, type: 'undirected'},
+  {multi: true, type: 'directed'},
+  {multi: true, type: 'undirected'}
 ];
 
 export default function instantiation(Graph, inmplementation, checkers) {
@@ -152,18 +142,6 @@ export default function instantiation(Graph, inmplementation, checkers) {
       },
 
       /**
-       * map
-       */
-      'map': {
-
-        'providing a non-boolean value should throw.': function() {
-          assert.throws(function() {
-            const graph = new Graph(null, {map: 'test'});
-          }, invalid());
-        }
-      },
-
-      /**
        * multi
        */
       'multi': {
@@ -276,12 +254,10 @@ export default function instantiation(Graph, inmplementation, checkers) {
           const graph = new inmplementation[name]();
 
           const {
-            map,
             multi,
             type
           } = OPTIONS[index];
 
-          assert.strictEqual(graph.map, map);
           assert.strictEqual(graph.multi, multi);
           assert.strictEqual(graph.type, type);
         });

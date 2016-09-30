@@ -63,12 +63,7 @@ function attachAttributeGetter(Class, method, key, elementName, checker, finder)
     if (!this[checker](element))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
 
-    let data;
-
-    if (this.map)
-      data = this[key].get(element);
-    else
-      data = this[key][element];
+    const data = this[key].get(element);
 
     return data.attributes[name];
   };
@@ -118,12 +113,7 @@ function attachAttributesGetter(Class, method, key, elementName, checker, finder
     if (!this[checker](element))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
 
-    let data;
-
-    if (this.map)
-      data = this[key].get(element);
-    else
-      data = this[key][element];
+    const data = this[key].get(element);
 
     return data.attributes;
   };
@@ -181,12 +171,7 @@ function attachAttributeSetter(Class, method, key, elementName, checker, finder)
     if (!this[checker](element))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
 
-    let data;
-
-    if (this.map)
-      data = this[key].get(element);
-    else
-      data = this[key][element];
+    const data = this[key].get(element);
 
     data.attributes[name] = value;
 
@@ -257,12 +242,7 @@ function attachAttributeUpdater(Class, method, key, elementName, checker, finder
     if (!this[checker](element))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
 
-    let data;
-
-    if (this.map)
-      data = this[key].get(element);
-    else
-      data = this[key][element];
+    const data = this[key].get(element);
 
     data.attributes[name] = updater(data.attributes[name]);
 
@@ -332,12 +312,7 @@ function attachAttributesReplacer(Class, method, key, elementName, checker, find
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(`Graph.${method}: provided attributes are not a plain object.`);
 
-    let data;
-
-    if (this.map)
-      data = this[key].get(element);
-    else
-      data = this[key][element];
+    const data = this[key].get(element);
 
     const oldAttributes = data.attributes;
 
@@ -409,12 +384,7 @@ function attachAttributesMerger(Class, method, key, elementName, checker, finder
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(`Graph.${method}: provided attributes are not a plain object.`);
 
-    let data;
-
-    if (this.map)
-      data = this[key].get(element);
-    else
-      data = this[key][element];
+    const data = this[key].get(element);
 
     assign(data.attributes, attributes);
 

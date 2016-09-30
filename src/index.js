@@ -48,46 +48,6 @@ class MultiUndirectedGraph extends Graph {
     );
   }
 }
-class GraphMap extends Graph {
-  constructor(data, options) {
-    super(
-      data,
-      assign({map: true}, options)
-    );
-  }
-}
-class DirectedGraphMap extends Graph {
-  constructor(data, options) {
-    super(
-      data,
-      assign({map: true, type: 'directed'}, options)
-    );
-  }
-}
-class UndirectedGraphMap extends Graph {
-  constructor(data, options) {
-    super(
-      data,
-      assign({map: true, type: 'undirected'}, options)
-    );
-  }
-}
-class MultiDirectedGraphMap extends Graph {
-  constructor(data, options) {
-    super(
-      data,
-      assign({map: true, multi: true, type: 'directed'}, options)
-    );
-  }
-}
-class MultiUndirectedGraphMap extends Graph {
-  constructor(data, options) {
-    super(
-      data,
-      assign({map: true, multi: true, type: 'undirected'}, options)
-    );
-  }
-}
 
 /**
  * Exporting as CommonJS for convenience.
@@ -96,11 +56,6 @@ Graph.DirectedGraph = DirectedGraph;
 Graph.UndirectedGraph = UndirectedGraph;
 Graph.MultiDirectedGraph = MultiDirectedGraph;
 Graph.MultiUndirectedGraph = MultiUndirectedGraph;
-Graph.GraphMap = GraphMap;
-Graph.DirectedGraphMap = DirectedGraphMap;
-Graph.UndirectedGraphMap = UndirectedGraphMap;
-Graph.MultiDirectedGraphMap = MultiDirectedGraphMap;
-Graph.MultiUndirectedGraphMap = MultiUndirectedGraphMap;
 
 Graph.InvalidArgumentsGraphError = InvalidArgumentsGraphError;
 Graph.NotFoundGraphError = NotFoundGraphError;

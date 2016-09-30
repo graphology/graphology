@@ -11,7 +11,6 @@ import {
 } from '../errors';
 
 import {
-  BasicSet,
   isBunch,
   overBunch
 } from '../utils';
@@ -62,27 +61,12 @@ const NEIGHBORS_ITERATION = [
 ];
 
 /**
- * Function merging neighbors into the given set iterating over the given map.
- *
- * @param {Set} neighbors - Neighbors set.
- * @param {Map} map       - Target map.
- */
-function mergeNeighborsFromMap(neighbors, map) {
-  if (!map)
-    return;
-
-  map.forEach(function(_, neighbor) {
-    neighbors.add(neighbor);
-  });
-}
-
-/**
  * Function merging neighbors into the given set iterating over the given object.
  *
  * @param {BasicSet} neighbors - Neighbors set.
  * @param {object}   object    - Target object.
  */
-function mergeNeighborsFromObject(neighbors, object) {
+function mergeNeighbors(neighbors, object) {
   if (!object)
     return;
 
@@ -100,14 +84,13 @@ function mergeNeighborsFromObject(neighbors, object) {
  * @return {Set|BasicSet}           - The neighbors set.
  */
 function createNeighborSetForNode(graph, type, direction, node) {
-  const mergeNeighbors = graph.map ? mergeNeighborsFromMap : mergeNeighborsFromObject;
 
   // For this, we need to compute the "structure" index
   graph.computeIndex('structure');
 
-  const neighbors = graph.map ? new Set() : new BasicSet();
+  const neighbors = new Set();
 
-  const nodeData = graph.map ? graph._nodes.get(node) : graph._nodes[node];
+  const nodeData = graph._nodes.get(node);
 
   if (type === 'mixed' || type === 'directed') {
 
@@ -143,18 +126,17 @@ function createNeighborSetForNode(graph, type, direction, node) {
  * @return {Set|BasicSet}           - The neighbors set.
  */
 function createNeighborSetForBunch(name, graph, type, direction, bunch) {
-  const mergeNeighbors = graph.map ? mergeNeighborsFromMap : mergeNeighborsFromObject;
 
   // For this, we need to compute the "structure" index
   graph.computeIndex('structure');
 
-  const neighbors = graph.map ? new Set() : new BasicSet();
+  const neighbors = new Set();
 
   overBunch(bunch, node => {
     if (!graph.hasNode(node))
       throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph in the given bunch.`);
 
-    const nodeData = graph.map ? graph._nodes.get(node) : graph._nodes[node];
+    const nodeData = graph._nodes.get(node);
 
     if (type === 'mixed' || type === 'directed') {
 
@@ -253,7 +235,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
         if (counter)
           return neighbors.size;
 
-        return this.map ? Array.from(neighbors) : neighbors.values();
+        return Array.from(neighbors);
       }
       else if (isBunch(nodeOrBunch)) {
 
@@ -274,7 +256,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
         if (counter)
           return neighbors.size;
 
-        return this.map ? Array.from(neighbors) : neighbors.values();
+        return Array.from(neighbors);
       }
       else {
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${nodeOrBunch}" node in the graph.`);

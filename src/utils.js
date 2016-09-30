@@ -1,4 +1,3 @@
-/* eslint no-nested-ternary: 0 */
 /**
  * Graphology Utilities
  * =====================
@@ -28,52 +27,13 @@ export function assign(target, ...objects) {
 }
 
 /**
- * Class emulating a Set object & used internally to reduce memory footprint &
- * ensure ES5 compatibility.
+ * Function returning the first item of a Set.
  *
- * @constructor
+ * @param  {object} set - Target set.
+ * @return {any}        - The "first" item.
  */
-export class BasicSet {
-  constructor(values) {
-    this.entries = {};
-    this.size = 0;
-
-    if (values) {
-      for (let i = 0, l = values.length; i < l; i++)
-        this.add(values[i]);
-    }
-  }
-
-  add(value) {
-    if (!(value in this.entries)) {
-      this.entries[value] = true;
-      this.size++;
-    }
-  }
-
-  delete(value) {
-    delete this.entries[value];
-    this.size--;
-  }
-
-  has(value) {
-    return value in this.entries;
-  }
-
-  first() {
-    for (const value in this.entries)
-      return value;
-  }
-
-  values() {
-    return Object.keys(this.entries);
-  }
-
-  inspect() {
-    const values = this.values().map(v => JSON.stringify(v)).join(', ');
-
-    return 'BasicSet { ' + values + ' }';
-  }
+export function firstItemOfSet(set) {
+  return set.values().next().value;
 }
 
 /**
