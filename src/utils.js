@@ -27,6 +27,32 @@ export function assign(target, ...objects) {
 }
 
 /**
+ * Custom Map used internally to coerce keys on vital operations.
+ *
+ * @return {Map}
+ */
+export function createInternalMap() {
+  const map = new Map();
+
+  map.set = function(key, value) {
+    key = '' + key;
+    return Map.prototype.set.call(this, key, value);
+  };
+
+  map.get = function(key) {
+    key = '' + key;
+    return Map.prototype.get.call(this, key);
+  };
+
+  map.has = function(key) {
+    key = '' + key;
+    return Map.prototype.has.call(this, key);
+  };
+
+  return map;
+}
+
+/**
  * Function returning the first item of a Set.
  *
  * @param  {object} set - Target set.

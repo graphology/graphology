@@ -19,6 +19,24 @@ export default function misc(Graph) {
           graph.addUndirectedEdge('Benjamin', 'Audrey');
         });
       }
+    },
+
+    'Key coercion': {
+      'keys should be correctly coerced to strings.': function() {
+        const graph = new Graph();
+        graph.addNode(1);
+        graph.addNode('2');
+
+        assert.strictEqual(graph.hasNode(1), true);
+        assert.strictEqual(graph.hasNode('1'), true);
+        assert.strictEqual(graph.hasNode(2), true);
+        assert.strictEqual(graph.hasNode('2'), true);
+
+        graph.addEdgeWithKey(3, 1, 2);
+
+        assert.strictEqual(graph.hasEdge(3), true);
+        assert.strictEqual(graph.hasEdge('3'), true);
+      }
     }
   };
 }

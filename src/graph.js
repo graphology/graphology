@@ -32,6 +32,7 @@ import {
 
 import {
   assign,
+  createInternalMap,
   firstItemOfSet,
   isBunch,
   isGraph,
@@ -381,8 +382,8 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_size', 0);
 
     // Indexes
-    privateProperty(this, '_nodes', new Map());
-    privateProperty(this, '_edges', new Map());
+    privateProperty(this, '_nodes', createInternalMap());
+    privateProperty(this, '_edges', createInternalMap());
     privateProperty(this, '_indices', {
       structure: {
         lazy: (
@@ -1297,7 +1298,7 @@ export default class Graph extends EventEmitter {
     if (!arguments.length) {
 
       // Dropping every edge from the graph
-      this._edges = new Map();
+      this._edges = createInternalMap();
       this._size = 0;
 
       // Without edges, we've got no 'structure'
@@ -1336,10 +1337,10 @@ export default class Graph extends EventEmitter {
   clear() {
 
     // Dropping edges
-    this._edges = new Map();
+    this._edges = createInternalMap();
 
     // Dropping nodes
-    this._nodes = new Map();
+    this._nodes = createInternalMap();
 
     // Resetting counters
     this._order = 0;
