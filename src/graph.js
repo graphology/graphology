@@ -244,9 +244,6 @@ function addEdge(graph, name, undirected, edge, source, target, attributes) {
   // Adding the edge to the internal register
   graph._edges.set(edge, data);
 
-  // Incrementing size
-  graph._size++;
-
   // Incrementing node counters
   const sourceData = graph._nodes.get(source),
         targetData = graph._nodes.get(target);
@@ -377,10 +374,6 @@ export default class Graph extends EventEmitter {
 
     //-- Private properties
 
-    // Counters
-    privateProperty(this, '_order', 0);
-    privateProperty(this, '_size', 0);
-
     // Indexes
     privateProperty(this, '_nodes', createInternalMap());
     privateProperty(this, '_edges', createInternalMap());
@@ -400,8 +393,8 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_options', options);
 
     //-- Properties readers
-    readOnlyProperty(this, 'order', () => this._order);
-    readOnlyProperty(this, 'size', () => this._size);
+    readOnlyProperty(this, 'order', () => this._nodes.size);
+    readOnlyProperty(this, 'size', () => this._edges.size);
     readOnlyProperty(this, 'multi', this._options.multi);
     readOnlyProperty(this, 'type', this._options.type);
     readOnlyProperty(this, 'allowSelfLoops', this._options.allowSelfLoops);
@@ -960,9 +953,6 @@ export default class Graph extends EventEmitter {
     // Adding the node to internal register
     this._nodes.set(node, data);
 
-    // Incrementing order
-    this._order++;
-
     // Emitting
     this.emit('nodeAdded', {
       key: node,
@@ -1168,9 +1158,6 @@ export default class Graph extends EventEmitter {
     // Dropping the node from the register
     this._nodes.delete(node);
 
-    // Decrementing order
-    this._order--;
-
     // Emitting
     this.emit('nodeDropped', {
       key: node,
@@ -1217,9 +1204,6 @@ export default class Graph extends EventEmitter {
 
     // Dropping the edge from the register
     this._edges.delete(edge);
-
-    // Decrementing size
-    this._size--;
 
     // Updating related degrees
     const {source, target, attributes, undirected = false} = data;
@@ -1299,7 +1283,6 @@ export default class Graph extends EventEmitter {
 
       // Dropping every edge from the graph
       this._edges = createInternalMap();
-      this._size = 0;
 
       // Without edges, we've got no 'structure'
       this.clearIndex('structure');
@@ -1342,10 +1325,7 @@ export default class Graph extends EventEmitter {
     // Dropping nodes
     this._nodes = createInternalMap();
 
-    // Resetting counters
-    this._order = 0;
-    this._size = 0;
-
+    // Handling indices
     for (const name in this._indices) {
       const index = this._indices[name];
 
