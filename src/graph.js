@@ -1498,6 +1498,7 @@ export default class Graph extends EventEmitter {
     const {valid, reason} = validateSerializedNode(data);
 
     if (!valid) {
+
       if (reason === 'not-object')
         throw new InvalidArgumentsGraphError('Graph.importNode: invalid serialized node. A serialized node should be a plain object with at least a "key" property.');
       if (reason === 'no-key')
@@ -1527,7 +1528,6 @@ export default class Graph extends EventEmitter {
 
     if (!valid) {
 
-      // TODO: use a function map to boost.
       if (reason === 'not-object')
         throw new InvalidArgumentsGraphError('Graph.importEdge: invalid serialized edge. A serialized edge should be a plain object with at least a "source" & "target" property.');
       if (reason === 'no-source')
