@@ -904,7 +904,7 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the given attributes are not an object.
    */
   addNode(node, attributes) {
-    if (arguments.length > 1 && !isPlainObject(attributes))
+    if (attributes && !isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(`Graph.addNode: invalid attributes. Expecting an object but got "${attributes}"`);
 
     // Protecting the attributes

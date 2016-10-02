@@ -130,7 +130,7 @@ export function overBunch(bunch, callback) {
   // Array iteration
   if (Array.isArray(bunch)) {
     for (let i = 0, l = bunch.length; i < l; i++) {
-      const shouldBreak = callback(bunch[i], {}) === false;
+      const shouldBreak = callback(bunch[i], null) === false;
 
       if (shouldBreak)
         break;
@@ -138,13 +138,22 @@ export function overBunch(bunch, callback) {
   }
 
   // Map & Set iteration
-  // TODO: use a while loop here!
   else if (typeof bunch.forEach === 'function') {
-    for (const [k, v] of bunch.entries()) {
-      let shouldBreak = false;
+    const iterator = bunch.entries();
+
+    let shouldBreak = false,
+        step;
+
+    while (step = iterator.next()) {
+      const {value, done} = step;
+
+      if (done)
+        break;
+
+      const [k, v] = value;
 
       if (v === k)
-        shouldBreak = callback(v, {}) === false;
+        shouldBreak = callback(v, null) === false;
       else
         shouldBreak = callback(k, v) === false;
 
