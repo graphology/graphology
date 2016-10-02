@@ -261,6 +261,16 @@ export default function read(Graph, checkers) {
         }, notFound());
       },
 
+      'it should throw if the node & the edge are not related.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['Thomas', 'Isabella', 'Estelle']);
+        graph.addEdgeWithKey('I->E', 'Isabella', 'Estelle');
+
+        assert.throws(function() {
+          graph.relatedNode('Thomas', 'I->E');
+        }, notFound());
+      },
+
       'it should return the correct node.': function() {
         const graph = new Graph();
         graph.addNodesFrom(['Thomas', 'Estelle']);

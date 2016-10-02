@@ -49,20 +49,9 @@ import {
 // TODO: lazily create attributes object
 // TODO: solve the #.merge conundrum
 // TODO: add the option adding nodes when creating edges if non-existent
-// TODO: use Object.create(null) for node & edge index
-// TODO: drop map support (don't forget docs)
-// TODO: use writable false for read-only props that never change
-
-// TODO: drop GraphMap. use Map internally. coerce keys to string (what about Symbols). map order & size to internal maps' sizes
 // TODO: neighbor counting method are basically degree
-
-// TODO: abstract map for coercion (override, set, get, has) (check construct, & drop/clear)
 // TODO: abstract set storing first element (override add)
-
-// TODO: fix potential bug on #.relatedEdge where the edge & the node are not attached
 // TODO: refactor edge adding methods using a descriptor?
-
-// TODO: performance pass
 
 /**
  * Enums.
@@ -845,6 +834,9 @@ export default class Graph extends EventEmitter {
       throw new NotFoundGraphError(`Graph.relatedNode: could not find the "${edge}" edge in the graph.`);
 
     const [node1, node2] = this.extremities(edge);
+
+    if (node !== node1 && node !== node2)
+      throw new NotFoundGraphError(`Graph.relatedNode: the "${node}" node is not attached to the "${edge}" edge (${node1}, ${node2}).`);
 
     return node === node1 ? node2 : node1;
   }
