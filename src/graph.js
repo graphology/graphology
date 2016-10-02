@@ -381,6 +381,9 @@ export default class Graph extends EventEmitter {
     // Options
     privateProperty(this, '_options', options);
 
+    // Emitter properties
+    EMITTER_PROPS.forEach(prop => privateProperty(this, prop, this[prop]));
+
     //-- Properties readers
     readOnlyProperty(this, 'order', () => this._nodes.size);
     readOnlyProperty(this, 'size', () => this._edges.size);
