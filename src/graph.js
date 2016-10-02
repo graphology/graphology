@@ -1343,7 +1343,7 @@ export default class Graph extends EventEmitter {
    * @return {array} - The nodes.
    */
   nodes() {
-    return [...this._nodes.keys()];
+    return Array.from(this._nodes.keys());
   }
 
   /**---------------------------------------------------------------------------
