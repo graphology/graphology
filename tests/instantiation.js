@@ -138,6 +138,19 @@ export default function instantiation(Graph, inmplementation, checkers) {
           assert.throws(function() {
             const graph = new Graph(null, {edgeKeyGenerator: 'test'});
           }, invalid());
+        },
+
+        'it should correctly give the edge an id.': function() {
+          const edgeKeyGenerator = function({source, target}) {
+            return `${source}->${target}`;
+          };
+
+          const graph = new Graph(null, {edgeKeyGenerator});
+          graph.addNodesFrom(['John', 'Martha', 'Clark']);
+          graph.addEdge('John', 'Martha');
+          graph.addEdge('Martha', 'Clark');
+
+          assert.deepEqual(graph.edges(), ['John->Martha', 'Martha->Clark']);
         }
       },
 

@@ -1051,12 +1051,12 @@ export default class Graph extends EventEmitter {
    * @return {any}                 - The edge.
    */
   addEdge(source, target, attributes) {
-    const edge = this._options.edgeKeyGenerator(
-      this.type === 'undirected',
+    const edge = this._options.edgeKeyGenerator({
+      undirected: this.type === 'undirected',
       source,
       target,
-      attributes
-    );
+      attributes: attributes || {}
+    });
 
     return addEdge(
       this,
@@ -1081,12 +1081,12 @@ export default class Graph extends EventEmitter {
   addDirectedEdge(source, target, attributes) {
 
     // Generating an id
-    const edge = this._options.edgeKeyGenerator(
-      false,
+    const edge = this._options.edgeKeyGenerator({
+      undirected: false,
       source,
       target,
-      attributes
-    );
+      attributes: attributes || {}
+    });
 
     return addEdge(
       this,
@@ -1111,12 +1111,12 @@ export default class Graph extends EventEmitter {
   addUndirectedEdge(source, target, attributes) {
 
     // Generating an id
-    const edge = this._options.edgeKeyGenerator(
-      false,
+    const edge = this._options.edgeKeyGenerator({
+      undirected: true,
       source,
       target,
-      attributes
-    );
+      attributes: attributes || {}
+    });
 
     return addEdge(
       this,
