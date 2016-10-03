@@ -163,6 +163,7 @@ function addEdge(
   attributes
 ) {
 
+  // Checking validity of operation
   if (!undirected && graph.type === 'undirected')
     throw new UsageGraphError(`Graph.${name}: you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.`);
 
@@ -171,6 +172,10 @@ function addEdge(
 
   if (attributes && !isPlainObject(attributes))
     throw new InvalidArgumentsGraphError(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
+
+  // Coercion of source & target:
+  source = '' + source;
+  target = '' + target;
 
   if (!graph.hasNode(source))
     throw new NotFoundGraphError(`Graph.${name}: source node "${source}" not found.`);
