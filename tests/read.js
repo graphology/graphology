@@ -455,7 +455,7 @@ export default function read(Graph, checkers) {
 
           graph.addDirectedEdge('Helen', 'Helen');
 
-          assert.strictEqual(graph.directedDegree('Helen'), 4);
+          assert.strictEqual(graph.directedDegree('Helen'), 5);
           assert.strictEqual(graph.directedDegree('Helen', false), 3);
         }
       },
@@ -489,7 +489,7 @@ export default function read(Graph, checkers) {
 
           graph.addUndirectedEdge('Helen', 'Helen');
 
-          assert.strictEqual(graph.undirectedDegree('Helen'), 2);
+          assert.strictEqual(graph.undirectedDegree('Helen'), 3);
           assert.strictEqual(graph.undirectedDegree('Helen', false), 1);
         }
       },
@@ -528,7 +528,7 @@ export default function read(Graph, checkers) {
 
           graph.addUndirectedEdge('Helen', 'Helen');
 
-          assert.strictEqual(graph.degree('Helen'), 5);
+          assert.strictEqual(graph.degree('Helen'), 6);
           assert.strictEqual(graph.degree('Helen', false), 4);
         }
       }

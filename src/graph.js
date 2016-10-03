@@ -52,6 +52,7 @@ import {
 // TODO: neighbor counting method are basically degree
 // TODO: abstract set storing first element (override add)
 // TODO: refactor edge adding methods using a descriptor?
+// TODO: discuss .removeNodeAttribute & .hasNodeAttribute
 
 /**
  * Enums.
@@ -238,7 +239,10 @@ function addEdge(graph, name, undirected, edge, source, target, attributes) {
         targetData = graph._nodes.get(target);
 
   if (source === target) {
-    sourceData.selfLoops++;
+    if (undirected)
+      sourceData.undirectedSelfLoops++;
+    else
+      sourceData.directedSelfLoops++;
   }
   else {
     if (undirected) {
@@ -670,9 +674,10 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.inDegree: could not find the "${node}" node in the graph.`);
 
-    const data = this._nodes.get(node);
+    const data = this._nodes.get(node),
+          loops = selfLoops ? data.directedSelfLoops : 0;
 
-    return data.inDegree + (selfLoops ? data.selfLoops : 0);
+    return data.inDegree + loops;
   }
 
   /**
@@ -692,9 +697,10 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.outDegree: could not find the "${node}" node in the graph.`);
 
-    const data = this._nodes.get(node);
+    const data = this._nodes.get(node),
+          loops = selfLoops ? data.directedSelfLoops : 0;
 
-    return data.outDegree + (selfLoops ? data.selfLoops : 0);
+    return data.outDegree + loops;
   }
 
   /**
@@ -714,12 +720,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.directedDegree: could not find the "${node}" node in the graph.`);
 
-    const data = this._nodes.get(node);
-
-    return (
-      data.outDegree + data.inDegree +
-      (selfLoops ? data.selfLoops : 0)
-    );
+    return this.inDegree(node, selfLoops) + this.outDegree(node, selfLoops);
   }
 
   /**
@@ -739,12 +740,10 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.undirectedDegree: could not find the "${node}" node in the graph.`);
 
-    const data = this._nodes.get(node);
+    const data = this._nodes.get(node),
+          loops = selfLoops ? (data.undirectedSelfLoops * 2) : 0;
 
-    return (
-      data.undirectedDegree +
-      (selfLoops ? data.selfLoops : 0)
-    );
+    return data.undirectedDegree + loops;
   }
 
   /**
@@ -764,11 +763,9 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.degree: could not find the "${node}" node in the graph.`);
 
-    const data = this._nodes.get(node);
-
     return (
-      data.outDegree + data.inDegree + data.undirectedDegree +
-      (selfLoops ? data.selfLoops : 0)
+      this.directedDegree(node, selfLoops) +
+      this.undirectedDegree(node, selfLoops)
     );
   }
 
@@ -933,8 +930,14 @@ export default class Graph extends EventEmitter {
       attributes
     };
 
-    if (this.allowSelfLoops)
-      data.selfLoops = 0;
+    if (this.allowSelfLoops) {
+      if (this.type === 'mixed' || this.type === 'directed') {
+        data.directedSelfLoops = 0;
+      }
+      if (this.type === 'mixed' || this.type === 'undirected') {
+        data.undirectedSelfLoops = 0;
+      }
+    }
 
     if (this.type === 'mixed' || this.type === 'directed') {
       data.inDegree = 0;
