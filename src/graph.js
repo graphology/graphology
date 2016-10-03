@@ -45,11 +45,8 @@ import {
 } from './utils';
 
 // TODO: finish #.selfLoops (bunch iteration only)
-// TODO: check that the degree calculation is legit related to self-loops
-// TODO: lazily create attributes object
 // TODO: solve the #.merge conundrum
 // TODO: add the option adding nodes when creating edges if non-existent
-// TODO: neighbor counting method are basically degree
 // TODO: abstract set storing first element (override add)
 // TODO: refactor edge adding methods using a descriptor?
 // TODO: discuss .removeNodeAttribute & .hasNodeAttribute
