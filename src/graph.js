@@ -137,21 +137,31 @@ function clearEdgeFromIndex(graph, name, edge, data) {
 /**
  * Internal method used to add an arbitrary edge to the given graph.
  *
- * @param  {Graph}   graph        - Target graph.
- * @param  {string}  name         - Name of the child method for errors.
- * @param  {boolean} undirected   - Whether the edge is undirected.
- * @param  {any}     edge         - The edge's key.
- * @param  {any}     source       - The source node.
- * @param  {any}     target       - The target node.
- * @param  {object}  [attributes] - Optional attributes.
- * @return {any}                  - The edge.
+ * @param  {Graph}   graph          - Target graph.
+ * @param  {string}  name           - Name of the child method for errors.
+ * @param  {boolean} mustGenerateId - Should the graph generate an id?
+ * @param  {boolean} undirected     - Whether the edge is undirected.
+ * @param  {any}     edge           - The edge's key.
+ * @param  {any}     source         - The source node.
+ * @param  {any}     target         - The target node.
+ * @param  {object}  [attributes]   - Optional attributes.
+ * @return {any}                    - The edge.
  *
  * @throws {Error} - Will throw if the graph is of the wrong type.
  * @throws {Error} - Will throw if the given attributes are not an object.
  * @throws {Error} - Will throw if source or target doesn't exist.
  * @throws {Error} - Will throw if the edge already exist.
  */
-function addEdge(graph, name, undirected, edge, source, target, attributes) {
+function addEdge(
+  graph,
+  name,
+  mustGenerateId,
+  undirected,
+  edge,
+  source,
+  target,
+  attributes
+) {
 
   if (!undirected && graph.type === 'undirected')
     throw new UsageGraphError(`Graph.${name}: you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.`);
@@ -171,6 +181,17 @@ function addEdge(graph, name, undirected, edge, source, target, attributes) {
   if (!graph.allowSelfLoops && source === target)
     throw new UsageGraphError(`Graph.${name}: source & target are the same, thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
 
+  // Must the graph generate an id for this edge?
+  if (mustGenerateId) {
+    edge = graph._options.edgeKeyGenerator({
+      undirected,
+      source,
+      target,
+      attributes: attributes || {}
+    });
+  }
+
+  // Do we need to handle duplicate?
   const canHandleDuplicate = typeof graph._options.onDuplicateEdge === 'function';
   let mustHandleDuplicate = false;
 
@@ -200,9 +221,6 @@ function addEdge(graph, name, undirected, edge, source, target, attributes) {
 
   // Handling duplicates
   if (mustHandleDuplicate) {
-
-    // TODO: decide whether to stock that id was generated and what to pass
-    // here
     graph._options.onDuplicateEdge(
       graph,
       {
@@ -224,14 +242,14 @@ function addEdge(graph, name, undirected, edge, source, target, attributes) {
     target
   };
 
-  // NOTE: only adding the 'undirected' key if needed
+  // Only adding the 'undirected' key if needed
   if (undirected)
     data.undirected = true;
 
   // Adding the edge to the internal register
   graph._edges.set(edge, data);
 
-  // Incrementing node counters
+  // Incrementing node degree counters
   const sourceData = graph._nodes.get(source),
         targetData = graph._nodes.get(target);
 
@@ -990,6 +1008,7 @@ export default class Graph extends EventEmitter {
     return addEdge(
       this,
       'addEdgeWithKey',
+      false,
       this.type === 'undirected',
       edge,
       source,
@@ -1012,6 +1031,7 @@ export default class Graph extends EventEmitter {
       this,
       'addDirectedEdgeWithKey',
       false,
+      false,
       edge,
       source,
       target,
@@ -1032,6 +1052,7 @@ export default class Graph extends EventEmitter {
     return addEdge(
       this,
       'addUndirectedEdgeWithKey',
+      false,
       true,
       edge,
       source,
@@ -1051,18 +1072,12 @@ export default class Graph extends EventEmitter {
    * @return {any}                 - The edge.
    */
   addEdge(source, target, attributes) {
-    const edge = this._options.edgeKeyGenerator({
-      undirected: this.type === 'undirected',
-      source,
-      target,
-      attributes: attributes || {}
-    });
-
     return addEdge(
       this,
       'addEdge',
+      true,
       this.type === 'undirected',
-      edge,
+      null,
       source,
       target,
       attributes
@@ -1079,20 +1094,12 @@ export default class Graph extends EventEmitter {
    * @return {any}                 - The edge.
    */
   addDirectedEdge(source, target, attributes) {
-
-    // Generating an id
-    const edge = this._options.edgeKeyGenerator({
-      undirected: false,
-      source,
-      target,
-      attributes: attributes || {}
-    });
-
     return addEdge(
       this,
       'addDirectedEdge',
+      true,
       false,
-      edge,
+      null,
       source,
       target,
       attributes
@@ -1109,20 +1116,12 @@ export default class Graph extends EventEmitter {
    * @return {any}                 - The edge.
    */
   addUndirectedEdge(source, target, attributes) {
-
-    // Generating an id
-    const edge = this._options.edgeKeyGenerator({
-      undirected: true,
-      source,
-      target,
-      attributes: attributes || {}
-    });
-
     return addEdge(
       this,
       'addUndirectedEdge',
       true,
-      edge,
+      true,
+      null,
       source,
       target,
       attributes
