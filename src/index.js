@@ -52,6 +52,7 @@ class MultiUndirectedGraph extends Graph {
 /**
  * Exporting as CommonJS for convenience.
  */
+Graph.Graph = Graph;
 Graph.DirectedGraph = DirectedGraph;
 Graph.UndirectedGraph = UndirectedGraph;
 Graph.MultiDirectedGraph = MultiDirectedGraph;
