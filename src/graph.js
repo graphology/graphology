@@ -48,7 +48,7 @@ import {
 // TODO: solve the #.merge conundrum
 // TODO: add the option adding nodes when creating edges if non-existent
 // TODO: abstract set storing first element (override add)
-// TODO: refactor edge adding methods using a descriptor?
+// TODO: refactor edge adding methods using a descriptor? YES! So we can add a different arity to them.
 // TODO: discuss .removeNodeAttribute & .hasNodeAttribute
 
 /**

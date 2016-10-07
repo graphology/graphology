@@ -120,6 +120,60 @@ function attachAttributesGetter(Class, method, key, elementName, checker, finder
 }
 
 /**
+ * Attach an attribute checker method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
+function attachAttributeChecker(Class, method, key, elementName, checker, finder) {
+
+  /**
+   * Checks whether the desired attribute is set for the given element (node or edge).
+   *
+   * Arity 2:
+   * @param  {any}    element - Target element.
+   * @param  {string} name    - Attribute's name.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}     source - Source element.
+   * @param  {any}     target - Target element.
+   * @param  {string}  name   - Attribute's name.
+   *
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
+  Class.prototype[method] = function(element, name) {
+    if (arguments.length > 2) {
+      if (!finder)
+        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
+
+      const source = element,
+            target = name;
+
+      name = arguments[2];
+
+      if (!this[checker](source, target))
+        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
+
+      element = this[finder](source, target);
+    }
+
+    if (!this[checker](element))
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
+
+    const data = this[key].get(element);
+
+    return data.attributes.hasOwnProperty(name);
+  };
+}
+
+/**
  * Attach an attribute setter method onto the provided class.
  *
  * @param {function} Class       - Target class.
@@ -412,6 +466,10 @@ const ATTRIBUTES_METHODS = [
   {
     name: element => `get${element}Attributes`,
     attacher: attachAttributesGetter
+  },
+  {
+    name: element => `has${element}Attribute`,
+    attacher: attachAttributeChecker
   },
   {
     name: element => `set${element}Attribute`,

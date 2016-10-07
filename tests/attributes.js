@@ -10,8 +10,10 @@ import {deepMerge} from './helpers';
 const METHODS = [
   'getNodeAttribute',
   'getNodeAttributes',
+  'hasNodeAttribute',
   'getEdgeAttribute',
   'getEdgeAttributes',
+  'hasEdgeAttribute',
   'setNodeAttribute',
   'setEdgeAttribute',
   'updateNodeAttribute',
@@ -131,6 +133,44 @@ export default function attributes(Graph, checkers) {
         const edge = graph.addEdge('John', 'Thomas');
 
         assert.deepEqual(graph.getEdgeAttributes(edge), {});
+      }
+    },
+
+    '#.hasNodeAttribute': {
+
+      'it should correctly return whether the attribute is set.': function() {
+        const graph = new Graph();
+        graph.addNode('John', {age: 20});
+
+        assert.strictEqual(graph.hasNodeAttribute('John', 'age'), true);
+        assert.strictEqual(graph.hasNodeAttribute('John', 'eyes'), false);
+      },
+
+      'it does not fail with typical prototypal properties.': function() {
+        const graph = new Graph();
+        graph.addNode('John', {age: 20});
+
+        assert.strictEqual(graph.hasNodeAttribute('John', 'toString'), false);
+      }
+    },
+
+    '#.hasEdgeAttribute': {
+
+      'it should correctly return whether the attribute is set.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Martha']);
+        graph.addEdgeWithKey('J->M', 'John', 'Martha', {weight: 10});
+
+        assert.strictEqual(graph.hasEdgeAttribute('J->M', 'weight'), true);
+        assert.strictEqual(graph.hasEdgeAttribute('J->M', 'type'), false);
+      },
+
+      'it does not fail with typical prototypal properties.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Martha']);
+        graph.addEdgeWithKey('J->M', 'John', 'Martha', {weight: 10});
+
+        assert.strictEqual(graph.hasEdgeAttribute('J->M', 'toString'), false);
       }
     },
 
