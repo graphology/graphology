@@ -1003,6 +1003,26 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method used to merge a node into the graph.
+   *
+   * @param  {any}    node         - The node.
+   * @param  {object} [attributes] - Optional attributes.
+   * @return {any}                 - The node.
+   */
+  mergeNode(node, attributes) {
+
+    // If the node already exists, we merge the attributes
+    if (this.hasNode(node)) {
+      if (attributes)
+        this.mergeNodeAttributes(node, attributes);
+      return node;
+    }
+
+    // Else, we create it
+    return this.addNode(node, attributes);
+  }
+
+  /**
    * Method used to add a nodes from a bunch.
    *
    * @param  {bunch}  bunch - The node.

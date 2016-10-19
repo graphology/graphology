@@ -51,6 +51,36 @@ export default function mutation(Graph, checkers) {
       }
     },
 
+    '#.mergeNode': {
+
+      'it should add the node if it does not exist yet.': function() {
+        const graph = new Graph();
+        graph.mergeNode('John');
+
+        assert.deepEqual(graph.nodes(), ['John']);
+      },
+
+      'it should do nothing if the node already exists.': function() {
+        const graph = new Graph();
+        graph.addNode('John');
+        graph.mergeNode('John');
+
+        assert.deepEqual(graph.nodes(), ['John']);
+      },
+
+      'it should merge the attributes.': function() {
+        const graph = new Graph();
+        graph.addNode('John', {eyes: 'blue'});
+        graph.mergeNode('John', {age: 15});
+
+        assert.deepEqual(graph.nodes(), ['John']);
+        assert.deepEqual(graph.getNodeAttributes('John'), {
+          eyes: 'blue',
+          age: 15
+        });
+      }
+    },
+
     '#.addNodesFrom': {
 
       'it should throw if the given bunch is not valid.': function() {
