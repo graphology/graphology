@@ -45,11 +45,7 @@ import {
 } from './utils';
 
 // TODO: finish #.selfLoops (bunch iteration only)
-// TODO: solve the #.merge conundrum
-// TODO: add the option adding nodes when creating edges if non-existent
-// TODO: abstract set storing first element (override add)
 // TODO: refactor edge adding methods using a descriptor? YES! So we can add a different arity to them.
-// TODO: discuss .removeNodeAttribute & .hasNodeAttribute
 
 /**
  * Enums.
@@ -829,17 +825,17 @@ export default class Graph extends EventEmitter {
    *
    * @throws {Error} - Will throw if either the node or the edge isn't in the graph.
    */
-  relatedNode(node, edge) {
+  opposite(node, edge) {
     if (!this.hasNode(node))
-      throw new NotFoundGraphError(`Graph.relatedNode: could not find the "${node}" node in the graph.`);
+      throw new NotFoundGraphError(`Graph.opposite: could not find the "${node}" node in the graph.`);
 
     if (!this.hasEdge(edge))
-      throw new NotFoundGraphError(`Graph.relatedNode: could not find the "${edge}" edge in the graph.`);
+      throw new NotFoundGraphError(`Graph.opposite: could not find the "${edge}" edge in the graph.`);
 
     const [node1, node2] = this.extremities(edge);
 
     if (node !== node1 && node !== node2)
-      throw new NotFoundGraphError(`Graph.relatedNode: the "${node}" node is not attached to the "${edge}" edge (${node1}, ${node2}).`);
+      throw new NotFoundGraphError(`Graph.opposite: the "${node}" node is not attached to the "${edge}" edge (${node1}, ${node2}).`);
 
     return node === node1 ? node2 : node1;
   }

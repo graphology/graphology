@@ -4,6 +4,7 @@
 
 * Adding `#.hasNodeAttribute` & `#.hasEdgeAttribute`.
 * Adding `#.removeNodeAttribute` & `#.removeEdgeAttribute`.
+* Renaming `#.relatedNode` to `#.opposite`.
 * Dropping the `onDuplicateNode` & `onDuplicateEdge` options.
 
 ## 0.1.1

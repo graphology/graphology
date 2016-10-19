@@ -246,18 +246,18 @@ export default function read(Graph, checkers) {
       }
     },
 
-    '#.relatedNode': {
+    '#.opposite': {
 
       'it should throw if either the node or the edge is not found in the graph.': function() {
         const graph = new Graph();
         graph.addNode('Thomas');
 
         assert.throws(function() {
-          graph.relatedNode('Jeremy', 'T->J');
+          graph.opposite('Jeremy', 'T->J');
         }, notFound());
 
         assert.throws(function() {
-          graph.relatedNode('Thomas', 'T->J');
+          graph.opposite('Thomas', 'T->J');
         }, notFound());
       },
 
@@ -267,7 +267,7 @@ export default function read(Graph, checkers) {
         graph.addEdgeWithKey('I->E', 'Isabella', 'Estelle');
 
         assert.throws(function() {
-          graph.relatedNode('Thomas', 'I->E');
+          graph.opposite('Thomas', 'I->E');
         }, notFound());
       },
 
@@ -277,7 +277,7 @@ export default function read(Graph, checkers) {
         const edge = graph.addEdge('Thomas', 'Estelle');
 
         assert.strictEqual(
-          graph.relatedNode('Thomas', edge),
+          graph.opposite('Thomas', edge),
           'Estelle'
         );
       }
