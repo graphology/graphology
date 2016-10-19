@@ -44,9 +44,6 @@ import {
   uuid
 } from './utils';
 
-// TODO: finish #.selfLoops (bunch iteration only)
-// TODO: refactor edge adding methods using a descriptor? YES! So we can add a different arity to them.
-
 /**
  * Enums.
  */
@@ -62,6 +59,34 @@ const EMITTER_PROPS = new Set([
   '_eventsCount',
   '_maxListeners'
 ]);
+
+const EDGE_ADD_METHODS = [
+  {
+    name: 'addEdge',
+    generateKey: true
+  },
+  {
+    name: 'addDirectedEdge',
+    generateKey: true,
+    type: 'directed'
+  },
+  {
+    name: 'addUndirectedEdge',
+    generateKey: true,
+    type: 'undirected'
+  },
+  {
+    name: 'addEdgeWithKey',
+  },
+  {
+    name: 'addDirectedEdgeWithKey',
+    type: 'directed'
+  },
+  {
+    name: 'addUndirectedEdgeWithKey',
+    type: 'undirected'
+  },
+];
 
 /**
  * Default options.
@@ -133,6 +158,7 @@ function clearEdgeFromIndex(graph, name, edge, data) {
  *
  * @param  {Graph}   graph          - Target graph.
  * @param  {string}  name           - Name of the child method for errors.
+ * @param  {boolean} merge          - Are we merging?
  * @param  {boolean} mustGenerateId - Should the graph generate an id?
  * @param  {boolean} undirected     - Whether the edge is undirected.
  * @param  {any}     edge           - The edge's key.
@@ -149,6 +175,7 @@ function clearEdgeFromIndex(graph, name, edge, data) {
 function addEdge(
   graph,
   name,
+  merge,
   mustGenerateId,
   undirected,
   edge,
@@ -171,11 +198,22 @@ function addEdge(
   source = '' + source;
   target = '' + target;
 
-  if (!graph.hasNode(source))
-    throw new NotFoundGraphError(`Graph.${name}: source node "${source}" not found.`);
+  let mustAddSource = false,
+      mustAddTarget = false;
 
-  if (!graph.hasNode(target))
-    throw new NotFoundGraphError(`Graph.${name}: target node "${target}" not found.`);
+  if (!graph.hasNode(source)) {
+    if (!merge)
+      throw new NotFoundGraphError(`Graph.${name}: source node "${source}" not found.`);
+    else
+      mustAddSource = true;
+  }
+
+  if (!graph.hasNode(target)) {
+    if (!merge)
+      throw new NotFoundGraphError(`Graph.${name}: target node "${target}" not found.`);
+    else
+      mustAddTarget = true;
+  }
 
   if (!graph.allowSelfLoops && source === target)
     throw new UsageGraphError(`Graph.${name}: source & target are the same, thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
@@ -191,16 +229,19 @@ function addEdge(
   }
 
   // Do we need to handle duplicate?
-  const canHandleDuplicate = false;
-  let mustHandleDuplicate = false;
+  let alreadyExistingEdge = null;
 
+  // Here, we have a key collision
   if (graph.hasEdge(edge)) {
-    if (!canHandleDuplicate)
+    if (!merge) {
       throw new UsageGraphError(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
-    else
-      mustHandleDuplicate = true;
+    }
+    else {
+      alreadyExistingEdge = edge;
+    }
   }
 
+  // Here, we might have a source / target collision
   if (
     !graph.multi &&
     (
@@ -209,21 +250,36 @@ function addEdge(
         graph.hasDirectedEdge(source, target)
     )
   ) {
-    if (!canHandleDuplicate)
+    if (!merge)
       throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option.`);
-    else
-      mustHandleDuplicate = true;
+    else {
+      alreadyExistingEdge = undirected ?
+        graph.getUndirectedEdge(source, target) :
+        graph.getDirectedEdge(source, target);
+    }
   }
 
   // Protecting the attributes
   attributes = assign({}, graph._options.defaultEdgeAttributes, attributes);
 
   // Handling duplicates
-  if (mustHandleDuplicate) {
+  if (alreadyExistingEdge) {
 
-    // TODO: currently dead code.
-    return edge;
+    // If the key collides but the source & target are inconsistent, we throw
+    if (graph.source(alreadyExistingEdge) !== source ||
+        graph.target(alreadyExistingEdge) !== target) {
+      throw new UsageGraphError(`Graph.${name}: inconsitency detected when attempting to merge the "${edge}" edge with "${source}" source & "${target}" target vs. (${graph.source(alreadyExistingEdge)}, ${graph.target(alreadyExistingEdge)}).`);
+    }
+
+    // Simply merging the attributes of the already existing edge
+    graph.mergeEdgeAttributes(alreadyExistingEdge, attributes);
+    return alreadyExistingEdge;
   }
+
+  if (mustAddSource)
+    graph.addNode(source);
+  if (mustAddTarget)
+    graph.addNode(target);
 
   // Storing some data
   const data = {
@@ -966,140 +1022,6 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method used to add an edge of the type of the graph or directed if the
-   * graph is mixed using the given key.
-   *
-   * @param  {any}    edge         - The edge's key.
-   * @param  {any}    source       - The source node.
-   * @param  {any}    target       - The target node.
-   * @param  {object} [attributes] - Optional attributes.
-   * @return {any}                 - The edge.
-   */
-  addEdgeWithKey(edge, source, target, attributes) {
-    return addEdge(
-      this,
-      'addEdgeWithKey',
-      false,
-      this.type === 'undirected',
-      edge,
-      source,
-      target,
-      attributes
-    );
-  }
-
-  /**
-   * Method used to add a directed edge to the graph using the given key.
-   *
-   * @param  {any}    edge         - The edge's key.
-   * @param  {any}    source       - The source node.
-   * @param  {any}    target       - The target node.
-   * @param  {object} [attributes] - Optional attributes.
-   * @return {any}                 - The edge.
-   */
-  addDirectedEdgeWithKey(edge, source, target, attributes) {
-    return addEdge(
-      this,
-      'addDirectedEdgeWithKey',
-      false,
-      false,
-      edge,
-      source,
-      target,
-      attributes
-    );
-  }
-
-  /**
-   * Method used to add an undirected edge to the graph using the given key.
-   *
-   * @param  {any}    edge         - The edge's key.
-   * @param  {any}    source       - The source node.
-   * @param  {any}    target       - The target node.
-   * @param  {object} [attributes] - Optional attributes.
-   * @return {any}                 - The edge.
-   */
-  addUndirectedEdgeWithKey(edge, source, target, attributes) {
-    return addEdge(
-      this,
-      'addUndirectedEdgeWithKey',
-      false,
-      true,
-      edge,
-      source,
-      target,
-      attributes
-    );
-  }
-
-  /**
-   * Method used to add an edge of the type of the graph or directed if the
-   * graph is mixed. An id will automatically be created for it using the
-   * 'edgeKeyGenerator' option.
-   *
-   * @param  {any}    source       - The source node.
-   * @param  {any}    target       - The target node.
-   * @param  {object} [attributes] - Optional attributes.
-   * @return {any}                 - The edge.
-   */
-  addEdge(source, target, attributes) {
-    return addEdge(
-      this,
-      'addEdge',
-      true,
-      this.type === 'undirected',
-      null,
-      source,
-      target,
-      attributes
-    );
-  }
-
-  /**
-   * Method used to add a directed edge to the graph. An id will automatically
-   * be created for it using the 'edgeKeyGenerator' option.
-   *
-   * @param  {any}    source       - The source node.
-   * @param  {any}    target       - The target node.
-   * @param  {object} [attributes] - Optional attributes.
-   * @return {any}                 - The edge.
-   */
-  addDirectedEdge(source, target, attributes) {
-    return addEdge(
-      this,
-      'addDirectedEdge',
-      true,
-      false,
-      null,
-      source,
-      target,
-      attributes
-    );
-  }
-
-  /**
-   * Method used to add an undirected edge to the graph. An id will automatically
-   * be created for it using the 'edgeKeyGenerator' option.
-   *
-   * @param  {any}    source       - The source node.
-   * @param  {any}    target       - The target node.
-   * @param  {object} [attributes] - Optional attributes.
-   * @return {any}                 - The edge.
-   */
-  addUndirectedEdge(source, target, attributes) {
-    return addEdge(
-      this,
-      'addUndirectedEdge',
-      true,
-      true,
-      null,
-      source,
-      target,
-      attributes
-    );
-  }
-
-  /**
    * Method used to drop a single node & all its attached edges from the graph.
    *
    * @param  {any}    node - The node.
@@ -1762,6 +1684,42 @@ export default class Graph extends EventEmitter {
  * prototype when those are very numerous and when their creation is
  * abstracted.
  */
+
+/**
+ * Related to edge addition.
+ */
+EDGE_ADD_METHODS.forEach(method => {
+  if (method.generateKey) {
+    Graph.prototype[method.name] = function(source, target, attributes) {
+      return addEdge(
+        this,
+        method.name,
+        method.merge,
+        method.generateKey,
+        (method.type || this.type) === 'undirected',
+        null,
+        source,
+        target,
+        attributes
+      );
+    };
+  }
+  else {
+    Graph.prototype[method.name] = function(edge, source, target, attributes) {
+      return addEdge(
+        this,
+        method.name,
+        method.merge,
+        method.generateKey,
+        (method.type || this.type) === 'undirected',
+        edge,
+        source,
+        target,
+        attributes
+      );
+    };
+  }
+});
 
 /**
  * Attributes-related.
