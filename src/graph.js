@@ -76,8 +76,6 @@ const DEFAULTS = {
   defaultNodeAttributes: {},
   edgeKeyGenerator: uuid,
   multi: false,
-  onDuplicateEdge: null,
-  onDuplicateNode: null,
   type: 'mixed'
 };
 
@@ -197,7 +195,7 @@ function addEdge(
   }
 
   // Do we need to handle duplicate?
-  const canHandleDuplicate = typeof graph._options.onDuplicateEdge === 'function';
+  const canHandleDuplicate = false;
   let mustHandleDuplicate = false;
 
   if (graph.hasEdge(edge)) {
@@ -216,7 +214,7 @@ function addEdge(
     )
   ) {
     if (!canHandleDuplicate)
-      throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option. The 'onDuplicateEdge' option might also interest you.`);
+      throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option.`);
     else
       mustHandleDuplicate = true;
   }
@@ -226,17 +224,8 @@ function addEdge(
 
   // Handling duplicates
   if (mustHandleDuplicate) {
-    graph._options.onDuplicateEdge(
-      graph,
-      {
-        key: edge,
-        attributes,
-        source,
-        target,
-        undirected
-      }
-    );
 
+    // TODO: currently dead code.
     return edge;
   }
 
@@ -378,12 +367,6 @@ export default class Graph extends EventEmitter {
 
     if (!isPlainObject(options.defaultNodeAttributes))
       throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'defaultNodeAttributes' option. Expecting a plain object but got "${options.defaultNodeAttributes}".`);
-
-    if (options.onDuplicateEdge && typeof options.onDuplicateEdge !== 'function')
-      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'onDuplicateEdge' option. Expecting a function but got "${options.onDuplicateEdge}".`);
-
-    if (options.onDuplicateNode && typeof options.onDuplicateNode !== 'function')
-      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'onDuplicateNode' option. Expecting a function but got "${options.onDuplicateNode}".`);
 
     //-- Private properties
 
@@ -930,21 +913,8 @@ export default class Graph extends EventEmitter {
     // Protecting the attributes
     attributes = assign({}, this._options.defaultNodeAttributes, attributes);
 
-    if (this.hasNode(node)) {
-
-      // Triggering duplicate callback
-      if (typeof this._options.onDuplicateNode === 'function') {
-        this._options.onDuplicateNode(
-          this,
-          {key: node, attributes}
-        );
-
-        return node;
-      }
-      else {
-        throw new UsageGraphError(`Graph.addNode: the "${node}" node already exist in the graph. You might want to check out the 'onDuplicateNode' option.`);
-      }
-    }
+    if (this.hasNode(node))
+      throw new UsageGraphError(`Graph.addNode: the "${node}" node already exist in the graph.`);
 
     const data = {
       attributes

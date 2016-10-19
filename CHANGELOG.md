@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0
+
+* Adding `#.hasNodeAttribute` & `#.hasEdgeAttribute`.
+* Adding `#.removeNodeAttribute` & `#.removeEdgeAttribute`.
+* Dropping the `onDuplicateNode` & `onDuplicateEdge` options.
+
 ## 0.1.1
 
 * Fixing the argument passed to the `edgeKeyGenerator` function.
