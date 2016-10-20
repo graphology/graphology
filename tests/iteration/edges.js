@@ -268,18 +268,27 @@ export default function edgesIteration(Graph, checkers) {
   };
 
   const graphWithSelfLoops = new Graph(null, {multi: true});
-  graphWithSelfLoops.addNodesFrom(['John', 'Tabitha', 'Alone']);
+  graphWithSelfLoops.addNodesFrom(['John', 'Tabitha', 'Marcia', 'Alone']);
   graphWithSelfLoops.addEdgeWithKey('J->T', 'John', 'Tabitha');
   graphWithSelfLoops.addEdgeWithKey('J1', 'John', 'John');
   graphWithSelfLoops.addEdgeWithKey('J2', 'John', 'John');
   graphWithSelfLoops.addEdgeWithKey('T1', 'Tabitha', 'Tabitha');
+  graphWithSelfLoops.addEdgeWithKey('M1', 'Marcia', 'Marcia');
 
   const SELF_LOOPS_TEST_DATA = {
     selfLoops: {
-      all: ['J1', 'J2', 'T1'],
+      all: ['J1', 'J2', 'T1', 'M1'],
       node: {
         key: 'John',
         loops: ['J1', 'J2']
+      },
+      bunch: {
+        keys: ['John', 'Tabitha'],
+        edges: [
+          'J1',
+          'J2',
+          'T1'
+        ]
       }
     }
   };
@@ -404,6 +413,15 @@ export default function edgesIteration(Graph, checkers) {
 
           assert.deepEqual(edges, data.node.loops);
           assert.deepEqual(graphWithSelfLoops[name]('Alone'), []);
+        },
+
+        'it should return a bunch of nodes\' relevant edges.': function() {
+          testBunches(data.bunch.keys, bunch => {
+            const edges = graphWithSelfLoops[name](bunch);
+
+            assert(sameMembers(edges, data.bunch.edges));
+            assert.deepEqual(graphWithSelfLoops[name](['Alone']), []);
+          });
         }
       },
 
@@ -419,7 +437,15 @@ export default function edgesIteration(Graph, checkers) {
 
           assert.strictEqual(nb, data.node.loops.length);
           assert.deepEqual(graphWithSelfLoops[counterName]('Alone'), 0);
-        }
+        },
+
+        'it should count a bunch of nodes\' relevant edges.': function() {
+          testBunches(data.bunch.keys, bunch => {
+
+            assert.strictEqual(graphWithSelfLoops[counterName](bunch), data.bunch.edges.length);
+            assert.deepEqual(graphWithSelfLoops[counterName](['Alone']), 0);
+          });
+        },
       }
     };
   }

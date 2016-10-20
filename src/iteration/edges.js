@@ -118,13 +118,22 @@ function countEdges(object, key) {
  *
  * @param {Set}              edges - Current set of edges.
  * @param {object|undefined} map   - Target object.
+ * @param {string}           key   - Sub key.
  */
-function mergeEdges(edges, object) {
+function mergeEdges(edges, object, key) {
   if (!object)
     return;
 
-  for (const k in object) {
-    object[k].forEach(value => (edges.add(value)));
+  if (key) {
+    const target = object[key];
+
+    if (target)
+      target.forEach(value => (edges.add(value)));
+  }
+  else {
+    for (const k in object) {
+      object[k].forEach(value => (edges.add(value)));
+    }
   }
 }
 
@@ -250,6 +259,13 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
       throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph in the given bunch.`);
 
     const nodeData = graph._nodes.get(node);
+
+    if (type === 'selfLoops') {
+      mergeEdges(edges, nodeData.out, node);
+      mergeEdges(edges, nodeData.undirectedOut, node);
+
+      return;
+    }
 
     if (type === 'mixed' || type === 'directed') {
 
