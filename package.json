@@ -17,7 +17,11 @@
     "specs"
   ],
   "keywords": [
-    "graph"
+    "graph",
+    "graph theory",
+    "directed",
+    "undirected",
+    "network"
   ],
   "repository": {
     "type": "git",
