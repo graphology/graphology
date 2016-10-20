@@ -300,6 +300,63 @@ export default function mutation(Graph, checkers) {
       }
     },
 
+    '#.mergeEdge': {
+
+      'it should add the edge if it does not yet exist.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Martha']);
+
+        graph.mergeEdge('John', 'Martha');
+
+        assert.strictEqual(graph.size, 1);
+        assert.strictEqual(graph.hasEdge('John', 'Martha'), true);
+      },
+
+      'it should do nothing if the edge already exists.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Martha']);
+
+        graph.addEdge('John', 'Martha');
+        graph.mergeEdge('John', 'Martha');
+
+        assert.strictEqual(graph.size, 1);
+        assert.strictEqual(graph.hasEdge('John', 'Martha'), true);
+      },
+
+      'it should merge existing attributes if any.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Martha']);
+
+        graph.addEdge('John', 'Martha', {type: 'KNOWS'});
+        graph.mergeEdge('John', 'Martha', {weight: 2});
+
+        assert.strictEqual(graph.size, 1);
+        assert.strictEqual(graph.hasEdge('John', 'Martha'), true);
+        assert.deepEqual(graph.getEdgeAttributes('John', 'Martha'), {
+          type: 'KNOWS',
+          weight: 2
+        });
+      },
+
+      'it should add missing nodes in the path.': function() {
+        const graph = new Graph();
+        graph.mergeEdge('John', 'Martha');
+
+        assert.strictEqual(graph.order, 2);
+        assert.strictEqual(graph.size, 1);
+        assert.deepEqual(graph.nodes(), ['John', 'Martha']);
+      },
+
+      'it should throw in case of inconsistencies.': function() {
+        const graph = new Graph();
+        graph.mergeEdgeWithKey('J->M', 'John', 'Martha');
+
+        assert.throws(function() {
+          graph.mergeEdgeWithKey('J->M', 'John', 'Thomas');
+        }, usage());
+      }
+    },
+
     '#.dropEdge': {
 
       'it should throw if the edge or nodes in the path are not found in the graph.': function() {

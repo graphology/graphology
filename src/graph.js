@@ -62,30 +62,30 @@ const EMITTER_PROPS = new Set([
 
 const EDGE_ADD_METHODS = [
   {
-    name: 'addEdge',
+    name: verb => `${verb}Edge`,
     generateKey: true
   },
   {
-    name: 'addDirectedEdge',
+    name: verb => `${verb}DirectedEdge`,
     generateKey: true,
     type: 'directed'
   },
   {
-    name: 'addUndirectedEdge',
+    name: verb => `${verb}UndirectedEdge`,
     generateKey: true,
     type: 'undirected'
   },
   {
-    name: 'addEdgeWithKey',
+    name: verb => `${verb}EdgeWithKey`,
   },
   {
-    name: 'addDirectedEdgeWithKey',
+    name: verb => `${verb}DirectedEdgeWithKey`,
     type: 'directed'
   },
   {
-    name: 'addUndirectedEdgeWithKey',
+    name: verb => `${verb}UndirectedEdgeWithKey`,
     type: 'undirected'
-  },
+  }
 ];
 
 /**
@@ -1709,36 +1709,40 @@ export default class Graph extends EventEmitter {
  * Related to edge addition.
  */
 EDGE_ADD_METHODS.forEach(method => {
-  if (method.generateKey) {
-    Graph.prototype[method.name] = function(source, target, attributes) {
-      return addEdge(
-        this,
-        method.name,
-        method.merge,
-        method.generateKey,
-        (method.type || this.type) === 'undirected',
-        null,
-        source,
-        target,
-        attributes
-      );
-    };
-  }
-  else {
-    Graph.prototype[method.name] = function(edge, source, target, attributes) {
-      return addEdge(
-        this,
-        method.name,
-        method.merge,
-        method.generateKey,
-        (method.type || this.type) === 'undirected',
-        edge,
-        source,
-        target,
-        attributes
-      );
-    };
-  }
+  ['add', 'merge'].forEach(verb => {
+    const name = method.name(verb);
+
+    if (method.generateKey) {
+      Graph.prototype[name] = function(source, target, attributes) {
+        return addEdge(
+          this,
+          name,
+          verb === 'merge',
+          method.generateKey,
+          (method.type || this.type) === 'undirected',
+          null,
+          source,
+          target,
+          attributes
+        );
+      };
+    }
+    else {
+      Graph.prototype[name] = function(edge, source, target, attributes) {
+        return addEdge(
+          this,
+          name,
+          verb === 'merge',
+          method.generateKey,
+          (method.type || this.type) === 'undirected',
+          edge,
+          source,
+          target,
+          attributes
+        );
+      };
+    }
+  });
 });
 
 /**
