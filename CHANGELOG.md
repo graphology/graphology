@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+
+* Adding merge flags to import methods.
+
 ## 0.2.0
 
 * Adding `#.hasNodeAttribute` & `#.hasEdgeAttribute`.

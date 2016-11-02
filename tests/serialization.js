@@ -273,6 +273,15 @@ export default function serialization(Graph, checkers) {
 
         assert.deepEqual(graph.nodes(), ['John', 'Jack']);
         assert.deepEqual(graph.getNodeAttributes('Jack'), {age: 34});
+      },
+
+      'it should merge if the flag is true.': function() {
+        const graph = new Graph();
+        graph.addNode('John');
+        graph.importNode({key: 'John', attributes: {age: 34}}, true);
+
+        assert.deepEqual(graph.nodes(), ['John']);
+        assert.strictEqual(graph.getNodeAttribute('John', 'age'), 34);
       }
     },
 
@@ -320,6 +329,17 @@ export default function serialization(Graph, checkers) {
 
         assert.strictEqual(graph.size, 2);
         assert.deepEqual(graph.getEdgeAttributes('J<->T'), {weight: 2});
+      },
+
+      'it should merge if the flag is true.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Thomas']);
+        graph.addEdge('John', 'Thomas');
+
+        graph.importEdge({source: 'John', target: 'Thomas', attributes: {weight: 10}}, true);
+
+        assert.strictEqual(graph.size, 1);
+        assert.strictEqual(graph.getEdgeAttribute('John', 'Thomas', 'weight'), 10);
       }
     },
 

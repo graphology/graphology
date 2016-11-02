@@ -1,3 +1,4 @@
+/* eslint no-nested-ternary: 0 */
 /**
  * Graphology Reference Implementation
  * ====================================
@@ -1401,10 +1402,11 @@ export default class Graph extends EventEmitter {
   /**
    * Method used to import a serialized node.
    *
-   * @param  {object} data - The serialized node.
-   * @return {Graph}       - Returns itself for chaining.
+   * @param  {object} data   - The serialized node.
+   * @param  {boolean} merge - Whether to merge the given node.
+   * @return {Graph}         - Returns itself for chaining.
    */
-  importNode(data) {
+  importNode(data, merge = false) {
 
     // Validating
     const {valid, reason} = validateSerializedNode(data);
@@ -1422,7 +1424,10 @@ export default class Graph extends EventEmitter {
     // Adding the node
     const {key, attributes = {}} = data;
 
-    this.addNode(key, attributes);
+    if (merge)
+      this.mergeNode(key, attributes);
+    else
+      this.addNode(key, attributes);
 
     return this;
   }
@@ -1430,10 +1435,11 @@ export default class Graph extends EventEmitter {
   /**
    * Method used to import a serialized edge.
    *
-   * @param  {object} data - The serialized edge.
-   * @return {Graph}       - Returns itself for chaining.
+   * @param  {object}  data  - The serialized edge.
+   * @param  {boolean} merge - Whether to merge the given edge.
+   * @return {Graph}         - Returns itself for chaining.
    */
-  importEdge(data) {
+  importEdge(data, merge = false) {
 
     // Validating
     const {valid, reason} = validateSerializedEdge(data);
@@ -1463,7 +1469,9 @@ export default class Graph extends EventEmitter {
     let method;
 
     if ('key' in data) {
-      method = undirected ? this.addUndirectedEdgeWithKey : this.addEdgeWithKey;
+      method = merge ?
+        (undirected ? this.mergeUndirectedEdgeWithKey : this.mergeDirectedEdgeWithKey) :
+        (undirected ? this.addUndirectedEdgeWithKey : this.addDirectedEdgeWithKey);
 
       method.call(
         this,
@@ -1474,7 +1482,9 @@ export default class Graph extends EventEmitter {
       );
     }
     else {
-      method = undirected ? this.addUndirectedEdge : this.addDirectedEdge;
+      method = merge ?
+        (undirected ? this.mergeUndirectedEdge : this.mergeDirectedEdge) :
+        (undirected ? this.addUndirectedEdge : this.addDirectedEdge);
 
       method.call(
         this,
@@ -1490,15 +1500,16 @@ export default class Graph extends EventEmitter {
   /**
    * Method used to import serialized nodes.
    *
-   * @param  {array} nodes - The serialized nodes.
-   * @return {Graph}       - Returns itself for chaining.
+   * @param  {array}   nodes - The serialized nodes.
+   * @param  {boolean} merge - Whether to merge the given nodes.
+   * @return {Graph}         - Returns itself for chaining.
    */
-  importNodes(nodes) {
+  importNodes(nodes, merge = false) {
     if (!Array.isArray(nodes))
       throw new InvalidArgumentsGraphError('Graph.importNodes: invalid argument. Expecting an array.');
 
     for (let i = 0, l = nodes.length; i < l; i++)
-      this.importNode(nodes[i]);
+      this.importNode(nodes[i], merge);
 
     return this;
   }
@@ -1506,15 +1517,16 @@ export default class Graph extends EventEmitter {
   /**
    * Method used to import serialized edges.
    *
-   * @param  {array} edges - The serialized edges.
-   * @return {Graph}       - Returns itself for chaining.
+   * @param  {array}   edges - The serialized edges.
+   * @param  {boolean} merge - Whether to merge the given edges.
+   * @return {Graph}         - Returns itself for chaining.
    */
-  importEdges(edges) {
+  importEdges(edges, merge = false) {
     if (!Array.isArray(edges))
       throw new InvalidArgumentsGraphError('Graph.importEdges: invalid argument. Expecting an array.');
 
     for (let i = 0, l = edges.length; i < l; i++)
-      this.importEdge(edges[i]);
+      this.importEdge(edges[i], merge);
 
     return this;
   }
@@ -1522,15 +1534,16 @@ export default class Graph extends EventEmitter {
   /**
    * Method used to import a serialized graph.
    *
-   * @param  {object|Graph} data - The serialized graph.
-   * @return {Graph}             - Returns itself for chaining.
+   * @param  {object|Graph} data  - The serialized graph.
+   * @param  {boolean}      merge - Whether to merge data.
+   * @return {Graph}              - Returns itself for chaining.
    */
-  import(data) {
+  import(data, merge = false) {
 
     // Importing a Graph instance
     if (isGraph(data)) {
 
-      this.import(data.export());
+      this.import(data.export(), merge);
       return this;
     }
 
@@ -1538,10 +1551,10 @@ export default class Graph extends EventEmitter {
     if (!isPlainObject(data) || !data.nodes)
       throw new InvalidArgumentsGraphError('Graph.import: invalid argument. Expecting an object with at least a "nodes" property or, alternatively, a Graph instance.');
 
-    this.importNodes(data.nodes);
+    this.importNodes(data.nodes, merge);
 
     if (data.edges)
-      this.importEdges(data.edges);
+      this.importEdges(data.edges, merge);
 
     return this;
   }
