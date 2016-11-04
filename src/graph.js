@@ -293,6 +293,10 @@ function addEdge(
   if (undirected)
     data.undirected = true;
 
+  // Storing whether the id was generated
+  if (mustGenerateId)
+    data.generatedId = true;
+
   // Adding the edge to the internal register
   graph._edges.set(edge, data);
 
