@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0
+
+* `nodeUpdated` & `edgeUpdated` changing to `nodeAttributesUpdated` & `edgeAttributesUpdated` respectively.
+
 ## 0.3.0
 
 * Adding merge flags to import methods.

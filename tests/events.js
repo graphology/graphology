@@ -103,7 +103,7 @@ export default function events(Graph) {
       }
     },
 
-    'nodeUpdated': {
+    'nodeAttributesUpdated': {
       'it should fire when a node is updated.': function() {
         const graph = new Graph();
 
@@ -127,7 +127,7 @@ export default function events(Graph) {
           }
         });
 
-        graph.on('nodeUpdated', handler);
+        graph.on('nodeAttributesUpdated', handler);
 
         graph.addNode('John');
         graph.setNodeAttribute('John', 'age', 34);
@@ -138,7 +138,7 @@ export default function events(Graph) {
       }
     },
 
-    'edgeUpdated': {
+    'edgeAttributesUpdated': {
       'it should fire when a node is updated.': function() {
         const graph = new Graph();
 
@@ -162,7 +162,7 @@ export default function events(Graph) {
           }
         });
 
-        graph.on('edgeUpdated', handler);
+        graph.on('edgeAttributesUpdated', handler);
 
         graph.addNodesFrom(['John', 'Thomas']);
         graph.addEdgeWithKey('J->T', 'John', 'Thomas');

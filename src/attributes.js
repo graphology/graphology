@@ -184,7 +184,7 @@ function attachAttributeChecker(Class, method, key, elementName, checker, finder
  * @param {string}   [finder]    - Name of the finder method to use.
  */
 function attachAttributeSetter(Class, method, key, elementName, checker, finder) {
-  const eventName = elementName === 'node' ? 'nodeUpdated' : 'edgeUpdated';
+  const eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
 
   /**
    * Set the desired attribute for the given element (node or edge).
@@ -254,7 +254,7 @@ function attachAttributeSetter(Class, method, key, elementName, checker, finder)
  * @param {string}   [finder]    - Name of the finder method to use.
  */
 function attachAttributeUpdater(Class, method, key, elementName, checker, finder) {
-  const eventName = elementName === 'node' ? 'nodeUpdated' : 'edgeUpdated';
+  const eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
 
   /**
    * Update the desired attribute for the given element (node or edge) using
@@ -325,7 +325,7 @@ function attachAttributeUpdater(Class, method, key, elementName, checker, finder
  * @param {string}   [finder]    - Name of the finder method to use.
  */
 function attachAttributesReplacer(Class, method, key, elementName, checker, finder) {
-  const eventName = elementName === 'node' ? 'nodeUpdated' : 'edgeUpdated';
+  const eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
 
   /**
    * Replace the attributes for the given element (node or edge).
@@ -397,7 +397,7 @@ function attachAttributesReplacer(Class, method, key, elementName, checker, find
  * @param {string}   [finder]    - Name of the finder method to use.
  */
 function attachAttributesMerger(Class, method, key, elementName, checker, finder) {
-  const eventName = elementName === 'node' ? 'nodeUpdated' : 'edgeUpdated';
+  const eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
 
   /**
    * Replace the attributes for the given element (node or edge).
