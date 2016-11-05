@@ -1672,28 +1672,23 @@ export default class Graph extends EventEmitter {
    * @return {object} - Formatted object representation of the graph.
    */
   inspect() {
-    const nodes = Object.create(null);
-
-    this._nodes.forEach(function(value, key) {
-      const attributes = value.attributes;
-
-      nodes[key] = Object.keys(attributes).length ? attributes : '<empty>';
+    const nodes = {};
+    this._nodes.forEach(function(data, key) {
+      nodes[key] = data.attributes;
     });
 
-    const edges = [];
-    this._edges.forEach(function(value, key) {
+    const edges = {};
+    this._edges.forEach(function(data, key) {
+      const direction = data.undirected ? '<->' : '->';
 
-      const formatted = [
-        key,
-        value.source,
-        value.undirected ? '<->' : '->',
-        value.target
-      ];
+      let label = '';
 
-      if (Object.keys(value.attributes).length)
-        formatted.push(value.attributes);
+      if (!data.generatedId)
+        label += `[${key}]: `;
 
-      edges.push(formatted);
+      label += `(${data.source})${direction}(${data.target})`;
+
+      edges[label] = data.attributes;
     });
 
     const dummy = {};
