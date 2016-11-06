@@ -428,6 +428,7 @@ export default class Graph extends EventEmitter {
     //-- Private properties
 
     // Indexes
+    privateProperty(this, '_attributes', {});
     privateProperty(this, '_nodes', createInternalMap());
     privateProperty(this, '_edges', createInternalMap());
     privateProperty(this, '_indices', {
@@ -472,6 +473,112 @@ export default class Graph extends EventEmitter {
    * Read
    **---------------------------------------------------------------------------
    */
+
+  /**
+   * Method returning the desired graph's attribute.
+   *
+   * @param  {string} name - Name of the attribute.
+   * @return {any}
+   */
+  getAttribute(name) {
+    return this._attributes[name];
+  }
+
+  /**
+   * Method returning the graph's attributes.
+   *
+   * @return {object}
+   */
+  getAttributes() {
+    return this._attributes;
+  }
+
+  /**
+   * Method returning whether the graph has the desired attribute.
+   *
+   * @param  {string}  name - Name of the attribute.
+   * @return {boolean}
+   */
+  hasAttribute(name) {
+    return this._attributes.hasOwnProperty(name);
+  }
+
+  /**
+   * Method setting a value for the desired graph's attribute.
+   *
+   * @param  {string}  name  - Name of the attribute.
+   * @param  {any}     value - Value for the attribute.
+   * @return {Graph}
+   */
+  setAttribute(name, value) {
+    this._attributes[name] = value;
+
+    // Emitting
+    this.emit('attributesUpdated', {
+      type: 'set',
+      meta: {
+        name,
+        value
+      }
+    });
+
+    return this;
+  }
+
+  /**
+   * Method using a function to update the desired graph's attribute's value.
+   *
+   * @param  {string}   name    - Name of the attribute.
+   * @param  {function} updater - Function use to update the attribute's value.
+   * @return {Graph}
+   */
+  updateAttribute(name, updater) {
+    this._attributes[name] = updater(this._attributes[name]);
+
+    // Emitting
+    this.emit('attributesUpdated', {
+      type: 'set',
+      meta: {
+        name,
+        value: this._attributes[name]
+      }
+    });
+
+    return this;
+  }
+
+  /**
+   * Method removing the desired graph's attribute.
+   *
+   * @param  {string} name  - Name of the attribute.
+   * @return {Graph}
+   */
+  removeAttribute(name) {
+    delete this._attributes[name];
+    return this;
+  }
+
+  /**
+   * Method replacing the graph's attributes.
+   *
+   * @param  {object} attributes - New attributes.
+   * @return {Graph}
+   */
+  replaceAttributes(attributes) {
+    this._attributes = attributes;
+    return this;
+  }
+
+  /**
+   * Method merging the graph's attributes.
+   *
+   * @param  {object} attributes - Attributes to merge.
+   * @return {Graph}
+   */
+  mergeAttributes(attributes) {
+    this._attributes = assign(this._attributes, attributes);
+    return this;
+  }
 
   /**
    * Method returning whether the given node is found in the graph.
@@ -1700,6 +1807,7 @@ export default class Graph extends EventEmitter {
         dummy[k] = this[k];
     }
 
+    dummy.attributes = this._attributes;
     dummy.nodes = nodes;
     dummy.edges = edges;
 
