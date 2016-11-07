@@ -18,6 +18,8 @@ const METHODS = [
   'setEdgeAttribute',
   'updateNodeAttribute',
   'updateEdgeAttribute',
+  'removeNodeAttribute',
+  'removeEdgeAttribute',
   'replaceNodeAttributes',
   'replaceEdgeAttributes',
   'mergeNodeAttributes',
@@ -248,6 +250,33 @@ export default function attributes(Graph, checkers) {
 
         graph.updateEdgeAttribute(edge, 'weight', updater);
         assert.strictEqual(graph.getEdgeAttribute(edge, 'weight'), 10);
+      }
+    },
+
+    '#.removeNodeAttribute': {
+      'it should correctly remove the attribute.': function() {
+        const graph = new Graph();
+        graph.addNode('Martha', {age: 34});
+
+        graph.removeNodeAttribute('Martha', 'age');
+
+        assert.strictEqual(graph.hasNodeAttribute('Martha', 'age'), false);
+        assert.deepEqual(graph.getNodeAttributes('Martha'), {});
+      }
+    },
+
+    '#.removeEdgeAttribute': {
+      'it should correclty remove the attribute.': function() {
+        const graph = new Graph();
+        const edge = graph.mergeEdge('John', 'Martha', {weight: 1, size: 3});
+
+        graph.removeEdgeAttribute('John', 'Martha', 'weight');
+        graph.removeEdgeAttribute(edge, 'size');
+
+        assert.strictEqual(graph.hasEdgeAttribute(edge, 'weight'), false);
+        assert.strictEqual(graph.hasEdgeAttribute(edge, 'size'), false);
+
+        assert.deepEqual(graph.getEdgeAttributes(edge), {});
       }
     },
 

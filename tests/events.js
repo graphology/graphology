@@ -7,7 +7,7 @@
 import assert from 'assert';
 import {spy} from './helpers';
 
-const VALID_TYPES = new Set(['set', 'merge', 'replace']);
+const VALID_TYPES = new Set(['set', 'merge', 'replace', 'remove']);
 
 export default function events(Graph) {
   return {
@@ -122,6 +122,9 @@ export default function events(Graph) {
             assert.deepEqual(meta.before, {age: 34});
             assert.deepEqual(meta.after, {age: 56});
           }
+          else if (type === 'remove') {
+            assert.strictEqual(meta.name, 'eyes');
+          }
           else {
             assert.deepEqual(meta.data, {eyes: 'blue'});
           }
@@ -133,8 +136,9 @@ export default function events(Graph) {
         graph.setNodeAttribute('John', 'age', 34);
         graph.replaceNodeAttributes('John', {age: 56});
         graph.mergeNodeAttributes('John', {eyes: 'blue'});
+        graph.removeNodeAttribute('John', 'eyes');
 
-        assert.strictEqual(handler.times, 3);
+        assert.strictEqual(handler.times, 4);
       }
     },
 
@@ -157,6 +161,9 @@ export default function events(Graph) {
             assert.deepEqual(meta.before, {weight: 34});
             assert.deepEqual(meta.after, {weight: 56});
           }
+          else if (type === 'remove') {
+            assert.strictEqual(meta.name, 'type');
+          }
           else {
             assert.deepEqual(meta.data, {type: 'KNOWS'});
           }
@@ -169,8 +176,9 @@ export default function events(Graph) {
         graph.setEdgeAttribute('J->T', 'weight', 34);
         graph.replaceEdgeAttributes('J->T', {weight: 56});
         graph.mergeEdgeAttributes('J->T', {type: 'KNOWS'});
+        graph.removeEdgeAttribute('J->T', 'type');
 
-        assert.strictEqual(handler.times, 3);
+        assert.strictEqual(handler.times, 4);
       }
     }
   };

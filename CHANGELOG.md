@@ -2,6 +2,7 @@
 
 ## 0.4.0
 
+* Adding `#.removeNodeAttribute` & `#.removeEdgeAttribute` that was actually missing from earlier versions.
 * `nodeUpdated` & `edgeUpdated` changing to `nodeAttributesUpdated` & `edgeAttributesUpdated` respectively.
 
 ## 0.3.0
