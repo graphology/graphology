@@ -1699,10 +1699,21 @@ export default class Graph extends EventEmitter {
     }
 
     // Importing a serialized graph
-    if (!isPlainObject(data) || !data.nodes)
-      throw new InvalidArgumentsGraphError('Graph.import: invalid argument. Expecting an object with at least a "nodes" property or, alternatively, a Graph instance.');
+    if (!isPlainObject(data))
+      throw new InvalidArgumentsGraphError('Graph.import: invalid argument. Expecting a serialized graph or, alternatively, a Graph instance.');
 
-    this.importNodes(data.nodes, merge);
+    if (data.attributes) {
+      if (!isPlainObject(data.attributes))
+        throw new InvalidArgumentsGraphError('Graph.import: invalid attributes. Expecting a plain object.');
+
+      if (merge)
+        this.mergeAttributes(data.attributes);
+      else
+        this.replaceAttributes(data.attributes);
+    }
+
+    if (data.nodes)
+      this.importNodes(data.nodes, merge);
 
     if (data.edges)
       this.importEdges(data.edges, merge);

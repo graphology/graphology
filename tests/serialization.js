@@ -407,10 +407,6 @@ export default function serialization(Graph, checkers) {
         assert.throws(function() {
           graph.import(true);
         }, invalid());
-
-        assert.throws(function() {
-          graph.import({hello: 'world'});
-        }, invalid());
       },
 
       'it should be possible to import a graph instance.': function() {
@@ -439,6 +435,32 @@ export default function serialization(Graph, checkers) {
 
         assert.deepEqual(graph.nodes(), ['John', 'Thomas']);
         assert.strictEqual(graph.hasEdge('John', 'Thomas'), true);
+      },
+
+      'it should be possible to import only edges when merging.': function() {
+        const graph = new Graph();
+
+        graph.import({
+          edges: [
+            {source: 'John', target: 'Thomas'}
+          ]
+        }, true);
+
+        assert.deepEqual(graph.nodes(), ['John', 'Thomas']);
+        assert.strictEqual(graph.size, 1);
+        assert.strictEqual(graph.hasEdge('John', 'Thomas'), true);
+      },
+
+      'it should be possible to import attributes.': function() {
+        const graph = new Graph();
+
+        graph.import({
+          attributes: {
+            name: 'graph'
+          }
+        });
+
+        assert.deepEqual(graph.getAttributes(), {name: 'graph'});
       }
     },
 
