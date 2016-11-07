@@ -572,8 +572,13 @@ export default class Graph extends EventEmitter {
    *
    * @param  {object} attributes - New attributes.
    * @return {Graph}
+   *
+   * @throws {Error} - Will throw if given attributes are not a plain object.
    */
   replaceAttributes(attributes) {
+    if (!isPlainObject(attributes))
+      throw new InvalidArgumentsGraphError('Graph.replaceAttributes: provided attributes are not a plain object.');
+
     const before = this._attributes;
 
     this._attributes = attributes;
@@ -595,8 +600,13 @@ export default class Graph extends EventEmitter {
    *
    * @param  {object} attributes - Attributes to merge.
    * @return {Graph}
+   *
+   * @throws {Error} - Will throw if given attributes are not a plain object.
    */
   mergeAttributes(attributes) {
+    if (!isPlainObject(attributes))
+      throw new InvalidArgumentsGraphError('Graph.mergeAttributes: provided attributes are not a plain object.');
+
     this._attributes = assign(this._attributes, attributes);
 
     // Emitting
