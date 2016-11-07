@@ -555,6 +555,15 @@ export default class Graph extends EventEmitter {
    */
   removeAttribute(name) {
     delete this._attributes[name];
+
+    // Emitting
+    this.emit('attributesUpdated', {
+      type: 'remove',
+      meta: {
+        name
+      }
+    });
+
     return this;
   }
 
@@ -565,7 +574,19 @@ export default class Graph extends EventEmitter {
    * @return {Graph}
    */
   replaceAttributes(attributes) {
+    const before = this._attributes;
+
     this._attributes = attributes;
+
+    // Emitting
+    this.emit('attributesUpdated', {
+      type: 'replace',
+      meta: {
+        before,
+        after: attributes
+      }
+    });
+
     return this;
   }
 
@@ -577,6 +598,15 @@ export default class Graph extends EventEmitter {
    */
   mergeAttributes(attributes) {
     this._attributes = assign(this._attributes, attributes);
+
+    // Emitting
+    this.emit('attributesUpdated', {
+      type: 'merge',
+      meta: {
+        data: attributes
+      }
+    });
+
     return this;
   }
 
