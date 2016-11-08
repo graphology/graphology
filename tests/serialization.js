@@ -221,6 +221,7 @@ export default function serialization(Graph, checkers) {
     '#.export': {
       'it should correctly return the serialized graph.': function() {
         const graph = new Graph(null, {multi: true});
+        graph.setAttribute('name', 'graph');
         graph.addNodesFrom(['John', 'Jack', 'Martha']);
         graph.setNodeAttribute('John', 'age', 34);
         graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
@@ -232,6 +233,9 @@ export default function serialization(Graph, checkers) {
         assert.deepEqual(
           graph.export(),
           {
+            attributes: {
+              name: 'graph'
+            },
             nodes: [
               {key: 'John', attributes: {age: 34}},
               {key: 'Jack'},

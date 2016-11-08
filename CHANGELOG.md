@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+* Adding missing `attributes` in export.
+
 ## 0.4.0
 
 * Adding `#.removeNodeAttribute` & `#.removeEdgeAttribute` that was actually missing from earlier versions.

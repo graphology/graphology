@@ -1545,6 +1545,7 @@ export default class Graph extends EventEmitter {
    */
   export() {
     return {
+      attributes: this.getAttributes(),
       nodes: this.exportNodes(),
       edges: this.exportEdges()
     };
