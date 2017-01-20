@@ -481,7 +481,7 @@ export default function serialization(Graph, checkers) {
         assert.strictEqual(copy.size, 0);
 
         PROPERTIES.forEach(property => {
-          assert.strictEqual(graph[property], graph[property]);
+          assert.strictEqual(graph[property], copy[property]);
         });
       }
     },
