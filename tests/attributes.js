@@ -160,7 +160,7 @@ export default function attributes(Graph, checkers) {
         assert.deepEqual(graph.getEdgeAttributes('John', 'Thomas'), {weight: 2});
       },
 
-      'it should return undefined if the edge does not have attributes.': function() {
+      'it should return an empty object if the edge does not have attributes.': function() {
         const graph = new Graph();
         graph.addNodesFrom(['John', 'Thomas']);
         const edge = graph.addEdge('John', 'Thomas');

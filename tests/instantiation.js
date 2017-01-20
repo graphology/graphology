@@ -22,7 +22,7 @@ const OPTIONS = [
   {multi: true, type: 'undirected'}
 ];
 
-export default function instantiation(Graph, inmplementation, checkers) {
+export default function instantiation(Graph, implementation, checkers) {
   const {
     invalid
   } = checkers;
@@ -30,7 +30,7 @@ export default function instantiation(Graph, inmplementation, checkers) {
   return {
     'Hydratation': {
 
-      'it should be possible to hydrate from a serialized graph.': function() {
+      'it should be possible to hydrate from a Graph instance.': function() {
         const graph = new Graph();
         graph.addNodesFrom(['John', 'Thomas']);
         graph.addEdge('John', 'Thomas');
@@ -41,7 +41,7 @@ export default function instantiation(Graph, inmplementation, checkers) {
         assert.deepEqual(graph.edges(), other.edges());
       },
 
-      'it should be possible to hydrate from a Graph instance.': function() {
+      'it should be possible to hydrate from a serialized graph': function() {
         const graph = new Graph({
           nodes: [
             {key: 'John'},
@@ -182,12 +182,12 @@ export default function instantiation(Graph, inmplementation, checkers) {
     'Constructors': {
 
       'all alternative constructors should be available.': function() {
-        CONSTRUCTORS.forEach(name => assert(name in inmplementation));
+        CONSTRUCTORS.forEach(name => assert(name in implementation));
       },
 
       'alternative constructors should have the correct options.': function() {
         CONSTRUCTORS.forEach((name, index) => {
-          const graph = new inmplementation[name]();
+          const graph = new implementation[name]();
 
           const {
             multi,
