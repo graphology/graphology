@@ -5,6 +5,5 @@ node_modules
 Notes.md
 
 # Transpiled folders
-build
 dist
 specs
