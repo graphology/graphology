@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.2
+
+* Adding missing built files to the npm package.
+
 ## 0.4.1
 
 * Adding missing `attributes` in export.

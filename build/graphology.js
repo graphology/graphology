@@ -21,16 +21,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
-/******/ 			exports: {},
-/******/ 			id: moduleId,
-/******/ 			loaded: false
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
 /******/ 		};
 
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 
 /******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
+/******/ 		module.l = true;
 
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -43,4132 +43,4152 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	'use strict';
+"use strict";
 
-	var _utils = __webpack_require__(1);
 
-	var _graph = __webpack_require__(2);
-
-	var _graph2 = _interopRequireDefault(_graph);
-
-	var _errors = __webpack_require__(4);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
-	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Graphology Reference Implementation Endoint
-	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * ============================================
-	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *
-	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Importing the Graph object & deriving alternative constructors.
-	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
-
-
-	/**
-	 * Alternative constructors.
-	 */
-	var DirectedGraph = function (_Graph) {
-	  _inherits(DirectedGraph, _Graph);
-
-	  function DirectedGraph(data, options) {
-	    _classCallCheck(this, DirectedGraph);
-
-	    return _possibleConstructorReturn(this, _Graph.call(this, data, (0, _utils.assign)({ type: 'directed' }, options)));
-	  }
-
-	  return DirectedGraph;
-	}(_graph2.default);
-
-	var UndirectedGraph = function (_Graph2) {
-	  _inherits(UndirectedGraph, _Graph2);
-
-	  function UndirectedGraph(data, options) {
-	    _classCallCheck(this, UndirectedGraph);
-
-	    return _possibleConstructorReturn(this, _Graph2.call(this, data, (0, _utils.assign)({ type: 'undirected' }, options)));
-	  }
-
-	  return UndirectedGraph;
-	}(_graph2.default);
-
-	var MultiDirectedGraph = function (_Graph3) {
-	  _inherits(MultiDirectedGraph, _Graph3);
-
-	  function MultiDirectedGraph(data, options) {
-	    _classCallCheck(this, MultiDirectedGraph);
-
-	    return _possibleConstructorReturn(this, _Graph3.call(this, data, (0, _utils.assign)({ multi: true, type: 'directed' }, options)));
-	  }
-
-	  return MultiDirectedGraph;
-	}(_graph2.default);
-
-	var MultiUndirectedGraph = function (_Graph4) {
-	  _inherits(MultiUndirectedGraph, _Graph4);
-
-	  function MultiUndirectedGraph(data, options) {
-	    _classCallCheck(this, MultiUndirectedGraph);
-
-	    return _possibleConstructorReturn(this, _Graph4.call(this, data, (0, _utils.assign)({ multi: true, type: 'undirected' }, options)));
-	  }
-
-	  return MultiUndirectedGraph;
-	}(_graph2.default);
-
-	/**
-	 * Exporting as CommonJS for convenience.
-	 */
-
-
-	_graph2.default.Graph = _graph2.default;
-	_graph2.default.DirectedGraph = DirectedGraph;
-	_graph2.default.UndirectedGraph = UndirectedGraph;
-	_graph2.default.MultiDirectedGraph = MultiDirectedGraph;
-	_graph2.default.MultiUndirectedGraph = MultiUndirectedGraph;
-
-	_graph2.default.InvalidArgumentsGraphError = _errors.InvalidArgumentsGraphError;
-	_graph2.default.NotFoundGraphError = _errors.NotFoundGraphError;
-	_graph2.default.UsageGraphError = _errors.UsageGraphError;
-
-	module.exports = _graph2.default;
-
-/***/ },
-/* 1 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-	exports.assign = assign;
-	exports.createInternalMap = createInternalMap;
-	exports.firstItemOfSet = firstItemOfSet;
-	exports.isBunch = isBunch;
-	exports.isGraph = isGraph;
-	exports.isPlainObject = isPlainObject;
-	exports.overBunch = overBunch;
-	exports.prettyPrint = prettyPrint;
-	exports.privateProperty = privateProperty;
-	exports.readOnlyProperty = readOnlyProperty;
-	exports.uuid = uuid;
-	/**
-	 * Graphology Utilities
-	 * =====================
-	 *
-	 * Collection of helpful functions used by the implementation.
-	 */
-
-	/**
-	 * Very simple Object.assign-like function.
-	 *
-	 * @param  {object} target       - First object.
-	 * @param  {object} [...objects] - Objects to merge.
-	 * @return {object}
-	 */
-	function assign(target) {
-	  target = target || {};
-
-	  for (var _len = arguments.length, objects = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	    objects[_key - 1] = arguments[_key];
-	  }
-
-	  for (var i = 0, l = objects.length; i < l; i++) {
-	    if (!objects[i]) continue;
-
-	    for (var k in objects[i]) {
-	      target[k] = objects[i][k];
-	    }
-	  }
-
-	  return target;
-	}
-
-	/**
-	 * Custom Map used internally to coerce keys on vital operations.
-	 *
-	 * @return {Map}
-	 */
-	function createInternalMap() {
-	  var map = new Map();
-
-	  map.set = function (key, value) {
-	    key = '' + key;
-	    return Map.prototype.set.call(this, key, value);
-	  };
-
-	  map.get = function (key) {
-	    key = '' + key;
-	    return Map.prototype.get.call(this, key);
-	  };
-
-	  map.has = function (key) {
-	    key = '' + key;
-	    return Map.prototype.has.call(this, key);
-	  };
-
-	  return map;
-	}
-
-	/**
-	 * Function returning the first item of a Set.
-	 *
-	 * @param  {object} set - Target set.
-	 * @return {any}        - The "first" item.
-	 */
-	function firstItemOfSet(set) {
-	  return set.values().next().value;
-	}
-
-	/**
-	 * Checks whether the given value is a potential bunch.
-	 *
-	 * @param  {mixed}   value - Target value.
-	 * @return {boolean}
-	 */
-	function isBunch(value) {
-	  return !!value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && (Array.isArray(value) || typeof Map === 'function' && value instanceof Map || typeof Set === 'function' && value instanceof Set || !(value instanceof Date) && !(value instanceof RegExp));
-	}
-
-	/**
-	 * Checks whether the given value is a Graph implementation instance.
-	 *
-	 * @param  {mixed}   value - Target value.
-	 * @return {boolean}
-	 */
-	function isGraph(value) {
-	  return !!value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && typeof value.addUndirectedEdgeWithKey === 'function' && typeof value.dropNode === 'function';
-	}
-
-	/**
-	 * Checks whether the given value is a plain object.
-	 *
-	 * @param  {mixed}   value - Target value.
-	 * @return {boolean}
-	 */
-	function isPlainObject(value) {
-	  return !!value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && !Array.isArray(value) && !(value instanceof Date) && !(value instanceof RegExp) && !(typeof Map === 'function' && value instanceof Map) && !(typeof Set === 'function' && value instanceof Set);
-	}
-
-	/**
-	 * Iterates over the provided bunch.
-	 *
-	 * @param {object}   bunch    - Target bunch.
-	 * @param {function} callback - Function to call.
-	 */
-	function overBunch(bunch, callback) {
-
-	  // Array iteration
-	  if (Array.isArray(bunch)) {
-	    for (var i = 0, l = bunch.length; i < l; i++) {
-	      var shouldBreak = callback(bunch[i], null) === false;
-
-	      if (shouldBreak) break;
-	    }
-	  }
-
-	  // Map & Set iteration
-	  else if (typeof bunch.forEach === 'function') {
-	      var iterator = bunch.entries();
-
-	      var _shouldBreak = false,
-	          step = void 0;
-
-	      while (step = iterator.next()) {
-	        var _step = step;
-	        var value = _step.value;
-	        var done = _step.done;
-
-
-	        if (done) break;
-
-	        var _value = _slicedToArray(value, 2);
-
-	        var k = _value[0];
-	        var v = _value[1];
-
-
-	        if (v === k) _shouldBreak = callback(v, null) === false;else _shouldBreak = callback(k, v) === false;
-
-	        if (_shouldBreak) break;
-	      }
-	    }
-
-	    // Plain object iteration
-	    else {
-	        for (var key in bunch) {
-	          var attributes = bunch[key];
-
-	          var _shouldBreak2 = callback(key, attributes);
-
-	          if (_shouldBreak2) break;
-	        }
-	      }
-	}
-
-	/**
-	 * Pretty prints the given integer.
-	 *
-	 * @param  {number}  integer - Target integer.
-	 * @return {string}          - The pretty string.
-	 */
-	function prettyPrint(integer) {
-	  var string = '' + integer;
-
-	  var prettyString = '';
-
-	  for (var i = 0, l = string.length; i < l; i++) {
-	    var j = l - i - 1;
-
-	    prettyString = string[j] + prettyString;
-
-	    if (!((i - 2) % 3)) prettyString = ',' + prettyString;
-	  }
-
-	  return prettyString;
-	}
-
-	/**
-	 * Creates a "private" property for the given member name by concealing it
-	 * using the `enumerable` option.
-	 *
-	 * @param {object} target - Target object.
-	 * @param {string} name   - Member name.
-	 */
-	function privateProperty(target, name, value) {
-	  Object.defineProperty(target, name, {
-	    enumerable: false,
-	    configurable: false,
-	    writable: true,
-	    value: value
-	  });
-	}
-
-	/**
-	 * Creates a read-only property for the given member name & the given getter.
-	 *
-	 * @param {object}   target - Target object.
-	 * @param {string}   name   - Member name.
-	 * @param {mixed}    value  - The attached getter or fixed value.
-	 */
-	function readOnlyProperty(target, name, value) {
-	  var descriptor = {
-	    enumerable: true,
-	    configurable: false
-	  };
-
-	  if (typeof value === 'function') {
-	    descriptor.get = value;
-	  } else {
-	    descriptor.value = value;
-	    descriptor.writable = false;
-	  }
-
-	  Object.defineProperty(target, name, descriptor);
-	}
-
-	/**
-	 * Function returning uuid v4 compressed into base62 to have 22 characters-long
-	 * ids easily copy-pastable or usable in a URL.
-	 *
-	 * @return {string} - The uuid.
-	 */
-	var RANDOM_BYTES = new Uint8Array(16),
-	    BASE62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-	function rng() {
-	  for (var i = 0, r; i < 16; i++) {
-	    if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
-	    RANDOM_BYTES[i] = r >>> ((i & 0x03) << 3) & 0xff;
-	  }
-
-	  return RANDOM_BYTES;
-	}
-
-	function uuidBytes() {
-	  var random = rng();
-
-	  random[6] = random[6] & 0x0f | 0x40;
-	  random[8] = random[8] & 0x3f | 0x80;
-
-	  return random;
-	}
-
-	function toBase62(bytes) {
-	  var digits = [0];
-
-	  for (var i = 0, l = bytes.length; i < l; i++) {
-	    var carry = bytes[i];
-
-	    for (var j = 0, m = digits.length; j < m; j++) {
-	      carry += digits[j] << 8;
-	      digits[j] = carry % 62;
-	      carry = carry / 62 | 0;
-	    }
-
-	    while (carry > 0) {
-	      digits.push(carry % 62);
-	      carry = carry / 62 | 0;
-	    }
-	  }
-
-	  var string = '';
-
-	  for (var _i = 0, _l = bytes.length; bytes[_i] === 0 && _i < _l - 1; _i++) {
-	    string += BASE62[0];
-	  }for (var _i2 = digits.length - 1; _i2 >= 0; _i2--) {
-	    string += BASE62[digits[_i2]];
-	  }while (string.length < 22) {
-	    string += '0';
-	  }return string;
-	}
-
-	function uuid() {
-	  var bytes = uuidBytes();
-
-	  return toBase62(bytes);
-	}
-
-/***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-	var _events = __webpack_require__(3);
-
-	var _errors = __webpack_require__(4);
-
-	var _indices = __webpack_require__(5);
-
-	var _attributes = __webpack_require__(6);
-
-	var _edges = __webpack_require__(7);
-
-	var _neighbors = __webpack_require__(8);
-
-	var _serialization = __webpack_require__(9);
-
-	var _utils = __webpack_require__(1);
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* eslint no-nested-ternary: 0 */
-	/**
-	 * Graphology Reference Implementation
-	 * ====================================
-	 *
-	 * Reference implementation of the graphology specs.
-	 */
-
-
-	/**
-	 * Enums.
-	 */
-	var TYPES = new Set(['directed', 'undirected', 'mixed']);
-
-	var EMITTER_PROPS = new Set(['domain', '_events', '_eventsCount', '_maxListeners']);
-
-	var EDGE_ADD_METHODS = [{
-	  name: function name(verb) {
-	    return verb + 'Edge';
-	  },
-	  generateKey: true
-	}, {
-	  name: function name(verb) {
-	    return verb + 'DirectedEdge';
-	  },
-	  generateKey: true,
-	  type: 'directed'
-	}, {
-	  name: function name(verb) {
-	    return verb + 'UndirectedEdge';
-	  },
-	  generateKey: true,
-	  type: 'undirected'
-	}, {
-	  name: function name(verb) {
-	    return verb + 'EdgeWithKey';
-	  }
-	}, {
-	  name: function name(verb) {
-	    return verb + 'DirectedEdgeWithKey';
-	  },
-	  type: 'directed'
-	}, {
-	  name: function name(verb) {
-	    return verb + 'UndirectedEdgeWithKey';
-	  },
-	  type: 'undirected'
-	}];
-
-	/**
-	 * Default options.
-	 */
-	var DEFAULTS = {
-	  allowSelfLoops: true,
-	  defaultEdgeAttributes: {},
-	  defaultNodeAttributes: {},
-	  edgeKeyGenerator: _utils.uuid,
-	  multi: false,
-	  type: 'mixed'
-	};
-
-	/**
-	 * Abstract functions used by the Graph class for various methods.
-	 */
-
-	/**
-	 * Method updating the desired index.
-	 *
-	 * @param  {Graph}  graph     - Target graph.
-	 * @param  {string} name      - Name of the index to compute.
-	 * @param  {mixed}  [...args] - Additional arguments.
-	 * @return {Graph}            - Returns itself for chaining.
-	 *
-	 * @throw  {Error} - Will throw if the index doesn't exist.
-	 */
-	function updateIndex(graph, name) {
-	  if (name === 'structure') {
-	    var index = graph._indices.structure;
-
-	    if (!index.computed) return graph;
-
-	    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-	      args[_key - 2] = arguments[_key];
-	    }
-
-	    var edge = args[0];
-	    var data = args[1];
-
-
-	    (0, _indices.updateStructureIndex)(graph, edge, data);
-	  }
-
-	  return graph;
-	}
-
-	/**
-	 * Method used to clear an edge from the desired index to clear memory.
-	 *
-	 * @param  {Graph}  graph - Target graph.
-	 * @param  {string} name  - Name of the index to update.
-	 * @param  {any}    edge  - Target edge.
-	 * @param  {object} data  - Former attached data.
-	 * @return {Graph}        - Returns itself for chaining.
-	 *
-	 * @throw  {Error} - Will throw if the index doesn't exist.
-	 */
-	function clearEdgeFromIndex(graph, name, edge, data) {
-	  if (name === 'structure') {
-	    var index = graph._indices.structure;
-
-	    if (!index.computed) return graph;
-
-	    (0, _indices.clearEdgeFromStructureIndex)(graph, edge, data);
-	  }
-
-	  return graph;
-	}
-
-	/**
-	 * Internal method used to add an arbitrary edge to the given graph.
-	 *
-	 * @param  {Graph}   graph          - Target graph.
-	 * @param  {string}  name           - Name of the child method for errors.
-	 * @param  {boolean} merge          - Are we merging?
-	 * @param  {boolean} mustGenerateId - Should the graph generate an id?
-	 * @param  {boolean} undirected     - Whether the edge is undirected.
-	 * @param  {any}     edge           - The edge's key.
-	 * @param  {any}     source         - The source node.
-	 * @param  {any}     target         - The target node.
-	 * @param  {object}  [attributes]   - Optional attributes.
-	 * @return {any}                    - The edge.
-	 *
-	 * @throws {Error} - Will throw if the graph is of the wrong type.
-	 * @throws {Error} - Will throw if the given attributes are not an object.
-	 * @throws {Error} - Will throw if source or target doesn't exist.
-	 * @throws {Error} - Will throw if the edge already exist.
-	 */
-	function addEdge(graph, name, merge, mustGenerateId, undirected, edge, source, target, attributes) {
-
-	  // Checking validity of operation
-	  if (!undirected && graph.type === 'undirected') throw new _errors.UsageGraphError('Graph.' + name + ': you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.');
-
-	  if (undirected && graph.type === 'directed') throw new _errors.UsageGraphError('Graph.' + name + ': you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.');
-
-	  if (attributes && !(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid attributes. Expecting an object but got "' + attributes + '"');
-
-	  // Coercion of source & target:
-	  source = '' + source;
-	  target = '' + target;
-
-	  var mustAddSource = false,
-	      mustAddTarget = false;
-
-	  if (!graph.hasNode(source)) {
-	    if (!merge) throw new _errors.NotFoundGraphError('Graph.' + name + ': source node "' + source + '" not found.');else mustAddSource = true;
-	  }
-
-	  if (!graph.hasNode(target)) {
-	    if (!merge) throw new _errors.NotFoundGraphError('Graph.' + name + ': target node "' + target + '" not found.');else mustAddTarget = true;
-	  }
-
-	  if (!graph.allowSelfLoops && source === target) throw new _errors.UsageGraphError('Graph.' + name + ': source & target are the same, thus creating a loop explicitly forbidden by this graph \'allowSelfLoops\' option set to false.');
-
-	  // Must the graph generate an id for this edge?
-	  if (mustGenerateId) {
-	    edge = graph._options.edgeKeyGenerator({
-	      undirected: undirected,
-	      source: source,
-	      target: target,
-	      attributes: attributes || {}
-	    });
-	  }
-
-	  // Do we need to handle duplicate?
-	  var alreadyExistingEdge = null;
-
-	  // Here, we have a key collision
-	  if (graph.hasEdge(edge)) {
-	    if (!merge) {
-	      throw new _errors.UsageGraphError('Graph.' + name + ': the "' + edge + '" edge already exists in the graph.');
-	    } else {
-	      alreadyExistingEdge = edge;
-	    }
-	  }
-
-	  // Here, we might have a source / target collision
-	  if (!graph.multi && (undirected ? graph.hasUndirectedEdge(source, target) : graph.hasDirectedEdge(source, target))) {
-	    if (!merge) throw new _errors.UsageGraphError('Graph.' + name + ': an edge linking "' + source + '" to "' + target + '" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the \'multi\' option.');else {
-	      alreadyExistingEdge = undirected ? graph.getUndirectedEdge(source, target) : graph.getDirectedEdge(source, target);
-	    }
-	  }
-
-	  // Protecting the attributes
-	  attributes = (0, _utils.assign)({}, graph._options.defaultEdgeAttributes, attributes);
-
-	  // Handling duplicates
-	  if (alreadyExistingEdge) {
-
-	    // If the key collides but the source & target are inconsistent, we throw
-	    if (graph.source(alreadyExistingEdge) !== source || graph.target(alreadyExistingEdge) !== target) {
-	      throw new _errors.UsageGraphError('Graph.' + name + ': inconsitency detected when attempting to merge the "' + edge + '" edge with "' + source + '" source & "' + target + '" target vs. (' + graph.source(alreadyExistingEdge) + ', ' + graph.target(alreadyExistingEdge) + ').');
-	    }
-
-	    // Simply merging the attributes of the already existing edge
-	    graph.mergeEdgeAttributes(alreadyExistingEdge, attributes);
-	    return alreadyExistingEdge;
-	  }
-
-	  if (mustAddSource) graph.addNode(source);
-	  if (mustAddTarget) graph.addNode(target);
-
-	  // Storing some data
-	  var data = {
-	    attributes: attributes,
-	    source: source,
-	    target: target
-	  };
-
-	  // Only adding the 'undirected' key if needed
-	  if (undirected) data.undirected = true;
-
-	  // Storing whether the id was generated
-	  if (mustGenerateId) data.generatedId = true;
-
-	  // Adding the edge to the internal register
-	  graph._edges.set(edge, data);
-
-	  // Incrementing node degree counters
-	  var sourceData = graph._nodes.get(source),
-	      targetData = graph._nodes.get(target);
-
-	  if (source === target) {
-	    if (undirected) sourceData.undirectedSelfLoops++;else sourceData.directedSelfLoops++;
-	  } else {
-	    if (undirected) {
-	      sourceData.undirectedDegree++;
-	      targetData.undirectedDegree++;
-	    } else {
-	      sourceData.outDegree++;
-	      targetData.inDegree++;
-	    }
-	  }
-
-	  // Updating relevant indexes
-	  updateIndex(graph, 'structure', edge, data);
-
-	  // Emitting
-	  graph.emit('edgeAdded', {
-	    key: edge,
-	    source: source,
-	    target: target,
-	    attributes: attributes,
-	    undirected: undirected
-	  });
-
-	  return edge;
-	}
-
-	/**
-	 * Internal method abstracting edges export.
-	 *
-	 * @param  {Graph}    graph     - Target graph.
-	 * @param  {string}   name      - Child method name.
-	 * @param  {function} predicate - Predicate to filter the bunch's edges.
-	 * @param  {mixed}    [bunch]   - Target edges.
-	 * @return {array[]}            - The serialized edges.
-	 *
-	 * @throws {Error} - Will throw if any of the edges is not found.
-	 */
-	function _exportEdges(graph, name, predicate, bunch) {
-	  var edges = [];
-
-	  if (!bunch) {
-
-	    // Exporting every edges of the given type
-	    if (name === 'exportEdges') edges = graph.edges();else if (name === 'exportDirectedEdges') edges = graph.directedEdges();else edges = graph.undirectedEdges();
-	  } else {
-
-	    // Exporting the bunch
-	    if (!(0, _utils.isBunch)(bunch)) throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid bunch.');
-
-	    (0, _utils.overBunch)(bunch, function (edge) {
-	      if (!graph.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + edge + '" edge from the bunch in the graph.');
-
-	      if (!predicate || predicate(edge)) edges.push(edge);
-	    });
-	  }
-
-	  var serializedEdges = new Array(edges.length);
-
-	  for (var i = 0, l = edges.length; i < l; i++) {
-	    serializedEdges[i] = graph.exportEdge(edges[i]);
-	  }return serializedEdges;
-	}
-
-	/**
-	 * Graph class
-	 *
-	 * @constructor
-	 * @param  {Graph|Array<Array>} [data]    - Hydratation data.
-	 * @param  {object}             [options] - Options:
-	 * @param  {boolean}              [allowSelfLoops] - Allow self loops?
-	 * @param  {string}               [type]           - Type of the graph.
-	 * @param  {boolean}              [map]            - Allow references as keys?
-	 * @param  {boolean}              [multi]          - Allow parallel edges?
-	 *
-	 * @throws {Error} - Will throw if the arguments are not valid.
-	 */
-
-	var Graph = function (_EventEmitter) {
-	  _inherits(Graph, _EventEmitter);
-
-	  function Graph(data, options) {
-	    _classCallCheck(this, Graph);
-
-	    //-- Solving options
-	    var _this = _possibleConstructorReturn(this, _EventEmitter.call(this));
-
-	    options = (0, _utils.assign)({}, DEFAULTS, options);
-
-	    // Freezing options
-	    Object.freeze(options);
-
-	    // Enforcing options validity
-	    if (typeof options.edgeKeyGenerator !== 'function') throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'edgeKeyGenerator\' option. Expecting a function but got "' + options.edgeKeyGenerator + '".');
-
-	    if (typeof options.multi !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'multi\' option. Expecting a boolean but got "' + options.multi + '".');
-
-	    if (!TYPES.has(options.type)) throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'type\' option. Should be one of "mixed", "directed" or "undirected" but got "' + options.type + '".');
-
-	    if (typeof options.allowSelfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'allowSelfLoops\' option. Expecting a boolean but got "' + options.allowSelfLoops + '".');
-
-	    if (!(0, _utils.isPlainObject)(options.defaultEdgeAttributes)) throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'defaultEdgeAttributes\' option. Expecting a plain object but got "' + options.defaultEdgeAttributes + '".');
-
-	    if (!(0, _utils.isPlainObject)(options.defaultNodeAttributes)) throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'defaultNodeAttributes\' option. Expecting a plain object but got "' + options.defaultNodeAttributes + '".');
-
-	    //-- Private properties
-
-	    // Indexes
-	    (0, _utils.privateProperty)(_this, '_attributes', {});
-	    (0, _utils.privateProperty)(_this, '_nodes', (0, _utils.createInternalMap)());
-	    (0, _utils.privateProperty)(_this, '_edges', (0, _utils.createInternalMap)());
-	    (0, _utils.privateProperty)(_this, '_indices', {
-	      structure: {
-	        lazy: options.indices && options.indices.structure && options.indices.structure.lazy || false,
-	        computed: false
-	      }
-	    });
-
-	    // Options
-	    (0, _utils.privateProperty)(_this, '_options', options);
-
-	    // Emitter properties
-	    EMITTER_PROPS.forEach(function (prop) {
-	      return (0, _utils.privateProperty)(_this, prop, _this[prop]);
-	    });
-
-	    //-- Properties readers
-	    (0, _utils.readOnlyProperty)(_this, 'order', function () {
-	      return _this._nodes.size;
-	    });
-	    (0, _utils.readOnlyProperty)(_this, 'size', function () {
-	      return _this._edges.size;
-	    });
-	    (0, _utils.readOnlyProperty)(_this, 'multi', _this._options.multi);
-	    (0, _utils.readOnlyProperty)(_this, 'type', _this._options.type);
-	    (0, _utils.readOnlyProperty)(_this, 'allowSelfLoops', _this._options.allowSelfLoops);
-
-	    //-- Precomputing indexes?
-	    for (var name in _this._indices) {
-	      var index = _this._indices[name];
-
-	      if (!index.lazy) index.computed = true;
-	    }
-
-	    //-- Hydratation
-	    if (data) _this.import(data);
-	    return _this;
-	  }
-
-	  /**---------------------------------------------------------------------------
-	   * Read
-	   **---------------------------------------------------------------------------
-	   */
-
-	  /**
-	   * Method returning the desired graph's attribute.
-	   *
-	   * @param  {string} name - Name of the attribute.
-	   * @return {any}
-	   */
-
-
-	  Graph.prototype.getAttribute = function getAttribute(name) {
-	    return this._attributes[name];
-	  };
-
-	  /**
-	   * Method returning the graph's attributes.
-	   *
-	   * @return {object}
-	   */
-
-
-	  Graph.prototype.getAttributes = function getAttributes() {
-	    return this._attributes;
-	  };
-
-	  /**
-	   * Method returning whether the graph has the desired attribute.
-	   *
-	   * @param  {string}  name - Name of the attribute.
-	   * @return {boolean}
-	   */
-
-
-	  Graph.prototype.hasAttribute = function hasAttribute(name) {
-	    return this._attributes.hasOwnProperty(name);
-	  };
-
-	  /**
-	   * Method setting a value for the desired graph's attribute.
-	   *
-	   * @param  {string}  name  - Name of the attribute.
-	   * @param  {any}     value - Value for the attribute.
-	   * @return {Graph}
-	   */
-
-
-	  Graph.prototype.setAttribute = function setAttribute(name, value) {
-	    this._attributes[name] = value;
-
-	    // Emitting
-	    this.emit('attributesUpdated', {
-	      type: 'set',
-	      meta: {
-	        name: name,
-	        value: value
-	      }
-	    });
-
-	    return this;
-	  };
-
-	  /**
-	   * Method using a function to update the desired graph's attribute's value.
-	   *
-	   * @param  {string}   name    - Name of the attribute.
-	   * @param  {function} updater - Function use to update the attribute's value.
-	   * @return {Graph}
-	   */
-
-
-	  Graph.prototype.updateAttribute = function updateAttribute(name, updater) {
-	    this._attributes[name] = updater(this._attributes[name]);
-
-	    // Emitting
-	    this.emit('attributesUpdated', {
-	      type: 'set',
-	      meta: {
-	        name: name,
-	        value: this._attributes[name]
-	      }
-	    });
-
-	    return this;
-	  };
-
-	  /**
-	   * Method removing the desired graph's attribute.
-	   *
-	   * @param  {string} name  - Name of the attribute.
-	   * @return {Graph}
-	   */
-
-
-	  Graph.prototype.removeAttribute = function removeAttribute(name) {
-	    delete this._attributes[name];
-
-	    // Emitting
-	    this.emit('attributesUpdated', {
-	      type: 'remove',
-	      meta: {
-	        name: name
-	      }
-	    });
-
-	    return this;
-	  };
-
-	  /**
-	   * Method replacing the graph's attributes.
-	   *
-	   * @param  {object} attributes - New attributes.
-	   * @return {Graph}
-	   *
-	   * @throws {Error} - Will throw if given attributes are not a plain object.
-	   */
-
-
-	  Graph.prototype.replaceAttributes = function replaceAttributes(attributes) {
-	    if (!(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.replaceAttributes: provided attributes are not a plain object.');
-
-	    var before = this._attributes;
-
-	    this._attributes = attributes;
-
-	    // Emitting
-	    this.emit('attributesUpdated', {
-	      type: 'replace',
-	      meta: {
-	        before: before,
-	        after: attributes
-	      }
-	    });
-
-	    return this;
-	  };
-
-	  /**
-	   * Method merging the graph's attributes.
-	   *
-	   * @param  {object} attributes - Attributes to merge.
-	   * @return {Graph}
-	   *
-	   * @throws {Error} - Will throw if given attributes are not a plain object.
-	   */
-
-
-	  Graph.prototype.mergeAttributes = function mergeAttributes(attributes) {
-	    if (!(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.mergeAttributes: provided attributes are not a plain object.');
-
-	    this._attributes = (0, _utils.assign)(this._attributes, attributes);
-
-	    // Emitting
-	    this.emit('attributesUpdated', {
-	      type: 'merge',
-	      meta: {
-	        data: attributes
-	      }
-	    });
-
-	    return this;
-	  };
-
-	  /**
-	   * Method returning whether the given node is found in the graph.
-	   *
-	   * @param  {any}     node - The node.
-	   * @return {boolean}
-	   */
-
-
-	  Graph.prototype.hasNode = function hasNode(node) {
-	    return this._nodes.has(node);
-	  };
-
-	  /**
-	   * Internal method returning a matching directed edge or undefined if no
-	   * matching edge was found.
-	   *
-	   * @param  {any}     source - The edge's source.
-	   * @param  {any}     target - The edge's target.
-	   * @return {any|undefined}
-	   */
-
-
-	  Graph.prototype.getDirectedEdge = function getDirectedEdge(source, target) {
-
-	    // We need to compute the 'structure' index for this
-	    this.computeIndex('structure');
-
-	    // If the node source or the target is not in the graph we break
-	    if (!this.hasNode(source) || !this.hasNode(target)) return;
-
-	    // Is there a directed edge pointing towards target?
-	    var nodeData = this._nodes.get(source),
-	        register = nodeData.out;
-
-	    if (!register) return;
-
-	    var edges = register[target];
-
-	    if (!edges) return;
-
-	    if (!edges.size) return;
-
-	    return (0, _utils.firstItemOfSet)(edges);
-	  };
-
-	  /**
-	   * Internal method returning a matching undirected edge or undefined if no
-	   * matching edge was found.
-	   *
-	   * @param  {any}     source - The edge's source.
-	   * @param  {any}     target - The edge's target.
-	   * @return {any|undefined}
-	   */
-
-
-	  Graph.prototype.getUndirectedEdge = function getUndirectedEdge(source, target) {
-
-	    // We need to compute the 'structure' index for this
-	    this.computeIndex('structure');
-
-	    // If the node source or the target is not in the graph we break
-	    if (!this.hasNode(source) || !this.hasNode(target)) return;
-
-	    // Is there a directed edge pointing towards target?
-	    var nodeData = this._nodes.get(source);
-
-	    var register = nodeData.undirectedOut,
-	        edges = void 0;
-
-	    if (register) edges = register[target];
-
-	    register = nodeData.undirectedIn;
-
-	    if (!edges && register) edges = register[target];
-
-	    if (!edges || !edges.size) return;
-
-	    return (0, _utils.firstItemOfSet)(edges);
-	  };
-
-	  /**
-	   * Method returning a matching edge (note that it will return the first
-	   * matching edge, starting with directed one then undirected), or undefined
-	   * if no matching edge was found.
-	   *
-	   * @param  {any}     source - The edge's source.
-	   * @param  {any}     target - The edge's target.
-	   * @return {any|undefined}
-	   */
-
-
-	  Graph.prototype.getEdge = function getEdge(source, target) {
-	    var edge = void 0;
-
-	    // First we try to find a directed edge
-	    if (this.type === 'mixed' || this.type === 'directed') edge = this.getDirectedEdge(source, target);
-
-	    if (edge) return edge;
-
-	    // Then we try to find an undirected edge
-	    if (this.type === 'mixed' || this.type === 'undirected') edge = this.getUndirectedEdge(source, target);
-
-	    return edge;
-	  };
-
-	  /**
-	   * Method returning whether the given directed edge is found in the graph.
-	   *
-	   * Arity 1:
-	   * @param  {any}     edge - The edge's key.
-	   *
-	   * Arity 2:
-	   * @param  {any}     source - The edge's source.
-	   * @param  {any}     target - The edge's target.
-	   *
-	   * @return {boolean}
-	   *
-	   * @throws {Error} - Will throw if the arguments are invalid.
-	   */
-
-
-	  Graph.prototype.hasDirectedEdge = function hasDirectedEdge(source, target) {
-	    if (arguments.length === 1) {
-	      var edge = source;
-
-	      return this._edges.has(edge) && this.directed(edge);
-	    } else if (arguments.length === 2) {
-
-	      // We need to compute the 'structure' index for this
-	      this.computeIndex('structure');
-
-	      // If the node source or the target is not in the graph we break
-	      if (!this.hasNode(source) || !this.hasNode(target)) return false;
-
-	      // Is there a directed edge pointing towards target?
-	      var nodeData = this._nodes.get(source),
-	          register = nodeData.out;
-
-	      if (!register) return false;
-
-	      var edges = register[target];
-
-	      if (!edges) return false;
-
-	      return !!edges.size;
-	    }
-
-	    throw new _errors.InvalidArgumentsGraphError('Graph.hasDirectedEdge: invalid arity (' + arguments.length + ', instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.');
-	  };
-
-	  /**
-	   * Method returning whether the given undirected edge is found in the graph.
-	   *
-	   * Arity 1:
-	   * @param  {any}     edge - The edge's key.
-	   *
-	   * Arity 2:
-	   * @param  {any}     source - The edge's source.
-	   * @param  {any}     target - The edge's target.
-	   *
-	   * @return {boolean}
-	   *
-	   * @throws {Error} - Will throw if the arguments are invalid.
-	   */
-
-
-	  Graph.prototype.hasUndirectedEdge = function hasUndirectedEdge(source, target) {
-	    if (arguments.length === 1) {
-	      var edge = source;
-
-	      return this._edges.has(edge) && this.undirected(edge);
-	    } else if (arguments.length === 2) {
-
-	      // We need to compute the 'structure' index for this
-	      this.computeIndex('structure');
-
-	      // If the node source or the target is not in the graph we break
-	      if (!this.hasNode(source) || !this.hasNode(target)) return false;
-
-	      // Is there a directed edge pointing towards target?
-	      var nodeData = this._nodes.get(source);
-
-	      var register = nodeData.undirectedOut,
-	          edges = void 0;
-
-	      if (register) edges = register[target];
-
-	      register = nodeData.undirectedIn;
-
-	      if (!edges && register) edges = register[target];
-
-	      if (!edges) return false;
-
-	      return !!edges.size;
-	    }
-
-	    throw new _errors.InvalidArgumentsGraphError('Graph.hasDirectedEdge: invalid arity (' + arguments.length + ', instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.');
-	  };
-
-	  /**
-	   * Method returning whether the given edge is found in the graph.
-	   *
-	   * Arity 1:
-	   * @param  {any}     edge - The edge's key.
-	   *
-	   * Arity 2:
-	   * @param  {any}     source - The edge's source.
-	   * @param  {any}     target - The edge's target.
-	   *
-	   * @return {boolean}
-	   *
-	   * @throws {Error} - Will throw if the arguments are invalid.
-	   */
-
-
-	  Graph.prototype.hasEdge = function hasEdge(source, target) {
-
-	    if (arguments.length === 1) {
-	      var edge = source;
-
-	      return this._edges.has(edge);
-	    } else if (arguments.length === 2) {
-	      return this.hasDirectedEdge(source, target) || this.hasUndirectedEdge(source, target);
-	    }
-
-	    throw new _errors.InvalidArgumentsGraphError('Graph.hasEdge: invalid arity (' + arguments.length + ', instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.');
-	  };
-
-	  /**
-	   * Method returning the given node's in degree.
-	   *
-	   * @param  {any}     node      - The node's key.
-	   * @param  {boolean} allowSelfLoops - Count self-loops?
-	   * @return {number}            - The node's in degree.
-	   *
-	   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
-	   * @throws {Error} - Will throw if the node isn't in the graph.
-	   */
-
-
-	  Graph.prototype.inDegree = function inDegree(node) {
-	    var selfLoops = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
-
-	    if (typeof selfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.inDegree: Expecting a boolean but got "' + selfLoops + '" for the second parameter (allowing self-loops to be counted).');
-
-	    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.inDegree: could not find the "' + node + '" node in the graph.');
-
-	    var data = this._nodes.get(node),
-	        loops = selfLoops ? data.directedSelfLoops : 0;
-
-	    return data.inDegree + loops;
-	  };
-
-	  /**
-	   * Method returning the given node's out degree.
-	   *
-	   * @param  {any}     node      - The node's key.
-	   * @param  {boolean} selfLoops - Count self-loops?
-	   * @return {number}            - The node's out degree.
-	   *
-	   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
-	   * @throws {Error} - Will throw if the node isn't in the graph.
-	   */
-
-
-	  Graph.prototype.outDegree = function outDegree(node) {
-	    var selfLoops = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
-
-	    if (typeof selfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.outDegree: Expecting a boolean but got "' + selfLoops + '" for the second parameter (allowing self-loops to be counted).');
-
-	    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.outDegree: could not find the "' + node + '" node in the graph.');
-
-	    var data = this._nodes.get(node),
-	        loops = selfLoops ? data.directedSelfLoops : 0;
-
-	    return data.outDegree + loops;
-	  };
-
-	  /**
-	   * Method returning the given node's directed degree.
-	   *
-	   * @param  {any}     node      - The node's key.
-	   * @param  {boolean} selfLoops - Count self-loops?
-	   * @return {number}            - The node's directed degree.
-	   *
-	   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
-	   * @throws {Error} - Will throw if the node isn't in the graph.
-	   */
-
-
-	  Graph.prototype.directedDegree = function directedDegree(node) {
-	    var selfLoops = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
-
-	    if (typeof selfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.directedDegree: Expecting a boolean but got "' + selfLoops + '" for the second parameter (allowing self-loops to be counted).');
-
-	    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.directedDegree: could not find the "' + node + '" node in the graph.');
-
-	    return this.inDegree(node, selfLoops) + this.outDegree(node, selfLoops);
-	  };
-
-	  /**
-	   * Method returning the given node's undirected degree.
-	   *
-	   * @param  {any}     node      - The node's key.
-	   * @param  {boolean} selfLoops - Count self-loops?
-	   * @return {number}            - The node's undirected degree.
-	   *
-	   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
-	   * @throws {Error} - Will throw if the node isn't in the graph.
-	   */
-
-
-	  Graph.prototype.undirectedDegree = function undirectedDegree(node) {
-	    var selfLoops = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
-
-	    if (typeof selfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.undirectedDegree: Expecting a boolean but got "' + selfLoops + '" for the second parameter (allowing self-loops to be counted).');
-
-	    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.undirectedDegree: could not find the "' + node + '" node in the graph.');
-
-	    var data = this._nodes.get(node),
-	        loops = selfLoops ? data.undirectedSelfLoops * 2 : 0;
-
-	    return data.undirectedDegree + loops;
-	  };
-
-	  /**
-	   * Method returning the given node's degree.
-	   *
-	   * @param  {any}     node      - The node's key.
-	   * @param  {boolean} selfLoops - Count self-loops?
-	   * @return {number}            - The node's degree.
-	   *
-	   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
-	   * @throws {Error} - Will throw if the node isn't in the graph.
-	   */
-
-
-	  Graph.prototype.degree = function degree(node) {
-	    var selfLoops = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
-
-	    if (typeof selfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.degree: Expecting a boolean but got "' + selfLoops + '" for the second parameter (allowing self-loops to be counted).');
-
-	    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.degree: could not find the "' + node + '" node in the graph.');
-
-	    return this.directedDegree(node, selfLoops) + this.undirectedDegree(node, selfLoops);
-	  };
-
-	  /**
-	   * Method returning the given edge's source.
-	   *
-	   * @param  {any} edge - The edge's key.
-	   * @return {any}      - The edge's source.
-	   *
-	   * @throws {Error} - Will throw if the edge isn't in the graph.
-	   */
-
-
-	  Graph.prototype.source = function source(edge) {
-	    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.source: could not find the "' + edge + '" edge in the graph.');
-
-	    return this._edges.get(edge).source;
-	  };
-
-	  /**
-	   * Method returning the given edge's target.
-	   *
-	   * @param  {any} edge - The edge's key.
-	   * @return {any}      - The edge's target.
-	   *
-	   * @throws {Error} - Will throw if the edge isn't in the graph.
-	   */
-
-
-	  Graph.prototype.target = function target(edge) {
-	    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.target: could not find the "' + edge + '" edge in the graph.');
-
-	    return this._edges.get(edge).target;
-	  };
-
-	  /**
-	   * Method returning the given edge's extremities.
-	   *
-	   * @param  {any}   edge - The edge's key.
-	   * @return {array}      - The edge's extremities.
-	   *
-	   * @throws {Error} - Will throw if the edge isn't in the graph.
-	   */
-
-
-	  Graph.prototype.extremities = function extremities(edge) {
-	    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.extremities: could not find the "' + edge + '" edge in the graph.');
-
-	    return [this._edges.get(edge).source, this._edges.get(edge).target];
-	  };
-
-	  /**
-	   * Given a node & an edge, returns the other extremity of the edge.
-	   *
-	   * @param  {any}   node - The node's key.
-	   * @param  {any}   edge - The edge's key.
-	   * @return {any}        - The related node.
-	   *
-	   * @throws {Error} - Will throw if either the node or the edge isn't in the graph.
-	   */
-
-
-	  Graph.prototype.opposite = function opposite(node, edge) {
-	    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.opposite: could not find the "' + node + '" node in the graph.');
-
-	    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.opposite: could not find the "' + edge + '" edge in the graph.');
-
-	    var _extremities = this.extremities(edge);
-
-	    var _extremities2 = _slicedToArray(_extremities, 2);
-
-	    var node1 = _extremities2[0];
-	    var node2 = _extremities2[1];
-
-
-	    if (node !== node1 && node !== node2) throw new _errors.NotFoundGraphError('Graph.opposite: the "' + node + '" node is not attached to the "' + edge + '" edge (' + node1 + ', ' + node2 + ').');
-
-	    return node === node1 ? node2 : node1;
-	  };
-
-	  /**
-	   * Method returning whether the given edge is undirected.
-	   *
-	   * @param  {any}     edge - The edge's key.
-	   * @return {boolean}
-	   *
-	   * @throws {Error} - Will throw if the edge isn't in the graph.
-	   */
-
-
-	  Graph.prototype.undirected = function undirected(edge) {
-	    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.undirected: could not find the "' + edge + '" edge in the graph.');
-
-	    return !!this._edges.get(edge).undirected;
-	  };
-
-	  /**
-	   * Method returning whether the given edge is directed.
-	   *
-	   * @param  {any}     edge - The edge's key.
-	   * @return {boolean}
-	   *
-	   * @throws {Error} - Will throw if the edge isn't in the graph.
-	   */
-
-
-	  Graph.prototype.directed = function directed(edge) {
-	    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.directed: could not find the "' + edge + '" edge in the graph.');
-
-	    return !this._edges.get(edge).undirected;
-	  };
-
-	  /**
-	   * Method returning whether the given edge is a self loop.
-	   *
-	   * @param  {any}     edge - The edge's key.
-	   * @return {boolean}
-	   *
-	   * @throws {Error} - Will throw if the edge isn't in the graph.
-	   */
-
-
-	  Graph.prototype.selfLoop = function selfLoop(edge) {
-	    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.selfLoop: could not find the "' + edge + '" edge in the graph.');
-
-	    var data = this._edges.get(edge);
-
-	    return data.source === data.target;
-	  };
-
-	  /**---------------------------------------------------------------------------
-	   * Mutation
-	   **---------------------------------------------------------------------------
-	   */
-
-	  /**
-	   * Method used to add a node to the graph.
-	   *
-	   * @param  {any}    node         - The node.
-	   * @param  {object} [attributes] - Optional attributes.
-	   * @return {any}                 - The node.
-	   *
-	   * @throws {Error} - Will throw if the given node already exist.
-	   * @throws {Error} - Will throw if the given attributes are not an object.
-	   */
-
-
-	  Graph.prototype.addNode = function addNode(node, attributes) {
-	    if (attributes && !(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.addNode: invalid attributes. Expecting an object but got "' + attributes + '"');
-
-	    // Protecting the attributes
-	    attributes = (0, _utils.assign)({}, this._options.defaultNodeAttributes, attributes);
-
-	    if (this.hasNode(node)) throw new _errors.UsageGraphError('Graph.addNode: the "' + node + '" node already exist in the graph.');
-
-	    var data = {
-	      attributes: attributes
-	    };
-
-	    if (this.allowSelfLoops) {
-	      if (this.type === 'mixed' || this.type === 'directed') {
-	        data.directedSelfLoops = 0;
-	      }
-	      if (this.type === 'mixed' || this.type === 'undirected') {
-	        data.undirectedSelfLoops = 0;
-	      }
-	    }
-
-	    if (this.type === 'mixed' || this.type === 'directed') {
-	      data.inDegree = 0;
-	      data.outDegree = 0;
-	    }
-
-	    if (this.type === 'mixed' || this.type === 'undirected') {
-	      data.undirectedDegree = 0;
-	    }
-
-	    // Adding the node to internal register
-	    this._nodes.set(node, data);
-
-	    // Emitting
-	    this.emit('nodeAdded', {
-	      key: node,
-	      attributes: attributes
-	    });
-
-	    return node;
-	  };
-
-	  /**
-	   * Method used to merge a node into the graph.
-	   *
-	   * @param  {any}    node         - The node.
-	   * @param  {object} [attributes] - Optional attributes.
-	   * @return {any}                 - The node.
-	   */
-
-
-	  Graph.prototype.mergeNode = function mergeNode(node, attributes) {
-
-	    // If the node already exists, we merge the attributes
-	    if (this.hasNode(node)) {
-	      if (attributes) this.mergeNodeAttributes(node, attributes);
-	      return node;
-	    }
-
-	    // Else, we create it
-	    return this.addNode(node, attributes);
-	  };
-
-	  /**
-	   * Method used to add a nodes from a bunch.
-	   *
-	   * @param  {bunch}  bunch - The node.
-	   * @return {Graph}        - Returns itself for chaining.
-	   *
-	   * @throws {Error} - Will throw if the given bunch is not valid.
-	   */
-
-
-	  Graph.prototype.addNodesFrom = function addNodesFrom(bunch) {
-	    var _this2 = this;
-
-	    if (!(0, _utils.isBunch)(bunch)) throw new _errors.InvalidArgumentsGraphError('Graph.addNodesFrom: invalid bunch provided ("' + bunch + '").');
-
-	    (0, _utils.overBunch)(bunch, function (node, attributes) {
-	      _this2.addNode(node, attributes);
-	    });
-
-	    return this;
-	  };
-
-	  /**
-	   * Method used to drop a single node & all its attached edges from the graph.
-	   *
-	   * @param  {any}    node - The node.
-	   * @return {Graph}
-	   *
-	   * @throws {Error} - Will throw if the node doesn't exist.
-	   */
-
-
-	  Graph.prototype.dropNode = function dropNode(node) {
-	    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.dropNode: could not find the "' + node + '" node in the graph.');
-
-	    // Removing attached edges
-	    var edges = this.edges(node);
-
-	    // NOTE: we could go faster here
-	    for (var i = 0, l = edges.length; i < l; i++) {
-	      this.dropEdge(edges[i]);
-	    }var data = this._nodes.get(node);
-
-	    // Dropping the node from the register
-	    this._nodes.delete(node);
-
-	    // Emitting
-	    this.emit('nodeDropped', {
-	      key: node,
-	      attributes: data.attributes
-	    });
-	  };
-
-	  /**
-	   * Method used to drop a single edge from the graph.
-	   *
-	   * Arity 1:
-	   * @param  {any}    edge - The edge.
-	   *
-	   * Arity 2:
-	   * @param  {any}    source - Source node.
-	   * @param  {any}    target - Target node.
-	   *
-	   * @return {Graph}
-	   *
-	   * @throws {Error} - Will throw if the edge doesn't exist.
-	   */
-
-
-	  Graph.prototype.dropEdge = function dropEdge(edge) {
-	    if (arguments.length > 1) {
-	      var _source = arguments[0],
-	          _target = arguments[1];
-
-	      if (!this.hasNode(_source)) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + _source + '" source node in the graph.');
-
-	      if (!this.hasNode(_target)) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + _target + '" target node in the graph.');
-
-	      if (!this.hasEdge(_source, _target)) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + _source + '" -> "' + _target + '" edge in the graph.');
-
-	      edge = this.getEdge(_source, _target);
-	    } else {
-	      if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + edge + '" edge in the graph.');
-	    }
-
-	    var data = this._edges.get(edge);
-
-	    // Dropping the edge from the register
-	    this._edges.delete(edge);
-
-	    // Updating related degrees
-	    var source = data.source;
-	    var target = data.target;
-	    var attributes = data.attributes;
-	    var _data$undirected = data.undirected;
-	    var undirected = _data$undirected === undefined ? false : _data$undirected;
-
-
-	    var sourceData = this._nodes.get(source),
-	        targetData = this._nodes.get(target);
-
-	    if (source === target) {
-	      sourceData.selfLoops--;
-	    } else {
-	      if (undirected) {
-	        sourceData.undirectedDegree--;
-	        targetData.undirectedDegree--;
-	      } else {
-	        sourceData.outDegree--;
-	        targetData.inDegree--;
-	      }
-	    }
-
-	    // Clearing index
-	    clearEdgeFromIndex(this, 'structure', edge, data);
-
-	    // Emitting
-	    this.emit('edgeDropped', {
-	      key: edge,
-	      attributes: attributes,
-	      source: source,
-	      target: target,
-	      undirected: undirected
-	    });
-
-	    return this;
-	  };
-
-	  /**
-	   * Method used to drop a bunch of nodes or every node from the graph.
-	   *
-	   * @param  {bunch} nodes - Bunch of nodes.
-	   * @return {Graph}
-	   *
-	   * @throws {Error} - Will throw if an invalid bunch is provided.
-	   * @throws {Error} - Will throw if any of the nodes doesn't exist.
-	   */
-
-
-	  Graph.prototype.dropNodes = function dropNodes(nodes) {
-	    var _this3 = this;
-
-	    if (!arguments.length) return this.clear();
-
-	    if (!(0, _utils.isBunch)(nodes)) throw new _errors.InvalidArgumentsGraphError('Graph.dropNodes: invalid bunch.');
-
-	    (0, _utils.overBunch)(nodes, function (node) {
-	      _this3.dropNode(node);
-	    });
-
-	    return this;
-	  };
-
-	  /**
-	   * Method used to drop a bunch of edges or every edges from the graph.
-	   *
-	   * Arity 1:
-	   * @param  {bunch} edges - Bunch of edges.
-	   *
-	   * Arity 2:
-	   * @param  {any}    source - Source node.
-	   * @param  {any}    target - Target node.
-	   *
-	   * @return {Graph}
-	   *
-	   * @throws {Error} - Will throw if an invalid bunch is provided.
-	   * @throws {Error} - Will throw if any of the edges doesn't exist.
-	   */
-
-
-	  Graph.prototype.dropEdges = function dropEdges(edges) {
-	    var _this4 = this;
-
-	    if (!arguments.length) {
-
-	      // Dropping every edge from the graph
-	      this._edges = (0, _utils.createInternalMap)();
-
-	      // Without edges, we've got no 'structure'
-	      this.clearIndex('structure');
-
-	      var index = this._indices.structure;
-
-	      if (!index.lazy) index.computed = true;
-
-	      return this;
-	    }
-
-	    if (arguments.length === 2) {
-	      var source = arguments[0],
-	          target = arguments[1];
-
-	      edges = this.edges(source, target);
-	    }
-
-	    if (!(0, _utils.isBunch)(edges)) throw new _errors.InvalidArgumentsGraphError('Graph.dropEdges: invalid bunch.');
-
-	    (0, _utils.overBunch)(edges, function (edge) {
-	      _this4.dropEdge(edge);
-	    });
-
-	    return this;
-	  };
-
-	  /**
-	   * Method used to remove every edge & every node from the graph.
-	   *
-	   * @return {Graph}
-	   */
-
-
-	  Graph.prototype.clear = function clear() {
-
-	    // Dropping edges
-	    this._edges = (0, _utils.createInternalMap)();
-
-	    // Dropping nodes
-	    this._nodes = (0, _utils.createInternalMap)();
-
-	    // Handling indices
-	    for (var name in this._indices) {
-	      var index = this._indices[name];
-
-	      if (index.lazy) index.computed = false;
-	    }
-
-	    // Emitting
-	    this.emit('cleared');
-	  };
-
-	  /**---------------------------------------------------------------------------
-	   * Iteration-related methods
-	   **---------------------------------------------------------------------------
-	   */
-
-	  /**
-	   * Method returning the list of the graph's nodes.
-	   *
-	   * @return {array} - The nodes.
-	   */
-
-
-	  Graph.prototype.nodes = function nodes() {
-	    return Array.from(this._nodes.keys());
-	  };
-
-	  /**---------------------------------------------------------------------------
-	   * Serialization
-	   **---------------------------------------------------------------------------
-	   */
-
-	  /**
-	   * Method exporting the target node.
-	   *
-	   * @param  {any}   node - Target node.
-	   * @return {array}      - The serialized node.
-	   *
-	   * @throws {Error} - Will throw if the node is not found.
-	   */
-
-
-	  Graph.prototype.exportNode = function exportNode(node) {
-	    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.exportNode: could not find the "' + node + '" node in the graph.');
-
-	    var data = this._nodes.get(node);
-
-	    return (0, _serialization.serializeNode)(node, data);
-	  };
-
-	  /**
-	   * Method exporting the target edge.
-	   *
-	   * @param  {any}   edge - Target edge.
-	   * @return {array}      - The serialized edge.
-	   *
-	   * @throws {Error} - Will throw if the edge is not found.
-	   */
-
-
-	  Graph.prototype.exportEdge = function exportEdge(edge) {
-	    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.exportEdge: could not find the "' + edge + '" edge in the graph.');
-
-	    var data = this._edges.get(edge);
-
-	    return (0, _serialization.serializeEdge)(edge, data);
-	  };
-
-	  /**
-	   * Method exporting every nodes or the bunch ones.
-	   *
-	   * @param  {mixed}   [bunch] - Target nodes.
-	   * @return {array[]}         - The serialized nodes.
-	   *
-	   * @throws {Error} - Will throw if any of the nodes is not found.
-	   */
-
-
-	  Graph.prototype.exportNodes = function exportNodes(bunch) {
-	    var _this5 = this;
-
-	    var nodes = [];
-
-	    if (!arguments.length) {
-
-	      // Exporting every node
-	      nodes = this.nodes();
-	    } else {
-
-	      // Exporting the bunch
-	      if (!(0, _utils.isBunch)(bunch)) throw new _errors.InvalidArgumentsGraphError('Graph.exportNodes: invalid bunch.');
-
-	      (0, _utils.overBunch)(bunch, function (node) {
-	        if (!_this5.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.exportNodes: could not find the "' + node + '" node from the bunch in the graph.');
-	        nodes.push(node);
-	      });
-	    }
-
-	    var serializedNodes = new Array(nodes.length);
-
-	    for (var i = 0, l = nodes.length; i < l; i++) {
-	      serializedNodes[i] = this.exportNode(nodes[i]);
-	    }return serializedNodes;
-	  };
-
-	  /**
-	   * Method exporting every edges or the bunch ones.
-	   *
-	   * @param  {mixed}   [bunch] - Target edges.
-	   * @return {array[]}         - The serialized edges.
-	   *
-	   * @throws {Error} - Will throw if any of the edges is not found.
-	   */
-
-
-	  Graph.prototype.exportEdges = function exportEdges(bunch) {
-	    return _exportEdges(this, 'exportEdges', null, bunch);
-	  };
-
-	  /**
-	   * Method exporting every directed edges or the bunch ones which are directed.
-	   *
-	   * @param  {mixed}   [bunch] - Target edges.
-	   * @return {array[]}         - The serialized edges.
-	   *
-	   * @throws {Error} - Will throw if any of the edges is not found.
-	   */
-
-
-	  Graph.prototype.exportDirectedEdges = function exportDirectedEdges(bunch) {
-	    var _this6 = this;
-
-	    return _exportEdges(this, 'exportDirectedEdges', function (edge) {
-	      return _this6.directed(edge);
-	    }, bunch);
-	  };
-
-	  /**
-	   * Method exporting every unddirected edges or the bunch ones which are
-	   * undirected
-	   *
-	   * @param  {mixed}   [bunch] - Target edges.
-	   * @return {array[]}         - The serialized edges.
-	   *
-	   * @throws {Error} - Will throw if any of the edges is not found.
-	   */
-
-
-	  Graph.prototype.exportUndirectedEdges = function exportUndirectedEdges(bunch) {
-	    var _this7 = this;
-
-	    return _exportEdges(this, 'exportUndirectedEdges', function (edge) {
-	      return _this7.undirected(edge);
-	    }, bunch);
-	  };
-
-	  /**
-	   * Method used to export the whole graph.
-	   *
-	   * @return {object} - The serialized graph.
-	   */
-
-
-	  Graph.prototype.export = function _export() {
-	    return {
-	      attributes: this.getAttributes(),
-	      nodes: this.exportNodes(),
-	      edges: this.exportEdges()
-	    };
-	  };
-
-	  /**
-	   * Method used to import a serialized node.
-	   *
-	   * @param  {object} data   - The serialized node.
-	   * @param  {boolean} merge - Whether to merge the given node.
-	   * @return {Graph}         - Returns itself for chaining.
-	   */
-
-
-	  Graph.prototype.importNode = function importNode(data) {
-	    var merge = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-
-	    // Validating
-	    var _validateSerializedNo = (0, _serialization.validateSerializedNode)(data);
-
-	    var valid = _validateSerializedNo.valid;
-	    var reason = _validateSerializedNo.reason;
-
-
-	    if (!valid) {
-
-	      if (reason === 'not-object') throw new _errors.InvalidArgumentsGraphError('Graph.importNode: invalid serialized node. A serialized node should be a plain object with at least a "key" property.');
-	      if (reason === 'no-key') throw new _errors.InvalidArgumentsGraphError('Graph.importNode: no key provided.');
-	      if (reason === 'invalid-attributes') throw new _errors.InvalidArgumentsGraphError('Graph.importNode: invalid attributes. Attributes should be a plain object, null or omitted.');
-	    }
-
-	    // Adding the node
-	    var key = data.key;
-	    var _data$attributes = data.attributes;
-	    var attributes = _data$attributes === undefined ? {} : _data$attributes;
-
-
-	    if (merge) this.mergeNode(key, attributes);else this.addNode(key, attributes);
-
-	    return this;
-	  };
-
-	  /**
-	   * Method used to import a serialized edge.
-	   *
-	   * @param  {object}  data  - The serialized edge.
-	   * @param  {boolean} merge - Whether to merge the given edge.
-	   * @return {Graph}         - Returns itself for chaining.
-	   */
-
-
-	  Graph.prototype.importEdge = function importEdge(data) {
-	    var merge = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-
-	    // Validating
-	    var _validateSerializedEd = (0, _serialization.validateSerializedEdge)(data);
-
-	    var valid = _validateSerializedEd.valid;
-	    var reason = _validateSerializedEd.reason;
-
-
-	    if (!valid) {
-
-	      if (reason === 'not-object') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: invalid serialized edge. A serialized edge should be a plain object with at least a "source" & "target" property.');
-	      if (reason === 'no-source') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: missing souce.');
-	      if (reason === 'no-target') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: missing target');
-	      if (reason === 'invalid-attributes') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: invalid attributes. Attributes should be a plain object, null or omitted.');
-	      if (reason === 'invalid-undirected') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: invalid undirected. Undirected should be boolean or omitted.');
-	    }
-
-	    // Adding the edge
-	    var source = data.source;
-	    var target = data.target;
-	    var _data$attributes2 = data.attributes;
-	    var attributes = _data$attributes2 === undefined ? {} : _data$attributes2;
-	    var _data$undirected2 = data.undirected;
-	    var undirected = _data$undirected2 === undefined ? false : _data$undirected2;
-
-
-	    var method = void 0;
-
-	    if ('key' in data) {
-	      method = merge ? undirected ? this.mergeUndirectedEdgeWithKey : this.mergeDirectedEdgeWithKey : undirected ? this.addUndirectedEdgeWithKey : this.addDirectedEdgeWithKey;
-
-	      method.call(this, data.key, source, target, attributes);
-	    } else {
-	      method = merge ? undirected ? this.mergeUndirectedEdge : this.mergeDirectedEdge : undirected ? this.addUndirectedEdge : this.addDirectedEdge;
-
-	      method.call(this, source, target, attributes);
-	    }
-
-	    return this;
-	  };
-
-	  /**
-	   * Method used to import serialized nodes.
-	   *
-	   * @param  {array}   nodes - The serialized nodes.
-	   * @param  {boolean} merge - Whether to merge the given nodes.
-	   * @return {Graph}         - Returns itself for chaining.
-	   */
-
-
-	  Graph.prototype.importNodes = function importNodes(nodes) {
-	    var merge = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-
-	    if (!Array.isArray(nodes)) throw new _errors.InvalidArgumentsGraphError('Graph.importNodes: invalid argument. Expecting an array.');
-
-	    for (var i = 0, l = nodes.length; i < l; i++) {
-	      this.importNode(nodes[i], merge);
-	    }return this;
-	  };
-
-	  /**
-	   * Method used to import serialized edges.
-	   *
-	   * @param  {array}   edges - The serialized edges.
-	   * @param  {boolean} merge - Whether to merge the given edges.
-	   * @return {Graph}         - Returns itself for chaining.
-	   */
-
-
-	  Graph.prototype.importEdges = function importEdges(edges) {
-	    var merge = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-
-	    if (!Array.isArray(edges)) throw new _errors.InvalidArgumentsGraphError('Graph.importEdges: invalid argument. Expecting an array.');
-
-	    for (var i = 0, l = edges.length; i < l; i++) {
-	      this.importEdge(edges[i], merge);
-	    }return this;
-	  };
-
-	  /**
-	   * Method used to import a serialized graph.
-	   *
-	   * @param  {object|Graph} data  - The serialized graph.
-	   * @param  {boolean}      merge - Whether to merge data.
-	   * @return {Graph}              - Returns itself for chaining.
-	   */
-
-
-	  Graph.prototype.import = function _import(data) {
-	    var merge = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-
-
-	    // Importing a Graph instance
-	    if ((0, _utils.isGraph)(data)) {
-
-	      this.import(data.export(), merge);
-	      return this;
-	    }
-
-	    // Importing a serialized graph
-	    if (!(0, _utils.isPlainObject)(data)) throw new _errors.InvalidArgumentsGraphError('Graph.import: invalid argument. Expecting a serialized graph or, alternatively, a Graph instance.');
-
-	    if (data.attributes) {
-	      if (!(0, _utils.isPlainObject)(data.attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.import: invalid attributes. Expecting a plain object.');
-
-	      if (merge) this.mergeAttributes(data.attributes);else this.replaceAttributes(data.attributes);
-	    }
-
-	    if (data.nodes) this.importNodes(data.nodes, merge);
-
-	    if (data.edges) this.importEdges(data.edges, merge);
-
-	    return this;
-	  };
-
-	  /**
-	   * Method returning an empty copy of the graph, i.e. a graph without nodes
-	   * & edges but with the exact same options.
-	   *
-	   * @return {Graph} - The empty copy.
-	   */
-
-
-	  Graph.prototype.emptyCopy = function emptyCopy() {
-	    return new Graph(null, this._options);
-	  };
-
-	  /**
-	   * Method returning an exact copy of the graph.
-	   *
-	   * @return {Graph} - The copy.
-	   */
-
-
-	  Graph.prototype.copy = function copy() {
-	    return new Graph(this, this._options);
-	  };
-
-	  /**---------------------------------------------------------------------------
-	   * Indexes-related methods
-	   **---------------------------------------------------------------------------
-	   */
-
-	  /**
-	   * Method computing the desired index.
-	   *
-	   * @param  {string} name - Name of the index to compute.
-	   * @return {Graph}       - Returns itself for chaining.
-	   *
-	   * @throw  {Error} - Will throw if the index doesn't exist.
-	   */
-
-
-	  Graph.prototype.computeIndex = function computeIndex(name) {
-	    var _this8 = this;
-
-	    if (!_indices.INDICES.has(name)) throw new _errors.InvalidArgumentsGraphError('Graph.computeIndex: unknown "' + name + '" index.');
-
-	    if (name === 'structure') {
-	      var index = this._indices.structure;
-
-	      if (index.computed) return this;
-
-	      index.computed = true;
-
-	      this._edges.forEach(function (data, edge) {
-	        return updateIndex(_this8, name, edge, data);
-	      });
-	    }
-
-	    return this;
-	  };
-
-	  /**
-	   * Method used to clear the desired index to clear memory.
-	   *
-	   * @param  {string} name - Name of the index to compute.
-	   * @return {Graph}       - Returns itself for chaining.
-	   *
-	   * @throw  {Error} - Will throw if the index doesn't exist.
-	   */
-
-
-	  Graph.prototype.clearIndex = function clearIndex(name) {
-	    if (!_indices.INDICES.has(name)) throw new _errors.InvalidArgumentsGraphError('Graph.clearIndex: unknown "' + name + '" index.');
-
-	    if (name === 'structure') {
-	      var index = this._indices.structure;
-
-	      if (!index.computed) return this;
-
-	      (0, _indices.clearStructureIndex)(this);
-	      index.computed = false;
-	    }
-
-	    return this;
-	  };
-
-	  /**---------------------------------------------------------------------------
-	   * Known methods
-	   **---------------------------------------------------------------------------
-	   */
-
-	  /**
-	   * Method used by JavaScript to perform JSON serialization.
-	   *
-	   * @return {object} - The serialized graph.
-	   */
-
-
-	  Graph.prototype.toJSON = function toJSON() {
-	    return this.export();
-	  };
-
-	  /**
-	   * Method used to perform string coercion and returning useful information
-	   * about the Graph instance.
-	   *
-	   * @return {string} - String representation of the graph.
-	   */
-
-
-	  Graph.prototype.toString = function toString() {
-	    var pluralOrder = this.order > 1 || this.order === 0,
-	        pluralSize = this.size > 1 || this.size === 0;
-
-	    return 'Graph<' + (0, _utils.prettyPrint)(this.order) + ' node' + (pluralOrder ? 's' : '') + ', ' + (0, _utils.prettyPrint)(this.size) + ' edge' + (pluralSize ? 's' : '') + '>';
-	  };
-
-	  /**
-	   * Method used internally by node's console to display a custom object.
-	   *
-	   * @return {object} - Formatted object representation of the graph.
-	   */
-
-
-	  Graph.prototype.inspect = function inspect() {
-	    var nodes = {};
-	    this._nodes.forEach(function (data, key) {
-	      nodes[key] = data.attributes;
-	    });
-
-	    var edges = {};
-	    this._edges.forEach(function (data, key) {
-	      var direction = data.undirected ? '<->' : '->';
-
-	      var label = '';
-
-	      if (!data.generatedId) label += '[' + key + ']: ';
-
-	      label += '(' + data.source + ')' + direction + '(' + data.target + ')';
-
-	      edges[label] = data.attributes;
-	    });
-
-	    var dummy = {};
-
-	    for (var k in this) {
-	      if (this.hasOwnProperty(k) && !EMITTER_PROPS.has(k) && typeof this[k] !== 'function') dummy[k] = this[k];
-	    }
-
-	    dummy.attributes = this._attributes;
-	    dummy.nodes = nodes;
-	    dummy.edges = edges;
-
-	    (0, _utils.privateProperty)(dummy, 'constructor', this.constructor);
-
-	    return dummy;
-	  };
-
-	  return Graph;
-	}(_events.EventEmitter);
-
-	/**
-	 * Attaching methods to the prototype.
-	 *
-	 * Here, we are attaching a wide variety of methods to the Graph class'
-	 * prototype when those are very numerous and when their creation is
-	 * abstracted.
-	 */
-
-	/**
-	 * Related to edge addition.
-	 */
-
-
-	exports.default = Graph;
-	EDGE_ADD_METHODS.forEach(function (method) {
-	  ['add', 'merge'].forEach(function (verb) {
-	    var name = method.name(verb);
-
-	    if (method.generateKey) {
-	      Graph.prototype[name] = function (source, target, attributes) {
-	        return addEdge(this, name, verb === 'merge', method.generateKey, (method.type || this.type) === 'undirected', null, source, target, attributes);
-	      };
-	    } else {
-	      Graph.prototype[name] = function (edge, source, target, attributes) {
-	        return addEdge(this, name, verb === 'merge', method.generateKey, (method.type || this.type) === 'undirected', edge, source, target, attributes);
-	      };
-	    }
-	  });
-	});
-
-	/**
-	 * Attributes-related.
-	 */
-	(0, _attributes.attachAttributesMethods)(Graph);
-
-	/**
-	 * Edge iteration-related.
-	 */
-	(0, _edges.attachEdgeIterationMethods)(Graph);
-
-	/**
-	 * Neighbor iteration-related.
-	 */
-	(0, _neighbors.attachNeighborIterationMethods)(Graph);
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	// Copyright Joyent, Inc. and other Node contributors.
-	//
-	// Permission is hereby granted, free of charge, to any person obtaining a
-	// copy of this software and associated documentation files (the
-	// "Software"), to deal in the Software without restriction, including
-	// without limitation the rights to use, copy, modify, merge, publish,
-	// distribute, sublicense, and/or sell copies of the Software, and to permit
-	// persons to whom the Software is furnished to do so, subject to the
-	// following conditions:
-	//
-	// The above copyright notice and this permission notice shall be included
-	// in all copies or substantial portions of the Software.
-	//
-	// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-	// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-	// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-	// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-	// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-	// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-	// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-	function EventEmitter() {
-	  this._events = this._events || {};
-	  this._maxListeners = this._maxListeners || undefined;
-	}
-	module.exports = EventEmitter;
-
-	// Backwards-compat with node 0.10.x
-	EventEmitter.EventEmitter = EventEmitter;
-
-	EventEmitter.prototype._events = undefined;
-	EventEmitter.prototype._maxListeners = undefined;
-
-	// By default EventEmitters will print a warning if more than 10 listeners are
-	// added to it. This is a useful default which helps finding memory leaks.
-	EventEmitter.defaultMaxListeners = 10;
-
-	// Obviously not all Emitters should be limited to 10. This function allows
-	// that to be increased. Set to zero for unlimited.
-	EventEmitter.prototype.setMaxListeners = function(n) {
-	  if (!isNumber(n) || n < 0 || isNaN(n))
-	    throw TypeError('n must be a positive number');
-	  this._maxListeners = n;
-	  return this;
-	};
-
-	EventEmitter.prototype.emit = function(type) {
-	  var er, handler, len, args, i, listeners;
-
-	  if (!this._events)
-	    this._events = {};
-
-	  // If there is no 'error' event listener then throw.
-	  if (type === 'error') {
-	    if (!this._events.error ||
-	        (isObject(this._events.error) && !this._events.error.length)) {
-	      er = arguments[1];
-	      if (er instanceof Error) {
-	        throw er; // Unhandled 'error' event
-	      } else {
-	        // At least give some kind of context to the user
-	        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
-	        err.context = er;
-	        throw err;
-	      }
-	    }
-	  }
-
-	  handler = this._events[type];
-
-	  if (isUndefined(handler))
-	    return false;
-
-	  if (isFunction(handler)) {
-	    switch (arguments.length) {
-	      // fast cases
-	      case 1:
-	        handler.call(this);
-	        break;
-	      case 2:
-	        handler.call(this, arguments[1]);
-	        break;
-	      case 3:
-	        handler.call(this, arguments[1], arguments[2]);
-	        break;
-	      // slower
-	      default:
-	        args = Array.prototype.slice.call(arguments, 1);
-	        handler.apply(this, args);
-	    }
-	  } else if (isObject(handler)) {
-	    args = Array.prototype.slice.call(arguments, 1);
-	    listeners = handler.slice();
-	    len = listeners.length;
-	    for (i = 0; i < len; i++)
-	      listeners[i].apply(this, args);
-	  }
-
-	  return true;
-	};
-
-	EventEmitter.prototype.addListener = function(type, listener) {
-	  var m;
-
-	  if (!isFunction(listener))
-	    throw TypeError('listener must be a function');
-
-	  if (!this._events)
-	    this._events = {};
-
-	  // To avoid recursion in the case that type === "newListener"! Before
-	  // adding it to the listeners, first emit "newListener".
-	  if (this._events.newListener)
-	    this.emit('newListener', type,
-	              isFunction(listener.listener) ?
-	              listener.listener : listener);
-
-	  if (!this._events[type])
-	    // Optimize the case of one listener. Don't need the extra array object.
-	    this._events[type] = listener;
-	  else if (isObject(this._events[type]))
-	    // If we've already got an array, just append.
-	    this._events[type].push(listener);
-	  else
-	    // Adding the second element, need to change to array.
-	    this._events[type] = [this._events[type], listener];
-
-	  // Check for listener leak
-	  if (isObject(this._events[type]) && !this._events[type].warned) {
-	    if (!isUndefined(this._maxListeners)) {
-	      m = this._maxListeners;
-	    } else {
-	      m = EventEmitter.defaultMaxListeners;
-	    }
-
-	    if (m && m > 0 && this._events[type].length > m) {
-	      this._events[type].warned = true;
-	      console.error('(node) warning: possible EventEmitter memory ' +
-	                    'leak detected. %d listeners added. ' +
-	                    'Use emitter.setMaxListeners() to increase limit.',
-	                    this._events[type].length);
-	      if (typeof console.trace === 'function') {
-	        // not supported in IE 10
-	        console.trace();
-	      }
-	    }
-	  }
-
-	  return this;
-	};
-
-	EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-	EventEmitter.prototype.once = function(type, listener) {
-	  if (!isFunction(listener))
-	    throw TypeError('listener must be a function');
-
-	  var fired = false;
-
-	  function g() {
-	    this.removeListener(type, g);
-
-	    if (!fired) {
-	      fired = true;
-	      listener.apply(this, arguments);
-	    }
-	  }
-
-	  g.listener = listener;
-	  this.on(type, g);
-
-	  return this;
-	};
-
-	// emits a 'removeListener' event iff the listener was removed
-	EventEmitter.prototype.removeListener = function(type, listener) {
-	  var list, position, length, i;
-
-	  if (!isFunction(listener))
-	    throw TypeError('listener must be a function');
-
-	  if (!this._events || !this._events[type])
-	    return this;
-
-	  list = this._events[type];
-	  length = list.length;
-	  position = -1;
-
-	  if (list === listener ||
-	      (isFunction(list.listener) && list.listener === listener)) {
-	    delete this._events[type];
-	    if (this._events.removeListener)
-	      this.emit('removeListener', type, listener);
-
-	  } else if (isObject(list)) {
-	    for (i = length; i-- > 0;) {
-	      if (list[i] === listener ||
-	          (list[i].listener && list[i].listener === listener)) {
-	        position = i;
-	        break;
-	      }
-	    }
-
-	    if (position < 0)
-	      return this;
-
-	    if (list.length === 1) {
-	      list.length = 0;
-	      delete this._events[type];
-	    } else {
-	      list.splice(position, 1);
-	    }
-
-	    if (this._events.removeListener)
-	      this.emit('removeListener', type, listener);
-	  }
-
-	  return this;
-	};
-
-	EventEmitter.prototype.removeAllListeners = function(type) {
-	  var key, listeners;
-
-	  if (!this._events)
-	    return this;
-
-	  // not listening for removeListener, no need to emit
-	  if (!this._events.removeListener) {
-	    if (arguments.length === 0)
-	      this._events = {};
-	    else if (this._events[type])
-	      delete this._events[type];
-	    return this;
-	  }
-
-	  // emit removeListener for all listeners on all events
-	  if (arguments.length === 0) {
-	    for (key in this._events) {
-	      if (key === 'removeListener') continue;
-	      this.removeAllListeners(key);
-	    }
-	    this.removeAllListeners('removeListener');
-	    this._events = {};
-	    return this;
-	  }
-
-	  listeners = this._events[type];
-
-	  if (isFunction(listeners)) {
-	    this.removeListener(type, listeners);
-	  } else if (listeners) {
-	    // LIFO order
-	    while (listeners.length)
-	      this.removeListener(type, listeners[listeners.length - 1]);
-	  }
-	  delete this._events[type];
-
-	  return this;
-	};
-
-	EventEmitter.prototype.listeners = function(type) {
-	  var ret;
-	  if (!this._events || !this._events[type])
-	    ret = [];
-	  else if (isFunction(this._events[type]))
-	    ret = [this._events[type]];
-	  else
-	    ret = this._events[type].slice();
-	  return ret;
-	};
-
-	EventEmitter.prototype.listenerCount = function(type) {
-	  if (this._events) {
-	    var evlistener = this._events[type];
-
-	    if (isFunction(evlistener))
-	      return 1;
-	    else if (evlistener)
-	      return evlistener.length;
-	  }
-	  return 0;
-	};
-
-	EventEmitter.listenerCount = function(emitter, type) {
-	  return emitter.listenerCount(type);
-	};
-
-	function isFunction(arg) {
-	  return typeof arg === 'function';
-	}
-
-	function isNumber(arg) {
-	  return typeof arg === 'number';
-	}
-
-	function isObject(arg) {
-	  return typeof arg === 'object' && arg !== null;
-	}
-
-	function isUndefined(arg) {
-	  return arg === void 0;
-	}
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	 * Graphology Custom Errors
-	 * =========================
-	 *
-	 * Defining custom errors for ease of use & easy unit tests across
-	 * implementations (normalized typology rather than relying on error
-	 * messages to check whether the correct error was found).
-	 */
-	var GraphError = exports.GraphError = function (_Error) {
-	  _inherits(GraphError, _Error);
-
-	  function GraphError(message, data) {
-	    _classCallCheck(this, GraphError);
-
-	    var _this = _possibleConstructorReturn(this, _Error.call(this));
-
-	    _this.name = 'GraphError';
-	    _this.message = message || '';
-	    _this.data = data || {};
-	    return _this;
-	  }
-
-	  return GraphError;
-	}(Error);
-
-	var InvalidArgumentsGraphError = exports.InvalidArgumentsGraphError = function (_GraphError) {
-	  _inherits(InvalidArgumentsGraphError, _GraphError);
-
-	  function InvalidArgumentsGraphError(message, data) {
-	    _classCallCheck(this, InvalidArgumentsGraphError);
-
-	    var _this2 = _possibleConstructorReturn(this, _GraphError.call(this, message, data));
-
-	    _this2.name = 'InvalidArgumentsGraphError';
-
-	    // This is V8 specific to enhance stack readability
-	    if (typeof Error.captureStackTrace === 'function') Error.captureStackTrace(_this2, InvalidArgumentsGraphError.prototype.constructor);
-	    return _this2;
-	  }
-
-	  return InvalidArgumentsGraphError;
-	}(GraphError);
-
-	var NotFoundGraphError = exports.NotFoundGraphError = function (_GraphError2) {
-	  _inherits(NotFoundGraphError, _GraphError2);
-
-	  function NotFoundGraphError(message, data) {
-	    _classCallCheck(this, NotFoundGraphError);
-
-	    var _this3 = _possibleConstructorReturn(this, _GraphError2.call(this, message, data));
-
-	    _this3.name = 'NotFoundGraphError';
-
-	    // This is V8 specific to enhance stack readability
-	    if (typeof Error.captureStackTrace === 'function') Error.captureStackTrace(_this3, NotFoundGraphError.prototype.constructor);
-	    return _this3;
-	  }
-
-	  return NotFoundGraphError;
-	}(GraphError);
-
-	var UsageGraphError = exports.UsageGraphError = function (_GraphError3) {
-	  _inherits(UsageGraphError, _GraphError3);
-
-	  function UsageGraphError(message, data) {
-	    _classCallCheck(this, UsageGraphError);
-
-	    var _this4 = _possibleConstructorReturn(this, _GraphError3.call(this, message, data));
-
-	    _this4.name = 'UsageGraphError';
-
-	    // This is V8 specific to enhance stack readability
-	    if (typeof Error.captureStackTrace === 'function') Error.captureStackTrace(_this4, UsageGraphError.prototype.constructor);
-	    return _this4;
-	  }
-
-	  return UsageGraphError;
-	}(GraphError);
-
-/***/ },
-/* 5 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.updateStructureIndex = updateStructureIndex;
-	exports.clearEdgeFromStructureIndex = clearEdgeFromStructureIndex;
-	exports.clearStructureIndex = clearStructureIndex;
-	/**
-	 * Graphology Indexes Functions
-	 * =============================
-	 *
-	 * Bunch of functions used to compute or clear indexes.
-	 */
-	var INDICES = exports.INDICES = new Set(['structure']);
-
-	/**
-	 * Structure.
-	 */
-
-	/**
-	 * Function updating the 'structure' index with the given edge's data.
-	 *
-	 * @param {Graph}  graph - Target Graph instance.
-	 * @param {any}    edge  - Added edge.
-	 * @param {object} data  - Attached data.
-	 */
-	function updateStructureIndex(graph, edge, data) {
-
-	  // Retrieving edge information
-	  var undirected = data.undirected;
-	  var source = data.source;
-	  var target = data.target;
-
-	  // Retrieving source & target data
-
-	  var sourceData = graph._nodes.get(source),
-	      targetData = graph._nodes.get(target);
-
-	  var outKey = undirected ? 'undirectedOut' : 'out',
-	      inKey = undirected ? 'undirectedIn' : 'in';
-
-	  // NOTE: The set of edges is the same for source & target
-	  var commonSet = new Set();
-
-	  // Handling source
-	  sourceData[outKey] = sourceData[outKey] || Object.create(null);
-
-	  if (!(target in sourceData[outKey])) sourceData[outKey][target] = commonSet;
-	  sourceData[outKey][target].add(edge);
-
-	  // If selfLoop, we break here
-	  if (source === target) return;
-
-	  // Handling target (we won't add the edge because it was already taken
-	  // care of with source above)
-	  targetData[inKey] = targetData[inKey] || Object.create(null);
-
-	  if (!(source in targetData[inKey])) targetData[inKey][source] = commonSet;
-	}
-
-	/**
-	 * Function clearing the 'structure' index data related to the given edge.
-	 *
-	 * @param {Graph}  graph - Target Graph instance.
-	 * @param {any}    edge  - Dropped edge.
-	 * @param {object} data  - Attached data.
-	 */
-	function clearEdgeFromStructureIndex(graph, edge, data) {
-	  var source = data.source;
-	  var target = data.target;
-	  var undirected = data.undirected;
-
-	  // NOTE: since the edge set is the same for source & target, we can only
-	  // affect source
-
-	  var sourceData = graph._nodes.get(source);
-
-	  var outKey = undirected ? 'undirectedOut' : 'out';
-
-	  var sourceIndex = sourceData[outKey];
-
-	  // NOTE: possible to clear empty sets from memory altogether
-	  if (target in sourceIndex) sourceIndex[target].delete(edge);
-	}
-
-	/**
-	 * Function clearing the whole 'structure' index.
-	 *
-	 * @param {Graph} graph - Target Graph instance.
-	 */
-	function clearStructureIndex(graph) {
-	  graph._nodes.forEach(function (data) {
-
-	    // Clearing properties
-	    delete data.in;
-	    delete data.out;
-	    delete data.undirectedIn;
-	    delete data.undirectedOut;
-	  });
-	}
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.attachAttributesMethods = attachAttributesMethods;
-
-	var _utils = __webpack_require__(1);
-
-	var _errors = __webpack_require__(4);
-
-	/**
-	 * Attach an attribute getter method onto the provided class.
-	 *
-	 * @param {function} Class       - Target class.
-	 * @param {string}   method      - Method name.
-	 * @param {string}   key         - Key of the element's storage on instance.
-	 * @param {string}   elementName - Name of target element for messages.
-	 * @param {string}   checker     - Name of the checker method to use.
-	 * @param {string}   [finder]    - Name of the finder method to use.
-	 */
-	/**
-	 * Graphology Attributes methods
-	 * ==============================
-	 *
-	 * Attributes-related methods being exactly the same for nodes & edges,
-	 * we abstract them here for factorization reasons.
-	 */
-	function attachAttributeGetter(Class, method, key, elementName, checker, finder) {
-
-	  /**
-	   * Get the desired attribute for the given element (node or edge).
-	   *
-	   * Arity 2:
-	   * @param  {any}    element - Target element.
-	   * @param  {string} name    - Attribute's name.
-	   *
-	   * Arity 3 (only for edges):
-	   * @param  {any}     source - Source element.
-	   * @param  {any}     target - Target element.
-	   * @param  {string}  name   - Attribute's name.
-	   *
-	   * @return {mixed}          - The attribute's value.
-	   *
-	   * @throws {Error} - Will throw if too many arguments are provided.
-	   * @throws {Error} - Will throw if any of the elements is not found.
-	   */
-	  Class.prototype[method] = function (element, name) {
-	    if (arguments.length > 2) {
-	      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
-
-	      var source = element,
-	          target = name;
-
-	      name = arguments[2];
-
-	      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
-
-	      element = this[finder](source, target);
-	    }
-
-	    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
-
-	    var data = this[key].get(element);
-
-	    return data.attributes[name];
-	  };
-	}
-
-	/**
-	 * Attach an attributes getter method onto the provided class.
-	 *
-	 * @param {function} Class       - Target class.
-	 * @param {string}   method      - Method name.
-	 * @param {string}   key         - Key of the element's storage on instance.
-	 * @param {string}   elementName - Name of target element for messages.
-	 * @param {string}   checker     - Name of the checker method to use.
-	 * @param {string}   [finder]    - Name of the finder method to use.
-	 */
-	function attachAttributesGetter(Class, method, key, elementName, checker, finder) {
-
-	  /**
-	   * Retrieves all the target element's attributes.
-	   *
-	   * Arity 2:
-	   * @param  {any}    element - Target element.
-	   *
-	   * Arity 3 (only for edges):
-	   * @param  {any}     source - Source element.
-	   * @param  {any}     target - Target element.
-	   *
-	   * @return {object}          - The element's attributes.
-	   *
-	   * @throws {Error} - Will throw if too many arguments are provided.
-	   * @throws {Error} - Will throw if any of the elements is not found.
-	   */
-	  Class.prototype[method] = function (element) {
-	    if (arguments.length > 1) {
-	      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
-
-	      var source = element,
-	          target = arguments[1];
-
-	      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
-
-	      element = this[finder](source, target);
-	    }
-
-	    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
-
-	    var data = this[key].get(element);
-
-	    return data.attributes;
-	  };
-	}
-
-	/**
-	 * Attach an attribute checker method onto the provided class.
-	 *
-	 * @param {function} Class       - Target class.
-	 * @param {string}   method      - Method name.
-	 * @param {string}   key         - Key of the element's storage on instance.
-	 * @param {string}   elementName - Name of target element for messages.
-	 * @param {string}   checker     - Name of the checker method to use.
-	 * @param {string}   [finder]    - Name of the finder method to use.
-	 */
-	function attachAttributeChecker(Class, method, key, elementName, checker, finder) {
-
-	  /**
-	   * Checks whether the desired attribute is set for the given element (node or edge).
-	   *
-	   * Arity 2:
-	   * @param  {any}    element - Target element.
-	   * @param  {string} name    - Attribute's name.
-	   *
-	   * Arity 3 (only for edges):
-	   * @param  {any}     source - Source element.
-	   * @param  {any}     target - Target element.
-	   * @param  {string}  name   - Attribute's name.
-	   *
-	   * @return {boolean}
-	   *
-	   * @throws {Error} - Will throw if too many arguments are provided.
-	   * @throws {Error} - Will throw if any of the elements is not found.
-	   */
-	  Class.prototype[method] = function (element, name) {
-	    if (arguments.length > 2) {
-	      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
-
-	      var source = element,
-	          target = name;
-
-	      name = arguments[2];
-
-	      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
-
-	      element = this[finder](source, target);
-	    }
-
-	    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
-
-	    var data = this[key].get(element);
-
-	    return data.attributes.hasOwnProperty(name);
-	  };
-	}
-
-	/**
-	 * Attach an attribute setter method onto the provided class.
-	 *
-	 * @param {function} Class       - Target class.
-	 * @param {string}   method      - Method name.
-	 * @param {string}   key         - Key of the element's storage on instance.
-	 * @param {string}   elementName - Name of target element for messages.
-	 * @param {string}   checker     - Name of the checker method to use.
-	 * @param {string}   [finder]    - Name of the finder method to use.
-	 */
-	function attachAttributeSetter(Class, method, key, elementName, checker, finder) {
-	  var eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
-
-	  /**
-	   * Set the desired attribute for the given element (node or edge).
-	   *
-	   * Arity 2:
-	   * @param  {any}    element - Target element.
-	   * @param  {string} name    - Attribute's name.
-	   * @param  {mixed}  value   - New attribute value.
-	   *
-	   * Arity 3 (only for edges):
-	   * @param  {any}     source - Source element.
-	   * @param  {any}     target - Target element.
-	   * @param  {string}  name   - Attribute's name.
-	   * @param  {mixed}  value   - New attribute value.
-	   *
-	   * @return {Graph}          - Returns itself for chaining.
-	   *
-	   * @throws {Error} - Will throw if too many arguments are provided.
-	   * @throws {Error} - Will throw if any of the elements is not found.
-	   */
-	  Class.prototype[method] = function (element, name, value) {
-	    if (arguments.length > 3) {
-	      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
-
-	      var source = element,
-	          target = name;
-
-	      name = arguments[2];
-	      value = arguments[3];
-
-	      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
-
-	      element = this[finder](source, target);
-	    }
-
-	    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
-
-	    var data = this[key].get(element);
-
-	    data.attributes[name] = value;
-
-	    // Emitting
-	    this.emit(eventName, {
-	      key: element,
-	      type: 'set',
-	      meta: {
-	        name: name,
-	        value: value
-	      }
-	    });
-
-	    return this;
-	  };
-	}
-
-	/**
-	 * Attach an attribute updater method onto the provided class.
-	 *
-	 * @param {function} Class       - Target class.
-	 * @param {string}   method      - Method name.
-	 * @param {string}   key         - Key of the element's storage on instance.
-	 * @param {string}   elementName - Name of target element for messages.
-	 * @param {string}   checker     - Name of the checker method to use.
-	 * @param {string}   [finder]    - Name of the finder method to use.
-	 */
-	function attachAttributeUpdater(Class, method, key, elementName, checker, finder) {
-	  var eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
-
-	  /**
-	   * Update the desired attribute for the given element (node or edge) using
-	   * the provided function.
-	   *
-	   * Arity 2:
-	   * @param  {any}      element - Target element.
-	   * @param  {string}   name    - Attribute's name.
-	   * @param  {function} updater - Updater function.
-	   *
-	   * Arity 3 (only for edges):
-	   * @param  {any}      source  - Source element.
-	   * @param  {any}      target  - Target element.
-	   * @param  {string}   name    - Attribute's name.
-	   * @param  {function} updater - Updater function.
-	   *
-	   * @return {Graph}            - Returns itself for chaining.
-	   *
-	   * @throws {Error} - Will throw if too many arguments are provided.
-	   * @throws {Error} - Will throw if any of the elements is not found.
-	   */
-	  Class.prototype[method] = function (element, name, updater) {
-	    if (arguments.length > 3) {
-	      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
-
-	      var source = element,
-	          target = name;
-
-	      name = arguments[2];
-	      updater = arguments[3];
-
-	      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
-
-	      element = this[finder](source, target);
-	    }
-
-	    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
-
-	    var data = this[key].get(element);
-
-	    data.attributes[name] = updater(data.attributes[name]);
-
-	    // Emitting
-	    this.emit(eventName, {
-	      key: element,
-	      type: 'set',
-	      meta: {
-	        name: name,
-	        value: data.attributes[name]
-	      }
-	    });
-
-	    return this;
-	  };
-	}
-
-	/**
-	 * Attach an attribute remover method onto the provided class.
-	 *
-	 * @param {function} Class       - Target class.
-	 * @param {string}   method      - Method name.
-	 * @param {string}   key         - Key of the element's storage on instance.
-	 * @param {string}   elementName - Name of target element for messages.
-	 * @param {string}   checker     - Name of the checker method to use.
-	 * @param {string}   [finder]    - Name of the finder method to use.
-	 */
-	function attachAttributeRemover(Class, method, key, elementName, checker, finder) {
-	  var eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
-
-	  /**
-	   * Remove the desired attribute for the given element (node or edge).
-	   *
-	   * Arity 2:
-	   * @param  {any}    element - Target element.
-	   * @param  {string} name    - Attribute's name.
-	   *
-	   * Arity 3 (only for edges):
-	   * @param  {any}     source - Source element.
-	   * @param  {any}     target - Target element.
-	   * @param  {string}  name   - Attribute's name.
-	   *
-	   * @return {Graph}          - Returns itself for chaining.
-	   *
-	   * @throws {Error} - Will throw if too many arguments are provided.
-	   * @throws {Error} - Will throw if any of the elements is not found.
-	   */
-	  Class.prototype[method] = function (element, name) {
-	    if (arguments.length > 2) {
-	      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
-
-	      var source = element,
-	          target = name;
-
-	      name = arguments[2];
-
-	      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
-
-	      element = this[finder](source, target);
-	    }
-
-	    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
-
-	    var data = this[key].get(element);
-
-	    delete data.attributes[name];
-
-	    // Emitting
-	    this.emit(eventName, {
-	      key: element,
-	      type: 'remove',
-	      meta: {
-	        name: name
-	      }
-	    });
-
-	    return this;
-	  };
-	}
-
-	/**
-	 * Attach an attribute replacer method onto the provided class.
-	 *
-	 * @param {function} Class       - Target class.
-	 * @param {string}   method      - Method name.
-	 * @param {string}   key         - Key of the element's storage on instance.
-	 * @param {string}   elementName - Name of target element for messages.
-	 * @param {string}   checker     - Name of the checker method to use.
-	 * @param {string}   [finder]    - Name of the finder method to use.
-	 */
-	function attachAttributesReplacer(Class, method, key, elementName, checker, finder) {
-	  var eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
-
-	  /**
-	   * Replace the attributes for the given element (node or edge).
-	   *
-	   * Arity 2:
-	   * @param  {any}    element    - Target element.
-	   * @param  {object} attributes - New attributes.
-	   *
-	   * Arity 3 (only for edges):
-	   * @param  {any}     source     - Source element.
-	   * @param  {any}     target     - Target element.
-	   * @param  {object}  attributes - New attributes.
-	   *
-	   * @return {Graph}              - Returns itself for chaining.
-	   *
-	   * @throws {Error} - Will throw if too many arguments are provided.
-	   * @throws {Error} - Will throw if any of the elements is not found.
-	   */
-	  Class.prototype[method] = function (element, attributes) {
-	    if (arguments.length > 2) {
-	      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
-
-	      var source = element,
-	          target = attributes;
-
-	      attributes = arguments[2];
-
-	      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
-
-	      element = this[finder](source, target);
-	    }
-
-	    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
-
-	    if (!(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': provided attributes are not a plain object.');
-
-	    var data = this[key].get(element);
-
-	    var oldAttributes = data.attributes;
-
-	    data.attributes = attributes;
-
-	    // Emitting
-	    this.emit(eventName, {
-	      key: element,
-	      type: 'replace',
-	      meta: {
-	        before: oldAttributes,
-	        after: attributes
-	      }
-	    });
-
-	    return this;
-	  };
-	}
-
-	/**
-	 * Attach an attribute merger method onto the provided class.
-	 *
-	 * @param {function} Class       - Target class.
-	 * @param {string}   method      - Method name.
-	 * @param {string}   key         - Key of the element's storage on instance.
-	 * @param {string}   elementName - Name of target element for messages.
-	 * @param {string}   checker     - Name of the checker method to use.
-	 * @param {string}   [finder]    - Name of the finder method to use.
-	 */
-	function attachAttributesMerger(Class, method, key, elementName, checker, finder) {
-	  var eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
-
-	  /**
-	   * Replace the attributes for the given element (node or edge).
-	   *
-	   * Arity 2:
-	   * @param  {any}    element    - Target element.
-	   * @param  {object} attributes - Attributes to merge.
-	   *
-	   * Arity 3 (only for edges):
-	   * @param  {any}     source     - Source element.
-	   * @param  {any}     target     - Target element.
-	   * @param  {object}  attributes - Attributes to merge.
-	   *
-	   * @return {Graph}              - Returns itself for chaining.
-	   *
-	   * @throws {Error} - Will throw if too many arguments are provided.
-	   * @throws {Error} - Will throw if any of the elements is not found.
-	   */
-	  Class.prototype[method] = function (element, attributes) {
-	    if (arguments.length > 2) {
-	      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
-
-	      var source = element,
-	          target = attributes;
-
-	      attributes = arguments[2];
-
-	      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
-
-	      element = this[finder](source, target);
-	    }
-
-	    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
-
-	    if (!(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': provided attributes are not a plain object.');
-
-	    var data = this[key].get(element);
-
-	    (0, _utils.assign)(data.attributes, attributes);
-
-	    // Emitting
-	    this.emit(eventName, {
-	      key: element,
-	      type: 'merge',
-	      meta: {
-	        data: attributes
-	      }
-	    });
-
-	    return this;
-	  };
-	}
-
-	/**
-	 * List of methods to attach.
-	 */
-	var ATTRIBUTES_METHODS = [{
-	  name: function name(element) {
-	    return 'get' + element + 'Attribute';
-	  },
-	  attacher: attachAttributeGetter
-	}, {
-	  name: function name(element) {
-	    return 'get' + element + 'Attributes';
-	  },
-	  attacher: attachAttributesGetter
-	}, {
-	  name: function name(element) {
-	    return 'has' + element + 'Attribute';
-	  },
-	  attacher: attachAttributeChecker
-	}, {
-	  name: function name(element) {
-	    return 'set' + element + 'Attribute';
-	  },
-	  attacher: attachAttributeSetter
-	}, {
-	  name: function name(element) {
-	    return 'update' + element + 'Attribute';
-	  },
-	  attacher: attachAttributeUpdater
-	}, {
-	  name: function name(element) {
-	    return 'remove' + element + 'Attribute';
-	  },
-	  attacher: attachAttributeRemover
-	}, {
-	  name: function name(element) {
-	    return 'replace' + element + 'Attributes';
-	  },
-	  attacher: attachAttributesReplacer
-	}, {
-	  name: function name(element) {
-	    return 'merge' + element + 'Attributes';
-	  },
-	  attacher: attachAttributesMerger
-	}];
-
-	/**
-	 * Attach every attributes-related methods to a Graph class.
-	 *
-	 * @param {function} Graph - Target class.
-	 */
-	function attachAttributesMethods(Graph) {
-	  ATTRIBUTES_METHODS.forEach(function (_ref) {
-	    var name = _ref.name;
-	    var attacher = _ref.attacher;
-
-
-	    // For nodes
-	    attacher(Graph, name('Node'), '_nodes', 'node', 'hasNode');
-
-	    // For edges
-	    attacher(Graph, name('Edge'), '_edges', 'edge', 'hasEdge', 'getEdge');
-	  });
-	}
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.attachEdgeIterationMethods = attachEdgeIterationMethods;
-
-	var _errors = __webpack_require__(4);
-
-	var _utils = __webpack_require__(1);
-
-	/**
-	 * Definitions.
-	 */
-	/**
-	 * Graphology Edge Iteration
-	 * ==========================
-	 *
-	 * Attaching some methods to the Graph class to be able to iterate over a
-	 * graph's edges.
-	 */
-	var EDGES_ITERATION = [{
-	  name: 'edges',
-	  counter: 'countEdges',
-	  type: 'mixed'
-	}, {
-	  name: 'inEdges',
-	  counter: 'countInEdges',
-	  type: 'directed',
-	  direction: 'in'
-	}, {
-	  name: 'outEdges',
-	  counter: 'countOutEdges',
-	  type: 'directed',
-	  direction: 'out'
-	}, {
-	  name: 'inboundEdges',
-	  counter: 'countInboundEdges',
-	  type: 'mixed',
-	  direction: 'in'
-	}, {
-	  name: 'outboundEdges',
-	  counter: 'countOutboundEdges',
-	  type: 'mixed',
-	  direction: 'out'
-	}, {
-	  name: 'directedEdges',
-	  counter: 'countDirectedEdges',
-	  type: 'directed'
-	}, {
-	  name: 'undirectedEdges',
-	  counter: 'countUndirectedEdges',
-	  type: 'undirected'
-	}, {
-	  name: 'selfLoops',
-	  counter: 'countSelfLoops',
-	  type: 'selfLoops'
-	}];
-
-	/**
-	 * Function collecting edges from the given object.
-	 *
-	 * @param  {object|undefined} object - Target object.
-	 * @param  {mixed}            [key]  - Optional key.
-	 * @return {array}                   - The found edges.
-	 */
-	function collectEdges(object, key) {
-	  var edges = [];
-
-	  var hasKey = arguments.length > 1;
-
-	  if (!object || hasKey && !(key in object)) return edges;
-
-	  if (hasKey) return Array.from(object[key]);
-
-	  for (var k in object) {
-	    edges.push.apply(edges, Array.from(object[k]));
-	  }return edges;
-	}
-
-	/**
-	 * Function counting edges from the given object.
-	 *
-	 * @param  {object|undefined} object - Target object.
-	 * @param  {mixed}            [key]  - Optional key.
-	 * @return {number}                  - The number of found edges.
-	 */
-	function countEdges(object, key) {
-	  var nb = 0;
-
-	  var hasKey = arguments.length > 1;
-
-	  if (!object || hasKey && !(key in object)) return nb;
-
-	  if (hasKey) return object[key].size;
-
-	  for (var k in object) {
-	    nb += object[k].size;
-	  }return nb;
-	}
-
-	/**
-	 * Function merging edges found in an object into the given set.
-	 *
-	 * @param {Set}              edges - Current set of edges.
-	 * @param {object|undefined} map   - Target object.
-	 * @param {string}           key   - Sub key.
-	 */
-	function mergeEdges(edges, object, key) {
-	  if (!object) return;
-
-	  if (key) {
-	    var target = object[key];
-
-	    if (target) target.forEach(function (value) {
-	      return edges.add(value);
-	    });
-	  } else {
-	    for (var k in object) {
-	      object[k].forEach(function (value) {
-	        return edges.add(value);
-	      });
-	    }
-	  }
-	}
-
-	/**
-	 * Function creating an array of edge for the given type.
-	 *
-	 * @param  {boolean} count - Should we count or collect?
-	 * @param  {Graph}   graph - Target Graph instance.
-	 * @param  {string}  type  - Type of edges to retrieve.
-	 * @return {array}         - Array of edges.
-	 */
-	function createEdgeArray(count, graph, type) {
-	  if (count && type === 'mixed') return graph.size;
-
-	  var list = [];
-	  var nb = 0;
-
-	  if (type === 'mixed') return Array.from(graph._edges.keys());
-
-	  graph._edges.forEach(function (data, edge) {
-
-	    if (type === 'selfLoops' === (data.source === data.target) && !!data.undirected === (type === 'undirected')) {
-
-	      if (!count) list.push(edge);
-
-	      nb++;
-	    }
-	  });
-
-	  return count ? nb : list;
-	}
-
-	/**
-	 * Function creating an array of edge for the given type & the given node.
-	 *
-	 * @param  {boolean} count     - Should we count or collect?
-	 * @param  {Graph}   graph     - Target Graph instance.
-	 * @param  {string}  type      - Type of edges to retrieve.
-	 * @param  {string}  direction - In or out?
-	 * @param  {any}     node      - Target node.
-	 * @return {array}             - Array of edges.
-	 */
-	function createEdgeArrayForNode(count, graph, type, direction, node) {
-
-	  // For this, we need to compute the "structure" index
-	  graph.computeIndex('structure');
-
-	  var edges = [],
-	      nb = 0;
-
-	  var nodeData = graph._nodes.get(node);
-
-	  if (type === 'mixed' || type === 'directed' || type === 'selfLoops') {
-
-	    if (!direction || direction === 'in') {
-	      if (count && type !== 'selfLoops') nb += countEdges(nodeData.in);else edges = edges.concat(collectEdges(nodeData.in));
-	    }
-	    if (!direction || direction === 'out') {
-	      if (count && type !== 'selfLoops') nb += countEdges(nodeData.out);else edges = edges.concat(collectEdges(nodeData.out));
-	    }
-	  }
-
-	  if (type === 'mixed' || type === 'undirected' || type === 'selfLoops') {
-
-	    if (!direction || direction === 'in') {
-	      if (count && type !== 'selfLoops') nb += countEdges(nodeData.undirectedIn);else edges = edges.concat(collectEdges(nodeData.undirectedIn));
-	    }
-	    if (!direction || direction === 'out') {
-	      if (count && type !== 'selfLoops') nb += countEdges(nodeData.undirectedOut);else edges = edges.concat(collectEdges(nodeData.undirectedOut));
-	    }
-	  }
-
-	  // NOTE: this is hardly optimal
-	  if (type === 'selfLoops') {
-	    edges = edges.filter(function (edge) {
-	      return graph.source(edge) === graph.target(edge);
-	    });
-
-	    nb = edges.length;
-	  }
-
-	  return count ? nb : edges;
-	}
-
-	/**
-	 * Function creating an array of edge for the given bunch of nodes.
-	 *
-	 * @param  {boolean} count     - Should we count or collect?
-	 * @param  {Graph}   graph     - Target Graph instance.
-	 * @param  {string}  type      - Type of edges to retrieve.
-	 * @param  {string}  direction - In or out?
-	 * @param  {bunch}   bunch     - Target bunch.
-	 * @return {array}             - Array of edges.
-	 */
-	function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
-
-	  // For this, we need to compute the "structure" index
-	  graph.computeIndex('structure');
-
-	  var edges = new Set();
-
-	  // Iterating over the bunch
-	  (0, _utils.overBunch)(bunch, function (node) {
-	    if (!graph.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node + '" node in the graph in the given bunch.');
-
-	    var nodeData = graph._nodes.get(node);
-
-	    if (type === 'selfLoops') {
-	      mergeEdges(edges, nodeData.out, node);
-	      mergeEdges(edges, nodeData.undirectedOut, node);
-
-	      return;
-	    }
-
-	    if (type === 'mixed' || type === 'directed') {
-
-	      if (!direction || direction === 'in') mergeEdges(edges, nodeData.in);
-	      if (!direction || direction === 'out') mergeEdges(edges, nodeData.out);
-	    }
-
-	    if (type === 'mixed' || type === 'undirected') {
-
-	      if (!direction || direction === 'in') mergeEdges(edges, nodeData.undirectedIn);
-	      if (!direction || direction === 'out') mergeEdges(edges, nodeData.undirectedOut);
-	    }
-	  });
-
-	  return Array.from(edges.values());
-	}
-
-	/**
-	 * Function creating an array of edge for the given path.
-	 *
-	 * @param  {boolean} count  - Should we count or collect?
-	 * @param  {Graph}   graph  - Target Graph instance.
-	 * @param  {string}  type   - Type of edges to retrieve.
-	 * @param  {any}     source - Source node.
-	 * @param  {any}     target - Target node.
-	 * @return {array}          - Array of edges.
-	 */
-	function createEdgeArrayForPath(count, graph, type, source, target) {
-
-	  // For this, we need to compute the "structure" index
-	  graph.computeIndex('structure');
-
-	  var edges = [],
-	      nb = 0;
-
-	  var sourceData = graph._nodes.get(source);
-
-	  if (type === 'mixed' || type === 'directed') {
-
-	    if (count) {
-	      nb += countEdges(sourceData.in, target);
-	      nb += countEdges(sourceData.out, target);
-	    } else {
-	      edges = edges.concat(collectEdges(sourceData.in, target)).concat(collectEdges(sourceData.out, target));
-	    }
-	  }
-
-	  if (type === 'mixed' || type === 'undirected') {
-	    if (count) {
-	      nb += countEdges(sourceData.undirectedIn, target);
-	      nb += countEdges(sourceData.undirectedOut, target);
-	    } else {
-	      edges = edges.concat(collectEdges(sourceData.undirectedIn, target)).concat(collectEdges(sourceData.undirectedOut, target));
-	    }
-	  }
-
-	  return count ? nb : edges;
-	}
-
-	/**
-	 * Function attaching an edge array creator method to the Graph prototype.
-	 *
-	 * @param {function} Class       - Target class.
-	 * @param {boolean}  counter     - Should we count or collect?
-	 * @param {object}   description - Method description.
-	 */
-	function attachEdgeArrayCreator(Class, counter, description) {
-	  var type = description.type;
-	  var direction = description.direction;
-
-
-	  var name = counter ? description.counter : description.name;
-
-	  /**
-	   * Function returning an array or the count of certain edges.
-	   *
-	   * Arity 0: Return all the relevant edges.
-	   *
-	   * Arity 1a: Return all of a node's relevant edges.
-	   * @param  {any}   node   - Target node.
-	   *
-	   * Arity 1b: Return the union of the relevant edges of the given bunch of nodes.
-	   * @param  {bunch} bunch  - Bunch of nodes.
-	   *
-	   * Arity 2: Return the relevant edges across the given path.
-	   * @param  {any}   source - Source node.
-	   * @param  {any}   target - Target node.
-	   *
-	   * @return {array|number} - The edges or the number of edges.
-	   *
-	   * @throws {Error} - Will throw if there are too many arguments.
-	   */
-	  Class.prototype[name] = function () {
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    if (!args.length) return createEdgeArray(counter, this, type);
-
-	    if (args.length === 1) {
-	      var nodeOrBunch = args[0];
-
-	      if (this.hasNode(nodeOrBunch)) {
-
-	        // Iterating over a node's edges
-	        return createEdgeArrayForNode(counter, this, type, direction, nodeOrBunch);
-	      } else if ((0, _utils.isBunch)(nodeOrBunch)) {
-
-	        // Iterating over the union of a node's edges
-
-	        // Note: since we need to keep track of the traversed values
-	        // to perform union, we can't optimize further and we have to
-	        // create this intermediary array and return its length when counting.
-	        var edges = createEdgeArrayForBunch(name, this, type, direction, nodeOrBunch);
-
-	        return counter ? edges.length : edges;
-	      } else {
-	        throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + nodeOrBunch + '" node in the graph.');
-	      }
-	    }
-
-	    if (args.length === 2) {
-	      var source = args[0];
-	      var target = args[1];
-
-
-	      if (!this.hasNode(source)) throw new _errors.NotFoundGraphError('Graph.' + name + ':  could not find the "' + source + '" source node in the graph.');
-
-	      if (!this.hasNode(target)) throw new _errors.NotFoundGraphError('Graph.' + name + ':  could not find the "' + target + '" target node in the graph.');
-
-	      // Iterating over the edges between source & target
-	      var hasEdge = void 0;
-
-	      if (type === 'mixed' || type === 'directed') hasEdge = this.hasDirectedEdge(source, target);else hasEdge = this.hasUndirectedEdge(source, target);
-
-	      // If no such edge exist, we'll stop right there.
-	      if (!hasEdge) return counter ? 0 : [];
-
-	      return createEdgeArrayForPath(counter, this, type, source, target);
-	    }
-
-	    throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': too many arguments (expecting 0, 1 or 2 and got ' + args.length + ').');
-	  };
-	}
-
-	/**
-	 * Function attaching every edge iteration method to the Graph class.
-	 *
-	 * @param {function} Graph - Graph class.
-	 */
-	function attachEdgeIterationMethods(Graph) {
-	  EDGES_ITERATION.forEach(function (description) {
-	    attachEdgeArrayCreator(Graph, false, description);
-	    attachEdgeArrayCreator(Graph, true, description);
-	  });
-	}
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.attachNeighborIterationMethods = attachNeighborIterationMethods;
-
-	var _errors = __webpack_require__(4);
-
-	var _utils = __webpack_require__(1);
-
-	/**
-	 * Definitions.
-	 */
-	/**
-	 * Graphology Neighbor Iteration
-	 * ==============================
-	 *
-	 * Attaching some methods to the Graph class to be able to iterate over
-	 * neighbors.
-	 */
-	var NEIGHBORS_ITERATION = [{
-	  name: 'neighbors',
-	  counter: 'countNeighbors',
-	  type: 'mixed'
-	}, {
-	  name: 'inNeighbors',
-	  counter: 'countInNeighbors',
-	  type: 'directed',
-	  direction: 'in'
-	}, {
-	  name: 'outNeighbors',
-	  counter: 'countOutNeighbors',
-	  type: 'directed',
-	  direction: 'out'
-	}, {
-	  name: 'inboundNeighbors',
-	  counter: 'countInboundNeighbors',
-	  type: 'mixed',
-	  direction: 'in'
-	}, {
-	  name: 'outboundNeighbors',
-	  counter: 'countOutboundNeighbors',
-	  type: 'mixed',
-	  direction: 'out'
-	}, {
-	  name: 'directedNeighbors',
-	  counter: 'countDirectedNeighbors',
-	  type: 'directed'
-	}, {
-	  name: 'undirectedNeighbors',
-	  counter: 'countUndirectedNeighbors',
-	  type: 'undirected'
-	}];
-
-	/**
-	 * Function merging neighbors into the given set iterating over the given object.
-	 *
-	 * @param {BasicSet} neighbors - Neighbors set.
-	 * @param {object}   object    - Target object.
-	 */
-	function mergeNeighbors(neighbors, object) {
-	  if (!object) return;
-
-	  for (var neighbor in object) {
-	    neighbors.add(neighbor);
-	  }
-	}
-
-	/**
-	 * Function creating a set of relevant neighbors for the given node.
-	 *
-	 * @param  {Graph}        graph     - Target graph.
-	 * @param  {string}       type      - Type of neighbors.
-	 * @param  {string}       direction - Direction.
-	 * @param  {any}          node      - Target node.
-	 * @return {Set|BasicSet}           - The neighbors set.
-	 */
-	function createNeighborSetForNode(graph, type, direction, node) {
-
-	  // For this, we need to compute the "structure" index
-	  graph.computeIndex('structure');
-
-	  var neighbors = new Set();
-
-	  var nodeData = graph._nodes.get(node);
-
-	  if (type === 'mixed' || type === 'directed') {
-
-	    if (!direction || direction === 'in') {
-	      mergeNeighbors(neighbors, nodeData.in);
-	    }
-	    if (!direction || direction === 'out') {
-	      mergeNeighbors(neighbors, nodeData.out);
-	    }
-	  }
-
-	  if (type === 'mixed' || type === 'undirected') {
-
-	    if (!direction || direction === 'in') {
-	      mergeNeighbors(neighbors, nodeData.undirectedIn);
-	    }
-	    if (!direction || direction === 'out') {
-	      mergeNeighbors(neighbors, nodeData.undirectedOut);
-	    }
-	  }
-
-	  return neighbors;
-	}
-
-	/**
-	 * Function creating a set of relevant neighbors for the given bunch of nodes.
-	 *
-	 * @param  {string}       name      - Name of the calling method.
-	 * @param  {Graph}        graph     - Target graph.
-	 * @param  {string}       type      - Type of neighbors.
-	 * @param  {string}       direction - Direction.
-	 * @param  {bunch}        bunch     - Target bunch.
-	 * @return {Set|BasicSet}           - The neighbors set.
-	 */
-	function createNeighborSetForBunch(name, graph, type, direction, bunch) {
-
-	  // For this, we need to compute the "structure" index
-	  graph.computeIndex('structure');
-
-	  var neighbors = new Set();
-
-	  (0, _utils.overBunch)(bunch, function (node) {
-	    if (!graph.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node + '" node in the graph in the given bunch.');
-
-	    var nodeData = graph._nodes.get(node);
-
-	    if (type === 'mixed' || type === 'directed') {
-
-	      if (!direction || direction === 'in') {
-	        mergeNeighbors(neighbors, nodeData.in);
-	      }
-	      if (!direction || direction === 'out') {
-	        mergeNeighbors(neighbors, nodeData.out);
-	      }
-	    }
-
-	    if (type === 'mixed' || type === 'undirected') {
-
-	      if (!direction || direction === 'in') {
-	        mergeNeighbors(neighbors, nodeData.undirectedIn);
-	      }
-	      if (!direction || direction === 'out') {
-	        mergeNeighbors(neighbors, nodeData.undirectedOut);
-	      }
-	    }
-	  });
-
-	  return neighbors;
-	}
-
-	/**
-	 * Function attaching a neighbors array creator method to the Graph prototype.
-	 *
-	 * @param {function} Class       - Target class.
-	 * @param {boolean}  counter     - Should we count or collect?
-	 * @param {object}   description - Method description.
-	 */
-	function attachNeighborArrayCreator(Class, counter, description) {
-	  var type = description.type;
-	  var direction = description.direction;
-
-
-	  var name = counter ? description.counter : description.name;
-
-	  /**
-	   * Function returning an array or the count of certain neighbors.
-	   *
-	   * Arity 1a: Return all of a node's relevant neighbors.
-	   * @param  {any}   node   - Target node.
-	   *
-	   * Arity 1b: Return the union of the relevant neighbors of the given bunch of nodes.
-	   * @param  {bunch} bunch  - Bunch of nodes.
-	   *
-	   * Arity 2: Return whether the two nodes are indeed neighbors.
-	   * @param  {any}   source - Source node.
-	   * @param  {any}   target - Target node.
-	   *
-	   * @return {array|number} - The neighbors or the number of neighbors.
-	   *
-	   * @throws {Error} - Will throw if there are too many arguments.
-	   */
-	  Class.prototype[name] = function () {
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    if (args.length === 2) {
-	      var node1 = args[0];
-	      var node2 = args[1];
-
-
-	      if (counter) throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid arguments.');
-
-	      if (!this.hasNode(node1)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node1 + '" node in the graph.');
-
-	      if (!this.hasNode(node2)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node2 + '" node in the graph.');
-
-	      // Here, we want to assess whether the two given nodes are neighbors
-	      // NOTE: we could improve performance here
-	      var neighbors = createNeighborSetForNode(this, type, direction, node1);
-
-	      return neighbors.has(node2);
-	    } else if (args.length === 1) {
-	      var nodeOrBunch = args[0];
-
-	      if (this.hasNode(nodeOrBunch)) {
-
-	        // Here, we want to iterate over a node's relevant neighbors
-	        var _neighbors = createNeighborSetForNode(this, type, direction, nodeOrBunch);
-
-	        if (counter) return _neighbors.size;
-
-	        return Array.from(_neighbors);
-	      } else if ((0, _utils.isBunch)(nodeOrBunch)) {
-
-	        // Here, we want to iterate over the union of a bunch of nodes'
-	        // relevant neighbors
-
-	        // Note: since we need to keep track of the traversed values
-	        // to perform union, we can't optimize further and we have to
-	        // create this intermediary array and return its length when counting.
-	        var _neighbors2 = createNeighborSetForBunch(name, this, type, direction, nodeOrBunch);
-
-	        if (counter) return _neighbors2.size;
-
-	        return Array.from(_neighbors2);
-	      } else {
-	        throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + nodeOrBunch + '" node in the graph.');
-	      }
-	    }
-
-	    throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid number of arguments (expecting 1 or 2 and got ' + args.length + ').');
-	  };
-	}
-
-	/**
-	 * Function attaching every neighbor iteration method to the Graph class.
-	 *
-	 * @param {function} Graph - Graph class.
-	 */
-	function attachNeighborIterationMethods(Graph) {
-	  NEIGHBORS_ITERATION.forEach(function (description) {
-	    attachNeighborArrayCreator(Graph, false, description);
-	    attachNeighborArrayCreator(Graph, true, description);
-	  });
-	}
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.serializeNode = serializeNode;
-	exports.serializeEdge = serializeEdge;
-	exports.validateSerializedNode = validateSerializedNode;
-	exports.validateSerializedEdge = validateSerializedEdge;
-
-	var _utils = __webpack_require__(1);
-
-	/**
-	 * Formats internal node data into a serialized node.
-	 *
-	 * @param  {any}    key  - The node's key.
-	 * @param  {object} data - Internal node's data.
-	 * @return {array}       - The serialized node.
-	 */
-	function serializeNode(key, data) {
-	  var serialized = { key: key };
-
-	  if (Object.keys(data.attributes).length) serialized.attributes = data.attributes;
-
-	  return serialized;
-	}
-
-	/**
-	 * Formats internal edge data into a serialized edge.
-	 *
-	 * @param  {any}    key  - The edge's key.
-	 * @param  {object} data - Internal edge's data.
-	 * @return {array}       - The serialized edge.
-	 */
-	/**
-	 * Graphology Serialization Utilities
-	 * ===================================
-	 *
-	 * Collection of functions used to validate import-export formats & to ouput
-	 * them from internal graph data.
-	 *
-	 * Serialized Node:
-	 * {key, ?attributes}
-	 *
-	 * Serialized Edge:
-	 * {key?, source, target, attributes?, undirected?}
-	 *
-	 * Serialized Graph:
-	 * {nodes[], edges?[]}
-	 */
-	function serializeEdge(key, data) {
-	  var serialized = {
-	    key: key,
-	    source: data.source,
-	    target: data.target
-	  };
-
-	  if (Object.keys(data.attributes).length) serialized.attributes = data.attributes;
-
-	  if (data.undirected) serialized.undirected = true;
-
-	  return serialized;
-	}
-
-	/**
-	 * Checks whether the given value is a serialized node.
-	 *
-	 * @param  {mixed} value - Target value.
-	 * @return {boolean}
-	 */
-	function validateSerializedNode(value) {
-	  if (!(0, _utils.isPlainObject)(value)) return { valid: false, reason: 'not-object' };
-
-	  if (!('key' in value)) return { valid: false, reason: 'no-key' };
-
-	  if ('attributes' in value && (!(0, _utils.isPlainObject)(value.attributes) || value.attributes === null)) return { valid: false, reason: 'invalid-attributes' };
-
-	  return { valid: true };
-	}
-
-	/**
-	 * Checks whether the given value is a serialized edge.
-	 *
-	 * @param  {mixed} value - Target value.
-	 * @return {boolean}
-	 */
-	function validateSerializedEdge(value) {
-	  if (!(0, _utils.isPlainObject)(value)) return { valid: false, reason: 'not-object' };
-
-	  if (!('source' in value)) return { valid: false, reason: 'no-source' };
-
-	  if (!('target' in value)) return { valid: false, reason: 'no-target' };
-
-	  if ('attributes' in value && (!(0, _utils.isPlainObject)(value.attributes) || value.attributes === null)) return { valid: false, reason: 'invalid-attributes' };
-
-	  if ('undirected' in value && typeof value.undirected !== 'boolean') return { valid: false, reason: 'invalid-undirected' };
-
-	  return { valid: true };
-	}
-
-/***/ }
-/******/ ])
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
-;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+exports.assign = assign;
+exports.createInternalMap = createInternalMap;
+exports.firstItemOfSet = firstItemOfSet;
+exports.isBunch = isBunch;
+exports.isGraph = isGraph;
+exports.isPlainObject = isPlainObject;
+exports.overBunch = overBunch;
+exports.prettyPrint = prettyPrint;
+exports.privateProperty = privateProperty;
+exports.readOnlyProperty = readOnlyProperty;
+exports.uuid = uuid;
+/**
+ * Graphology Utilities
+ * =====================
+ *
+ * Collection of helpful functions used by the implementation.
+ */
+
+/**
+ * Very simple Object.assign-like function.
+ *
+ * @param  {object} target       - First object.
+ * @param  {object} [...objects] - Objects to merge.
+ * @return {object}
+ */
+function assign(target) {
+  target = target || {};
+
+  for (var _len = arguments.length, objects = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    objects[_key - 1] = arguments[_key];
+  }
+
+  for (var i = 0, l = objects.length; i < l; i++) {
+    if (!objects[i]) continue;
+
+    for (var k in objects[i]) {
+      target[k] = objects[i][k];
+    }
+  }
+
+  return target;
+}
+
+/**
+ * Custom Map used internally to coerce keys on vital operations.
+ *
+ * @return {Map}
+ */
+function createInternalMap() {
+  var map = new Map();
+
+  map.set = function (key, value) {
+    key = '' + key;
+    return Map.prototype.set.call(this, key, value);
+  };
+
+  map.get = function (key) {
+    key = '' + key;
+    return Map.prototype.get.call(this, key);
+  };
+
+  map.has = function (key) {
+    key = '' + key;
+    return Map.prototype.has.call(this, key);
+  };
+
+  return map;
+}
+
+/**
+ * Function returning the first item of a Set.
+ *
+ * @param  {object} set - Target set.
+ * @return {any}        - The "first" item.
+ */
+function firstItemOfSet(set) {
+  return set.values().next().value;
+}
+
+/**
+ * Checks whether the given value is a potential bunch.
+ *
+ * @param  {mixed}   value - Target value.
+ * @return {boolean}
+ */
+function isBunch(value) {
+  return !!value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && (Array.isArray(value) || typeof Map === 'function' && value instanceof Map || typeof Set === 'function' && value instanceof Set || !(value instanceof Date) && !(value instanceof RegExp));
+}
+
+/**
+ * Checks whether the given value is a Graph implementation instance.
+ *
+ * @param  {mixed}   value - Target value.
+ * @return {boolean}
+ */
+function isGraph(value) {
+  return !!value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && typeof value.addUndirectedEdgeWithKey === 'function' && typeof value.dropNode === 'function';
+}
+
+/**
+ * Checks whether the given value is a plain object.
+ *
+ * @param  {mixed}   value - Target value.
+ * @return {boolean}
+ */
+function isPlainObject(value) {
+  return !!value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && !Array.isArray(value) && !(value instanceof Date) && !(value instanceof RegExp) && !(typeof Map === 'function' && value instanceof Map) && !(typeof Set === 'function' && value instanceof Set);
+}
+
+/**
+ * Iterates over the provided bunch.
+ *
+ * @param {object}   bunch    - Target bunch.
+ * @param {function} callback - Function to call.
+ */
+function overBunch(bunch, callback) {
+
+  // Array iteration
+  if (Array.isArray(bunch)) {
+    for (var i = 0, l = bunch.length; i < l; i++) {
+      var shouldBreak = callback(bunch[i], null) === false;
+
+      if (shouldBreak) break;
+    }
+  }
+
+  // Map & Set iteration
+  else if (typeof bunch.forEach === 'function') {
+      var iterator = bunch.entries();
+
+      var _shouldBreak = false,
+          step = void 0;
+
+      while (step = iterator.next()) {
+        var _step = step,
+            value = _step.value,
+            done = _step.done;
+
+
+        if (done) break;
+
+        var k = value[0],
+            v = value[1];
+
+
+        if (v === k) _shouldBreak = callback(v, null) === false;else _shouldBreak = callback(k, v) === false;
+
+        if (_shouldBreak) break;
+      }
+    }
+
+    // Plain object iteration
+    else {
+        for (var key in bunch) {
+          var attributes = bunch[key];
+
+          var _shouldBreak2 = callback(key, attributes);
+
+          if (_shouldBreak2) break;
+        }
+      }
+}
+
+/**
+ * Pretty prints the given integer.
+ *
+ * @param  {number}  integer - Target integer.
+ * @return {string}          - The pretty string.
+ */
+function prettyPrint(integer) {
+  var string = '' + integer;
+
+  var prettyString = '';
+
+  for (var i = 0, l = string.length; i < l; i++) {
+    var j = l - i - 1;
+
+    prettyString = string[j] + prettyString;
+
+    if (!((i - 2) % 3)) prettyString = ',' + prettyString;
+  }
+
+  return prettyString;
+}
+
+/**
+ * Creates a "private" property for the given member name by concealing it
+ * using the `enumerable` option.
+ *
+ * @param {object} target - Target object.
+ * @param {string} name   - Member name.
+ */
+function privateProperty(target, name, value) {
+  Object.defineProperty(target, name, {
+    enumerable: false,
+    configurable: false,
+    writable: true,
+    value: value
+  });
+}
+
+/**
+ * Creates a read-only property for the given member name & the given getter.
+ *
+ * @param {object}   target - Target object.
+ * @param {string}   name   - Member name.
+ * @param {mixed}    value  - The attached getter or fixed value.
+ */
+function readOnlyProperty(target, name, value) {
+  var descriptor = {
+    enumerable: true,
+    configurable: false
+  };
+
+  if (typeof value === 'function') {
+    descriptor.get = value;
+  } else {
+    descriptor.value = value;
+    descriptor.writable = false;
+  }
+
+  Object.defineProperty(target, name, descriptor);
+}
+
+/**
+ * Function returning uuid v4 compressed into base62 to have 22 characters-long
+ * ids easily copy-pastable or usable in a URL.
+ *
+ * @return {string} - The uuid.
+ */
+var RANDOM_BYTES = new Uint8Array(16),
+    BASE62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+function rng() {
+  for (var i = 0, r; i < 16; i++) {
+    if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
+    RANDOM_BYTES[i] = r >>> ((i & 0x03) << 3) & 0xff;
+  }
+
+  return RANDOM_BYTES;
+}
+
+function uuidBytes() {
+  var random = rng();
+
+  random[6] = random[6] & 0x0f | 0x40;
+  random[8] = random[8] & 0x3f | 0x80;
+
+  return random;
+}
+
+function toBase62(bytes) {
+  var digits = [0];
+
+  for (var i = 0, l = bytes.length; i < l; i++) {
+    var carry = bytes[i];
+
+    for (var j = 0, m = digits.length; j < m; j++) {
+      carry += digits[j] << 8;
+      digits[j] = carry % 62;
+      carry = carry / 62 | 0;
+    }
+
+    while (carry > 0) {
+      digits.push(carry % 62);
+      carry = carry / 62 | 0;
+    }
+  }
+
+  var string = '';
+
+  for (var _i = 0, _l = bytes.length; bytes[_i] === 0 && _i < _l - 1; _i++) {
+    string += BASE62[0];
+  }for (var _i2 = digits.length - 1; _i2 >= 0; _i2--) {
+    string += BASE62[digits[_i2]];
+  }while (string.length < 22) {
+    string += '0';
+  }return string;
+}
+
+function uuid() {
+  var bytes = uuidBytes();
+
+  return toBase62(bytes);
+}
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * Graphology Custom Errors
+ * =========================
+ *
+ * Defining custom errors for ease of use & easy unit tests across
+ * implementations (normalized typology rather than relying on error
+ * messages to check whether the correct error was found).
+ */
+var GraphError = exports.GraphError = function (_Error) {
+  _inherits(GraphError, _Error);
+
+  function GraphError(message, data) {
+    _classCallCheck(this, GraphError);
+
+    var _this = _possibleConstructorReturn(this, _Error.call(this));
+
+    _this.name = 'GraphError';
+    _this.message = message || '';
+    _this.data = data || {};
+    return _this;
+  }
+
+  return GraphError;
+}(Error);
+
+var InvalidArgumentsGraphError = exports.InvalidArgumentsGraphError = function (_GraphError) {
+  _inherits(InvalidArgumentsGraphError, _GraphError);
+
+  function InvalidArgumentsGraphError(message, data) {
+    _classCallCheck(this, InvalidArgumentsGraphError);
+
+    var _this2 = _possibleConstructorReturn(this, _GraphError.call(this, message, data));
+
+    _this2.name = 'InvalidArgumentsGraphError';
+
+    // This is V8 specific to enhance stack readability
+    if (typeof Error.captureStackTrace === 'function') Error.captureStackTrace(_this2, InvalidArgumentsGraphError.prototype.constructor);
+    return _this2;
+  }
+
+  return InvalidArgumentsGraphError;
+}(GraphError);
+
+var NotFoundGraphError = exports.NotFoundGraphError = function (_GraphError2) {
+  _inherits(NotFoundGraphError, _GraphError2);
+
+  function NotFoundGraphError(message, data) {
+    _classCallCheck(this, NotFoundGraphError);
+
+    var _this3 = _possibleConstructorReturn(this, _GraphError2.call(this, message, data));
+
+    _this3.name = 'NotFoundGraphError';
+
+    // This is V8 specific to enhance stack readability
+    if (typeof Error.captureStackTrace === 'function') Error.captureStackTrace(_this3, NotFoundGraphError.prototype.constructor);
+    return _this3;
+  }
+
+  return NotFoundGraphError;
+}(GraphError);
+
+var UsageGraphError = exports.UsageGraphError = function (_GraphError3) {
+  _inherits(UsageGraphError, _GraphError3);
+
+  function UsageGraphError(message, data) {
+    _classCallCheck(this, UsageGraphError);
+
+    var _this4 = _possibleConstructorReturn(this, _GraphError3.call(this, message, data));
+
+    _this4.name = 'UsageGraphError';
+
+    // This is V8 specific to enhance stack readability
+    if (typeof Error.captureStackTrace === 'function') Error.captureStackTrace(_this4, UsageGraphError.prototype.constructor);
+    return _this4;
+  }
+
+  return UsageGraphError;
+}(GraphError);
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _events = __webpack_require__(8);
+
+var _errors = __webpack_require__(1);
+
+var _indices = __webpack_require__(4);
+
+var _attributes = __webpack_require__(3);
+
+var _edges = __webpack_require__(5);
+
+var _neighbors = __webpack_require__(6);
+
+var _serialization = __webpack_require__(7);
+
+var _utils = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* eslint no-nested-ternary: 0 */
+/**
+ * Graphology Reference Implementation
+ * ====================================
+ *
+ * Reference implementation of the graphology specs.
+ */
+
+
+/**
+ * Enums.
+ */
+var TYPES = new Set(['directed', 'undirected', 'mixed']);
+
+var EMITTER_PROPS = new Set(['domain', '_events', '_eventsCount', '_maxListeners']);
+
+var EDGE_ADD_METHODS = [{
+  name: function name(verb) {
+    return verb + 'Edge';
+  },
+  generateKey: true
+}, {
+  name: function name(verb) {
+    return verb + 'DirectedEdge';
+  },
+  generateKey: true,
+  type: 'directed'
+}, {
+  name: function name(verb) {
+    return verb + 'UndirectedEdge';
+  },
+  generateKey: true,
+  type: 'undirected'
+}, {
+  name: function name(verb) {
+    return verb + 'EdgeWithKey';
+  }
+}, {
+  name: function name(verb) {
+    return verb + 'DirectedEdgeWithKey';
+  },
+  type: 'directed'
+}, {
+  name: function name(verb) {
+    return verb + 'UndirectedEdgeWithKey';
+  },
+  type: 'undirected'
+}];
+
+/**
+ * Default options.
+ */
+var DEFAULTS = {
+  allowSelfLoops: true,
+  defaultEdgeAttributes: {},
+  defaultNodeAttributes: {},
+  edgeKeyGenerator: _utils.uuid,
+  multi: false,
+  type: 'mixed'
+};
+
+/**
+ * Abstract functions used by the Graph class for various methods.
+ */
+
+/**
+ * Method updating the desired index.
+ *
+ * @param  {Graph}  graph     - Target graph.
+ * @param  {string} name      - Name of the index to compute.
+ * @param  {mixed}  [...args] - Additional arguments.
+ * @return {Graph}            - Returns itself for chaining.
+ *
+ * @throw  {Error} - Will throw if the index doesn't exist.
+ */
+function updateIndex(graph, name) {
+  if (name === 'structure') {
+    var index = graph._indices.structure;
+
+    if (!index.computed) return graph;
+
+    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+      args[_key - 2] = arguments[_key];
+    }
+
+    var edge = args[0],
+        data = args[1];
+
+
+    (0, _indices.updateStructureIndex)(graph, edge, data);
+  }
+
+  return graph;
+}
+
+/**
+ * Method used to clear an edge from the desired index to clear memory.
+ *
+ * @param  {Graph}  graph - Target graph.
+ * @param  {string} name  - Name of the index to update.
+ * @param  {any}    edge  - Target edge.
+ * @param  {object} data  - Former attached data.
+ * @return {Graph}        - Returns itself for chaining.
+ *
+ * @throw  {Error} - Will throw if the index doesn't exist.
+ */
+function clearEdgeFromIndex(graph, name, edge, data) {
+  if (name === 'structure') {
+    var index = graph._indices.structure;
+
+    if (!index.computed) return graph;
+
+    (0, _indices.clearEdgeFromStructureIndex)(graph, edge, data);
+  }
+
+  return graph;
+}
+
+/**
+ * Internal method used to add an arbitrary edge to the given graph.
+ *
+ * @param  {Graph}   graph          - Target graph.
+ * @param  {string}  name           - Name of the child method for errors.
+ * @param  {boolean} merge          - Are we merging?
+ * @param  {boolean} mustGenerateId - Should the graph generate an id?
+ * @param  {boolean} undirected     - Whether the edge is undirected.
+ * @param  {any}     edge           - The edge's key.
+ * @param  {any}     source         - The source node.
+ * @param  {any}     target         - The target node.
+ * @param  {object}  [attributes]   - Optional attributes.
+ * @return {any}                    - The edge.
+ *
+ * @throws {Error} - Will throw if the graph is of the wrong type.
+ * @throws {Error} - Will throw if the given attributes are not an object.
+ * @throws {Error} - Will throw if source or target doesn't exist.
+ * @throws {Error} - Will throw if the edge already exist.
+ */
+function addEdge(graph, name, merge, mustGenerateId, undirected, edge, source, target, attributes) {
+
+  // Checking validity of operation
+  if (!undirected && graph.type === 'undirected') throw new _errors.UsageGraphError('Graph.' + name + ': you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.');
+
+  if (undirected && graph.type === 'directed') throw new _errors.UsageGraphError('Graph.' + name + ': you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.');
+
+  if (attributes && !(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid attributes. Expecting an object but got "' + attributes + '"');
+
+  // Coercion of source & target:
+  source = '' + source;
+  target = '' + target;
+
+  var mustAddSource = false,
+      mustAddTarget = false;
+
+  if (!graph.hasNode(source)) {
+    if (!merge) throw new _errors.NotFoundGraphError('Graph.' + name + ': source node "' + source + '" not found.');else mustAddSource = true;
+  }
+
+  if (!graph.hasNode(target)) {
+    if (!merge) throw new _errors.NotFoundGraphError('Graph.' + name + ': target node "' + target + '" not found.');else mustAddTarget = true;
+  }
+
+  if (!graph.allowSelfLoops && source === target) throw new _errors.UsageGraphError('Graph.' + name + ': source & target are the same, thus creating a loop explicitly forbidden by this graph \'allowSelfLoops\' option set to false.');
+
+  // Must the graph generate an id for this edge?
+  if (mustGenerateId) {
+    edge = graph._options.edgeKeyGenerator({
+      undirected: undirected,
+      source: source,
+      target: target,
+      attributes: attributes || {}
+    });
+  }
+
+  // Do we need to handle duplicate?
+  var alreadyExistingEdge = null;
+
+  // Here, we have a key collision
+  if (graph.hasEdge(edge)) {
+    if (!merge) {
+      throw new _errors.UsageGraphError('Graph.' + name + ': the "' + edge + '" edge already exists in the graph.');
+    } else {
+      alreadyExistingEdge = edge;
+    }
+  }
+
+  // Here, we might have a source / target collision
+  if (!graph.multi && (undirected ? graph.hasUndirectedEdge(source, target) : graph.hasDirectedEdge(source, target))) {
+    if (!merge) throw new _errors.UsageGraphError('Graph.' + name + ': an edge linking "' + source + '" to "' + target + '" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the \'multi\' option.');else {
+      alreadyExistingEdge = undirected ? graph.getUndirectedEdge(source, target) : graph.getDirectedEdge(source, target);
+    }
+  }
+
+  // Protecting the attributes
+  attributes = (0, _utils.assign)({}, graph._options.defaultEdgeAttributes, attributes);
+
+  // Handling duplicates
+  if (alreadyExistingEdge) {
+
+    // If the key collides but the source & target are inconsistent, we throw
+    if (graph.source(alreadyExistingEdge) !== source || graph.target(alreadyExistingEdge) !== target) {
+      throw new _errors.UsageGraphError('Graph.' + name + ': inconsitency detected when attempting to merge the "' + edge + '" edge with "' + source + '" source & "' + target + '" target vs. (' + graph.source(alreadyExistingEdge) + ', ' + graph.target(alreadyExistingEdge) + ').');
+    }
+
+    // Simply merging the attributes of the already existing edge
+    graph.mergeEdgeAttributes(alreadyExistingEdge, attributes);
+    return alreadyExistingEdge;
+  }
+
+  if (mustAddSource) graph.addNode(source);
+  if (mustAddTarget) graph.addNode(target);
+
+  // Storing some data
+  var data = {
+    attributes: attributes,
+    source: source,
+    target: target
+  };
+
+  // Only adding the 'undirected' key if needed
+  if (undirected) data.undirected = true;
+
+  // Storing whether the id was generated
+  if (mustGenerateId) data.generatedId = true;
+
+  // Adding the edge to the internal register
+  graph._edges.set(edge, data);
+
+  // Incrementing node degree counters
+  var sourceData = graph._nodes.get(source),
+      targetData = graph._nodes.get(target);
+
+  if (source === target) {
+    if (undirected) sourceData.undirectedSelfLoops++;else sourceData.directedSelfLoops++;
+  } else {
+    if (undirected) {
+      sourceData.undirectedDegree++;
+      targetData.undirectedDegree++;
+    } else {
+      sourceData.outDegree++;
+      targetData.inDegree++;
+    }
+  }
+
+  // Updating relevant indexes
+  updateIndex(graph, 'structure', edge, data);
+
+  // Emitting
+  graph.emit('edgeAdded', {
+    key: edge,
+    source: source,
+    target: target,
+    attributes: attributes,
+    undirected: undirected
+  });
+
+  return edge;
+}
+
+/**
+ * Internal method abstracting edges export.
+ *
+ * @param  {Graph}    graph     - Target graph.
+ * @param  {string}   name      - Child method name.
+ * @param  {function} predicate - Predicate to filter the bunch's edges.
+ * @param  {mixed}    [bunch]   - Target edges.
+ * @return {array[]}            - The serialized edges.
+ *
+ * @throws {Error} - Will throw if any of the edges is not found.
+ */
+function _exportEdges(graph, name, predicate, bunch) {
+  var edges = [];
+
+  if (!bunch) {
+
+    // Exporting every edges of the given type
+    if (name === 'exportEdges') edges = graph.edges();else if (name === 'exportDirectedEdges') edges = graph.directedEdges();else edges = graph.undirectedEdges();
+  } else {
+
+    // Exporting the bunch
+    if (!(0, _utils.isBunch)(bunch)) throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid bunch.');
+
+    (0, _utils.overBunch)(bunch, function (edge) {
+      if (!graph.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + edge + '" edge from the bunch in the graph.');
+
+      if (!predicate || predicate(edge)) edges.push(edge);
+    });
+  }
+
+  var serializedEdges = new Array(edges.length);
+
+  for (var i = 0, l = edges.length; i < l; i++) {
+    serializedEdges[i] = graph.exportEdge(edges[i]);
+  }return serializedEdges;
+}
+
+/**
+ * Graph class
+ *
+ * @constructor
+ * @param  {Graph|Array<Array>} [data]    - Hydratation data.
+ * @param  {object}             [options] - Options:
+ * @param  {boolean}              [allowSelfLoops] - Allow self loops?
+ * @param  {string}               [type]           - Type of the graph.
+ * @param  {boolean}              [map]            - Allow references as keys?
+ * @param  {boolean}              [multi]          - Allow parallel edges?
+ *
+ * @throws {Error} - Will throw if the arguments are not valid.
+ */
+
+var Graph = function (_EventEmitter) {
+  _inherits(Graph, _EventEmitter);
+
+  function Graph(data, options) {
+    _classCallCheck(this, Graph);
+
+    //-- Solving options
+    var _this = _possibleConstructorReturn(this, _EventEmitter.call(this));
+
+    options = (0, _utils.assign)({}, DEFAULTS, options);
+
+    // Freezing options
+    Object.freeze(options);
+
+    // Enforcing options validity
+    if (typeof options.edgeKeyGenerator !== 'function') throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'edgeKeyGenerator\' option. Expecting a function but got "' + options.edgeKeyGenerator + '".');
+
+    if (typeof options.multi !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'multi\' option. Expecting a boolean but got "' + options.multi + '".');
+
+    if (!TYPES.has(options.type)) throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'type\' option. Should be one of "mixed", "directed" or "undirected" but got "' + options.type + '".');
+
+    if (typeof options.allowSelfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'allowSelfLoops\' option. Expecting a boolean but got "' + options.allowSelfLoops + '".');
+
+    if (!(0, _utils.isPlainObject)(options.defaultEdgeAttributes)) throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'defaultEdgeAttributes\' option. Expecting a plain object but got "' + options.defaultEdgeAttributes + '".');
+
+    if (!(0, _utils.isPlainObject)(options.defaultNodeAttributes)) throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'defaultNodeAttributes\' option. Expecting a plain object but got "' + options.defaultNodeAttributes + '".');
+
+    //-- Private properties
+
+    // Indexes
+    (0, _utils.privateProperty)(_this, '_attributes', {});
+    (0, _utils.privateProperty)(_this, '_nodes', (0, _utils.createInternalMap)());
+    (0, _utils.privateProperty)(_this, '_edges', (0, _utils.createInternalMap)());
+    (0, _utils.privateProperty)(_this, '_indices', {
+      structure: {
+        lazy: options.indices && options.indices.structure && options.indices.structure.lazy || false,
+        computed: false
+      }
+    });
+
+    // Options
+    (0, _utils.privateProperty)(_this, '_options', options);
+
+    // Emitter properties
+    EMITTER_PROPS.forEach(function (prop) {
+      return (0, _utils.privateProperty)(_this, prop, _this[prop]);
+    });
+
+    //-- Properties readers
+    (0, _utils.readOnlyProperty)(_this, 'order', function () {
+      return _this._nodes.size;
+    });
+    (0, _utils.readOnlyProperty)(_this, 'size', function () {
+      return _this._edges.size;
+    });
+    (0, _utils.readOnlyProperty)(_this, 'multi', _this._options.multi);
+    (0, _utils.readOnlyProperty)(_this, 'type', _this._options.type);
+    (0, _utils.readOnlyProperty)(_this, 'allowSelfLoops', _this._options.allowSelfLoops);
+
+    //-- Precomputing indexes?
+    for (var name in _this._indices) {
+      var index = _this._indices[name];
+
+      if (!index.lazy) index.computed = true;
+    }
+
+    //-- Hydratation
+    if (data) _this.import(data);
+    return _this;
+  }
+
+  /**---------------------------------------------------------------------------
+   * Read
+   **---------------------------------------------------------------------------
+   */
+
+  /**
+   * Method returning the desired graph's attribute.
+   *
+   * @param  {string} name - Name of the attribute.
+   * @return {any}
+   */
+
+
+  Graph.prototype.getAttribute = function getAttribute(name) {
+    return this._attributes[name];
+  };
+
+  /**
+   * Method returning the graph's attributes.
+   *
+   * @return {object}
+   */
+
+
+  Graph.prototype.getAttributes = function getAttributes() {
+    return this._attributes;
+  };
+
+  /**
+   * Method returning whether the graph has the desired attribute.
+   *
+   * @param  {string}  name - Name of the attribute.
+   * @return {boolean}
+   */
+
+
+  Graph.prototype.hasAttribute = function hasAttribute(name) {
+    return this._attributes.hasOwnProperty(name);
+  };
+
+  /**
+   * Method setting a value for the desired graph's attribute.
+   *
+   * @param  {string}  name  - Name of the attribute.
+   * @param  {any}     value - Value for the attribute.
+   * @return {Graph}
+   */
+
+
+  Graph.prototype.setAttribute = function setAttribute(name, value) {
+    this._attributes[name] = value;
+
+    // Emitting
+    this.emit('attributesUpdated', {
+      type: 'set',
+      meta: {
+        name: name,
+        value: value
+      }
+    });
+
+    return this;
+  };
+
+  /**
+   * Method using a function to update the desired graph's attribute's value.
+   *
+   * @param  {string}   name    - Name of the attribute.
+   * @param  {function} updater - Function use to update the attribute's value.
+   * @return {Graph}
+   */
+
+
+  Graph.prototype.updateAttribute = function updateAttribute(name, updater) {
+    this._attributes[name] = updater(this._attributes[name]);
+
+    // Emitting
+    this.emit('attributesUpdated', {
+      type: 'set',
+      meta: {
+        name: name,
+        value: this._attributes[name]
+      }
+    });
+
+    return this;
+  };
+
+  /**
+   * Method removing the desired graph's attribute.
+   *
+   * @param  {string} name  - Name of the attribute.
+   * @return {Graph}
+   */
+
+
+  Graph.prototype.removeAttribute = function removeAttribute(name) {
+    delete this._attributes[name];
+
+    // Emitting
+    this.emit('attributesUpdated', {
+      type: 'remove',
+      meta: {
+        name: name
+      }
+    });
+
+    return this;
+  };
+
+  /**
+   * Method replacing the graph's attributes.
+   *
+   * @param  {object} attributes - New attributes.
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if given attributes are not a plain object.
+   */
+
+
+  Graph.prototype.replaceAttributes = function replaceAttributes(attributes) {
+    if (!(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.replaceAttributes: provided attributes are not a plain object.');
+
+    var before = this._attributes;
+
+    this._attributes = attributes;
+
+    // Emitting
+    this.emit('attributesUpdated', {
+      type: 'replace',
+      meta: {
+        before: before,
+        after: attributes
+      }
+    });
+
+    return this;
+  };
+
+  /**
+   * Method merging the graph's attributes.
+   *
+   * @param  {object} attributes - Attributes to merge.
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if given attributes are not a plain object.
+   */
+
+
+  Graph.prototype.mergeAttributes = function mergeAttributes(attributes) {
+    if (!(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.mergeAttributes: provided attributes are not a plain object.');
+
+    this._attributes = (0, _utils.assign)(this._attributes, attributes);
+
+    // Emitting
+    this.emit('attributesUpdated', {
+      type: 'merge',
+      meta: {
+        data: attributes
+      }
+    });
+
+    return this;
+  };
+
+  /**
+   * Method returning whether the given node is found in the graph.
+   *
+   * @param  {any}     node - The node.
+   * @return {boolean}
+   */
+
+
+  Graph.prototype.hasNode = function hasNode(node) {
+    return this._nodes.has(node);
+  };
+
+  /**
+   * Internal method returning a matching directed edge or undefined if no
+   * matching edge was found.
+   *
+   * @param  {any}     source - The edge's source.
+   * @param  {any}     target - The edge's target.
+   * @return {any|undefined}
+   */
+
+
+  Graph.prototype.getDirectedEdge = function getDirectedEdge(source, target) {
+
+    // We need to compute the 'structure' index for this
+    this.computeIndex('structure');
+
+    // If the node source or the target is not in the graph we break
+    if (!this.hasNode(source) || !this.hasNode(target)) return;
+
+    // Is there a directed edge pointing towards target?
+    var nodeData = this._nodes.get(source),
+        register = nodeData.out;
+
+    if (!register) return;
+
+    var edges = register[target];
+
+    if (!edges) return;
+
+    if (!edges.size) return;
+
+    return (0, _utils.firstItemOfSet)(edges);
+  };
+
+  /**
+   * Internal method returning a matching undirected edge or undefined if no
+   * matching edge was found.
+   *
+   * @param  {any}     source - The edge's source.
+   * @param  {any}     target - The edge's target.
+   * @return {any|undefined}
+   */
+
+
+  Graph.prototype.getUndirectedEdge = function getUndirectedEdge(source, target) {
+
+    // We need to compute the 'structure' index for this
+    this.computeIndex('structure');
+
+    // If the node source or the target is not in the graph we break
+    if (!this.hasNode(source) || !this.hasNode(target)) return;
+
+    // Is there a directed edge pointing towards target?
+    var nodeData = this._nodes.get(source);
+
+    var register = nodeData.undirectedOut,
+        edges = void 0;
+
+    if (register) edges = register[target];
+
+    register = nodeData.undirectedIn;
+
+    if (!edges && register) edges = register[target];
+
+    if (!edges || !edges.size) return;
+
+    return (0, _utils.firstItemOfSet)(edges);
+  };
+
+  /**
+   * Method returning a matching edge (note that it will return the first
+   * matching edge, starting with directed one then undirected), or undefined
+   * if no matching edge was found.
+   *
+   * @param  {any}     source - The edge's source.
+   * @param  {any}     target - The edge's target.
+   * @return {any|undefined}
+   */
+
+
+  Graph.prototype.getEdge = function getEdge(source, target) {
+    var edge = void 0;
+
+    // First we try to find a directed edge
+    if (this.type === 'mixed' || this.type === 'directed') edge = this.getDirectedEdge(source, target);
+
+    if (edge) return edge;
+
+    // Then we try to find an undirected edge
+    if (this.type === 'mixed' || this.type === 'undirected') edge = this.getUndirectedEdge(source, target);
+
+    return edge;
+  };
+
+  /**
+   * Method returning whether the given directed edge is found in the graph.
+   *
+   * Arity 1:
+   * @param  {any}     edge - The edge's key.
+   *
+   * Arity 2:
+   * @param  {any}     source - The edge's source.
+   * @param  {any}     target - The edge's target.
+   *
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the arguments are invalid.
+   */
+
+
+  Graph.prototype.hasDirectedEdge = function hasDirectedEdge(source, target) {
+    if (arguments.length === 1) {
+      var edge = source;
+
+      return this._edges.has(edge) && this.directed(edge);
+    } else if (arguments.length === 2) {
+
+      // We need to compute the 'structure' index for this
+      this.computeIndex('structure');
+
+      // If the node source or the target is not in the graph we break
+      if (!this.hasNode(source) || !this.hasNode(target)) return false;
+
+      // Is there a directed edge pointing towards target?
+      var nodeData = this._nodes.get(source),
+          register = nodeData.out;
+
+      if (!register) return false;
+
+      var edges = register[target];
+
+      if (!edges) return false;
+
+      return !!edges.size;
+    }
+
+    throw new _errors.InvalidArgumentsGraphError('Graph.hasDirectedEdge: invalid arity (' + arguments.length + ', instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.');
+  };
+
+  /**
+   * Method returning whether the given undirected edge is found in the graph.
+   *
+   * Arity 1:
+   * @param  {any}     edge - The edge's key.
+   *
+   * Arity 2:
+   * @param  {any}     source - The edge's source.
+   * @param  {any}     target - The edge's target.
+   *
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the arguments are invalid.
+   */
+
+
+  Graph.prototype.hasUndirectedEdge = function hasUndirectedEdge(source, target) {
+    if (arguments.length === 1) {
+      var edge = source;
+
+      return this._edges.has(edge) && this.undirected(edge);
+    } else if (arguments.length === 2) {
+
+      // We need to compute the 'structure' index for this
+      this.computeIndex('structure');
+
+      // If the node source or the target is not in the graph we break
+      if (!this.hasNode(source) || !this.hasNode(target)) return false;
+
+      // Is there a directed edge pointing towards target?
+      var nodeData = this._nodes.get(source);
+
+      var register = nodeData.undirectedOut,
+          edges = void 0;
+
+      if (register) edges = register[target];
+
+      register = nodeData.undirectedIn;
+
+      if (!edges && register) edges = register[target];
+
+      if (!edges) return false;
+
+      return !!edges.size;
+    }
+
+    throw new _errors.InvalidArgumentsGraphError('Graph.hasDirectedEdge: invalid arity (' + arguments.length + ', instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.');
+  };
+
+  /**
+   * Method returning whether the given edge is found in the graph.
+   *
+   * Arity 1:
+   * @param  {any}     edge - The edge's key.
+   *
+   * Arity 2:
+   * @param  {any}     source - The edge's source.
+   * @param  {any}     target - The edge's target.
+   *
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the arguments are invalid.
+   */
+
+
+  Graph.prototype.hasEdge = function hasEdge(source, target) {
+
+    if (arguments.length === 1) {
+      var edge = source;
+
+      return this._edges.has(edge);
+    } else if (arguments.length === 2) {
+      return this.hasDirectedEdge(source, target) || this.hasUndirectedEdge(source, target);
+    }
+
+    throw new _errors.InvalidArgumentsGraphError('Graph.hasEdge: invalid arity (' + arguments.length + ', instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.');
+  };
+
+  /**
+   * Method returning the given node's in degree.
+   *
+   * @param  {any}     node      - The node's key.
+   * @param  {boolean} allowSelfLoops - Count self-loops?
+   * @return {number}            - The node's in degree.
+   *
+   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+
+
+  Graph.prototype.inDegree = function inDegree(node) {
+    var selfLoops = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+    if (typeof selfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.inDegree: Expecting a boolean but got "' + selfLoops + '" for the second parameter (allowing self-loops to be counted).');
+
+    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.inDegree: could not find the "' + node + '" node in the graph.');
+
+    var data = this._nodes.get(node),
+        loops = selfLoops ? data.directedSelfLoops : 0;
+
+    return data.inDegree + loops;
+  };
+
+  /**
+   * Method returning the given node's out degree.
+   *
+   * @param  {any}     node      - The node's key.
+   * @param  {boolean} selfLoops - Count self-loops?
+   * @return {number}            - The node's out degree.
+   *
+   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+
+
+  Graph.prototype.outDegree = function outDegree(node) {
+    var selfLoops = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+    if (typeof selfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.outDegree: Expecting a boolean but got "' + selfLoops + '" for the second parameter (allowing self-loops to be counted).');
+
+    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.outDegree: could not find the "' + node + '" node in the graph.');
+
+    var data = this._nodes.get(node),
+        loops = selfLoops ? data.directedSelfLoops : 0;
+
+    return data.outDegree + loops;
+  };
+
+  /**
+   * Method returning the given node's directed degree.
+   *
+   * @param  {any}     node      - The node's key.
+   * @param  {boolean} selfLoops - Count self-loops?
+   * @return {number}            - The node's directed degree.
+   *
+   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+
+
+  Graph.prototype.directedDegree = function directedDegree(node) {
+    var selfLoops = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+    if (typeof selfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.directedDegree: Expecting a boolean but got "' + selfLoops + '" for the second parameter (allowing self-loops to be counted).');
+
+    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.directedDegree: could not find the "' + node + '" node in the graph.');
+
+    return this.inDegree(node, selfLoops) + this.outDegree(node, selfLoops);
+  };
+
+  /**
+   * Method returning the given node's undirected degree.
+   *
+   * @param  {any}     node      - The node's key.
+   * @param  {boolean} selfLoops - Count self-loops?
+   * @return {number}            - The node's undirected degree.
+   *
+   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+
+
+  Graph.prototype.undirectedDegree = function undirectedDegree(node) {
+    var selfLoops = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+    if (typeof selfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.undirectedDegree: Expecting a boolean but got "' + selfLoops + '" for the second parameter (allowing self-loops to be counted).');
+
+    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.undirectedDegree: could not find the "' + node + '" node in the graph.');
+
+    var data = this._nodes.get(node),
+        loops = selfLoops ? data.undirectedSelfLoops * 2 : 0;
+
+    return data.undirectedDegree + loops;
+  };
+
+  /**
+   * Method returning the given node's degree.
+   *
+   * @param  {any}     node      - The node's key.
+   * @param  {boolean} selfLoops - Count self-loops?
+   * @return {number}            - The node's degree.
+   *
+   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+
+
+  Graph.prototype.degree = function degree(node) {
+    var selfLoops = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+    if (typeof selfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.degree: Expecting a boolean but got "' + selfLoops + '" for the second parameter (allowing self-loops to be counted).');
+
+    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.degree: could not find the "' + node + '" node in the graph.');
+
+    return this.directedDegree(node, selfLoops) + this.undirectedDegree(node, selfLoops);
+  };
+
+  /**
+   * Method returning the given edge's source.
+   *
+   * @param  {any} edge - The edge's key.
+   * @return {any}      - The edge's source.
+   *
+   * @throws {Error} - Will throw if the edge isn't in the graph.
+   */
+
+
+  Graph.prototype.source = function source(edge) {
+    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.source: could not find the "' + edge + '" edge in the graph.');
+
+    return this._edges.get(edge).source;
+  };
+
+  /**
+   * Method returning the given edge's target.
+   *
+   * @param  {any} edge - The edge's key.
+   * @return {any}      - The edge's target.
+   *
+   * @throws {Error} - Will throw if the edge isn't in the graph.
+   */
+
+
+  Graph.prototype.target = function target(edge) {
+    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.target: could not find the "' + edge + '" edge in the graph.');
+
+    return this._edges.get(edge).target;
+  };
+
+  /**
+   * Method returning the given edge's extremities.
+   *
+   * @param  {any}   edge - The edge's key.
+   * @return {array}      - The edge's extremities.
+   *
+   * @throws {Error} - Will throw if the edge isn't in the graph.
+   */
+
+
+  Graph.prototype.extremities = function extremities(edge) {
+    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.extremities: could not find the "' + edge + '" edge in the graph.');
+
+    return [this._edges.get(edge).source, this._edges.get(edge).target];
+  };
+
+  /**
+   * Given a node & an edge, returns the other extremity of the edge.
+   *
+   * @param  {any}   node - The node's key.
+   * @param  {any}   edge - The edge's key.
+   * @return {any}        - The related node.
+   *
+   * @throws {Error} - Will throw if either the node or the edge isn't in the graph.
+   */
+
+
+  Graph.prototype.opposite = function opposite(node, edge) {
+    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.opposite: could not find the "' + node + '" node in the graph.');
+
+    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.opposite: could not find the "' + edge + '" edge in the graph.');
+
+    var _extremities = this.extremities(edge),
+        node1 = _extremities[0],
+        node2 = _extremities[1];
+
+    if (node !== node1 && node !== node2) throw new _errors.NotFoundGraphError('Graph.opposite: the "' + node + '" node is not attached to the "' + edge + '" edge (' + node1 + ', ' + node2 + ').');
+
+    return node === node1 ? node2 : node1;
+  };
+
+  /**
+   * Method returning whether the given edge is undirected.
+   *
+   * @param  {any}     edge - The edge's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the edge isn't in the graph.
+   */
+
+
+  Graph.prototype.undirected = function undirected(edge) {
+    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.undirected: could not find the "' + edge + '" edge in the graph.');
+
+    return !!this._edges.get(edge).undirected;
+  };
+
+  /**
+   * Method returning whether the given edge is directed.
+   *
+   * @param  {any}     edge - The edge's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the edge isn't in the graph.
+   */
+
+
+  Graph.prototype.directed = function directed(edge) {
+    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.directed: could not find the "' + edge + '" edge in the graph.');
+
+    return !this._edges.get(edge).undirected;
+  };
+
+  /**
+   * Method returning whether the given edge is a self loop.
+   *
+   * @param  {any}     edge - The edge's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the edge isn't in the graph.
+   */
+
+
+  Graph.prototype.selfLoop = function selfLoop(edge) {
+    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.selfLoop: could not find the "' + edge + '" edge in the graph.');
+
+    var data = this._edges.get(edge);
+
+    return data.source === data.target;
+  };
+
+  /**---------------------------------------------------------------------------
+   * Mutation
+   **---------------------------------------------------------------------------
+   */
+
+  /**
+   * Method used to add a node to the graph.
+   *
+   * @param  {any}    node         - The node.
+   * @param  {object} [attributes] - Optional attributes.
+   * @return {any}                 - The node.
+   *
+   * @throws {Error} - Will throw if the given node already exist.
+   * @throws {Error} - Will throw if the given attributes are not an object.
+   */
+
+
+  Graph.prototype.addNode = function addNode(node, attributes) {
+    if (attributes && !(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.addNode: invalid attributes. Expecting an object but got "' + attributes + '"');
+
+    // Protecting the attributes
+    attributes = (0, _utils.assign)({}, this._options.defaultNodeAttributes, attributes);
+
+    if (this.hasNode(node)) throw new _errors.UsageGraphError('Graph.addNode: the "' + node + '" node already exist in the graph.');
+
+    var data = {
+      attributes: attributes
+    };
+
+    if (this.allowSelfLoops) {
+      if (this.type === 'mixed' || this.type === 'directed') {
+        data.directedSelfLoops = 0;
+      }
+      if (this.type === 'mixed' || this.type === 'undirected') {
+        data.undirectedSelfLoops = 0;
+      }
+    }
+
+    if (this.type === 'mixed' || this.type === 'directed') {
+      data.inDegree = 0;
+      data.outDegree = 0;
+    }
+
+    if (this.type === 'mixed' || this.type === 'undirected') {
+      data.undirectedDegree = 0;
+    }
+
+    // Adding the node to internal register
+    this._nodes.set(node, data);
+
+    // Emitting
+    this.emit('nodeAdded', {
+      key: node,
+      attributes: attributes
+    });
+
+    return node;
+  };
+
+  /**
+   * Method used to merge a node into the graph.
+   *
+   * @param  {any}    node         - The node.
+   * @param  {object} [attributes] - Optional attributes.
+   * @return {any}                 - The node.
+   */
+
+
+  Graph.prototype.mergeNode = function mergeNode(node, attributes) {
+
+    // If the node already exists, we merge the attributes
+    if (this.hasNode(node)) {
+      if (attributes) this.mergeNodeAttributes(node, attributes);
+      return node;
+    }
+
+    // Else, we create it
+    return this.addNode(node, attributes);
+  };
+
+  /**
+   * Method used to add a nodes from a bunch.
+   *
+   * @param  {bunch}  bunch - The node.
+   * @return {Graph}        - Returns itself for chaining.
+   *
+   * @throws {Error} - Will throw if the given bunch is not valid.
+   */
+
+
+  Graph.prototype.addNodesFrom = function addNodesFrom(bunch) {
+    var _this2 = this;
+
+    if (!(0, _utils.isBunch)(bunch)) throw new _errors.InvalidArgumentsGraphError('Graph.addNodesFrom: invalid bunch provided ("' + bunch + '").');
+
+    (0, _utils.overBunch)(bunch, function (node, attributes) {
+      _this2.addNode(node, attributes);
+    });
+
+    return this;
+  };
+
+  /**
+   * Method used to drop a single node & all its attached edges from the graph.
+   *
+   * @param  {any}    node - The node.
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if the node doesn't exist.
+   */
+
+
+  Graph.prototype.dropNode = function dropNode(node) {
+    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.dropNode: could not find the "' + node + '" node in the graph.');
+
+    // Removing attached edges
+    var edges = this.edges(node);
+
+    // NOTE: we could go faster here
+    for (var i = 0, l = edges.length; i < l; i++) {
+      this.dropEdge(edges[i]);
+    }var data = this._nodes.get(node);
+
+    // Dropping the node from the register
+    this._nodes.delete(node);
+
+    // Emitting
+    this.emit('nodeDropped', {
+      key: node,
+      attributes: data.attributes
+    });
+  };
+
+  /**
+   * Method used to drop a single edge from the graph.
+   *
+   * Arity 1:
+   * @param  {any}    edge - The edge.
+   *
+   * Arity 2:
+   * @param  {any}    source - Source node.
+   * @param  {any}    target - Target node.
+   *
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if the edge doesn't exist.
+   */
+
+
+  Graph.prototype.dropEdge = function dropEdge(edge) {
+    if (arguments.length > 1) {
+      var _source = arguments[0],
+          _target = arguments[1];
+
+      if (!this.hasNode(_source)) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + _source + '" source node in the graph.');
+
+      if (!this.hasNode(_target)) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + _target + '" target node in the graph.');
+
+      if (!this.hasEdge(_source, _target)) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + _source + '" -> "' + _target + '" edge in the graph.');
+
+      edge = this.getEdge(_source, _target);
+    } else {
+      if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + edge + '" edge in the graph.');
+    }
+
+    var data = this._edges.get(edge);
+
+    // Dropping the edge from the register
+    this._edges.delete(edge);
+
+    // Updating related degrees
+    var source = data.source,
+        target = data.target,
+        attributes = data.attributes,
+        _data$undirected = data.undirected,
+        undirected = _data$undirected === undefined ? false : _data$undirected;
+
+
+    var sourceData = this._nodes.get(source),
+        targetData = this._nodes.get(target);
+
+    if (source === target) {
+      sourceData.selfLoops--;
+    } else {
+      if (undirected) {
+        sourceData.undirectedDegree--;
+        targetData.undirectedDegree--;
+      } else {
+        sourceData.outDegree--;
+        targetData.inDegree--;
+      }
+    }
+
+    // Clearing index
+    clearEdgeFromIndex(this, 'structure', edge, data);
+
+    // Emitting
+    this.emit('edgeDropped', {
+      key: edge,
+      attributes: attributes,
+      source: source,
+      target: target,
+      undirected: undirected
+    });
+
+    return this;
+  };
+
+  /**
+   * Method used to drop a bunch of nodes or every node from the graph.
+   *
+   * @param  {bunch} nodes - Bunch of nodes.
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if an invalid bunch is provided.
+   * @throws {Error} - Will throw if any of the nodes doesn't exist.
+   */
+
+
+  Graph.prototype.dropNodes = function dropNodes(nodes) {
+    var _this3 = this;
+
+    if (!arguments.length) return this.clear();
+
+    if (!(0, _utils.isBunch)(nodes)) throw new _errors.InvalidArgumentsGraphError('Graph.dropNodes: invalid bunch.');
+
+    (0, _utils.overBunch)(nodes, function (node) {
+      _this3.dropNode(node);
+    });
+
+    return this;
+  };
+
+  /**
+   * Method used to drop a bunch of edges or every edges from the graph.
+   *
+   * Arity 1:
+   * @param  {bunch} edges - Bunch of edges.
+   *
+   * Arity 2:
+   * @param  {any}    source - Source node.
+   * @param  {any}    target - Target node.
+   *
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if an invalid bunch is provided.
+   * @throws {Error} - Will throw if any of the edges doesn't exist.
+   */
+
+
+  Graph.prototype.dropEdges = function dropEdges(edges) {
+    var _this4 = this;
+
+    if (!arguments.length) {
+
+      // Dropping every edge from the graph
+      this._edges = (0, _utils.createInternalMap)();
+
+      // Without edges, we've got no 'structure'
+      this.clearIndex('structure');
+
+      var index = this._indices.structure;
+
+      if (!index.lazy) index.computed = true;
+
+      return this;
+    }
+
+    if (arguments.length === 2) {
+      var source = arguments[0],
+          target = arguments[1];
+
+      edges = this.edges(source, target);
+    }
+
+    if (!(0, _utils.isBunch)(edges)) throw new _errors.InvalidArgumentsGraphError('Graph.dropEdges: invalid bunch.');
+
+    (0, _utils.overBunch)(edges, function (edge) {
+      _this4.dropEdge(edge);
+    });
+
+    return this;
+  };
+
+  /**
+   * Method used to remove every edge & every node from the graph.
+   *
+   * @return {Graph}
+   */
+
+
+  Graph.prototype.clear = function clear() {
+
+    // Dropping edges
+    this._edges = (0, _utils.createInternalMap)();
+
+    // Dropping nodes
+    this._nodes = (0, _utils.createInternalMap)();
+
+    // Handling indices
+    for (var name in this._indices) {
+      var index = this._indices[name];
+
+      if (index.lazy) index.computed = false;
+    }
+
+    // Emitting
+    this.emit('cleared');
+  };
+
+  /**---------------------------------------------------------------------------
+   * Iteration-related methods
+   **---------------------------------------------------------------------------
+   */
+
+  /**
+   * Method returning the list of the graph's nodes.
+   *
+   * @return {array} - The nodes.
+   */
+
+
+  Graph.prototype.nodes = function nodes() {
+    return Array.from(this._nodes.keys());
+  };
+
+  /**---------------------------------------------------------------------------
+   * Serialization
+   **---------------------------------------------------------------------------
+   */
+
+  /**
+   * Method exporting the target node.
+   *
+   * @param  {any}   node - Target node.
+   * @return {array}      - The serialized node.
+   *
+   * @throws {Error} - Will throw if the node is not found.
+   */
+
+
+  Graph.prototype.exportNode = function exportNode(node) {
+    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.exportNode: could not find the "' + node + '" node in the graph.');
+
+    var data = this._nodes.get(node);
+
+    return (0, _serialization.serializeNode)(node, data);
+  };
+
+  /**
+   * Method exporting the target edge.
+   *
+   * @param  {any}   edge - Target edge.
+   * @return {array}      - The serialized edge.
+   *
+   * @throws {Error} - Will throw if the edge is not found.
+   */
+
+
+  Graph.prototype.exportEdge = function exportEdge(edge) {
+    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.exportEdge: could not find the "' + edge + '" edge in the graph.');
+
+    var data = this._edges.get(edge);
+
+    return (0, _serialization.serializeEdge)(edge, data);
+  };
+
+  /**
+   * Method exporting every nodes or the bunch ones.
+   *
+   * @param  {mixed}   [bunch] - Target nodes.
+   * @return {array[]}         - The serialized nodes.
+   *
+   * @throws {Error} - Will throw if any of the nodes is not found.
+   */
+
+
+  Graph.prototype.exportNodes = function exportNodes(bunch) {
+    var _this5 = this;
+
+    var nodes = [];
+
+    if (!arguments.length) {
+
+      // Exporting every node
+      nodes = this.nodes();
+    } else {
+
+      // Exporting the bunch
+      if (!(0, _utils.isBunch)(bunch)) throw new _errors.InvalidArgumentsGraphError('Graph.exportNodes: invalid bunch.');
+
+      (0, _utils.overBunch)(bunch, function (node) {
+        if (!_this5.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.exportNodes: could not find the "' + node + '" node from the bunch in the graph.');
+        nodes.push(node);
+      });
+    }
+
+    var serializedNodes = new Array(nodes.length);
+
+    for (var i = 0, l = nodes.length; i < l; i++) {
+      serializedNodes[i] = this.exportNode(nodes[i]);
+    }return serializedNodes;
+  };
+
+  /**
+   * Method exporting every edges or the bunch ones.
+   *
+   * @param  {mixed}   [bunch] - Target edges.
+   * @return {array[]}         - The serialized edges.
+   *
+   * @throws {Error} - Will throw if any of the edges is not found.
+   */
+
+
+  Graph.prototype.exportEdges = function exportEdges(bunch) {
+    return _exportEdges(this, 'exportEdges', null, bunch);
+  };
+
+  /**
+   * Method exporting every directed edges or the bunch ones which are directed.
+   *
+   * @param  {mixed}   [bunch] - Target edges.
+   * @return {array[]}         - The serialized edges.
+   *
+   * @throws {Error} - Will throw if any of the edges is not found.
+   */
+
+
+  Graph.prototype.exportDirectedEdges = function exportDirectedEdges(bunch) {
+    var _this6 = this;
+
+    return _exportEdges(this, 'exportDirectedEdges', function (edge) {
+      return _this6.directed(edge);
+    }, bunch);
+  };
+
+  /**
+   * Method exporting every unddirected edges or the bunch ones which are
+   * undirected
+   *
+   * @param  {mixed}   [bunch] - Target edges.
+   * @return {array[]}         - The serialized edges.
+   *
+   * @throws {Error} - Will throw if any of the edges is not found.
+   */
+
+
+  Graph.prototype.exportUndirectedEdges = function exportUndirectedEdges(bunch) {
+    var _this7 = this;
+
+    return _exportEdges(this, 'exportUndirectedEdges', function (edge) {
+      return _this7.undirected(edge);
+    }, bunch);
+  };
+
+  /**
+   * Method used to export the whole graph.
+   *
+   * @return {object} - The serialized graph.
+   */
+
+
+  Graph.prototype.export = function _export() {
+    return {
+      attributes: this.getAttributes(),
+      nodes: this.exportNodes(),
+      edges: this.exportEdges()
+    };
+  };
+
+  /**
+   * Method used to import a serialized node.
+   *
+   * @param  {object} data   - The serialized node.
+   * @param  {boolean} merge - Whether to merge the given node.
+   * @return {Graph}         - Returns itself for chaining.
+   */
+
+
+  Graph.prototype.importNode = function importNode(data) {
+    var merge = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+    // Validating
+    var _validateSerializedNo = (0, _serialization.validateSerializedNode)(data),
+        valid = _validateSerializedNo.valid,
+        reason = _validateSerializedNo.reason;
+
+    if (!valid) {
+
+      if (reason === 'not-object') throw new _errors.InvalidArgumentsGraphError('Graph.importNode: invalid serialized node. A serialized node should be a plain object with at least a "key" property.');
+      if (reason === 'no-key') throw new _errors.InvalidArgumentsGraphError('Graph.importNode: no key provided.');
+      if (reason === 'invalid-attributes') throw new _errors.InvalidArgumentsGraphError('Graph.importNode: invalid attributes. Attributes should be a plain object, null or omitted.');
+    }
+
+    // Adding the node
+    var key = data.key,
+        _data$attributes = data.attributes,
+        attributes = _data$attributes === undefined ? {} : _data$attributes;
+
+
+    if (merge) this.mergeNode(key, attributes);else this.addNode(key, attributes);
+
+    return this;
+  };
+
+  /**
+   * Method used to import a serialized edge.
+   *
+   * @param  {object}  data  - The serialized edge.
+   * @param  {boolean} merge - Whether to merge the given edge.
+   * @return {Graph}         - Returns itself for chaining.
+   */
+
+
+  Graph.prototype.importEdge = function importEdge(data) {
+    var merge = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+    // Validating
+    var _validateSerializedEd = (0, _serialization.validateSerializedEdge)(data),
+        valid = _validateSerializedEd.valid,
+        reason = _validateSerializedEd.reason;
+
+    if (!valid) {
+
+      if (reason === 'not-object') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: invalid serialized edge. A serialized edge should be a plain object with at least a "source" & "target" property.');
+      if (reason === 'no-source') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: missing souce.');
+      if (reason === 'no-target') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: missing target');
+      if (reason === 'invalid-attributes') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: invalid attributes. Attributes should be a plain object, null or omitted.');
+      if (reason === 'invalid-undirected') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: invalid undirected. Undirected should be boolean or omitted.');
+    }
+
+    // Adding the edge
+    var source = data.source,
+        target = data.target,
+        _data$attributes2 = data.attributes,
+        attributes = _data$attributes2 === undefined ? {} : _data$attributes2,
+        _data$undirected2 = data.undirected,
+        undirected = _data$undirected2 === undefined ? false : _data$undirected2;
+
+
+    var method = void 0;
+
+    if ('key' in data) {
+      method = merge ? undirected ? this.mergeUndirectedEdgeWithKey : this.mergeDirectedEdgeWithKey : undirected ? this.addUndirectedEdgeWithKey : this.addDirectedEdgeWithKey;
+
+      method.call(this, data.key, source, target, attributes);
+    } else {
+      method = merge ? undirected ? this.mergeUndirectedEdge : this.mergeDirectedEdge : undirected ? this.addUndirectedEdge : this.addDirectedEdge;
+
+      method.call(this, source, target, attributes);
+    }
+
+    return this;
+  };
+
+  /**
+   * Method used to import serialized nodes.
+   *
+   * @param  {array}   nodes - The serialized nodes.
+   * @param  {boolean} merge - Whether to merge the given nodes.
+   * @return {Graph}         - Returns itself for chaining.
+   */
+
+
+  Graph.prototype.importNodes = function importNodes(nodes) {
+    var merge = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+    if (!Array.isArray(nodes)) throw new _errors.InvalidArgumentsGraphError('Graph.importNodes: invalid argument. Expecting an array.');
+
+    for (var i = 0, l = nodes.length; i < l; i++) {
+      this.importNode(nodes[i], merge);
+    }return this;
+  };
+
+  /**
+   * Method used to import serialized edges.
+   *
+   * @param  {array}   edges - The serialized edges.
+   * @param  {boolean} merge - Whether to merge the given edges.
+   * @return {Graph}         - Returns itself for chaining.
+   */
+
+
+  Graph.prototype.importEdges = function importEdges(edges) {
+    var merge = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+    if (!Array.isArray(edges)) throw new _errors.InvalidArgumentsGraphError('Graph.importEdges: invalid argument. Expecting an array.');
+
+    for (var i = 0, l = edges.length; i < l; i++) {
+      this.importEdge(edges[i], merge);
+    }return this;
+  };
+
+  /**
+   * Method used to import a serialized graph.
+   *
+   * @param  {object|Graph} data  - The serialized graph.
+   * @param  {boolean}      merge - Whether to merge data.
+   * @return {Graph}              - Returns itself for chaining.
+   */
+
+
+  Graph.prototype.import = function _import(data) {
+    var merge = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+
+    // Importing a Graph instance
+    if ((0, _utils.isGraph)(data)) {
+
+      this.import(data.export(), merge);
+      return this;
+    }
+
+    // Importing a serialized graph
+    if (!(0, _utils.isPlainObject)(data)) throw new _errors.InvalidArgumentsGraphError('Graph.import: invalid argument. Expecting a serialized graph or, alternatively, a Graph instance.');
+
+    if (data.attributes) {
+      if (!(0, _utils.isPlainObject)(data.attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.import: invalid attributes. Expecting a plain object.');
+
+      if (merge) this.mergeAttributes(data.attributes);else this.replaceAttributes(data.attributes);
+    }
+
+    if (data.nodes) this.importNodes(data.nodes, merge);
+
+    if (data.edges) this.importEdges(data.edges, merge);
+
+    return this;
+  };
+
+  /**
+   * Method returning an empty copy of the graph, i.e. a graph without nodes
+   * & edges but with the exact same options.
+   *
+   * @return {Graph} - The empty copy.
+   */
+
+
+  Graph.prototype.emptyCopy = function emptyCopy() {
+    return new Graph(null, this._options);
+  };
+
+  /**
+   * Method returning an exact copy of the graph.
+   *
+   * @return {Graph} - The copy.
+   */
+
+
+  Graph.prototype.copy = function copy() {
+    return new Graph(this, this._options);
+  };
+
+  /**---------------------------------------------------------------------------
+   * Indexes-related methods
+   **---------------------------------------------------------------------------
+   */
+
+  /**
+   * Method computing the desired index.
+   *
+   * @param  {string} name - Name of the index to compute.
+   * @return {Graph}       - Returns itself for chaining.
+   *
+   * @throw  {Error} - Will throw if the index doesn't exist.
+   */
+
+
+  Graph.prototype.computeIndex = function computeIndex(name) {
+    var _this8 = this;
+
+    if (!_indices.INDICES.has(name)) throw new _errors.InvalidArgumentsGraphError('Graph.computeIndex: unknown "' + name + '" index.');
+
+    if (name === 'structure') {
+      var index = this._indices.structure;
+
+      if (index.computed) return this;
+
+      index.computed = true;
+
+      this._edges.forEach(function (data, edge) {
+        return updateIndex(_this8, name, edge, data);
+      });
+    }
+
+    return this;
+  };
+
+  /**
+   * Method used to clear the desired index to clear memory.
+   *
+   * @param  {string} name - Name of the index to compute.
+   * @return {Graph}       - Returns itself for chaining.
+   *
+   * @throw  {Error} - Will throw if the index doesn't exist.
+   */
+
+
+  Graph.prototype.clearIndex = function clearIndex(name) {
+    if (!_indices.INDICES.has(name)) throw new _errors.InvalidArgumentsGraphError('Graph.clearIndex: unknown "' + name + '" index.');
+
+    if (name === 'structure') {
+      var index = this._indices.structure;
+
+      if (!index.computed) return this;
+
+      (0, _indices.clearStructureIndex)(this);
+      index.computed = false;
+    }
+
+    return this;
+  };
+
+  /**---------------------------------------------------------------------------
+   * Known methods
+   **---------------------------------------------------------------------------
+   */
+
+  /**
+   * Method used by JavaScript to perform JSON serialization.
+   *
+   * @return {object} - The serialized graph.
+   */
+
+
+  Graph.prototype.toJSON = function toJSON() {
+    return this.export();
+  };
+
+  /**
+   * Method used to perform string coercion and returning useful information
+   * about the Graph instance.
+   *
+   * @return {string} - String representation of the graph.
+   */
+
+
+  Graph.prototype.toString = function toString() {
+    var pluralOrder = this.order > 1 || this.order === 0,
+        pluralSize = this.size > 1 || this.size === 0;
+
+    return 'Graph<' + (0, _utils.prettyPrint)(this.order) + ' node' + (pluralOrder ? 's' : '') + ', ' + (0, _utils.prettyPrint)(this.size) + ' edge' + (pluralSize ? 's' : '') + '>';
+  };
+
+  /**
+   * Method used internally by node's console to display a custom object.
+   *
+   * @return {object} - Formatted object representation of the graph.
+   */
+
+
+  Graph.prototype.inspect = function inspect() {
+    var nodes = {};
+    this._nodes.forEach(function (data, key) {
+      nodes[key] = data.attributes;
+    });
+
+    var edges = {};
+    this._edges.forEach(function (data, key) {
+      var direction = data.undirected ? '<->' : '->';
+
+      var label = '';
+
+      if (!data.generatedId) label += '[' + key + ']: ';
+
+      label += '(' + data.source + ')' + direction + '(' + data.target + ')';
+
+      edges[label] = data.attributes;
+    });
+
+    var dummy = {};
+
+    for (var k in this) {
+      if (this.hasOwnProperty(k) && !EMITTER_PROPS.has(k) && typeof this[k] !== 'function') dummy[k] = this[k];
+    }
+
+    dummy.attributes = this._attributes;
+    dummy.nodes = nodes;
+    dummy.edges = edges;
+
+    (0, _utils.privateProperty)(dummy, 'constructor', this.constructor);
+
+    return dummy;
+  };
+
+  return Graph;
+}(_events.EventEmitter);
+
+/**
+ * Attaching methods to the prototype.
+ *
+ * Here, we are attaching a wide variety of methods to the Graph class'
+ * prototype when those are very numerous and when their creation is
+ * abstracted.
+ */
+
+/**
+ * Related to edge addition.
+ */
+
+
+exports.default = Graph;
+EDGE_ADD_METHODS.forEach(function (method) {
+  ['add', 'merge'].forEach(function (verb) {
+    var name = method.name(verb);
+
+    if (method.generateKey) {
+      Graph.prototype[name] = function (source, target, attributes) {
+        return addEdge(this, name, verb === 'merge', method.generateKey, (method.type || this.type) === 'undirected', null, source, target, attributes);
+      };
+    } else {
+      Graph.prototype[name] = function (edge, source, target, attributes) {
+        return addEdge(this, name, verb === 'merge', method.generateKey, (method.type || this.type) === 'undirected', edge, source, target, attributes);
+      };
+    }
+  });
+});
+
+/**
+ * Attributes-related.
+ */
+(0, _attributes.attachAttributesMethods)(Graph);
+
+/**
+ * Edge iteration-related.
+ */
+(0, _edges.attachEdgeIterationMethods)(Graph);
+
+/**
+ * Neighbor iteration-related.
+ */
+(0, _neighbors.attachNeighborIterationMethods)(Graph);
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.attachAttributesMethods = attachAttributesMethods;
+
+var _utils = __webpack_require__(0);
+
+var _errors = __webpack_require__(1);
+
+/**
+ * Attach an attribute getter method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
+/**
+ * Graphology Attributes methods
+ * ==============================
+ *
+ * Attributes-related methods being exactly the same for nodes & edges,
+ * we abstract them here for factorization reasons.
+ */
+function attachAttributeGetter(Class, method, key, elementName, checker, finder) {
+
+  /**
+   * Get the desired attribute for the given element (node or edge).
+   *
+   * Arity 2:
+   * @param  {any}    element - Target element.
+   * @param  {string} name    - Attribute's name.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}     source - Source element.
+   * @param  {any}     target - Target element.
+   * @param  {string}  name   - Attribute's name.
+   *
+   * @return {mixed}          - The attribute's value.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
+  Class.prototype[method] = function (element, name) {
+    if (arguments.length > 2) {
+      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
+
+      var source = element,
+          target = name;
+
+      name = arguments[2];
+
+      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+
+      element = this[finder](source, target);
+    }
+
+    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
+
+    var data = this[key].get(element);
+
+    return data.attributes[name];
+  };
+}
+
+/**
+ * Attach an attributes getter method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
+function attachAttributesGetter(Class, method, key, elementName, checker, finder) {
+
+  /**
+   * Retrieves all the target element's attributes.
+   *
+   * Arity 2:
+   * @param  {any}    element - Target element.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}     source - Source element.
+   * @param  {any}     target - Target element.
+   *
+   * @return {object}          - The element's attributes.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
+  Class.prototype[method] = function (element) {
+    if (arguments.length > 1) {
+      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
+
+      var source = element,
+          target = arguments[1];
+
+      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+
+      element = this[finder](source, target);
+    }
+
+    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
+
+    var data = this[key].get(element);
+
+    return data.attributes;
+  };
+}
+
+/**
+ * Attach an attribute checker method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
+function attachAttributeChecker(Class, method, key, elementName, checker, finder) {
+
+  /**
+   * Checks whether the desired attribute is set for the given element (node or edge).
+   *
+   * Arity 2:
+   * @param  {any}    element - Target element.
+   * @param  {string} name    - Attribute's name.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}     source - Source element.
+   * @param  {any}     target - Target element.
+   * @param  {string}  name   - Attribute's name.
+   *
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
+  Class.prototype[method] = function (element, name) {
+    if (arguments.length > 2) {
+      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
+
+      var source = element,
+          target = name;
+
+      name = arguments[2];
+
+      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+
+      element = this[finder](source, target);
+    }
+
+    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
+
+    var data = this[key].get(element);
+
+    return data.attributes.hasOwnProperty(name);
+  };
+}
+
+/**
+ * Attach an attribute setter method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
+function attachAttributeSetter(Class, method, key, elementName, checker, finder) {
+  var eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
+
+  /**
+   * Set the desired attribute for the given element (node or edge).
+   *
+   * Arity 2:
+   * @param  {any}    element - Target element.
+   * @param  {string} name    - Attribute's name.
+   * @param  {mixed}  value   - New attribute value.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}     source - Source element.
+   * @param  {any}     target - Target element.
+   * @param  {string}  name   - Attribute's name.
+   * @param  {mixed}  value   - New attribute value.
+   *
+   * @return {Graph}          - Returns itself for chaining.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
+  Class.prototype[method] = function (element, name, value) {
+    if (arguments.length > 3) {
+      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
+
+      var source = element,
+          target = name;
+
+      name = arguments[2];
+      value = arguments[3];
+
+      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+
+      element = this[finder](source, target);
+    }
+
+    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
+
+    var data = this[key].get(element);
+
+    data.attributes[name] = value;
+
+    // Emitting
+    this.emit(eventName, {
+      key: element,
+      type: 'set',
+      meta: {
+        name: name,
+        value: value
+      }
+    });
+
+    return this;
+  };
+}
+
+/**
+ * Attach an attribute updater method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
+function attachAttributeUpdater(Class, method, key, elementName, checker, finder) {
+  var eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
+
+  /**
+   * Update the desired attribute for the given element (node or edge) using
+   * the provided function.
+   *
+   * Arity 2:
+   * @param  {any}      element - Target element.
+   * @param  {string}   name    - Attribute's name.
+   * @param  {function} updater - Updater function.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}      source  - Source element.
+   * @param  {any}      target  - Target element.
+   * @param  {string}   name    - Attribute's name.
+   * @param  {function} updater - Updater function.
+   *
+   * @return {Graph}            - Returns itself for chaining.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
+  Class.prototype[method] = function (element, name, updater) {
+    if (arguments.length > 3) {
+      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
+
+      var source = element,
+          target = name;
+
+      name = arguments[2];
+      updater = arguments[3];
+
+      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+
+      element = this[finder](source, target);
+    }
+
+    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
+
+    var data = this[key].get(element);
+
+    data.attributes[name] = updater(data.attributes[name]);
+
+    // Emitting
+    this.emit(eventName, {
+      key: element,
+      type: 'set',
+      meta: {
+        name: name,
+        value: data.attributes[name]
+      }
+    });
+
+    return this;
+  };
+}
+
+/**
+ * Attach an attribute remover method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
+function attachAttributeRemover(Class, method, key, elementName, checker, finder) {
+  var eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
+
+  /**
+   * Remove the desired attribute for the given element (node or edge).
+   *
+   * Arity 2:
+   * @param  {any}    element - Target element.
+   * @param  {string} name    - Attribute's name.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}     source - Source element.
+   * @param  {any}     target - Target element.
+   * @param  {string}  name   - Attribute's name.
+   *
+   * @return {Graph}          - Returns itself for chaining.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
+  Class.prototype[method] = function (element, name) {
+    if (arguments.length > 2) {
+      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
+
+      var source = element,
+          target = name;
+
+      name = arguments[2];
+
+      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+
+      element = this[finder](source, target);
+    }
+
+    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
+
+    var data = this[key].get(element);
+
+    delete data.attributes[name];
+
+    // Emitting
+    this.emit(eventName, {
+      key: element,
+      type: 'remove',
+      meta: {
+        name: name
+      }
+    });
+
+    return this;
+  };
+}
+
+/**
+ * Attach an attribute replacer method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
+function attachAttributesReplacer(Class, method, key, elementName, checker, finder) {
+  var eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
+
+  /**
+   * Replace the attributes for the given element (node or edge).
+   *
+   * Arity 2:
+   * @param  {any}    element    - Target element.
+   * @param  {object} attributes - New attributes.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}     source     - Source element.
+   * @param  {any}     target     - Target element.
+   * @param  {object}  attributes - New attributes.
+   *
+   * @return {Graph}              - Returns itself for chaining.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
+  Class.prototype[method] = function (element, attributes) {
+    if (arguments.length > 2) {
+      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
+
+      var source = element,
+          target = attributes;
+
+      attributes = arguments[2];
+
+      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+
+      element = this[finder](source, target);
+    }
+
+    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
+
+    if (!(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': provided attributes are not a plain object.');
+
+    var data = this[key].get(element);
+
+    var oldAttributes = data.attributes;
+
+    data.attributes = attributes;
+
+    // Emitting
+    this.emit(eventName, {
+      key: element,
+      type: 'replace',
+      meta: {
+        before: oldAttributes,
+        after: attributes
+      }
+    });
+
+    return this;
+  };
+}
+
+/**
+ * Attach an attribute merger method onto the provided class.
+ *
+ * @param {function} Class       - Target class.
+ * @param {string}   method      - Method name.
+ * @param {string}   key         - Key of the element's storage on instance.
+ * @param {string}   elementName - Name of target element for messages.
+ * @param {string}   checker     - Name of the checker method to use.
+ * @param {string}   [finder]    - Name of the finder method to use.
+ */
+function attachAttributesMerger(Class, method, key, elementName, checker, finder) {
+  var eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
+
+  /**
+   * Replace the attributes for the given element (node or edge).
+   *
+   * Arity 2:
+   * @param  {any}    element    - Target element.
+   * @param  {object} attributes - Attributes to merge.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}     source     - Source element.
+   * @param  {any}     target     - Target element.
+   * @param  {object}  attributes - Attributes to merge.
+   *
+   * @return {Graph}              - Returns itself for chaining.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
+  Class.prototype[method] = function (element, attributes) {
+    if (arguments.length > 2) {
+      if (!finder) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': too many arguments provided.');
+
+      var source = element,
+          target = attributes;
+
+      attributes = arguments[2];
+
+      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+
+      element = this[finder](source, target);
+    }
+
+    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + elementName + ' in the graph.');
+
+    if (!(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': provided attributes are not a plain object.');
+
+    var data = this[key].get(element);
+
+    (0, _utils.assign)(data.attributes, attributes);
+
+    // Emitting
+    this.emit(eventName, {
+      key: element,
+      type: 'merge',
+      meta: {
+        data: attributes
+      }
+    });
+
+    return this;
+  };
+}
+
+/**
+ * List of methods to attach.
+ */
+var ATTRIBUTES_METHODS = [{
+  name: function name(element) {
+    return 'get' + element + 'Attribute';
+  },
+  attacher: attachAttributeGetter
+}, {
+  name: function name(element) {
+    return 'get' + element + 'Attributes';
+  },
+  attacher: attachAttributesGetter
+}, {
+  name: function name(element) {
+    return 'has' + element + 'Attribute';
+  },
+  attacher: attachAttributeChecker
+}, {
+  name: function name(element) {
+    return 'set' + element + 'Attribute';
+  },
+  attacher: attachAttributeSetter
+}, {
+  name: function name(element) {
+    return 'update' + element + 'Attribute';
+  },
+  attacher: attachAttributeUpdater
+}, {
+  name: function name(element) {
+    return 'remove' + element + 'Attribute';
+  },
+  attacher: attachAttributeRemover
+}, {
+  name: function name(element) {
+    return 'replace' + element + 'Attributes';
+  },
+  attacher: attachAttributesReplacer
+}, {
+  name: function name(element) {
+    return 'merge' + element + 'Attributes';
+  },
+  attacher: attachAttributesMerger
+}];
+
+/**
+ * Attach every attributes-related methods to a Graph class.
+ *
+ * @param {function} Graph - Target class.
+ */
+function attachAttributesMethods(Graph) {
+  ATTRIBUTES_METHODS.forEach(function (_ref) {
+    var name = _ref.name,
+        attacher = _ref.attacher;
+
+
+    // For nodes
+    attacher(Graph, name('Node'), '_nodes', 'node', 'hasNode');
+
+    // For edges
+    attacher(Graph, name('Edge'), '_edges', 'edge', 'hasEdge', 'getEdge');
+  });
+}
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.updateStructureIndex = updateStructureIndex;
+exports.clearEdgeFromStructureIndex = clearEdgeFromStructureIndex;
+exports.clearStructureIndex = clearStructureIndex;
+/**
+ * Graphology Indexes Functions
+ * =============================
+ *
+ * Bunch of functions used to compute or clear indexes.
+ */
+var INDICES = exports.INDICES = new Set(['structure']);
+
+/**
+ * Structure.
+ */
+
+/**
+ * Function updating the 'structure' index with the given edge's data.
+ *
+ * @param {Graph}  graph - Target Graph instance.
+ * @param {any}    edge  - Added edge.
+ * @param {object} data  - Attached data.
+ */
+function updateStructureIndex(graph, edge, data) {
+
+  // Retrieving edge information
+  var undirected = data.undirected,
+      source = data.source,
+      target = data.target;
+
+  // Retrieving source & target data
+
+  var sourceData = graph._nodes.get(source),
+      targetData = graph._nodes.get(target);
+
+  var outKey = undirected ? 'undirectedOut' : 'out',
+      inKey = undirected ? 'undirectedIn' : 'in';
+
+  // NOTE: The set of edges is the same for source & target
+  var commonSet = new Set();
+
+  // Handling source
+  sourceData[outKey] = sourceData[outKey] || Object.create(null);
+
+  if (!(target in sourceData[outKey])) sourceData[outKey][target] = commonSet;
+  sourceData[outKey][target].add(edge);
+
+  // If selfLoop, we break here
+  if (source === target) return;
+
+  // Handling target (we won't add the edge because it was already taken
+  // care of with source above)
+  targetData[inKey] = targetData[inKey] || Object.create(null);
+
+  if (!(source in targetData[inKey])) targetData[inKey][source] = commonSet;
+}
+
+/**
+ * Function clearing the 'structure' index data related to the given edge.
+ *
+ * @param {Graph}  graph - Target Graph instance.
+ * @param {any}    edge  - Dropped edge.
+ * @param {object} data  - Attached data.
+ */
+function clearEdgeFromStructureIndex(graph, edge, data) {
+  var source = data.source,
+      target = data.target,
+      undirected = data.undirected;
+
+  // NOTE: since the edge set is the same for source & target, we can only
+  // affect source
+
+  var sourceData = graph._nodes.get(source);
+
+  var outKey = undirected ? 'undirectedOut' : 'out';
+
+  var sourceIndex = sourceData[outKey];
+
+  // NOTE: possible to clear empty sets from memory altogether
+  if (target in sourceIndex) sourceIndex[target].delete(edge);
+}
+
+/**
+ * Function clearing the whole 'structure' index.
+ *
+ * @param {Graph} graph - Target Graph instance.
+ */
+function clearStructureIndex(graph) {
+  graph._nodes.forEach(function (data) {
+
+    // Clearing properties
+    delete data.in;
+    delete data.out;
+    delete data.undirectedIn;
+    delete data.undirectedOut;
+  });
+}
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.attachEdgeIterationMethods = attachEdgeIterationMethods;
+
+var _errors = __webpack_require__(1);
+
+var _utils = __webpack_require__(0);
+
+/**
+ * Definitions.
+ */
+/**
+ * Graphology Edge Iteration
+ * ==========================
+ *
+ * Attaching some methods to the Graph class to be able to iterate over a
+ * graph's edges.
+ */
+var EDGES_ITERATION = [{
+  name: 'edges',
+  counter: 'countEdges',
+  type: 'mixed'
+}, {
+  name: 'inEdges',
+  counter: 'countInEdges',
+  type: 'directed',
+  direction: 'in'
+}, {
+  name: 'outEdges',
+  counter: 'countOutEdges',
+  type: 'directed',
+  direction: 'out'
+}, {
+  name: 'inboundEdges',
+  counter: 'countInboundEdges',
+  type: 'mixed',
+  direction: 'in'
+}, {
+  name: 'outboundEdges',
+  counter: 'countOutboundEdges',
+  type: 'mixed',
+  direction: 'out'
+}, {
+  name: 'directedEdges',
+  counter: 'countDirectedEdges',
+  type: 'directed'
+}, {
+  name: 'undirectedEdges',
+  counter: 'countUndirectedEdges',
+  type: 'undirected'
+}, {
+  name: 'selfLoops',
+  counter: 'countSelfLoops',
+  type: 'selfLoops'
+}];
+
+/**
+ * Function collecting edges from the given object.
+ *
+ * @param  {object|undefined} object - Target object.
+ * @param  {mixed}            [key]  - Optional key.
+ * @return {array}                   - The found edges.
+ */
+function collectEdges(object, key) {
+  var edges = [];
+
+  var hasKey = arguments.length > 1;
+
+  if (!object || hasKey && !(key in object)) return edges;
+
+  if (hasKey) return Array.from(object[key]);
+
+  for (var k in object) {
+    edges.push.apply(edges, Array.from(object[k]));
+  }return edges;
+}
+
+/**
+ * Function counting edges from the given object.
+ *
+ * @param  {object|undefined} object - Target object.
+ * @param  {mixed}            [key]  - Optional key.
+ * @return {number}                  - The number of found edges.
+ */
+function countEdges(object, key) {
+  var nb = 0;
+
+  var hasKey = arguments.length > 1;
+
+  if (!object || hasKey && !(key in object)) return nb;
+
+  if (hasKey) return object[key].size;
+
+  for (var k in object) {
+    nb += object[k].size;
+  }return nb;
+}
+
+/**
+ * Function merging edges found in an object into the given set.
+ *
+ * @param {Set}              edges - Current set of edges.
+ * @param {object|undefined} map   - Target object.
+ * @param {string}           key   - Sub key.
+ */
+function mergeEdges(edges, object, key) {
+  if (!object) return;
+
+  if (key) {
+    var target = object[key];
+
+    if (target) target.forEach(function (value) {
+      return edges.add(value);
+    });
+  } else {
+    for (var k in object) {
+      object[k].forEach(function (value) {
+        return edges.add(value);
+      });
+    }
+  }
+}
+
+/**
+ * Function creating an array of edge for the given type.
+ *
+ * @param  {boolean} count - Should we count or collect?
+ * @param  {Graph}   graph - Target Graph instance.
+ * @param  {string}  type  - Type of edges to retrieve.
+ * @return {array}         - Array of edges.
+ */
+function createEdgeArray(count, graph, type) {
+  if (count && type === 'mixed') return graph.size;
+
+  var list = [];
+  var nb = 0;
+
+  if (type === 'mixed') return Array.from(graph._edges.keys());
+
+  graph._edges.forEach(function (data, edge) {
+
+    if (type === 'selfLoops' === (data.source === data.target) && !!data.undirected === (type === 'undirected')) {
+
+      if (!count) list.push(edge);
+
+      nb++;
+    }
+  });
+
+  return count ? nb : list;
+}
+
+/**
+ * Function creating an array of edge for the given type & the given node.
+ *
+ * @param  {boolean} count     - Should we count or collect?
+ * @param  {Graph}   graph     - Target Graph instance.
+ * @param  {string}  type      - Type of edges to retrieve.
+ * @param  {string}  direction - In or out?
+ * @param  {any}     node      - Target node.
+ * @return {array}             - Array of edges.
+ */
+function createEdgeArrayForNode(count, graph, type, direction, node) {
+
+  // For this, we need to compute the "structure" index
+  graph.computeIndex('structure');
+
+  var edges = [],
+      nb = 0;
+
+  var nodeData = graph._nodes.get(node);
+
+  if (type === 'mixed' || type === 'directed' || type === 'selfLoops') {
+
+    if (!direction || direction === 'in') {
+      if (count && type !== 'selfLoops') nb += countEdges(nodeData.in);else edges = edges.concat(collectEdges(nodeData.in));
+    }
+    if (!direction || direction === 'out') {
+      if (count && type !== 'selfLoops') nb += countEdges(nodeData.out);else edges = edges.concat(collectEdges(nodeData.out));
+    }
+  }
+
+  if (type === 'mixed' || type === 'undirected' || type === 'selfLoops') {
+
+    if (!direction || direction === 'in') {
+      if (count && type !== 'selfLoops') nb += countEdges(nodeData.undirectedIn);else edges = edges.concat(collectEdges(nodeData.undirectedIn));
+    }
+    if (!direction || direction === 'out') {
+      if (count && type !== 'selfLoops') nb += countEdges(nodeData.undirectedOut);else edges = edges.concat(collectEdges(nodeData.undirectedOut));
+    }
+  }
+
+  // NOTE: this is hardly optimal
+  if (type === 'selfLoops') {
+    edges = edges.filter(function (edge) {
+      return graph.source(edge) === graph.target(edge);
+    });
+
+    nb = edges.length;
+  }
+
+  return count ? nb : edges;
+}
+
+/**
+ * Function creating an array of edge for the given bunch of nodes.
+ *
+ * @param  {boolean} count     - Should we count or collect?
+ * @param  {Graph}   graph     - Target Graph instance.
+ * @param  {string}  type      - Type of edges to retrieve.
+ * @param  {string}  direction - In or out?
+ * @param  {bunch}   bunch     - Target bunch.
+ * @return {array}             - Array of edges.
+ */
+function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
+
+  // For this, we need to compute the "structure" index
+  graph.computeIndex('structure');
+
+  var edges = new Set();
+
+  // Iterating over the bunch
+  (0, _utils.overBunch)(bunch, function (node) {
+    if (!graph.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node + '" node in the graph in the given bunch.');
+
+    var nodeData = graph._nodes.get(node);
+
+    if (type === 'selfLoops') {
+      mergeEdges(edges, nodeData.out, node);
+      mergeEdges(edges, nodeData.undirectedOut, node);
+
+      return;
+    }
+
+    if (type === 'mixed' || type === 'directed') {
+
+      if (!direction || direction === 'in') mergeEdges(edges, nodeData.in);
+      if (!direction || direction === 'out') mergeEdges(edges, nodeData.out);
+    }
+
+    if (type === 'mixed' || type === 'undirected') {
+
+      if (!direction || direction === 'in') mergeEdges(edges, nodeData.undirectedIn);
+      if (!direction || direction === 'out') mergeEdges(edges, nodeData.undirectedOut);
+    }
+  });
+
+  return Array.from(edges.values());
+}
+
+/**
+ * Function creating an array of edge for the given path.
+ *
+ * @param  {boolean} count  - Should we count or collect?
+ * @param  {Graph}   graph  - Target Graph instance.
+ * @param  {string}  type   - Type of edges to retrieve.
+ * @param  {any}     source - Source node.
+ * @param  {any}     target - Target node.
+ * @return {array}          - Array of edges.
+ */
+function createEdgeArrayForPath(count, graph, type, source, target) {
+
+  // For this, we need to compute the "structure" index
+  graph.computeIndex('structure');
+
+  var edges = [],
+      nb = 0;
+
+  var sourceData = graph._nodes.get(source);
+
+  if (type === 'mixed' || type === 'directed') {
+
+    if (count) {
+      nb += countEdges(sourceData.in, target);
+      nb += countEdges(sourceData.out, target);
+    } else {
+      edges = edges.concat(collectEdges(sourceData.in, target)).concat(collectEdges(sourceData.out, target));
+    }
+  }
+
+  if (type === 'mixed' || type === 'undirected') {
+    if (count) {
+      nb += countEdges(sourceData.undirectedIn, target);
+      nb += countEdges(sourceData.undirectedOut, target);
+    } else {
+      edges = edges.concat(collectEdges(sourceData.undirectedIn, target)).concat(collectEdges(sourceData.undirectedOut, target));
+    }
+  }
+
+  return count ? nb : edges;
+}
+
+/**
+ * Function attaching an edge array creator method to the Graph prototype.
+ *
+ * @param {function} Class       - Target class.
+ * @param {boolean}  counter     - Should we count or collect?
+ * @param {object}   description - Method description.
+ */
+function attachEdgeArrayCreator(Class, counter, description) {
+  var type = description.type,
+      direction = description.direction;
+
+
+  var name = counter ? description.counter : description.name;
+
+  /**
+   * Function returning an array or the count of certain edges.
+   *
+   * Arity 0: Return all the relevant edges.
+   *
+   * Arity 1a: Return all of a node's relevant edges.
+   * @param  {any}   node   - Target node.
+   *
+   * Arity 1b: Return the union of the relevant edges of the given bunch of nodes.
+   * @param  {bunch} bunch  - Bunch of nodes.
+   *
+   * Arity 2: Return the relevant edges across the given path.
+   * @param  {any}   source - Source node.
+   * @param  {any}   target - Target node.
+   *
+   * @return {array|number} - The edges or the number of edges.
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  Class.prototype[name] = function () {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    if (!args.length) return createEdgeArray(counter, this, type);
+
+    if (args.length === 1) {
+      var nodeOrBunch = args[0];
+
+      if (this.hasNode(nodeOrBunch)) {
+
+        // Iterating over a node's edges
+        return createEdgeArrayForNode(counter, this, type, direction, nodeOrBunch);
+      } else if ((0, _utils.isBunch)(nodeOrBunch)) {
+
+        // Iterating over the union of a node's edges
+
+        // Note: since we need to keep track of the traversed values
+        // to perform union, we can't optimize further and we have to
+        // create this intermediary array and return its length when counting.
+        var edges = createEdgeArrayForBunch(name, this, type, direction, nodeOrBunch);
+
+        return counter ? edges.length : edges;
+      } else {
+        throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + nodeOrBunch + '" node in the graph.');
+      }
+    }
+
+    if (args.length === 2) {
+      var source = args[0],
+          target = args[1];
+
+
+      if (!this.hasNode(source)) throw new _errors.NotFoundGraphError('Graph.' + name + ':  could not find the "' + source + '" source node in the graph.');
+
+      if (!this.hasNode(target)) throw new _errors.NotFoundGraphError('Graph.' + name + ':  could not find the "' + target + '" target node in the graph.');
+
+      // Iterating over the edges between source & target
+      var hasEdge = void 0;
+
+      if (type === 'mixed' || type === 'directed') hasEdge = this.hasDirectedEdge(source, target);else hasEdge = this.hasUndirectedEdge(source, target);
+
+      // If no such edge exist, we'll stop right there.
+      if (!hasEdge) return counter ? 0 : [];
+
+      return createEdgeArrayForPath(counter, this, type, source, target);
+    }
+
+    throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': too many arguments (expecting 0, 1 or 2 and got ' + args.length + ').');
+  };
+}
+
+/**
+ * Function attaching every edge iteration method to the Graph class.
+ *
+ * @param {function} Graph - Graph class.
+ */
+function attachEdgeIterationMethods(Graph) {
+  EDGES_ITERATION.forEach(function (description) {
+    attachEdgeArrayCreator(Graph, false, description);
+    attachEdgeArrayCreator(Graph, true, description);
+  });
+}
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.attachNeighborIterationMethods = attachNeighborIterationMethods;
+
+var _errors = __webpack_require__(1);
+
+var _utils = __webpack_require__(0);
+
+/**
+ * Definitions.
+ */
+/**
+ * Graphology Neighbor Iteration
+ * ==============================
+ *
+ * Attaching some methods to the Graph class to be able to iterate over
+ * neighbors.
+ */
+var NEIGHBORS_ITERATION = [{
+  name: 'neighbors',
+  counter: 'countNeighbors',
+  type: 'mixed'
+}, {
+  name: 'inNeighbors',
+  counter: 'countInNeighbors',
+  type: 'directed',
+  direction: 'in'
+}, {
+  name: 'outNeighbors',
+  counter: 'countOutNeighbors',
+  type: 'directed',
+  direction: 'out'
+}, {
+  name: 'inboundNeighbors',
+  counter: 'countInboundNeighbors',
+  type: 'mixed',
+  direction: 'in'
+}, {
+  name: 'outboundNeighbors',
+  counter: 'countOutboundNeighbors',
+  type: 'mixed',
+  direction: 'out'
+}, {
+  name: 'directedNeighbors',
+  counter: 'countDirectedNeighbors',
+  type: 'directed'
+}, {
+  name: 'undirectedNeighbors',
+  counter: 'countUndirectedNeighbors',
+  type: 'undirected'
+}];
+
+/**
+ * Function merging neighbors into the given set iterating over the given object.
+ *
+ * @param {BasicSet} neighbors - Neighbors set.
+ * @param {object}   object    - Target object.
+ */
+function mergeNeighbors(neighbors, object) {
+  if (!object) return;
+
+  for (var neighbor in object) {
+    neighbors.add(neighbor);
+  }
+}
+
+/**
+ * Function creating a set of relevant neighbors for the given node.
+ *
+ * @param  {Graph}        graph     - Target graph.
+ * @param  {string}       type      - Type of neighbors.
+ * @param  {string}       direction - Direction.
+ * @param  {any}          node      - Target node.
+ * @return {Set|BasicSet}           - The neighbors set.
+ */
+function createNeighborSetForNode(graph, type, direction, node) {
+
+  // For this, we need to compute the "structure" index
+  graph.computeIndex('structure');
+
+  var neighbors = new Set();
+
+  var nodeData = graph._nodes.get(node);
+
+  if (type === 'mixed' || type === 'directed') {
+
+    if (!direction || direction === 'in') {
+      mergeNeighbors(neighbors, nodeData.in);
+    }
+    if (!direction || direction === 'out') {
+      mergeNeighbors(neighbors, nodeData.out);
+    }
+  }
+
+  if (type === 'mixed' || type === 'undirected') {
+
+    if (!direction || direction === 'in') {
+      mergeNeighbors(neighbors, nodeData.undirectedIn);
+    }
+    if (!direction || direction === 'out') {
+      mergeNeighbors(neighbors, nodeData.undirectedOut);
+    }
+  }
+
+  return neighbors;
+}
+
+/**
+ * Function creating a set of relevant neighbors for the given bunch of nodes.
+ *
+ * @param  {string}       name      - Name of the calling method.
+ * @param  {Graph}        graph     - Target graph.
+ * @param  {string}       type      - Type of neighbors.
+ * @param  {string}       direction - Direction.
+ * @param  {bunch}        bunch     - Target bunch.
+ * @return {Set|BasicSet}           - The neighbors set.
+ */
+function createNeighborSetForBunch(name, graph, type, direction, bunch) {
+
+  // For this, we need to compute the "structure" index
+  graph.computeIndex('structure');
+
+  var neighbors = new Set();
+
+  (0, _utils.overBunch)(bunch, function (node) {
+    if (!graph.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node + '" node in the graph in the given bunch.');
+
+    var nodeData = graph._nodes.get(node);
+
+    if (type === 'mixed' || type === 'directed') {
+
+      if (!direction || direction === 'in') {
+        mergeNeighbors(neighbors, nodeData.in);
+      }
+      if (!direction || direction === 'out') {
+        mergeNeighbors(neighbors, nodeData.out);
+      }
+    }
+
+    if (type === 'mixed' || type === 'undirected') {
+
+      if (!direction || direction === 'in') {
+        mergeNeighbors(neighbors, nodeData.undirectedIn);
+      }
+      if (!direction || direction === 'out') {
+        mergeNeighbors(neighbors, nodeData.undirectedOut);
+      }
+    }
+  });
+
+  return neighbors;
+}
+
+/**
+ * Function attaching a neighbors array creator method to the Graph prototype.
+ *
+ * @param {function} Class       - Target class.
+ * @param {boolean}  counter     - Should we count or collect?
+ * @param {object}   description - Method description.
+ */
+function attachNeighborArrayCreator(Class, counter, description) {
+  var type = description.type,
+      direction = description.direction;
+
+
+  var name = counter ? description.counter : description.name;
+
+  /**
+   * Function returning an array or the count of certain neighbors.
+   *
+   * Arity 1a: Return all of a node's relevant neighbors.
+   * @param  {any}   node   - Target node.
+   *
+   * Arity 1b: Return the union of the relevant neighbors of the given bunch of nodes.
+   * @param  {bunch} bunch  - Bunch of nodes.
+   *
+   * Arity 2: Return whether the two nodes are indeed neighbors.
+   * @param  {any}   source - Source node.
+   * @param  {any}   target - Target node.
+   *
+   * @return {array|number} - The neighbors or the number of neighbors.
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  Class.prototype[name] = function () {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    if (args.length === 2) {
+      var node1 = args[0],
+          node2 = args[1];
+
+
+      if (counter) throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid arguments.');
+
+      if (!this.hasNode(node1)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node1 + '" node in the graph.');
+
+      if (!this.hasNode(node2)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node2 + '" node in the graph.');
+
+      // Here, we want to assess whether the two given nodes are neighbors
+      // NOTE: we could improve performance here
+      var neighbors = createNeighborSetForNode(this, type, direction, node1);
+
+      return neighbors.has(node2);
+    } else if (args.length === 1) {
+      var nodeOrBunch = args[0];
+
+      if (this.hasNode(nodeOrBunch)) {
+
+        // Here, we want to iterate over a node's relevant neighbors
+        var _neighbors = createNeighborSetForNode(this, type, direction, nodeOrBunch);
+
+        if (counter) return _neighbors.size;
+
+        return Array.from(_neighbors);
+      } else if ((0, _utils.isBunch)(nodeOrBunch)) {
+
+        // Here, we want to iterate over the union of a bunch of nodes'
+        // relevant neighbors
+
+        // Note: since we need to keep track of the traversed values
+        // to perform union, we can't optimize further and we have to
+        // create this intermediary array and return its length when counting.
+        var _neighbors2 = createNeighborSetForBunch(name, this, type, direction, nodeOrBunch);
+
+        if (counter) return _neighbors2.size;
+
+        return Array.from(_neighbors2);
+      } else {
+        throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + nodeOrBunch + '" node in the graph.');
+      }
+    }
+
+    throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid number of arguments (expecting 1 or 2 and got ' + args.length + ').');
+  };
+}
+
+/**
+ * Function attaching every neighbor iteration method to the Graph class.
+ *
+ * @param {function} Graph - Graph class.
+ */
+function attachNeighborIterationMethods(Graph) {
+  NEIGHBORS_ITERATION.forEach(function (description) {
+    attachNeighborArrayCreator(Graph, false, description);
+    attachNeighborArrayCreator(Graph, true, description);
+  });
+}
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.serializeNode = serializeNode;
+exports.serializeEdge = serializeEdge;
+exports.validateSerializedNode = validateSerializedNode;
+exports.validateSerializedEdge = validateSerializedEdge;
+
+var _utils = __webpack_require__(0);
+
+/**
+ * Formats internal node data into a serialized node.
+ *
+ * @param  {any}    key  - The node's key.
+ * @param  {object} data - Internal node's data.
+ * @return {array}       - The serialized node.
+ */
+function serializeNode(key, data) {
+  var serialized = { key: key };
+
+  if (Object.keys(data.attributes).length) serialized.attributes = data.attributes;
+
+  return serialized;
+}
+
+/**
+ * Formats internal edge data into a serialized edge.
+ *
+ * @param  {any}    key  - The edge's key.
+ * @param  {object} data - Internal edge's data.
+ * @return {array}       - The serialized edge.
+ */
+/**
+ * Graphology Serialization Utilities
+ * ===================================
+ *
+ * Collection of functions used to validate import-export formats & to ouput
+ * them from internal graph data.
+ *
+ * Serialized Node:
+ * {key, ?attributes}
+ *
+ * Serialized Edge:
+ * {key?, source, target, attributes?, undirected?}
+ *
+ * Serialized Graph:
+ * {nodes[], edges?[]}
+ */
+function serializeEdge(key, data) {
+  var serialized = {
+    key: key,
+    source: data.source,
+    target: data.target
+  };
+
+  if (Object.keys(data.attributes).length) serialized.attributes = data.attributes;
+
+  if (data.undirected) serialized.undirected = true;
+
+  return serialized;
+}
+
+/**
+ * Checks whether the given value is a serialized node.
+ *
+ * @param  {mixed} value - Target value.
+ * @return {boolean}
+ */
+function validateSerializedNode(value) {
+  if (!(0, _utils.isPlainObject)(value)) return { valid: false, reason: 'not-object' };
+
+  if (!('key' in value)) return { valid: false, reason: 'no-key' };
+
+  if ('attributes' in value && (!(0, _utils.isPlainObject)(value.attributes) || value.attributes === null)) return { valid: false, reason: 'invalid-attributes' };
+
+  return { valid: true };
+}
+
+/**
+ * Checks whether the given value is a serialized edge.
+ *
+ * @param  {mixed} value - Target value.
+ * @return {boolean}
+ */
+function validateSerializedEdge(value) {
+  if (!(0, _utils.isPlainObject)(value)) return { valid: false, reason: 'not-object' };
+
+  if (!('source' in value)) return { valid: false, reason: 'no-source' };
+
+  if (!('target' in value)) return { valid: false, reason: 'no-target' };
+
+  if ('attributes' in value && (!(0, _utils.isPlainObject)(value.attributes) || value.attributes === null)) return { valid: false, reason: 'invalid-attributes' };
+
+  if ('undirected' in value && typeof value.undirected !== 'boolean') return { valid: false, reason: 'invalid-undirected' };
+
+  return { valid: true };
+}
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+function EventEmitter() {
+  this._events = this._events || {};
+  this._maxListeners = this._maxListeners || undefined;
+}
+module.exports = EventEmitter;
+
+// Backwards-compat with node 0.10.x
+EventEmitter.EventEmitter = EventEmitter;
+
+EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._maxListeners = undefined;
+
+// By default EventEmitters will print a warning if more than 10 listeners are
+// added to it. This is a useful default which helps finding memory leaks.
+EventEmitter.defaultMaxListeners = 10;
+
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!isNumber(n) || n < 0 || isNaN(n))
+    throw TypeError('n must be a positive number');
+  this._maxListeners = n;
+  return this;
+};
+
+EventEmitter.prototype.emit = function(type) {
+  var er, handler, len, args, i, listeners;
+
+  if (!this._events)
+    this._events = {};
+
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events.error ||
+        (isObject(this._events.error) && !this._events.error.length)) {
+      er = arguments[1];
+      if (er instanceof Error) {
+        throw er; // Unhandled 'error' event
+      } else {
+        // At least give some kind of context to the user
+        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
+        err.context = er;
+        throw err;
+      }
+    }
+  }
+
+  handler = this._events[type];
+
+  if (isUndefined(handler))
+    return false;
+
+  if (isFunction(handler)) {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        args = Array.prototype.slice.call(arguments, 1);
+        handler.apply(this, args);
+    }
+  } else if (isObject(handler)) {
+    args = Array.prototype.slice.call(arguments, 1);
+    listeners = handler.slice();
+    len = listeners.length;
+    for (i = 0; i < len; i++)
+      listeners[i].apply(this, args);
+  }
+
+  return true;
+};
+
+EventEmitter.prototype.addListener = function(type, listener) {
+  var m;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events)
+    this._events = {};
+
+  // To avoid recursion in the case that type === "newListener"! Before
+  // adding it to the listeners, first emit "newListener".
+  if (this._events.newListener)
+    this.emit('newListener', type,
+              isFunction(listener.listener) ?
+              listener.listener : listener);
+
+  if (!this._events[type])
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  else if (isObject(this._events[type]))
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  else
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+
+  // Check for listener leak
+  if (isObject(this._events[type]) && !this._events[type].warned) {
+    if (!isUndefined(this._maxListeners)) {
+      m = this._maxListeners;
+    } else {
+      m = EventEmitter.defaultMaxListeners;
+    }
+
+    if (m && m > 0 && this._events[type].length > m) {
+      this._events[type].warned = true;
+      console.error('(node) warning: possible EventEmitter memory ' +
+                    'leak detected. %d listeners added. ' +
+                    'Use emitter.setMaxListeners() to increase limit.',
+                    this._events[type].length);
+      if (typeof console.trace === 'function') {
+        // not supported in IE 10
+        console.trace();
+      }
+    }
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.once = function(type, listener) {
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  var fired = false;
+
+  function g() {
+    this.removeListener(type, g);
+
+    if (!fired) {
+      fired = true;
+      listener.apply(this, arguments);
+    }
+  }
+
+  g.listener = listener;
+  this.on(type, g);
+
+  return this;
+};
+
+// emits a 'removeListener' event iff the listener was removed
+EventEmitter.prototype.removeListener = function(type, listener) {
+  var list, position, length, i;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events || !this._events[type])
+    return this;
+
+  list = this._events[type];
+  length = list.length;
+  position = -1;
+
+  if (list === listener ||
+      (isFunction(list.listener) && list.listener === listener)) {
+    delete this._events[type];
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+
+  } else if (isObject(list)) {
+    for (i = length; i-- > 0;) {
+      if (list[i] === listener ||
+          (list[i].listener && list[i].listener === listener)) {
+        position = i;
+        break;
+      }
+    }
+
+    if (position < 0)
+      return this;
+
+    if (list.length === 1) {
+      list.length = 0;
+      delete this._events[type];
+    } else {
+      list.splice(position, 1);
+    }
+
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  var key, listeners;
+
+  if (!this._events)
+    return this;
+
+  // not listening for removeListener, no need to emit
+  if (!this._events.removeListener) {
+    if (arguments.length === 0)
+      this._events = {};
+    else if (this._events[type])
+      delete this._events[type];
+    return this;
+  }
+
+  // emit removeListener for all listeners on all events
+  if (arguments.length === 0) {
+    for (key in this._events) {
+      if (key === 'removeListener') continue;
+      this.removeAllListeners(key);
+    }
+    this.removeAllListeners('removeListener');
+    this._events = {};
+    return this;
+  }
+
+  listeners = this._events[type];
+
+  if (isFunction(listeners)) {
+    this.removeListener(type, listeners);
+  } else if (listeners) {
+    // LIFO order
+    while (listeners.length)
+      this.removeListener(type, listeners[listeners.length - 1]);
+  }
+  delete this._events[type];
+
+  return this;
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  var ret;
+  if (!this._events || !this._events[type])
+    ret = [];
+  else if (isFunction(this._events[type]))
+    ret = [this._events[type]];
+  else
+    ret = this._events[type].slice();
+  return ret;
+};
+
+EventEmitter.prototype.listenerCount = function(type) {
+  if (this._events) {
+    var evlistener = this._events[type];
+
+    if (isFunction(evlistener))
+      return 1;
+    else if (evlistener)
+      return evlistener.length;
+  }
+  return 0;
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  return emitter.listenerCount(type);
+};
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+var _graph = __webpack_require__(2);
+
+var _graph2 = _interopRequireDefault(_graph);
+
+var _errors = __webpack_require__(1);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Graphology Reference Implementation Endoint
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * ============================================
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Importing the Graph object & deriving alternative constructors.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+
+/**
+ * Alternative constructors.
+ */
+var DirectedGraph = function (_Graph) {
+  _inherits(DirectedGraph, _Graph);
+
+  function DirectedGraph(data, options) {
+    _classCallCheck(this, DirectedGraph);
+
+    return _possibleConstructorReturn(this, _Graph.call(this, data, (0, _utils.assign)({ type: 'directed' }, options)));
+  }
+
+  return DirectedGraph;
+}(_graph2.default);
+
+var UndirectedGraph = function (_Graph2) {
+  _inherits(UndirectedGraph, _Graph2);
+
+  function UndirectedGraph(data, options) {
+    _classCallCheck(this, UndirectedGraph);
+
+    return _possibleConstructorReturn(this, _Graph2.call(this, data, (0, _utils.assign)({ type: 'undirected' }, options)));
+  }
+
+  return UndirectedGraph;
+}(_graph2.default);
+
+var MultiDirectedGraph = function (_Graph3) {
+  _inherits(MultiDirectedGraph, _Graph3);
+
+  function MultiDirectedGraph(data, options) {
+    _classCallCheck(this, MultiDirectedGraph);
+
+    return _possibleConstructorReturn(this, _Graph3.call(this, data, (0, _utils.assign)({ multi: true, type: 'directed' }, options)));
+  }
+
+  return MultiDirectedGraph;
+}(_graph2.default);
+
+var MultiUndirectedGraph = function (_Graph4) {
+  _inherits(MultiUndirectedGraph, _Graph4);
+
+  function MultiUndirectedGraph(data, options) {
+    _classCallCheck(this, MultiUndirectedGraph);
+
+    return _possibleConstructorReturn(this, _Graph4.call(this, data, (0, _utils.assign)({ multi: true, type: 'undirected' }, options)));
+  }
+
+  return MultiUndirectedGraph;
+}(_graph2.default);
+
+/**
+ * Exporting as CommonJS for convenience.
+ */
+
+
+_graph2.default.Graph = _graph2.default;
+_graph2.default.DirectedGraph = DirectedGraph;
+_graph2.default.UndirectedGraph = UndirectedGraph;
+_graph2.default.MultiDirectedGraph = MultiDirectedGraph;
+_graph2.default.MultiUndirectedGraph = MultiUndirectedGraph;
+
+_graph2.default.InvalidArgumentsGraphError = _errors.InvalidArgumentsGraphError;
+_graph2.default.NotFoundGraphError = _errors.NotFoundGraphError;
+_graph2.default.UsageGraphError = _errors.UsageGraphError;
+
+module.exports = _graph2.default;
+
+/***/ })
+/******/ ]);
+});
