@@ -5,14 +5,15 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "webpack --colors --progress && webpack --colors --progress -p",
-    "clean": "rimraf build dist specs",
+    "clean": "rimraf dist specs",
     "dist": "npm run clean && babel src --out-dir dist && babel tests --out-dir specs",
     "lint": "eslint src tests test.js",
     "postpublish": "npm run clean",
-    "prepublish": "npm run test && npm run lint && npm run dist",
+    "prepublish": "npm run test && npm run lint && npm run dist && npm run build",
     "test": "mocha -u exports --compilers js:babel-core/register ./test.js"
   },
   "files": [
+    "build",
     "dist",
     "specs"
   ],
