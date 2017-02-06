@@ -2,7 +2,7 @@
  * Graphology Reference Implementation Endoint
  * ============================================
  *
- * Importing the Graph object & deriving alternative constructors.
+ * Importing the Graph object & creating typed constructors.
  */
 import {assign} from './utils';
 import Graph from './graph';
@@ -50,7 +50,8 @@ class MultiUndirectedGraph extends Graph {
 }
 
 /**
- * Exporting as CommonJS for convenience.
+ * Attaching the various constructors to the Graph class itself so we can
+ * keep CommonJS semantics so everyone can consume the library easily.
  */
 Graph.Graph = Graph;
 Graph.DirectedGraph = DirectedGraph;
