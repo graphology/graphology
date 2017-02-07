@@ -20,12 +20,10 @@ import {
  *
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
- * @param {string}   key         - Key of the element's storage on instance.
- * @param {string}   elementName - Name of target element for messages.
  * @param {string}   checker     - Name of the checker method to use.
  * @param {string}   [finder]    - Name of the finder method to use.
  */
-function attachAttributeGetter(Class, method, key, elementName, checker, finder) {
+function attachAttributeGetter(Class, method, checker, finder) {
 
   /**
    * Get the desired attribute for the given element (node or edge).
@@ -61,9 +59,9 @@ function attachAttributeGetter(Class, method, key, elementName, checker, finder)
     }
 
     if (!this[checker](element))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
 
-    const data = this[key].get(element);
+    const data = this._edges.get(element);
 
     return data.attributes[name];
   };
@@ -74,12 +72,10 @@ function attachAttributeGetter(Class, method, key, elementName, checker, finder)
  *
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
- * @param {string}   key         - Key of the element's storage on instance.
- * @param {string}   elementName - Name of target element for messages.
  * @param {string}   checker     - Name of the checker method to use.
  * @param {string}   [finder]    - Name of the finder method to use.
  */
-function attachAttributesGetter(Class, method, key, elementName, checker, finder) {
+function attachAttributesGetter(Class, method, checker, finder) {
 
   /**
    * Retrieves all the target element's attributes.
@@ -111,9 +107,9 @@ function attachAttributesGetter(Class, method, key, elementName, checker, finder
     }
 
     if (!this[checker](element))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
 
-    const data = this[key].get(element);
+    const data = this._edges.get(element);
 
     return data.attributes;
   };
@@ -124,12 +120,10 @@ function attachAttributesGetter(Class, method, key, elementName, checker, finder
  *
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
- * @param {string}   key         - Key of the element's storage on instance.
- * @param {string}   elementName - Name of target element for messages.
  * @param {string}   checker     - Name of the checker method to use.
  * @param {string}   [finder]    - Name of the finder method to use.
  */
-function attachAttributeChecker(Class, method, key, elementName, checker, finder) {
+function attachAttributeChecker(Class, method, checker, finder) {
 
   /**
    * Checks whether the desired attribute is set for the given element (node or edge).
@@ -165,9 +159,9 @@ function attachAttributeChecker(Class, method, key, elementName, checker, finder
     }
 
     if (!this[checker](element))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
 
-    const data = this[key].get(element);
+    const data = this._edges.get(element);
 
     return data.attributes.hasOwnProperty(name);
   };
@@ -178,13 +172,10 @@ function attachAttributeChecker(Class, method, key, elementName, checker, finder
  *
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
- * @param {string}   key         - Key of the element's storage on instance.
- * @param {string}   elementName - Name of target element for messages.
  * @param {string}   checker     - Name of the checker method to use.
  * @param {string}   [finder]    - Name of the finder method to use.
  */
-function attachAttributeSetter(Class, method, key, elementName, checker, finder) {
-  const eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
+function attachAttributeSetter(Class, method, checker, finder) {
 
   /**
    * Set the desired attribute for the given element (node or edge).
@@ -223,14 +214,14 @@ function attachAttributeSetter(Class, method, key, elementName, checker, finder)
     }
 
     if (!this[checker](element))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
 
-    const data = this[key].get(element);
+    const data = this._edges.get(element);
 
     data.attributes[name] = value;
 
     // Emitting
-    this.emit(eventName, {
+    this.emit('edgeAttributesUpdated', {
       key: element,
       type: 'set',
       meta: {
@@ -248,13 +239,10 @@ function attachAttributeSetter(Class, method, key, elementName, checker, finder)
  *
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
- * @param {string}   key         - Key of the element's storage on instance.
- * @param {string}   elementName - Name of target element for messages.
  * @param {string}   checker     - Name of the checker method to use.
  * @param {string}   [finder]    - Name of the finder method to use.
  */
-function attachAttributeUpdater(Class, method, key, elementName, checker, finder) {
-  const eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
+function attachAttributeUpdater(Class, method, checker, finder) {
 
   /**
    * Update the desired attribute for the given element (node or edge) using
@@ -294,14 +282,14 @@ function attachAttributeUpdater(Class, method, key, elementName, checker, finder
     }
 
     if (!this[checker](element))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
 
-    const data = this[key].get(element);
+    const data = this._edges.get(element);
 
     data.attributes[name] = updater(data.attributes[name]);
 
     // Emitting
-    this.emit(eventName, {
+    this.emit('edgeAttributesUpdated', {
       key: element,
       type: 'set',
       meta: {
@@ -319,13 +307,10 @@ function attachAttributeUpdater(Class, method, key, elementName, checker, finder
  *
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
- * @param {string}   key         - Key of the element's storage on instance.
- * @param {string}   elementName - Name of target element for messages.
  * @param {string}   checker     - Name of the checker method to use.
  * @param {string}   [finder]    - Name of the finder method to use.
  */
-function attachAttributeRemover(Class, method, key, elementName, checker, finder) {
-  const eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
+function attachAttributeRemover(Class, method, checker, finder) {
 
   /**
    * Remove the desired attribute for the given element (node or edge).
@@ -361,14 +346,14 @@ function attachAttributeRemover(Class, method, key, elementName, checker, finder
     }
 
     if (!this[checker](element))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
 
-    const data = this[key].get(element);
+    const data = this._edges.get(element);
 
     delete data.attributes[name];
 
     // Emitting
-    this.emit(eventName, {
+    this.emit('edgeAttributesUpdated', {
       key: element,
       type: 'remove',
       meta: {
@@ -385,13 +370,10 @@ function attachAttributeRemover(Class, method, key, elementName, checker, finder
  *
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
- * @param {string}   key         - Key of the element's storage on instance.
- * @param {string}   elementName - Name of target element for messages.
  * @param {string}   checker     - Name of the checker method to use.
  * @param {string}   [finder]    - Name of the finder method to use.
  */
-function attachAttributesReplacer(Class, method, key, elementName, checker, finder) {
-  const eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
+function attachAttributesReplacer(Class, method, checker, finder) {
 
   /**
    * Replace the attributes for the given element (node or edge).
@@ -427,19 +409,19 @@ function attachAttributesReplacer(Class, method, key, elementName, checker, find
     }
 
     if (!this[checker](element))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
 
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(`Graph.${method}: provided attributes are not a plain object.`);
 
-    const data = this[key].get(element);
+    const data = this._edges.get(element);
 
     const oldAttributes = data.attributes;
 
     data.attributes = attributes;
 
     // Emitting
-    this.emit(eventName, {
+    this.emit('edgeAttributesUpdated', {
       key: element,
       type: 'replace',
       meta: {
@@ -457,13 +439,10 @@ function attachAttributesReplacer(Class, method, key, elementName, checker, find
  *
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
- * @param {string}   key         - Key of the element's storage on instance.
- * @param {string}   elementName - Name of target element for messages.
  * @param {string}   checker     - Name of the checker method to use.
  * @param {string}   [finder]    - Name of the finder method to use.
  */
-function attachAttributesMerger(Class, method, key, elementName, checker, finder) {
-  const eventName = elementName === 'node' ? 'nodeAttributesUpdated' : 'edgeAttributesUpdated';
+function attachAttributesMerger(Class, method, checker, finder) {
 
   /**
    * Replace the attributes for the given element (node or edge).
@@ -499,17 +478,17 @@ function attachAttributesMerger(Class, method, key, elementName, checker, finder
     }
 
     if (!this[checker](element))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${elementName} in the graph.`);
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
 
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(`Graph.${method}: provided attributes are not a plain object.`);
 
-    const data = this[key].get(element);
+    const data = this._edges.get(element);
 
     assign(data.attributes, attributes);
 
     // Emitting
-    this.emit(eventName, {
+    this.emit('edgeAttributesUpdated', {
       key: element,
       type: 'merge',
       meta: {
@@ -571,8 +550,6 @@ export function attachAttributesMethods(Graph) {
     attacher(
       Graph,
       name('Edge'),
-      '_edges',
-      'edge',
       'hasEdge',
       'getEdge'
     );
