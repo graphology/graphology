@@ -10,7 +10,7 @@ export default function knownMethods(Graph) {
   return {
     '#.toJSON': {
       'it should return the serialized graph.': function() {
-        const graph = new Graph(null, {multi: true});
+        const graph = new Graph({multi: true});
         graph.addNodesFrom(['John', 'Jack', 'Martha']);
         graph.setNodeAttribute('John', 'age', 34);
         graph.addEdgeWithKey('J->J•1', 'John', 'Jack');

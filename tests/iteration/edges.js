@@ -34,7 +34,7 @@ export default function edgesIteration(Graph, checkers) {
     notFound
   } = checkers;
 
-  const graph = new Graph(null, {multi: true});
+  const graph = new Graph({multi: true});
 
   graph.addNodesFrom([
     'John',
@@ -267,7 +267,7 @@ export default function edgesIteration(Graph, checkers) {
     }
   };
 
-  const graphWithSelfLoops = new Graph(null, {multi: true});
+  const graphWithSelfLoops = new Graph({multi: true});
   graphWithSelfLoops.addNodesFrom(['John', 'Tabitha', 'Marcia', 'Alone']);
   graphWithSelfLoops.addEdgeWithKey('J->T', 'John', 'Tabitha');
   graphWithSelfLoops.addEdgeWithKey('J1', 'John', 'John');

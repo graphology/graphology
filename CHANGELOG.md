@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0 (provisonal)
+
+* Implementing the static `#.from` method & switching constructor paradigm.
+
 ## 0.4.2
 
 * Adding missing built files to the npm package.

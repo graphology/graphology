@@ -124,7 +124,7 @@ export default function mutation(Graph, checkers) {
       },
 
       'it should throw if the graph is undirected.': function() {
-        const graph = new Graph(null, {type: 'undirected'});
+        const graph = new Graph({type: 'undirected'});
 
         assert.throws(function() {
           graph.addDirectedEdge('source', 'target');
@@ -145,7 +145,7 @@ export default function mutation(Graph, checkers) {
       },
 
       'it should throw if the edge is a loop and the graph does not allow it.': function() {
-        const graph = new Graph(null, {allowSelfLoops: false});
+        const graph = new Graph({allowSelfLoops: false});
 
         graph.addNode('Thomas');
 
@@ -195,7 +195,7 @@ export default function mutation(Graph, checkers) {
     '#.addEdge': {
       'it should add a directed edge if the graph is directed or mixed.': function() {
         const graph = new Graph(),
-              directedGraph = new Graph(null, {type: 'directed'});
+              directedGraph = new Graph({type: 'directed'});
 
         graph.addNode('John');
         graph.addNode('Martha');
@@ -210,7 +210,7 @@ export default function mutation(Graph, checkers) {
       },
 
       'it should add an undirected edge if the graph is undirected.': function() {
-        const graph = new Graph(null, {type: 'undirected'});
+        const graph = new Graph({type: 'undirected'});
 
         graph.addNode('John');
         graph.addNode('Martha');
@@ -275,7 +275,7 @@ export default function mutation(Graph, checkers) {
     '#.addEdgeWithKey': {
       'it should add a directed edge if the graph is directed or mixed.': function() {
         const graph = new Graph(),
-              directedGraph = new Graph(null, {type: 'directed'});
+              directedGraph = new Graph({type: 'directed'});
 
         graph.addNode('John');
         graph.addNode('Martha');
@@ -290,7 +290,7 @@ export default function mutation(Graph, checkers) {
       },
 
       'it should add an undirected edge if the graph is undirected.': function() {
-        const graph = new Graph(null, {type: 'undirected'});
+        const graph = new Graph({type: 'undirected'});
 
         graph.addNode('John');
         graph.addNode('Martha');
@@ -478,7 +478,7 @@ export default function mutation(Graph, checkers) {
       },
 
       'it should drop every edges between source & target.': function() {
-        const graph = new Graph(null, {multi: true});
+        const graph = new Graph({multi: true});
 
         graph.addNodesFrom(['Lindsay', 'Martha']);
         graph.addEdge('Lindsay', 'Martha');

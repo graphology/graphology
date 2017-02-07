@@ -85,7 +85,7 @@ export default function read(Graph, checkers) {
       },
 
       'it should return a directed edge before an undirected one.': function() {
-        const graph = new Graph(null, {multi: true});
+        const graph = new Graph({multi: true});
         graph.addNode('Martha');
         graph.addNode('Catherine');
         graph.addNode('John');

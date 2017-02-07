@@ -387,17 +387,16 @@ function exportEdges(graph, name, predicate, bunch) {
  * Graph class
  *
  * @constructor
- * @param  {Graph|Array<Array>} [data]    - Hydratation data.
- * @param  {object}             [options] - Options:
- * @param  {boolean}              [allowSelfLoops] - Allow self loops?
- * @param  {string}               [type]           - Type of the graph.
- * @param  {boolean}              [map]            - Allow references as keys?
- * @param  {boolean}              [multi]          - Allow parallel edges?
+ * @param  {object}  [options] - Options:
+ * @param  {boolean}   [allowSelfLoops] - Allow self loops?
+ * @param  {string}    [type]           - Type of the graph.
+ * @param  {boolean}   [map]            - Allow references as keys?
+ * @param  {boolean}   [multi]          - Allow parallel edges?
  *
  * @throws {Error} - Will throw if the arguments are not valid.
  */
 export default class Graph extends EventEmitter {
-  constructor(data, options) {
+  constructor(options) {
     super();
 
     //-- Solving options
@@ -463,10 +462,6 @@ export default class Graph extends EventEmitter {
       if (!index.lazy)
         index.computed = true;
     }
-
-    //-- Hydratation
-    if (data)
-      this.import(data);
   }
 
   /**---------------------------------------------------------------------------
@@ -1729,7 +1724,7 @@ export default class Graph extends EventEmitter {
    * @return {Graph} - The empty copy.
    */
   emptyCopy() {
-    return new Graph(null, this._options);
+    return new Graph(this._options);
   }
 
   /**
@@ -1738,7 +1733,10 @@ export default class Graph extends EventEmitter {
    * @return {Graph} - The copy.
    */
   copy() {
-    return new Graph(this, this._options);
+    const graph = new Graph(this._options);
+    graph.import(this);
+
+    return graph;
   }
 
   /**---------------------------------------------------------------------------

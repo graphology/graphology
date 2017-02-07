@@ -27,7 +27,7 @@ export default function neighborsIteration(Graph, checkers) {
     notFound
   } = checkers;
 
-  const graph = new Graph(null, {multi: true});
+  const graph = new Graph({multi: true});
 
   graph.addNodesFrom([
     'John',

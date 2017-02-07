@@ -28,21 +28,21 @@ export default function instantiation(Graph, implementation, checkers) {
   } = checkers;
 
   return {
-    'Hydratation': {
+    'Static #.from method': {
 
-      'it should be possible to hydrate from a Graph instance.': function() {
+      'it should be possible to create a Graph from a Graph instance.': function() {
         const graph = new Graph();
         graph.addNodesFrom(['John', 'Thomas']);
         graph.addEdge('John', 'Thomas');
 
-        const other = new Graph(graph);
+        const other = Graph.from(graph);
 
         assert.deepEqual(graph.nodes(), other.nodes());
         assert.deepEqual(graph.edges(), other.edges());
       },
 
-      'it should be possible to hydrate from a serialized graph': function() {
-        const graph = new Graph({
+      'it should be possible to create a Graph from a serialized graph': function() {
+        const graph = Graph.from({
           nodes: [
             {key: 'John'},
             {key: 'Thomas'}
@@ -54,6 +54,20 @@ export default function instantiation(Graph, implementation, checkers) {
 
         assert.deepEqual(graph.nodes(), ['John', 'Thomas']);
         assert.strictEqual(graph.hasEdge('John', 'Thomas'), true);
+      },
+
+      'it should be possible to provide options.': function() {
+        const graph = Graph.from({
+          node: [
+            {key: 'John'}
+          ],
+          attributes: {
+            name: 'Awesome graph'
+          }
+        }, {type: 'directed'});
+
+        assert.strictEqual(graph.type, 'directed');
+        assert.strictEqual(graph.getAttribute('name'), 'Awesome graph');
       }
     },
 
@@ -66,7 +80,7 @@ export default function instantiation(Graph, implementation, checkers) {
 
         'providing a non-boolean value should throw.': function() {
           assert.throws(function() {
-            const graph = new Graph(null, {allowSelfLoops: 'test'});
+            const graph = new Graph({allowSelfLoops: 'test'});
           }, invalid());
         }
       },
@@ -78,12 +92,12 @@ export default function instantiation(Graph, implementation, checkers) {
 
         'providing something other than a plain object should throw.': function() {
           assert.throws(function() {
-            const graph = new Graph(null, {defaultEdgeAttributes: 'test'});
+            const graph = new Graph({defaultEdgeAttributes: 'test'});
           }, invalid());
         },
 
         'it should set default attributes on edges.': function() {
-          const graph = new Graph(null, {defaultEdgeAttributes: {type: 'KNOWS'}, multi: true});
+          const graph = new Graph({defaultEdgeAttributes: {type: 'KNOWS'}, multi: true});
 
           graph.addNodesFrom(['John', 'Martha']);
 
@@ -108,12 +122,12 @@ export default function instantiation(Graph, implementation, checkers) {
 
         'providing something other than a plain object should throw.': function() {
           assert.throws(function() {
-            const graph = new Graph(null, {defaultNodeAttributes: 'test'});
+            const graph = new Graph({defaultNodeAttributes: 'test'});
           }, invalid());
         },
 
         'it should set default attributes on nodes.': function() {
-          const graph = new Graph(null, {defaultNodeAttributes: {eyes: 'blue'}});
+          const graph = new Graph({defaultNodeAttributes: {eyes: 'blue'}});
 
           graph.addNode('John');
 
@@ -136,7 +150,7 @@ export default function instantiation(Graph, implementation, checkers) {
 
         'providing something other than a function should throw.': function() {
           assert.throws(function() {
-            const graph = new Graph(null, {edgeKeyGenerator: 'test'});
+            const graph = new Graph({edgeKeyGenerator: 'test'});
           }, invalid());
         },
 
@@ -145,7 +159,7 @@ export default function instantiation(Graph, implementation, checkers) {
             return `${source}->${target}`;
           };
 
-          const graph = new Graph(null, {edgeKeyGenerator});
+          const graph = new Graph({edgeKeyGenerator});
           graph.addNodesFrom(['John', 'Martha', 'Clark']);
           graph.addEdge('John', 'Martha');
           graph.addEdge('Martha', 'Clark');
@@ -161,7 +175,7 @@ export default function instantiation(Graph, implementation, checkers) {
 
         'providing a non-boolean value should throw.': function() {
           assert.throws(function() {
-            const graph = new Graph(null, {multi: 'test'});
+            const graph = new Graph({multi: 'test'});
           }, invalid());
         }
       },
@@ -173,7 +187,7 @@ export default function instantiation(Graph, implementation, checkers) {
 
         'providing an invalid type should throw.': function() {
           assert.throws(function() {
-            const graph = new Graph(null, {type: 'test'});
+            const graph = new Graph({type: 'test'});
           }, invalid());
         }
       }

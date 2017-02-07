@@ -50,7 +50,7 @@ export default function serialization(Graph, checkers) {
       },
 
       'it should properly serialize edges.': function() {
-        const graph = new Graph(null, {multi: true});
+        const graph = new Graph({multi: true});
         graph.addNodesFrom(['John', 'Martha']);
         graph.addEdgeWithKey('J->M•1', 'John', 'Martha');
         graph.addEdgeWithKey('J->M•2', 'John', 'Martha', {weight: 1});
@@ -107,7 +107,7 @@ export default function serialization(Graph, checkers) {
       },
 
       'it should return all the edges serialized if no arguments are provided.': function() {
-        const graph = new Graph(null, {multi: true});
+        const graph = new Graph({multi: true});
         graph.addNode('John');
         graph.addNode('Jack');
         graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
@@ -120,7 +120,7 @@ export default function serialization(Graph, checkers) {
       },
 
       'it should return the serialized edges from the given bunch.': function() {
-        const graph = new Graph(null, {multi: true});
+        const graph = new Graph({multi: true});
         graph.addNodesFrom(['John', 'Jack', 'Martha']);
         graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
         graph.addEdgeWithKey('J->J•2', 'John', 'Jack', {weight: 2});
@@ -145,7 +145,7 @@ export default function serialization(Graph, checkers) {
       },
 
       'it should return all the directed edges serialized if no arguments are provided.': function() {
-        const graph = new Graph(null, {multi: true});
+        const graph = new Graph({multi: true});
         graph.addNode('John');
         graph.addNode('Jack');
         graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
@@ -160,7 +160,7 @@ export default function serialization(Graph, checkers) {
       },
 
       'it should return the serialized directed edges from the given bunch.': function() {
-        const graph = new Graph(null, {multi: true});
+        const graph = new Graph({multi: true});
         graph.addNodesFrom(['John', 'Jack', 'Martha']);
         graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
         graph.addEdgeWithKey('J->J•2', 'John', 'Jack', {weight: 2});
@@ -187,7 +187,7 @@ export default function serialization(Graph, checkers) {
       },
 
       'it should return all the undirected edges serialized if no arguments are provided.': function() {
-        const graph = new Graph(null, {multi: true});
+        const graph = new Graph({multi: true});
         graph.addNode('John');
         graph.addNode('Jack');
         graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
@@ -202,7 +202,7 @@ export default function serialization(Graph, checkers) {
       },
 
       'it should return the serialized undirected edges from the given bunch.': function() {
-        const graph = new Graph(null, {multi: true});
+        const graph = new Graph({multi: true});
         graph.addNodesFrom(['John', 'Jack', 'Martha']);
         graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
         graph.addEdgeWithKey('J->J•2', 'John', 'Jack', {weight: 2});
@@ -220,7 +220,7 @@ export default function serialization(Graph, checkers) {
 
     '#.export': {
       'it should correctly return the serialized graph.': function() {
-        const graph = new Graph(null, {multi: true});
+        const graph = new Graph({multi: true});
         graph.setAttribute('name', 'graph');
         graph.addNodesFrom(['John', 'Jack', 'Martha']);
         graph.setNodeAttribute('John', 'age', 34);
@@ -315,7 +315,7 @@ export default function serialization(Graph, checkers) {
       },
 
       'it should correctly import the given edge.': function() {
-        const graph = new Graph(null, {multi: true});
+        const graph = new Graph({multi: true});
         graph.addNodesFrom(['John', 'Thomas']);
 
         graph.importEdge({
@@ -487,7 +487,7 @@ export default function serialization(Graph, checkers) {
     },
 
     '#.copy': {
-      'it should create an empty copy of the graph.': function() {
+      'it should create a full copy of the graph.': function() {
         const graph = new Graph();
         graph.addNodesFrom(['John', 'Thomas']);
         graph.addEdge('John', 'Thomas');

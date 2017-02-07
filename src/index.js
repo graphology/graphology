@@ -17,37 +17,59 @@ import {
  * Alternative constructors.
  */
 class DirectedGraph extends Graph {
-  constructor(data, options) {
+  constructor(options) {
     super(
-      data,
       assign({type: 'directed'}, options)
     );
   }
 }
 class UndirectedGraph extends Graph {
-  constructor(data, options) {
+  constructor(options) {
     super(
-      data,
       assign({type: 'undirected'}, options)
     );
   }
 }
 class MultiDirectedGraph extends Graph {
-  constructor(data, options) {
+  constructor(options) {
     super(
-      data,
       assign({multi: true, type: 'directed'}, options)
     );
   }
 }
 class MultiUndirectedGraph extends Graph {
-  constructor(data, options) {
+  constructor(options) {
     super(
-      data,
       assign({multi: true, type: 'undirected'}, options)
     );
   }
 }
+
+/**
+ * Attaching static #.from method to each of the constructors.
+ */
+function attachStaticFromMethod(Class) {
+
+  /**
+   * Builds a graph from serialized data or another graph's data.
+   *
+   * @param  {Graph|SerializedGraph} data      - Hydratation data.
+   * @param  {object}                [options] - Options.
+   * @return {Class}
+   */
+  Class.from = function(data, options) {
+    const instance = new Class(options);
+    instance.import(data);
+
+    return instance;
+  };
+}
+
+attachStaticFromMethod(Graph);
+attachStaticFromMethod(DirectedGraph);
+attachStaticFromMethod(UndirectedGraph);
+attachStaticFromMethod(MultiDirectedGraph);
+attachStaticFromMethod(MultiUndirectedGraph);
 
 /**
  * Attaching the various constructors to the Graph class itself so we can
