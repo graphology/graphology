@@ -103,6 +103,42 @@ export default function events(Graph) {
       }
     },
 
+    'attributesUpdated': {
+      'it should fire when a graph attribute is updated.': function() {
+        const graph = new Graph();
+
+        const handler = spy(payload => {
+          const {type, meta} = payload;
+
+          assert(VALID_TYPES.has(type));
+
+          if (type === 'set') {
+            assert.strictEqual(meta.name, 'name');
+            assert.strictEqual(meta.value, 'Awesome graph');
+          }
+          else if (type === 'replace') {
+            assert.deepEqual(meta.before, {name: 'Awesome graph'});
+            assert.deepEqual(meta.after, {name: 'Shitty graph'});
+          }
+          else if (type === 'remove') {
+            assert.strictEqual(meta.name, 'name');
+          }
+          else {
+            assert.deepEqual(meta.data, {name: 'Shitty graph', author: 'John'});
+          }
+        });
+
+        graph.on('attributesUpdated', handler);
+
+        graph.setAttribute('name', 'Awesome graph');
+        graph.replaceAttributes({name: 'Shitty graph'});
+        graph.mergeAttributes({author: 'John'});
+        graph.removeAttribute('name');
+
+        assert.strictEqual(handler.times, 4);
+      }
+    },
+
     'nodeAttributesUpdated': {
       'it should fire when a node is updated.': function() {
         const graph = new Graph();

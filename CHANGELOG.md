@@ -3,6 +3,7 @@
 ## 0.5.0 (provisonal)
 
 * Implementing the static `#.from` method & switching constructor paradigm.
+* Fixing bug related to the `attributesUpdated` event.
 
 ## 0.4.2
 

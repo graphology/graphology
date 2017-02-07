@@ -608,7 +608,7 @@ export default class Graph extends EventEmitter {
     this.emit('attributesUpdated', {
       type: 'merge',
       meta: {
-        data: attributes
+        data: this._attributes
       }
     });
 
