@@ -567,15 +567,6 @@ const ATTRIBUTES_METHODS = [
 export function attachAttributesMethods(Graph) {
   ATTRIBUTES_METHODS.forEach(function({name, attacher}) {
 
-    // For nodes
-    attacher(
-      Graph,
-      name('Node'),
-      '_nodes',
-      'node',
-      'hasNode'
-    );
-
     // For edges
     attacher(
       Graph,
