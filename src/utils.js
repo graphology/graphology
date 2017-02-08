@@ -53,13 +53,38 @@ export function createInternalMap() {
 }
 
 /**
- * Function returning the first item of a Set.
+ * Function returning the first matching edge for given path.
  *
- * @param  {object} set - Target set.
- * @return {any}        - The "first" item.
+ * @param  {Graph}  graph  - Target graph.
+ * @param  {any}    source - Source node.
+ * @param  {any}    target - Target node.
+ * @param  {string} type   - Type of the edge (mixed, directed or undirected).
+ * @return {string|null}
  */
-export function firstItemOfSet(set) {
-  return set.values().next().value;
+export function getMatchingEdge(graph, source, target, type) {
+  if (type === 'mixed')
+    return (
+      getMatchingEdge(graph, source, target, 'directed') ||
+      getMatchingEdge(graph, source, target, 'undirected')
+    );
+
+  if (!graph.hasNode(source))
+    return null;
+  if (!graph.hasNode(target))
+    return null;
+
+  const sourceData = graph._nodes.get(source);
+  let register = type === 'directed' ?
+    sourceData.out :
+    sourceData.undirectedOut;
+
+  if (!register || !register[target] && type === 'undirected')
+    register = sourceData.undirectedIn;
+
+  if (!register || !register[target])
+    return null;
+
+  return register[target];
 }
 
 /**

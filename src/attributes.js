@@ -7,7 +7,8 @@
  */
 import {
   assign,
-  isPlainObject
+  isPlainObject,
+  getMatchingEdge
 } from './utils';
 
 import {
@@ -20,10 +21,9 @@ import {
  *
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
- * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   [finder]    - Name of the finder method to use.
+ * @param {string}   type        - Type of the edge to find.
  */
-function attachAttributeGetter(Class, method, checker, finder) {
+function attachAttributeGetter(Class, method, checker, type) {
 
   /**
    * Get the desired attribute for the given element (node or edge).
@@ -44,9 +44,6 @@ function attachAttributeGetter(Class, method, checker, finder) {
    */
   Class.prototype[method] = function(element, name) {
     if (arguments.length > 2) {
-      if (!finder)
-        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
-
       const source = element,
             target = name;
 
@@ -55,7 +52,7 @@ function attachAttributeGetter(Class, method, checker, finder) {
       if (!this[checker](source, target))
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
-      element = this[finder](source, target);
+      element = getMatchingEdge(this, source, target, type);
     }
 
     if (!this[checker](element))
@@ -73,9 +70,9 @@ function attachAttributeGetter(Class, method, checker, finder) {
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
  * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   [finder]    - Name of the finder method to use.
+ * @param {string}   type        - Type of the edge to find.
  */
-function attachAttributesGetter(Class, method, checker, finder) {
+function attachAttributesGetter(Class, method, checker, type) {
 
   /**
    * Retrieves all the target element's attributes.
@@ -94,16 +91,13 @@ function attachAttributesGetter(Class, method, checker, finder) {
    */
   Class.prototype[method] = function(element) {
     if (arguments.length > 1) {
-      if (!finder)
-        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
-
       const source = element,
             target = arguments[1];
 
       if (!this[checker](source, target))
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
-      element = this[finder](source, target);
+      element = getMatchingEdge(this, source, target, type);
     }
 
     if (!this[checker](element))
@@ -121,9 +115,9 @@ function attachAttributesGetter(Class, method, checker, finder) {
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
  * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   [finder]    - Name of the finder method to use.
+ * @param {string}   type        - Type of the edge to find.
  */
-function attachAttributeChecker(Class, method, checker, finder) {
+function attachAttributeChecker(Class, method, checker, type) {
 
   /**
    * Checks whether the desired attribute is set for the given element (node or edge).
@@ -144,9 +138,6 @@ function attachAttributeChecker(Class, method, checker, finder) {
    */
   Class.prototype[method] = function(element, name) {
     if (arguments.length > 2) {
-      if (!finder)
-        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
-
       const source = element,
             target = name;
 
@@ -155,7 +146,7 @@ function attachAttributeChecker(Class, method, checker, finder) {
       if (!this[checker](source, target))
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
-      element = this[finder](source, target);
+      element = getMatchingEdge(this, source, target, type);
     }
 
     if (!this[checker](element))
@@ -173,9 +164,9 @@ function attachAttributeChecker(Class, method, checker, finder) {
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
  * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   [finder]    - Name of the finder method to use.
+ * @param {string}   type        - Type of the edge to find.
  */
-function attachAttributeSetter(Class, method, checker, finder) {
+function attachAttributeSetter(Class, method, checker, type) {
 
   /**
    * Set the desired attribute for the given element (node or edge).
@@ -198,9 +189,6 @@ function attachAttributeSetter(Class, method, checker, finder) {
    */
   Class.prototype[method] = function(element, name, value) {
     if (arguments.length > 3) {
-      if (!finder)
-        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
-
       const source = element,
             target = name;
 
@@ -210,7 +198,7 @@ function attachAttributeSetter(Class, method, checker, finder) {
       if (!this[checker](source, target))
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
-      element = this[finder](source, target);
+      element = getMatchingEdge(this, source, target, type);
     }
 
     if (!this[checker](element))
@@ -240,9 +228,9 @@ function attachAttributeSetter(Class, method, checker, finder) {
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
  * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   [finder]    - Name of the finder method to use.
+ * @param {string}   type        - Type of the edge to find.
  */
-function attachAttributeUpdater(Class, method, checker, finder) {
+function attachAttributeUpdater(Class, method, checker, type) {
 
   /**
    * Update the desired attribute for the given element (node or edge) using
@@ -266,9 +254,6 @@ function attachAttributeUpdater(Class, method, checker, finder) {
    */
   Class.prototype[method] = function(element, name, updater) {
     if (arguments.length > 3) {
-      if (!finder)
-        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
-
       const source = element,
             target = name;
 
@@ -278,7 +263,7 @@ function attachAttributeUpdater(Class, method, checker, finder) {
       if (!this[checker](source, target))
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
-      element = this[finder](source, target);
+      element = getMatchingEdge(this, source, target, type);
     }
 
     if (!this[checker](element))
@@ -308,9 +293,9 @@ function attachAttributeUpdater(Class, method, checker, finder) {
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
  * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   [finder]    - Name of the finder method to use.
+ * @param {string}   type        - Type of the edge to find.
  */
-function attachAttributeRemover(Class, method, checker, finder) {
+function attachAttributeRemover(Class, method, checker, type) {
 
   /**
    * Remove the desired attribute for the given element (node or edge).
@@ -331,9 +316,6 @@ function attachAttributeRemover(Class, method, checker, finder) {
    */
   Class.prototype[method] = function(element, name) {
     if (arguments.length > 2) {
-      if (!finder)
-        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
-
       const source = element,
             target = name;
 
@@ -342,7 +324,7 @@ function attachAttributeRemover(Class, method, checker, finder) {
       if (!this[checker](source, target))
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
-      element = this[finder](source, target);
+      element = getMatchingEdge(this, source, target, type);
     }
 
     if (!this[checker](element))
@@ -371,9 +353,9 @@ function attachAttributeRemover(Class, method, checker, finder) {
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
  * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   [finder]    - Name of the finder method to use.
+ * @param {string}   type        - Type of the edge to find.
  */
-function attachAttributesReplacer(Class, method, checker, finder) {
+function attachAttributesReplacer(Class, method, checker, type) {
 
   /**
    * Replace the attributes for the given element (node or edge).
@@ -394,9 +376,6 @@ function attachAttributesReplacer(Class, method, checker, finder) {
    */
   Class.prototype[method] = function(element, attributes) {
     if (arguments.length > 2) {
-      if (!finder)
-        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
-
       const source = element,
             target = attributes;
 
@@ -405,7 +384,7 @@ function attachAttributesReplacer(Class, method, checker, finder) {
       if (!this[checker](source, target))
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
-      element = this[finder](source, target);
+      element = getMatchingEdge(this, source, target, type);
     }
 
     if (!this[checker](element))
@@ -440,9 +419,9 @@ function attachAttributesReplacer(Class, method, checker, finder) {
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
  * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   [finder]    - Name of the finder method to use.
+ * @param {string}   type        - Type of the edge to find.
  */
-function attachAttributesMerger(Class, method, checker, finder) {
+function attachAttributesMerger(Class, method, checker, type) {
 
   /**
    * Replace the attributes for the given element (node or edge).
@@ -463,9 +442,6 @@ function attachAttributesMerger(Class, method, checker, finder) {
    */
   Class.prototype[method] = function(element, attributes) {
     if (arguments.length > 2) {
-      if (!finder)
-        throw new InvalidArgumentsGraphError(`Graph.${method}: too many arguments provided.`);
-
       const source = element,
             target = attributes;
 
@@ -474,7 +450,7 @@ function attachAttributesMerger(Class, method, checker, finder) {
       if (!this[checker](source, target))
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
-      element = this[finder](source, target);
+      element = getMatchingEdge(this, source, target, type);
     }
 
     if (!this[checker](element))
@@ -551,7 +527,7 @@ export function attachAttributesMethods(Graph) {
       Graph,
       name('Edge'),
       'hasEdge',
-      'getEdge'
+      'mixed'
     );
   });
 }

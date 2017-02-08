@@ -18,6 +18,7 @@ export const INDICES = new Set(['structure']);
  * @param {object} data  - Attached data.
  */
 export function updateStructureIndex(graph, edge, data) {
+  const multi = graph.multi;
 
   // Retrieving edge information
   const {
@@ -34,14 +35,21 @@ export function updateStructureIndex(graph, edge, data) {
         inKey = undirected ? 'undirectedIn' : 'in';
 
   // NOTE: The set of edges is the same for source & target
-  const commonSet = new Set();
+  let commonSet;
+
+  if (multi)
+    commonSet = new Set();
+  else
+    commonSet = edge;
 
   // Handling source
   sourceData[outKey] = sourceData[outKey] || Object.create(null);
 
   if (!(target in sourceData[outKey]))
     sourceData[outKey][target] = commonSet;
-  sourceData[outKey][target].add(edge);
+
+  if (multi)
+    sourceData[outKey][target].add(edge);
 
   // If selfLoop, we break here
   if (source === target)
@@ -63,19 +71,33 @@ export function updateStructureIndex(graph, edge, data) {
  * @param {object} data  - Attached data.
  */
 export function clearEdgeFromStructureIndex(graph, edge, data) {
+  const multi = graph.multi;
+
   const {source, target, undirected} = data;
 
   // NOTE: since the edge set is the same for source & target, we can only
   // affect source
-  const sourceData = graph._nodes.get(source);
-
-  const outKey = undirected ? 'undirectedOut' : 'out';
-
-  const sourceIndex = sourceData[outKey];
+  const sourceData = graph._nodes.get(source),
+        outKey = undirected ? 'undirectedOut' : 'out',
+        sourceIndex = sourceData[outKey];
 
   // NOTE: possible to clear empty sets from memory altogether
-  if (target in sourceIndex)
-    sourceIndex[target].delete(edge);
+  if (target in sourceIndex) {
+
+    if (multi)
+      sourceIndex[target].delete(edge);
+    else
+      delete sourceIndex[target];
+  }
+
+  if (multi)
+    return;
+
+  const targetData = graph._nodes.get(target),
+        inKey = undirected ? 'undirectedIn' : 'in',
+        targetIndex = targetData[inKey];
+
+  delete targetIndex[source];
 }
 
 /**

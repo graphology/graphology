@@ -34,7 +34,7 @@ import {
 import {
   assign,
   createInternalMap,
-  firstItemOfSet,
+  getMatchingEdge,
   isBunch,
   isGraph,
   isPlainObject,
@@ -254,9 +254,7 @@ function addEdge(
     if (!merge)
       throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option.`);
     else {
-      alreadyExistingEdge = undirected ?
-        graph.getUndirectedEdge(source, target) :
-        graph.getDirectedEdge(source, target);
+      alreadyExistingEdge = getMatchingEdge(graph, source, target, undirected ? 'undirected' : 'directed');
     }
   }
 
@@ -480,104 +478,6 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Internal method returning a matching directed edge or undefined if no
-   * matching edge was found.
-   *
-   * @param  {any}     source - The edge's source.
-   * @param  {any}     target - The edge's target.
-   * @return {any|undefined}
-   */
-  getDirectedEdge(source, target) {
-
-    // We need to compute the 'structure' index for this
-    this.computeIndex('structure');
-
-    // If the node source or the target is not in the graph we break
-    if (!this.hasNode(source) || !this.hasNode(target))
-      return;
-
-    // Is there a directed edge pointing towards target?
-    const nodeData = this._nodes.get(source),
-          register = nodeData.out;
-
-    if (!register)
-      return;
-
-    const edges = register[target];
-
-    if (!edges)
-      return;
-
-    if (!edges.size)
-      return;
-
-    return firstItemOfSet(edges);
-  }
-
-  /**
-   * Internal method returning a matching undirected edge or undefined if no
-   * matching edge was found.
-   *
-   * @param  {any}     source - The edge's source.
-   * @param  {any}     target - The edge's target.
-   * @return {any|undefined}
-   */
-  getUndirectedEdge(source, target) {
-
-    // We need to compute the 'structure' index for this
-    this.computeIndex('structure');
-
-    // If the node source or the target is not in the graph we break
-    if (!this.hasNode(source) || !this.hasNode(target))
-      return;
-
-    // Is there a directed edge pointing towards target?
-    const nodeData = this._nodes.get(source);
-
-    let register = nodeData.undirectedOut,
-        edges;
-
-    if (register)
-      edges = register[target];
-
-    register = nodeData.undirectedIn;
-
-    if (!edges && register)
-      edges = register[target];
-
-    if (!edges || !edges.size)
-      return;
-
-    return firstItemOfSet(edges);
-  }
-
-  /**
-   * Method returning a matching edge (note that it will return the first
-   * matching edge, starting with directed one then undirected), or undefined
-   * if no matching edge was found.
-   *
-   * @param  {any}     source - The edge's source.
-   * @param  {any}     target - The edge's target.
-   * @return {any|undefined}
-   */
-  getEdge(source, target) {
-    let edge;
-
-    // First we try to find a directed edge
-    if (this.type === 'mixed' || this.type === 'directed')
-      edge = this.getDirectedEdge(source, target);
-
-    if (edge)
-      return edge;
-
-    // Then we try to find an undirected edge
-    if (this.type === 'mixed' || this.type === 'undirected')
-    edge = this.getUndirectedEdge(source, target);
-
-    return edge;
-  }
-
-  /**
    * Method returning whether the given directed edge is found in the graph.
    *
    * Arity 1:
@@ -621,7 +521,7 @@ export default class Graph extends EventEmitter {
       if (!edges)
         return false;
 
-      return !!edges.size;
+      return this.multi ? !!edges.size : !!edges;
     }
 
     throw new InvalidArgumentsGraphError(`Graph.hasDirectedEdge: invalid arity (${arguments.length}, instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.`);
@@ -676,7 +576,7 @@ export default class Graph extends EventEmitter {
       if (!edges)
         return false;
 
-      return !!edges.size;
+      return this.multi ? !!edges.size : !!edges;
     }
 
     throw new InvalidArgumentsGraphError(`Graph.hasDirectedEdge: invalid arity (${arguments.length}, instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.`);
@@ -1101,7 +1001,7 @@ export default class Graph extends EventEmitter {
       if (!this.hasEdge(source, target))
         throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${source}" -> "${target}" edge in the graph.`);
 
-      edge = this.getEdge(source, target);
+      edge = getMatchingEdge(this, source, target, this.type);
     }
     else {
       if (!this.hasEdge(edge))

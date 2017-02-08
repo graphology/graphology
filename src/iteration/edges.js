@@ -81,10 +81,10 @@ function collectEdges(object, key) {
     return edges;
 
   if (hasKey)
-    return Array.from(object[key]);
+    return object[key] instanceof Set ? Array.from(object[key]) : [object[key]];
 
   for (const k in object)
-    edges.push.apply(edges, Array.from(object[k]));
+    edges.push.apply(edges, object[k] instanceof Set ? Array.from(object[k]) : [object[k]]);
 
   return edges;
 }
@@ -105,10 +105,10 @@ function countEdges(object, key) {
     return nb;
 
   if (hasKey)
-    return object[key].size;
+    return object[key] instanceof Set ? object[key].size : +!!object[key];
 
   for (const k in object)
-    nb += object[k].size;
+    nb += (object[k] instanceof Set ? object[k].size : +!!object[k]);
 
   return nb;
 }
@@ -127,12 +127,19 @@ function mergeEdges(edges, object, key) {
   if (key) {
     const target = object[key];
 
-    if (target)
-      target.forEach(value => (edges.add(value)));
+    if (target) {
+      if (target instanceof Set)
+        target.forEach(value => (edges.add(value)));
+      else
+        edges.add(target);
+    }
   }
   else {
     for (const k in object) {
-      object[k].forEach(value => (edges.add(value)));
+      if (object[k] instanceof Set)
+        object[k].forEach(value => (edges.add(value)));
+      else
+        edges.add(object[k]);
     }
   }
 }
