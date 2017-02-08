@@ -1,12 +1,13 @@
 # Changelog
 
-## 0.5.0 (provisonal)
+## 0.5.0
 
 * Implementing the static `#.from` method & switching constructor paradigm.
 * Fixing bug related to the `attributesUpdated` event.
 * Adding more errors related to attributes' setters.
 * Adding typed edges attributes' getters/setters.
 * Rewrote internal indices.
+* Dropping `#.getEdge` & friends.
 * Dropping `#.selfLoops`.
 
 ## 0.4.2
