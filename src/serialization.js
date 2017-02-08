@@ -59,45 +59,45 @@ export function serializeEdge(key, data) {
  * Checks whether the given value is a serialized node.
  *
  * @param  {mixed} value - Target value.
- * @return {boolean}
+ * @return {string|null}
  */
 export function validateSerializedNode(value) {
   if (!isPlainObject(value))
-    return {valid: false, reason: 'not-object'};
+    return 'not-object';
 
   if (!('key' in value))
-    return {valid: false, reason: 'no-key'};
+    return 'no-key';
 
   if ('attributes' in value &&
       (!isPlainObject(value.attributes) || value.attributes === null))
-    return {valid: false, reason: 'invalid-attributes'};
+    return 'invalid-attributes';
 
-  return {valid: true};
+  return null;
 }
 
 /**
  * Checks whether the given value is a serialized edge.
  *
  * @param  {mixed} value - Target value.
- * @return {boolean}
+ * @return {string|null}
  */
 export function validateSerializedEdge(value) {
   if (!isPlainObject(value))
-    return {valid: false, reason: 'not-object'};
+    return 'not-object';
 
   if (!('source' in value))
-    return {valid: false, reason: 'no-source'};
+    return 'no-source';
 
   if (!('target' in value))
-    return {valid: false, reason: 'no-target'};
+    return 'no-target';
 
   if ('attributes' in value &&
       (!isPlainObject(value.attributes) || value.attributes === null))
-    return {valid: false, reason: 'invalid-attributes'};
+    return 'invalid-attributes';
 
   if ('undirected' in value &&
       (typeof value.undirected !== 'boolean'))
-    return {valid: false, reason: 'invalid-undirected'};
+    return 'invalid-undirected';
 
-  return {valid: true};
+  return null;
 }

@@ -1776,15 +1776,15 @@ export default class Graph extends EventEmitter {
   importNode(data, merge = false) {
 
     // Validating
-    const {valid, reason} = validateSerializedNode(data);
+    const error = validateSerializedNode(data);
 
-    if (!valid) {
+    if (error) {
 
-      if (reason === 'not-object')
+      if (error === 'not-object')
         throw new InvalidArgumentsGraphError('Graph.importNode: invalid serialized node. A serialized node should be a plain object with at least a "key" property.');
-      if (reason === 'no-key')
+      if (error === 'no-key')
         throw new InvalidArgumentsGraphError('Graph.importNode: no key provided.');
-      if (reason === 'invalid-attributes')
+      if (error === 'invalid-attributes')
         throw new InvalidArgumentsGraphError('Graph.importNode: invalid attributes. Attributes should be a plain object, null or omitted.');
     }
 
@@ -1809,19 +1809,19 @@ export default class Graph extends EventEmitter {
   importEdge(data, merge = false) {
 
     // Validating
-    const {valid, reason} = validateSerializedEdge(data);
+    const error = validateSerializedEdge(data);
 
-    if (!valid) {
+    if (error) {
 
-      if (reason === 'not-object')
+      if (error === 'not-object')
         throw new InvalidArgumentsGraphError('Graph.importEdge: invalid serialized edge. A serialized edge should be a plain object with at least a "source" & "target" property.');
-      if (reason === 'no-source')
+      if (error === 'no-source')
         throw new InvalidArgumentsGraphError('Graph.importEdge: missing souce.');
-      if (reason === 'no-target')
+      if (error === 'no-target')
         throw new InvalidArgumentsGraphError('Graph.importEdge: missing target');
-      if (reason === 'invalid-attributes')
+      if (error === 'invalid-attributes')
         throw new InvalidArgumentsGraphError('Graph.importEdge: invalid attributes. Attributes should be a plain object, null or omitted.');
-      if (reason === 'invalid-undirected')
+      if (error === 'invalid-undirected')
         throw new InvalidArgumentsGraphError('Graph.importEdge: invalid undirected. Undirected should be boolean or omitted.');
     }
 
