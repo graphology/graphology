@@ -269,6 +269,9 @@ function attachAttributeUpdater(Class, method, checker, type) {
     if (!this[checker](element))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
 
+    if (typeof updater !== 'function')
+      throw new InvalidArgumentsGraphError(`Graph.${method}: updater should be a function.`);
+
     const data = this._edges.get(element);
 
     data.attributes[name] = updater(data.attributes[name]);

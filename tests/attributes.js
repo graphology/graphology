@@ -261,6 +261,15 @@ export default function attributes(Graph, checkers) {
 
     '#.updateAttribute': {
 
+      'it should throw if the updater is not a function.': function() {
+        const graph = new Graph();
+        graph.setAttribute('count', 0);
+
+        assert.throws(function() {
+          graph.updateAttribute('count', {hello: 'world'});
+        }, invalid());
+      },
+
       'it should correctly set the graph\'s attribute.': function() {
         const graph = new Graph();
         graph.setAttribute('name', 'graph');
@@ -283,6 +292,15 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.updateNodeAttribute': {
+
+      'it should throw if given an invalid updater.': function() {
+        const graph = new Graph();
+        graph.addNode('John', {age: 20});
+
+        assert.throws(function() {
+          graph.updateNodeAttribute('John', 'age', {hello: 'world'});
+        }, invalid());
+      },
 
       'it should correctly set the node\'s attribute.': function() {
         const graph = new Graph();
@@ -307,6 +325,16 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.updateEdgeAttribute': {
+      'it should throw if given an invalid updater.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Martha']);
+        graph.addEdge('John', 'Martha', {weigth: 3});
+
+        assert.throws(function() {
+          graph.updateEdgeAttribute('John', 'Martha', 'weight', {hello: 'world'});
+        }, invalid());
+      },
+
       'it should correctly set the edge\'s attribute.': function() {
         const graph = new Graph();
         graph.addNodesFrom(['John', 'Martha']);

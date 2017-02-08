@@ -1209,6 +1209,9 @@ export default class Graph extends EventEmitter {
    * @return {Graph}
    */
   updateAttribute(name, updater) {
+    if (typeof updater !== 'function')
+      throw new InvalidArgumentsGraphError('Graph.updateAttribute: updater should be a function.');
+
     this._attributes[name] = updater(this._attributes[name]);
 
     // Emitting
