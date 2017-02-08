@@ -13,7 +13,8 @@ import {
 
 import {
   InvalidArgumentsGraphError,
-  NotFoundGraphError
+  NotFoundGraphError,
+  UsageGraphError
 } from './errors';
 
 /**
@@ -44,6 +45,10 @@ function attachAttributeGetter(Class, method, checker, type) {
    */
   Class.prototype[method] = function(element, name) {
     if (arguments.length > 2) {
+
+      if (this.multi)
+        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+
       const source = element,
             target = name;
 
@@ -91,6 +96,10 @@ function attachAttributesGetter(Class, method, checker, type) {
    */
   Class.prototype[method] = function(element) {
     if (arguments.length > 1) {
+
+      if (this.multi)
+        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+
       const source = element,
             target = arguments[1];
 
@@ -138,6 +147,10 @@ function attachAttributeChecker(Class, method, checker, type) {
    */
   Class.prototype[method] = function(element, name) {
     if (arguments.length > 2) {
+
+      if (this.multi)
+        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+
       const source = element,
             target = name;
 
@@ -189,6 +202,10 @@ function attachAttributeSetter(Class, method, checker, type) {
    */
   Class.prototype[method] = function(element, name, value) {
     if (arguments.length > 3) {
+
+      if (this.multi)
+        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+
       const source = element,
             target = name;
 
@@ -254,6 +271,10 @@ function attachAttributeUpdater(Class, method, checker, type) {
    */
   Class.prototype[method] = function(element, name, updater) {
     if (arguments.length > 3) {
+
+      if (this.multi)
+        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+
       const source = element,
             target = name;
 
@@ -319,6 +340,10 @@ function attachAttributeRemover(Class, method, checker, type) {
    */
   Class.prototype[method] = function(element, name) {
     if (arguments.length > 2) {
+
+      if (this.multi)
+        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+
       const source = element,
             target = name;
 
@@ -379,6 +404,10 @@ function attachAttributesReplacer(Class, method, checker, type) {
    */
   Class.prototype[method] = function(element, attributes) {
     if (arguments.length > 2) {
+
+      if (this.multi)
+        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+
       const source = element,
             target = attributes;
 
@@ -445,6 +474,10 @@ function attachAttributesMerger(Class, method, checker, type) {
    */
   Class.prototype[method] = function(element, attributes) {
     if (arguments.length > 2) {
+
+      if (this.multi)
+        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+
       const source = element,
             target = attributes;
 

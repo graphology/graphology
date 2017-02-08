@@ -29,7 +29,8 @@ const METHODS = [
 export default function attributes(Graph, checkers) {
   const {
     invalid,
-    notFound
+    notFound,
+    usage
   } = checkers;
 
   function commonTests(method) {
@@ -44,6 +45,17 @@ export default function attributes(Graph, checkers) {
           assert.throws(function() {
             graph[method]('source', 'target', 'name', 'value');
           }, notFound());
+        },
+
+        'it should throw when using a path on a multi graph.': function() {
+          if (!~method.indexOf('Edge'))
+            return;
+
+          const graph = new Graph({multi: true});
+
+          assert.throws(function() {
+            graph[method]('source', 'target', 'name', 'value');
+          }, usage());
         },
 
         'it should throw if the element is not found in the graph.': function() {
