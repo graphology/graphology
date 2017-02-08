@@ -113,7 +113,6 @@ export default function attributes(Graph, checkers) {
         graph.addNodesFrom(['John', 'Thomas']);
         const edge = graph.addEdge('John', 'Thomas', {weight: 2});
 
-
         assert.strictEqual(graph.getEdgeAttribute(edge, 'weight'), 2);
         assert.strictEqual(graph.getEdgeAttribute('John', 'Thomas', 'weight'), 2);
       },

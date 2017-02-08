@@ -565,5 +565,21 @@ export function attachAttributesMethods(Graph) {
       'hasEdge',
       'mixed'
     );
+
+    // For directed edges
+    attacher(
+      Graph,
+      name('DirectedEdge'),
+      'hasDirectedEdge',
+      'directed'
+    );
+
+    // For undirected edges
+    attacher(
+      Graph,
+      name('UndirectedEdge'),
+      'hasUndirectedEdge',
+      'undirected'
+    );
   });
 }
