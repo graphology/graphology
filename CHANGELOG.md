@@ -7,6 +7,7 @@
 * Adding more errors related to attributes' setters.
 * Adding typed edges attributes' getters/setters.
 * Rewrote internal indices.
+* Dropping `#.selfLoops`.
 
 ## 0.4.2
 

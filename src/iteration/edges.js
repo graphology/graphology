@@ -57,11 +57,6 @@ const EDGES_ITERATION = [
     name: 'undirectedEdges',
     counter: 'countUndirectedEdges',
     type: 'undirected'
-  },
-  {
-    name: 'selfLoops',
-    counter: 'countSelfLoops',
-    type: 'selfLoops'
   }
 ];
 
@@ -164,10 +159,7 @@ function createEdgeArray(count, graph, type) {
 
   graph._edges.forEach((data, edge) => {
 
-    if (
-      ((type === 'selfLoops') === (data.source === data.target)) &&
-      (!!data.undirected === (type === 'undirected'))
-    ) {
+    if (!!data.undirected === (type === 'undirected')) {
 
       if (!count)
         list.push(edge);
@@ -199,45 +191,36 @@ function createEdgeArrayForNode(count, graph, type, direction, node) {
 
   const nodeData = graph._nodes.get(node);
 
-  if (type === 'mixed' || type === 'directed' || type === 'selfLoops') {
+  if (type === 'mixed' || type === 'directed') {
 
     if (!direction || direction === 'in') {
-      if (count && type !== 'selfLoops')
+      if (count)
         nb += countEdges(nodeData.in);
       else
         edges = edges.concat(collectEdges(nodeData.in));
     }
     if (!direction || direction === 'out') {
-      if (count && type !== 'selfLoops')
+      if (count)
         nb += countEdges(nodeData.out);
       else
         edges = edges.concat(collectEdges(nodeData.out));
     }
   }
 
-  if (type === 'mixed' || type === 'undirected' || type === 'selfLoops') {
+  if (type === 'mixed' || type === 'undirected') {
 
     if (!direction || direction === 'in') {
-      if (count && type !== 'selfLoops')
+      if (count)
         nb += countEdges(nodeData.undirectedIn);
       else
         edges = edges.concat(collectEdges(nodeData.undirectedIn));
     }
     if (!direction || direction === 'out') {
-      if (count && type !== 'selfLoops')
+      if (count)
         nb += countEdges(nodeData.undirectedOut);
       else
         edges = edges.concat(collectEdges(nodeData.undirectedOut));
     }
-  }
-
-  // NOTE: this is hardly optimal
-  if (type === 'selfLoops') {
-    edges = edges.filter(edge => {
-      return graph.source(edge) === graph.target(edge);
-    });
-
-    nb = edges.length;
   }
 
   return count ? nb : edges;
@@ -266,13 +249,6 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
       throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph in the given bunch.`);
 
     const nodeData = graph._nodes.get(node);
-
-    if (type === 'selfLoops') {
-      mergeEdges(edges, nodeData.out, node);
-      mergeEdges(edges, nodeData.undirectedOut, node);
-
-      return;
-    }
 
     if (type === 'mixed' || type === 'directed') {
 
