@@ -4,6 +4,8 @@
 
 * Implementing the static `#.from` method & switching constructor paradigm.
 * Fixing bug related to the `attributesUpdated` event.
+* Adding more errors related to attributes' setters.
+* Rewrote internal indices.
 
 ## 0.4.2
 
