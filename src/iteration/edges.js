@@ -63,25 +63,34 @@ const EDGES_ITERATION = [
 /**
  * Function collecting edges from the given object.
  *
+ * @param  {array}            edges  - Edges array to populate.
  * @param  {object|undefined} object - Target object.
  * @param  {mixed}            [key]  - Optional key.
  * @return {array}                   - The found edges.
  */
-function collect(object, key) {
-  const edges = [];
-
-  const hasKey = arguments.length > 1;
+function collect(edges, object, key) {
+  const hasKey = arguments.length > 2;
 
   if (!object || (hasKey && !(key in object)))
-    return edges;
+    return;
 
-  if (hasKey)
-    return object[key] instanceof Set ? Array.from(object[key]) : [object[key]];
+  if (hasKey) {
 
-  for (const k in object)
-    edges.push.apply(edges, object[k] instanceof Set ? Array.from(object[k]) : [object[k]]);
+    if (object[key] instanceof Set)
+      edges.push.apply(edges, Array.from(object[key]));
+    else
+      edges.push(object[key]);
 
-  return edges;
+    return;
+  }
+
+  for (const k in object) {
+
+    if (object[k] instanceof Set)
+      edges.push.apply(edges, Array.from(object[k]));
+    else
+      edges.push(object[k]);
+  }
 }
 
 /**
@@ -233,24 +242,24 @@ function createEdgeArrayForNode(graph, type, direction, node) {
   // For this, we need to compute the "structure" index
   graph.computeIndex('structure');
 
-  let edges = [];
+  const edges = [];
 
   const nodeData = graph._nodes.get(node);
 
   if (type === 'mixed' || type === 'directed') {
 
     if (!direction || direction === 'in')
-      edges = edges.concat(collect(nodeData.in));
+      collect(edges, nodeData.in);
     if (!direction || direction === 'out')
-      edges = edges.concat(collect(nodeData.out));
+      collect(edges, nodeData.out);
   }
 
   if (type === 'mixed' || type === 'undirected') {
 
     if (!direction || direction === 'in')
-      edges = edges.concat(collect(nodeData.undirectedIn));
+      collect(edges, nodeData.undirectedIn);
     if (!direction || direction === 'out')
-      edges = edges.concat(collect(nodeData.undirectedOut));
+      collect(edges, nodeData.undirectedOut);
   }
 
   return edges;
@@ -344,21 +353,18 @@ function createEdgeArrayForPath(graph, type, source, target) {
   // For this, we need to compute the "structure" index
   graph.computeIndex('structure');
 
-  let edges = [];
+  const edges = [];
 
   const sourceData = graph._nodes.get(source);
 
   if (type === 'mixed' || type === 'directed') {
-
-    edges = edges
-      .concat(collect(sourceData.in, target))
-      .concat(collect(sourceData.out, target));
+    collect(edges, sourceData.in, target);
+    collect(edges, sourceData.out, target);
   }
 
   if (type === 'mixed' || type === 'undirected') {
-    edges = edges
-      .concat(collect(sourceData.undirectedIn, target))
-      .concat(collect(sourceData.undirectedOut, target));
+    collect(edges, sourceData.undirectedIn, target);
+    collect(edges, sourceData.undirectedOut, target);
   }
 
   return edges;
