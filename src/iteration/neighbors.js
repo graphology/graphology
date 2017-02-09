@@ -66,7 +66,7 @@ const NEIGHBORS_ITERATION = [
  * @param {BasicSet} neighbors - Neighbors set.
  * @param {object}   object    - Target object.
  */
-function mergeNeighbors(neighbors, object) {
+function merge(neighbors, object) {
   if (!object)
     return;
 
@@ -95,20 +95,20 @@ function createNeighborSetForNode(graph, type, direction, node) {
   if (type === 'mixed' || type === 'directed') {
 
     if (!direction || direction === 'in') {
-      mergeNeighbors(neighbors, nodeData.in);
+      merge(neighbors, nodeData.in);
     }
     if (!direction || direction === 'out') {
-      mergeNeighbors(neighbors, nodeData.out);
+      merge(neighbors, nodeData.out);
     }
   }
 
   if (type === 'mixed' || type === 'undirected') {
 
     if (!direction || direction === 'in') {
-      mergeNeighbors(neighbors, nodeData.undirectedIn);
+      merge(neighbors, nodeData.undirectedIn);
     }
     if (!direction || direction === 'out') {
-      mergeNeighbors(neighbors, nodeData.undirectedOut);
+      merge(neighbors, nodeData.undirectedOut);
     }
   }
 
@@ -141,20 +141,20 @@ function createNeighborSetForBunch(name, graph, type, direction, bunch) {
     if (type === 'mixed' || type === 'directed') {
 
       if (!direction || direction === 'in') {
-        mergeNeighbors(neighbors, nodeData.in);
+        merge(neighbors, nodeData.in);
       }
       if (!direction || direction === 'out') {
-        mergeNeighbors(neighbors, nodeData.out);
+        merge(neighbors, nodeData.out);
       }
     }
 
     if (type === 'mixed' || type === 'undirected') {
 
       if (!direction || direction === 'in') {
-        mergeNeighbors(neighbors, nodeData.undirectedIn);
+        merge(neighbors, nodeData.undirectedIn);
       }
       if (!direction || direction === 'out') {
-        mergeNeighbors(neighbors, nodeData.undirectedOut);
+        merge(neighbors, nodeData.undirectedOut);
       }
     }
   });
