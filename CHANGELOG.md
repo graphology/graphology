@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1 (provisional)
+
+* Better unit tests.
+
 ## 0.5.0
 
 * Implementing the static `#.from` method & switching constructor paradigm.
