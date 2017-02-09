@@ -54,6 +54,8 @@ export function createInternalMap() {
 
 /**
  * Function returning the first matching edge for given path.
+ * Note: this function does not check the existence of source & target. This
+ * must be performed by the caller.
  *
  * @param  {Graph}  graph  - Target graph.
  * @param  {any}    source - Source node.
@@ -68,12 +70,8 @@ export function getMatchingEdge(graph, source, target, type) {
       getMatchingEdge(graph, source, target, 'undirected')
     );
 
-  if (!graph.hasNode(source))
-    return null;
-  if (!graph.hasNode(target))
-    return null;
-
   const sourceData = graph._nodes.get(source);
+
   let register = type === 'directed' ?
     sourceData.out :
     sourceData.undirectedOut;
