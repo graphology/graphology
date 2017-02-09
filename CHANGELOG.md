@@ -3,6 +3,7 @@
 ## 0.5.1 (provisional)
 
 * Better unit tests.
+* Internal refactoring.
 
 ## 0.5.0
 

@@ -67,7 +67,7 @@ const EDGES_ITERATION = [
  * @param  {mixed}            [key]  - Optional key.
  * @return {array}                   - The found edges.
  */
-function collectEdges(object, key) {
+function collect(object, key) {
   const edges = [];
 
   const hasKey = arguments.length > 1;
@@ -91,7 +91,7 @@ function collectEdges(object, key) {
  * @param  {mixed}            [key]  - Optional key.
  * @return {number}                  - The number of found edges.
  */
-function countEdges(object, key) {
+function count(object, key) {
   let nb = 0;
 
   const hasKey = arguments.length > 1;
@@ -115,7 +115,7 @@ function countEdges(object, key) {
  * @param {object|undefined} map   - Target object.
  * @param {string}           key   - Sub key.
  */
-function mergeEdges(edges, object, key) {
+function merge(edges, object, key) {
   if (!object)
     return;
 
@@ -140,96 +140,125 @@ function mergeEdges(edges, object, key) {
 }
 
 /**
+ * Function used to count the edges of the given type.
+ *
+ * @param  {Graph}  graph - Target Graph instance.
+ * @param  {string} type  - Type of edges to retrieve.
+ * @return {number}
+ */
+function countEdges(graph, type) {
+  if (type === 'mixed')
+    return graph.size;
+
+  let nb = 0;
+
+  graph._edges.forEach(data => {
+    if (!!data.undirected === (type === 'undirected'))
+      nb++;
+  });
+
+  return nb;
+}
+
+/**
  * Function creating an array of edge for the given type.
  *
- * @param  {boolean} count - Should we count or collect?
  * @param  {Graph}   graph - Target Graph instance.
  * @param  {string}  type  - Type of edges to retrieve.
  * @return {array}         - Array of edges.
  */
-function createEdgeArray(count, graph, type) {
-  if (count && type === 'mixed')
-    return graph.size;
-
-  const list = [];
-  let nb = 0;
-
+function createEdgeArray(graph, type) {
   if (type === 'mixed')
     return Array.from(graph._edges.keys());
 
+  const list = [];
+
   graph._edges.forEach((data, edge) => {
 
-    if (!!data.undirected === (type === 'undirected')) {
-
-      if (!count)
-        list.push(edge);
-
-      nb++;
-    }
+    if (!!data.undirected === (type === 'undirected'))
+      list.push(edge);
   });
 
-  return count ? nb : list;
+  return list;
+}
+
+/**
+ * Function counting the number of edges for the given type & the given node.
+ *
+ * @param  {Graph}   graph     - Target Graph instance.
+ * @param  {string}  type      - Type of edges to retrieve.
+ * @param  {string}  direction - In or out?
+ * @param  {any}     node      - Target node.
+ * @return {number}
+ */
+function countEdgesForNode(graph, type, direction, node) {
+
+  // For this, we need to compute the "structure" index
+  graph.computeIndex('structure');
+
+  let nb = 0;
+
+  const nodeData = graph._nodes.get(node);
+
+  if (type === 'mixed' || type === 'directed') {
+
+    if (!direction || direction === 'in')
+      nb += count(nodeData.in);
+    if (!direction || direction === 'out')
+      nb += count(nodeData.out);
+  }
+
+  if (type === 'mixed' || type === 'undirected') {
+
+    if (!direction || direction === 'in')
+      nb += count(nodeData.undirectedIn);
+    if (!direction || direction === 'out')
+      nb += count(nodeData.undirectedOut);
+  }
+
+  return nb;
 }
 
 /**
  * Function creating an array of edge for the given type & the given node.
  *
- * @param  {boolean} count     - Should we count or collect?
  * @param  {Graph}   graph     - Target Graph instance.
  * @param  {string}  type      - Type of edges to retrieve.
  * @param  {string}  direction - In or out?
  * @param  {any}     node      - Target node.
  * @return {array}             - Array of edges.
  */
-function createEdgeArrayForNode(count, graph, type, direction, node) {
+function createEdgeArrayForNode(graph, type, direction, node) {
 
   // For this, we need to compute the "structure" index
   graph.computeIndex('structure');
 
-  let edges = [],
-      nb = 0;
+  let edges = [];
 
   const nodeData = graph._nodes.get(node);
 
   if (type === 'mixed' || type === 'directed') {
 
-    if (!direction || direction === 'in') {
-      if (count)
-        nb += countEdges(nodeData.in);
-      else
-        edges = edges.concat(collectEdges(nodeData.in));
-    }
-    if (!direction || direction === 'out') {
-      if (count)
-        nb += countEdges(nodeData.out);
-      else
-        edges = edges.concat(collectEdges(nodeData.out));
-    }
+    if (!direction || direction === 'in')
+      edges = edges.concat(collect(nodeData.in));
+    if (!direction || direction === 'out')
+      edges = edges.concat(collect(nodeData.out));
   }
 
   if (type === 'mixed' || type === 'undirected') {
 
-    if (!direction || direction === 'in') {
-      if (count)
-        nb += countEdges(nodeData.undirectedIn);
-      else
-        edges = edges.concat(collectEdges(nodeData.undirectedIn));
-    }
-    if (!direction || direction === 'out') {
-      if (count)
-        nb += countEdges(nodeData.undirectedOut);
-      else
-        edges = edges.concat(collectEdges(nodeData.undirectedOut));
-    }
+    if (!direction || direction === 'in')
+      edges = edges.concat(collect(nodeData.undirectedIn));
+    if (!direction || direction === 'out')
+      edges = edges.concat(collect(nodeData.undirectedOut));
   }
 
-  return count ? nb : edges;
+  return edges;
 }
 
 /**
  * Function creating an array of edge for the given bunch of nodes.
  *
- * @param  {boolean} count     - Should we count or collect?
  * @param  {Graph}   graph     - Target Graph instance.
  * @param  {string}  type      - Type of edges to retrieve.
  * @param  {string}  direction - In or out?
@@ -253,17 +282,17 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
     if (type === 'mixed' || type === 'directed') {
 
       if (!direction || direction === 'in')
-        mergeEdges(edges, nodeData.in);
+        merge(edges, nodeData.in);
       if (!direction || direction === 'out')
-        mergeEdges(edges, nodeData.out);
+        merge(edges, nodeData.out);
     }
 
     if (type === 'mixed' || type === 'undirected') {
 
       if (!direction || direction === 'in')
-        mergeEdges(edges, nodeData.undirectedIn);
+        merge(edges, nodeData.undirectedIn);
       if (!direction || direction === 'out')
-        mergeEdges(edges, nodeData.undirectedOut);
+        merge(edges, nodeData.undirectedOut);
     }
   });
 
@@ -271,51 +300,68 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
 }
 
 /**
- * Function creating an array of edge for the given path.
+ * Function counting the number of edges for the given path.
  *
- * @param  {boolean} count  - Should we count or collect?
  * @param  {Graph}   graph  - Target Graph instance.
  * @param  {string}  type   - Type of edges to retrieve.
  * @param  {any}     source - Source node.
  * @param  {any}     target - Target node.
  * @return {array}          - Array of edges.
  */
-function createEdgeArrayForPath(count, graph, type, source, target) {
+function countEdgesForPath(graph, type, source, target) {
 
   // For this, we need to compute the "structure" index
   graph.computeIndex('structure');
 
-  let edges = [],
-      nb = 0;
+  let nb = 0;
+
+  const sourceData = graph._nodes.get(source);
+
+  if (type === 'mixed' || type === 'directed') {
+    nb += count(sourceData.in, target);
+    nb += count(sourceData.out, target);
+  }
+
+  if (type === 'mixed' || type === 'undirected') {
+    nb += count(sourceData.undirectedIn, target);
+    nb += count(sourceData.undirectedOut, target);
+  }
+
+  return nb;
+}
+
+/**
+ * Function creating an array of edge for the given path.
+ *
+ * @param  {Graph}   graph  - Target Graph instance.
+ * @param  {string}  type   - Type of edges to retrieve.
+ * @param  {any}     source - Source node.
+ * @param  {any}     target - Target node.
+ * @return {array}          - Array of edges.
+ */
+function createEdgeArrayForPath(graph, type, source, target) {
+
+  // For this, we need to compute the "structure" index
+  graph.computeIndex('structure');
+
+  let edges = [];
 
   const sourceData = graph._nodes.get(source);
 
   if (type === 'mixed' || type === 'directed') {
 
-    if (count) {
-      nb += countEdges(sourceData.in, target);
-      nb += countEdges(sourceData.out, target);
-    }
-    else {
-      edges = edges
-        .concat(collectEdges(sourceData.in, target))
-        .concat(collectEdges(sourceData.out, target));
-    }
+    edges = edges
+      .concat(collect(sourceData.in, target))
+      .concat(collect(sourceData.out, target));
   }
 
   if (type === 'mixed' || type === 'undirected') {
-    if (count) {
-      nb += countEdges(sourceData.undirectedIn, target);
-      nb += countEdges(sourceData.undirectedOut, target);
-    }
-    else {
-      edges = edges
-        .concat(collectEdges(sourceData.undirectedIn, target))
-        .concat(collectEdges(sourceData.undirectedOut, target));
-    }
+    edges = edges
+      .concat(collect(sourceData.undirectedIn, target))
+      .concat(collect(sourceData.undirectedOut, target));
   }
 
-  return count ? nb : edges;
+  return edges;
 }
 
 /**
@@ -354,7 +400,9 @@ function attachEdgeArrayCreator(Class, counter, description) {
    */
   Class.prototype[name] = function(...args) {
     if (!args.length)
-      return createEdgeArray(counter, this, type);
+      return counter ?
+        countEdges(this, type) :
+        createEdgeArray(this, type);
 
     if (args.length === 1) {
       const nodeOrBunch = args[0];
@@ -362,13 +410,9 @@ function attachEdgeArrayCreator(Class, counter, description) {
       if (this.hasNode(nodeOrBunch)) {
 
         // Iterating over a node's edges
-        return createEdgeArrayForNode(
-          counter,
-          this,
-          type,
-          direction,
-          nodeOrBunch
-        );
+        return counter ?
+          countEdgesForNode(this, type, direction, nodeOrBunch) :
+          createEdgeArrayForNode(this, type, direction, nodeOrBunch);
       }
       else if (isBunch(nodeOrBunch)) {
 
@@ -413,13 +457,9 @@ function attachEdgeArrayCreator(Class, counter, description) {
       if (!hasEdge)
         return counter ? 0 : [];
 
-      return createEdgeArrayForPath(
-        counter,
-        this,
-        type,
-        source,
-        target
-      );
+      return counter ?
+        countEdgesForPath(this, type, source, target) :
+        createEdgeArrayForPath(this, type, source, target);
     }
 
     throw new InvalidArgumentsGraphError(`Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${args.length}).`);
