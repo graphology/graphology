@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.1 (provisional)
+## 0.5.1
 
 * Better unit tests.
 * Internal refactoring.
