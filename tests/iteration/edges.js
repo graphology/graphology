@@ -391,7 +391,19 @@ export default function edgesIteration(Graph, checkers) {
     };
   }
 
-  const tests = {};
+  const tests = {
+    'Various cases': {
+      'simple graph indices should work.': function() {
+        const simpleGraph = new Graph();
+        simpleGraph.addNodesFrom([1, 2, 3, 4]);
+        simpleGraph.addEdgeWithKey('1->2', 1, 2);
+        simpleGraph.addEdgeWithKey('1->3', 1, 3);
+        simpleGraph.addEdgeWithKey('1->4', 1, 4);
+
+        assert.deepEqual(simpleGraph.edges(1), ['1->2', '1->3', '1->4']);
+      }
+    }
+  };
 
   // Common tests
   METHODS.forEach(name => deepMerge(tests, commonTests(name)));
