@@ -233,7 +233,7 @@ export function prettyPrint(integer) {
 
     prettyString = string[j] + prettyString;
 
-    if (!((i - 2) % 3))
+    if (!((i - 2) % 3) && i !== l - 1)
       prettyString = ',' + prettyString;
   }
 
