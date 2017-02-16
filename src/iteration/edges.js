@@ -11,6 +11,7 @@ import {
 } from '../errors';
 
 import {
+  consumeIterator,
   isBunch,
   overBunch
 } from '../utils';
@@ -77,7 +78,7 @@ function collect(edges, object, key) {
   if (hasKey) {
 
     if (object[key] instanceof Set)
-      edges.push.apply(edges, Array.from(object[key]));
+      edges.push.apply(edges, consumeIterator(object[key].size, object[key].values()));
     else
       edges.push(object[key]);
 
@@ -87,7 +88,7 @@ function collect(edges, object, key) {
   for (const k in object) {
 
     if (object[k] instanceof Set)
-      edges.push.apply(edges, Array.from(object[k]));
+      edges.push.apply(edges, consumeIterator(object[k].size, object[k].values()));
     else
       edges.push(object[k]);
   }
@@ -178,7 +179,7 @@ function countEdges(graph, type) {
  */
 function createEdgeArray(graph, type) {
   if (type === 'mixed')
-    return Array.from(graph._edges.keys());
+    return consumeIterator(graph._edges.size, graph._edges.keys());
 
   const list = [];
 
@@ -305,7 +306,7 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
     }
   });
 
-  return Array.from(edges.values());
+  return consumeIterator(edges.size, edges.values());
 }
 
 /**

@@ -11,6 +11,7 @@ import {
 } from '../errors';
 
 import {
+  consumeIterator,
   isBunch,
   overBunch
 } from '../utils';
@@ -235,7 +236,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
         if (counter)
           return neighbors.size;
 
-        return Array.from(neighbors);
+        return consumeIterator(neighbors.size, neighbors.values());
       }
       else if (isBunch(nodeOrBunch)) {
 
@@ -256,7 +257,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
         if (counter)
           return neighbors.size;
 
-        return Array.from(neighbors);
+        return consumeIterator(neighbors.size, neighbors.values());
       }
       else {
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${nodeOrBunch}" node in the graph.`);

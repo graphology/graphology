@@ -91,6 +91,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.assign = assign;
 exports.createInternalMap = createInternalMap;
+exports.consumeIterator = consumeIterator;
 exports.getMatchingEdge = getMatchingEdge;
 exports.isBunch = isBunch;
 exports.isGraph = isGraph;
@@ -156,6 +157,24 @@ function createInternalMap() {
   };
 
   return map;
+}
+
+/**
+ * Function consuming the given iterator.
+ *
+ * @param  {number}   size     - Size of the target.
+ * @param  {Iterator} iterator - Target iterator.
+ * @return {Array}
+ */
+function consumeIterator(size, iterator) {
+  var array = new Array(size);
+
+  var i = 0,
+      step = void 0;
+
+  while (step = iterator.next(), !step.done) {
+    array[i++] = step.value;
+  }return array;
 }
 
 /**
@@ -1983,7 +2002,7 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.nodes = function nodes() {
-    return Array.from(this._nodes.keys());
+    return (0, _utils.consumeIterator)(this._nodes.size, this._nodes.keys());
   };
 
   /**---------------------------------------------------------------------------
@@ -3248,14 +3267,14 @@ function collect(edges, object, key) {
 
   if (hasKey) {
 
-    if (object[key] instanceof Set) edges.push.apply(edges, Array.from(object[key]));else edges.push(object[key]);
+    if (object[key] instanceof Set) edges.push.apply(edges, (0, _utils.consumeIterator)(object[key].size, object[key].values()));else edges.push(object[key]);
 
     return;
   }
 
   for (var k in object) {
 
-    if (object[k] instanceof Set) edges.push.apply(edges, Array.from(object[k]));else edges.push(object[k]);
+    if (object[k] instanceof Set) edges.push.apply(edges, (0, _utils.consumeIterator)(object[k].size, object[k].values()));else edges.push(object[k]);
   }
 }
 
@@ -3334,7 +3353,7 @@ function countEdges(graph, type) {
  * @return {array}         - Array of edges.
  */
 function createEdgeArray(graph, type) {
-  if (type === 'mixed') return Array.from(graph._edges.keys());
+  if (type === 'mixed') return (0, _utils.consumeIterator)(graph._edges.size, graph._edges.keys());
 
   var list = [];
 
@@ -3447,7 +3466,7 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
     }
   });
 
-  return Array.from(edges.values());
+  return (0, _utils.consumeIterator)(edges.size, edges.values());
 }
 
 /**
@@ -3833,7 +3852,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
 
         if (counter) return _neighbors.size;
 
-        return Array.from(_neighbors);
+        return (0, _utils.consumeIterator)(_neighbors.size, _neighbors.values());
       } else if ((0, _utils.isBunch)(nodeOrBunch)) {
 
         // Here, we want to iterate over the union of a bunch of nodes'
@@ -3846,7 +3865,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
 
         if (counter) return _neighbors2.size;
 
-        return Array.from(_neighbors2);
+        return (0, _utils.consumeIterator)(_neighbors2.size, _neighbors2.values());
       } else {
         throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + nodeOrBunch + '" node in the graph.');
       }

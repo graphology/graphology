@@ -53,6 +53,25 @@ export function createInternalMap() {
 }
 
 /**
+ * Function consuming the given iterator.
+ *
+ * @param  {number}   size     - Size of the target.
+ * @param  {Iterator} iterator - Target iterator.
+ * @return {Array}
+ */
+export function consumeIterator(size, iterator) {
+  const array = new Array(size);
+
+  let i = 0,
+      step;
+
+  while ((step = iterator.next(), !step.done))
+    array[i++] = step.value;
+
+  return array;
+}
+
+/**
  * Function returning the first matching edge for given path.
  * Note: this function does not check the existence of source & target. This
  * must be performed by the caller.

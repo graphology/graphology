@@ -34,6 +34,7 @@ import {
 import {
   assign,
   createInternalMap,
+  consumeIterator,
   getMatchingEdge,
   isBunch,
   isGraph,
@@ -1525,7 +1526,7 @@ export default class Graph extends EventEmitter {
    * @return {array} - The nodes.
    */
   nodes() {
-    return Array.from(this._nodes.keys());
+    return consumeIterator(this._nodes.size, this._nodes.keys());
   }
 
   /**---------------------------------------------------------------------------
