@@ -1397,7 +1397,7 @@ export default class Graph extends EventEmitter {
       throw new NotFoundGraphError(`Graph.updateNodeAttribute: could not find the "${node}" node in the graph.`);
 
     if (arguments.length < 3)
-      throw new InvalidArgumentsGraphError('Graph.updateNodeAttribute: not enough arguments. Either you forgot to pass the attribute\'s name or value, or you meant to use #.replaceNodeAttributes / #.mergeNodeAttributes instead.');
+      throw new InvalidArgumentsGraphError('Graph.updateNodeAttribute: not enough arguments. Either you forgot to pass the attribute\'s name or updater, or you meant to use #.replaceNodeAttributes / #.mergeNodeAttributes instead.');
 
     if (typeof updater !== 'function')
       throw new InvalidArgumentsGraphError('Graph.updateAttribute: updater should be a function.');
