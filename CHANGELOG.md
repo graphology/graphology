@@ -4,6 +4,8 @@
 
 * Node.js 0.12.x compatibility.
 * Fixing bug related to the graph's string coercion.
+* Improving performance.
+* Better error message when adding a self-loop when it's not authorized.
 
 ## 0.5.1
 

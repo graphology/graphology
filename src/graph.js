@@ -218,7 +218,7 @@ function addEdge(
   }
 
   if (!graph.allowSelfLoops && source === target)
-    throw new UsageGraphError(`Graph.${name}: source & target are the same, thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
+    throw new UsageGraphError(`Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
 
   // Must the graph generate an id for this edge?
   if (mustGenerateId) {
