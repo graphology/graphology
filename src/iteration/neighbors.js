@@ -195,10 +195,11 @@ function attachNeighborArrayCreator(Class, counter, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[name] = function(...args) {
+  Class.prototype[name] = function(nodeOrBunch) {
 
-    if (args.length === 2) {
-      const [node1, node2] = args;
+    if (arguments.length === 2) {
+      const node1 = arguments[0],
+            node2 = arguments[1];
 
       if (counter)
         throw new InvalidArgumentsGraphError(`Graph.${name}: invalid arguments.`);
@@ -220,8 +221,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
 
       return neighbors.has(node2);
     }
-    else if (args.length === 1) {
-      const nodeOrBunch = args[0];
+    else if (arguments.length === 1) {
 
       if (this.hasNode(nodeOrBunch)) {
 
@@ -264,7 +264,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
       }
     }
 
-    throw new InvalidArgumentsGraphError(`Graph.${name}: invalid number of arguments (expecting 1 or 2 and got ${args.length}).`);
+    throw new InvalidArgumentsGraphError(`Graph.${name}: invalid number of arguments (expecting 1 or 2 and got ${arguments.length}).`);
   };
 }
 
