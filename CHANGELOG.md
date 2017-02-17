@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.2 (provisional)
+## 0.5.2
 
 * Node.js 0.12.x compatibility.
 * Fixing bug related to the graph's string coercion.
