@@ -31,8 +31,7 @@ export function updateStructureIndex(graph, edge, data) {
   const sourceData = graph._nodes.get(source),
         targetData = graph._nodes.get(target);
 
-  const outKey = undirected ? 'undirectedOut' : 'out',
-        inKey = undirected ? 'undirectedIn' : 'in';
+  const outKey = undirected ? 'undirectedOut' : 'out';
 
   // NOTE: The set of edges is the same for source & target
   let commonSet;
@@ -57,6 +56,8 @@ export function updateStructureIndex(graph, edge, data) {
 
   // Handling target (we won't add the edge because it was already taken
   // care of with source above)
+  const inKey = undirected ? 'undirectedIn' : 'in';
+
   targetData[inKey] = targetData[inKey] || Object.create(null);
 
   if (!(source in targetData[inKey]))
