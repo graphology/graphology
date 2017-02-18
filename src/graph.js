@@ -875,20 +875,20 @@ export default class Graph extends EventEmitter {
     };
 
     if (this.allowSelfLoops) {
-      if (this.type === 'mixed' || this.type === 'directed') {
+      if (this.type !== 'undirected') {
         data.directedSelfLoops = 0;
       }
-      if (this.type === 'mixed' || this.type === 'undirected') {
+      if (this.type !== 'directed') {
         data.undirectedSelfLoops = 0;
       }
     }
 
-    if (this.type === 'mixed' || this.type === 'directed') {
+    if (this.type !== 'undirected') {
       data.inDegree = 0;
       data.outDegree = 0;
     }
 
-    if (this.type === 'mixed' || this.type === 'undirected') {
+    if (this.type !== 'directed') {
       data.undirectedDegree = 0;
     }
 

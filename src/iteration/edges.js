@@ -210,19 +210,19 @@ function countEdgesForNode(graph, type, direction, node) {
 
   const nodeData = graph._nodes.get(node);
 
-  if (type === 'mixed' || type === 'directed') {
+  if (type !== 'undirected') {
 
-    if (!direction || direction === 'in')
+    if (direction !== 'out')
       nb += count(nodeData.in);
-    if (!direction || direction === 'out')
+    if (direction !== 'in')
       nb += count(nodeData.out);
   }
 
-  if (type === 'mixed' || type === 'undirected') {
+  if (type !== 'directed') {
 
-    if (!direction || direction === 'in')
+    if (direction !== 'out')
       nb += count(nodeData.undirectedIn);
-    if (!direction || direction === 'out')
+    if (direction !== 'in')
       nb += count(nodeData.undirectedOut);
   }
 
@@ -247,19 +247,19 @@ function createEdgeArrayForNode(graph, type, direction, node) {
 
   const nodeData = graph._nodes.get(node);
 
-  if (type === 'mixed' || type === 'directed') {
+  if (type !== 'undirected') {
 
-    if (!direction || direction === 'in')
+    if (direction !== 'out')
       collect(edges, nodeData.in);
-    if (!direction || direction === 'out')
+    if (direction !== 'in')
       collect(edges, nodeData.out);
   }
 
-  if (type === 'mixed' || type === 'undirected') {
+  if (type !== 'directed') {
 
-    if (!direction || direction === 'in')
+    if (direction !== 'out')
       collect(edges, nodeData.undirectedIn);
-    if (!direction || direction === 'out')
+    if (direction !== 'in')
       collect(edges, nodeData.undirectedOut);
   }
 
@@ -289,19 +289,19 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
 
     const nodeData = graph._nodes.get(node);
 
-    if (type === 'mixed' || type === 'directed') {
+    if (type !== 'undirected') {
 
-      if (!direction || direction === 'in')
+      if (direction !== 'out')
         merge(edges, nodeData.in);
-      if (!direction || direction === 'out')
+      if (direction !== 'in')
         merge(edges, nodeData.out);
     }
 
-    if (type === 'mixed' || type === 'undirected') {
+    if (type !== 'directed') {
 
-      if (!direction || direction === 'in')
+      if (direction !== 'out')
         merge(edges, nodeData.undirectedIn);
-      if (!direction || direction === 'out')
+      if (direction !== 'in')
         merge(edges, nodeData.undirectedOut);
     }
   });
@@ -327,12 +327,12 @@ function countEdgesForPath(graph, type, source, target) {
 
   const sourceData = graph._nodes.get(source);
 
-  if (type === 'mixed' || type === 'directed') {
+  if (type !== 'undirected') {
     nb += count(sourceData.in, target);
     nb += count(sourceData.out, target);
   }
 
-  if (type === 'mixed' || type === 'undirected') {
+  if (type !== 'directed') {
     nb += count(sourceData.undirectedIn, target);
     nb += count(sourceData.undirectedOut, target);
   }
@@ -358,12 +358,12 @@ function createEdgeArrayForPath(graph, type, source, target) {
 
   const sourceData = graph._nodes.get(source);
 
-  if (type === 'mixed' || type === 'directed') {
+  if (type !== 'undirected') {
     collect(edges, sourceData.in, target);
     collect(edges, sourceData.out, target);
   }
 
-  if (type === 'mixed' || type === 'undirected') {
+  if (type !== 'directed') {
     collect(edges, sourceData.undirectedIn, target);
     collect(edges, sourceData.undirectedOut, target);
   }
@@ -455,7 +455,7 @@ function attachEdgeArrayCreator(Class, counter, description) {
       // Iterating over the edges between source & target
       let hasEdge;
 
-      if (type === 'mixed' || type === 'directed')
+      if (type !== 'undirected')
         hasEdge = this.hasDirectedEdge(source, target);
       else
         hasEdge = this.hasUndirectedEdge(source, target);

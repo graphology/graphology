@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.3 (provisional)
+
+* Improving performance.
+
 ## 0.5.2
 
 * Node.js 0.12.x compatibility.

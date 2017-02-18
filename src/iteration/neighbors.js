@@ -93,22 +93,22 @@ function createNeighborSetForNode(graph, type, direction, node) {
 
   const nodeData = graph._nodes.get(node);
 
-  if (type === 'mixed' || type === 'directed') {
+  if (type !== 'undirected') {
 
-    if (!direction || direction === 'in') {
+    if (direction !== 'out') {
       merge(neighbors, nodeData.in);
     }
-    if (!direction || direction === 'out') {
+    if (direction !== 'in') {
       merge(neighbors, nodeData.out);
     }
   }
 
-  if (type === 'mixed' || type === 'undirected') {
+  if (type !== 'directed') {
 
-    if (!direction || direction === 'in') {
+    if (direction !== 'out') {
       merge(neighbors, nodeData.undirectedIn);
     }
-    if (!direction || direction === 'out') {
+    if (direction !== 'in') {
       merge(neighbors, nodeData.undirectedOut);
     }
   }
@@ -139,22 +139,22 @@ function createNeighborSetForBunch(name, graph, type, direction, bunch) {
 
     const nodeData = graph._nodes.get(node);
 
-    if (type === 'mixed' || type === 'directed') {
+    if (type !== 'undirected') {
 
-      if (!direction || direction === 'in') {
+      if (direction !== 'out') {
         merge(neighbors, nodeData.in);
       }
-      if (!direction || direction === 'out') {
+      if (direction !== 'in') {
         merge(neighbors, nodeData.out);
       }
     }
 
-    if (type === 'mixed' || type === 'undirected') {
+    if (type !== 'directed') {
 
-      if (!direction || direction === 'in') {
+      if (direction !== 'out') {
         merge(neighbors, nodeData.undirectedIn);
       }
-      if (!direction || direction === 'out') {
+      if (direction !== 'in') {
         merge(neighbors, nodeData.undirectedOut);
       }
     }

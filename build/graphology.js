@@ -302,7 +302,7 @@ function prettyPrint(integer) {
 
     prettyString = string[j] + prettyString;
 
-    if (!((i - 2) % 3)) prettyString = ',' + prettyString;
+    if (!((i - 2) % 3) && i !== l - 1) prettyString = ',' + prettyString;
   }
 
   return prettyString;
@@ -697,7 +697,7 @@ function addEdge(graph, name, merge, mustGenerateId, undirected, edge, source, t
     if (!merge) throw new _errors.NotFoundGraphError('Graph.' + name + ': target node "' + target + '" not found.');else mustAddTarget = true;
   }
 
-  if (!graph.allowSelfLoops && source === target) throw new _errors.UsageGraphError('Graph.' + name + ': source & target are the same, thus creating a loop explicitly forbidden by this graph \'allowSelfLoops\' option set to false.');
+  if (!graph.allowSelfLoops && source === target) throw new _errors.UsageGraphError('Graph.' + name + ': source & target are the same ("' + source + '"), thus creating a loop explicitly forbidden by this graph \'allowSelfLoops\' option set to false.');
 
   // Must the graph generate an id for this edge?
   if (mustGenerateId) {
@@ -1871,7 +1871,7 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.updateNodeAttribute = function updateNodeAttribute(node, name, updater) {
     if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.updateNodeAttribute: could not find the "' + node + '" node in the graph.');
 
-    if (arguments.length < 3) throw new _errors.InvalidArgumentsGraphError('Graph.updateNodeAttribute: not enough arguments. Either you forgot to pass the attribute\'s name or value, or you meant to use #.replaceNodeAttributes / #.mergeNodeAttributes instead.');
+    if (arguments.length < 3) throw new _errors.InvalidArgumentsGraphError('Graph.updateNodeAttribute: not enough arguments. Either you forgot to pass the attribute\'s name or updater, or you meant to use #.replaceNodeAttributes / #.mergeNodeAttributes instead.');
 
     if (typeof updater !== 'function') throw new _errors.InvalidArgumentsGraphError('Graph.updateAttribute: updater should be a function.');
 
@@ -3115,8 +3115,7 @@ function updateStructureIndex(graph, edge, data) {
   var sourceData = graph._nodes.get(source),
       targetData = graph._nodes.get(target);
 
-  var outKey = undirected ? 'undirectedOut' : 'out',
-      inKey = undirected ? 'undirectedIn' : 'in';
+  var outKey = undirected ? 'undirectedOut' : 'out';
 
   // NOTE: The set of edges is the same for source & target
   var commonSet = void 0;
@@ -3135,6 +3134,8 @@ function updateStructureIndex(graph, edge, data) {
 
   // Handling target (we won't add the edge because it was already taken
   // care of with source above)
+  var inKey = undirected ? 'undirectedIn' : 'in';
+
   targetData[inKey] = targetData[inKey] || Object.create(null);
 
   if (!(source in targetData[inKey])) targetData[inKey][source] = commonSet;
@@ -3821,15 +3822,11 @@ function attachNeighborArrayCreator(Class, counter, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[name] = function () {
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
+  Class.prototype[name] = function (nodeOrBunch) {
 
-    if (args.length === 2) {
-      var node1 = args[0],
-          node2 = args[1];
-
+    if (arguments.length === 2) {
+      var node1 = arguments[0],
+          node2 = arguments[1];
 
       if (counter) throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid arguments.');
 
@@ -3842,8 +3839,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
       var neighbors = createNeighborSetForNode(this, type, direction, node1);
 
       return neighbors.has(node2);
-    } else if (args.length === 1) {
-      var nodeOrBunch = args[0];
+    } else if (arguments.length === 1) {
 
       if (this.hasNode(nodeOrBunch)) {
 
@@ -3871,7 +3867,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
       }
     }
 
-    throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid number of arguments (expecting 1 or 2 and got ' + args.length + ').');
+    throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid number of arguments (expecting 1 or 2 and got ' + arguments.length + ').');
   };
 }
 
