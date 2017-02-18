@@ -12,6 +12,8 @@ export const INDICES = new Set(['structure']);
 
 /**
  * Function updating the 'structure' index with the given edge's data.
+ * Note that in the case of the multi graph, related edges are stored in a
+ * set that is the same for A -> B & B <- A.
  *
  * @param {Graph}  graph - Target Graph instance.
  * @param {any}    edge  - Added edge.
@@ -33,19 +35,11 @@ export function updateStructureIndex(graph, edge, data) {
 
   const outKey = undirected ? 'undirectedOut' : 'out';
 
-  // NOTE: The set of edges is the same for source & target
-  let commonSet;
-
-  if (multi)
-    commonSet = new Set();
-  else
-    commonSet = edge;
-
   // Handling source
   sourceData[outKey] = sourceData[outKey] || Object.create(null);
 
   if (!(target in sourceData[outKey]))
-    sourceData[outKey][target] = commonSet;
+    sourceData[outKey][target] = multi ? new Set() : edge;
 
   if (multi)
     sourceData[outKey][target].add(edge);
@@ -61,7 +55,7 @@ export function updateStructureIndex(graph, edge, data) {
   targetData[inKey] = targetData[inKey] || Object.create(null);
 
   if (!(source in targetData[inKey]))
-    targetData[inKey][source] = commonSet;
+    targetData[inKey][source] = sourceData[outKey][target];
 }
 
 /**
