@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.3 (provisional)
+## 0.5.3
 
 * Improving performance.
 
