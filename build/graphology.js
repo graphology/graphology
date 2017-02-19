@@ -1071,6 +1071,8 @@ var Graph = function (_EventEmitter) {
 
     if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.inDegree: could not find the "' + node + '" node in the graph.');
 
+    if (this.type === 'undirected') return 0;
+
     var data = this._nodes.get(node),
         loops = selfLoops ? data.directedSelfLoops : 0;
 
@@ -1095,6 +1097,8 @@ var Graph = function (_EventEmitter) {
     if (typeof selfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.outDegree: Expecting a boolean but got "' + selfLoops + '" for the second parameter (allowing self-loops to be counted).');
 
     if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.outDegree: could not find the "' + node + '" node in the graph.');
+
+    if (this.type === 'undirected') return 0;
 
     var data = this._nodes.get(node),
         loops = selfLoops ? data.directedSelfLoops : 0;
@@ -1121,6 +1125,8 @@ var Graph = function (_EventEmitter) {
 
     if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.directedDegree: could not find the "' + node + '" node in the graph.');
 
+    if (this.type === 'undirected') return 0;
+
     return this.inDegree(node, selfLoops) + this.outDegree(node, selfLoops);
   };
 
@@ -1142,6 +1148,8 @@ var Graph = function (_EventEmitter) {
     if (typeof selfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.undirectedDegree: Expecting a boolean but got "' + selfLoops + '" for the second parameter (allowing self-loops to be counted).');
 
     if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.undirectedDegree: could not find the "' + node + '" node in the graph.');
+
+    if (this.type === 'directed') return 0;
 
     var data = this._nodes.get(node),
         loops = selfLoops ? data.undirectedSelfLoops * 2 : 0;
@@ -1168,7 +1176,13 @@ var Graph = function (_EventEmitter) {
 
     if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.degree: could not find the "' + node + '" node in the graph.');
 
-    return this.directedDegree(node, selfLoops) + this.undirectedDegree(node, selfLoops);
+    var degree = 0;
+
+    if (this.type !== 'undirected') degree += this.directedDegree(node, selfLoops);
+
+    if (this.type !== 'directed') degree += this.undirectedDegree(node, selfLoops);
+
+    return degree;
   };
 
   /**
@@ -1324,20 +1338,20 @@ var Graph = function (_EventEmitter) {
     };
 
     if (this.allowSelfLoops) {
-      if (this.type === 'mixed' || this.type === 'directed') {
+      if (this.type !== 'undirected') {
         data.directedSelfLoops = 0;
       }
-      if (this.type === 'mixed' || this.type === 'undirected') {
+      if (this.type !== 'directed') {
         data.undirectedSelfLoops = 0;
       }
     }
 
-    if (this.type === 'mixed' || this.type === 'directed') {
+    if (this.type !== 'undirected') {
       data.inDegree = 0;
       data.outDegree = 0;
     }
 
-    if (this.type === 'mixed' || this.type === 'undirected') {
+    if (this.type !== 'directed') {
       data.undirectedDegree = 0;
     }
 
@@ -3097,6 +3111,8 @@ var INDICES = exports.INDICES = new Set(['structure']);
 
 /**
  * Function updating the 'structure' index with the given edge's data.
+ * Note that in the case of the multi graph, related edges are stored in a
+ * set that is the same for A -> B & B <- A.
  *
  * @param {Graph}  graph - Target Graph instance.
  * @param {any}    edge  - Added edge.
@@ -3117,15 +3133,10 @@ function updateStructureIndex(graph, edge, data) {
 
   var outKey = undirected ? 'undirectedOut' : 'out';
 
-  // NOTE: The set of edges is the same for source & target
-  var commonSet = void 0;
-
-  if (multi) commonSet = new Set();else commonSet = edge;
-
   // Handling source
   sourceData[outKey] = sourceData[outKey] || Object.create(null);
 
-  if (!(target in sourceData[outKey])) sourceData[outKey][target] = commonSet;
+  if (!(target in sourceData[outKey])) sourceData[outKey][target] = multi ? new Set() : edge;
 
   if (multi) sourceData[outKey][target].add(edge);
 
@@ -3138,7 +3149,7 @@ function updateStructureIndex(graph, edge, data) {
 
   targetData[inKey] = targetData[inKey] || Object.create(null);
 
-  if (!(source in targetData[inKey])) targetData[inKey][source] = commonSet;
+  if (!(source in targetData[inKey])) targetData[inKey][source] = sourceData[outKey][target];
 }
 
 /**
@@ -3384,16 +3395,16 @@ function countEdgesForNode(graph, type, direction, node) {
 
   var nodeData = graph._nodes.get(node);
 
-  if (type === 'mixed' || type === 'directed') {
+  if (type !== 'undirected') {
 
-    if (!direction || direction === 'in') nb += count(nodeData.in);
-    if (!direction || direction === 'out') nb += count(nodeData.out);
+    if (direction !== 'out') nb += count(nodeData.in);
+    if (direction !== 'in') nb += count(nodeData.out);
   }
 
-  if (type === 'mixed' || type === 'undirected') {
+  if (type !== 'directed') {
 
-    if (!direction || direction === 'in') nb += count(nodeData.undirectedIn);
-    if (!direction || direction === 'out') nb += count(nodeData.undirectedOut);
+    if (direction !== 'out') nb += count(nodeData.undirectedIn);
+    if (direction !== 'in') nb += count(nodeData.undirectedOut);
   }
 
   return nb;
@@ -3417,16 +3428,16 @@ function createEdgeArrayForNode(graph, type, direction, node) {
 
   var nodeData = graph._nodes.get(node);
 
-  if (type === 'mixed' || type === 'directed') {
+  if (type !== 'undirected') {
 
-    if (!direction || direction === 'in') collect(edges, nodeData.in);
-    if (!direction || direction === 'out') collect(edges, nodeData.out);
+    if (direction !== 'out') collect(edges, nodeData.in);
+    if (direction !== 'in') collect(edges, nodeData.out);
   }
 
-  if (type === 'mixed' || type === 'undirected') {
+  if (type !== 'directed') {
 
-    if (!direction || direction === 'in') collect(edges, nodeData.undirectedIn);
-    if (!direction || direction === 'out') collect(edges, nodeData.undirectedOut);
+    if (direction !== 'out') collect(edges, nodeData.undirectedIn);
+    if (direction !== 'in') collect(edges, nodeData.undirectedOut);
   }
 
   return edges;
@@ -3454,16 +3465,16 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
 
     var nodeData = graph._nodes.get(node);
 
-    if (type === 'mixed' || type === 'directed') {
+    if (type !== 'undirected') {
 
-      if (!direction || direction === 'in') merge(edges, nodeData.in);
-      if (!direction || direction === 'out') merge(edges, nodeData.out);
+      if (direction !== 'out') merge(edges, nodeData.in);
+      if (direction !== 'in') merge(edges, nodeData.out);
     }
 
-    if (type === 'mixed' || type === 'undirected') {
+    if (type !== 'directed') {
 
-      if (!direction || direction === 'in') merge(edges, nodeData.undirectedIn);
-      if (!direction || direction === 'out') merge(edges, nodeData.undirectedOut);
+      if (direction !== 'out') merge(edges, nodeData.undirectedIn);
+      if (direction !== 'in') merge(edges, nodeData.undirectedOut);
     }
   });
 
@@ -3488,12 +3499,12 @@ function countEdgesForPath(graph, type, source, target) {
 
   var sourceData = graph._nodes.get(source);
 
-  if (type === 'mixed' || type === 'directed') {
+  if (type !== 'undirected') {
     nb += count(sourceData.in, target);
     nb += count(sourceData.out, target);
   }
 
-  if (type === 'mixed' || type === 'undirected') {
+  if (type !== 'directed') {
     nb += count(sourceData.undirectedIn, target);
     nb += count(sourceData.undirectedOut, target);
   }
@@ -3519,12 +3530,12 @@ function createEdgeArrayForPath(graph, type, source, target) {
 
   var sourceData = graph._nodes.get(source);
 
-  if (type === 'mixed' || type === 'directed') {
+  if (type !== 'undirected') {
     collect(edges, sourceData.in, target);
     collect(edges, sourceData.out, target);
   }
 
-  if (type === 'mixed' || type === 'undirected') {
+  if (type !== 'directed') {
     collect(edges, sourceData.undirectedIn, target);
     collect(edges, sourceData.undirectedOut, target);
   }
@@ -3606,7 +3617,7 @@ function attachEdgeArrayCreator(Class, counter, description) {
       // Iterating over the edges between source & target
       var hasEdge = void 0;
 
-      if (type === 'mixed' || type === 'directed') hasEdge = this.hasDirectedEdge(source, target);else hasEdge = this.hasUndirectedEdge(source, target);
+      if (type !== 'undirected') hasEdge = this.hasDirectedEdge(source, target);else hasEdge = this.hasUndirectedEdge(source, target);
 
       // If no such edge exist, we'll stop right there.
       if (!hasEdge) return counter ? 0 : [];
@@ -3722,22 +3733,22 @@ function createNeighborSetForNode(graph, type, direction, node) {
 
   var nodeData = graph._nodes.get(node);
 
-  if (type === 'mixed' || type === 'directed') {
+  if (type !== 'undirected') {
 
-    if (!direction || direction === 'in') {
+    if (direction !== 'out') {
       merge(neighbors, nodeData.in);
     }
-    if (!direction || direction === 'out') {
+    if (direction !== 'in') {
       merge(neighbors, nodeData.out);
     }
   }
 
-  if (type === 'mixed' || type === 'undirected') {
+  if (type !== 'directed') {
 
-    if (!direction || direction === 'in') {
+    if (direction !== 'out') {
       merge(neighbors, nodeData.undirectedIn);
     }
-    if (!direction || direction === 'out') {
+    if (direction !== 'in') {
       merge(neighbors, nodeData.undirectedOut);
     }
   }
@@ -3767,22 +3778,22 @@ function createNeighborSetForBunch(name, graph, type, direction, bunch) {
 
     var nodeData = graph._nodes.get(node);
 
-    if (type === 'mixed' || type === 'directed') {
+    if (type !== 'undirected') {
 
-      if (!direction || direction === 'in') {
+      if (direction !== 'out') {
         merge(neighbors, nodeData.in);
       }
-      if (!direction || direction === 'out') {
+      if (direction !== 'in') {
         merge(neighbors, nodeData.out);
       }
     }
 
-    if (type === 'mixed' || type === 'undirected') {
+    if (type !== 'directed') {
 
-      if (!direction || direction === 'in') {
+      if (direction !== 'out') {
         merge(neighbors, nodeData.undirectedIn);
       }
-      if (!direction || direction === 'out') {
+      if (direction !== 'in') {
         merge(neighbors, nodeData.undirectedOut);
       }
     }
