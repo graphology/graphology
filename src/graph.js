@@ -631,6 +631,9 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.inDegree: could not find the "${node}" node in the graph.`);
 
+    if (this.type === 'undirected')
+      return 0;
+
     const data = this._nodes.get(node),
           loops = selfLoops ? data.directedSelfLoops : 0;
 
@@ -653,6 +656,9 @@ export default class Graph extends EventEmitter {
 
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.outDegree: could not find the "${node}" node in the graph.`);
+
+    if (this.type === 'undirected')
+      return 0;
 
     const data = this._nodes.get(node),
           loops = selfLoops ? data.directedSelfLoops : 0;
@@ -677,6 +683,9 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.directedDegree: could not find the "${node}" node in the graph.`);
 
+    if (this.type === 'undirected')
+      return 0;
+
     return this.inDegree(node, selfLoops) + this.outDegree(node, selfLoops);
   }
 
@@ -696,6 +705,9 @@ export default class Graph extends EventEmitter {
 
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.undirectedDegree: could not find the "${node}" node in the graph.`);
+
+    if (this.type === 'directed')
+      return 0;
 
     const data = this._nodes.get(node),
           loops = selfLoops ? (data.undirectedSelfLoops * 2) : 0;
@@ -720,10 +732,15 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.degree: could not find the "${node}" node in the graph.`);
 
-    return (
-      this.directedDegree(node, selfLoops) +
-      this.undirectedDegree(node, selfLoops)
-    );
+    let degree = 0;
+
+    if (this.type !== 'undirected')
+      degree += this.directedDegree(node, selfLoops);
+
+    if (this.type !== 'directed')
+      degree += this.undirectedDegree(node, selfLoops);
+
+    return degree;
   }
 
   /**

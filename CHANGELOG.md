@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.4
+
+* Fixing degree methods for typed graphs.
+
 ## 0.5.3
 
 * Improving performance.

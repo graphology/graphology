@@ -312,6 +312,14 @@ export default function read(Graph, checkers) {
 
           assert.strictEqual(graph.inDegree('Sue'), 3);
           assert.strictEqual(graph.inDegree('Sue', false), 2);
+        },
+
+        'it should always return 0 in an undirected graph.': function() {
+          const graph = new Graph({type: 'undirected'});
+          graph.addNodesFrom(['Helen', 'Sue']);
+          graph.addEdge('Helen', 'Sue');
+
+          assert.strictEqual(graph.inDegree('Helen'), 0);
         }
       },
 
@@ -345,6 +353,14 @@ export default function read(Graph, checkers) {
 
           assert.strictEqual(graph.outDegree('Helen'), 3);
           assert.strictEqual(graph.outDegree('Helen', false), 2);
+        },
+
+        'it should always return 0 in an undirected graph.': function() {
+          const graph = new Graph({type: 'undirected'});
+          graph.addNodesFrom(['Helen', 'Sue']);
+          graph.addEdge('Helen', 'Sue');
+
+          assert.strictEqual(graph.outDegree('Sue'), 0);
         }
       },
 
@@ -384,6 +400,14 @@ export default function read(Graph, checkers) {
 
           assert.strictEqual(graph.directedDegree('Helen'), 5);
           assert.strictEqual(graph.directedDegree('Helen', false), 3);
+        },
+
+        'it should always return 0 in an undirected graph.': function() {
+          const graph = new Graph({type: 'undirected'});
+          graph.addNodesFrom(['Helen', 'Sue']);
+          graph.addEdge('Helen', 'Sue');
+
+          assert.strictEqual(graph.inDegree('Helen'), 0);
         }
       },
 
@@ -418,6 +442,14 @@ export default function read(Graph, checkers) {
 
           assert.strictEqual(graph.undirectedDegree('Helen'), 3);
           assert.strictEqual(graph.undirectedDegree('Helen', false), 1);
+        },
+
+        'it should always return 0 in a directed graph.': function() {
+          const graph = new Graph({type: 'directed'});
+          graph.addNodesFrom(['Helen', 'Sue']);
+          graph.addEdge('Helen', 'Sue');
+
+          assert.strictEqual(graph.undirectedDegree('Helen'), 0);
         }
       },
 
@@ -458,6 +490,23 @@ export default function read(Graph, checkers) {
           assert.strictEqual(graph.degree('Helen'), 6);
           assert.strictEqual(graph.degree('Helen', false), 4);
         }
+      },
+
+      'it should also work with typed graphs.': function() {
+        const directedGraph = new Graph({type: 'directed'}),
+              undirectedGraph = new Graph({type: 'undirected'});
+
+        directedGraph.addNodesFrom([1, 2]);
+        undirectedGraph.addNodesFrom([1, 2]);
+
+        assert.strictEqual(directedGraph.degree(1), 0);
+        assert.strictEqual(undirectedGraph.degree(1), 0);
+
+        directedGraph.addDirectedEdge(1, 2);
+        undirectedGraph.addUndirectedEdge(1, 2);
+
+        assert.strictEqual(directedGraph.degree(1), 1);
+        assert.strictEqual(undirectedGraph.degree(1), 1);
       }
     }
   };
