@@ -92,13 +92,7 @@ function createNeighborSetForNode(graph, type, direction, node) {
   }
 
   if (type !== 'directed') {
-
-    if (direction !== 'out') {
-      merge(neighbors, nodeData.undirectedIn);
-    }
-    if (direction !== 'in') {
-      merge(neighbors, nodeData.undirectedOut);
-    }
+    merge(neighbors, nodeData.undirected);
   }
 
   return neighbors;
@@ -138,13 +132,7 @@ function createNeighborSetForBunch(name, graph, type, direction, bunch) {
     }
 
     if (type !== 'directed') {
-
-      if (direction !== 'out') {
-        merge(neighbors, nodeData.undirectedIn);
-      }
-      if (direction !== 'in') {
-        merge(neighbors, nodeData.undirectedOut);
-      }
+      merge(neighbors, nodeData.undirected);
     }
   });
 

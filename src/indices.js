@@ -33,7 +33,7 @@ export function updateStructureIndex(graph, edge, data) {
   const sourceData = graph._nodes.get(source),
         targetData = graph._nodes.get(target);
 
-  const outKey = undirected ? 'undirectedOut' : 'out';
+  const outKey = undirected ? 'undirected' : 'out';
 
   // Handling source
   sourceData[outKey] = sourceData[outKey] || Object.create(null);
@@ -50,7 +50,7 @@ export function updateStructureIndex(graph, edge, data) {
 
   // Handling target (we won't add the edge because it was already taken
   // care of with source above)
-  const inKey = undirected ? 'undirectedIn' : 'in';
+  const inKey = undirected ? 'undirected' : 'in';
 
   targetData[inKey] = targetData[inKey] || Object.create(null);
 
@@ -73,7 +73,7 @@ export function clearEdgeFromStructureIndex(graph, edge, data) {
   // NOTE: since the edge set is the same for source & target, we can only
   // affect source
   const sourceData = graph._nodes.get(source),
-        outKey = undirected ? 'undirectedOut' : 'out',
+        outKey = undirected ? 'undirected' : 'out',
         sourceIndex = sourceData[outKey];
 
   // NOTE: possible to clear empty sets from memory altogether
@@ -89,7 +89,7 @@ export function clearEdgeFromStructureIndex(graph, edge, data) {
     return;
 
   const targetData = graph._nodes.get(target),
-        inKey = undirected ? 'undirectedIn' : 'in',
+        inKey = undirected ? 'undirected' : 'in',
         targetIndex = targetData[inKey];
 
   delete targetIndex[source];
@@ -106,7 +106,6 @@ export function clearStructureIndex(graph) {
     // Clearing properties
     delete data.in;
     delete data.out;
-    delete data.undirectedIn;
-    delete data.undirectedOut;
+    delete data.undirected;
   });
 }

@@ -563,15 +563,11 @@ export default class Graph extends EventEmitter {
       // Is there a directed edge pointing towards target?
       const nodeData = this._nodes.get(source);
 
-      let register = nodeData.undirectedOut,
-          edges;
+      const register = nodeData.undirected;
+
+      let edges;
 
       if (register)
-        edges = register[target];
-
-      register = nodeData.undirectedIn;
-
-      if (!edges && register)
         edges = register[target];
 
       if (!edges)

@@ -207,11 +207,7 @@ function countEdgesForNode(graph, type, direction, node) {
   }
 
   if (type !== 'directed') {
-
-    if (direction !== 'out')
-      nb += count(nodeData.undirectedIn);
-    if (direction !== 'in')
-      nb += count(nodeData.undirectedOut);
+    nb += count(nodeData.undirected);
   }
 
   return nb;
@@ -244,11 +240,7 @@ function createEdgeArrayForNode(graph, type, direction, node) {
   }
 
   if (type !== 'directed') {
-
-    if (direction !== 'out')
-      collect(edges, nodeData.undirectedIn);
-    if (direction !== 'in')
-      collect(edges, nodeData.undirectedOut);
+    collect(edges, nodeData.undirected);
   }
 
   return edges;
@@ -286,11 +278,7 @@ function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
     }
 
     if (type !== 'directed') {
-
-      if (direction !== 'out')
-        merge(edges, nodeData.undirectedIn);
-      if (direction !== 'in')
-        merge(edges, nodeData.undirectedOut);
+      merge(edges, nodeData.undirected);
     }
   });
 
@@ -321,8 +309,7 @@ function countEdgesForPath(graph, type, source, target) {
   }
 
   if (type !== 'directed') {
-    nb += count(sourceData.undirectedIn, target);
-    nb += count(sourceData.undirectedOut, target);
+    nb += count(sourceData.undirected, target);
   }
 
   return nb;
@@ -352,8 +339,7 @@ function createEdgeArrayForPath(graph, type, source, target) {
   }
 
   if (type !== 'directed') {
-    collect(edges, sourceData.undirectedIn, target);
-    collect(edges, sourceData.undirectedOut, target);
+    collect(edges, sourceData.undirected, target);
   }
 
   return edges;

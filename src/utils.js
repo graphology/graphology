@@ -83,25 +83,21 @@ export function consumeIterator(size, iterator) {
  * @return {string|null}
  */
 export function getMatchingEdge(graph, source, target, type) {
-  if (type === 'mixed')
-    return (
-      getMatchingEdge(graph, source, target, 'directed') ||
-      getMatchingEdge(graph, source, target, 'undirected')
-    );
-
   const sourceData = graph._nodes.get(source);
 
-  let register = type === 'directed' ?
-    sourceData.out :
-    sourceData.undirectedOut;
+  let edge = null;
 
-  if (!register || !register[target] && type === 'undirected')
-    register = sourceData.undirectedIn;
+  if (type === 'mixed') {
+    edge = sourceData.out[target] || sourceData.undirected[target];
+  }
+  else if (type === 'directed') {
+    edge = sourceData.out[target];
+  }
+  else {
+    edge = sourceData.undirected[target];
+  }
 
-  if (!register || !register[target])
-    return null;
-
-  return register[target];
+  return edge;
 }
 
 /**

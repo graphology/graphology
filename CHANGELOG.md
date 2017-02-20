@@ -3,6 +3,7 @@
 ## 0.6.0
 
 * Dropping `inbound` & `outbound` iteration methods.
+* Refactoring internal indices for undirected graphs.
 
 ## 0.5.4
 
