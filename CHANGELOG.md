@@ -5,6 +5,7 @@
 * Dropping `inbound` & `outbound` iteration methods.
 * Dropping bunch consuming polymorphisms from iteration methods.
 * Refactoring internal indices for undirected graphs.
+* Improving performance.
 
 ## 0.5.4
 

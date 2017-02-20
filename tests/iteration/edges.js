@@ -279,7 +279,7 @@ export default function edgesIteration(Graph, checkers) {
   }
 
   const tests = {
-    'Various cases': {
+    'Miscellaneous': {
       'simple graph indices should work.': function() {
         const simpleGraph = new Graph();
         simpleGraph.addNodesFrom([1, 2, 3, 4]);

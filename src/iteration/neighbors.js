@@ -7,7 +7,8 @@
  */
 import {
   InvalidArgumentsGraphError,
-  NotFoundGraphError
+  NotFoundGraphError,
+  UsageGraphError
 } from '../errors';
 
 import {
@@ -21,28 +22,33 @@ const NEIGHBORS_ITERATION = [
   {
     name: 'neighbors',
     counter: 'countNeighbors',
+    fallback: 'degree',
     type: 'mixed'
   },
   {
     name: 'inNeighbors',
     counter: 'countInNeighbors',
+    fallback: 'inDegree',
     type: 'directed',
     direction: 'in'
   },
   {
     name: 'outNeighbors',
     counter: 'countOutNeighbors',
+    fallback: 'outDegree',
     type: 'directed',
     direction: 'out'
   },
   {
     name: 'directedNeighbors',
     counter: 'countDirectedNeighbors',
+    fallback: 'directedDegree',
     type: 'directed'
   },
   {
     name: 'undirectedNeighbors',
     counter: 'countUndirectedNeighbors',
+    fallback: 'undirectedDegree',
     type: 'undirected'
   }
 ];
@@ -104,9 +110,10 @@ function createNeighborSetForNode(graph, type, direction, node) {
  * @param {object}   description - Method description.
  */
 function attachNeighborArrayCreator(Class, counter, description) {
-    const {
+  const {
     type,
-    direction
+    direction,
+    fallback
   } = description;
 
   const name = counter ? description.counter : description.name;
@@ -139,7 +146,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
             node2 = arguments[1];
 
       if (counter)
-        throw new InvalidArgumentsGraphError(`Graph.${name}: invalid arguments.`);
+        throw new UsageGraphError(`Graph.${name}: it makes no sense to count the neighbors between two nodes.`);
 
       if (!this.hasNode(node1))
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node1}" node in the graph.`);
@@ -162,6 +169,10 @@ function attachNeighborArrayCreator(Class, counter, description) {
 
       if (!this.hasNode(node))
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph.`);
+
+      // Shortcut: in a simple graph, counting neighbors & degree is the same
+      if (!this.multi)
+        return this[fallback](node);
 
       // Here, we want to iterate over a node's relevant neighbors
       const neighbors = createNeighborSetForNode(

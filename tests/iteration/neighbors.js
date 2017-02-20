@@ -172,7 +172,17 @@ export default function neighborsIteration(Graph, checkers) {
     };
   }
 
-  const tests = {};
+  const tests = {
+    'Miscellaneous': {
+      'it should be possible to count neighbors in simple graphs (probably relying on degree).': function() {
+        const g = new Graph();
+        g.addNodesFrom([1, 2]);
+        g.addEdge(1, 2);
+
+        assert.strictEqual(g.countNeighbors(1), 1);
+      }
+    }
+  };
 
   // Common tests
   METHODS.forEach(name => deepMerge(tests, commonTests(name)));
