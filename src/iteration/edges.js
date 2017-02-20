@@ -11,9 +11,7 @@ import {
 } from '../errors';
 
 import {
-  consumeIterator,
-  isBunch,
-  overBunch
+  consumeIterator
 } from '../utils';
 
 /**
@@ -104,37 +102,6 @@ function count(object, key) {
     nb += (object[k] instanceof Set ? object[k].size : +!!object[k]);
 
   return nb;
-}
-
-/**
- * Function merging edges found in an object into the given set.
- *
- * @param {Set}              edges - Current set of edges.
- * @param {object|undefined} map   - Target object.
- * @param {string}           key   - Sub key.
- */
-function merge(edges, object, key) {
-  if (!object)
-    return;
-
-  if (key) {
-    const target = object[key];
-
-    if (target) {
-      if (target instanceof Set)
-        target.forEach(value => (edges.add(value)));
-      else
-        edges.add(target);
-    }
-  }
-  else {
-    for (const k in object) {
-      if (object[k] instanceof Set)
-        object[k].forEach(value => (edges.add(value)));
-      else
-        edges.add(object[k]);
-    }
-  }
 }
 
 /**
@@ -247,45 +214,6 @@ function createEdgeArrayForNode(graph, type, direction, node) {
 }
 
 /**
- * Function creating an array of edge for the given bunch of nodes.
- *
- * @param  {Graph}   graph     - Target Graph instance.
- * @param  {string}  type      - Type of edges to retrieve.
- * @param  {string}  direction - In or out?
- * @param  {bunch}   bunch     - Target bunch.
- * @return {array}             - Array of edges.
- */
-function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
-
-  // For this, we need to compute the "structure" index
-  graph.computeIndex('structure');
-
-  const edges = new Set();
-
-  // Iterating over the bunch
-  overBunch(bunch, node => {
-    if (!graph.hasNode(node))
-      throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph in the given bunch.`);
-
-    const nodeData = graph._nodes.get(node);
-
-    if (type !== 'undirected') {
-
-      if (direction !== 'out')
-        merge(edges, nodeData.in);
-      if (direction !== 'in')
-        merge(edges, nodeData.out);
-    }
-
-    if (type !== 'directed') {
-      merge(edges, nodeData.undirected);
-    }
-  });
-
-  return consumeIterator(edges.size, edges.values());
-}
-
-/**
  * Function counting the number of edges for the given path.
  *
  * @param  {Graph}   graph  - Target Graph instance.
@@ -379,47 +307,24 @@ function attachEdgeArrayCreator(Class, counter, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[name] = function(...args) {
-    if (!args.length)
+  Class.prototype[name] = function(source, target) {
+    if (!arguments.length)
       return counter ?
         countEdges(this, type) :
         createEdgeArray(this, type);
 
-    if (args.length === 1) {
-      const nodeOrBunch = args[0];
+    if (arguments.length === 1) {
 
-      if (this.hasNode(nodeOrBunch)) {
+      if (!this.hasNode(source))
+        throw new NotFoundGraphError(`Graph.${name}: could not find the "${source}" node in the graph.`);
 
-        // Iterating over a node's edges
-        return counter ?
-          countEdgesForNode(this, type, direction, nodeOrBunch) :
-          createEdgeArrayForNode(this, type, direction, nodeOrBunch);
-      }
-      else if (isBunch(nodeOrBunch)) {
-
-        // Iterating over the union of a node's edges
-
-        // Note: since we need to keep track of the traversed values
-        // to perform union, we can't optimize further and we have to
-        // create this intermediary array and return its length when counting.
-        const edges = createEdgeArrayForBunch(
-          name,
-          this,
-          type,
-          direction,
-          nodeOrBunch
-        );
-
-        return counter ? edges.length : edges;
-      }
-      else {
-        throw new NotFoundGraphError(`Graph.${name}: could not find the "${nodeOrBunch}" node in the graph.`);
-      }
+      // Iterating over a node's edges
+      return counter ?
+        countEdgesForNode(this, type, direction, source) :
+        createEdgeArrayForNode(this, type, direction, source);
     }
 
-    if (args.length === 2) {
-      const [source, target] = args;
-
+    if (arguments.length === 2) {
       if (!this.hasNode(source))
         throw new NotFoundGraphError(`Graph.${name}:  could not find the "${source}" source node in the graph.`);
 
@@ -443,7 +348,7 @@ function attachEdgeArrayCreator(Class, counter, description) {
         createEdgeArrayForPath(this, type, source, target);
     }
 
-    throw new InvalidArgumentsGraphError(`Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${args.length}).`);
+    throw new InvalidArgumentsGraphError(`Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${arguments.length}).`);
   };
 }
 

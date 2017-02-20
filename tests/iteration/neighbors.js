@@ -7,8 +7,7 @@
 import assert from 'assert';
 import {
   capitalize,
-  deepMerge,
-  testBunches
+  deepMerge
 } from '../helpers';
 
 const METHODS = [
@@ -134,13 +133,7 @@ export default function neighborsIteration(Graph, checkers) {
           assert.throws(function() {
             graph[name]('Forever', 'Test');
           }, notFound());
-        },
-
-        'it should throw if any of the provided bunch node is not found.': function() {
-          assert.throws(function() {
-            graph[name](['Test']);
-          }, notFound());
-        },
+        }
       }
     };
   }
@@ -164,18 +157,6 @@ export default function neighborsIteration(Graph, checkers) {
 
           assert.deepEqual(neighbors, data.node.neighbors);
           assert.deepEqual(graph[name]('Alone'), []);
-        },
-
-        'it should return the correct neighbors array from the provided bunch.': function() {
-          testBunches([data.node.key], bunch => {
-            const neighbors = graph[name](bunch);
-
-            assert.deepEqual(neighbors, data.node.neighbors);
-          });
-
-          testBunches(['Forever', 'Alone'], bunch => {
-            assert.deepEqual(graph[name](bunch), []);
-          });
         }
       },
 
@@ -186,12 +167,6 @@ export default function neighborsIteration(Graph, checkers) {
 
           assert.strictEqual(neighbors, data.node.neighbors.length);
           assert.strictEqual(graph[counterName]('Alone'), 0);
-        },
-
-        'it should return the correct number of neighbors from the provided bunch.': function() {
-          testBunches([data.node.key], bunch => {
-            assert.strictEqual(graph[counterName](bunch), data.node.neighbors.length);
-          });
         }
       }
     };

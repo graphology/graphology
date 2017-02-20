@@ -8,8 +8,7 @@ import assert from 'assert';
 import {
   capitalize,
   deepMerge,
-  sameMembers,
-  testBunches
+  sameMembers
 } from '../helpers';
 
 const METHODS = [
@@ -110,13 +109,6 @@ export default function edgesIteration(Graph, checkers) {
           'C->J'
         ]
       },
-      bunch: {
-        keys: ['Thomas', 'John'],
-        edges: [
-          'J->T',
-          'C->J'
-        ]
-      },
       path: {
         source: 'John',
         target: 'Martha',
@@ -134,14 +126,6 @@ export default function edgesIteration(Graph, checkers) {
           'J->M'
         ]
       },
-      bunch: {
-        keys: ['John', 'Catherine'],
-        edges: [
-          'J->T',
-          'J->M',
-          'C->J'
-        ]
-      },
       path: {
         source: 'John',
         target: 'Martha',
@@ -154,14 +138,6 @@ export default function edgesIteration(Graph, checkers) {
       all: ALL_DIRECTED_EDGES,
       node: {
         key: 'John',
-        edges: [
-          'C->J',
-          'J->T',
-          'J->M'
-        ]
-      },
-      bunch: {
-        keys: ['John', 'Catherine'],
         edges: [
           'C->J',
           'J->T',
@@ -183,15 +159,6 @@ export default function edgesIteration(Graph, checkers) {
         edges: [
           'M<->J',
           'J<->R'
-        ]
-      },
-      bunch: {
-        keys: ['John', 'Martha'],
-        edges: [
-          'M<->R',
-          'M<->J',
-          'J<->R',
-          'T<->M',
         ]
       },
       path: {
@@ -245,12 +212,6 @@ export default function edgesIteration(Graph, checkers) {
           }, notFound());
         },
 
-        'it should throw if any of the provided bunch node is not found.': function() {
-          assert.throws(function() {
-            graph[name](['Test']);
-          }, notFound());
-        },
-
         'it should throw if either source or target is not found.': function() {
           assert.throws(function() {
             graph[name]('Test', 'Alone');
@@ -284,15 +245,6 @@ export default function edgesIteration(Graph, checkers) {
           assert.deepEqual(graph[name]('Alone'), []);
         },
 
-        'it should return a bunch of nodes\' relevant edges.': function() {
-          testBunches(data.bunch.keys, bunch => {
-            const edges = graph[name](bunch);
-
-            assert(sameMembers(edges, data.bunch.edges));
-            assert.deepEqual(graph[name](['Forever', 'Alone']), []);
-          });
-        },
-
         'it should return all the relevant edges between source & target.': function() {
           const edges = graph[name](data.path.source, data.path.target);
 
@@ -314,14 +266,6 @@ export default function edgesIteration(Graph, checkers) {
 
           assert.strictEqual(nb, data.node.edges.length);
           assert.deepEqual(graph[counterName]('Alone'), 0);
-        },
-
-        'it should count a bunch of nodes\' relevant edges.': function() {
-          testBunches(data.bunch.keys, bunch => {
-
-            assert.strictEqual(graph[counterName](bunch), data.bunch.edges.length);
-            assert.deepEqual(graph[counterName](['Forever', 'Alone']), 0);
-          });
         },
 
         'it should count all the relevant edges between source & target.': function() {

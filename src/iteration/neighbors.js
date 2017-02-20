@@ -11,9 +11,7 @@ import {
 } from '../errors';
 
 import {
-  consumeIterator,
-  isBunch,
-  overBunch
+  consumeIterator
 } from '../utils';
 
 /**
@@ -99,47 +97,6 @@ function createNeighborSetForNode(graph, type, direction, node) {
 }
 
 /**
- * Function creating a set of relevant neighbors for the given bunch of nodes.
- *
- * @param  {string}       name      - Name of the calling method.
- * @param  {Graph}        graph     - Target graph.
- * @param  {string}       type      - Type of neighbors.
- * @param  {string}       direction - Direction.
- * @param  {bunch}        bunch     - Target bunch.
- * @return {Set|BasicSet}           - The neighbors set.
- */
-function createNeighborSetForBunch(name, graph, type, direction, bunch) {
-
-  // For this, we need to compute the "structure" index
-  graph.computeIndex('structure');
-
-  const neighbors = new Set();
-
-  overBunch(bunch, node => {
-    if (!graph.hasNode(node))
-      throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph in the given bunch.`);
-
-    const nodeData = graph._nodes.get(node);
-
-    if (type !== 'undirected') {
-
-      if (direction !== 'out') {
-        merge(neighbors, nodeData.in);
-      }
-      if (direction !== 'in') {
-        merge(neighbors, nodeData.out);
-      }
-    }
-
-    if (type !== 'directed') {
-      merge(neighbors, nodeData.undirected);
-    }
-  });
-
-  return neighbors;
-}
-
-/**
  * Function attaching a neighbors array creator method to the Graph prototype.
  *
  * @param {function} Class       - Target class.
@@ -171,7 +128,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[name] = function(nodeOrBunch) {
+  Class.prototype[name] = function(node) {
 
     if (arguments.length === 2) {
       const node1 = arguments[0],
@@ -199,45 +156,21 @@ function attachNeighborArrayCreator(Class, counter, description) {
     }
     else if (arguments.length === 1) {
 
-      if (this.hasNode(nodeOrBunch)) {
+      if (!this.hasNode(node))
+        throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph.`);
 
-        // Here, we want to iterate over a node's relevant neighbors
-        const neighbors = createNeighborSetForNode(
-          this,
-          type,
-          direction,
-          nodeOrBunch
-        );
+      // Here, we want to iterate over a node's relevant neighbors
+      const neighbors = createNeighborSetForNode(
+        this,
+        type,
+        direction,
+        node
+      );
 
-        if (counter)
-          return neighbors.size;
+      if (counter)
+        return neighbors.size;
 
-        return consumeIterator(neighbors.size, neighbors.values());
-      }
-      else if (isBunch(nodeOrBunch)) {
-
-        // Here, we want to iterate over the union of a bunch of nodes'
-        // relevant neighbors
-
-        // Note: since we need to keep track of the traversed values
-        // to perform union, we can't optimize further and we have to
-        // create this intermediary array and return its length when counting.
-        const neighbors = createNeighborSetForBunch(
-          name,
-          this,
-          type,
-          direction,
-          nodeOrBunch
-        );
-
-        if (counter)
-          return neighbors.size;
-
-        return consumeIterator(neighbors.size, neighbors.values());
-      }
-      else {
-        throw new NotFoundGraphError(`Graph.${name}: could not find the "${nodeOrBunch}" node in the graph.`);
-      }
+      return consumeIterator(neighbors.size, neighbors.values());
     }
 
     throw new InvalidArgumentsGraphError(`Graph.${name}: invalid number of arguments (expecting 1 or 2 and got ${arguments.length}).`);
