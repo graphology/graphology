@@ -38,18 +38,6 @@ const EDGES_ITERATION = [
     direction: 'out'
   },
   {
-    name: 'inboundEdges',
-    counter: 'countInboundEdges',
-    type: 'mixed',
-    direction: 'in'
-  },
-  {
-    name: 'outboundEdges',
-    counter: 'countOutboundEdges',
-    type: 'mixed',
-    direction: 'out'
-  },
-  {
     name: 'directedEdges',
     counter: 'countDirectedEdges',
     type: 'directed'

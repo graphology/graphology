@@ -16,8 +16,6 @@ const METHODS = [
   'edges',
   'inEdges',
   'outEdges',
-  'inboundEdges',
-  'outboundEdges',
   'directedEdges',
   'undirectedEdges'
 ];
@@ -149,61 +147,6 @@ export default function edgesIteration(Graph, checkers) {
         target: 'Martha',
         edges: [
           'J->M'
-        ]
-      }
-    },
-    inboundEdges: {
-      all: ALL_EDGES,
-      node: {
-        key: 'John',
-        edges: [
-          'C->J',
-          'M<->J'
-        ]
-      },
-      bunch: {
-        keys: ['Thomas', 'John'],
-        edges: [
-          'J->T',
-          'C->J',
-          'M<->J'
-        ]
-      },
-      path: {
-        source: 'John',
-        target: 'Martha',
-        edges: [
-          'J->M',
-          'M<->J'
-        ]
-      }
-    },
-    outboundEdges: {
-      all: ALL_EDGES,
-      node: {
-        key: 'John',
-        edges: [
-          'J->T',
-          'J->M',
-          'J<->R'
-        ]
-      },
-      bunch: {
-        keys: ['John', 'Martha'],
-        edges: [
-          'J->T',
-          'J->M',
-          'J<->R',
-          'M<->R',
-          'M<->J'
-        ]
-      },
-      path: {
-        source: 'John',
-        target: 'Martha',
-        edges: [
-          'J->M',
-          'M<->J'
         ]
       }
     },

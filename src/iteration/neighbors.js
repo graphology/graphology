@@ -38,18 +38,6 @@ const NEIGHBORS_ITERATION = [
     direction: 'out'
   },
   {
-    name: 'inboundNeighbors',
-    counter: 'countInboundNeighbors',
-    type: 'mixed',
-    direction: 'in'
-  },
-  {
-    name: 'outboundNeighbors',
-    counter: 'countOutboundNeighbors',
-    type: 'mixed',
-    direction: 'out'
-  },
-  {
     name: 'directedNeighbors',
     counter: 'countDirectedNeighbors',
     type: 'directed'

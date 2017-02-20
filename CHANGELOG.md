@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0
+
+* Dropping `inbound` & `outbound` iteration methods.
+
 ## 0.5.4
 
 * Fixing degree methods for typed graphs.
