@@ -308,6 +308,11 @@ function attachEdgeArrayCreator(Class, counter, description) {
    * @throws {Error} - Will throw if there are too many arguments.
    */
   Class.prototype[name] = function(source, target) {
+
+    // Early termination
+    if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
+      return [];
+
     if (!arguments.length)
       return counter ?
         countEdges(this, type) :

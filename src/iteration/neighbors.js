@@ -130,6 +130,10 @@ function attachNeighborArrayCreator(Class, counter, description) {
    */
   Class.prototype[name] = function(node) {
 
+    // Early termination
+    if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
+      return [];
+
     if (arguments.length === 2) {
       const node1 = arguments[0],
             node2 = arguments[1];
