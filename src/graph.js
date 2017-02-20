@@ -788,12 +788,14 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the edge isn't in the graph.
    */
   extremities(edge) {
-    if (!this.hasEdge(edge))
+    const edgeData = this._edges.get(edge);
+
+    if (!edgeData)
       throw new NotFoundGraphError(`Graph.extremities: could not find the "${edge}" edge in the graph.`);
 
     return [
-      this._edges.get(edge).source,
-      this._edges.get(edge).target
+      edgeData.source,
+      edgeData.target
     ];
   }
 
