@@ -7,8 +7,7 @@
  */
 import {
   InvalidArgumentsGraphError,
-  NotFoundGraphError,
-  UsageGraphError
+  NotFoundGraphError
 } from '../errors';
 
 import {
@@ -21,34 +20,24 @@ import {
 const NEIGHBORS_ITERATION = [
   {
     name: 'neighbors',
-    counter: 'countNeighbors',
-    fallback: 'degree',
     type: 'mixed'
   },
   {
     name: 'inNeighbors',
-    counter: 'countInNeighbors',
-    fallback: 'inDegree',
     type: 'directed',
     direction: 'in'
   },
   {
     name: 'outNeighbors',
-    counter: 'countOutNeighbors',
-    fallback: 'outDegree',
     type: 'directed',
     direction: 'out'
   },
   {
     name: 'directedNeighbors',
-    counter: 'countDirectedNeighbors',
-    fallback: 'directedDegree',
     type: 'directed'
   },
   {
     name: 'undirectedNeighbors',
-    counter: 'countUndirectedNeighbors',
-    fallback: 'undirectedDegree',
     type: 'undirected'
   }
 ];
@@ -106,17 +95,14 @@ function createNeighborSetForNode(graph, type, direction, node) {
  * Function attaching a neighbors array creator method to the Graph prototype.
  *
  * @param {function} Class       - Target class.
- * @param {boolean}  counter     - Should we count or collect?
  * @param {object}   description - Method description.
  */
-function attachNeighborArrayCreator(Class, counter, description) {
+function attachNeighborArrayCreator(Class, description) {
   const {
+    name,
     type,
-    direction,
-    fallback
+    direction
   } = description;
-
-  const name = counter ? description.counter : description.name;
 
   /**
    * Function returning an array or the count of certain neighbors.
@@ -145,9 +131,6 @@ function attachNeighborArrayCreator(Class, counter, description) {
       const node1 = arguments[0],
             node2 = arguments[1];
 
-      if (counter)
-        throw new UsageGraphError(`Graph.${name}: it makes no sense to count the neighbors between two nodes.`);
-
       if (!this.hasNode(node1))
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node1}" node in the graph.`);
 
@@ -155,7 +138,6 @@ function attachNeighborArrayCreator(Class, counter, description) {
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node2}" node in the graph.`);
 
       // Here, we want to assess whether the two given nodes are neighbors
-      // NOTE: we could improve performance here
       const neighbors = createNeighborSetForNode(
         this,
         type,
@@ -170,10 +152,6 @@ function attachNeighborArrayCreator(Class, counter, description) {
       if (!this.hasNode(node))
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph.`);
 
-      // Shortcut: in a simple graph, counting neighbors & degree is the same
-      if (!this.multi)
-        return this[fallback](node);
-
       // Here, we want to iterate over a node's relevant neighbors
       const neighbors = createNeighborSetForNode(
         this,
@@ -181,9 +159,6 @@ function attachNeighborArrayCreator(Class, counter, description) {
         direction,
         node
       );
-
-      if (counter)
-        return neighbors.size;
 
       return consumeIterator(neighbors.size, neighbors.values());
     }
@@ -199,7 +174,6 @@ function attachNeighborArrayCreator(Class, counter, description) {
  */
 export function attachNeighborIterationMethods(Graph) {
   NEIGHBORS_ITERATION.forEach(description => {
-    attachNeighborArrayCreator(Graph, false, description);
-    attachNeighborArrayCreator(Graph, true, description);
+    attachNeighborArrayCreator(Graph, description);
   });
 }

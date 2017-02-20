@@ -6,7 +6,6 @@
  */
 import assert from 'assert';
 import {
-  capitalize,
   deepMerge
 } from '../helpers';
 
@@ -139,8 +138,6 @@ export default function neighborsIteration(Graph, checkers) {
   }
 
   function specificTests(name, data) {
-    const counterName = 'count' + capitalize(name);
-
     return {
 
       // Array-creators
@@ -158,35 +155,14 @@ export default function neighborsIteration(Graph, checkers) {
           assert.deepEqual(neighbors, data.node.neighbors);
           assert.deepEqual(graph[name]('Alone'), []);
         }
-      },
-
-      // Counters
-      ['#.' + counterName]: {
-        'it should return the correct neighbors count.': function() {
-          const neighbors = graph[counterName](data.node.key);
-
-          assert.strictEqual(neighbors, data.node.neighbors.length);
-          assert.strictEqual(graph[counterName]('Alone'), 0);
-        }
       }
     };
   }
 
-  const tests = {
-    'Miscellaneous': {
-      'it should be possible to count neighbors in simple graphs (probably relying on degree).': function() {
-        const g = new Graph();
-        g.addNodesFrom([1, 2]);
-        g.addEdge(1, 2);
-
-        assert.strictEqual(g.countNeighbors(1), 1);
-      }
-    }
-  };
+  const tests = {};
 
   // Common tests
   METHODS.forEach(name => deepMerge(tests, commonTests(name)));
-  METHODS.forEach(name => deepMerge(tests, commonTests('count' + capitalize(name))));
 
   // Specific tests
   for (const name in TEST_DATA)

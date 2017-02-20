@@ -3,6 +3,7 @@
 ## 0.6.0 (provisional)
 
 * Dropping `inbound` & `outbound` iteration methods.
+* Dropping useless counting iteration methods.
 * Dropping bunch consuming polymorphisms from iteration methods.
 * Refactoring internal indices for undirected graphs.
 * Improving performance.

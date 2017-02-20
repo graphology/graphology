@@ -485,13 +485,13 @@ export default function mutation(Graph, checkers) {
         graph.addEdge('Lindsay', 'Martha');
 
         assert.strictEqual(graph.size, 2);
-        assert.strictEqual(graph.countEdges('Lindsay', 'Martha'), 2);
+        assert.strictEqual(graph.edges('Lindsay', 'Martha').length, 2);
 
         graph.dropEdges('Lindsay', 'Martha');
 
         assert.strictEqual(graph.order, 2);
         assert.strictEqual(graph.size, 0);
-        assert.strictEqual(graph.countEdges('Lindsay', 'Martha'), 0);
+        assert.strictEqual(graph.edges('Lindsay', 'Martha').length, 0);
       }
     },
 

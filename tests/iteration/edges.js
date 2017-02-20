@@ -6,7 +6,6 @@
  */
 import assert from 'assert';
 import {
-  capitalize,
   deepMerge,
   sameMembers
 } from '../helpers';
@@ -171,32 +170,6 @@ export default function edgesIteration(Graph, checkers) {
     }
   };
 
-  // const graphWithSelfLoops = new Graph({multi: true});
-  // graphWithSelfLoops.addNodesFrom(['John', 'Tabitha', 'Marcia', 'Alone']);
-  // graphWithSelfLoops.addEdgeWithKey('J->T', 'John', 'Tabitha');
-  // graphWithSelfLoops.addEdgeWithKey('J1', 'John', 'John');
-  // graphWithSelfLoops.addEdgeWithKey('J2', 'John', 'John');
-  // graphWithSelfLoops.addEdgeWithKey('T1', 'Tabitha', 'Tabitha');
-  // graphWithSelfLoops.addEdgeWithKey('M1', 'Marcia', 'Marcia');
-
-  // const SELF_LOOPS_TEST_DATA = {
-  //   selfLoops: {
-  //     all: ['J1', 'J2', 'T1', 'M1'],
-  //     node: {
-  //       key: 'John',
-  //       loops: ['J1', 'J2']
-  //     },
-  //     bunch: {
-  //       keys: ['John', 'Tabitha'],
-  //       edges: [
-  //         'J1',
-  //         'J2',
-  //         'T1'
-  //       ]
-  //     }
-  //   }
-  // };
-
   function commonTests(name) {
     return {
       ['#.' + name]: {
@@ -226,8 +199,6 @@ export default function edgesIteration(Graph, checkers) {
   }
 
   function specificTests(name, data) {
-    const counterName = 'count' + capitalize(name);
-
     return {
 
       // Array-creators
@@ -251,29 +222,6 @@ export default function edgesIteration(Graph, checkers) {
           assert(sameMembers(edges, data.path.edges));
           assert.deepEqual(graph[name]('Forever', 'Alone'), []);
         }
-      },
-
-      // Counters
-      ['#.' + counterName]: {
-        'it should count all the relevant edges.': function() {
-          const nb = graph[counterName]();
-
-          assert.strictEqual(nb, data.all.length);
-        },
-
-        'it should count all the relevant edges of a node.': function() {
-          const nb = graph[counterName](data.node.key);
-
-          assert.strictEqual(nb, data.node.edges.length);
-          assert.deepEqual(graph[counterName]('Alone'), 0);
-        },
-
-        'it should count all the relevant edges between source & target.': function() {
-          const nb = graph[counterName](data.path.source, data.path.target);
-
-          assert.strictEqual(nb, data.path.edges.length);
-          assert.deepEqual(graph[counterName]('Forever', 'Alone'), 0);
-        }
       }
     };
   }
@@ -294,7 +242,6 @@ export default function edgesIteration(Graph, checkers) {
 
   // Common tests
   METHODS.forEach(name => deepMerge(tests, commonTests(name)));
-  METHODS.forEach(name => deepMerge(tests, commonTests('count' + capitalize(name))));
 
   // Specific tests
   for (const name in TEST_DATA)
