@@ -493,6 +493,11 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the arguments are invalid.
    */
   hasDirectedEdge(source, target) {
+
+    // Early termination
+    if (this.type === 'undirected')
+      return false;
+
     if (arguments.length === 1) {
       const edge = source;
 
@@ -543,6 +548,11 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the arguments are invalid.
    */
   hasUndirectedEdge(source, target) {
+
+    // Early termination
+    if (this.type === 'directed')
+      return false;
+
     if (arguments.length === 1) {
       const edge = source;
 
