@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.0 (provisional)
+## 0.6.0
 
 * Dropping `inbound` & `outbound` iteration methods.
 * Dropping useless counting iteration methods.

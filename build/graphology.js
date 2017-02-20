@@ -189,17 +189,19 @@ function consumeIterator(size, iterator) {
  * @return {string|null}
  */
 function getMatchingEdge(graph, source, target, type) {
-  if (type === 'mixed') return getMatchingEdge(graph, source, target, 'directed') || getMatchingEdge(graph, source, target, 'undirected');
-
   var sourceData = graph._nodes.get(source);
 
-  var register = type === 'directed' ? sourceData.out : sourceData.undirectedOut;
+  var edge = null;
 
-  if (!register || !register[target] && type === 'undirected') register = sourceData.undirectedIn;
+  if (type === 'mixed') {
+    edge = sourceData.out[target] || sourceData.undirected[target];
+  } else if (type === 'directed') {
+    edge = sourceData.out[target];
+  } else {
+    edge = sourceData.undirected[target];
+  }
 
-  if (!register || !register[target]) return null;
-
-  return register[target];
+  return edge;
 }
 
 /**
@@ -946,6 +948,10 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.hasDirectedEdge = function hasDirectedEdge(source, target) {
+
+    // Early termination
+    if (this.type === 'undirected') return false;
+
     if (arguments.length === 1) {
       var edge = source;
 
@@ -991,6 +997,10 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.hasUndirectedEdge = function hasUndirectedEdge(source, target) {
+
+    // Early termination
+    if (this.type === 'directed') return false;
+
     if (arguments.length === 1) {
       var edge = source;
 
@@ -1006,14 +1016,11 @@ var Graph = function (_EventEmitter) {
       // Is there a directed edge pointing towards target?
       var nodeData = this._nodes.get(source);
 
-      var register = nodeData.undirectedOut,
-          edges = void 0;
+      var register = nodeData.undirected;
+
+      var edges = void 0;
 
       if (register) edges = register[target];
-
-      register = nodeData.undirectedIn;
-
-      if (!edges && register) edges = register[target];
 
       if (!edges) return false;
 
@@ -1228,9 +1235,11 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.extremities = function extremities(edge) {
-    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.extremities: could not find the "' + edge + '" edge in the graph.');
+    var edgeData = this._edges.get(edge);
 
-    return [this._edges.get(edge).source, this._edges.get(edge).target];
+    if (!edgeData) throw new _errors.NotFoundGraphError('Graph.extremities: could not find the "' + edge + '" edge in the graph.');
+
+    return [edgeData.source, edgeData.target];
   };
 
   /**
@@ -3131,7 +3140,7 @@ function updateStructureIndex(graph, edge, data) {
   var sourceData = graph._nodes.get(source),
       targetData = graph._nodes.get(target);
 
-  var outKey = undirected ? 'undirectedOut' : 'out';
+  var outKey = undirected ? 'undirected' : 'out';
 
   // Handling source
   sourceData[outKey] = sourceData[outKey] || Object.create(null);
@@ -3145,7 +3154,7 @@ function updateStructureIndex(graph, edge, data) {
 
   // Handling target (we won't add the edge because it was already taken
   // care of with source above)
-  var inKey = undirected ? 'undirectedIn' : 'in';
+  var inKey = undirected ? 'undirected' : 'in';
 
   targetData[inKey] = targetData[inKey] || Object.create(null);
 
@@ -3170,7 +3179,7 @@ function clearEdgeFromStructureIndex(graph, edge, data) {
   // affect source
 
   var sourceData = graph._nodes.get(source),
-      outKey = undirected ? 'undirectedOut' : 'out',
+      outKey = undirected ? 'undirected' : 'out',
       sourceIndex = sourceData[outKey];
 
   // NOTE: possible to clear empty sets from memory altogether
@@ -3182,7 +3191,7 @@ function clearEdgeFromStructureIndex(graph, edge, data) {
   if (multi) return;
 
   var targetData = graph._nodes.get(target),
-      inKey = undirected ? 'undirectedIn' : 'in',
+      inKey = undirected ? 'undirected' : 'in',
       targetIndex = targetData[inKey];
 
   delete targetIndex[source];
@@ -3199,8 +3208,7 @@ function clearStructureIndex(graph) {
     // Clearing properties
     delete data.in;
     delete data.out;
-    delete data.undirectedIn;
-    delete data.undirectedOut;
+    delete data.undirected;
   });
 }
 
@@ -3232,35 +3240,20 @@ var _utils = __webpack_require__(0);
  */
 var EDGES_ITERATION = [{
   name: 'edges',
-  counter: 'countEdges',
   type: 'mixed'
 }, {
   name: 'inEdges',
-  counter: 'countInEdges',
   type: 'directed',
   direction: 'in'
 }, {
   name: 'outEdges',
-  counter: 'countOutEdges',
   type: 'directed',
   direction: 'out'
 }, {
-  name: 'inboundEdges',
-  counter: 'countInboundEdges',
-  type: 'mixed',
-  direction: 'in'
-}, {
-  name: 'outboundEdges',
-  counter: 'countOutboundEdges',
-  type: 'mixed',
-  direction: 'out'
-}, {
   name: 'directedEdges',
-  counter: 'countDirectedEdges',
   type: 'directed'
 }, {
   name: 'undirectedEdges',
-  counter: 'countUndirectedEdges',
   type: 'undirected'
 }];
 
@@ -3291,73 +3284,6 @@ function collect(edges, object, key) {
 }
 
 /**
- * Function counting edges from the given object.
- *
- * @param  {object|undefined} object - Target object.
- * @param  {mixed}            [key]  - Optional key.
- * @return {number}                  - The number of found edges.
- */
-function count(object, key) {
-  var nb = 0;
-
-  var hasKey = arguments.length > 1;
-
-  if (!object || hasKey && !(key in object)) return nb;
-
-  if (hasKey) return object[key] instanceof Set ? object[key].size : +!!object[key];
-
-  for (var k in object) {
-    nb += object[k] instanceof Set ? object[k].size : +!!object[k];
-  }return nb;
-}
-
-/**
- * Function merging edges found in an object into the given set.
- *
- * @param {Set}              edges - Current set of edges.
- * @param {object|undefined} map   - Target object.
- * @param {string}           key   - Sub key.
- */
-function merge(edges, object, key) {
-  if (!object) return;
-
-  if (key) {
-    var target = object[key];
-
-    if (target) {
-      if (target instanceof Set) target.forEach(function (value) {
-        return edges.add(value);
-      });else edges.add(target);
-    }
-  } else {
-    for (var k in object) {
-      if (object[k] instanceof Set) object[k].forEach(function (value) {
-        return edges.add(value);
-      });else edges.add(object[k]);
-    }
-  }
-}
-
-/**
- * Function used to count the edges of the given type.
- *
- * @param  {Graph}  graph - Target Graph instance.
- * @param  {string} type  - Type of edges to retrieve.
- * @return {number}
- */
-function countEdges(graph, type) {
-  if (type === 'mixed') return graph.size;
-
-  var nb = 0;
-
-  graph._edges.forEach(function (data) {
-    if (!!data.undirected === (type === 'undirected')) nb++;
-  });
-
-  return nb;
-}
-
-/**
  * Function creating an array of edge for the given type.
  *
  * @param  {Graph}   graph - Target Graph instance.
@@ -3375,39 +3301,6 @@ function createEdgeArray(graph, type) {
   });
 
   return list;
-}
-
-/**
- * Function counting the number of edges for the given type & the given node.
- *
- * @param  {Graph}   graph     - Target Graph instance.
- * @param  {string}  type      - Type of edges to retrieve.
- * @param  {string}  direction - In or out?
- * @param  {any}     node      - Target node.
- * @return {number}
- */
-function countEdgesForNode(graph, type, direction, node) {
-
-  // For this, we need to compute the "structure" index
-  graph.computeIndex('structure');
-
-  var nb = 0;
-
-  var nodeData = graph._nodes.get(node);
-
-  if (type !== 'undirected') {
-
-    if (direction !== 'out') nb += count(nodeData.in);
-    if (direction !== 'in') nb += count(nodeData.out);
-  }
-
-  if (type !== 'directed') {
-
-    if (direction !== 'out') nb += count(nodeData.undirectedIn);
-    if (direction !== 'in') nb += count(nodeData.undirectedOut);
-  }
-
-  return nb;
 }
 
 /**
@@ -3435,81 +3328,10 @@ function createEdgeArrayForNode(graph, type, direction, node) {
   }
 
   if (type !== 'directed') {
-
-    if (direction !== 'out') collect(edges, nodeData.undirectedIn);
-    if (direction !== 'in') collect(edges, nodeData.undirectedOut);
+    collect(edges, nodeData.undirected);
   }
 
   return edges;
-}
-
-/**
- * Function creating an array of edge for the given bunch of nodes.
- *
- * @param  {Graph}   graph     - Target Graph instance.
- * @param  {string}  type      - Type of edges to retrieve.
- * @param  {string}  direction - In or out?
- * @param  {bunch}   bunch     - Target bunch.
- * @return {array}             - Array of edges.
- */
-function createEdgeArrayForBunch(name, graph, type, direction, bunch) {
-
-  // For this, we need to compute the "structure" index
-  graph.computeIndex('structure');
-
-  var edges = new Set();
-
-  // Iterating over the bunch
-  (0, _utils.overBunch)(bunch, function (node) {
-    if (!graph.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node + '" node in the graph in the given bunch.');
-
-    var nodeData = graph._nodes.get(node);
-
-    if (type !== 'undirected') {
-
-      if (direction !== 'out') merge(edges, nodeData.in);
-      if (direction !== 'in') merge(edges, nodeData.out);
-    }
-
-    if (type !== 'directed') {
-
-      if (direction !== 'out') merge(edges, nodeData.undirectedIn);
-      if (direction !== 'in') merge(edges, nodeData.undirectedOut);
-    }
-  });
-
-  return (0, _utils.consumeIterator)(edges.size, edges.values());
-}
-
-/**
- * Function counting the number of edges for the given path.
- *
- * @param  {Graph}   graph  - Target Graph instance.
- * @param  {string}  type   - Type of edges to retrieve.
- * @param  {any}     source - Source node.
- * @param  {any}     target - Target node.
- * @return {array}          - Array of edges.
- */
-function countEdgesForPath(graph, type, source, target) {
-
-  // For this, we need to compute the "structure" index
-  graph.computeIndex('structure');
-
-  var nb = 0;
-
-  var sourceData = graph._nodes.get(source);
-
-  if (type !== 'undirected') {
-    nb += count(sourceData.in, target);
-    nb += count(sourceData.out, target);
-  }
-
-  if (type !== 'directed') {
-    nb += count(sourceData.undirectedIn, target);
-    nb += count(sourceData.undirectedOut, target);
-  }
-
-  return nb;
 }
 
 /**
@@ -3536,8 +3358,7 @@ function createEdgeArrayForPath(graph, type, source, target) {
   }
 
   if (type !== 'directed') {
-    collect(edges, sourceData.undirectedIn, target);
-    collect(edges, sourceData.undirectedOut, target);
+    collect(edges, sourceData.undirected, target);
   }
 
   return edges;
@@ -3547,15 +3368,12 @@ function createEdgeArrayForPath(graph, type, source, target) {
  * Function attaching an edge array creator method to the Graph prototype.
  *
  * @param {function} Class       - Target class.
- * @param {boolean}  counter     - Should we count or collect?
  * @param {object}   description - Method description.
  */
-function attachEdgeArrayCreator(Class, counter, description) {
-  var type = description.type,
+function attachEdgeArrayCreator(Class, description) {
+  var name = description.name,
+      type = description.type,
       direction = description.direction;
-
-
-  var name = counter ? description.counter : description.name;
 
   /**
    * Function returning an array or the count of certain edges.
@@ -3576,40 +3394,23 @@ function attachEdgeArrayCreator(Class, counter, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[name] = function () {
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
+
+  Class.prototype[name] = function (source, target) {
+
+    // Early termination
+    if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type) return [];
+
+    if (!arguments.length) return createEdgeArray(this, type);
+
+    if (arguments.length === 1) {
+
+      if (!this.hasNode(source)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + source + '" node in the graph.');
+
+      // Iterating over a node's edges
+      return createEdgeArrayForNode(this, type, direction, source);
     }
 
-    if (!args.length) return counter ? countEdges(this, type) : createEdgeArray(this, type);
-
-    if (args.length === 1) {
-      var nodeOrBunch = args[0];
-
-      if (this.hasNode(nodeOrBunch)) {
-
-        // Iterating over a node's edges
-        return counter ? countEdgesForNode(this, type, direction, nodeOrBunch) : createEdgeArrayForNode(this, type, direction, nodeOrBunch);
-      } else if ((0, _utils.isBunch)(nodeOrBunch)) {
-
-        // Iterating over the union of a node's edges
-
-        // Note: since we need to keep track of the traversed values
-        // to perform union, we can't optimize further and we have to
-        // create this intermediary array and return its length when counting.
-        var edges = createEdgeArrayForBunch(name, this, type, direction, nodeOrBunch);
-
-        return counter ? edges.length : edges;
-      } else {
-        throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + nodeOrBunch + '" node in the graph.');
-      }
-    }
-
-    if (args.length === 2) {
-      var source = args[0],
-          target = args[1];
-
-
+    if (arguments.length === 2) {
       if (!this.hasNode(source)) throw new _errors.NotFoundGraphError('Graph.' + name + ':  could not find the "' + source + '" source node in the graph.');
 
       if (!this.hasNode(target)) throw new _errors.NotFoundGraphError('Graph.' + name + ':  could not find the "' + target + '" target node in the graph.');
@@ -3620,12 +3421,12 @@ function attachEdgeArrayCreator(Class, counter, description) {
       if (type !== 'undirected') hasEdge = this.hasDirectedEdge(source, target);else hasEdge = this.hasUndirectedEdge(source, target);
 
       // If no such edge exist, we'll stop right there.
-      if (!hasEdge) return counter ? 0 : [];
+      if (!hasEdge) return [];
 
-      return counter ? countEdgesForPath(this, type, source, target) : createEdgeArrayForPath(this, type, source, target);
+      return createEdgeArrayForPath(this, type, source, target);
     }
 
-    throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': too many arguments (expecting 0, 1 or 2 and got ' + args.length + ').');
+    throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': too many arguments (expecting 0, 1 or 2 and got ' + arguments.length + ').');
   };
 }
 
@@ -3636,8 +3437,7 @@ function attachEdgeArrayCreator(Class, counter, description) {
  */
 function attachEdgeIterationMethods(Graph) {
   EDGES_ITERATION.forEach(function (description) {
-    attachEdgeArrayCreator(Graph, false, description);
-    attachEdgeArrayCreator(Graph, true, description);
+    attachEdgeArrayCreator(Graph, description);
   });
 }
 
@@ -3669,35 +3469,20 @@ var _utils = __webpack_require__(0);
  */
 var NEIGHBORS_ITERATION = [{
   name: 'neighbors',
-  counter: 'countNeighbors',
   type: 'mixed'
 }, {
   name: 'inNeighbors',
-  counter: 'countInNeighbors',
   type: 'directed',
   direction: 'in'
 }, {
   name: 'outNeighbors',
-  counter: 'countOutNeighbors',
   type: 'directed',
   direction: 'out'
 }, {
-  name: 'inboundNeighbors',
-  counter: 'countInboundNeighbors',
-  type: 'mixed',
-  direction: 'in'
-}, {
-  name: 'outboundNeighbors',
-  counter: 'countOutboundNeighbors',
-  type: 'mixed',
-  direction: 'out'
-}, {
   name: 'directedNeighbors',
-  counter: 'countDirectedNeighbors',
   type: 'directed'
 }, {
   name: 'undirectedNeighbors',
-  counter: 'countUndirectedNeighbors',
   type: 'undirected'
 }];
 
@@ -3744,60 +3529,8 @@ function createNeighborSetForNode(graph, type, direction, node) {
   }
 
   if (type !== 'directed') {
-
-    if (direction !== 'out') {
-      merge(neighbors, nodeData.undirectedIn);
-    }
-    if (direction !== 'in') {
-      merge(neighbors, nodeData.undirectedOut);
-    }
+    merge(neighbors, nodeData.undirected);
   }
-
-  return neighbors;
-}
-
-/**
- * Function creating a set of relevant neighbors for the given bunch of nodes.
- *
- * @param  {string}       name      - Name of the calling method.
- * @param  {Graph}        graph     - Target graph.
- * @param  {string}       type      - Type of neighbors.
- * @param  {string}       direction - Direction.
- * @param  {bunch}        bunch     - Target bunch.
- * @return {Set|BasicSet}           - The neighbors set.
- */
-function createNeighborSetForBunch(name, graph, type, direction, bunch) {
-
-  // For this, we need to compute the "structure" index
-  graph.computeIndex('structure');
-
-  var neighbors = new Set();
-
-  (0, _utils.overBunch)(bunch, function (node) {
-    if (!graph.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node + '" node in the graph in the given bunch.');
-
-    var nodeData = graph._nodes.get(node);
-
-    if (type !== 'undirected') {
-
-      if (direction !== 'out') {
-        merge(neighbors, nodeData.in);
-      }
-      if (direction !== 'in') {
-        merge(neighbors, nodeData.out);
-      }
-    }
-
-    if (type !== 'directed') {
-
-      if (direction !== 'out') {
-        merge(neighbors, nodeData.undirectedIn);
-      }
-      if (direction !== 'in') {
-        merge(neighbors, nodeData.undirectedOut);
-      }
-    }
-  });
 
   return neighbors;
 }
@@ -3806,15 +3539,12 @@ function createNeighborSetForBunch(name, graph, type, direction, bunch) {
  * Function attaching a neighbors array creator method to the Graph prototype.
  *
  * @param {function} Class       - Target class.
- * @param {boolean}  counter     - Should we count or collect?
  * @param {object}   description - Method description.
  */
-function attachNeighborArrayCreator(Class, counter, description) {
-  var type = description.type,
+function attachNeighborArrayCreator(Class, description) {
+  var name = description.name,
+      type = description.type,
       direction = description.direction;
-
-
-  var name = counter ? description.counter : description.name;
 
   /**
    * Function returning an array or the count of certain neighbors.
@@ -3833,49 +3563,32 @@ function attachNeighborArrayCreator(Class, counter, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[name] = function (nodeOrBunch) {
+
+  Class.prototype[name] = function (node) {
+
+    // Early termination
+    if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type) return [];
 
     if (arguments.length === 2) {
       var node1 = arguments[0],
           node2 = arguments[1];
-
-      if (counter) throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid arguments.');
 
       if (!this.hasNode(node1)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node1 + '" node in the graph.');
 
       if (!this.hasNode(node2)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node2 + '" node in the graph.');
 
       // Here, we want to assess whether the two given nodes are neighbors
-      // NOTE: we could improve performance here
       var neighbors = createNeighborSetForNode(this, type, direction, node1);
 
       return neighbors.has(node2);
     } else if (arguments.length === 1) {
 
-      if (this.hasNode(nodeOrBunch)) {
+      if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node + '" node in the graph.');
 
-        // Here, we want to iterate over a node's relevant neighbors
-        var _neighbors = createNeighborSetForNode(this, type, direction, nodeOrBunch);
+      // Here, we want to iterate over a node's relevant neighbors
+      var _neighbors = createNeighborSetForNode(this, type, direction, node);
 
-        if (counter) return _neighbors.size;
-
-        return (0, _utils.consumeIterator)(_neighbors.size, _neighbors.values());
-      } else if ((0, _utils.isBunch)(nodeOrBunch)) {
-
-        // Here, we want to iterate over the union of a bunch of nodes'
-        // relevant neighbors
-
-        // Note: since we need to keep track of the traversed values
-        // to perform union, we can't optimize further and we have to
-        // create this intermediary array and return its length when counting.
-        var _neighbors2 = createNeighborSetForBunch(name, this, type, direction, nodeOrBunch);
-
-        if (counter) return _neighbors2.size;
-
-        return (0, _utils.consumeIterator)(_neighbors2.size, _neighbors2.values());
-      } else {
-        throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + nodeOrBunch + '" node in the graph.');
-      }
+      return (0, _utils.consumeIterator)(_neighbors.size, _neighbors.values());
     }
 
     throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid number of arguments (expecting 1 or 2 and got ' + arguments.length + ').');
@@ -3889,8 +3602,7 @@ function attachNeighborArrayCreator(Class, counter, description) {
  */
 function attachNeighborIterationMethods(Graph) {
   NEIGHBORS_ITERATION.forEach(function (description) {
-    attachNeighborArrayCreator(Graph, false, description);
-    attachNeighborArrayCreator(Graph, true, description);
+    attachNeighborArrayCreator(Graph, description);
   });
 }
 
