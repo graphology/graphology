@@ -621,6 +621,87 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method returning the edge matching source & target in a directed fashion.
+   *
+   * @param  {any} source - The edge's source.
+   * @param  {any} target - The edge's target.
+   *
+   * @return {any|undefined}
+   *
+   * @throws {Error} - Will throw if the graph is multi.
+   */
+  directedEdge(source, target) {
+    if (this.multi)
+      throw new UsageGraphError('Graph.directedEdge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.directedEdges instead.');
+
+    if (!this.hasNode(source))
+      throw new NotFoundGraphError(`Graph.directedEdge: could not find the "${source}" source node in the graph.`);
+
+    if (!this.hasNode(target))
+      throw new NotFoundGraphError(`Graph.directedEdge: could not find the "${target}" target node in the graph.`);
+
+    this.computeIndex('structure');
+
+    const sourceData = this._nodes.get(source);
+
+    return sourceData.out[target] || undefined;
+  }
+
+  /**
+   * Method returning the edge matching source & target in a undirected fashion.
+   *
+   * @param  {any} source - The edge's source.
+   * @param  {any} target - The edge's target.
+   *
+   * @return {any|undefined}
+   *
+   * @throws {Error} - Will throw if the graph is multi.
+   */
+  undirectedEdge(source, target) {
+    if (this.multi)
+      throw new UsageGraphError('Graph.undirectedEdge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.undirectedEdges instead.');
+
+    if (!this.hasNode(source))
+      throw new NotFoundGraphError(`Graph.undirectedEdge: could not find the "${source}" source node in the graph.`);
+
+    if (!this.hasNode(target))
+      throw new NotFoundGraphError('Graph.undirectedEdge: could not find the "${target}" target node in the graph.');
+
+    this.computeIndex('structure');
+
+    const sourceData = this._nodes.get(source);
+
+    return sourceData.undirected[target] || undefined;
+  }
+
+  /**
+   * Method returning the edge matching source & target in a mixed fashion.
+   *
+   * @param  {any} source - The edge's source.
+   * @param  {any} target - The edge's target.
+   *
+   * @return {any|undefined}
+   *
+   * @throws {Error} - Will throw if the graph is multi.
+   */
+  edge(source, target) {
+    if (this.multi)
+      throw new UsageGraphError('Graph.edge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.edges instead.');
+
+    if (!this.hasNode(source))
+      throw new NotFoundGraphError(`Graph.edge: could not find the "${source}" source node in the graph.`);
+
+    if (!this.hasNode(target))
+      throw new NotFoundGraphError(`Graph.edge: could not find the "${target}" target node in the graph.`);
+
+    this.computeIndex('structure');
+
+    const sourceData = this._nodes.get(source);
+
+    return sourceData.out[target] || sourceData.undirected[target] || undefined;
+  }
+
+  /**
    * Method returning the given node's in degree.
    *
    * @param  {any}     node      - The node's key.
