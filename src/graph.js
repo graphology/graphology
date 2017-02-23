@@ -629,6 +629,7 @@ export default class Graph extends EventEmitter {
    * @return {any|undefined}
    *
    * @throws {Error} - Will throw if the graph is multi.
+   * @throws {Error} - Will throw if source or target doesn't exist.
    */
   directedEdge(source, target) {
     if (this.multi)
@@ -640,11 +641,14 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(target))
       throw new NotFoundGraphError(`Graph.directedEdge: could not find the "${target}" target node in the graph.`);
 
+    if (this.type === 'undirected')
+      return;
+
     this.computeIndex('structure');
 
     const sourceData = this._nodes.get(source);
 
-    return sourceData.out[target] || undefined;
+    return (sourceData.out && sourceData.out[target]) || undefined;
   }
 
   /**
@@ -656,6 +660,7 @@ export default class Graph extends EventEmitter {
    * @return {any|undefined}
    *
    * @throws {Error} - Will throw if the graph is multi.
+   * @throws {Error} - Will throw if source or target doesn't exist.
    */
   undirectedEdge(source, target) {
     if (this.multi)
@@ -665,13 +670,16 @@ export default class Graph extends EventEmitter {
       throw new NotFoundGraphError(`Graph.undirectedEdge: could not find the "${source}" source node in the graph.`);
 
     if (!this.hasNode(target))
-      throw new NotFoundGraphError('Graph.undirectedEdge: could not find the "${target}" target node in the graph.');
+      throw new NotFoundGraphError(`Graph.undirectedEdge: could not find the "${target}" target node in the graph.`);
+
+    if (this.type === 'directed')
+      return;
 
     this.computeIndex('structure');
 
     const sourceData = this._nodes.get(source);
 
-    return sourceData.undirected[target] || undefined;
+    return (sourceData.undirected && sourceData.undirected[target]) || undefined;
   }
 
   /**
@@ -683,6 +691,7 @@ export default class Graph extends EventEmitter {
    * @return {any|undefined}
    *
    * @throws {Error} - Will throw if the graph is multi.
+   * @throws {Error} - Will throw if source or target doesn't exist.
    */
   edge(source, target) {
     if (this.multi)
@@ -698,7 +707,11 @@ export default class Graph extends EventEmitter {
 
     const sourceData = this._nodes.get(source);
 
-    return sourceData.out[target] || sourceData.undirected[target] || undefined;
+    return (
+      (sourceData.out && sourceData.out[target]) ||
+      (sourceData.undirected && sourceData.undirected[target]) ||
+      undefined
+    );
   }
 
   /**

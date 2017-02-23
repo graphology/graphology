@@ -9,7 +9,8 @@ import assert from 'assert';
 export default function read(Graph, checkers) {
   const {
     invalid,
-    notFound
+    notFound,
+    usage
   } = checkers;
 
   return {
@@ -107,6 +108,110 @@ export default function read(Graph, checkers) {
         assert.strictEqual(graph.hasEdge('Martha', 'Thomas'), false);
         assert.strictEqual(graph.hasEdge('Catherine', 'John'), true);
         assert.strictEqual(graph.hasEdge('John', 'Catherine'), true);
+      }
+    },
+
+    '#.directedEdge': {
+
+      'it should throw if invalid arguments are provided.': function() {
+        const graph = new Graph(),
+              multiGraph = new Graph({multi: true});
+
+        graph.addNode('John');
+
+        assert.throws(function() {
+          multiGraph.directedEdge(1, 2);
+        }, usage());
+
+        assert.throws(function() {
+          graph.directedEdge('Jack', 'John');
+        }, notFound());
+
+        assert.throws(function() {
+          graph.directedEdge('John', 'Jack');
+        }, notFound());
+      },
+
+      'it should return the correct edge.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['Jack', 'Lucy']);
+        graph.addDirectedEdgeWithKey('J->L', 'Jack', 'Lucy');
+        graph.addUndirectedEdgeWithKey('J<->L', 'Jack', 'Lucy');
+
+        assert.strictEqual(graph.directedEdge('Lucy', 'Jack'), undefined);
+        assert.strictEqual(graph.directedEdge('Jack', 'Lucy'), 'J->L');
+
+        const undirectedGraph = new Graph({type: 'undirected'});
+        undirectedGraph.mergeEdge('Jack', 'Lucy');
+        assert.strictEqual(undirectedGraph.directedEdge('Jack', 'Lucy'), undefined);
+      }
+    },
+
+    '#.undirectedEdge': {
+
+      'it should throw if invalid arguments are provided.': function() {
+        const graph = new Graph(),
+              multiGraph = new Graph({multi: true});
+
+        graph.addNode('John');
+
+        assert.throws(function() {
+          multiGraph.undirectedEdge(1, 2);
+        }, usage());
+
+        assert.throws(function() {
+          graph.undirectedEdge('Jack', 'John');
+        }, notFound());
+
+        assert.throws(function() {
+          graph.undirectedEdge('John', 'Jack');
+        }, notFound());
+      },
+
+      'it should return the correct edge.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['Jack', 'Lucy']);
+        graph.addDirectedEdgeWithKey('J->L', 'Jack', 'Lucy');
+        graph.addUndirectedEdgeWithKey('J<->L', 'Jack', 'Lucy');
+
+        assert.strictEqual(graph.undirectedEdge('Lucy', 'Jack'), 'J<->L');
+        assert.strictEqual(graph.undirectedEdge('Jack', 'Lucy'), 'J<->L');
+
+        const directedGraph = new Graph({type: 'directed'});
+        directedGraph.mergeEdge('Jack', 'Lucy');
+        assert.strictEqual(directedGraph.undirectedEdge('Jack', 'Lucy'), undefined);
+      }
+    },
+
+    '#.edge': {
+
+      'it should throw if invalid arguments are provided.': function() {
+        const graph = new Graph(),
+              multiGraph = new Graph({multi: true});
+
+        graph.addNode('John');
+
+        assert.throws(function() {
+          multiGraph.edge(1, 2);
+        }, usage());
+
+        assert.throws(function() {
+          graph.edge('Jack', 'John');
+        }, notFound());
+
+        assert.throws(function() {
+          graph.edge('John', 'Jack');
+        }, notFound());
+      },
+
+      'it should return the correct edge.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['Jack', 'Lucy']);
+        graph.addDirectedEdgeWithKey('J->L', 'Jack', 'Lucy');
+        graph.addUndirectedEdgeWithKey('J<->L', 'Jack', 'Lucy');
+
+        assert.strictEqual(graph.edge('Lucy', 'Jack'), 'J<->L');
+        assert.strictEqual(graph.edge('Jack', 'Lucy'), 'J->L');
       }
     },
 

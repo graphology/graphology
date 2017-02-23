@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0
+
+* Adding the `#.edge` & variants methods.
+
 ## 0.6.0
 
 * Dropping `inbound` & `outbound` iteration methods.
