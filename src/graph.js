@@ -14,7 +14,6 @@ import {
 } from './errors';
 
 import {
-  INDICES,
   updateStructureIndex,
   clearEdgeFromStructureIndex,
   clearStructureIndex
@@ -110,49 +109,30 @@ const DEFAULTS = {
  * Method updating the desired index.
  *
  * @param  {Graph}  graph     - Target graph.
- * @param  {string} name      - Name of the index to compute.
- * @param  {mixed}  [...args] - Additional arguments.
+ * @param  {any}    edge      - Target edge.
+ * @param  {object} data      - Attached edge data.
  * @return {Graph}            - Returns itself for chaining.
- *
- * @throw  {Error} - Will throw if the index doesn't exist.
  */
-function updateIndex(graph, name, ...args) {
-  if (name === 'structure') {
-    const index = graph._indices.structure;
+function updateIndex(graph, edge, data) {
+  if (!graph._structureIsComputed)
+    return;
 
-    if (!index.computed)
-      return graph;
-
-    const [edge, data] = args;
-
-    updateStructureIndex(graph, edge, data);
-  }
-
-  return graph;
+  updateStructureIndex(graph, edge, data);
 }
 
 /**
  * Method used to clear an edge from the desired index to clear memory.
  *
  * @param  {Graph}  graph - Target graph.
- * @param  {string} name  - Name of the index to update.
  * @param  {any}    edge  - Target edge.
  * @param  {object} data  - Former attached data.
  * @return {Graph}        - Returns itself for chaining.
- *
- * @throw  {Error} - Will throw if the index doesn't exist.
  */
-function clearEdgeFromIndex(graph, name, edge, data) {
-  if (name === 'structure') {
-    const index = graph._indices.structure;
+function clearEdgeFromIndex(graph, edge, data) {
+  if (!graph._structureIsComputed)
+    return;
 
-    if (!index.computed)
-      return graph;
-
-    clearEdgeFromStructureIndex(graph, edge, data);
-  }
-
-  return graph;
+  clearEdgeFromStructureIndex(graph, edge, data);
 }
 
 /**
@@ -321,7 +301,7 @@ function addEdge(
   }
 
   // Updating relevant indexes
-  updateIndex(graph, 'structure', edge, data);
+  updateIndex(graph, edge, data);
 
   // Emitting
   graph.emit('edgeAdded', {
@@ -429,17 +409,7 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_attributes', {});
     privateProperty(this, '_nodes', createInternalMap());
     privateProperty(this, '_edges', createInternalMap());
-    privateProperty(this, '_indices', {
-      structure: {
-        lazy: (
-          options.indices &&
-          options.indices.structure &&
-          options.indices.structure.lazy ||
-          false
-        ),
-        computed: false
-      }
-    });
+    privateProperty(this, '_structureIsComputed', false);
 
     // Options
     privateProperty(this, '_options', options);
@@ -453,14 +423,6 @@ export default class Graph extends EventEmitter {
     readOnlyProperty(this, 'multi', this._options.multi);
     readOnlyProperty(this, 'type', this._options.type);
     readOnlyProperty(this, 'allowSelfLoops', this._options.allowSelfLoops);
-
-    //-- Precomputing indexes?
-    for (const name in this._indices) {
-      const index = this._indices[name];
-
-      if (!index.lazy)
-        index.computed = true;
-    }
   }
 
   /**---------------------------------------------------------------------------
@@ -509,7 +471,7 @@ export default class Graph extends EventEmitter {
     else if (arguments.length === 2) {
 
       // We need to compute the 'structure' index for this
-      this.computeIndex('structure');
+      this.computeIndex();
 
       // If the node source or the target is not in the graph we break
       if (!this.hasNode(source) || !this.hasNode(target))
@@ -564,7 +526,7 @@ export default class Graph extends EventEmitter {
     else if (arguments.length === 2) {
 
       // We need to compute the 'structure' index for this
-      this.computeIndex('structure');
+      this.computeIndex();
 
       // If the node source or the target is not in the graph we break
       if (!this.hasNode(source) || !this.hasNode(target))
@@ -644,7 +606,7 @@ export default class Graph extends EventEmitter {
     if (this.type === 'undirected')
       return;
 
-    this.computeIndex('structure');
+    this.computeIndex();
 
     const sourceData = this._nodes.get(source);
 
@@ -675,7 +637,7 @@ export default class Graph extends EventEmitter {
     if (this.type === 'directed')
       return;
 
-    this.computeIndex('structure');
+    this.computeIndex();
 
     const sourceData = this._nodes.get(source);
 
@@ -703,7 +665,7 @@ export default class Graph extends EventEmitter {
     if (!this.hasNode(target))
       throw new NotFoundGraphError(`Graph.edge: could not find the "${target}" target node in the graph.`);
 
-    this.computeIndex('structure');
+    this.computeIndex();
 
     const sourceData = this._nodes.get(source);
 
@@ -1154,7 +1116,7 @@ export default class Graph extends EventEmitter {
     }
 
     // Clearing index
-    clearEdgeFromIndex(this, 'structure', edge, data);
+    clearEdgeFromIndex(this, edge, data);
 
     // Emitting
     this.emit('edgeDropped', {
@@ -1213,12 +1175,7 @@ export default class Graph extends EventEmitter {
       this._edges = createInternalMap();
 
       // Without edges, we've got no 'structure'
-      this.clearIndex('structure');
-
-      const index = this._indices.structure;
-
-      if (!index.lazy)
-        index.computed = true;
+      this.clearIndex();
 
       return this;
     }
@@ -1990,26 +1947,17 @@ export default class Graph extends EventEmitter {
   /**
    * Method computing the desired index.
    *
-   * @param  {string} name - Name of the index to compute.
    * @return {Graph}       - Returns itself for chaining.
-   *
-   * @throw  {Error} - Will throw if the index doesn't exist.
    */
-  computeIndex(name) {
+  computeIndex() {
+    if (this._structureIsComputed)
+      return;
 
-    if (!INDICES.has(name))
-      throw new InvalidArgumentsGraphError(`Graph.computeIndex: unknown "${name}" index.`);
+    this._edges.forEach((data, edge) => {
+      updateStructureIndex(this, edge, data);
+    });
 
-    if (name === 'structure') {
-      const index = this._indices.structure;
-
-      if (index.computed)
-        return this;
-
-      index.computed = true;
-
-      this._edges.forEach((data, edge) => updateIndex(this, name, edge, data));
-    }
+    this._structureIsComputed = true;
 
     return this;
   }
@@ -2017,24 +1965,15 @@ export default class Graph extends EventEmitter {
   /**
    * Method used to clear the desired index to clear memory.
    *
-   * @param  {string} name - Name of the index to compute.
    * @return {Graph}       - Returns itself for chaining.
-   *
-   * @throw  {Error} - Will throw if the index doesn't exist.
    */
-  clearIndex(name) {
-    if (!INDICES.has(name))
-      throw new InvalidArgumentsGraphError(`Graph.clearIndex: unknown "${name}" index.`);
+  clearIndex() {
+    if (!this._structureIsComputed)
+      return this;
 
-    if (name === 'structure') {
-      const index = this._indices.structure;
+    clearStructureIndex(this);
 
-      if (!index.computed)
-        return this;
-
-      clearStructureIndex(this);
-      index.computed = false;
-    }
+    this._structureIsComputed = false;
 
     return this;
   }

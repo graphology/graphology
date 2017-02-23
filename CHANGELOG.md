@@ -1,8 +1,9 @@
 # Changelog
 
-## 0.7.0
+## 0.7.0 (provisional)
 
 * Adding the `#.edge` & variants methods.
+* Refactoring indices methods.
 
 ## 0.6.0
 

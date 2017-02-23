@@ -4,11 +4,6 @@
  *
  * Bunch of functions used to compute or clear indexes.
  */
-export const INDICES = new Set(['structure']);
-
-/**
- * Structure.
- */
 
 /**
  * Function updating the 'structure' index with the given edge's data.
@@ -103,7 +98,7 @@ export function clearEdgeFromStructureIndex(graph, edge, data) {
 export function clearStructureIndex(graph) {
   graph._nodes.forEach(data => {
 
-    // Clearing properties
+    // Clearing now useless properties
     delete data.in;
     delete data.out;
     delete data.undirected;
