@@ -1172,7 +1172,7 @@ export default class Graph extends EventEmitter {
     if (!arguments.length) {
 
       // Dropping every edge from the graph
-      this._edges = createInternalMap();
+      this._edges.clear();
 
       // Without edges, we've got no 'structure'
       this.clearIndex();
@@ -1205,10 +1205,10 @@ export default class Graph extends EventEmitter {
   clear() {
 
     // Dropping edges
-    this._edges = createInternalMap();
+    this._edges.clear();
 
     // Dropping nodes
-    this._nodes = createInternalMap();
+    this._nodes.clear();
 
     // Handling indices
     for (const name in this._indices) {
