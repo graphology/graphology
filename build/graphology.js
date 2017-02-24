@@ -336,7 +336,7 @@ function privateProperty(target, name, value) {
 function readOnlyProperty(target, name, value) {
   var descriptor = {
     enumerable: true,
-    configurable: false
+    configurable: true
   };
 
   if (typeof value === 'function') {
@@ -607,53 +607,28 @@ var DEFAULTS = {
  * Method updating the desired index.
  *
  * @param  {Graph}  graph     - Target graph.
- * @param  {string} name      - Name of the index to compute.
- * @param  {mixed}  [...args] - Additional arguments.
+ * @param  {any}    edge      - Target edge.
+ * @param  {object} data      - Attached edge data.
  * @return {Graph}            - Returns itself for chaining.
- *
- * @throw  {Error} - Will throw if the index doesn't exist.
  */
-function updateIndex(graph, name) {
-  if (name === 'structure') {
-    var index = graph._indices.structure;
+function updateIndex(graph, edge, data) {
+  if (!graph._structureIsComputed) return;
 
-    if (!index.computed) return graph;
-
-    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-      args[_key - 2] = arguments[_key];
-    }
-
-    var edge = args[0],
-        data = args[1];
-
-
-    (0, _indices.updateStructureIndex)(graph, edge, data);
-  }
-
-  return graph;
+  (0, _indices.updateStructureIndex)(graph, edge, data);
 }
 
 /**
  * Method used to clear an edge from the desired index to clear memory.
  *
  * @param  {Graph}  graph - Target graph.
- * @param  {string} name  - Name of the index to update.
  * @param  {any}    edge  - Target edge.
  * @param  {object} data  - Former attached data.
  * @return {Graph}        - Returns itself for chaining.
- *
- * @throw  {Error} - Will throw if the index doesn't exist.
  */
-function clearEdgeFromIndex(graph, name, edge, data) {
-  if (name === 'structure') {
-    var index = graph._indices.structure;
+function clearEdgeFromIndex(graph, edge, data) {
+  if (!graph._structureIsComputed) return;
 
-    if (!index.computed) return graph;
-
-    (0, _indices.clearEdgeFromStructureIndex)(graph, edge, data);
-  }
-
-  return graph;
+  (0, _indices.clearEdgeFromStructureIndex)(graph, edge, data);
 }
 
 /**
@@ -782,7 +757,7 @@ function addEdge(graph, name, merge, mustGenerateId, undirected, edge, source, t
   }
 
   // Updating relevant indexes
-  updateIndex(graph, 'structure', edge, data);
+  updateIndex(graph, edge, data);
 
   // Emitting
   graph.emit('edgeAdded', {
@@ -857,9 +832,6 @@ var Graph = function (_EventEmitter) {
 
     options = (0, _utils.assign)({}, DEFAULTS, options);
 
-    // Freezing options
-    Object.freeze(options);
-
     // Enforcing options validity
     if (typeof options.edgeKeyGenerator !== 'function') throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'edgeKeyGenerator\' option. Expecting a function but got "' + options.edgeKeyGenerator + '".');
 
@@ -879,12 +851,7 @@ var Graph = function (_EventEmitter) {
     (0, _utils.privateProperty)(_this, '_attributes', {});
     (0, _utils.privateProperty)(_this, '_nodes', (0, _utils.createInternalMap)());
     (0, _utils.privateProperty)(_this, '_edges', (0, _utils.createInternalMap)());
-    (0, _utils.privateProperty)(_this, '_indices', {
-      structure: {
-        lazy: options.indices && options.indices.structure && options.indices.structure.lazy || false,
-        computed: false
-      }
-    });
+    (0, _utils.privateProperty)(_this, '_structureIsComputed', false);
 
     // Options
     (0, _utils.privateProperty)(_this, '_options', options);
@@ -904,13 +871,6 @@ var Graph = function (_EventEmitter) {
     (0, _utils.readOnlyProperty)(_this, 'multi', _this._options.multi);
     (0, _utils.readOnlyProperty)(_this, 'type', _this._options.type);
     (0, _utils.readOnlyProperty)(_this, 'allowSelfLoops', _this._options.allowSelfLoops);
-
-    //-- Precomputing indexes?
-    for (var name in _this._indices) {
-      var index = _this._indices[name];
-
-      if (!index.lazy) index.computed = true;
-    }
     return _this;
   }
 
@@ -959,7 +919,7 @@ var Graph = function (_EventEmitter) {
     } else if (arguments.length === 2) {
 
       // We need to compute the 'structure' index for this
-      this.computeIndex('structure');
+      this.computeIndex();
 
       // If the node source or the target is not in the graph we break
       if (!this.hasNode(source) || !this.hasNode(target)) return false;
@@ -1008,7 +968,7 @@ var Graph = function (_EventEmitter) {
     } else if (arguments.length === 2) {
 
       // We need to compute the 'structure' index for this
-      this.computeIndex('structure');
+      this.computeIndex();
 
       // If the node source or the target is not in the graph we break
       if (!this.hasNode(source) || !this.hasNode(target)) return false;
@@ -1057,6 +1017,91 @@ var Graph = function (_EventEmitter) {
     }
 
     throw new _errors.InvalidArgumentsGraphError('Graph.hasEdge: invalid arity (' + arguments.length + ', instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.');
+  };
+
+  /**
+   * Method returning the edge matching source & target in a directed fashion.
+   *
+   * @param  {any} source - The edge's source.
+   * @param  {any} target - The edge's target.
+   *
+   * @return {any|undefined}
+   *
+   * @throws {Error} - Will throw if the graph is multi.
+   * @throws {Error} - Will throw if source or target doesn't exist.
+   */
+
+
+  Graph.prototype.directedEdge = function directedEdge(source, target) {
+    if (this.multi) throw new _errors.UsageGraphError('Graph.directedEdge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.directedEdges instead.');
+
+    if (!this.hasNode(source)) throw new _errors.NotFoundGraphError('Graph.directedEdge: could not find the "' + source + '" source node in the graph.');
+
+    if (!this.hasNode(target)) throw new _errors.NotFoundGraphError('Graph.directedEdge: could not find the "' + target + '" target node in the graph.');
+
+    if (this.type === 'undirected') return;
+
+    this.computeIndex();
+
+    var sourceData = this._nodes.get(source);
+
+    return sourceData.out && sourceData.out[target] || undefined;
+  };
+
+  /**
+   * Method returning the edge matching source & target in a undirected fashion.
+   *
+   * @param  {any} source - The edge's source.
+   * @param  {any} target - The edge's target.
+   *
+   * @return {any|undefined}
+   *
+   * @throws {Error} - Will throw if the graph is multi.
+   * @throws {Error} - Will throw if source or target doesn't exist.
+   */
+
+
+  Graph.prototype.undirectedEdge = function undirectedEdge(source, target) {
+    if (this.multi) throw new _errors.UsageGraphError('Graph.undirectedEdge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.undirectedEdges instead.');
+
+    if (!this.hasNode(source)) throw new _errors.NotFoundGraphError('Graph.undirectedEdge: could not find the "' + source + '" source node in the graph.');
+
+    if (!this.hasNode(target)) throw new _errors.NotFoundGraphError('Graph.undirectedEdge: could not find the "' + target + '" target node in the graph.');
+
+    if (this.type === 'directed') return;
+
+    this.computeIndex();
+
+    var sourceData = this._nodes.get(source);
+
+    return sourceData.undirected && sourceData.undirected[target] || undefined;
+  };
+
+  /**
+   * Method returning the edge matching source & target in a mixed fashion.
+   *
+   * @param  {any} source - The edge's source.
+   * @param  {any} target - The edge's target.
+   *
+   * @return {any|undefined}
+   *
+   * @throws {Error} - Will throw if the graph is multi.
+   * @throws {Error} - Will throw if source or target doesn't exist.
+   */
+
+
+  Graph.prototype.edge = function edge(source, target) {
+    if (this.multi) throw new _errors.UsageGraphError('Graph.edge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.edges instead.');
+
+    if (!this.hasNode(source)) throw new _errors.NotFoundGraphError('Graph.edge: could not find the "' + source + '" source node in the graph.');
+
+    if (!this.hasNode(target)) throw new _errors.NotFoundGraphError('Graph.edge: could not find the "' + target + '" target node in the graph.');
+
+    this.computeIndex();
+
+    var sourceData = this._nodes.get(source);
+
+    return sourceData.out && sourceData.out[target] || sourceData.undirected && sourceData.undirected[target] || undefined;
   };
 
   /**
@@ -1511,7 +1556,7 @@ var Graph = function (_EventEmitter) {
     }
 
     // Clearing index
-    clearEdgeFromIndex(this, 'structure', edge, data);
+    clearEdgeFromIndex(this, edge, data);
 
     // Emitting
     this.emit('edgeDropped', {
@@ -1573,14 +1618,10 @@ var Graph = function (_EventEmitter) {
     if (!arguments.length) {
 
       // Dropping every edge from the graph
-      this._edges = (0, _utils.createInternalMap)();
+      this._edges.clear();
 
       // Without edges, we've got no 'structure'
-      this.clearIndex('structure');
-
-      var index = this._indices.structure;
-
-      if (!index.lazy) index.computed = true;
+      this.clearIndex();
 
       return this;
     }
@@ -1611,10 +1652,10 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.clear = function clear() {
 
     // Dropping edges
-    this._edges = (0, _utils.createInternalMap)();
+    this._edges.clear();
 
     // Dropping nodes
-    this._nodes = (0, _utils.createInternalMap)();
+    this._nodes.clear();
 
     // Handling indices
     for (var name in this._indices) {
@@ -2329,6 +2370,11 @@ var Graph = function (_EventEmitter) {
     return this;
   };
 
+  /**---------------------------------------------------------------------------
+   * Utils
+   **---------------------------------------------------------------------------
+   */
+
   /**
    * Method returning an empty copy of the graph, i.e. a graph without nodes
    * & edges but with the exact same options.
@@ -2355,6 +2401,59 @@ var Graph = function (_EventEmitter) {
     return graph;
   };
 
+  /**
+   * Method upgrading the graph to a mixed one.
+   *
+   * @return {Graph} - The copy.
+   */
+
+
+  Graph.prototype.upgradeToMixed = function upgradeToMixed() {
+    var _this8 = this;
+
+    if (this.type === 'mixed') return this;
+
+    // Upgrading node data
+    this._nodes.forEach(function (data) {
+      if (_this8.type === 'undirected') {
+        data.directedSelfLoops = 0;
+        data.inDegree = 0;
+        data.outDegree = 0;
+      } else {
+        data.undirectedSelfLoops = 0;
+        data.undirectedDegree = 0;
+      }
+    });
+
+    // Mutating the options & the instance
+    this._options.type = 'mixed';
+    (0, _utils.readOnlyProperty)(this, 'type', this._options.type);
+
+    return this;
+  };
+
+  /**
+   * Method upgrading the graph to a multi one.
+   *
+   * @return {Graph} - The copy.
+   */
+
+
+  Graph.prototype.upgradeToMulti = function upgradeToMulti() {
+    if (this.multi) return this;
+
+    // Mutating the options & the instance
+    this._options.multi = true;
+    (0, _utils.readOnlyProperty)(this, 'multi', true);
+
+    // Upgrading indices
+    if (!this._structureIsComputed) return this;
+
+    (0, _indices.upgradeStructureIndexToMulti)(this);
+
+    return this;
+  };
+
   /**---------------------------------------------------------------------------
    * Indexes-related methods
    **---------------------------------------------------------------------------
@@ -2363,29 +2462,20 @@ var Graph = function (_EventEmitter) {
   /**
    * Method computing the desired index.
    *
-   * @param  {string} name - Name of the index to compute.
    * @return {Graph}       - Returns itself for chaining.
-   *
-   * @throw  {Error} - Will throw if the index doesn't exist.
    */
 
 
-  Graph.prototype.computeIndex = function computeIndex(name) {
-    var _this8 = this;
+  Graph.prototype.computeIndex = function computeIndex() {
+    var _this9 = this;
 
-    if (!_indices.INDICES.has(name)) throw new _errors.InvalidArgumentsGraphError('Graph.computeIndex: unknown "' + name + '" index.');
+    if (this._structureIsComputed) return;
 
-    if (name === 'structure') {
-      var index = this._indices.structure;
+    this._edges.forEach(function (data, edge) {
+      (0, _indices.updateStructureIndex)(_this9, edge, data);
+    });
 
-      if (index.computed) return this;
-
-      index.computed = true;
-
-      this._edges.forEach(function (data, edge) {
-        return updateIndex(_this8, name, edge, data);
-      });
-    }
+    this._structureIsComputed = true;
 
     return this;
   };
@@ -2393,24 +2483,16 @@ var Graph = function (_EventEmitter) {
   /**
    * Method used to clear the desired index to clear memory.
    *
-   * @param  {string} name - Name of the index to compute.
    * @return {Graph}       - Returns itself for chaining.
-   *
-   * @throw  {Error} - Will throw if the index doesn't exist.
    */
 
 
-  Graph.prototype.clearIndex = function clearIndex(name) {
-    if (!_indices.INDICES.has(name)) throw new _errors.InvalidArgumentsGraphError('Graph.clearIndex: unknown "' + name + '" index.');
+  Graph.prototype.clearIndex = function clearIndex() {
+    if (!this._structureIsComputed) return this;
 
-    if (name === 'structure') {
-      var index = this._indices.structure;
+    (0, _indices.clearStructureIndex)(this);
 
-      if (!index.computed) return this;
-
-      (0, _indices.clearStructureIndex)(this);
-      index.computed = false;
-    }
+    this._structureIsComputed = false;
 
     return this;
   };
@@ -3106,16 +3188,12 @@ Object.defineProperty(exports, "__esModule", {
 exports.updateStructureIndex = updateStructureIndex;
 exports.clearEdgeFromStructureIndex = clearEdgeFromStructureIndex;
 exports.clearStructureIndex = clearStructureIndex;
+exports.upgradeStructureIndexToMulti = upgradeStructureIndexToMulti;
 /**
  * Graphology Indexes Functions
  * =============================
  *
  * Bunch of functions used to compute or clear indexes.
- */
-var INDICES = exports.INDICES = new Set(['structure']);
-
-/**
- * Structure.
  */
 
 /**
@@ -3205,10 +3283,43 @@ function clearEdgeFromStructureIndex(graph, edge, data) {
 function clearStructureIndex(graph) {
   graph._nodes.forEach(function (data) {
 
-    // Clearing properties
+    // Clearing now useless properties
     delete data.in;
     delete data.out;
     delete data.undirected;
+  });
+}
+
+/**
+ * Function used to upgrade a simple `structure` index to a multi on.
+ *
+ * @param {Graph}  graph - Target Graph instance.
+ */
+function upgradeStructureIndexToMulti(graph) {
+  graph._nodes.forEach(function (data, node) {
+
+    // Directed
+    if (data.out) {
+
+      for (var neighbor in data.out) {
+        var edges = new Set();
+        edges.add(data.out[neighbor]);
+        data.out[neighbor] = edges;
+        graph._nodes.get(neighbor).in[node] = edges;
+      }
+    }
+
+    // Undirected
+    if (data.undirected) {
+      for (var _neighbor in data.undirected) {
+        if (_neighbor > node) continue;
+
+        var _edges = new Set();
+        _edges.add(data.undirected[_neighbor]);
+        data.undirected[_neighbor] = _edges;
+        graph._nodes.get(_neighbor).undirected[node] = _edges;
+      }
+    }
   });
 }
 
@@ -3315,7 +3426,7 @@ function createEdgeArray(graph, type) {
 function createEdgeArrayForNode(graph, type, direction, node) {
 
   // For this, we need to compute the "structure" index
-  graph.computeIndex('structure');
+  graph.computeIndex();
 
   var edges = [];
 
@@ -3346,7 +3457,7 @@ function createEdgeArrayForNode(graph, type, direction, node) {
 function createEdgeArrayForPath(graph, type, source, target) {
 
   // For this, we need to compute the "structure" index
-  graph.computeIndex('structure');
+  graph.computeIndex();
 
   var edges = [];
 
@@ -3512,7 +3623,7 @@ function merge(neighbors, object) {
 function createNeighborSetForNode(graph, type, direction, node) {
 
   // For this, we need to compute the "structure" index
-  graph.computeIndex('structure');
+  graph.computeIndex();
 
   var neighbors = new Set();
 

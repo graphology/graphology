@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.7.0 (provisional)
+## 0.7.0
 
 * Adding the `#.edge` & variants methods.
 * Adding the `#.upgradeToMixed` method.
