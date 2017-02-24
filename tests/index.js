@@ -12,6 +12,7 @@ import attributes from './attributes';
 import iteration from './iteration';
 import serialization from './serialization';
 import events from './events';
+import utils from './utils';
 import knownMethods from './known';
 import misc from './misc';
 
@@ -50,6 +51,7 @@ export default function specs(Graph, implementation) {
       'Iteration': iteration(Graph, errorCheckers),
       'Serialization': serialization(Graph, errorCheckers),
       'Events': events(Graph),
+      'Utils': utils(Graph),
       'Known Methods': knownMethods(Graph, errorCheckers),
       'Miscellaneous': misc(Graph)
     }

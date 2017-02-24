@@ -16,7 +16,8 @@ import {
 import {
   updateStructureIndex,
   clearEdgeFromStructureIndex,
-  clearStructureIndex
+  clearStructureIndex,
+  upgradeStructureIndexToMulti
 } from './indices';
 
 import {attachAttributesMethods} from './attributes';
@@ -380,9 +381,6 @@ export default class Graph extends EventEmitter {
 
     //-- Solving options
     options = assign({}, DEFAULTS, options);
-
-    // Freezing options
-    Object.freeze(options);
 
     // Enforcing options validity
     if (typeof options.edgeKeyGenerator !== 'function')
@@ -1917,6 +1915,11 @@ export default class Graph extends EventEmitter {
     return this;
   }
 
+  /**---------------------------------------------------------------------------
+   * Utils
+   **---------------------------------------------------------------------------
+   */
+
   /**
    * Method returning an empty copy of the graph, i.e. a graph without nodes
    * & edges but with the exact same options.
@@ -1937,6 +1940,57 @@ export default class Graph extends EventEmitter {
     graph.import(this);
 
     return graph;
+  }
+
+  /**
+   * Method upgrading the graph to a mixed one.
+   *
+   * @return {Graph} - The copy.
+   */
+  upgradeToMixed() {
+    if (this.type === 'mixed')
+      return this;
+
+    // Upgrading node data
+    this._nodes.forEach(data => {
+      if (this.type === 'undirected') {
+        data.directedSelfLoops = 0;
+        data.inDegree = 0;
+        data.outDegree = 0;
+      }
+      else {
+        data.undirectedSelfLoops = 0;
+        data.undirectedDegree = 0;
+      }
+    });
+
+    // Mutating the options & the instance
+    this._options.type = 'mixed';
+    readOnlyProperty(this, 'type', this._options.type);
+
+    return this;
+  }
+
+  /**
+   * Method upgrading the graph to a multi one.
+   *
+   * @return {Graph} - The copy.
+   */
+  upgradeToMulti() {
+    if (this.multi)
+      return this;
+
+    // Mutating the options & the instance
+    this._options.multi = true;
+    readOnlyProperty(this, 'multi', true);
+
+    // Upgrading indices
+    if (!this._structureIsComputed)
+      return this;
+
+    upgradeStructureIndexToMulti(this);
+
+    return this;
   }
 
   /**---------------------------------------------------------------------------

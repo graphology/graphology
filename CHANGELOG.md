@@ -3,6 +3,8 @@
 ## 0.7.0 (provisional)
 
 * Adding the `#.edge` & variants methods.
+* Adding the `#.upgradeToMixed` method.
+* Adding the `#.upgradeToMulti` method.
 * Refactoring indices methods.
 
 ## 0.6.0

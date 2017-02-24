@@ -263,7 +263,7 @@ export function privateProperty(target, name, value) {
 export function readOnlyProperty(target, name, value) {
   const descriptor = {
     enumerable: true,
-    configurable: false
+    configurable: true
   };
 
   if (typeof value === 'function') {
