@@ -156,6 +156,11 @@ function createInternalMap() {
     return Map.prototype.has.call(this, key);
   };
 
+  map.delete = function (key) {
+    key = '' + key;
+    return Map.prototype.delete.call(this, key);
+  };
+
   return map;
 }
 
@@ -194,11 +199,11 @@ function getMatchingEdge(graph, source, target, type) {
   var edge = null;
 
   if (type === 'mixed') {
-    edge = sourceData.out[target] || sourceData.undirected[target];
+    edge = sourceData.out && sourceData.out[target] || sourceData.undirected && sourceData.undirected[target];
   } else if (type === 'directed') {
-    edge = sourceData.out[target];
+    edge = sourceData.out && sourceData.out[target];
   } else {
-    edge = sourceData.undirected[target];
+    edge = sourceData.undirected && sourceData.undirected[target];
   }
 
   return edge;

@@ -2,6 +2,7 @@
 
 ## 0.7.1
 
+* Fixing a bug related to typed graphs' attributes.
 * Fixing a bug with the dropping methods.
 
 ## 0.7.0
