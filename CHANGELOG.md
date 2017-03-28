@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.1
+
+* Fixing a bug with the dropping methods.
+
 ## 0.7.0
 
 * Adding the `#.edge` & variants methods.

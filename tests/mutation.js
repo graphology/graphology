@@ -434,6 +434,26 @@ export default function mutation(Graph, checkers) {
         assert.strictEqual(graph.hasEdge(edge), false);
         assert.strictEqual(graph.degree('John'), 0);
         assert.strictEqual(graph.hasDirectedEdge('John', 'Margaret'), false);
+      },
+
+      'it should also coerce keys as strings.': function() {
+        function Key(name) {
+          this.name = name;
+        }
+
+        Key.prototype.toString = function() {
+          return this.name;
+        };
+
+        const graph = new Graph();
+
+        const key = new Key('test');
+
+        graph.addNode(key);
+        graph.dropNode(key);
+
+        assert.strictEqual(graph.order, 0);
+        assert.strictEqual(graph.hasNode(key), false);
       }
     },
 

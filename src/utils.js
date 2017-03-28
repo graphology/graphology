@@ -49,6 +49,11 @@ export function createInternalMap() {
     return Map.prototype.has.call(this, key);
   };
 
+  map.delete = function(key) {
+    key = '' + key;
+    return Map.prototype.delete.call(this, key);
+  };
+
   return map;
 }
 
