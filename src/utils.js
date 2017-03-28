@@ -93,13 +93,16 @@ export function getMatchingEdge(graph, source, target, type) {
   let edge = null;
 
   if (type === 'mixed') {
-    edge = sourceData.out[target] || sourceData.undirected[target];
+    edge = (
+      (sourceData.out && sourceData.out[target]) ||
+      (sourceData.undirected && sourceData.undirected[target])
+    );
   }
   else if (type === 'directed') {
-    edge = sourceData.out[target];
+    edge = sourceData.out && sourceData.out[target];
   }
   else {
-    edge = sourceData.undirected[target];
+    edge = sourceData.undirected && sourceData.undirected[target];
   }
 
   return edge;
