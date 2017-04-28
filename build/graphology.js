@@ -11,41 +11,41 @@
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -56,7 +56,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -65,15 +65,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -523,19 +523,19 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _events = __webpack_require__(8);
+var _events = __webpack_require__(9);
 
 var _errors = __webpack_require__(1);
 
-var _indices = __webpack_require__(4);
+var _indices = __webpack_require__(5);
 
 var _attributes = __webpack_require__(3);
 
-var _edges = __webpack_require__(5);
+var _edges = __webpack_require__(6);
 
-var _neighbors = __webpack_require__(6);
+var _neighbors = __webpack_require__(7);
 
-var _serialization = __webpack_require__(7);
+var _serialization = __webpack_require__(8);
 
 var _utils = __webpack_require__(0);
 
@@ -3187,6 +3187,130 @@ function attachAttributesMethods(Graph) {
 "use strict";
 
 
+var _utils = __webpack_require__(0);
+
+var _graph = __webpack_require__(2);
+
+var _graph2 = _interopRequireDefault(_graph);
+
+var _errors = __webpack_require__(1);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Graphology Reference Implementation Endoint
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * ============================================
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Importing the Graph object & creating typed constructors.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+
+/**
+ * Alternative constructors.
+ */
+var DirectedGraph = function (_Graph) {
+  _inherits(DirectedGraph, _Graph);
+
+  function DirectedGraph(options) {
+    _classCallCheck(this, DirectedGraph);
+
+    return _possibleConstructorReturn(this, _Graph.call(this, (0, _utils.assign)({ type: 'directed' }, options)));
+  }
+
+  return DirectedGraph;
+}(_graph2.default);
+
+var UndirectedGraph = function (_Graph2) {
+  _inherits(UndirectedGraph, _Graph2);
+
+  function UndirectedGraph(options) {
+    _classCallCheck(this, UndirectedGraph);
+
+    return _possibleConstructorReturn(this, _Graph2.call(this, (0, _utils.assign)({ type: 'undirected' }, options)));
+  }
+
+  return UndirectedGraph;
+}(_graph2.default);
+
+var MultiDirectedGraph = function (_Graph3) {
+  _inherits(MultiDirectedGraph, _Graph3);
+
+  function MultiDirectedGraph(options) {
+    _classCallCheck(this, MultiDirectedGraph);
+
+    return _possibleConstructorReturn(this, _Graph3.call(this, (0, _utils.assign)({ multi: true, type: 'directed' }, options)));
+  }
+
+  return MultiDirectedGraph;
+}(_graph2.default);
+
+var MultiUndirectedGraph = function (_Graph4) {
+  _inherits(MultiUndirectedGraph, _Graph4);
+
+  function MultiUndirectedGraph(options) {
+    _classCallCheck(this, MultiUndirectedGraph);
+
+    return _possibleConstructorReturn(this, _Graph4.call(this, (0, _utils.assign)({ multi: true, type: 'undirected' }, options)));
+  }
+
+  return MultiUndirectedGraph;
+}(_graph2.default);
+
+/**
+ * Attaching static #.from method to each of the constructors.
+ */
+
+
+function attachStaticFromMethod(Class) {
+
+  /**
+   * Builds a graph from serialized data or another graph's data.
+   *
+   * @param  {Graph|SerializedGraph} data      - Hydratation data.
+   * @param  {object}                [options] - Options.
+   * @return {Class}
+   */
+  Class.from = function (data, options) {
+    var instance = new Class(options);
+    instance.import(data);
+
+    return instance;
+  };
+}
+
+attachStaticFromMethod(_graph2.default);
+attachStaticFromMethod(DirectedGraph);
+attachStaticFromMethod(UndirectedGraph);
+attachStaticFromMethod(MultiDirectedGraph);
+attachStaticFromMethod(MultiUndirectedGraph);
+
+/**
+ * Attaching the various constructors to the Graph class itself so we can
+ * keep CommonJS semantics so everyone can consume the library easily.
+ */
+_graph2.default.Graph = _graph2.default;
+_graph2.default.DirectedGraph = DirectedGraph;
+_graph2.default.UndirectedGraph = UndirectedGraph;
+_graph2.default.MultiDirectedGraph = MultiDirectedGraph;
+_graph2.default.MultiUndirectedGraph = MultiUndirectedGraph;
+
+_graph2.default.InvalidArgumentsGraphError = _errors.InvalidArgumentsGraphError;
+_graph2.default.NotFoundGraphError = _errors.NotFoundGraphError;
+_graph2.default.UsageGraphError = _errors.UsageGraphError;
+
+module.exports = _graph2.default;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -3329,7 +3453,7 @@ function upgradeStructureIndexToMulti(graph) {
 }
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3558,7 +3682,7 @@ function attachEdgeIterationMethods(Graph) {
 }
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3723,7 +3847,7 @@ function attachNeighborIterationMethods(Graph) {
 }
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3828,7 +3952,7 @@ function validateSerializedEdge(value) {
 }
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -4134,130 +4258,6 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-var _graph = __webpack_require__(2);
-
-var _graph2 = _interopRequireDefault(_graph);
-
-var _errors = __webpack_require__(1);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Graphology Reference Implementation Endoint
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * ============================================
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Importing the Graph object & creating typed constructors.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
-
-
-/**
- * Alternative constructors.
- */
-var DirectedGraph = function (_Graph) {
-  _inherits(DirectedGraph, _Graph);
-
-  function DirectedGraph(options) {
-    _classCallCheck(this, DirectedGraph);
-
-    return _possibleConstructorReturn(this, _Graph.call(this, (0, _utils.assign)({ type: 'directed' }, options)));
-  }
-
-  return DirectedGraph;
-}(_graph2.default);
-
-var UndirectedGraph = function (_Graph2) {
-  _inherits(UndirectedGraph, _Graph2);
-
-  function UndirectedGraph(options) {
-    _classCallCheck(this, UndirectedGraph);
-
-    return _possibleConstructorReturn(this, _Graph2.call(this, (0, _utils.assign)({ type: 'undirected' }, options)));
-  }
-
-  return UndirectedGraph;
-}(_graph2.default);
-
-var MultiDirectedGraph = function (_Graph3) {
-  _inherits(MultiDirectedGraph, _Graph3);
-
-  function MultiDirectedGraph(options) {
-    _classCallCheck(this, MultiDirectedGraph);
-
-    return _possibleConstructorReturn(this, _Graph3.call(this, (0, _utils.assign)({ multi: true, type: 'directed' }, options)));
-  }
-
-  return MultiDirectedGraph;
-}(_graph2.default);
-
-var MultiUndirectedGraph = function (_Graph4) {
-  _inherits(MultiUndirectedGraph, _Graph4);
-
-  function MultiUndirectedGraph(options) {
-    _classCallCheck(this, MultiUndirectedGraph);
-
-    return _possibleConstructorReturn(this, _Graph4.call(this, (0, _utils.assign)({ multi: true, type: 'undirected' }, options)));
-  }
-
-  return MultiUndirectedGraph;
-}(_graph2.default);
-
-/**
- * Attaching static #.from method to each of the constructors.
- */
-
-
-function attachStaticFromMethod(Class) {
-
-  /**
-   * Builds a graph from serialized data or another graph's data.
-   *
-   * @param  {Graph|SerializedGraph} data      - Hydratation data.
-   * @param  {object}                [options] - Options.
-   * @return {Class}
-   */
-  Class.from = function (data, options) {
-    var instance = new Class(options);
-    instance.import(data);
-
-    return instance;
-  };
-}
-
-attachStaticFromMethod(_graph2.default);
-attachStaticFromMethod(DirectedGraph);
-attachStaticFromMethod(UndirectedGraph);
-attachStaticFromMethod(MultiDirectedGraph);
-attachStaticFromMethod(MultiUndirectedGraph);
-
-/**
- * Attaching the various constructors to the Graph class itself so we can
- * keep CommonJS semantics so everyone can consume the library easily.
- */
-_graph2.default.Graph = _graph2.default;
-_graph2.default.DirectedGraph = DirectedGraph;
-_graph2.default.UndirectedGraph = UndirectedGraph;
-_graph2.default.MultiDirectedGraph = MultiDirectedGraph;
-_graph2.default.MultiUndirectedGraph = MultiUndirectedGraph;
-
-_graph2.default.InvalidArgumentsGraphError = _errors.InvalidArgumentsGraphError;
-_graph2.default.NotFoundGraphError = _errors.NotFoundGraphError;
-_graph2.default.UsageGraphError = _errors.UsageGraphError;
-
-module.exports = _graph2.default;
 
 /***/ })
 /******/ ]);
