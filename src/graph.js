@@ -14,6 +14,10 @@ import {
 } from './errors';
 
 import {
+  NodesIterator
+} from './iteration/iterators';
+
+import {
   updateStructureIndex,
   clearEdgeFromStructureIndex,
   clearStructureIndex,
@@ -1601,6 +1605,17 @@ export default class Graph extends EventEmitter {
    */
   nodes() {
     return consumeIterator(this._nodes.size, this._nodes.keys());
+  }
+
+  /**
+   * Method returning an iterator over the graph's nodes.
+   *
+   * @return {Iterator}
+   */
+  nodesIterator() {
+    const iterator = this._nodes.keys();
+
+    return new NodesIterator(() => iterator.next());
   }
 
   /**---------------------------------------------------------------------------

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.0
+
+* Adding the `#.nodesIterator` method.
+
 ## 0.7.1
 
 * Fixing a bug related to typed graphs' attributes.
