@@ -175,20 +175,15 @@ export function overBunch(bunch, callback) {
 
   // Array iteration
   if (Array.isArray(bunch)) {
-    for (let i = 0, l = bunch.length; i < l; i++) {
-      const shouldBreak = callback(bunch[i], null) === false;
-
-      if (shouldBreak)
-        break;
-    }
+    for (let i = 0, l = bunch.length; i < l; i++)
+      callback(bunch[i], null);
   }
 
   // Map & Set iteration
   else if (typeof bunch.forEach === 'function') {
     const iterator = bunch.entries();
 
-    let shouldBreak = false,
-        step;
+    let step;
 
     while (step = iterator.next()) {
       const {value, done} = step;
@@ -199,12 +194,9 @@ export function overBunch(bunch, callback) {
       const [k, v] = value;
 
       if (v === k)
-        shouldBreak = callback(v, null) === false;
+        callback(v, null);
       else
-        shouldBreak = callback(k, v) === false;
-
-      if (shouldBreak)
-        break;
+        callback(k, v);
     }
   }
 
@@ -213,10 +205,7 @@ export function overBunch(bunch, callback) {
     for (const key in bunch) {
       const attributes = bunch[key];
 
-      const shouldBreak = callback(key, attributes);
-
-      if (shouldBreak)
-        break;
+      callback(key, attributes);
     }
   }
 }
