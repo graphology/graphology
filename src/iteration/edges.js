@@ -202,6 +202,7 @@ function attachEdgeArrayCreator(Class, description) {
       return createEdgeArray(this, type);
 
     if (arguments.length === 1) {
+      source = '' + source;
 
       if (!this.hasNode(source))
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${source}" node in the graph.`);
@@ -211,6 +212,9 @@ function attachEdgeArrayCreator(Class, description) {
     }
 
     if (arguments.length === 2) {
+      source = '' + source;
+      target = '' + target;
+
       if (!this.hasNode(source))
         throw new NotFoundGraphError(`Graph.${name}:  could not find the "${source}" source node in the graph.`);
 

@@ -49,8 +49,8 @@ function attachAttributeGetter(Class, method, checker, type) {
       if (this.multi)
         throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
 
-      const source = element,
-            target = name;
+      const source = '' + element,
+            target = '' + name;
 
       name = arguments[2];
 
@@ -58,6 +58,9 @@ function attachAttributeGetter(Class, method, checker, type) {
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
       element = getMatchingEdge(this, source, target, type);
+    }
+    else {
+      element = '' + element;
     }
 
     if (!this[checker](element))
@@ -100,13 +103,16 @@ function attachAttributesGetter(Class, method, checker, type) {
       if (this.multi)
         throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
 
-      const source = element,
-            target = arguments[1];
+      const source = '' + element,
+            target = '' + arguments[1];
 
       if (!this[checker](source, target))
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
       element = getMatchingEdge(this, source, target, type);
+    }
+    else {
+      element = '' + element;
     }
 
     if (!this[checker](element))
@@ -151,8 +157,8 @@ function attachAttributeChecker(Class, method, checker, type) {
       if (this.multi)
         throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
 
-      const source = element,
-            target = name;
+      const source = '' + element,
+            target = '' + name;
 
       name = arguments[2];
 
@@ -160,6 +166,9 @@ function attachAttributeChecker(Class, method, checker, type) {
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
       element = getMatchingEdge(this, source, target, type);
+    }
+    else {
+      element = '' + element;
     }
 
     if (!this[checker](element))
@@ -206,8 +215,8 @@ function attachAttributeSetter(Class, method, checker, type) {
       if (this.multi)
         throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
 
-      const source = element,
-            target = name;
+      const source = '' + element,
+            target = '' + name;
 
       name = arguments[2];
       value = arguments[3];
@@ -216,6 +225,9 @@ function attachAttributeSetter(Class, method, checker, type) {
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
       element = getMatchingEdge(this, source, target, type);
+    }
+    else {
+      element = '' + element;
     }
 
     if (!this[checker](element))
@@ -275,8 +287,8 @@ function attachAttributeUpdater(Class, method, checker, type) {
       if (this.multi)
         throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
 
-      const source = element,
-            target = name;
+      const source = '' + element,
+            target = '' + name;
 
       name = arguments[2];
       updater = arguments[3];
@@ -285,6 +297,9 @@ function attachAttributeUpdater(Class, method, checker, type) {
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
       element = getMatchingEdge(this, source, target, type);
+    }
+    else {
+      element = '' + element;
     }
 
     if (!this[checker](element))
@@ -344,8 +359,8 @@ function attachAttributeRemover(Class, method, checker, type) {
       if (this.multi)
         throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
 
-      const source = element,
-            target = name;
+      const source = '' + element,
+            target = '' + name;
 
       name = arguments[2];
 
@@ -353,6 +368,9 @@ function attachAttributeRemover(Class, method, checker, type) {
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
       element = getMatchingEdge(this, source, target, type);
+    }
+    else {
+      element = '' + element;
     }
 
     if (!this[checker](element))
@@ -408,8 +426,8 @@ function attachAttributesReplacer(Class, method, checker, type) {
       if (this.multi)
         throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
 
-      const source = element,
-            target = attributes;
+      const source = '' + element,
+            target = '' + attributes;
 
       attributes = arguments[2];
 
@@ -417,6 +435,9 @@ function attachAttributesReplacer(Class, method, checker, type) {
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
       element = getMatchingEdge(this, source, target, type);
+    }
+    else {
+      element = '' + element;
     }
 
     if (!this[checker](element))
@@ -478,8 +499,8 @@ function attachAttributesMerger(Class, method, checker, type) {
       if (this.multi)
         throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
 
-      const source = element,
-            target = attributes;
+      const source = '' + element,
+            target = '' + attributes;
 
       attributes = arguments[2];
 
@@ -487,6 +508,9 @@ function attachAttributesMerger(Class, method, checker, type) {
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
       element = getMatchingEdge(this, source, target, type);
+    }
+    else {
+      element = '' + element;
     }
 
     if (!this[checker](element))

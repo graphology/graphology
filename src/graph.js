@@ -37,7 +37,6 @@ import {
 
 import {
   assign,
-  createInternalMap,
   consumeIterator,
   getMatchingEdge,
   isBunch,
@@ -215,11 +214,14 @@ function addEdge(
     });
   }
 
+  // Coercion of edge key
+  edge = '' + edge;
+
   // Do we need to handle duplicate?
   let alreadyExistingEdge = null;
 
   // Here, we have a key collision
-  if (graph.hasEdge(edge)) {
+  if (graph._edges.has(edge)) {
     if (!merge) {
       throw new UsageGraphError(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
     }
@@ -409,8 +411,8 @@ export default class Graph extends EventEmitter {
 
     // Indexes
     privateProperty(this, '_attributes', {});
-    privateProperty(this, '_nodes', createInternalMap());
-    privateProperty(this, '_edges', createInternalMap());
+    privateProperty(this, '_nodes', new Map());
+    privateProperty(this, '_edges', new Map());
     privateProperty(this, '_structureIsComputed', false);
 
     // Options
@@ -439,7 +441,7 @@ export default class Graph extends EventEmitter {
    * @return {boolean}
    */
   hasNode(node) {
-    return this._nodes.has(node);
+    return this._nodes.has('' + node);
   }
 
   /**
@@ -463,7 +465,7 @@ export default class Graph extends EventEmitter {
       return false;
 
     if (arguments.length === 1) {
-      const edge = source;
+      const edge = '' + source;
 
       return (
         this._edges.has(edge) &&
@@ -471,6 +473,9 @@ export default class Graph extends EventEmitter {
       );
     }
     else if (arguments.length === 2) {
+
+      source = '' + source;
+      target = '' + target;
 
       // We need to compute the 'structure' index for this
       this.computeIndex();
@@ -518,7 +523,7 @@ export default class Graph extends EventEmitter {
       return false;
 
     if (arguments.length === 1) {
-      const edge = source;
+      const edge = '' + source;
 
       return (
         this._edges.has(edge) &&
@@ -526,6 +531,9 @@ export default class Graph extends EventEmitter {
       );
     }
     else if (arguments.length === 2) {
+
+      source = '' + source;
+      target = '' + target;
 
       // We need to compute the 'structure' index for this
       this.computeIndex();
@@ -570,11 +578,14 @@ export default class Graph extends EventEmitter {
   hasEdge(source, target) {
 
     if (arguments.length === 1) {
-      const edge = source;
+      const edge = '' + source;
 
       return this._edges.has(edge);
     }
     else if (arguments.length === 2) {
+      source = '' + source;
+      target = '' + target;
+
       return (
         this.hasDirectedEdge(source, target) ||
         this.hasUndirectedEdge(source, target)
@@ -596,21 +607,25 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if source or target doesn't exist.
    */
   directedEdge(source, target) {
-    if (this.multi)
-      throw new UsageGraphError('Graph.directedEdge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.directedEdges instead.');
-
-    if (!this.hasNode(source))
-      throw new NotFoundGraphError(`Graph.directedEdge: could not find the "${source}" source node in the graph.`);
-
-    if (!this.hasNode(target))
-      throw new NotFoundGraphError(`Graph.directedEdge: could not find the "${target}" target node in the graph.`);
 
     if (this.type === 'undirected')
       return;
 
-    this.computeIndex();
+    source = '' + source;
+    target = '' + target;
+
+    if (this.multi)
+      throw new UsageGraphError('Graph.directedEdge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.directedEdges instead.');
 
     const sourceData = this._nodes.get(source);
+
+    if (!sourceData)
+      throw new NotFoundGraphError(`Graph.directedEdge: could not find the "${source}" source node in the graph.`);
+
+    if (!this._nodes.has(target))
+      throw new NotFoundGraphError(`Graph.directedEdge: could not find the "${target}" target node in the graph.`);
+
+    this.computeIndex();
 
     return (sourceData.out && sourceData.out[target]) || undefined;
   }
@@ -627,21 +642,25 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if source or target doesn't exist.
    */
   undirectedEdge(source, target) {
-    if (this.multi)
-      throw new UsageGraphError('Graph.undirectedEdge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.undirectedEdges instead.');
-
-    if (!this.hasNode(source))
-      throw new NotFoundGraphError(`Graph.undirectedEdge: could not find the "${source}" source node in the graph.`);
-
-    if (!this.hasNode(target))
-      throw new NotFoundGraphError(`Graph.undirectedEdge: could not find the "${target}" target node in the graph.`);
 
     if (this.type === 'directed')
       return;
 
-    this.computeIndex();
+    source = '' + source;
+    target = '' + target;
+
+    if (this.multi)
+      throw new UsageGraphError('Graph.undirectedEdge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.undirectedEdges instead.');
 
     const sourceData = this._nodes.get(source);
+
+    if (!sourceData)
+      throw new NotFoundGraphError(`Graph.undirectedEdge: could not find the "${source}" source node in the graph.`);
+
+    if (!this._nodes.has(target))
+      throw new NotFoundGraphError(`Graph.undirectedEdge: could not find the "${target}" target node in the graph.`);
+
+    this.computeIndex();
 
     return (sourceData.undirected && sourceData.undirected[target]) || undefined;
   }
@@ -661,15 +680,18 @@ export default class Graph extends EventEmitter {
     if (this.multi)
       throw new UsageGraphError('Graph.edge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.edges instead.');
 
-    if (!this.hasNode(source))
+    source = '' + source;
+    target = '' + target;
+
+    const sourceData = this._nodes.get(source);
+
+    if (!sourceData)
       throw new NotFoundGraphError(`Graph.edge: could not find the "${source}" source node in the graph.`);
 
-    if (!this.hasNode(target))
+    if (!this._nodes.has(target))
       throw new NotFoundGraphError(`Graph.edge: could not find the "${target}" target node in the graph.`);
 
     this.computeIndex();
-
-    const sourceData = this._nodes.get(source);
 
     return (
       (sourceData.out && sourceData.out[target]) ||
@@ -691,6 +713,8 @@ export default class Graph extends EventEmitter {
   inDegree(node, selfLoops = true) {
     if (typeof selfLoops !== 'boolean')
       throw new InvalidArgumentsGraphError(`Graph.inDegree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`);
+
+    node = '' + node;
 
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.inDegree: could not find the "${node}" node in the graph.`);
@@ -718,6 +742,8 @@ export default class Graph extends EventEmitter {
     if (typeof selfLoops !== 'boolean')
       throw new InvalidArgumentsGraphError(`Graph.outDegree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`);
 
+    node = '' + node;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.outDegree: could not find the "${node}" node in the graph.`);
 
@@ -744,6 +770,8 @@ export default class Graph extends EventEmitter {
     if (typeof selfLoops !== 'boolean')
       throw new InvalidArgumentsGraphError(`Graph.directedDegree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`);
 
+    node = '' + node;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.directedDegree: could not find the "${node}" node in the graph.`);
 
@@ -766,6 +794,8 @@ export default class Graph extends EventEmitter {
   undirectedDegree(node, selfLoops = true) {
     if (typeof selfLoops !== 'boolean')
       throw new InvalidArgumentsGraphError(`Graph.undirectedDegree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`);
+
+    node = '' + node;
 
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.undirectedDegree: could not find the "${node}" node in the graph.`);
@@ -793,6 +823,8 @@ export default class Graph extends EventEmitter {
     if (typeof selfLoops !== 'boolean')
       throw new InvalidArgumentsGraphError(`Graph.degree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`);
 
+    node = '' + node;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.degree: could not find the "${node}" node in the graph.`);
 
@@ -816,6 +848,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the edge isn't in the graph.
    */
   source(edge) {
+    edge = '' + edge;
+
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.source: could not find the "${edge}" edge in the graph.`);
 
@@ -831,6 +865,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the edge isn't in the graph.
    */
   target(edge) {
+    edge = '' + edge;
+
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.target: could not find the "${edge}" edge in the graph.`);
 
@@ -846,6 +882,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the edge isn't in the graph.
    */
   extremities(edge) {
+    edge = '' + edge;
+
     const edgeData = this._edges.get(edge);
 
     if (!edgeData)
@@ -867,6 +905,9 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if either the node or the edge isn't in the graph.
    */
   opposite(node, edge) {
+    node = '' + node;
+    edge = '' + edge;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.opposite: could not find the "${node}" node in the graph.`);
 
@@ -890,6 +931,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the edge isn't in the graph.
    */
   undirected(edge) {
+    edge = '' + edge;
+
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.undirected: could not find the "${edge}" edge in the graph.`);
 
@@ -905,6 +948,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the edge isn't in the graph.
    */
   directed(edge) {
+    edge = '' + edge;
+
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.directed: could not find the "${edge}" edge in the graph.`);
 
@@ -920,6 +965,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the edge isn't in the graph.
    */
   selfLoop(edge) {
+    edge = '' + edge;
+
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.selfLoop: could not find the "${edge}" edge in the graph.`);
 
@@ -946,6 +993,9 @@ export default class Graph extends EventEmitter {
   addNode(node, attributes) {
     if (attributes && !isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(`Graph.addNode: invalid attributes. Expecting an object but got "${attributes}"`);
+
+    // String coercion
+    node = '' + node;
 
     // Protecting the attributes
     attributes = assign({}, this._options.defaultNodeAttributes, attributes);
@@ -1035,6 +1085,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the node doesn't exist.
    */
   dropNode(node) {
+    node = '' + node;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.dropNode: could not find the "${node}" node in the graph.`);
 
@@ -1073,8 +1125,8 @@ export default class Graph extends EventEmitter {
    */
   dropEdge(edge) {
     if (arguments.length > 1) {
-      const source = arguments[0],
-            target = arguments[1];
+      const source = '' + arguments[0],
+            target = '' + arguments[1];
 
       if (!this.hasNode(source))
         throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${source}" source node in the graph.`);
@@ -1088,6 +1140,8 @@ export default class Graph extends EventEmitter {
       edge = getMatchingEdge(this, source, target, this.type);
     }
     else {
+      edge = '' + edge;
+
       if (!this.hasEdge(edge))
         throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${edge}" edge in the graph.`);
     }
@@ -1388,6 +1442,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the node is not found.
    */
   getNodeAttribute(node, name) {
+    node = '' + node;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.getNodeAttribute: could not find the "${node}" node in the graph.`);
 
@@ -1403,6 +1459,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the node is not found.
    */
   getNodeAttributes(node) {
+    node = '' + node;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.getNodeAttributes: could not find the "${node}" node in the graph.`);
 
@@ -1419,6 +1477,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the node is not found.
    */
   hasNodeAttribute(node, name) {
+    node = '' + node;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.hasNodeAttribute: could not find the "${node}" node in the graph.`);
 
@@ -1437,6 +1497,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the node is not found.
    */
   setNodeAttribute(node, name, value) {
+    node = '' + node;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.setNodeAttribute: could not find the "${node}" node in the graph.`);
 
@@ -1471,6 +1533,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the node is not found.
    */
   updateNodeAttribute(node, name, updater) {
+    node = '' + node;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.updateNodeAttribute: could not find the "${node}" node in the graph.`);
 
@@ -1507,6 +1571,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the node is not found.
    */
   removeNodeAttribute(node, name) {
+    node = '' + node;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.hasNodeAttribute: could not find the "${node}" node in the graph.`);
 
@@ -1535,6 +1601,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the given attributes is not a plain object.
    */
   replaceNodeAttributes(node, attributes) {
+    node = '' + node;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.replaceNodeAttributes: could not find the "${node}" node in the graph.`);
 
@@ -1571,6 +1639,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the given attributes is not a plain object.
    */
   mergeNodeAttributes(node, attributes) {
+    node = '' + node;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.mergeNodeAttributes: could not find the "${node}" node in the graph.`);
 
@@ -1632,6 +1702,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the node is not found.
    */
   exportNode(node) {
+    node = '' + node;
+
     if (!this.hasNode(node))
       throw new NotFoundGraphError(`Graph.exportNode: could not find the "${node}" node in the graph.`);
 
@@ -1649,6 +1721,8 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the edge is not found.
    */
   exportEdge(edge) {
+    edge = '' + edge;
+
     if (!this.hasEdge(edge))
       throw new NotFoundGraphError(`Graph.exportEdge: could not find the "${edge}" edge in the graph.`);
 

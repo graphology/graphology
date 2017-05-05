@@ -128,8 +128,8 @@ function attachNeighborArrayCreator(Class, description) {
       return [];
 
     if (arguments.length === 2) {
-      const node1 = arguments[0],
-            node2 = arguments[1];
+      const node1 = '' + arguments[0],
+            node2 = '' + arguments[1];
 
       if (!this.hasNode(node1))
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node1}" node in the graph.`);
@@ -148,6 +148,7 @@ function attachNeighborArrayCreator(Class, description) {
       return neighbors.has(node2);
     }
     else if (arguments.length === 1) {
+      node = '' + node;
 
       if (!this.hasNode(node))
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph.`);

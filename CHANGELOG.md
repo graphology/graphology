@@ -1,8 +1,9 @@
 # Changelog
 
-## 0.8.0
+## 0.8.0 (provisional)
 
 * Adding the `#.nodesIterator` method.
+* Performance improvements.
 
 ## 0.7.1
 
