@@ -467,9 +467,11 @@ export default class Graph extends EventEmitter {
     if (arguments.length === 1) {
       const edge = '' + source;
 
+      const edgeData = this._edges.get(edge);
+
       return (
-        this._edges.has(edge) &&
-        this.directed(edge)
+        !!edgeData &&
+        !edgeData.undirected
       );
     }
     else if (arguments.length === 2) {
@@ -481,7 +483,7 @@ export default class Graph extends EventEmitter {
       this.computeIndex();
 
       // If the node source or the target is not in the graph we break
-      if (!this.hasNode(source) || !this.hasNode(target))
+      if (!this._nodes.has(source) || !this._nodes.has(target))
         return false;
 
       // Is there a directed edge pointing towards target?
@@ -525,9 +527,11 @@ export default class Graph extends EventEmitter {
     if (arguments.length === 1) {
       const edge = '' + source;
 
+      const edgeData = this._edges.get(edge);
+
       return (
-        this._edges.has(edge) &&
-        this.undirected(edge)
+        !!edgeData &&
+        !!edgeData.undirected
       );
     }
     else if (arguments.length === 2) {
@@ -539,7 +543,7 @@ export default class Graph extends EventEmitter {
       this.computeIndex();
 
       // If the node source or the target is not in the graph we break
-      if (!this.hasNode(source) || !this.hasNode(target))
+      if (!this._nodes.has(source) || !this._nodes.has(target))
         return false;
 
       // Is there a directed edge pointing towards target?
@@ -586,10 +590,32 @@ export default class Graph extends EventEmitter {
       source = '' + source;
       target = '' + target;
 
-      return (
-        this.hasDirectedEdge(source, target) ||
-        this.hasUndirectedEdge(source, target)
-      );
+      // We need to compute the 'structure' index for this
+      this.computeIndex();
+
+      // If the node source or the target is not in the graph we break
+      if (!this._nodes.has(source) || !this._nodes.has(target))
+        return false;
+
+      // Is there a directed edge pointing towards target?
+      const nodeData = this._nodes.get(source);
+
+      let register = nodeData.out,
+          edges;
+
+      if (register)
+        edges = register[target];
+
+      if (!edges)
+        register = nodeData.undirected;
+
+      if (register)
+        edges = register[target];
+
+      if (!edges)
+        return false;
+
+      return this.multi ? !!edges.size : !!edges;
     }
 
     throw new InvalidArgumentsGraphError(`Graph.hasEdge: invalid arity (${arguments.length}, instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.`);
@@ -716,16 +742,17 @@ export default class Graph extends EventEmitter {
 
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
       throw new NotFoundGraphError(`Graph.inDegree: could not find the "${node}" node in the graph.`);
 
     if (this.type === 'undirected')
       return 0;
 
-    const data = this._nodes.get(node),
-          loops = selfLoops ? data.directedSelfLoops : 0;
+    const loops = selfLoops ? nodeData.directedSelfLoops : 0;
 
-    return data.inDegree + loops;
+    return nodeData.inDegree + loops;
   }
 
   /**
@@ -744,16 +771,17 @@ export default class Graph extends EventEmitter {
 
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
       throw new NotFoundGraphError(`Graph.outDegree: could not find the "${node}" node in the graph.`);
 
     if (this.type === 'undirected')
       return 0;
 
-    const data = this._nodes.get(node),
-          loops = selfLoops ? data.directedSelfLoops : 0;
+    const loops = selfLoops ? nodeData.directedSelfLoops : 0;
 
-    return data.outDegree + loops;
+    return nodeData.outDegree + loops;
   }
 
   /**
@@ -1803,7 +1831,7 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method exporting every unddirected edges or the bunch ones which are
+   * Method exporting every undirected edges or the bunch ones which are
    * undirected
    *
    * @param  {mixed}   [bunch] - Target edges.
