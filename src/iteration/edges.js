@@ -204,7 +204,7 @@ function attachEdgeArrayCreator(Class, description) {
     if (arguments.length === 1) {
       source = '' + source;
 
-      if (!this.hasNode(source))
+      if (!this._nodes.has(source))
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${source}" node in the graph.`);
 
       // Iterating over a node's edges
@@ -215,10 +215,10 @@ function attachEdgeArrayCreator(Class, description) {
       source = '' + source;
       target = '' + target;
 
-      if (!this.hasNode(source))
+      if (!this._nodes.has(source))
         throw new NotFoundGraphError(`Graph.${name}:  could not find the "${source}" source node in the graph.`);
 
-      if (!this.hasNode(target))
+      if (!this._nodes.has(target))
         throw new NotFoundGraphError(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
 
       // Iterating over the edges between source & target

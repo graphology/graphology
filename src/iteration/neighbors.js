@@ -131,10 +131,10 @@ function attachNeighborArrayCreator(Class, description) {
       const node1 = '' + arguments[0],
             node2 = '' + arguments[1];
 
-      if (!this.hasNode(node1))
+      if (!this._nodes.has(node1))
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node1}" node in the graph.`);
 
-      if (!this.hasNode(node2))
+      if (!this._nodes.has(node2))
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node2}" node in the graph.`);
 
       // Here, we want to assess whether the two given nodes are neighbors
@@ -150,7 +150,7 @@ function attachNeighborArrayCreator(Class, description) {
     else if (arguments.length === 1) {
       node = '' + node;
 
-      if (!this.hasNode(node))
+      if (!this._nodes.has(node))
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph.`);
 
       // Here, we want to iterate over a node's relevant neighbors

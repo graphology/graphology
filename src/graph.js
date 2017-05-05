@@ -187,14 +187,14 @@ function addEdge(
   let mustAddSource = false,
       mustAddTarget = false;
 
-  if (!graph.hasNode(source)) {
+  if (!graph._nodes.has(source)) {
     if (!merge)
       throw new NotFoundGraphError(`Graph.${name}: source node "${source}" not found.`);
     else
       mustAddSource = true;
   }
 
-  if (!graph.hasNode(target)) {
+  if (!graph._nodes.has(target)) {
     if (!merge)
       throw new NotFoundGraphError(`Graph.${name}: target node "${target}" not found.`);
     else
