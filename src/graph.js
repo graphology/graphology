@@ -110,36 +110,6 @@ const DEFAULTS = {
  */
 
 /**
- * Method updating the desired index.
- *
- * @param  {Graph}  graph     - Target graph.
- * @param  {any}    edge      - Target edge.
- * @param  {object} data      - Attached edge data.
- * @return {Graph}            - Returns itself for chaining.
- */
-function updateIndex(graph, edge, data) {
-  if (!graph._structureIsComputed)
-    return;
-
-  updateStructureIndex(graph, edge, data);
-}
-
-/**
- * Method used to clear an edge from the desired index to clear memory.
- *
- * @param  {Graph}  graph - Target graph.
- * @param  {any}    edge  - Target edge.
- * @param  {object} data  - Former attached data.
- * @return {Graph}        - Returns itself for chaining.
- */
-function clearEdgeFromIndex(graph, edge, data) {
-  if (!graph._structureIsComputed)
-    return;
-
-  clearEdgeFromStructureIndex(graph, edge, data);
-}
-
-/**
  * Internal method used to add an arbitrary edge to the given graph.
  *
  * @param  {Graph}   graph          - Target graph.
@@ -308,7 +278,8 @@ function addEdge(
   }
 
   // Updating relevant indexes
-  updateIndex(graph, edge, data);
+  if (graph._structureIsComputed)
+    updateStructureIndex(graph, edge, data);
 
   // Emitting
   graph.emit('edgeAdded', {
@@ -1200,7 +1171,8 @@ export default class Graph extends EventEmitter {
     }
 
     // Clearing index
-    clearEdgeFromIndex(this, edge, data);
+    if (this._structureIsComputed)
+      clearEdgeFromStructureIndex(this, edge, data);
 
     // Emitting
     this.emit('edgeDropped', {
