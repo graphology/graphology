@@ -225,7 +225,7 @@ function addEdge(
     // If the key collides but the source & target are inconsistent, we throw
     if (graph.source(alreadyExistingEdge) !== source ||
         graph.target(alreadyExistingEdge) !== target) {
-      throw new UsageGraphError(`Graph.${name}: inconsitency detected when attempting to merge the "${edge}" edge with "${source}" source & "${target}" target vs. (${graph.source(alreadyExistingEdge)}, ${graph.target(alreadyExistingEdge)}).`);
+      throw new UsageGraphError(`Graph.${name}: inconsistency detected when attempting to merge the "${edge}" edge with "${source}" source & "${target}" target vs. (${graph.source(alreadyExistingEdge)}, ${graph.target(alreadyExistingEdge)}).`);
     }
 
     // Simply merging the attributes of the already existing edge
