@@ -28,12 +28,14 @@ export function updateStructureIndex(graph, edge, data) {
   const sourceData = graph._nodes.get(source),
         targetData = graph._nodes.get(target);
 
-  const outKey = undirected ? 'undirected' : 'out';
+  const outKey = undirected ? 'undirected' : 'out',
+        inKey = undirected ? 'undirected' : 'in';
 
   // Handling source
-  sourceData[outKey] = sourceData[outKey] || Object.create(null);
+  if (typeof sourceData[outKey] === 'undefined')
+    sourceData[outKey] = {};
 
-  if (!(target in sourceData[outKey]))
+  if (typeof sourceData[outKey][target] === 'undefined')
     sourceData[outKey][target] = multi ? new Set() : edge;
 
   if (multi)
@@ -45,11 +47,10 @@ export function updateStructureIndex(graph, edge, data) {
 
   // Handling target (we won't add the edge because it was already taken
   // care of with source above)
-  const inKey = undirected ? 'undirected' : 'in';
+  if (typeof targetData[inKey] === 'undefined')
+    targetData[inKey] = {};
 
-  targetData[inKey] = targetData[inKey] || Object.create(null);
-
-  if (!(source in targetData[inKey]))
+  if (typeof targetData[inKey][source] === 'undefined')
     targetData[inKey][source] = sourceData[outKey][target];
 }
 
