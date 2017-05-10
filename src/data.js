@@ -13,6 +13,7 @@
  * MixedNodeData class.
  *
  * @constructor
+ * @param {object} attributes - Node's attributes.
  */
 export function MixedNodeData(attributes) {
 
@@ -36,6 +37,7 @@ export function MixedNodeData(attributes) {
  * DirectedNodeData class.
  *
  * @constructor
+ * @param {object} attributes - Node's attributes.
  */
 export function DirectedNodeData(attributes) {
 
@@ -67,6 +69,7 @@ DirectedNodeData.prototype.upgradeToMixed = function() {
  * UndirectedNodeData class.
  *
  * @constructor
+ * @param {object} attributes - Node's attributes.
  */
 export function UndirectedNodeData(attributes) {
 
@@ -92,3 +95,47 @@ UndirectedNodeData.prototype.upgradeToMixed = function() {
   this.in = {};
   this.out = {};
 };
+
+/**
+ * DirectedEdgeData class.
+ *
+ * @constructor
+ * @param {boolean} generatedKey - Was its key generated?
+ * @param {string}  source       - Source of the edge.
+ * @param {string}  target       - Target of the edge.
+ * @param {object}  attributes   - Edge's attributes.
+ */
+export function DirectedEdgeData(generatedKey, source, target, attributes) {
+
+  // Attributes
+  this.attributes = attributes;
+
+  // Extremities
+  this.source = source;
+  this.target = target;
+
+  // Was its key generated?
+  this.generatedKey = generatedKey;
+}
+
+/**
+ * UndirectedEdgeData class.
+ *
+ * @constructor
+ * @param {boolean} generatedKey - Was its key generated?
+ * @param {string}  source       - Source of the edge.
+ * @param {string}  target       - Target of the edge.
+ * @param {object}  attributes   - Edge's attributes.
+ */
+export function UndirectedEdgeData(generatedKey, source, target, attributes) {
+
+  // Attributes
+  this.attributes = attributes;
+
+  // Extremities
+  this.source = source;
+  this.target = target;
+
+  // Was its key generated?
+  this.generatedKey = generatedKey;
+}

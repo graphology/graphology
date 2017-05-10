@@ -16,7 +16,9 @@ import {
 import {
   MixedNodeData,
   DirectedNodeData,
-  UndirectedNodeData
+  UndirectedNodeData,
+  DirectedEdgeData,
+  UndirectedEdgeData
 } from './data';
 
 import {
@@ -245,19 +247,14 @@ function addEdge(
     graph.addNode(target);
 
   // Storing some data
-  const data = {
-    attributes,
+  const DataClass = undirected ? UndirectedEdgeData : DirectedEdgeData;
+
+  const data = new DataClass(
+    mustGenerateId,
     source,
-    target
-  };
-
-  // Only adding the 'undirected' key if needed
-  if (undirected)
-    data.undirected = true;
-
-  // Storing whether the id was generated
-  if (mustGenerateId)
-    data.generatedId = true;
+    target,
+    attributes
+  );
 
   // Adding the edge to the internal register
   graph._edges.set(edge, data);
@@ -285,7 +282,7 @@ function addEdge(
 
   // Updating relevant indexes
   if (graph._structureIsComputed)
-    updateStructureIndex(graph, edge, data);
+    updateStructureIndex(graph, undirected, edge, data);
 
   // Emitting
   graph.emit('edgeAdded', {
@@ -448,7 +445,7 @@ export default class Graph extends EventEmitter {
 
       return (
         !!edgeData &&
-        !edgeData.undirected
+        edgeData instanceof DirectedEdgeData
       );
     }
     else if (arguments.length === 2) {
@@ -475,7 +472,7 @@ export default class Graph extends EventEmitter {
       if (!edges)
         return false;
 
-      return this.multi ? !!edges.size : !!edges;
+      return this.multi ? !!edges.size : true;
     }
 
     throw new InvalidArgumentsGraphError(`Graph.hasDirectedEdge: invalid arity (${arguments.length}, instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.`);
@@ -508,7 +505,7 @@ export default class Graph extends EventEmitter {
 
       return (
         !!edgeData &&
-        !!edgeData.undirected
+        edgeData instanceof UndirectedEdgeData
       );
     }
     else if (arguments.length === 2) {
@@ -536,7 +533,7 @@ export default class Graph extends EventEmitter {
       if (!edges)
         return false;
 
-      return this.multi ? !!edges.size : !!edges;
+      return this.multi ? !!edges.size : true;
     }
 
     throw new InvalidArgumentsGraphError(`Graph.hasDirectedEdge: invalid arity (${arguments.length}, instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.`);
@@ -592,7 +589,7 @@ export default class Graph extends EventEmitter {
       if (!edges)
         return false;
 
-      return this.multi ? !!edges.size : !!edges;
+      return this.multi ? !!edges.size : true;
     }
 
     throw new InvalidArgumentsGraphError(`Graph.hasEdge: invalid arity (${arguments.length}, instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.`);
@@ -938,10 +935,12 @@ export default class Graph extends EventEmitter {
   undirected(edge) {
     edge = '' + edge;
 
-    if (!this.hasEdge(edge))
+    const data = this._edges.get(edge);
+
+    if (!data)
       throw new NotFoundGraphError(`Graph.undirected: could not find the "${edge}" edge in the graph.`);
 
-    return !!this._edges.get(edge).undirected;
+    return data instanceof UndirectedEdgeData;
   }
 
   /**
@@ -955,10 +954,12 @@ export default class Graph extends EventEmitter {
   directed(edge) {
     edge = '' + edge;
 
-    if (!this.hasEdge(edge))
+    const data = this._edges.get(edge);
+
+    if (!data)
       throw new NotFoundGraphError(`Graph.directed: could not find the "${edge}" edge in the graph.`);
 
-    return !this._edges.get(edge).undirected;
+    return data instanceof DirectedEdgeData;
   }
 
   /**
@@ -972,10 +973,10 @@ export default class Graph extends EventEmitter {
   selfLoop(edge) {
     edge = '' + edge;
 
-    if (!this.hasEdge(edge))
-      throw new NotFoundGraphError(`Graph.selfLoop: could not find the "${edge}" edge in the graph.`);
-
     const data = this._edges.get(edge);
+
+    if (!data)
+      throw new NotFoundGraphError(`Graph.selfLoop: could not find the "${edge}" edge in the graph.`);
 
     return data.source === data.target;
   }
@@ -1143,7 +1144,9 @@ export default class Graph extends EventEmitter {
     this._edges.delete(edge);
 
     // Updating related degrees
-    const {source, target, attributes, undirected = false} = data;
+    const {source, target, attributes} = data;
+
+    const undirected = data instanceof UndirectedEdgeData;
 
     const sourceData = this._nodes.get(source),
           targetData = this._nodes.get(target);
@@ -1164,7 +1167,7 @@ export default class Graph extends EventEmitter {
 
     // Clearing index
     if (this._structureIsComputed)
-      clearEdgeFromStructureIndex(this, edge, data);
+      clearEdgeFromStructureIndex(this, undirected, edge, data);
 
     // Emitting
     this.emit('edgeDropped', {
@@ -2079,7 +2082,7 @@ export default class Graph extends EventEmitter {
       return;
 
     this._edges.forEach((data, edge) => {
-      updateStructureIndex(this, edge, data);
+      updateStructureIndex(this, data instanceof UndirectedEdgeData, edge, data);
     });
 
     this._structureIsComputed = true;
@@ -2147,7 +2150,7 @@ export default class Graph extends EventEmitter {
 
       let label = '';
 
-      if (!data.generatedId)
+      if (!data.generatedKey)
         label += `[${key}]: `;
 
       label += `(${data.source})${direction}(${data.target})`;
@@ -2195,7 +2198,7 @@ EDGE_ADD_METHODS.forEach(method => {
           this,
           name,
           verb === 'merge',
-          method.generateKey,
+          !!method.generateKey,
           (method.type || this.type) === 'undirected',
           null,
           source,
@@ -2210,7 +2213,7 @@ EDGE_ADD_METHODS.forEach(method => {
           this,
           name,
           verb === 'merge',
-          method.generateKey,
+          !!method.generateKey,
           (method.type || this.type) === 'undirected',
           edge,
           source,

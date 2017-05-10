@@ -10,6 +10,8 @@ import {
   NotFoundGraphError
 } from '../errors';
 
+import {UndirectedEdgeData} from '../data';
+
 import {
   consumeIterator
 } from '../utils';
@@ -90,7 +92,7 @@ function createEdgeArray(graph, type) {
 
   graph._edges.forEach((data, edge) => {
 
-    if (!!data.undirected === (type === 'undirected'))
+    if ((data instanceof UndirectedEdgeData) === (type === 'undirected'))
       list.push(edge);
   });
 

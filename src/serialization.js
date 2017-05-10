@@ -14,6 +14,7 @@
  * Serialized Graph:
  * {nodes[], edges?[]}
  */
+import {UndirectedEdgeData} from './data';
 import {isPlainObject} from './utils';
 
 /**
@@ -49,8 +50,11 @@ export function serializeEdge(key, data) {
   if (Object.keys(data.attributes).length)
     serialized.attributes = data.attributes;
 
-  if (data.undirected)
+  if (data instanceof UndirectedEdgeData)
     serialized.undirected = true;
+
+  // TODO: if key was generated, we forget it
+  // TODO: test merging two graphs with similar keys
 
   return serialized;
 }

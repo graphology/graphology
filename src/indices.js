@@ -14,12 +14,11 @@
  * @param {any}    edge  - Added edge.
  * @param {object} data  - Attached data.
  */
-export function updateStructureIndex(graph, edge, data) {
+export function updateStructureIndex(graph, undirected, edge, data) {
   const multi = graph.multi;
 
   // Retrieving edge information
   const {
-    undirected,
     source,
     target
   } = data;
@@ -61,10 +60,10 @@ export function updateStructureIndex(graph, edge, data) {
  * @param {any}    edge  - Dropped edge.
  * @param {object} data  - Attached data.
  */
-export function clearEdgeFromStructureIndex(graph, edge, data) {
+export function clearEdgeFromStructureIndex(graph, undirected, edge, data) {
   const multi = graph.multi;
 
-  const {source, target, undirected} = data;
+  const {source, target} = data;
 
   // NOTE: since the edge set is the same for source & target, we can only
   // affect source
