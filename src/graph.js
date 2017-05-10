@@ -14,6 +14,12 @@ import {
 } from './errors';
 
 import {
+  MixedNodeData,
+  DirectedNodeData,
+  UndirectedNodeData
+} from './data';
+
+import {
   NodesIterator
 } from './iteration/iterators';
 
@@ -996,33 +1002,19 @@ export default class Graph extends EventEmitter {
     // String coercion
     node = '' + node;
 
+    if (this._nodes.has(node))
+      throw new UsageGraphError(`Graph.addNode: the "${node}" node already exist in the graph.`);
+
     // Protecting the attributes
     attributes = assign({}, this._options.defaultNodeAttributes, attributes);
 
-    if (this.hasNode(node))
-      throw new UsageGraphError(`Graph.addNode: the "${node}" node already exist in the graph.`);
+    const DataClass = this.type === 'mixed' ?
+      MixedNodeData :
+      (this.type === 'directed') ?
+        DirectedNodeData :
+        UndirectedNodeData;
 
-    const data = {
-      attributes
-    };
-
-    if (this.allowSelfLoops) {
-      if (this.type !== 'undirected') {
-        data.directedSelfLoops = 0;
-      }
-      if (this.type !== 'directed') {
-        data.undirectedSelfLoops = 0;
-      }
-    }
-
-    if (this.type !== 'undirected') {
-      data.inDegree = 0;
-      data.outDegree = 0;
-    }
-
-    if (this.type !== 'directed') {
-      data.undirectedDegree = 0;
-    }
+    const data = new DataClass(attributes);
 
     // Adding the node to internal register
     this._nodes.set(node, data);
@@ -2041,17 +2033,7 @@ export default class Graph extends EventEmitter {
       return this;
 
     // Upgrading node data
-    this._nodes.forEach(data => {
-      if (this.type === 'undirected') {
-        data.directedSelfLoops = 0;
-        data.inDegree = 0;
-        data.outDegree = 0;
-      }
-      else {
-        data.undirectedSelfLoops = 0;
-        data.undirectedDegree = 0;
-      }
-    });
+    this._nodes.forEach(data => (data.upgradeToMixed()));
 
     // Mutating the options & the instance
     this._options.type = 'mixed';
