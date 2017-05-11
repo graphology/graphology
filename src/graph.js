@@ -280,9 +280,8 @@ function addEdge(
     }
   }
 
-  // Updating relevant indexes
-  if (graph._structureIsComputed)
-    updateStructureIndex(graph, undirected, edge, data);
+  // Updating relevant index
+  updateStructureIndex(graph, undirected, edge, data);
 
   // Emitting
   graph.emit('edgeAdded', {
@@ -388,7 +387,6 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_nodes', new Map());
     privateProperty(this, '_edges', new Map());
     privateProperty(this, '_edgeKeyGenerator', options.edgeKeyGenerator || incrementalId());
-    privateProperty(this, '_structureIsComputed', false);
 
     // Options
     privateProperty(this, '_options', options);
@@ -454,9 +452,6 @@ export default class Graph extends EventEmitter {
       source = '' + source;
       target = '' + target;
 
-      // We need to compute the 'structure' index for this
-      this.computeIndex();
-
       // If the node source or the target is not in the graph we break
       if (!this._nodes.has(source) || !this._nodes.has(target))
         return false;
@@ -514,9 +509,6 @@ export default class Graph extends EventEmitter {
       source = '' + source;
       target = '' + target;
 
-      // We need to compute the 'structure' index for this
-      this.computeIndex();
-
       // If the node source or the target is not in the graph we break
       if (!this._nodes.has(source) || !this._nodes.has(target))
         return false;
@@ -564,9 +556,6 @@ export default class Graph extends EventEmitter {
     else if (arguments.length === 2) {
       source = '' + source;
       target = '' + target;
-
-      // We need to compute the 'structure' index for this
-      this.computeIndex();
 
       // If the node source or the target is not in the graph we break
       if (!this._nodes.has(source) || !this._nodes.has(target))
@@ -626,8 +615,6 @@ export default class Graph extends EventEmitter {
     if (!this._nodes.has(target))
       throw new NotFoundGraphError(`Graph.directedEdge: could not find the "${target}" target node in the graph.`);
 
-    this.computeIndex();
-
     return (sourceData.out && sourceData.out[target]) || undefined;
   }
 
@@ -661,8 +648,6 @@ export default class Graph extends EventEmitter {
     if (!this._nodes.has(target))
       throw new NotFoundGraphError(`Graph.undirectedEdge: could not find the "${target}" target node in the graph.`);
 
-    this.computeIndex();
-
     return (sourceData.undirected && sourceData.undirected[target]) || undefined;
   }
 
@@ -691,8 +676,6 @@ export default class Graph extends EventEmitter {
 
     if (!this._nodes.has(target))
       throw new NotFoundGraphError(`Graph.edge: could not find the "${target}" target node in the graph.`);
-
-    this.computeIndex();
 
     return (
       (sourceData.out && sourceData.out[target]) ||
@@ -1167,8 +1150,7 @@ export default class Graph extends EventEmitter {
     }
 
     // Clearing index
-    if (this._structureIsComputed)
-      clearEdgeFromStructureIndex(this, undirected, edge, data);
+    clearEdgeFromStructureIndex(this, undirected, edge, data);
 
     // Emitting
     this.emit('edgeDropped', {
@@ -2064,9 +2046,6 @@ export default class Graph extends EventEmitter {
     readOnlyProperty(this, 'multi', true);
 
     // Upgrading indices
-    if (!this._structureIsComputed)
-      return this;
-
     upgradeStructureIndexToMulti(this);
 
     return this;
@@ -2078,36 +2057,12 @@ export default class Graph extends EventEmitter {
    */
 
   /**
-   * Method computing the desired index.
-   *
-   * @return {Graph}       - Returns itself for chaining.
-   */
-  computeIndex() {
-    if (this._structureIsComputed)
-      return;
-
-    this._edges.forEach((data, edge) => {
-      updateStructureIndex(this, data instanceof UndirectedEdgeData, edge, data);
-    });
-
-    this._structureIsComputed = true;
-
-    return this;
-  }
-
-  /**
    * Method used to clear the desired index to clear memory.
    *
    * @return {Graph}       - Returns itself for chaining.
    */
   clearIndex() {
-    if (!this._structureIsComputed)
-      return this;
-
     clearStructureIndex(this);
-
-    this._structureIsComputed = false;
-
     return this;
   }
 

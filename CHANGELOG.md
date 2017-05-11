@@ -4,6 +4,7 @@
 
 * Major write performance improvements.
 * Shifting the default edge key generation system.
+* Dropping index' laziness.
 
 ## 0.8.0
 

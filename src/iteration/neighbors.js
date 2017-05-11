@@ -66,10 +66,6 @@ function merge(neighbors, object) {
  * @return {Set|BasicSet}           - The neighbors set.
  */
 function createNeighborSetForNode(graph, type, direction, node) {
-
-  // For this, we need to compute the "structure" index
-  graph.computeIndex();
-
   const neighbors = new Set();
 
   const nodeData = graph._nodes.get(node);

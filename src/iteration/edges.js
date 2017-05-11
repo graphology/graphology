@@ -113,10 +113,6 @@ function createEdgeArray(graph, type) {
  * @return {array}             - Array of edges.
  */
 function createEdgeArrayForNode(graph, type, direction, node) {
-
-  // For this, we need to compute the "structure" index
-  graph.computeIndex();
-
   const edges = [];
 
   const nodeData = graph._nodes.get(node);
@@ -146,10 +142,6 @@ function createEdgeArrayForNode(graph, type, direction, node) {
  * @return {array}          - Array of edges.
  */
 function createEdgeArrayForPath(graph, type, source, target) {
-
-  // For this, we need to compute the "structure" index
-  graph.computeIndex();
-
   const edges = [];
 
   const sourceData = graph._nodes.get(source);
