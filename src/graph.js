@@ -453,17 +453,13 @@ export default class Graph extends EventEmitter {
       target = '' + target;
 
       // If the node source or the target is not in the graph we break
-      if (!this._nodes.has(source) || !this._nodes.has(target))
+      const nodeData = this._nodes.get(source);
+
+      if (!nodeData)
         return false;
 
-      // Is there a directed edge pointing towards target?
-      const nodeData = this._nodes.get(source),
-            register = nodeData.out;
-
-      if (!register)
-        return false;
-
-      const edges = register[target];
+      // Is there a directed edge pointing toward target?
+      const edges = nodeData.out[target];
 
       if (!edges)
         return false;
@@ -510,18 +506,13 @@ export default class Graph extends EventEmitter {
       target = '' + target;
 
       // If the node source or the target is not in the graph we break
-      if (!this._nodes.has(source) || !this._nodes.has(target))
-        return false;
-
-      // Is there a directed edge pointing towards target?
       const nodeData = this._nodes.get(source);
 
-      const register = nodeData.undirected;
+      if (!nodeData)
+        return false;
 
-      let edges;
-
-      if (register)
-        edges = register[target];
+      // Is there a directed edge pointing toward target?
+      const edges = nodeData.undirected[target];
 
       if (!edges)
         return false;
@@ -554,27 +545,21 @@ export default class Graph extends EventEmitter {
       return this._edges.has(edge);
     }
     else if (arguments.length === 2) {
+
       source = '' + source;
       target = '' + target;
 
       // If the node source or the target is not in the graph we break
-      if (!this._nodes.has(source) || !this._nodes.has(target))
-        return false;
-
-      // Is there a directed edge pointing towards target?
       const nodeData = this._nodes.get(source);
 
-      let register = nodeData.out,
-          edges;
+      if (!nodeData)
+        return false;
 
-      if (register)
-        edges = register[target];
+      // Is there a directed edge pointing toward target?
+      let edges = nodeData.out[target];
 
       if (!edges)
-        register = nodeData.undirected;
-
-      if (register)
-        edges = register[target];
+        edges = nodeData.undirected[target];
 
       if (!edges)
         return false;
