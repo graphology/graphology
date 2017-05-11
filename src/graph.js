@@ -237,7 +237,15 @@ function addEdge(
   }
 
   // Updating relevant index
-  updateStructureIndex(graph, undirected, edge, data);
+  updateStructureIndex(
+    graph,
+    undirected,
+    edge,
+    source,
+    target,
+    sourceData,
+    targetData
+  );
 
   // Emitting
   graph.emit('edgeAdded', {
@@ -392,7 +400,15 @@ function mergeEdge(
   }
 
   // Updating relevant index
-  updateStructureIndex(graph, undirected, edge, data);
+  updateStructureIndex(
+    graph,
+    undirected,
+    edge,
+    source,
+    target,
+    sourceData,
+    targetData
+  );
 
   // Emitting
   graph.emit('edgeAdded', {

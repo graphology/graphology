@@ -10,22 +10,21 @@
  * Note that in the case of the multi graph, related edges are stored in a
  * set that is the same for A -> B & B <- A.
  *
- * @param {Graph}  graph - Target Graph instance.
- * @param {any}    edge  - Added edge.
- * @param {object} data  - Attached data.
+ * @param {Graph}    graph      - Target Graph instance.
+ * @param {any}      edge       - Added edge.
+ * @param {NodeData} sourceData - Source node's data.
+ * @param {NodeData} targetData - Target node's data.
  */
-export function updateStructureIndex(graph, undirected, edge, data) {
+export function updateStructureIndex(
+  graph,
+  undirected,
+  edge,
+  source,
+  target,
+  sourceData,
+  targetData
+) {
   const multi = graph.multi;
-
-  // Retrieving edge information
-  const {
-    source,
-    target
-  } = data;
-
-  // Retrieving source & target data
-  const sourceData = graph._nodes.get(source),
-        targetData = graph._nodes.get(target);
 
   const outKey = undirected ? 'undirected' : 'out',
         inKey = undirected ? 'undirected' : 'in';
