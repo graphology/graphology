@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.0 (provisional)
+
+* Major write performance improvements.
+* Shifting the default edge key generation system.
+
 ## 0.8.0
 
 * Adding the `#.nodesIterator` method.
