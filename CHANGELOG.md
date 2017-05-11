@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.1
+
+* Fixing a bug concerning `#.hasEdge` & typed graphs.
+
 ## 0.9.0
 
 * Major write performance improvements.

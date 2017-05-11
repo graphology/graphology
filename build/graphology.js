@@ -1153,9 +1153,9 @@ var Graph = function (_EventEmitter) {
       if (!nodeData) return false;
 
       // Is there a directed edge pointing toward target?
-      var edges = nodeData.out[target];
+      var edges = typeof nodeData.out !== 'undefined' && nodeData.out[target];
 
-      if (!edges) edges = nodeData.undirected[target];
+      if (!edges) edges = typeof nodeData.undirected !== 'undefined' && nodeData.undirected[target];
 
       if (!edges) return false;
 

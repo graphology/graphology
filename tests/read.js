@@ -108,6 +108,17 @@ export default function read(Graph, checkers) {
         assert.strictEqual(graph.hasEdge('Martha', 'Thomas'), false);
         assert.strictEqual(graph.hasEdge('Catherine', 'John'), true);
         assert.strictEqual(graph.hasEdge('John', 'Catherine'), true);
+      },
+
+      'it should work properly with typed graphs.': function() {
+        const directedGraph = new Graph({type: 'directed'}),
+              undirectedGraph = new Graph({type: 'undirected'});
+
+        directedGraph.addNodesFrom([1, 2]);
+        undirectedGraph.addNodesFrom([1, 2]);
+
+        assert.strictEqual(directedGraph.hasEdge(1, 2), false);
+        assert.strictEqual(undirectedGraph.hasEdge(1, 2), false);
       }
     },
 

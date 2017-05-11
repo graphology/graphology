@@ -683,10 +683,10 @@ export default class Graph extends EventEmitter {
         return false;
 
       // Is there a directed edge pointing toward target?
-      let edges = nodeData.out[target];
+      let edges = typeof nodeData.out !== 'undefined' && nodeData.out[target];
 
       if (!edges)
-        edges = nodeData.undirected[target];
+        edges = typeof nodeData.undirected !== 'undefined' && nodeData.undirected[target];
 
       if (!edges)
         return false;
