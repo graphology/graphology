@@ -120,16 +120,15 @@ const DEFAULTS = {
 /**
  * Internal method used to add an arbitrary edge to the given graph.
  *
- * @param  {Graph}   graph          - Target graph.
- * @param  {string}  name           - Name of the child method for errors.
- * @param  {boolean} merge          - Are we merging?
- * @param  {boolean} mustGenerateId - Should the graph generate an id?
- * @param  {boolean} undirected     - Whether the edge is undirected.
- * @param  {any}     edge           - The edge's key.
- * @param  {any}     source         - The source node.
- * @param  {any}     target         - The target node.
- * @param  {object}  [attributes]   - Optional attributes.
- * @return {any}                    - The edge.
+ * @param  {Graph}   graph           - Target graph.
+ * @param  {string}  name            - Name of the child method for errors.
+ * @param  {boolean} mustGenerateKey - Should the graph generate an id?
+ * @param  {boolean} undirected      - Whether the edge is undirected.
+ * @param  {any}     edge            - The edge's key.
+ * @param  {any}     source          - The source node.
+ * @param  {any}     target          - The target node.
+ * @param  {object}  [attributes]    - Optional attributes.
+ * @return {any}                     - The edge.
  *
  * @throws {Error} - Will throw if the graph is of the wrong type.
  * @throws {Error} - Will throw if the given attributes are not an object.
@@ -139,8 +138,7 @@ const DEFAULTS = {
 function addEdge(
   graph,
   name,
-  merge,
-  mustGenerateId,
+  mustGenerateKey,
   undirected,
   edge,
   source,
@@ -155,6 +153,9 @@ function addEdge(
   if (undirected && graph.type === 'directed')
     throw new UsageGraphError(`Graph.${name}: you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.`);
 
+  if (!graph.allowSelfLoops && source === target)
+    throw new UsageGraphError(`Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
+
   if (attributes && !isPlainObject(attributes))
     throw new InvalidArgumentsGraphError(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
 
@@ -162,51 +163,35 @@ function addEdge(
   source = '' + source;
   target = '' + target;
 
-  let mustAddSource = false,
-      mustAddTarget = false;
+  const sourceData = graph._nodes.get(source),
+        targetData = graph._nodes.get(target);
 
-  if (!graph._nodes.has(source)) {
-    if (!merge)
-      throw new NotFoundGraphError(`Graph.${name}: source node "${source}" not found.`);
-    else
-      mustAddSource = true;
-  }
+  if (!sourceData)
+    throw new NotFoundGraphError(`Graph.${name}: source node "${source}" not found.`);
 
-  if (!graph._nodes.has(target)) {
-    if (!merge)
-      throw new NotFoundGraphError(`Graph.${name}: target node "${target}" not found.`);
-    else
-      mustAddTarget = true;
-  }
+  if (!targetData)
+    throw new NotFoundGraphError(`Graph.${name}: target node "${target}" not found.`);
 
-  if (!graph.allowSelfLoops && source === target)
-    throw new UsageGraphError(`Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
+  // Protecting the attributes
+  attributes = assign({}, graph._options.defaultEdgeAttributes, attributes);
 
   // Must the graph generate an id for this edge?
-  if (mustGenerateId) {
+  // TODO: we can save up the object if using the default method + coercion
+  if (mustGenerateKey) {
     edge = graph._edgeKeyGenerator({
       undirected,
       source,
       target,
-      attributes: attributes || {}
+      attributes
     });
   }
 
   // Coercion of edge key
   edge = '' + edge;
 
-  // Do we need to handle duplicate?
-  let alreadyExistingEdge = null;
-
   // Here, we have a key collision
-  if (graph._edges.has(edge)) {
-    if (!merge) {
-      throw new UsageGraphError(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
-    }
-    else {
-      alreadyExistingEdge = edge;
-    }
-  }
+  if (graph._edges.has(edge))
+    throw new UsageGraphError(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
 
   // Here, we might have a source / target collision
   if (
@@ -217,40 +202,14 @@ function addEdge(
         graph.hasDirectedEdge(source, target)
     )
   ) {
-    if (!merge)
-      throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option.`);
-    else {
-      alreadyExistingEdge = getMatchingEdge(graph, source, target, undirected ? 'undirected' : 'directed');
-    }
+    throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option.`);
   }
-
-  // Protecting the attributes
-  attributes = assign({}, graph._options.defaultEdgeAttributes, attributes);
-
-  // Handling duplicates
-  if (alreadyExistingEdge) {
-
-    // If the key collides but the source & target are inconsistent, we throw
-    if (graph.source(alreadyExistingEdge) !== source ||
-        graph.target(alreadyExistingEdge) !== target) {
-      throw new UsageGraphError(`Graph.${name}: inconsistency detected when attempting to merge the "${edge}" edge with "${source}" source & "${target}" target vs. (${graph.source(alreadyExistingEdge)}, ${graph.target(alreadyExistingEdge)}).`);
-    }
-
-    // Simply merging the attributes of the already existing edge
-    graph.mergeEdgeAttributes(alreadyExistingEdge, attributes);
-    return alreadyExistingEdge;
-  }
-
-  if (mustAddSource)
-    graph.addNode(source);
-  if (mustAddTarget)
-    graph.addNode(target);
 
   // Storing some data
   const DataClass = undirected ? UndirectedEdgeData : DirectedEdgeData;
 
   const data = new DataClass(
-    mustGenerateId,
+    mustGenerateKey,
     source,
     target,
     attributes
@@ -260,9 +219,161 @@ function addEdge(
   graph._edges.set(edge, data);
 
   // Incrementing node degree counters
-  const sourceData = graph._nodes.get(source),
-        targetData = graph._nodes.get(target);
+  if (source === target) {
+    if (undirected)
+      sourceData.undirectedSelfLoops++;
+    else
+      sourceData.directedSelfLoops++;
+  }
+  else {
+    if (undirected) {
+      sourceData.undirectedDegree++;
+      targetData.undirectedDegree++;
+    }
+    else {
+      sourceData.outDegree++;
+      targetData.inDegree++;
+    }
+  }
 
+  // Updating relevant index
+  updateStructureIndex(graph, undirected, edge, data);
+
+  // Emitting
+  graph.emit('edgeAdded', {
+    key: edge,
+    source,
+    target,
+    attributes,
+    undirected
+  });
+
+  return edge;
+}
+
+/**
+ * Internal method used to add an arbitrary edge to the given graph.
+ *
+ * @param  {Graph}   graph           - Target graph.
+ * @param  {string}  name            - Name of the child method for errors.
+ * @param  {boolean} mustGenerateKey - Should the graph generate an id?
+ * @param  {boolean} undirected      - Whether the edge is undirected.
+ * @param  {any}     edge            - The edge's key.
+ * @param  {any}     source          - The source node.
+ * @param  {any}     target          - The target node.
+ * @param  {object}  [attributes]    - Optional attributes.
+ * @return {any}                     - The edge.
+ *
+ * @throws {Error} - Will throw if the graph is of the wrong type.
+ * @throws {Error} - Will throw if the given attributes are not an object.
+ * @throws {Error} - Will throw if source or target doesn't exist.
+ * @throws {Error} - Will throw if the edge already exist.
+ */
+function mergeEdge(
+  graph,
+  name,
+  mustGenerateKey,
+  undirected,
+  edge,
+  source,
+  target,
+  attributes
+) {
+
+  // Checking validity of operation
+  if (!undirected && graph.type === 'undirected')
+    throw new UsageGraphError(`Graph.${name}: you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.`);
+
+  if (undirected && graph.type === 'directed')
+    throw new UsageGraphError(`Graph.${name}: you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.`);
+
+  if (!graph.allowSelfLoops && source === target)
+    throw new UsageGraphError(`Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
+
+  if (attributes && !isPlainObject(attributes))
+    throw new InvalidArgumentsGraphError(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
+
+  // Coercion of source & target:
+  source = '' + source;
+  target = '' + target;
+
+  let sourceData = graph._nodes.get(source),
+      targetData = graph._nodes.get(target);
+
+  // Do we need to handle duplicate?
+  let alreadyExistingEdge = null;
+
+  // Here, we might have a source / target collision
+  if (
+    !graph.multi &&
+    (
+      undirected ?
+        graph.hasUndirectedEdge(source, target) :
+        graph.hasDirectedEdge(source, target)
+    )
+  ) {
+    alreadyExistingEdge = getMatchingEdge(graph, source, target, undirected ? 'undirected' : 'directed');
+  }
+
+  // Handling duplicates
+  if (alreadyExistingEdge) {
+    const edgeData = graph._edges.get(alreadyExistingEdge);
+
+    // If the key collides but the source & target are inconsistent, we throw
+    if (edgeData.source !== source ||
+        edgeData.target !== target) {
+      throw new UsageGraphError(`Graph.${name}: inconsistency detected when attempting to merge the "${edge}" edge with "${source}" source & "${target}" target vs. (${edgeData.source}, ${edgeData.target}).`);
+    }
+
+    // Simply merging the attributes of the already existing edge
+    assign(edgeData.attributes, attributes);
+    return alreadyExistingEdge;
+  }
+
+  // Protecting the attributes
+  attributes = assign({}, graph._options.defaultEdgeAttributes, attributes);
+
+  // Must the graph generate an id for this edge?
+  // TODO: we can save up the object if using the default method + coercion
+  if (mustGenerateKey) {
+    edge = graph._edgeKeyGenerator({
+      undirected,
+      source,
+      target,
+      attributes: attributes
+    });
+  }
+
+  // Coercion of edge key
+  edge = '' + edge;
+
+  // Here, we have a key collision
+  if (graph._edges.has(edge))
+    throw new UsageGraphError(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
+
+  if (!sourceData) {
+    graph.addNode(source);
+    sourceData = graph._nodes.get(source);
+  }
+  if (!targetData) {
+    graph.addNode(target);
+    targetData = graph._nodes.get(target);
+  }
+
+  // Storing some data
+  const DataClass = undirected ? UndirectedEdgeData : DirectedEdgeData;
+
+  const data = new DataClass(
+    mustGenerateKey,
+    source,
+    target,
+    attributes
+  );
+
+  // Adding the edge to the internal register
+  graph._edges.set(edge, data);
+
+  // Incrementing node degree counters
   if (source === target) {
     if (undirected)
       sourceData.undirectedSelfLoops++;
@@ -2139,15 +2250,15 @@ export default class Graph extends EventEmitter {
  */
 EDGE_ADD_METHODS.forEach(method => {
   ['add', 'merge'].forEach(verb => {
-    const name = method.name(verb);
+    const name = method.name(verb),
+          fn = verb === 'add' ? addEdge : mergeEdge;
 
     if (method.generateKey) {
       Graph.prototype[name] = function(source, target, attributes) {
-        return addEdge(
+        return fn(
           this,
           name,
-          verb === 'merge',
-          !!method.generateKey,
+          method.generateKey,
           (method.type || this.type) === 'undirected',
           null,
           source,
@@ -2158,11 +2269,10 @@ EDGE_ADD_METHODS.forEach(method => {
     }
     else {
       Graph.prototype[name] = function(edge, source, target, attributes) {
-        return addEdge(
+        return fn(
           this,
           name,
-          verb === 'merge',
-          !!method.generateKey,
+          method.generateKey,
           (method.type || this.type) === 'undirected',
           edge,
           source,
