@@ -31,9 +31,6 @@ export function updateStructureIndex(graph, undirected, edge, data) {
         inKey = undirected ? 'undirected' : 'in';
 
   // Handling source
-  if (typeof sourceData[outKey] === 'undefined')
-    sourceData[outKey] = {};
-
   if (typeof sourceData[outKey][target] === 'undefined')
     sourceData[outKey][target] = multi ? new Set() : edge;
 
@@ -46,9 +43,6 @@ export function updateStructureIndex(graph, undirected, edge, data) {
 
   // Handling target (we won't add the edge because it was already taken
   // care of with source above)
-  if (typeof targetData[inKey] === 'undefined')
-    targetData[inKey] = {};
-
   if (typeof targetData[inKey][source] === 'undefined')
     targetData[inKey][source] = sourceData[outKey][target];
 }
@@ -99,9 +93,9 @@ export function clearStructureIndex(graph) {
   graph._nodes.forEach(data => {
 
     // Clearing now useless properties
-    delete data.in;
-    delete data.out;
-    delete data.undirected;
+    data.in = {};
+    data.out = {};
+    data.undirected = {};
   });
 }
 
