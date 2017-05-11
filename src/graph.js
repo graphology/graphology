@@ -1880,7 +1880,7 @@ export default class Graph extends EventEmitter {
       if (error === 'no-source')
         throw new InvalidArgumentsGraphError('Graph.importEdge: missing souce.');
       if (error === 'no-target')
-        throw new InvalidArgumentsGraphError('Graph.importEdge: missing target');
+        throw new InvalidArgumentsGraphError('Graph.importEdge: missing target.');
       if (error === 'invalid-attributes')
         throw new InvalidArgumentsGraphError('Graph.importEdge: invalid attributes. Attributes should be a plain object, null or omitted.');
       if (error === 'invalid-undirected')
@@ -2035,7 +2035,11 @@ export default class Graph extends EventEmitter {
     if (this.type === 'mixed')
       return this;
 
-    // Upgrading node data
+    // Upgrading node data:
+    // NOTE: maybe this could lead to some de-optimization by usual
+    // JavaScript engines but I cannot be sure of it. Another solution
+    // would be to reinstantiate the classes but this surely has a performance
+    // and memory impact.
     this._nodes.forEach(data => (data.upgradeToMixed()));
 
     // Mutating the options & the instance
