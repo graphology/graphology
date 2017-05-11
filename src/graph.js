@@ -879,18 +879,20 @@ export default class Graph extends EventEmitter {
     node = '' + node;
     edge = '' + edge;
 
-    if (!this.hasNode(node))
+    if (!this._nodes.has(node))
       throw new NotFoundGraphError(`Graph.opposite: could not find the "${node}" node in the graph.`);
 
-    if (!this.hasEdge(edge))
+    const data = this._edges.get(edge);
+
+    if (!data)
       throw new NotFoundGraphError(`Graph.opposite: could not find the "${edge}" edge in the graph.`);
 
-    const [node1, node2] = this.extremities(edge);
+    const {source, target} = data;
 
-    if (node !== node1 && node !== node2)
-      throw new NotFoundGraphError(`Graph.opposite: the "${node}" node is not attached to the "${edge}" edge (${node1}, ${node2}).`);
+    if (node !== source && node !== target)
+      throw new NotFoundGraphError(`Graph.opposite: the "${node}" node is not attached to the "${edge}" edge (${source}, ${target}).`);
 
-    return node === node1 ? node2 : node1;
+    return node === source ? target : source;
   }
 
   /**
