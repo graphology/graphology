@@ -54,7 +54,7 @@ import {
   prettyPrint,
   privateProperty,
   readOnlyProperty,
-  uuid
+  incrementalId
 } from './utils';
 
 /**
@@ -108,7 +108,7 @@ const DEFAULTS = {
   allowSelfLoops: true,
   defaultEdgeAttributes: {},
   defaultNodeAttributes: {},
-  edgeKeyGenerator: uuid,
+  edgeKeyGenerator: null,
   multi: false,
   type: 'mixed'
 };
@@ -184,7 +184,7 @@ function addEdge(
 
   // Must the graph generate an id for this edge?
   if (mustGenerateId) {
-    edge = graph._options.edgeKeyGenerator({
+    edge = graph._edgeKeyGenerator({
       undirected,
       source,
       target,
@@ -363,7 +363,7 @@ export default class Graph extends EventEmitter {
     options = assign({}, DEFAULTS, options);
 
     // Enforcing options validity
-    if (typeof options.edgeKeyGenerator !== 'function')
+    if (options.edgeKeyGenerator && typeof options.edgeKeyGenerator !== 'function')
       throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'edgeKeyGenerator' option. Expecting a function but got "${options.edgeKeyGenerator}".`);
 
     if (typeof options.multi !== 'boolean')
@@ -387,6 +387,7 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_attributes', {});
     privateProperty(this, '_nodes', new Map());
     privateProperty(this, '_edges', new Map());
+    privateProperty(this, '_edgeKeyGenerator', options.edgeKeyGenerator || incrementalId());
     privateProperty(this, '_structureIsComputed', false);
 
     // Options
@@ -1699,10 +1700,10 @@ export default class Graph extends EventEmitter {
   exportNode(node) {
     node = '' + node;
 
-    if (!this.hasNode(node))
-      throw new NotFoundGraphError(`Graph.exportNode: could not find the "${node}" node in the graph.`);
-
     const data = this._nodes.get(node);
+
+    if (!data)
+      throw new NotFoundGraphError(`Graph.exportNode: could not find the "${node}" node in the graph.`);
 
     return serializeNode(node, data);
   }
@@ -1718,10 +1719,10 @@ export default class Graph extends EventEmitter {
   exportEdge(edge) {
     edge = '' + edge;
 
-    if (!this.hasEdge(edge))
-      throw new NotFoundGraphError(`Graph.exportEdge: could not find the "${edge}" edge in the graph.`);
-
     const data = this._edges.get(edge);
+
+    if (!data)
+      throw new NotFoundGraphError(`Graph.exportEdge: could not find the "${edge}" edge in the graph.`);
 
     return serializeEdge(edge, data);
   }

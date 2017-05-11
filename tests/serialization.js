@@ -54,6 +54,25 @@ export default function serialization(Graph, checkers) {
         assert.deepEqual(graph.exportEdge('J->M•2'), {key: 'J->M•2', source: 'John', target: 'Martha', attributes: {weight: 1}});
         assert.deepEqual(graph.exportEdge('J<->M•1'), {key: 'J<->M•1', source: 'John', target: 'Martha', undirected: true});
         assert.deepEqual(graph.exportEdge('J<->M•2'), {key: 'J<->M•2', source: 'John', target: 'Martha', attributes: {weight: 2}, undirected: true});
+      },
+
+      'it should not include generated keys.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom([1, 2, 3]);
+
+        const edge1 = graph.addEdge(1, 2);
+        const edge2 = graph.addEdgeWithKey('edge2', 2, 3);
+
+        assert.deepEqual(graph.exportEdge(edge1), {
+          source: '1',
+          target: '2'
+        });
+
+        assert.deepEqual(graph.exportEdge(edge2), {
+          source: '2',
+          target: '3',
+          key: 'edge2'
+        });
       }
     },
 

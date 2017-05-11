@@ -42,19 +42,19 @@ export function serializeNode(key, data) {
  */
 export function serializeEdge(key, data) {
   const serialized = {
-    key,
     source: data.source,
     target: data.target
   };
+
+  // We export the key unless if it was provided by the user
+  if (!data.generatedKey)
+    serialized.key = key;
 
   if (Object.keys(data.attributes).length)
     serialized.attributes = data.attributes;
 
   if (data instanceof UndirectedEdgeData)
     serialized.undirected = true;
-
-  // TODO: if key was generated, we forget it
-  // TODO: test merging two graphs with similar keys
 
   return serialized;
 }
