@@ -1008,9 +1008,11 @@ export default class Graph extends EventEmitter {
   mergeNode(node, attributes) {
 
     // If the node already exists, we merge the attributes
-    if (this.hasNode(node)) {
+    const data = this._nodes.get(node);
+
+    if (data) {
       if (attributes)
-        this.mergeNodeAttributes(node, attributes);
+        assign(data.attributes, attributes);
       return node;
     }
 
