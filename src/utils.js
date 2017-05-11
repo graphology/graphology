@@ -109,7 +109,7 @@ export function isBunch(value) {
  */
 export function isGraph(value) {
   return (
-    !!value &&
+    value !== null &&
     typeof value === 'object' &&
     typeof value.addUndirectedEdgeWithKey === 'function' &&
     typeof value.dropNode === 'function'
@@ -124,13 +124,9 @@ export function isGraph(value) {
  */
 export function isPlainObject(value) {
   return (
-    !!value &&
     typeof value === 'object' &&
-    !Array.isArray(value) &&
-    !(value instanceof Date) &&
-    !(value instanceof RegExp) &&
-    !(typeof Map === 'function' && value instanceof Map) &&
-    !(typeof Set === 'function' && value instanceof Set)
+    value !== null &&
+    value.constructor === Object
   );
 }
 
