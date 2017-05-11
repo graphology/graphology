@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.0 (provisional)
+## 0.9.0
 
 * Major write performance improvements.
 * Shifting the default edge key generation system.

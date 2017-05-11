@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -99,7 +99,7 @@ exports.overBunch = overBunch;
 exports.prettyPrint = prettyPrint;
 exports.privateProperty = privateProperty;
 exports.readOnlyProperty = readOnlyProperty;
-exports.uuid = uuid;
+exports.incrementalId = incrementalId;
 /**
  * Graphology Utilities
  * =====================
@@ -194,7 +194,7 @@ function isBunch(value) {
  * @return {boolean}
  */
 function isGraph(value) {
-  return !!value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && typeof value.addUndirectedEdgeWithKey === 'function' && typeof value.dropNode === 'function';
+  return value !== null && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && typeof value.addUndirectedEdgeWithKey === 'function' && typeof value.dropNode === 'function';
 }
 
 /**
@@ -204,7 +204,7 @@ function isGraph(value) {
  * @return {boolean}
  */
 function isPlainObject(value) {
-  return !!value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && !Array.isArray(value) && !(value instanceof Date) && !(value instanceof RegExp) && !(typeof Map === 'function' && value instanceof Map) && !(typeof Set === 'function' && value instanceof Set);
+  return (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && value !== null && value.constructor === Object;
 }
 
 /**
@@ -316,65 +316,16 @@ function readOnlyProperty(target, name, value) {
 }
 
 /**
- * Function returning uuid v4 compressed into base62 to have 22 characters-long
- * ids easily copy-pastable or usable in a URL.
+ * Creates a function generating incremental ids for edges.
  *
- * @return {string} - The uuid.
+ * @return {function}
  */
-var RANDOM_BYTES = new Uint8Array(16),
-    BASE62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+function incrementalId() {
+  var i = 0;
 
-function rng() {
-  for (var i = 0, r; i < 16; i++) {
-    if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
-    RANDOM_BYTES[i] = r >>> ((i & 0x03) << 3) & 0xff;
-  }
-
-  return RANDOM_BYTES;
-}
-
-function uuidBytes() {
-  var random = rng();
-
-  random[6] = random[6] & 0x0f | 0x40;
-  random[8] = random[8] & 0x3f | 0x80;
-
-  return random;
-}
-
-function toBase62(bytes) {
-  var digits = [0];
-
-  for (var i = 0, l = bytes.length; i < l; i++) {
-    var carry = bytes[i];
-
-    for (var j = 0, m = digits.length; j < m; j++) {
-      carry += digits[j] << 8;
-      digits[j] = carry % 62;
-      carry = carry / 62 | 0;
-    }
-
-    while (carry > 0) {
-      digits.push(carry % 62);
-      carry = carry / 62 | 0;
-    }
-  }
-
-  var string = '';
-
-  for (var _i = 0, _l = bytes.length; bytes[_i] === 0 && _i < _l - 1; _i++) {
-    string += BASE62[0];
-  }for (var _i2 = digits.length - 1; _i2 >= 0; _i2--) {
-    string += BASE62[digits[_i2]];
-  }while (string.length < 22) {
-    string += '0';
-  }return string;
-}
-
-function uuid() {
-  var bytes = uuidBytes();
-
-  return toBase62(bytes);
+  return function () {
+    return '_geid' + i++ + '_';
+  };
 }
 
 /***/ }),
@@ -483,22 +434,180 @@ var UsageGraphError = exports.UsageGraphError = function (_GraphError3) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.MixedNodeData = MixedNodeData;
+exports.DirectedNodeData = DirectedNodeData;
+exports.UndirectedNodeData = UndirectedNodeData;
+exports.DirectedEdgeData = DirectedEdgeData;
+exports.UndirectedEdgeData = UndirectedEdgeData;
+/**
+ * Graphology Internal Data Classes
+ * =================================
+ *
+ * Internal classes hopefully reduced to structs by engines & storing
+ * necessary information for nodes & edges.
+ *
+ * Note that those classes don't rely on the `class` keyword to avoid some
+ * cruft introduced by most of ES2015 transpilers.
+ */
 
-var _events = __webpack_require__(10);
+/**
+ * MixedNodeData class.
+ *
+ * @constructor
+ * @param {object} attributes - Node's attributes.
+ */
+function MixedNodeData(attributes) {
+
+  // Attributes
+  this.attributes = attributes;
+
+  // Degrees
+  this.inDegree = 0;
+  this.outDegree = 0;
+  this.undirectedDegree = 0;
+  this.directedSelfLoops = 0;
+  this.undirectedSelfLoops = 0;
+
+  // Indices
+  this.in = {};
+  this.out = {};
+  this.undirected = {};
+}
+
+/**
+ * DirectedNodeData class.
+ *
+ * @constructor
+ * @param {object} attributes - Node's attributes.
+ */
+function DirectedNodeData(attributes) {
+
+  // Attributes
+  this.attributes = attributes || {};
+
+  // Degrees
+  this.inDegree = 0;
+  this.outDegree = 0;
+  this.directedSelfLoops = 0;
+
+  // Indices
+  this.in = {};
+  this.out = {};
+}
+
+DirectedNodeData.prototype.upgradeToMixed = function () {
+
+  // Degrees
+  this.undirectedDegree = 0;
+  this.undirectedSelfLoops = 0;
+
+  // Indices
+  this.undirected = {};
+};
+
+/**
+ * UndirectedNodeData class.
+ *
+ * @constructor
+ * @param {object} attributes - Node's attributes.
+ */
+function UndirectedNodeData(attributes) {
+
+  // Attributes
+  this.attributes = attributes || {};
+
+  // Degrees
+  this.undirectedDegree = 0;
+  this.undirectedSelfLoops = 0;
+
+  // Indices
+  this.undirected = {};
+}
+
+UndirectedNodeData.prototype.upgradeToMixed = function () {
+
+  // Degrees
+  this.inDegree = 0;
+  this.outDegree = 0;
+  this.directedSelfLoops = 0;
+
+  // Indices
+  this.in = {};
+  this.out = {};
+};
+
+/**
+ * DirectedEdgeData class.
+ *
+ * @constructor
+ * @param {boolean} generatedKey - Was its key generated?
+ * @param {string}  source       - Source of the edge.
+ * @param {string}  target       - Target of the edge.
+ * @param {object}  attributes   - Edge's attributes.
+ */
+function DirectedEdgeData(generatedKey, source, target, attributes) {
+
+  // Attributes
+  this.attributes = attributes;
+
+  // Extremities
+  this.source = source;
+  this.target = target;
+
+  // Was its key generated?
+  this.generatedKey = generatedKey;
+}
+
+/**
+ * UndirectedEdgeData class.
+ *
+ * @constructor
+ * @param {boolean} generatedKey - Was its key generated?
+ * @param {string}  source       - Source of the edge.
+ * @param {string}  target       - Target of the edge.
+ * @param {object}  attributes   - Edge's attributes.
+ */
+function UndirectedEdgeData(generatedKey, source, target, attributes) {
+
+  // Attributes
+  this.attributes = attributes;
+
+  // Extremities
+  this.source = source;
+  this.target = target;
+
+  // Was its key generated?
+  this.generatedKey = generatedKey;
+}
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _events = __webpack_require__(11);
 
 var _errors = __webpack_require__(1);
 
-var _iterators = __webpack_require__(7);
+var _data = __webpack_require__(2);
 
-var _indices = __webpack_require__(5);
+var _iterators = __webpack_require__(8);
 
-var _attributes = __webpack_require__(3);
+var _indices = __webpack_require__(6);
 
-var _edges = __webpack_require__(6);
+var _attributes = __webpack_require__(4);
 
-var _neighbors = __webpack_require__(8);
+var _edges = __webpack_require__(7);
 
-var _serialization = __webpack_require__(9);
+var _neighbors = __webpack_require__(9);
+
+var _serialization = __webpack_require__(10);
 
 var _utils = __webpack_require__(0);
 
@@ -562,7 +671,7 @@ var DEFAULTS = {
   allowSelfLoops: true,
   defaultEdgeAttributes: {},
   defaultNodeAttributes: {},
-  edgeKeyGenerator: _utils.uuid,
+  edgeKeyGenerator: null,
   multi: false,
   type: 'mixed'
 };
@@ -574,28 +683,29 @@ var DEFAULTS = {
 /**
  * Internal method used to add an arbitrary edge to the given graph.
  *
- * @param  {Graph}   graph          - Target graph.
- * @param  {string}  name           - Name of the child method for errors.
- * @param  {boolean} merge          - Are we merging?
- * @param  {boolean} mustGenerateId - Should the graph generate an id?
- * @param  {boolean} undirected     - Whether the edge is undirected.
- * @param  {any}     edge           - The edge's key.
- * @param  {any}     source         - The source node.
- * @param  {any}     target         - The target node.
- * @param  {object}  [attributes]   - Optional attributes.
- * @return {any}                    - The edge.
+ * @param  {Graph}   graph           - Target graph.
+ * @param  {string}  name            - Name of the child method for errors.
+ * @param  {boolean} mustGenerateKey - Should the graph generate an id?
+ * @param  {boolean} undirected      - Whether the edge is undirected.
+ * @param  {any}     edge            - The edge's key.
+ * @param  {any}     source          - The source node.
+ * @param  {any}     target          - The target node.
+ * @param  {object}  [attributes]    - Optional attributes.
+ * @return {any}                     - The edge.
  *
  * @throws {Error} - Will throw if the graph is of the wrong type.
  * @throws {Error} - Will throw if the given attributes are not an object.
  * @throws {Error} - Will throw if source or target doesn't exist.
  * @throws {Error} - Will throw if the edge already exist.
  */
-function addEdge(graph, name, merge, mustGenerateId, undirected, edge, source, target, attributes) {
+function addEdge(graph, name, mustGenerateKey, undirected, edge, source, target, attributes) {
 
   // Checking validity of operation
   if (!undirected && graph.type === 'undirected') throw new _errors.UsageGraphError('Graph.' + name + ': you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.');
 
   if (undirected && graph.type === 'directed') throw new _errors.UsageGraphError('Graph.' + name + ': you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.');
+
+  if (!graph.allowSelfLoops && source === target) throw new _errors.UsageGraphError('Graph.' + name + ': source & target are the same ("' + source + '"), thus creating a loop explicitly forbidden by this graph \'allowSelfLoops\' option set to false.');
 
   if (attributes && !(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid attributes. Expecting an object but got "' + attributes + '"');
 
@@ -603,90 +713,47 @@ function addEdge(graph, name, merge, mustGenerateId, undirected, edge, source, t
   source = '' + source;
   target = '' + target;
 
-  var mustAddSource = false,
-      mustAddTarget = false;
+  var sourceData = graph._nodes.get(source),
+      targetData = graph._nodes.get(target);
 
-  if (!graph._nodes.has(source)) {
-    if (!merge) throw new _errors.NotFoundGraphError('Graph.' + name + ': source node "' + source + '" not found.');else mustAddSource = true;
-  }
+  if (!sourceData) throw new _errors.NotFoundGraphError('Graph.' + name + ': source node "' + source + '" not found.');
 
-  if (!graph._nodes.has(target)) {
-    if (!merge) throw new _errors.NotFoundGraphError('Graph.' + name + ': target node "' + target + '" not found.');else mustAddTarget = true;
-  }
+  if (!targetData) throw new _errors.NotFoundGraphError('Graph.' + name + ': target node "' + target + '" not found.');
 
-  if (!graph.allowSelfLoops && source === target) throw new _errors.UsageGraphError('Graph.' + name + ': source & target are the same ("' + source + '"), thus creating a loop explicitly forbidden by this graph \'allowSelfLoops\' option set to false.');
+  // Protecting the attributes
+  attributes = (0, _utils.assign)({}, graph._options.defaultEdgeAttributes, attributes);
 
   // Must the graph generate an id for this edge?
-  if (mustGenerateId) {
-    edge = graph._options.edgeKeyGenerator({
+  // TODO: we can save up the object if using the default method + coercion
+  if (mustGenerateKey) {
+    edge = graph._edgeKeyGenerator({
       undirected: undirected,
       source: source,
       target: target,
-      attributes: attributes || {}
+      attributes: attributes
     });
   }
 
   // Coercion of edge key
   edge = '' + edge;
 
-  // Do we need to handle duplicate?
-  var alreadyExistingEdge = null;
-
   // Here, we have a key collision
-  if (graph._edges.has(edge)) {
-    if (!merge) {
-      throw new _errors.UsageGraphError('Graph.' + name + ': the "' + edge + '" edge already exists in the graph.');
-    } else {
-      alreadyExistingEdge = edge;
-    }
-  }
+  if (graph._edges.has(edge)) throw new _errors.UsageGraphError('Graph.' + name + ': the "' + edge + '" edge already exists in the graph.');
 
   // Here, we might have a source / target collision
   if (!graph.multi && (undirected ? graph.hasUndirectedEdge(source, target) : graph.hasDirectedEdge(source, target))) {
-    if (!merge) throw new _errors.UsageGraphError('Graph.' + name + ': an edge linking "' + source + '" to "' + target + '" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the \'multi\' option.');else {
-      alreadyExistingEdge = (0, _utils.getMatchingEdge)(graph, source, target, undirected ? 'undirected' : 'directed');
-    }
+    throw new _errors.UsageGraphError('Graph.' + name + ': an edge linking "' + source + '" to "' + target + '" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the \'multi\' option.');
   }
-
-  // Protecting the attributes
-  attributes = (0, _utils.assign)({}, graph._options.defaultEdgeAttributes, attributes);
-
-  // Handling duplicates
-  if (alreadyExistingEdge) {
-
-    // If the key collides but the source & target are inconsistent, we throw
-    if (graph.source(alreadyExistingEdge) !== source || graph.target(alreadyExistingEdge) !== target) {
-      throw new _errors.UsageGraphError('Graph.' + name + ': inconsitency detected when attempting to merge the "' + edge + '" edge with "' + source + '" source & "' + target + '" target vs. (' + graph.source(alreadyExistingEdge) + ', ' + graph.target(alreadyExistingEdge) + ').');
-    }
-
-    // Simply merging the attributes of the already existing edge
-    graph.mergeEdgeAttributes(alreadyExistingEdge, attributes);
-    return alreadyExistingEdge;
-  }
-
-  if (mustAddSource) graph.addNode(source);
-  if (mustAddTarget) graph.addNode(target);
 
   // Storing some data
-  var data = {
-    attributes: attributes,
-    source: source,
-    target: target
-  };
+  var DataClass = undirected ? _data.UndirectedEdgeData : _data.DirectedEdgeData;
 
-  // Only adding the 'undirected' key if needed
-  if (undirected) data.undirected = true;
-
-  // Storing whether the id was generated
-  if (mustGenerateId) data.generatedId = true;
+  var data = new DataClass(mustGenerateKey, source, target, attributes);
 
   // Adding the edge to the internal register
   graph._edges.set(edge, data);
 
   // Incrementing node degree counters
-  var sourceData = graph._nodes.get(source),
-      targetData = graph._nodes.get(target);
-
   if (source === target) {
     if (undirected) sourceData.undirectedSelfLoops++;else sourceData.directedSelfLoops++;
   } else {
@@ -699,8 +766,131 @@ function addEdge(graph, name, merge, mustGenerateId, undirected, edge, source, t
     }
   }
 
-  // Updating relevant indexes
-  if (graph._structureIsComputed) (0, _indices.updateStructureIndex)(graph, edge, data);
+  // Updating relevant index
+  (0, _indices.updateStructureIndex)(graph, undirected, edge, source, target, sourceData, targetData);
+
+  // Emitting
+  graph.emit('edgeAdded', {
+    key: edge,
+    source: source,
+    target: target,
+    attributes: attributes,
+    undirected: undirected
+  });
+
+  return edge;
+}
+
+/**
+ * Internal method used to add an arbitrary edge to the given graph.
+ *
+ * @param  {Graph}   graph           - Target graph.
+ * @param  {string}  name            - Name of the child method for errors.
+ * @param  {boolean} mustGenerateKey - Should the graph generate an id?
+ * @param  {boolean} undirected      - Whether the edge is undirected.
+ * @param  {any}     edge            - The edge's key.
+ * @param  {any}     source          - The source node.
+ * @param  {any}     target          - The target node.
+ * @param  {object}  [attributes]    - Optional attributes.
+ * @return {any}                     - The edge.
+ *
+ * @throws {Error} - Will throw if the graph is of the wrong type.
+ * @throws {Error} - Will throw if the given attributes are not an object.
+ * @throws {Error} - Will throw if source or target doesn't exist.
+ * @throws {Error} - Will throw if the edge already exist.
+ */
+function mergeEdge(graph, name, mustGenerateKey, undirected, edge, source, target, attributes) {
+
+  // Checking validity of operation
+  if (!undirected && graph.type === 'undirected') throw new _errors.UsageGraphError('Graph.' + name + ': you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.');
+
+  if (undirected && graph.type === 'directed') throw new _errors.UsageGraphError('Graph.' + name + ': you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.');
+
+  if (!graph.allowSelfLoops && source === target) throw new _errors.UsageGraphError('Graph.' + name + ': source & target are the same ("' + source + '"), thus creating a loop explicitly forbidden by this graph \'allowSelfLoops\' option set to false.');
+
+  if (attributes && !(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid attributes. Expecting an object but got "' + attributes + '"');
+
+  // Coercion of source & target:
+  source = '' + source;
+  target = '' + target;
+
+  var sourceData = graph._nodes.get(source),
+      targetData = graph._nodes.get(target);
+
+  // Do we need to handle duplicate?
+  var alreadyExistingEdge = null;
+
+  // Here, we might have a source / target collision
+  if (!graph.multi && (undirected ? graph.hasUndirectedEdge(source, target) : graph.hasDirectedEdge(source, target))) {
+    alreadyExistingEdge = (0, _utils.getMatchingEdge)(graph, source, target, undirected ? 'undirected' : 'directed');
+  }
+
+  // Handling duplicates
+  if (alreadyExistingEdge) {
+    var edgeData = graph._edges.get(alreadyExistingEdge);
+
+    // If the key collides but the source & target are inconsistent, we throw
+    if (edgeData.source !== source || edgeData.target !== target) {
+      throw new _errors.UsageGraphError('Graph.' + name + ': inconsistency detected when attempting to merge the "' + edge + '" edge with "' + source + '" source & "' + target + '" target vs. (' + edgeData.source + ', ' + edgeData.target + ').');
+    }
+
+    // Simply merging the attributes of the already existing edge
+    (0, _utils.assign)(edgeData.attributes, attributes);
+    return alreadyExistingEdge;
+  }
+
+  // Protecting the attributes
+  attributes = (0, _utils.assign)({}, graph._options.defaultEdgeAttributes, attributes);
+
+  // Must the graph generate an id for this edge?
+  // TODO: we can save up the object if using the default method + coercion
+  if (mustGenerateKey) {
+    edge = graph._edgeKeyGenerator({
+      undirected: undirected,
+      source: source,
+      target: target,
+      attributes: attributes
+    });
+  }
+
+  // Coercion of edge key
+  edge = '' + edge;
+
+  // Here, we have a key collision
+  if (graph._edges.has(edge)) throw new _errors.UsageGraphError('Graph.' + name + ': the "' + edge + '" edge already exists in the graph.');
+
+  if (!sourceData) {
+    graph.addNode(source);
+    sourceData = graph._nodes.get(source);
+  }
+  if (!targetData) {
+    graph.addNode(target);
+    targetData = graph._nodes.get(target);
+  }
+
+  // Storing some data
+  var DataClass = undirected ? _data.UndirectedEdgeData : _data.DirectedEdgeData;
+
+  var data = new DataClass(mustGenerateKey, source, target, attributes);
+
+  // Adding the edge to the internal register
+  graph._edges.set(edge, data);
+
+  // Incrementing node degree counters
+  if (source === target) {
+    if (undirected) sourceData.undirectedSelfLoops++;else sourceData.directedSelfLoops++;
+  } else {
+    if (undirected) {
+      sourceData.undirectedDegree++;
+      targetData.undirectedDegree++;
+    } else {
+      sourceData.outDegree++;
+      targetData.inDegree++;
+    }
+  }
+
+  // Updating relevant index
+  (0, _indices.updateStructureIndex)(graph, undirected, edge, source, target, sourceData, targetData);
 
   // Emitting
   graph.emit('edgeAdded', {
@@ -776,7 +966,7 @@ var Graph = function (_EventEmitter) {
     options = (0, _utils.assign)({}, DEFAULTS, options);
 
     // Enforcing options validity
-    if (typeof options.edgeKeyGenerator !== 'function') throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'edgeKeyGenerator\' option. Expecting a function but got "' + options.edgeKeyGenerator + '".');
+    if (options.edgeKeyGenerator && typeof options.edgeKeyGenerator !== 'function') throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'edgeKeyGenerator\' option. Expecting a function but got "' + options.edgeKeyGenerator + '".');
 
     if (typeof options.multi !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'multi\' option. Expecting a boolean but got "' + options.multi + '".');
 
@@ -794,7 +984,7 @@ var Graph = function (_EventEmitter) {
     (0, _utils.privateProperty)(_this, '_attributes', {});
     (0, _utils.privateProperty)(_this, '_nodes', new Map());
     (0, _utils.privateProperty)(_this, '_edges', new Map());
-    (0, _utils.privateProperty)(_this, '_structureIsComputed', false);
+    (0, _utils.privateProperty)(_this, '_edgeKeyGenerator', options.edgeKeyGenerator || (0, _utils.incrementalId)());
 
     // Options
     (0, _utils.privateProperty)(_this, '_options', options);
@@ -860,29 +1050,23 @@ var Graph = function (_EventEmitter) {
 
       var edgeData = this._edges.get(edge);
 
-      return !!edgeData && !edgeData.undirected;
+      return !!edgeData && edgeData instanceof _data.DirectedEdgeData;
     } else if (arguments.length === 2) {
 
       source = '' + source;
       target = '' + target;
 
-      // We need to compute the 'structure' index for this
-      this.computeIndex();
-
       // If the node source or the target is not in the graph we break
-      if (!this._nodes.has(source) || !this._nodes.has(target)) return false;
+      var nodeData = this._nodes.get(source);
 
-      // Is there a directed edge pointing towards target?
-      var nodeData = this._nodes.get(source),
-          register = nodeData.out;
+      if (!nodeData) return false;
 
-      if (!register) return false;
-
-      var edges = register[target];
+      // Is there a directed edge pointing toward target?
+      var edges = nodeData.out[target];
 
       if (!edges) return false;
 
-      return this.multi ? !!edges.size : !!edges;
+      return this.multi ? !!edges.size : true;
     }
 
     throw new _errors.InvalidArgumentsGraphError('Graph.hasDirectedEdge: invalid arity (' + arguments.length + ', instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.');
@@ -914,30 +1098,23 @@ var Graph = function (_EventEmitter) {
 
       var edgeData = this._edges.get(edge);
 
-      return !!edgeData && !!edgeData.undirected;
+      return !!edgeData && edgeData instanceof _data.UndirectedEdgeData;
     } else if (arguments.length === 2) {
 
       source = '' + source;
       target = '' + target;
 
-      // We need to compute the 'structure' index for this
-      this.computeIndex();
-
       // If the node source or the target is not in the graph we break
-      if (!this._nodes.has(source) || !this._nodes.has(target)) return false;
-
-      // Is there a directed edge pointing towards target?
       var nodeData = this._nodes.get(source);
 
-      var register = nodeData.undirected;
+      if (!nodeData) return false;
 
-      var edges = void 0;
-
-      if (register) edges = register[target];
+      // Is there a directed edge pointing toward target?
+      var edges = nodeData.undirected[target];
 
       if (!edges) return false;
 
-      return this.multi ? !!edges.size : !!edges;
+      return this.multi ? !!edges.size : true;
     }
 
     throw new _errors.InvalidArgumentsGraphError('Graph.hasDirectedEdge: invalid arity (' + arguments.length + ', instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.');
@@ -966,30 +1143,23 @@ var Graph = function (_EventEmitter) {
 
       return this._edges.has(edge);
     } else if (arguments.length === 2) {
+
       source = '' + source;
       target = '' + target;
 
-      // We need to compute the 'structure' index for this
-      this.computeIndex();
-
       // If the node source or the target is not in the graph we break
-      if (!this._nodes.has(source) || !this._nodes.has(target)) return false;
-
-      // Is there a directed edge pointing towards target?
       var nodeData = this._nodes.get(source);
 
-      var register = nodeData.out,
-          edges = void 0;
+      if (!nodeData) return false;
 
-      if (register) edges = register[target];
+      // Is there a directed edge pointing toward target?
+      var edges = nodeData.out[target];
 
-      if (!edges) register = nodeData.undirected;
-
-      if (register) edges = register[target];
+      if (!edges) edges = nodeData.undirected[target];
 
       if (!edges) return false;
 
-      return this.multi ? !!edges.size : !!edges;
+      return this.multi ? !!edges.size : true;
     }
 
     throw new _errors.InvalidArgumentsGraphError('Graph.hasEdge: invalid arity (' + arguments.length + ', instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target.');
@@ -1023,8 +1193,6 @@ var Graph = function (_EventEmitter) {
 
     if (!this._nodes.has(target)) throw new _errors.NotFoundGraphError('Graph.directedEdge: could not find the "' + target + '" target node in the graph.');
 
-    this.computeIndex();
-
     return sourceData.out && sourceData.out[target] || undefined;
   };
 
@@ -1056,8 +1224,6 @@ var Graph = function (_EventEmitter) {
 
     if (!this._nodes.has(target)) throw new _errors.NotFoundGraphError('Graph.undirectedEdge: could not find the "' + target + '" target node in the graph.');
 
-    this.computeIndex();
-
     return sourceData.undirected && sourceData.undirected[target] || undefined;
   };
 
@@ -1085,8 +1251,6 @@ var Graph = function (_EventEmitter) {
     if (!sourceData) throw new _errors.NotFoundGraphError('Graph.edge: could not find the "' + source + '" source node in the graph.');
 
     if (!this._nodes.has(target)) throw new _errors.NotFoundGraphError('Graph.edge: could not find the "' + target + '" target node in the graph.');
-
-    this.computeIndex();
 
     return sourceData.out && sourceData.out[target] || sourceData.undirected && sourceData.undirected[target] || undefined;
   };
@@ -1307,17 +1471,19 @@ var Graph = function (_EventEmitter) {
     node = '' + node;
     edge = '' + edge;
 
-    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.opposite: could not find the "' + node + '" node in the graph.');
+    if (!this._nodes.has(node)) throw new _errors.NotFoundGraphError('Graph.opposite: could not find the "' + node + '" node in the graph.');
 
-    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.opposite: could not find the "' + edge + '" edge in the graph.');
+    var data = this._edges.get(edge);
 
-    var _extremities = this.extremities(edge),
-        node1 = _extremities[0],
-        node2 = _extremities[1];
+    if (!data) throw new _errors.NotFoundGraphError('Graph.opposite: could not find the "' + edge + '" edge in the graph.');
 
-    if (node !== node1 && node !== node2) throw new _errors.NotFoundGraphError('Graph.opposite: the "' + node + '" node is not attached to the "' + edge + '" edge (' + node1 + ', ' + node2 + ').');
+    var source = data.source,
+        target = data.target;
 
-    return node === node1 ? node2 : node1;
+
+    if (node !== source && node !== target) throw new _errors.NotFoundGraphError('Graph.opposite: the "' + node + '" node is not attached to the "' + edge + '" edge (' + source + ', ' + target + ').');
+
+    return node === source ? target : source;
   };
 
   /**
@@ -1333,9 +1499,11 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.undirected = function undirected(edge) {
     edge = '' + edge;
 
-    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.undirected: could not find the "' + edge + '" edge in the graph.');
+    var data = this._edges.get(edge);
 
-    return !!this._edges.get(edge).undirected;
+    if (!data) throw new _errors.NotFoundGraphError('Graph.undirected: could not find the "' + edge + '" edge in the graph.');
+
+    return data instanceof _data.UndirectedEdgeData;
   };
 
   /**
@@ -1351,9 +1519,11 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.directed = function directed(edge) {
     edge = '' + edge;
 
-    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.directed: could not find the "' + edge + '" edge in the graph.');
+    var data = this._edges.get(edge);
 
-    return !this._edges.get(edge).undirected;
+    if (!data) throw new _errors.NotFoundGraphError('Graph.directed: could not find the "' + edge + '" edge in the graph.');
+
+    return data instanceof _data.DirectedEdgeData;
   };
 
   /**
@@ -1369,9 +1539,9 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.selfLoop = function selfLoop(edge) {
     edge = '' + edge;
 
-    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.selfLoop: could not find the "' + edge + '" edge in the graph.');
-
     var data = this._edges.get(edge);
+
+    if (!data) throw new _errors.NotFoundGraphError('Graph.selfLoop: could not find the "' + edge + '" edge in the graph.');
 
     return data.source === data.target;
   };
@@ -1399,32 +1569,14 @@ var Graph = function (_EventEmitter) {
     // String coercion
     node = '' + node;
 
+    if (this._nodes.has(node)) throw new _errors.UsageGraphError('Graph.addNode: the "' + node + '" node already exist in the graph.');
+
     // Protecting the attributes
     attributes = (0, _utils.assign)({}, this._options.defaultNodeAttributes, attributes);
 
-    if (this.hasNode(node)) throw new _errors.UsageGraphError('Graph.addNode: the "' + node + '" node already exist in the graph.');
+    var DataClass = this.type === 'mixed' ? _data.MixedNodeData : this.type === 'directed' ? _data.DirectedNodeData : _data.UndirectedNodeData;
 
-    var data = {
-      attributes: attributes
-    };
-
-    if (this.allowSelfLoops) {
-      if (this.type !== 'undirected') {
-        data.directedSelfLoops = 0;
-      }
-      if (this.type !== 'directed') {
-        data.undirectedSelfLoops = 0;
-      }
-    }
-
-    if (this.type !== 'undirected') {
-      data.inDegree = 0;
-      data.outDegree = 0;
-    }
-
-    if (this.type !== 'directed') {
-      data.undirectedDegree = 0;
-    }
+    var data = new DataClass(attributes);
 
     // Adding the node to internal register
     this._nodes.set(node, data);
@@ -1450,8 +1602,10 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.mergeNode = function mergeNode(node, attributes) {
 
     // If the node already exists, we merge the attributes
-    if (this.hasNode(node)) {
-      if (attributes) this.mergeNodeAttributes(node, attributes);
+    var data = this._nodes.get(node);
+
+    if (data) {
+      if (attributes) (0, _utils.assign)(data.attributes, attributes);
       return node;
     }
 
@@ -1556,10 +1710,10 @@ var Graph = function (_EventEmitter) {
     // Updating related degrees
     var source = data.source,
         target = data.target,
-        attributes = data.attributes,
-        _data$undirected = data.undirected,
-        undirected = _data$undirected === undefined ? false : _data$undirected;
+        attributes = data.attributes;
 
+
+    var undirected = data instanceof _data.UndirectedEdgeData;
 
     var sourceData = this._nodes.get(source),
         targetData = this._nodes.get(target);
@@ -1577,7 +1731,7 @@ var Graph = function (_EventEmitter) {
     }
 
     // Clearing index
-    if (this._structureIsComputed) (0, _indices.clearEdgeFromStructureIndex)(this, edge, data);
+    (0, _indices.clearEdgeFromStructureIndex)(this, undirected, edge, data);
 
     // Emitting
     this.emit('edgeDropped', {
@@ -2139,9 +2293,9 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.exportNode = function exportNode(node) {
     node = '' + node;
 
-    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.exportNode: could not find the "' + node + '" node in the graph.');
-
     var data = this._nodes.get(node);
+
+    if (!data) throw new _errors.NotFoundGraphError('Graph.exportNode: could not find the "' + node + '" node in the graph.');
 
     return (0, _serialization.serializeNode)(node, data);
   };
@@ -2159,9 +2313,9 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.exportEdge = function exportEdge(edge) {
     edge = '' + edge;
 
-    if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.exportEdge: could not find the "' + edge + '" edge in the graph.');
-
     var data = this._edges.get(edge);
+
+    if (!data) throw new _errors.NotFoundGraphError('Graph.exportEdge: could not find the "' + edge + '" edge in the graph.');
 
     return (0, _serialization.serializeEdge)(edge, data);
   };
@@ -2323,7 +2477,7 @@ var Graph = function (_EventEmitter) {
 
       if (error === 'not-object') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: invalid serialized edge. A serialized edge should be a plain object with at least a "source" & "target" property.');
       if (error === 'no-source') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: missing souce.');
-      if (error === 'no-target') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: missing target');
+      if (error === 'no-target') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: missing target.');
       if (error === 'invalid-attributes') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: invalid attributes. Attributes should be a plain object, null or omitted.');
       if (error === 'invalid-undirected') throw new _errors.InvalidArgumentsGraphError('Graph.importEdge: invalid undirected. Undirected should be boolean or omitted.');
     }
@@ -2333,8 +2487,8 @@ var Graph = function (_EventEmitter) {
         target = data.target,
         _data$attributes2 = data.attributes,
         attributes = _data$attributes2 === undefined ? {} : _data$attributes2,
-        _data$undirected2 = data.undirected,
-        undirected = _data$undirected2 === undefined ? false : _data$undirected2;
+        _data$undirected = data.undirected,
+        undirected = _data$undirected === undefined ? false : _data$undirected;
 
 
     var method = void 0;
@@ -2465,20 +2619,15 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.upgradeToMixed = function upgradeToMixed() {
-    var _this8 = this;
-
     if (this.type === 'mixed') return this;
 
-    // Upgrading node data
+    // Upgrading node data:
+    // NOTE: maybe this could lead to some de-optimization by usual
+    // JavaScript engines but I cannot be sure of it. Another solution
+    // would be to reinstantiate the classes but this surely has a performance
+    // and memory impact.
     this._nodes.forEach(function (data) {
-      if (_this8.type === 'undirected') {
-        data.directedSelfLoops = 0;
-        data.inDegree = 0;
-        data.outDegree = 0;
-      } else {
-        data.undirectedSelfLoops = 0;
-        data.undirectedDegree = 0;
-      }
+      return data.upgradeToMixed();
     });
 
     // Mutating the options & the instance
@@ -2503,8 +2652,6 @@ var Graph = function (_EventEmitter) {
     (0, _utils.readOnlyProperty)(this, 'multi', true);
 
     // Upgrading indices
-    if (!this._structureIsComputed) return this;
-
     (0, _indices.upgradeStructureIndexToMulti)(this);
 
     return this;
@@ -2516,27 +2663,6 @@ var Graph = function (_EventEmitter) {
    */
 
   /**
-   * Method computing the desired index.
-   *
-   * @return {Graph}       - Returns itself for chaining.
-   */
-
-
-  Graph.prototype.computeIndex = function computeIndex() {
-    var _this9 = this;
-
-    if (this._structureIsComputed) return;
-
-    this._edges.forEach(function (data, edge) {
-      (0, _indices.updateStructureIndex)(_this9, edge, data);
-    });
-
-    this._structureIsComputed = true;
-
-    return this;
-  };
-
-  /**
    * Method used to clear the desired index to clear memory.
    *
    * @return {Graph}       - Returns itself for chaining.
@@ -2544,12 +2670,7 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.clearIndex = function clearIndex() {
-    if (!this._structureIsComputed) return this;
-
     (0, _indices.clearStructureIndex)(this);
-
-    this._structureIsComputed = false;
-
     return this;
   };
 
@@ -2603,7 +2724,7 @@ var Graph = function (_EventEmitter) {
 
       var label = '';
 
-      if (!data.generatedId) label += '[' + key + ']: ';
+      if (!data.generatedKey) label += '[' + key + ']: ';
 
       label += '(' + data.source + ')' + direction + '(' + data.target + ')';
 
@@ -2644,15 +2765,16 @@ var Graph = function (_EventEmitter) {
 exports.default = Graph;
 EDGE_ADD_METHODS.forEach(function (method) {
   ['add', 'merge'].forEach(function (verb) {
-    var name = method.name(verb);
+    var name = method.name(verb),
+        fn = verb === 'add' ? addEdge : mergeEdge;
 
     if (method.generateKey) {
       Graph.prototype[name] = function (source, target, attributes) {
-        return addEdge(this, name, verb === 'merge', method.generateKey, (method.type || this.type) === 'undirected', null, source, target, attributes);
+        return fn(this, name, method.generateKey, (method.type || this.type) === 'undirected', null, source, target, attributes);
       };
     } else {
       Graph.prototype[name] = function (edge, source, target, attributes) {
-        return addEdge(this, name, verb === 'merge', method.generateKey, (method.type || this.type) === 'undirected', edge, source, target, attributes);
+        return fn(this, name, method.generateKey, (method.type || this.type) === 'undirected', edge, source, target, attributes);
       };
     }
   });
@@ -2674,7 +2796,7 @@ EDGE_ADD_METHODS.forEach(function (method) {
 (0, _neighbors.attachNeighborIterationMethods)(Graph);
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3248,7 +3370,7 @@ function attachAttributesMethods(Graph) {
 }
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3256,7 +3378,7 @@ function attachAttributesMethods(Graph) {
 
 var _utils = __webpack_require__(0);
 
-var _graph = __webpack_require__(2);
+var _graph = __webpack_require__(3);
 
 var _graph2 = _interopRequireDefault(_graph);
 
@@ -3372,7 +3494,7 @@ _graph2.default.UsageGraphError = _errors.UsageGraphError;
 module.exports = _graph2.default;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3397,29 +3519,18 @@ exports.upgradeStructureIndexToMulti = upgradeStructureIndexToMulti;
  * Note that in the case of the multi graph, related edges are stored in a
  * set that is the same for A -> B & B <- A.
  *
- * @param {Graph}  graph - Target Graph instance.
- * @param {any}    edge  - Added edge.
- * @param {object} data  - Attached data.
+ * @param {Graph}    graph      - Target Graph instance.
+ * @param {any}      edge       - Added edge.
+ * @param {NodeData} sourceData - Source node's data.
+ * @param {NodeData} targetData - Target node's data.
  */
-function updateStructureIndex(graph, edge, data) {
+function updateStructureIndex(graph, undirected, edge, source, target, sourceData, targetData) {
   var multi = graph.multi;
-
-  // Retrieving edge information
-  var undirected = data.undirected,
-      source = data.source,
-      target = data.target;
-
-  // Retrieving source & target data
-
-  var sourceData = graph._nodes.get(source),
-      targetData = graph._nodes.get(target);
 
   var outKey = undirected ? 'undirected' : 'out',
       inKey = undirected ? 'undirected' : 'in';
 
   // Handling source
-  if (typeof sourceData[outKey] === 'undefined') sourceData[outKey] = {};
-
   if (typeof sourceData[outKey][target] === 'undefined') sourceData[outKey][target] = multi ? new Set() : edge;
 
   if (multi) sourceData[outKey][target].add(edge);
@@ -3429,8 +3540,6 @@ function updateStructureIndex(graph, edge, data) {
 
   // Handling target (we won't add the edge because it was already taken
   // care of with source above)
-  if (typeof targetData[inKey] === 'undefined') targetData[inKey] = {};
-
   if (typeof targetData[inKey][source] === 'undefined') targetData[inKey][source] = sourceData[outKey][target];
 }
 
@@ -3441,12 +3550,11 @@ function updateStructureIndex(graph, edge, data) {
  * @param {any}    edge  - Dropped edge.
  * @param {object} data  - Attached data.
  */
-function clearEdgeFromStructureIndex(graph, edge, data) {
+function clearEdgeFromStructureIndex(graph, undirected, edge, data) {
   var multi = graph.multi;
 
   var source = data.source,
-      target = data.target,
-      undirected = data.undirected;
+      target = data.target;
 
   // NOTE: since the edge set is the same for source & target, we can only
   // affect source
@@ -3479,9 +3587,9 @@ function clearStructureIndex(graph) {
   graph._nodes.forEach(function (data) {
 
     // Clearing now useless properties
-    delete data.in;
-    delete data.out;
-    delete data.undirected;
+    data.in = {};
+    data.out = {};
+    data.undirected = {};
   });
 }
 
@@ -3519,7 +3627,7 @@ function upgradeStructureIndexToMulti(graph) {
 }
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3532,17 +3640,12 @@ exports.attachEdgeIterationMethods = attachEdgeIterationMethods;
 
 var _errors = __webpack_require__(1);
 
+var _data = __webpack_require__(2);
+
 var _utils = __webpack_require__(0);
 
 /**
  * Definitions.
- */
-/**
- * Graphology Edge Iteration
- * ==========================
- *
- * Attaching some methods to the Graph class to be able to iterate over a
- * graph's edges.
  */
 var EDGES_ITERATION = [{
   name: 'edges',
@@ -3568,25 +3671,36 @@ var EDGES_ITERATION = [{
  *
  * @param  {array}            edges  - Edges array to populate.
  * @param  {object|undefined} object - Target object.
- * @param  {mixed}            [key]  - Optional key.
  * @return {array}                   - The found edges.
  */
-function collect(edges, object, key) {
-  var hasKey = arguments.length > 2;
-
-  if (!object || hasKey && !(key in object)) return;
-
-  if (hasKey) {
-
-    if (object[key] instanceof Set) edges.push.apply(edges, (0, _utils.consumeIterator)(object[key].size, object[key].values()));else edges.push(object[key]);
-
-    return;
-  }
-
+/**
+ * Graphology Edge Iteration
+ * ==========================
+ *
+ * Attaching some methods to the Graph class to be able to iterate over a
+ * graph's edges.
+ */
+function collect(edges, object) {
   for (var k in object) {
-
     if (object[k] instanceof Set) edges.push.apply(edges, (0, _utils.consumeIterator)(object[k].size, object[k].values()));else edges.push(object[k]);
   }
+}
+
+/**
+ * Function collecting edges from the given object at given key.
+ *
+ * @param  {array}            edges  - Edges array to populate.
+ * @param  {object|undefined} object - Target object.
+ * @param  {mixed}            key    - Neighbor key.
+ * @return {array}                   - The found edges.
+ */
+function collectForKey(edges, object, key) {
+
+  if (!(key in object)) return;
+
+  if (object[key] instanceof Set) edges.push.apply(edges, (0, _utils.consumeIterator)(object[key].size, object[key].values()));else edges.push(object[key]);
+
+  return;
 }
 
 /**
@@ -3603,7 +3717,7 @@ function createEdgeArray(graph, type) {
 
   graph._edges.forEach(function (data, edge) {
 
-    if (!!data.undirected === (type === 'undirected')) list.push(edge);
+    if (data instanceof _data.UndirectedEdgeData === (type === 'undirected')) list.push(edge);
   });
 
   return list;
@@ -3619,10 +3733,6 @@ function createEdgeArray(graph, type) {
  * @return {array}             - Array of edges.
  */
 function createEdgeArrayForNode(graph, type, direction, node) {
-
-  // For this, we need to compute the "structure" index
-  graph.computeIndex();
-
   var edges = [];
 
   var nodeData = graph._nodes.get(node);
@@ -3650,21 +3760,17 @@ function createEdgeArrayForNode(graph, type, direction, node) {
  * @return {array}          - Array of edges.
  */
 function createEdgeArrayForPath(graph, type, source, target) {
-
-  // For this, we need to compute the "structure" index
-  graph.computeIndex();
-
   var edges = [];
 
   var sourceData = graph._nodes.get(source);
 
   if (type !== 'undirected') {
-    collect(edges, sourceData.in, target);
-    collect(edges, sourceData.out, target);
+    collectForKey(edges, sourceData.in, target);
+    collectForKey(edges, sourceData.out, target);
   }
 
   if (type !== 'directed') {
-    collect(edges, sourceData.undirected, target);
+    collectForKey(edges, sourceData.undirected, target);
   }
 
   return edges;
@@ -3752,7 +3858,7 @@ function attachEdgeIterationMethods(Graph) {
 }
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3808,7 +3914,7 @@ var NodesIterator = exports.NodesIterator = function (_Iterator) {
 }(Iterator);
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3876,10 +3982,6 @@ function merge(neighbors, object) {
  * @return {Set|BasicSet}           - The neighbors set.
  */
 function createNeighborSetForNode(graph, type, direction, node) {
-
-  // For this, we need to compute the "structure" index
-  graph.computeIndex();
-
   var neighbors = new Set();
 
   var nodeData = graph._nodes.get(node);
@@ -3974,7 +4076,7 @@ function attachNeighborIterationMethods(Graph) {
 }
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3988,6 +4090,8 @@ exports.serializeEdge = serializeEdge;
 exports.validateSerializedNode = validateSerializedNode;
 exports.validateSerializedEdge = validateSerializedEdge;
 
+var _data = __webpack_require__(2);
+
 var _utils = __webpack_require__(0);
 
 /**
@@ -3996,21 +4100,6 @@ var _utils = __webpack_require__(0);
  * @param  {any}    key  - The node's key.
  * @param  {object} data - Internal node's data.
  * @return {array}       - The serialized node.
- */
-function serializeNode(key, data) {
-  var serialized = { key: key };
-
-  if (Object.keys(data.attributes).length) serialized.attributes = data.attributes;
-
-  return serialized;
-}
-
-/**
- * Formats internal edge data into a serialized edge.
- *
- * @param  {any}    key  - The edge's key.
- * @param  {object} data - Internal edge's data.
- * @return {array}       - The serialized edge.
  */
 /**
  * Graphology Serialization Utilities
@@ -4028,16 +4117,33 @@ function serializeNode(key, data) {
  * Serialized Graph:
  * {nodes[], edges?[]}
  */
+function serializeNode(key, data) {
+  var serialized = { key: key };
+
+  if (Object.keys(data.attributes).length) serialized.attributes = data.attributes;
+
+  return serialized;
+}
+
+/**
+ * Formats internal edge data into a serialized edge.
+ *
+ * @param  {any}    key  - The edge's key.
+ * @param  {object} data - Internal edge's data.
+ * @return {array}       - The serialized edge.
+ */
 function serializeEdge(key, data) {
   var serialized = {
-    key: key,
     source: data.source,
     target: data.target
   };
 
+  // We export the key unless if it was provided by the user
+  if (!data.generatedKey) serialized.key = key;
+
   if (Object.keys(data.attributes).length) serialized.attributes = data.attributes;
 
-  if (data.undirected) serialized.undirected = true;
+  if (data instanceof _data.UndirectedEdgeData) serialized.undirected = true;
 
   return serialized;
 }
@@ -4079,7 +4185,7 @@ function validateSerializedEdge(value) {
 }
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
