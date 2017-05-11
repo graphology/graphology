@@ -49,32 +49,36 @@ const EDGES_ITERATION = [
  *
  * @param  {array}            edges  - Edges array to populate.
  * @param  {object|undefined} object - Target object.
- * @param  {mixed}            [key]  - Optional key.
  * @return {array}                   - The found edges.
  */
-function collect(edges, object, key) {
-  const hasKey = arguments.length > 2;
-
-  if (!object || (hasKey && !(key in object)))
-    return;
-
-  if (hasKey) {
-
-    if (object[key] instanceof Set)
-      edges.push.apply(edges, consumeIterator(object[key].size, object[key].values()));
-    else
-      edges.push(object[key]);
-
-    return;
-  }
-
+function collect(edges, object) {
   for (const k in object) {
-
     if (object[k] instanceof Set)
       edges.push.apply(edges, consumeIterator(object[k].size, object[k].values()));
     else
       edges.push(object[k]);
   }
+}
+
+/**
+ * Function collecting edges from the given object at given key.
+ *
+ * @param  {array}            edges  - Edges array to populate.
+ * @param  {object|undefined} object - Target object.
+ * @param  {mixed}            key    - Neighbor key.
+ * @return {array}                   - The found edges.
+ */
+function collectForKey(edges, object, key) {
+
+  if (!(key in object))
+    return;
+
+  if (object[key] instanceof Set)
+    edges.push.apply(edges, consumeIterator(object[key].size, object[key].values()));
+  else
+    edges.push(object[key]);
+
+  return;
 }
 
 /**
@@ -151,12 +155,12 @@ function createEdgeArrayForPath(graph, type, source, target) {
   const sourceData = graph._nodes.get(source);
 
   if (type !== 'undirected') {
-    collect(edges, sourceData.in, target);
-    collect(edges, sourceData.out, target);
+    collectForKey(edges, sourceData.in, target);
+    collectForKey(edges, sourceData.out, target);
   }
 
   if (type !== 'directed') {
-    collect(edges, sourceData.undirected, target);
+    collectForKey(edges, sourceData.undirected, target);
   }
 
   return edges;
