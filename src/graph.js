@@ -179,6 +179,7 @@ function addEdge(
 
   // Must the graph generate an id for this edge?
   const eventData = {
+    key: null,
     undirected,
     source,
     target,
@@ -342,6 +343,7 @@ function mergeEdge(
 
   // Must the graph generate an id for this edge?
   const eventData = {
+    key: null,
     undirected,
     source,
     target,
