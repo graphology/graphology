@@ -354,6 +354,14 @@ export default function mutation(Graph, checkers) {
         assert.throws(function() {
           graph.mergeEdgeWithKey('J->M', 'John', 'Thomas');
         }, usage());
+      },
+
+      'it should distinguish between typed edges.': function() {
+        const graph = new Graph();
+        graph.mergeEdge('John', 'Martha', {type: 'LIKES'});
+        graph.mergeUndirectedEdge('John', 'Martha', {weight: 34});
+
+        assert.strictEqual(graph.size, 2);
       }
     },
 
