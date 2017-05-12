@@ -48,7 +48,8 @@
   },
   "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
-    "events": "^1.1.1"
+    "events": "^1.1.1",
+    "obliterator": "^1.1.0"
   },
   "devDependencies": {
     "@yomguithereal/eslint-config": "^3.0.0",

@@ -1784,7 +1784,7 @@ export default class Graph extends EventEmitter {
   nodesIterator() {
     const iterator = this._nodes.keys();
 
-    return new NodesIterator(() => iterator.next());
+    return new NodesIterator(iterator.next.bind(iterator));
   }
 
   /**---------------------------------------------------------------------------

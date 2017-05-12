@@ -89,8 +89,16 @@ function collectForKey(edges, object, key) {
  * @return {array}         - Array of edges.
  */
 function createEdgeArray(graph, type) {
-  if (type === 'mixed')
+  if (graph.size === 0)
+    return [];
+
+  if (type === 'mixed') {
     return consumeIterator(graph._edges.size, graph._edges.keys());
+  }
+  else {
+    if (graph.type !== 'mixed' && type !== graph.type)
+      return [];
+  }
 
   const list = [];
 
@@ -172,7 +180,7 @@ function attachEdgeArrayCreator(Class, description) {
   } = description;
 
   /**
-   * Function returning an array or the count of certain edges.
+   * Function returning an array of certain edges.
    *
    * Arity 0: Return all the relevant edges.
    *

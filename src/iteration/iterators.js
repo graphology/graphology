@@ -4,23 +4,14 @@
  *
  * Various classes representing the library's iterators.
  */
-
-/**
- * Generic iterator class.
- *
- * @constructor
- * @param {function} next - Next function.
- */
-class Iterator {
-  constructor(next) {
-    this.next = next;
-  }
-}
+import Iterator from 'obliterator/iterator';
 
 /**
  * Node iterator class.
- *
- * @constructor
- * @param {function} next - Next function.
  */
 export class NodesIterator extends Iterator {}
+
+/**
+ * Edge iterator class.
+ */
+export class EdgesIterator extends Iterator {}
