@@ -6,6 +6,7 @@
  * Reference implementation of the graphology specs.
  */
 import {EventEmitter} from 'events';
+import Iterator from 'obliterator/iterator';
 
 import {
   InvalidArgumentsGraphError,
@@ -20,10 +21,6 @@ import {
   DirectedEdgeData,
   UndirectedEdgeData
 } from './data';
-
-import {
-  NodesIterator
-} from './iteration/iterators';
 
 import {
   updateStructureIndex,
@@ -1784,7 +1781,7 @@ export default class Graph extends EventEmitter {
   nodesIterator() {
     const iterator = this._nodes.keys();
 
-    return new NodesIterator(iterator.next.bind(iterator));
+    return new Iterator(iterator.next.bind(iterator));
   }
 
   /**---------------------------------------------------------------------------
