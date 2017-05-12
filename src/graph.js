@@ -949,10 +949,12 @@ export default class Graph extends EventEmitter {
   source(edge) {
     edge = '' + edge;
 
-    if (!this.hasEdge(edge))
+    const data = this._edges.get(edge);
+
+    if (!data)
       throw new NotFoundGraphError(`Graph.source: could not find the "${edge}" edge in the graph.`);
 
-    return this._edges.get(edge).source;
+    return data.source;
   }
 
   /**
@@ -966,10 +968,12 @@ export default class Graph extends EventEmitter {
   target(edge) {
     edge = '' + edge;
 
-    if (!this.hasEdge(edge))
+    const data = this._edges.get(edge);
+
+    if (!data)
       throw new NotFoundGraphError(`Graph.target: could not find the "${edge}" edge in the graph.`);
 
-    return this._edges.get(edge).target;
+    return data.target;
   }
 
   /**
