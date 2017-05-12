@@ -178,15 +178,15 @@ function addEdge(
   attributes = assign({}, graph._options.defaultEdgeAttributes, attributes);
 
   // Must the graph generate an id for this edge?
-  // TODO: we can save up the object if using the default method + coercion
-  if (mustGenerateKey) {
-    edge = graph._edgeKeyGenerator({
-      undirected,
-      source,
-      target,
-      attributes
-    });
-  }
+  const eventData = {
+    undirected,
+    source,
+    target,
+    attributes
+  };
+
+  if (mustGenerateKey)
+    edge = graph._edgeKeyGenerator(eventData);
 
   // Coercion of edge key
   edge = '' + edge;
@@ -250,13 +250,9 @@ function addEdge(
   );
 
   // Emitting
-  graph.emit('edgeAdded', {
-    key: edge,
-    source,
-    target,
-    attributes,
-    undirected
-  });
+  eventData.key = edge;
+
+  graph.emit('edgeAdded', eventData);
 
   return edge;
 }
@@ -345,15 +341,15 @@ function mergeEdge(
   attributes = assign({}, graph._options.defaultEdgeAttributes, attributes);
 
   // Must the graph generate an id for this edge?
-  // TODO: we can save up the object if using the default method + coercion
-  if (mustGenerateKey) {
-    edge = graph._edgeKeyGenerator({
-      undirected,
-      source,
-      target,
-      attributes: attributes
-    });
-  }
+  const eventData = {
+    undirected,
+    source,
+    target,
+    attributes
+  };
+
+  if (mustGenerateKey)
+    edge = graph._edgeKeyGenerator(eventData);
 
   // Coercion of edge key
   edge = '' + edge;
@@ -414,13 +410,9 @@ function mergeEdge(
   );
 
   // Emitting
-  graph.emit('edgeAdded', {
-    key: edge,
-    source,
-    target,
-    attributes,
-    undirected
-  });
+  eventData.key = edge;
+
+  graph.emit('edgeAdded', eventData);
 
   return edge;
 }

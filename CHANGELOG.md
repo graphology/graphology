@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.1
+
+* Performance enhancements.
+
 ## 0.10.0
 
 * Adding basic edges iterators.
