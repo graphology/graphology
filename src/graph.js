@@ -198,8 +198,8 @@ function addEdge(
     !graph.multi &&
     (
       undirected ?
-        graph.hasUndirectedEdge(source, target) :
-        graph.hasDirectedEdge(source, target)
+        typeof sourceData.undirected[target] !== 'undefined' :
+        typeof sourceData.out[target] !== 'undefined'
     )
   ) {
     throw new UsageGraphError(`Graph.${name}: an edge linking "${source}" to "${target}" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option.`);
@@ -314,10 +314,11 @@ function mergeEdge(
   // Here, we might have a source / target collision
   if (
     !graph.multi &&
+    sourceData &&
     (
       undirected ?
-        graph.hasUndirectedEdge(source, target) :
-        graph.hasDirectedEdge(source, target)
+        typeof sourceData.undirected[target] !== 'undefined' :
+        typeof sourceData.out[target] !== 'undefined'
     )
   ) {
     alreadyExistingEdge = getMatchingEdge(graph, source, target, undirected ? 'undirected' : 'directed');
