@@ -111,6 +111,11 @@ const DEFAULTS = {
 };
 
 /**
+ * Helper classes.
+ */
+class NodesIterator extends Iterator {}
+
+/**
  * Abstract functions used by the Graph class for various methods.
  */
 
@@ -1781,7 +1786,7 @@ export default class Graph extends EventEmitter {
   nodesIterator() {
     const iterator = this._nodes.keys();
 
-    return new Iterator(iterator.next.bind(iterator));
+    return new NodesIterator(iterator.next.bind(iterator));
   }
 
   /**---------------------------------------------------------------------------

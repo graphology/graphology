@@ -113,11 +113,31 @@ function createEdgeArray(graph, type) {
  * @return {Iterator}       - Edge iterator.
  */
 function createEdgeIterator(graph, type) {
-  const inner = graph._edges.keys();
+  if (graph.size === 0)
+    return Iterator.empty();
+
+  let inner;
 
   if (type === 'mixed') {
+    inner = graph._edges.keys();
     return new Iterator(inner.next.bind(inner));
   }
+
+  inner = graph._edges.entries();
+
+  return new Iterator(function next() {
+    const step = inner.next();
+
+    if (step.done)
+      return step;
+
+    const data = step.value[1];
+
+    if ((data instanceof UndirectedEdgeData) === (type === 'undirected'))
+      return {value: step.value[0]};
+
+    return next();
+  });
 }
 
 /**
@@ -265,7 +285,7 @@ export function attachEdgeIteratorCreator(Class, description) {
   const {
     name: originalName,
     type,
-    direction
+    // direction
   } = description;
 
   const name = originalName + 'Iterator';
@@ -289,51 +309,52 @@ export function attachEdgeIteratorCreator(Class, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[name] = function(source, target) {
+  Class.prototype[name] = function() {
 
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
-      return [];
+      return Iterator.empty();
 
     if (!arguments.length)
       return createEdgeIterator(this, type);
 
-    if (arguments.length === 1) {
-      source = '' + source;
+    // TODO: complete here...
+    // if (arguments.length === 1) {
+    //   source = '' + source;
 
-      if (!this._nodes.has(source))
-        throw new NotFoundGraphError(`Graph.${name}: could not find the "${source}" node in the graph.`);
+    //   if (!this._nodes.has(source))
+    //     throw new NotFoundGraphError(`Graph.${name}: could not find the "${source}" node in the graph.`);
 
-      // Iterating over a node's edges
-      return createEdgeArrayForNode(this, type, direction, source);
-    }
+    //   // Iterating over a node's edges
+    //   return createEdgeArrayForNode(this, type, direction, source);
+    // }
 
-    if (arguments.length === 2) {
-      source = '' + source;
-      target = '' + target;
+    // if (arguments.length === 2) {
+    //   source = '' + source;
+    //   target = '' + target;
 
-      if (!this._nodes.has(source))
-        throw new NotFoundGraphError(`Graph.${name}:  could not find the "${source}" source node in the graph.`);
+    //   if (!this._nodes.has(source))
+    //     throw new NotFoundGraphError(`Graph.${name}:  could not find the "${source}" source node in the graph.`);
 
-      if (!this._nodes.has(target))
-        throw new NotFoundGraphError(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
+    //   if (!this._nodes.has(target))
+    //     throw new NotFoundGraphError(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
 
-      // Iterating over the edges between source & target
-      let hasEdge;
+    //   // Iterating over the edges between source & target
+    //   let hasEdge;
 
-      if (type !== 'undirected')
-        hasEdge = this.hasDirectedEdge(source, target);
-      else
-        hasEdge = this.hasUndirectedEdge(source, target);
+    //   if (type !== 'undirected')
+    //     hasEdge = this.hasDirectedEdge(source, target);
+    //   else
+    //     hasEdge = this.hasUndirectedEdge(source, target);
 
-      // If no such edge exist, we'll stop right there.
-      if (!hasEdge)
-        return [];
+    //   // If no such edge exist, we'll stop right there.
+    //   if (!hasEdge)
+    //     return [];
 
-      return createEdgeArrayForPath(this, type, source, target);
-    }
+    //   return createEdgeArrayForPath(this, type, source, target);
+    // }
 
-    throw new InvalidArgumentsGraphError(`Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${arguments.length}).`);
+    // throw new InvalidArgumentsGraphError(`Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${arguments.length}).`);
   };
 }
 
