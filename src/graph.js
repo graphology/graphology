@@ -153,15 +153,15 @@ function addEdge(
   if (undirected && graph.type === 'directed')
     throw new UsageGraphError(`Graph.${name}: you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.`);
 
-  if (!graph.allowSelfLoops && source === target)
-    throw new UsageGraphError(`Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
-
   if (attributes && !isPlainObject(attributes))
     throw new InvalidArgumentsGraphError(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
 
   // Coercion of source & target:
   source = '' + source;
   target = '' + target;
+
+  if (!graph.allowSelfLoops && source === target)
+    throw new UsageGraphError(`Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
 
   const sourceData = graph._nodes.get(source),
         targetData = graph._nodes.get(target);
@@ -295,15 +295,15 @@ function mergeEdge(
   if (undirected && graph.type === 'directed')
     throw new UsageGraphError(`Graph.${name}: you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.`);
 
-  if (!graph.allowSelfLoops && source === target)
-    throw new UsageGraphError(`Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
-
   if (attributes && !isPlainObject(attributes))
     throw new InvalidArgumentsGraphError(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
 
   // Coercion of source & target:
   source = '' + source;
   target = '' + target;
+
+  if (!graph.allowSelfLoops && source === target)
+    throw new UsageGraphError(`Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
 
   let sourceData = graph._nodes.get(source),
       targetData = graph._nodes.get(target);
