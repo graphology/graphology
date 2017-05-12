@@ -44,6 +44,11 @@ const EDGES_ITERATION = [
 ];
 
 /**
+ * Helper classes.
+ */
+class EdgesIterator extends Iterator {}
+
+/**
  * Function collecting edges from the given object.
  *
  * @param  {array}            edges  - Edges array to populate.
@@ -114,18 +119,18 @@ function createEdgeArray(graph, type) {
  */
 function createEdgeIterator(graph, type) {
   if (graph.size === 0)
-    return Iterator.empty();
+    return EdgesIterator.empty();
 
   let inner;
 
   if (type === 'mixed') {
     inner = graph._edges.keys();
-    return new Iterator(inner.next.bind(inner));
+    return new EdgesIterator(inner.next.bind(inner));
   }
 
   inner = graph._edges.entries();
 
-  return new Iterator(function next() {
+  return new EdgesIterator(function next() {
     const step = inner.next();
 
     if (step.done)
