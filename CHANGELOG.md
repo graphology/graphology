@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.2 (provisional)
+
+* Fixing `#.inspect`.
+
 ## 0.9.1
 
 * Fixing a bug concerning `#.hasEdge` & typed graphs.

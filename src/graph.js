@@ -2222,7 +2222,7 @@ export default class Graph extends EventEmitter {
 
     const edges = {};
     this._edges.forEach(function(data, key) {
-      const direction = data.undirected ? '<->' : '->';
+      const direction = data instanceof UndirectedEdgeData ? '--' : '->';
 
       let label = '';
 
