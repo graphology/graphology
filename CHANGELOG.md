@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.10.0 (provisional)
+## 0.10.0
 
-* Adding edges iterators.
+* Adding basic edges iterators.
 * Fixing `#.inspect`.
 
 ## 0.9.1
