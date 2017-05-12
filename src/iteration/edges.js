@@ -6,6 +6,7 @@
  * graph's edges.
  */
 import Iterator from 'obliterator/iterator';
+import consume from 'obliterator/consume';
 
 import {
   InvalidArgumentsGraphError,
@@ -13,10 +14,6 @@ import {
 } from '../errors';
 
 import {UndirectedEdgeData} from '../data';
-
-import {
-  consumeIterator
-} from '../utils';
 
 /**
  * Definitions.
@@ -56,7 +53,7 @@ const EDGES_ITERATION = [
 function collect(edges, object) {
   for (const k in object) {
     if (object[k] instanceof Set)
-      edges.push.apply(edges, consumeIterator(object[k].size, object[k].values()));
+      edges.push.apply(edges, consume(object[k].values(), object[k].size));
     else
       edges.push(object[k]);
   }
@@ -76,7 +73,7 @@ function collectForKey(edges, object, key) {
     return;
 
   if (object[key] instanceof Set)
-    edges.push.apply(edges, consumeIterator(object[key].size, object[key].values()));
+    edges.push.apply(edges, consume(object[key].values(), object[key].size));
   else
     edges.push(object[key]);
 
@@ -95,7 +92,7 @@ function createEdgeArray(graph, type) {
     return [];
 
   if (type === 'mixed')
-    return consumeIterator(graph._edges.size, graph._edges.keys());
+    return consume(graph._edges.keys(), graph._edges.size);
 
   const list = [];
 

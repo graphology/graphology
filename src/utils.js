@@ -12,37 +12,18 @@
  * @param  {object} [...objects] - Objects to merge.
  * @return {object}
  */
-export function assign(target, ...objects) {
-  target = target || {};
+export function assign() {
+  const target = arguments[0] || {};
 
-  for (let i = 0, l = objects.length; i < l; i++) {
-    if (!objects[i])
+  for (let i = 1, l = arguments.length; i < l; i++) {
+    if (!arguments[i])
       continue;
 
-    for (const k in objects[i])
-      target[k] = objects[i][k];
+    for (const k in arguments[i])
+      target[k] = arguments[i][k];
   }
 
   return target;
-}
-
-/**
- * Function consuming the given iterator.
- *
- * @param  {number}   size     - Size of the target.
- * @param  {Iterator} iterator - Target iterator.
- * @return {Array}
- */
-export function consumeIterator(size, iterator) {
-  const array = new Array(size);
-
-  let i = 0,
-      step;
-
-  while ((step = iterator.next(), !step.done))
-    array[i++] = step.value;
-
-  return array;
 }
 
 /**

@@ -7,6 +7,7 @@
  */
 import {EventEmitter} from 'events';
 import Iterator from 'obliterator/iterator';
+import consume from 'obliterator/consume';
 
 import {
   InvalidArgumentsGraphError,
@@ -42,7 +43,6 @@ import {
 
 import {
   assign,
-  consumeIterator,
   getMatchingEdge,
   isBunch,
   isGraph,
@@ -1770,7 +1770,7 @@ export default class Graph extends EventEmitter {
    * @return {array} - The nodes.
    */
   nodes() {
-    return consumeIterator(this._nodes.size, this._nodes.keys());
+    return consume(this._nodes.keys(), this._nodes.size);
   }
 
   /**
