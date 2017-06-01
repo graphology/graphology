@@ -2295,7 +2295,7 @@ EDGE_ADD_METHODS.forEach(method => {
         return fn(
           this,
           name,
-          method.generateKey,
+          true,
           (method.type || this.type) === 'undirected',
           null,
           source,
@@ -2309,7 +2309,7 @@ EDGE_ADD_METHODS.forEach(method => {
         return fn(
           this,
           name,
-          method.generateKey,
+          false,
           (method.type || this.type) === 'undirected',
           edge,
           source,
