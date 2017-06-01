@@ -865,15 +865,15 @@ function addEdge(graph, name, mustGenerateKey, undirected, edge, source, target,
   attributes = (0, _utils.assign)({}, graph._options.defaultEdgeAttributes, attributes);
 
   // Must the graph generate an id for this edge?
-  // TODO: we can save up the object if using the default method + coercion
-  if (mustGenerateKey) {
-    edge = graph._edgeKeyGenerator({
-      undirected: undirected,
-      source: source,
-      target: target,
-      attributes: attributes
-    });
-  }
+  var eventData = {
+    key: null,
+    undirected: undirected,
+    source: source,
+    target: target,
+    attributes: attributes
+  };
+
+  if (mustGenerateKey) edge = graph._edgeKeyGenerator(eventData);
 
   // Coercion of edge key
   edge = '' + edge;
@@ -911,13 +911,9 @@ function addEdge(graph, name, mustGenerateKey, undirected, edge, source, target,
   (0, _indices.updateStructureIndex)(graph, undirected, edge, source, target, sourceData, targetData);
 
   // Emitting
-  graph.emit('edgeAdded', {
-    key: edge,
-    source: source,
-    target: target,
-    attributes: attributes,
-    undirected: undirected
-  });
+  eventData.key = edge;
+
+  graph.emit('edgeAdded', eventData);
 
   return edge;
 }
@@ -956,26 +952,41 @@ function mergeEdge(graph, name, mustGenerateKey, undirected, edge, source, targe
   if (!graph.allowSelfLoops && source === target) throw new _errors.UsageGraphError('Graph.' + name + ': source & target are the same ("' + source + '"), thus creating a loop explicitly forbidden by this graph \'allowSelfLoops\' option set to false.');
 
   var sourceData = graph._nodes.get(source),
-      targetData = graph._nodes.get(target);
+      targetData = graph._nodes.get(target),
+      edgeData = void 0;
 
   // Do we need to handle duplicate?
   var alreadyExistingEdge = null;
 
+  if (!mustGenerateKey) {
+    edgeData = graph._edges.get(edge);
+
+    if (edgeData) {
+
+      // Here, we need to ensure, if the user gave a key, that source & target
+      // are coherent
+      if (edgeData.source !== source || edgeData.target !== target || undirected && (edgeData.source !== target || edgeData.target !== source)) {
+        throw new _errors.UsageGraphError('Graph.' + name + ': inconsistency detected when attempting to merge the "' + edge + '" edge with "' + source + '" source & "' + target + '" target vs. (' + edgeData.source + ', ' + edgeData.target + ').');
+      }
+
+      alreadyExistingEdge = edge;
+    }
+  }
+
   // Here, we might have a source / target collision
-  if (!graph.multi && sourceData && (undirected ? typeof sourceData.undirected[target] !== 'undefined' : typeof sourceData.out[target] !== 'undefined')) {
+  if (!alreadyExistingEdge && !graph.multi && sourceData && (undirected ? typeof sourceData.undirected[target] !== 'undefined' : typeof sourceData.out[target] !== 'undefined')) {
     alreadyExistingEdge = (0, _utils.getMatchingEdge)(graph, source, target, undirected ? 'undirected' : 'directed');
   }
 
   // Handling duplicates
   if (alreadyExistingEdge) {
-    var edgeData = graph._edges.get(alreadyExistingEdge);
 
-    // If the key collides but the source & target are inconsistent, we throw
-    if (edgeData.source !== source || edgeData.target !== target) {
-      throw new _errors.UsageGraphError('Graph.' + name + ': inconsistency detected when attempting to merge the "' + edge + '" edge with "' + source + '" source & "' + target + '" target vs. (' + edgeData.source + ', ' + edgeData.target + ').');
-    }
+    // We can skip the attribute merging part if the user did not provide them
+    if (!attributes) return alreadyExistingEdge;
 
-    // Simply merging the attributes of the already existing edge
+    if (!edgeData) edgeData = graph._edges.get(alreadyExistingEdge);
+
+    // Merging the attributes
     (0, _utils.assign)(edgeData.attributes, attributes);
     return alreadyExistingEdge;
   }
@@ -984,15 +995,15 @@ function mergeEdge(graph, name, mustGenerateKey, undirected, edge, source, targe
   attributes = (0, _utils.assign)({}, graph._options.defaultEdgeAttributes, attributes);
 
   // Must the graph generate an id for this edge?
-  // TODO: we can save up the object if using the default method + coercion
-  if (mustGenerateKey) {
-    edge = graph._edgeKeyGenerator({
-      undirected: undirected,
-      source: source,
-      target: target,
-      attributes: attributes
-    });
-  }
+  var eventData = {
+    key: null,
+    undirected: undirected,
+    source: source,
+    target: target,
+    attributes: attributes
+  };
+
+  if (mustGenerateKey) edge = graph._edgeKeyGenerator(eventData);
 
   // Coercion of edge key
   edge = '' + edge;
@@ -1034,13 +1045,9 @@ function mergeEdge(graph, name, mustGenerateKey, undirected, edge, source, targe
   (0, _indices.updateStructureIndex)(graph, undirected, edge, source, target, sourceData, targetData);
 
   // Emitting
-  graph.emit('edgeAdded', {
-    key: edge,
-    source: source,
-    target: target,
-    attributes: attributes,
-    undirected: undirected
-  });
+  eventData.key = edge;
+
+  graph.emit('edgeAdded', eventData);
 
   return edge;
 }
@@ -2913,11 +2920,11 @@ EDGE_ADD_METHODS.forEach(function (method) {
 
     if (method.generateKey) {
       Graph.prototype[name] = function (source, target, attributes) {
-        return fn(this, name, method.generateKey, (method.type || this.type) === 'undirected', null, source, target, attributes);
+        return fn(this, name, true, (method.type || this.type) === 'undirected', null, source, target, attributes);
       };
     } else {
       Graph.prototype[name] = function (edge, source, target, attributes) {
-        return fn(this, name, method.generateKey, (method.type || this.type) === 'undirected', edge, source, target, attributes);
+        return fn(this, name, false, (method.type || this.type) === 'undirected', edge, source, target, attributes);
       };
     }
   });
@@ -3796,15 +3803,21 @@ var _data = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Graphology Edge Iteration
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * ==========================
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Attaching some methods to the Graph class to be able to iterate over a
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * graph's edges.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+
 /**
  * Definitions.
- */
-/**
- * Graphology Edge Iteration
- * ==========================
- *
- * Attaching some methods to the Graph class to be able to iterate over a
- * graph's edges.
  */
 var EDGES_ITERATION = [{
   name: 'edges',
@@ -3826,12 +3839,30 @@ var EDGES_ITERATION = [{
 }];
 
 /**
+ * Helper classes.
+ */
+
+var EdgesIterator = function (_Iterator) {
+  _inherits(EdgesIterator, _Iterator);
+
+  function EdgesIterator() {
+    _classCallCheck(this, EdgesIterator);
+
+    return _possibleConstructorReturn(this, _Iterator.apply(this, arguments));
+  }
+
+  return EdgesIterator;
+}(_iterator2.default);
+
+/**
  * Function collecting edges from the given object.
  *
  * @param  {array}            edges  - Edges array to populate.
  * @param  {object|undefined} object - Target object.
  * @return {array}                   - The found edges.
  */
+
+
 function collect(edges, object) {
   for (var k in object) {
     if (object[k] instanceof Set) edges.push.apply(edges, (0, _consume2.default)(object[k].values(), object[k].size));else edges.push(object[k]);
@@ -3885,18 +3916,18 @@ function createEdgeArray(graph, type) {
  * @return {Iterator}       - Edge iterator.
  */
 function createEdgeIterator(graph, type) {
-  if (graph.size === 0) return _iterator2.default.empty();
+  if (graph.size === 0) return EdgesIterator.empty();
 
   var inner = void 0;
 
   if (type === 'mixed') {
     inner = graph._edges.keys();
-    return new _iterator2.default(inner.next.bind(inner));
+    return new EdgesIterator(inner.next.bind(inner));
   }
 
   inner = graph._edges.entries();
 
-  return new _iterator2.default(function next() {
+  return new EdgesIterator(function next() {
     var step = inner.next();
 
     if (step.done) return step;
