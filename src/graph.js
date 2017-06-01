@@ -305,13 +305,33 @@ function mergeEdge(
     throw new UsageGraphError(`Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
 
   let sourceData = graph._nodes.get(source),
-      targetData = graph._nodes.get(target);
+      targetData = graph._nodes.get(target),
+      edgeData;
 
   // Do we need to handle duplicate?
   let alreadyExistingEdge = null;
 
+  if (!mustGenerateKey) {
+    edgeData = graph._edges.get(edge);
+
+    if (edgeData) {
+
+      // Here, we need to ensure, if the user gave a key, that source & target
+      // are coherent
+      if (
+        (edgeData.source !== source || edgeData.target !== target) ||
+        (undirected && (edgeData.source !== target || edgeData.target !== source))
+      ) {
+        throw new UsageGraphError(`Graph.${name}: inconsistency detected when attempting to merge the "${edge}" edge with "${source}" source & "${target}" target vs. (${edgeData.source}, ${edgeData.target}).`);
+      }
+
+      alreadyExistingEdge = edge;
+    }
+  }
+
   // Here, we might have a source / target collision
   if (
+    !alreadyExistingEdge &&
     !graph.multi &&
     sourceData &&
     (
@@ -325,15 +345,15 @@ function mergeEdge(
 
   // Handling duplicates
   if (alreadyExistingEdge) {
-    const edgeData = graph._edges.get(alreadyExistingEdge);
 
-    // If the key collides but the source & target are inconsistent, we throw
-    if (edgeData.source !== source ||
-        edgeData.target !== target) {
-      throw new UsageGraphError(`Graph.${name}: inconsistency detected when attempting to merge the "${edge}" edge with "${source}" source & "${target}" target vs. (${edgeData.source}, ${edgeData.target}).`);
-    }
+    // We can skip the attribute merging part if the user did not provide them
+    if (!attributes)
+      return alreadyExistingEdge;
 
-    // Simply merging the attributes of the already existing edge
+    if (!edgeData)
+      edgeData = graph._edges.get(alreadyExistingEdge);
+
+    // Merging the attributes
     assign(edgeData.attributes, attributes);
     return alreadyExistingEdge;
   }

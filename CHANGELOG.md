@@ -1,8 +1,9 @@
 # Changelog
 
-## 0.10.1
+## 0.10.1 (provisional)
 
 * Performance enhancements.
+* Fixing a bug with `#.mergeEdge` & undirected edges.
 
 ## 0.10.0
 
