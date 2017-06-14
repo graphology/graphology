@@ -3,6 +3,7 @@
 node_modules
 *.log
 Notes.md
+package-lock.json
 
 # Transpiled folders
 dist
