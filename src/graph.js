@@ -1559,10 +1559,12 @@ export default class Graph extends EventEmitter {
   getNodeAttribute(node, name) {
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const data = this._nodes.get(node);
+
+    if (!data)
       throw new NotFoundGraphError(`Graph.getNodeAttribute: could not find the "${node}" node in the graph.`);
 
-    return this._nodes.get(node).attributes[name];
+    return data.attributes[name];
   }
 
   /**
@@ -1576,10 +1578,12 @@ export default class Graph extends EventEmitter {
   getNodeAttributes(node) {
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const data = this._nodes.get(node);
+
+    if (!data)
       throw new NotFoundGraphError(`Graph.getNodeAttributes: could not find the "${node}" node in the graph.`);
 
-    return this._nodes.get(node).attributes;
+    return data.attributes;
   }
 
   /**
@@ -1594,10 +1598,12 @@ export default class Graph extends EventEmitter {
   hasNodeAttribute(node, name) {
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const data = this._nodes.get(node);
+
+    if (!data)
       throw new NotFoundGraphError(`Graph.hasNodeAttribute: could not find the "${node}" node in the graph.`);
 
-    return this._nodes.get(node).attributes.hasOwnProperty(name);
+    return data.attributes.hasOwnProperty(name);
   }
 
   /**
@@ -1614,13 +1620,15 @@ export default class Graph extends EventEmitter {
   setNodeAttribute(node, name, value) {
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const data = this._nodes.get(node);
+
+    if (!data)
       throw new NotFoundGraphError(`Graph.setNodeAttribute: could not find the "${node}" node in the graph.`);
 
     if (arguments.length < 3)
       throw new InvalidArgumentsGraphError('Graph.setNodeAttribute: not enough arguments. Either you forgot to pass the attribute\'s name or value, or you meant to use #.replaceNodeAttributes / #.mergeNodeAttributes instead.');
 
-    this._nodes.get(node).attributes[name] = value;
+    data.attributes[name] = value;
 
     // Emitting
     this.emit('nodeAttributesUpdated', {
@@ -1650,7 +1658,9 @@ export default class Graph extends EventEmitter {
   updateNodeAttribute(node, name, updater) {
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const data = this._nodes.get(node);
+
+    if (!data)
       throw new NotFoundGraphError(`Graph.updateNodeAttribute: could not find the "${node}" node in the graph.`);
 
     if (arguments.length < 3)
@@ -1659,7 +1669,7 @@ export default class Graph extends EventEmitter {
     if (typeof updater !== 'function')
       throw new InvalidArgumentsGraphError('Graph.updateAttribute: updater should be a function.');
 
-    const attributes = this._nodes.get(node).attributes;
+    const attributes = data.attributes;
 
     attributes[name] = updater(attributes[name]);
 
@@ -1688,10 +1698,12 @@ export default class Graph extends EventEmitter {
   removeNodeAttribute(node, name) {
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const data = this._nodes.get(node);
+
+    if (!data)
       throw new NotFoundGraphError(`Graph.hasNodeAttribute: could not find the "${node}" node in the graph.`);
 
-    delete this._nodes.get(node).attributes[name];
+    delete data.attributes[name];
 
     // Emitting
     this.emit('nodeAttributesUpdated', {
@@ -1718,13 +1730,13 @@ export default class Graph extends EventEmitter {
   replaceNodeAttributes(node, attributes) {
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const data = this._nodes.get(node);
+
+    if (!data)
       throw new NotFoundGraphError(`Graph.replaceNodeAttributes: could not find the "${node}" node in the graph.`);
 
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError('Graph.replaceNodeAttributes: provided attributes are not a plain object.');
-
-    const data = this._nodes.get(node);
 
     const oldAttributes = data.attributes;
 
@@ -1756,13 +1768,13 @@ export default class Graph extends EventEmitter {
   mergeNodeAttributes(node, attributes) {
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const data = this._nodes.get(node);
+
+    if (!data)
       throw new NotFoundGraphError(`Graph.mergeNodeAttributes: could not find the "${node}" node in the graph.`);
 
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError('Graph.mergeNodeAttributes: provided attributes are not a plain object.');
-
-    const data = this._nodes.get(node);
 
     assign(data.attributes, attributes);
 

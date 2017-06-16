@@ -2176,9 +2176,11 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.getNodeAttribute = function getNodeAttribute(node, name) {
     node = '' + node;
 
-    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.getNodeAttribute: could not find the "' + node + '" node in the graph.');
+    var data = this._nodes.get(node);
 
-    return this._nodes.get(node).attributes[name];
+    if (!data) throw new _errors.NotFoundGraphError('Graph.getNodeAttribute: could not find the "' + node + '" node in the graph.');
+
+    return data.attributes[name];
   };
 
   /**
@@ -2194,9 +2196,11 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.getNodeAttributes = function getNodeAttributes(node) {
     node = '' + node;
 
-    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.getNodeAttributes: could not find the "' + node + '" node in the graph.');
+    var data = this._nodes.get(node);
 
-    return this._nodes.get(node).attributes;
+    if (!data) throw new _errors.NotFoundGraphError('Graph.getNodeAttributes: could not find the "' + node + '" node in the graph.');
+
+    return data.attributes;
   };
 
   /**
@@ -2213,9 +2217,11 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.hasNodeAttribute = function hasNodeAttribute(node, name) {
     node = '' + node;
 
-    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.hasNodeAttribute: could not find the "' + node + '" node in the graph.');
+    var data = this._nodes.get(node);
 
-    return this._nodes.get(node).attributes.hasOwnProperty(name);
+    if (!data) throw new _errors.NotFoundGraphError('Graph.hasNodeAttribute: could not find the "' + node + '" node in the graph.');
+
+    return data.attributes.hasOwnProperty(name);
   };
 
   /**
@@ -2234,11 +2240,13 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.setNodeAttribute = function setNodeAttribute(node, name, value) {
     node = '' + node;
 
-    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.setNodeAttribute: could not find the "' + node + '" node in the graph.');
+    var data = this._nodes.get(node);
+
+    if (!data) throw new _errors.NotFoundGraphError('Graph.setNodeAttribute: could not find the "' + node + '" node in the graph.');
 
     if (arguments.length < 3) throw new _errors.InvalidArgumentsGraphError('Graph.setNodeAttribute: not enough arguments. Either you forgot to pass the attribute\'s name or value, or you meant to use #.replaceNodeAttributes / #.mergeNodeAttributes instead.');
 
-    this._nodes.get(node).attributes[name] = value;
+    data.attributes[name] = value;
 
     // Emitting
     this.emit('nodeAttributesUpdated', {
@@ -2270,13 +2278,15 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.updateNodeAttribute = function updateNodeAttribute(node, name, updater) {
     node = '' + node;
 
-    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.updateNodeAttribute: could not find the "' + node + '" node in the graph.');
+    var data = this._nodes.get(node);
+
+    if (!data) throw new _errors.NotFoundGraphError('Graph.updateNodeAttribute: could not find the "' + node + '" node in the graph.');
 
     if (arguments.length < 3) throw new _errors.InvalidArgumentsGraphError('Graph.updateNodeAttribute: not enough arguments. Either you forgot to pass the attribute\'s name or updater, or you meant to use #.replaceNodeAttributes / #.mergeNodeAttributes instead.');
 
     if (typeof updater !== 'function') throw new _errors.InvalidArgumentsGraphError('Graph.updateAttribute: updater should be a function.');
 
-    var attributes = this._nodes.get(node).attributes;
+    var attributes = data.attributes;
 
     attributes[name] = updater(attributes[name]);
 
@@ -2307,9 +2317,11 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.removeNodeAttribute = function removeNodeAttribute(node, name) {
     node = '' + node;
 
-    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.hasNodeAttribute: could not find the "' + node + '" node in the graph.');
+    var data = this._nodes.get(node);
 
-    delete this._nodes.get(node).attributes[name];
+    if (!data) throw new _errors.NotFoundGraphError('Graph.hasNodeAttribute: could not find the "' + node + '" node in the graph.');
+
+    delete data.attributes[name];
 
     // Emitting
     this.emit('nodeAttributesUpdated', {
@@ -2338,11 +2350,11 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.replaceNodeAttributes = function replaceNodeAttributes(node, attributes) {
     node = '' + node;
 
-    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.replaceNodeAttributes: could not find the "' + node + '" node in the graph.');
+    var data = this._nodes.get(node);
+
+    if (!data) throw new _errors.NotFoundGraphError('Graph.replaceNodeAttributes: could not find the "' + node + '" node in the graph.');
 
     if (!(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.replaceNodeAttributes: provided attributes are not a plain object.');
-
-    var data = this._nodes.get(node);
 
     var oldAttributes = data.attributes;
 
@@ -2376,11 +2388,11 @@ var Graph = function (_EventEmitter) {
   Graph.prototype.mergeNodeAttributes = function mergeNodeAttributes(node, attributes) {
     node = '' + node;
 
-    if (!this.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.mergeNodeAttributes: could not find the "' + node + '" node in the graph.');
+    var data = this._nodes.get(node);
+
+    if (!data) throw new _errors.NotFoundGraphError('Graph.mergeNodeAttributes: could not find the "' + node + '" node in the graph.');
 
     if (!(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.mergeNodeAttributes: provided attributes are not a plain object.');
-
-    var data = this._nodes.get(node);
 
     (0, _utils.assign)(data.attributes, attributes);
 

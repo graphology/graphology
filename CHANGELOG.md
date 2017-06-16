@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.2
+
+* Performance enhancements.
+
 ## 0.10.1
 
 * Performance enhancements.
