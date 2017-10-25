@@ -250,6 +250,11 @@ function addEdge(
     targetData
   );
 
+  if (undirected)
+    graph._undirectedSize++;
+  else
+    graph._directedSize++;
+
   // Emitting
   eventData.key = edge;
 
@@ -431,6 +436,11 @@ function mergeEdge(
     targetData
   );
 
+  if (undirected)
+    graph._undirectedSize++;
+  else
+    graph._directedSize++;
+
   // Emitting
   eventData.key = edge;
 
@@ -530,6 +540,8 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_attributes', {});
     privateProperty(this, '_nodes', new Map());
     privateProperty(this, '_edges', new Map());
+    privateProperty(this, '_directedSize', 0);
+    privateProperty(this, '_undirectedSize', 0);
     privateProperty(this, '_edgeKeyGenerator', options.edgeKeyGenerator || incrementalId());
 
     // Options
@@ -541,6 +553,8 @@ export default class Graph extends EventEmitter {
     //-- Properties readers
     readOnlyProperty(this, 'order', () => this._nodes.size);
     readOnlyProperty(this, 'size', () => this._edges.size);
+    readOnlyProperty(this, 'directedSize', () => this._directedSize);
+    readOnlyProperty(this, 'undirectedSize', () => this._undirectedSize);
     readOnlyProperty(this, 'multi', this._options.multi);
     readOnlyProperty(this, 'type', this._options.type);
     readOnlyProperty(this, 'allowSelfLoops', this._options.allowSelfLoops);
@@ -1288,6 +1302,11 @@ export default class Graph extends EventEmitter {
 
     // Clearing index
     clearEdgeFromStructureIndex(this, undirected, edge, data);
+
+    if (undirected)
+      this._undirectedSize--;
+    else
+      this._directedSize--;
 
     // Emitting
     this.emit('edgeDropped', {
