@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.11.0 (provisional)
+## 0.11.0
 
 * Adding `#.directedSize` & `#.undirectedSize`.
 
