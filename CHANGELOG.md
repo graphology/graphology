@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.1
+
+* Fixing the `#.edges` for undirected graphs.
+
 ## 0.11.0
 
 * Adding `#.directedSize` & `#.undirectedSize`.
