@@ -243,6 +243,17 @@ export default function edgesIteration(Graph, checkers) {
         simpleGraph.addEdgeWithKey('1->4', 1, 4);
 
         assert.deepEqual(simpleGraph.edges(1), ['1->2', '1->3', '1->4']);
+      },
+
+      'it should also work with typed graphs.': function() {
+        const undirected = new Graph({type: 'undirected'}),
+              directed = new Graph({type: 'directed'});
+
+        undirected.mergeEdgeWithKey('1--2', 1, 2);
+        directed.mergeEdgeWithKey('1->2', 1, 2);
+
+        assert.deepEqual(undirected.edges(1, 2), ['1--2']);
+        assert.deepEqual(directed.edges(1, 2), ['1->2']);
       }
     }
   };

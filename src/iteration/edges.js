@@ -189,12 +189,17 @@ function createEdgeArrayForPath(graph, type, source, target) {
   const sourceData = graph._nodes.get(source);
 
   if (type !== 'undirected') {
-    collectForKey(edges, sourceData.in, target);
-    collectForKey(edges, sourceData.out, target);
+
+    if (typeof sourceData.in !== 'undefined')
+      collectForKey(edges, sourceData.in, target);
+
+    if (typeof sourceData.out !== 'undefined')
+      collectForKey(edges, sourceData.out, target);
   }
 
   if (type !== 'directed') {
-    collectForKey(edges, sourceData.undirected, target);
+    if (typeof sourceData.undirected !== 'undefined')
+      collectForKey(edges, sourceData.undirected, target);
   }
 
   return edges;
@@ -262,17 +267,6 @@ function attachEdgeArrayCreator(Class, description) {
         throw new NotFoundGraphError(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
 
       // Iterating over the edges between source & target
-      let hasEdge;
-
-      if (type !== 'undirected')
-        hasEdge = this.hasDirectedEdge(source, target);
-      else
-        hasEdge = this.hasUndirectedEdge(source, target);
-
-      // If no such edge exist, we'll stop right there.
-      if (!hasEdge)
-        return [];
-
       return createEdgeArrayForPath(this, type, source, target);
     }
 
@@ -345,17 +339,6 @@ export function attachEdgeIteratorCreator(Class, description) {
     //     throw new NotFoundGraphError(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
 
     //   // Iterating over the edges between source & target
-    //   let hasEdge;
-
-    //   if (type !== 'undirected')
-    //     hasEdge = this.hasDirectedEdge(source, target);
-    //   else
-    //     hasEdge = this.hasUndirectedEdge(source, target);
-
-    //   // If no such edge exist, we'll stop right there.
-    //   if (!hasEdge)
-    //     return [];
-
     //   return createEdgeArrayForPath(this, type, source, target);
     // }
 
