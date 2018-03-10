@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.11.2 (provisional)
+## 0.11.2
 
 * Fixing an issue with `#.mergeNode` & string coercion.
 

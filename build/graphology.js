@@ -1885,6 +1885,7 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.mergeNode = function mergeNode(node, attributes) {
+    node = '' + node;
 
     // If the node already exists, we merge the attributes
     var data = this._nodes.get(node);
