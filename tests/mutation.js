@@ -78,6 +78,13 @@ export default function mutation(Graph, checkers) {
           eyes: 'blue',
           age: 15
         });
+      },
+
+      'it should coerce keys to string.': function() {
+        const graph = new Graph();
+        graph.addNode(4);
+
+        assert.doesNotThrow(() => graph.mergeNode(4));
       }
     },
 

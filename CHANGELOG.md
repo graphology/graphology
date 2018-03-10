@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.2 (provisional)
+
+* Fixing an issue with `#.mergeNode` & string coercion.
+
 ## 0.11.1
 
 * Fixing the `#.edges` for undirected graphs.

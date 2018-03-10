@@ -1170,6 +1170,7 @@ export default class Graph extends EventEmitter {
    * @return {any}                 - The node.
    */
   mergeNode(node, attributes) {
+    node = '' + node;
 
     // If the node already exists, we merge the attributes
     const data = this._nodes.get(node);
