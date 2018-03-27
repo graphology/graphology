@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.11.3 (provisional)
+## 0.11.3
 
 * Fixing issues related to the `obliterator` dependencies.
 
