@@ -7,7 +7,7 @@
  */
 import {EventEmitter} from 'events';
 import Iterator from 'obliterator/iterator';
-import consume from 'obliterator/consume';
+import take from 'obliterator/take';
 
 import {
   InvalidArgumentsGraphError,
@@ -1821,7 +1821,7 @@ export default class Graph extends EventEmitter {
    * @return {array} - The nodes.
    */
   nodes() {
-    return consume(this._nodes.keys(), this._nodes.size);
+    return take(this._nodes.keys(), this._nodes.size);
   }
 
   /**

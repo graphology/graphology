@@ -402,29 +402,45 @@ function incrementalId() {
 /* 2 */
 /***/ (function(module, exports) {
 
+/* eslint no-constant-condition: 0 */
 /**
- * Obliterator Consume Function
- * =============================
+ * Obliterator Take Function
+ * ==========================
  *
- * Function consuming the given iterator into an array.
+ * Function taking n or every value of the given iterator and returns them
+ * into an array.
  */
 
 /**
- * Consume.
+ * Take.
  *
  * @param  {Iterator} iterator - Target iterator.
- * @param  {number}   [size]   - Optional size.
+ * @param  {number}   [n]      - Optional number of items to take.
  * @return {array}
  */
-module.exports = function consume(iterator, size) {
-  var array = arguments.length > 1 ? new Array(size) : [],
+module.exports = function take(iterator, n) {
+  var l = arguments.length > 1 ? n : Infinity,
+      array = l !== Infinity ? new Array(l) : [],
       step,
       i = 0;
 
-  while ((step = iterator.next(), !step.done))
-    array[i++] = step.value;
+  while (true) {
 
-  return array;
+    if (i === l)
+      return array;
+
+    step = iterator.next();
+
+    if (step.done) {
+
+      if (i !== n)
+        return array.slice(0, i);
+
+      return array;
+    }
+
+    array[i++] = step.value;
+  }
 };
 
 
@@ -619,6 +635,7 @@ function Iterator(next) {
  *
  * @return {object}
  */
+// NOTE: maybe this should dropped for performance?
 Iterator.prototype.next = function() {
   if (this.done)
     return {done: true};
@@ -640,20 +657,21 @@ if (typeof Symbol !== 'undefined')
   };
 
 /**
- * Returning an iterator of the given value.
+ * Returning an iterator of the given values.
  *
- * @param  {any} value - Value.
+ * @param  {any...} values - Values.
  * @return {Iterator}
  */
-Iterator.of = function(value) {
-  var consumed = false;
+Iterator.of = function() {
+  var args = arguments,
+      l = args.length,
+      i = 0;
 
   return new Iterator(function() {
-    if (consumed)
+    if (i >= l)
       return {done: true};
 
-    consumed = true;
-    return {value: value};
+    return {done: false, value: args[i++]};
   });
 };
 
@@ -833,9 +851,9 @@ var _iterator = __webpack_require__(4);
 
 var _iterator2 = _interopRequireDefault(_iterator);
 
-var _consume = __webpack_require__(2);
+var _take = __webpack_require__(2);
 
-var _consume2 = _interopRequireDefault(_consume);
+var _take2 = _interopRequireDefault(_take);
 
 var _errors = __webpack_require__(0);
 
@@ -2557,7 +2575,7 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.nodes = function nodes() {
-    return (0, _consume2.default)(this._nodes.keys(), this._nodes.size);
+    return (0, _take2.default)(this._nodes.keys(), this._nodes.size);
   };
 
   /**
@@ -4125,9 +4143,9 @@ var _iterator = __webpack_require__(4);
 
 var _iterator2 = _interopRequireDefault(_iterator);
 
-var _consume = __webpack_require__(2);
+var _take = __webpack_require__(2);
 
-var _consume2 = _interopRequireDefault(_consume);
+var _take2 = _interopRequireDefault(_take);
 
 var _errors = __webpack_require__(0);
 
@@ -4197,7 +4215,7 @@ var EdgesIterator = function (_Iterator) {
 
 function collect(edges, object) {
   for (var k in object) {
-    if (object[k] instanceof Set) edges.push.apply(edges, (0, _consume2.default)(object[k].values(), object[k].size));else edges.push(object[k]);
+    if (object[k] instanceof Set) edges.push.apply(edges, (0, _take2.default)(object[k].values(), object[k].size));else edges.push(object[k]);
   }
 }
 
@@ -4213,7 +4231,7 @@ function collectForKey(edges, object, key) {
 
   if (!(key in object)) return;
 
-  if (object[key] instanceof Set) edges.push.apply(edges, (0, _consume2.default)(object[key].values(), object[key].size));else edges.push(object[key]);
+  if (object[key] instanceof Set) edges.push.apply(edges, (0, _take2.default)(object[key].values(), object[key].size));else edges.push(object[key]);
 
   return;
 }
@@ -4228,7 +4246,7 @@ function collectForKey(edges, object, key) {
 function createEdgeArray(graph, type) {
   if (graph.size === 0) return [];
 
-  if (type === 'mixed') return (0, _consume2.default)(graph._edges.keys(), graph._edges.size);
+  if (type === 'mixed') return (0, _take2.default)(graph._edges.keys(), graph._edges.size);
 
   var list = [];
 
@@ -4482,9 +4500,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.attachNeighborIterationMethods = attachNeighborIterationMethods;
 
-var _consume = __webpack_require__(2);
+var _take = __webpack_require__(2);
 
-var _consume2 = _interopRequireDefault(_consume);
+var _take2 = _interopRequireDefault(_take);
 
 var _errors = __webpack_require__(0);
 
@@ -4618,7 +4636,7 @@ function attachNeighborArrayCreator(Class, description) {
       // Here, we want to iterate over a node's relevant neighbors
       var _neighbors = createNeighborSetForNode(this, type, direction, node);
 
-      return (0, _consume2.default)(_neighbors.values(), _neighbors.size);
+      return (0, _take2.default)(_neighbors.values(), _neighbors.size);
     }
 
     throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid number of arguments (expecting 1 or 2 and got ' + arguments.length + ').');

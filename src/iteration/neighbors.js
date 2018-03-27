@@ -5,7 +5,7 @@
  * Attaching some methods to the Graph class to be able to iterate over
  * neighbors.
  */
-import consume from 'obliterator/consume';
+import take from 'obliterator/take';
 
 import {
   InvalidArgumentsGraphError,
@@ -155,7 +155,7 @@ function attachNeighborArrayCreator(Class, description) {
         node
       );
 
-      return consume(neighbors.values(), neighbors.size);
+      return take(neighbors.values(), neighbors.size);
     }
 
     throw new InvalidArgumentsGraphError(`Graph.${name}: invalid number of arguments (expecting 1 or 2 and got ${arguments.length}).`);

@@ -5,7 +5,7 @@
  * Testing the edges iteration-related methods of the graph.
  */
 import assert from 'assert';
-import consume from 'obliterator/consume';
+import take from 'obliterator/take';
 import {
   deepMerge,
   sameMembers
@@ -213,7 +213,7 @@ export default function edgesIteration(Graph, checkers) {
         'it should be possible to return an iterator over the relevant edges.': function() {
           const iterator = graph[name + 'Iterator']();
 
-          assert.deepEqual(consume(iterator), data.all);
+          assert.deepEqual(take(iterator), data.all);
         },
 
         'it should return a node\'s relevant edges.': function() {

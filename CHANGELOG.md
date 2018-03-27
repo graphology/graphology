@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.3 (provisional)
+
+* Fixing issues related to the `obliterator` dependencies.
+
 ## 0.11.2
 
 * Fixing an issue with `#.mergeNode` & string coercion.
