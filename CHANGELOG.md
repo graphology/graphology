@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.11.4 (provisional)
+## 0.11.4
 
 * Improving performance of neighbors-related methods.
 * Improving performance of edges-related methods.
