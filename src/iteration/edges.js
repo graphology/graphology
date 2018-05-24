@@ -151,13 +151,11 @@ function createEdgeIterator(graph, type) {
  * @param  {Graph}   graph     - Target Graph instance.
  * @param  {string}  type      - Type of edges to retrieve.
  * @param  {string}  direction - In or out?
- * @param  {any}     node      - Target node.
+ * @param  {any}     nodeData  - Target node's data.
  * @return {array}             - Array of edges.
  */
-function createEdgeArrayForNode(graph, type, direction, node) {
+function createEdgeArrayForNode(graph, type, direction, nodeData) {
   const edges = [];
-
-  const nodeData = graph._nodes.get(node);
 
   if (type !== 'undirected') {
 
@@ -249,11 +247,13 @@ function attachEdgeArrayCreator(Class, description) {
     if (arguments.length === 1) {
       source = '' + source;
 
-      if (!this._nodes.has(source))
+      const nodeData = this._nodes.get(source);
+
+      if (typeof nodeData === 'undefined')
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${source}" node in the graph.`);
 
       // Iterating over a node's edges
-      return createEdgeArrayForNode(this, type, direction, source);
+      return createEdgeArrayForNode(this, type, direction, nodeData);
     }
 
     if (arguments.length === 2) {

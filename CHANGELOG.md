@@ -3,6 +3,7 @@
 ## 0.11.4 (provisional)
 
 * Improving performance of neighbors-related methods.
+* Improving performance of edges-related methods.
 
 ## 0.11.3
 
