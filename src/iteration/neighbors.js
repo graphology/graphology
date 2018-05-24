@@ -47,7 +47,7 @@ const NEIGHBORS_ITERATION = [
  * @param {object}   object    - Target object.
  */
 function merge(neighbors, object) {
-  if (!object)
+  if (typeof object === 'undefined')
     return;
 
   for (const neighbor in object)
@@ -61,12 +61,23 @@ function merge(neighbors, object) {
  * @param  {string}       type      - Type of neighbors.
  * @param  {string}       direction - Direction.
  * @param  {any}          node      - Target node.
- * @return {Set|BasicSet}           - The neighbors set.
+ * @return {Array}                  - The list of neighbors.
  */
 function createNeighborSetForNode(graph, type, direction, node) {
-  const neighbors = new Set();
 
   const nodeData = graph._nodes.get(node);
+
+  // If we want only undirected or in or out, we can roll some optimizations
+  if (type !== 'mixed') {
+    if (type === 'undirected')
+      return Object.keys(nodeData.undirected);
+
+    if (typeof direction === 'string')
+      return Object.keys(nodeData[direction]);
+  }
+
+  // Else we need to keep a set of neighbors not to return duplicates
+  const neighbors = new Set();
 
   if (type !== 'undirected') {
 
@@ -82,7 +93,44 @@ function createNeighborSetForNode(graph, type, direction, node) {
     merge(neighbors, nodeData.undirected);
   }
 
-  return neighbors;
+  return take(neighbors.values(), neighbors.size);
+}
+
+/**
+ * Function returning whether the given node has target neighbor.
+ *
+ * @param  {Graph}        graph     - Target graph.
+ * @param  {string}       type      - Type of neighbor.
+ * @param  {string}       direction - Direction.
+ * @param  {any}          node      - Target node.
+ * @param  {any}          neighbor  - Target neighbor.
+ * @return {boolean}
+ */
+function nodeHasNeighbor(graph, type, direction, node, neighbor) {
+
+  const nodeData = graph._nodes.get(node);
+
+  if (type !== 'undirected') {
+
+    if (direction !== 'out' && typeof nodeData.in !== 'undefined') {
+      for (const k in nodeData.in)
+        if (k === neighbor)
+          return true;
+    }
+    if (direction !== 'in' && typeof nodeData.out !== 'undefined') {
+      for (const k in nodeData.out)
+        if (k === neighbor)
+          return true;
+    }
+  }
+
+  if (type !== 'directed' && typeof nodeData.undirected !== 'undefined') {
+    for (const k in nodeData.undirected)
+        if (k === neighbor)
+          return true;
+  }
+
+  return false;
 }
 
 /**
@@ -132,14 +180,13 @@ function attachNeighborArrayCreator(Class, description) {
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node2}" node in the graph.`);
 
       // Here, we want to assess whether the two given nodes are neighbors
-      const neighbors = createNeighborSetForNode(
+      return nodeHasNeighbor(
         this,
         type,
         direction,
-        node1
+        node1,
+        node2
       );
-
-      return neighbors.has(node2);
     }
     else if (arguments.length === 1) {
       node = '' + node;
@@ -155,7 +202,7 @@ function attachNeighborArrayCreator(Class, description) {
         node
       );
 
-      return take(neighbors.values(), neighbors.size);
+      return neighbors;
     }
 
     throw new InvalidArgumentsGraphError(`Graph.${name}: invalid number of arguments (expecting 1 or 2 and got ${arguments.length}).`);

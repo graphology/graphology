@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.4 (provisional)
+
+* Improving performance of neighbors-related methods.
+
 ## 0.11.3
 
 * Fixing issues related to the `obliterator` dependencies.
