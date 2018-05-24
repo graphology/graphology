@@ -60,12 +60,10 @@ function merge(neighbors, object) {
  * @param  {Graph}        graph     - Target graph.
  * @param  {string}       type      - Type of neighbors.
  * @param  {string}       direction - Direction.
- * @param  {any}          node      - Target node.
+ * @param  {any}          nodeData  - Target node's data.
  * @return {Array}                  - The list of neighbors.
  */
-function createNeighborSetForNode(graph, type, direction, node) {
-
-  const nodeData = graph._nodes.get(node);
+function createNeighborSetForNode(graph, type, direction, nodeData) {
 
   // If we want only undirected or in or out, we can roll some optimizations
   if (type !== 'mixed') {
@@ -191,7 +189,9 @@ function attachNeighborArrayCreator(Class, description) {
     else if (arguments.length === 1) {
       node = '' + node;
 
-      if (!this._nodes.has(node))
+      const nodeData = this._nodes.get(node);
+
+      if (typeof nodeData === 'undefined')
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph.`);
 
       // Here, we want to iterate over a node's relevant neighbors
@@ -199,7 +199,7 @@ function attachNeighborArrayCreator(Class, description) {
         this,
         type,
         direction,
-        node
+        nodeData
       );
 
       return neighbors;
