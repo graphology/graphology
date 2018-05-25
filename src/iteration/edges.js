@@ -99,12 +99,19 @@ function createEdgeArray(graph, type) {
   if (type === 'mixed')
     return take(graph._edges.keys(), graph._edges.size);
 
-  const list = [];
+  const size = type === 'undirected' ?
+    graph.undirectedSize :
+    graph.directedSize;
+
+  const list = new Array(size),
+        mask = type === 'undirected';
+
+  let i = 0;
 
   graph._edges.forEach((data, edge) => {
 
-    if ((data instanceof UndirectedEdgeData) === (type === 'undirected'))
-      list.push(edge);
+    if ((data instanceof UndirectedEdgeData) === mask)
+      list[i++] = edge;
   });
 
   return list;
