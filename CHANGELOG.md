@@ -3,6 +3,7 @@
 ## 0.11.5
 
 * Improving performance of edges-related methods.
+* Fixing edge-case deopt for `#.dropEdges`.
 
 ## 0.11.4
 

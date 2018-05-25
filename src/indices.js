@@ -92,9 +92,14 @@ export function clearStructureIndex(graph) {
   graph._nodes.forEach(data => {
 
     // Clearing now useless properties
-    data.in = {};
-    data.out = {};
-    data.undirected = {};
+    if (typeof data.in !== 'undefined') {
+      data.in = {};
+      data.out = {};
+    }
+
+    if (typeof data.undirected !== 'undefined') {
+      data.undirected = {};
+    }
   });
 }
 
