@@ -96,7 +96,7 @@ function createEdgeArray(graph, type) {
   if (graph.size === 0)
     return [];
 
-  if (type === 'mixed')
+  if (type === 'mixed' || type === graph.type)
     return take(graph._edges.keys(), graph._edges.size);
 
   const size = type === 'undirected' ?
