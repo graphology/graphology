@@ -54,6 +54,7 @@ function attachAttributeGetter(Class, method, checker, type) {
 
       name = arguments[2];
 
+      // TODO: possible to optimize by doing this check in `getMatchingEdge`
       if (!this[checker](source, target))
         throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
 
