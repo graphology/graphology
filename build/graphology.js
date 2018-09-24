@@ -3513,9 +3513,14 @@ function clearStructureIndex(graph) {
   graph._nodes.forEach(function (data) {
 
     // Clearing now useless properties
-    data.in = {};
-    data.out = {};
-    data.undirected = {};
+    if (typeof data.in !== 'undefined') {
+      data.in = {};
+      data.out = {};
+    }
+
+    if (typeof data.undirected !== 'undefined') {
+      data.undirected = {};
+    }
   });
 }
 
@@ -3611,6 +3616,7 @@ function attachAttributeGetter(Class, method, checker, type) {
 
       name = arguments[2];
 
+      // TODO: possible to optimize by doing this check in `getMatchingEdge`
       if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
 
       element = (0, _utils.getMatchingEdge)(this, source, target, type);
@@ -4246,13 +4252,18 @@ function collectForKey(edges, object, key) {
 function createEdgeArray(graph, type) {
   if (graph.size === 0) return [];
 
-  if (type === 'mixed') return (0, _take2.default)(graph._edges.keys(), graph._edges.size);
+  if (type === 'mixed' || type === graph.type) return (0, _take2.default)(graph._edges.keys(), graph._edges.size);
 
-  var list = [];
+  var size = type === 'undirected' ? graph.undirectedSize : graph.directedSize;
+
+  var list = new Array(size),
+      mask = type === 'undirected';
+
+  var i = 0;
 
   graph._edges.forEach(function (data, edge) {
 
-    if (data instanceof _data.UndirectedEdgeData === (type === 'undirected')) list.push(edge);
+    if (data instanceof _data.UndirectedEdgeData === mask) list[i++] = edge;
   });
 
   return list;
