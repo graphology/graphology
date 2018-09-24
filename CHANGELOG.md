@@ -2,6 +2,7 @@
 
 ## 0.12.0 (provisional)
 
+* Adding `#.inboundNeighbors` & `#.outboundNeighbors`.
 * Adding `#.inboundEdges` & `#.outboundEdges`.
 * Fixing semantics of `#.inEdges` & `#.outEdges` for arity 2.
 * Improving performance of edges-related methods.

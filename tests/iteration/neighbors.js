@@ -13,6 +13,8 @@ const METHODS = [
   'neighbors',
   'inNeighbors',
   'outNeighbors',
+  'inboundNeighbors',
+  'outboundNeighbors',
   'directedNeighbors',
   'undirectedNeighbors'
 ];
@@ -76,6 +78,29 @@ export default function neighborsIteration(Graph, checkers) {
       node: {
         key: 'John',
         neighbors: ['Thomas', 'Martha']
+      }
+    },
+    inboundNeighbors: {
+      are: [
+        ['John', 'Thomas', false],
+        ['John', 'Roger', true],
+        ['Martha', 'John', true]
+      ],
+      node: {
+        key: 'John',
+        neighbors: ['Catherine', 'Martha', 'Roger']
+      }
+    },
+    outboundNeighbors: {
+      are: [
+        ['John', 'Thomas', true],
+        ['John', 'Roger', true],
+        ['Martha', 'John', true],
+        ['John', 'Catherine', false]
+      ],
+      node: {
+        key: 'John',
+        neighbors: ['Thomas', 'Martha', 'Roger']
       }
     },
     directedNeighbors: {
