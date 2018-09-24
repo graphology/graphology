@@ -30,11 +30,15 @@ export function updateStructureIndex(
         inKey = undirected ? 'undirected' : 'in';
 
   // Handling source
-  if (typeof sourceData[outKey][target] === 'undefined')
-    sourceData[outKey][target] = multi ? new Set() : edge;
+  let edgeOrSet = sourceData[outKey][target];
+
+  if (typeof edgeOrSet === 'undefined') {
+    edgeOrSet = multi ? new Set() : edge;
+    sourceData[outKey][target] = edgeOrSet;
+  }
 
   if (multi)
-    sourceData[outKey][target].add(edge);
+    edgeOrSet.add(edge);
 
   // If selfLoop, we break here
   if (source === target)
@@ -43,7 +47,7 @@ export function updateStructureIndex(
   // Handling target (we won't add the edge because it was already taken
   // care of with source above)
   if (typeof targetData[inKey][source] === 'undefined')
-    targetData[inKey][source] = sourceData[outKey][target];
+    targetData[inKey][source] = edgeOrSet;
 }
 
 /**
