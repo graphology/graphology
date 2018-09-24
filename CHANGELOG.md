@@ -1,7 +1,9 @@
 # Changelog
 
-## 0.11.5
+## 0.12.0 (provisional)
 
+* Adding `#.inboundEdges` & `#.outboundEdges`.
+* Fixing semantics of `#.inEdges` & `#.outEdges` for arity 2.
 * Improving performance of edges-related methods.
 * Fixing edge-case deopt for `#.dropEdges`.
 

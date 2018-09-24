@@ -34,6 +34,16 @@ const EDGES_ITERATION = [
     direction: 'out'
   },
   {
+    name: 'inboundEdges',
+    type: 'mixed',
+    direction: 'in'
+  },
+  {
+    name: 'outboundEdges',
+    type: 'mixed',
+    direction: 'out'
+  },
+  {
     name: 'directedEdges',
     type: 'directed'
   },
@@ -182,23 +192,24 @@ function createEdgeArrayForNode(graph, type, direction, nodeData) {
 /**
  * Function creating an array of edges for the given path.
  *
- * @param  {Graph}   graph  - Target Graph instance.
- * @param  {string}  type   - Type of edges to retrieve.
- * @param  {any}     source - Source node.
- * @param  {any}     target - Target node.
- * @return {array}          - Array of edges.
+ * @param  {Graph}   graph     - Target Graph instance.
+ * @param  {string}  type      - Type of edges to retrieve.
+ * @param  {string}  direction - In or out?
+ * @param  {any}     source    - Source node.
+ * @param  {any}     target    - Target node.
+ * @return {array}             - Array of edges.
  */
-function createEdgeArrayForPath(graph, type, source, target) {
+function createEdgeArrayForPath(graph, type, direction, source, target) {
   const edges = [];
 
   const sourceData = graph._nodes.get(source);
 
   if (type !== 'undirected') {
 
-    if (typeof sourceData.in !== 'undefined')
+    if (typeof sourceData.in !== 'undefined' && direction !== 'out')
       collectForKey(edges, sourceData.in, target);
 
-    if (typeof sourceData.out !== 'undefined')
+    if (typeof sourceData.out !== 'undefined' && direction !== 'in')
       collectForKey(edges, sourceData.out, target);
   }
 
@@ -274,7 +285,7 @@ function attachEdgeArrayCreator(Class, description) {
         throw new NotFoundGraphError(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
 
       // Iterating over the edges between source & target
-      return createEdgeArrayForPath(this, type, source, target);
+      return createEdgeArrayForPath(this, type, direction, source, target);
     }
 
     throw new InvalidArgumentsGraphError(`Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${arguments.length}).`);

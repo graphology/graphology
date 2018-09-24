@@ -15,6 +15,8 @@ const METHODS = [
   'edges',
   'inEdges',
   'outEdges',
+  'inboundEdges',
+  'outboundEdges',
   'directedEdges',
   'undirectedEdges'
 ];
@@ -82,16 +84,6 @@ export default function edgesIteration(Graph, checkers) {
           'J<->R'
         ]
       },
-      bunch: {
-        keys: ['Martha', 'Roger'],
-        edges: [
-          'J->M',
-          'M<->R',
-          'M<->J',
-          'T<->M',
-          'J<->R'
-        ]
-      },
       path: {
         source: 'John',
         target: 'Martha',
@@ -112,9 +104,7 @@ export default function edgesIteration(Graph, checkers) {
       path: {
         source: 'John',
         target: 'Martha',
-        edges: [
-          'J->M'
-        ]
+        edges: []
       }
     },
     outEdges: {
@@ -131,6 +121,44 @@ export default function edgesIteration(Graph, checkers) {
         target: 'Martha',
         edges: [
           'J->M'
+        ]
+      }
+    },
+    inboundEdges: {
+      all: ALL_DIRECTED_EDGES.concat(ALL_UNDIRECTED_EDGES),
+      node: {
+        key: 'John',
+        edges: [
+          'C->J',
+          'M<->J',
+          'J<->R'
+        ]
+      },
+      path: {
+        source: 'John',
+        target: 'Martha',
+        edges: [
+          'M<->J'
+        ]
+      }
+    },
+    outboundEdges: {
+      all: ALL_DIRECTED_EDGES.concat(ALL_UNDIRECTED_EDGES),
+      node: {
+        key: 'John',
+        edges: [
+          'J->T',
+          'J->M',
+          'M<->J',
+          'J<->R'
+        ]
+      },
+      path: {
+        source: 'John',
+        target: 'Martha',
+        edges: [
+          'J->M',
+          'M<->J'
         ]
       }
     },
@@ -205,9 +233,9 @@ export default function edgesIteration(Graph, checkers) {
       // Array-creators
       ['#.' + name]: {
         'it should return all the relevant edges.': function() {
-          const edges = graph[name]();
+          const edges = graph[name]().sort();
 
-          assert.deepEqual(edges, data.all);
+          assert.deepEqual(edges, data.all.slice().sort());
         },
 
         'it should be possible to return an iterator over the relevant edges.': function() {
