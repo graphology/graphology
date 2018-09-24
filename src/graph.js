@@ -1825,6 +1825,20 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method iterating over the graph's nodes using the given callback.
+   *
+   * @param  {function}  callback - Callback (key, attributes, index).
+   */
+  forEachNode(callback) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError('Graph.forEachNode: expecting a callback.');
+
+    this._nodes.forEach((data, key) => {
+      callback(key, data.attributes);
+    });
+  }
+
+  /**
    * Method returning an iterator over the graph's nodes.
    *
    * @return {Iterator}

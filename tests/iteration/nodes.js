@@ -6,7 +6,8 @@
  */
 import assert from 'assert';
 
-export default function nodesIteration(Graph) {
+export default function nodesIteration(Graph, checkers) {
+  const {invalid} = checkers;
 
   return {
     '#.nodes': {
@@ -15,6 +16,33 @@ export default function nodesIteration(Graph) {
         graph.addNodesFrom(['one', 'two', 'three']);
 
         assert.deepEqual(graph.nodes(), ['one', 'two', 'three']);
+      }
+    },
+
+    '#.forEachNode': {
+      'it should throw if given callback is not a function.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.forEachNode(null);
+        }, invalid());
+      },
+
+      'it should be possible to iterate over nodes and their attributes.': function() {
+        const graph = new Graph();
+
+        graph.addNode('John', {age: 34});
+        graph.addNode('Martha', {age: 33});
+
+        let count = 0;
+
+        graph.forEachNode(function(key, attributes) {
+          assert.strictEqual(key, count ? 'Martha' : 'John');
+          assert.deepEqual(attributes, count ? {age: 33} : {age: 34});
+          count++;
+        });
+
+        assert.strictEqual(count, 2);
       }
     },
 

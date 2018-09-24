@@ -39,7 +39,7 @@ export default function edgesIteration(Graph, checkers) {
     'Forever'
   ]);
 
-  graph.addDirectedEdgeWithKey('J->T', 'John', 'Thomas');
+  graph.addDirectedEdgeWithKey('J->T', 'John', 'Thomas', {weight: 14});
   graph.addDirectedEdgeWithKey('J->M', 'John', 'Martha');
   graph.addDirectedEdgeWithKey('C->J', 'Catherine', 'John');
 
@@ -228,6 +228,9 @@ export default function edgesIteration(Graph, checkers) {
   }
 
   function specificTests(name, data) {
+    const iteratorName = name + 'Iterator',
+          forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1);
+
     return {
 
       // Array-creators
@@ -238,8 +241,24 @@ export default function edgesIteration(Graph, checkers) {
           assert.deepEqual(edges, data.all.slice().sort());
         },
 
+        'it should possible to use callback iterators.': function() {
+          const edges = [];
+
+          graph[forEachName](function(key, attributes, source, target) {
+            edges.push(key);
+
+            assert.deepEqual(attributes, key === 'J->T' ? {weight: 14} : {});
+            assert.strictEqual(source, graph.source(key));
+            assert.strictEqual(target, graph.target(key));
+          });
+
+          edges.sort();
+
+          assert.deepEqual(edges, data.all.slice().sort());
+        },
+
         'it should be possible to return an iterator over the relevant edges.': function() {
-          const iterator = graph[name + 'Iterator']();
+          const iterator = graph[iteratorName]();
 
           assert.deepEqual(take(iterator), data.all);
         },

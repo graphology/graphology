@@ -128,6 +128,32 @@ function createEdgeArray(graph, type) {
 }
 
 /**
+ * Function iterating over a graph's edges using a callback.
+ *
+ * @param  {Graph}    graph    - Target Graph instance.
+ * @param  {string}   type     - Type of edges to retrieve.
+ * @param  {function} callback - Function to call.
+ */
+function forEachEdge(graph, type, callback) {
+  if (graph.size === 0)
+    return;
+
+  if (type === 'mixed' || type === graph.type) {
+    graph._edges.forEach((data, key) => {
+      callback(key, data.attributes, data.source, data.target);
+    });
+  }
+  else {
+    const mask = type === 'undirected';
+
+    graph._edges.forEach((data, key) => {
+      if ((data instanceof UndirectedEdgeData) === mask)
+        callback(key, data.attributes, data.source, data.target);
+    });
+  }
+}
+
+/**
  * Function creating an iterator of edges for the given type.
  *
  * @param  {Graph}    graph - Target Graph instance.
@@ -239,11 +265,8 @@ function attachEdgeArrayCreator(Class, description) {
    *
    * Arity 0: Return all the relevant edges.
    *
-   * Arity 1a: Return all of a node's relevant edges.
+   * Arity 1: Return all of a node's relevant edges.
    * @param  {any}   node   - Target node.
-   *
-   * Arity 1b: Return the union of the relevant edges of the given bunch of nodes.
-   * @param  {bunch} bunch  - Bunch of nodes.
    *
    * Arity 2: Return the relevant edges across the given path.
    * @param  {any}   source - Source node.
@@ -293,7 +316,81 @@ function attachEdgeArrayCreator(Class, description) {
 }
 
 /**
- * Function attaching an edge array iterator method to the Graph prototype.
+ * Function attaching a edge callback iterator method to the Graph prototype.
+ *
+ * @param {function} Class       - Target class.
+ * @param {object}   description - Method description.
+ */
+function attachForEachEdge(Class, description) {
+  const {
+    name,
+    type,
+    // direction
+  } = description;
+
+  const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1);
+
+  /**
+   * Function iterating over the graph's relevant edges by applying the given
+   * callback.
+   *
+   * Arity 0: Iterate over all the relevant edges.
+   *
+   * Arity 1: Iterate over all of a node's relevant edges.
+   * @param  {any}   node   - Target node.
+   *
+   * Arity 2: Iterate over the relevant edges across the given path.
+   * @param  {any}   source - Source node.
+   * @param  {any}   target - Target node.
+   *
+   * @return {undefined}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  Class.prototype[forEachName] = function(source, target, callback) {
+
+    // Early termination
+    if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
+      return;
+
+    if (arguments.length === 1) {
+      callback = source;
+      return forEachEdge(this, type, callback);
+    }
+
+    // TODO: complete here...
+    // if (arguments.length === 1) {
+    //   source = '' + source;
+
+    //   const nodeData = this._nodes.get(source);
+
+    //   if (typeof nodeData === 'undefined')
+    //     throw new NotFoundGraphError(`Graph.${forEachName}: could not find the "${source}" node in the graph.`);
+
+    //   // Iterating over a node's edges
+    //   return createEdgeArrayForNode(this, type, direction, nodeData);
+    // }
+
+    // if (arguments.length === 2) {
+    //   source = '' + source;
+    //   target = '' + target;
+
+    //   if (!this._nodes.has(source))
+    //     throw new NotFoundGraphError(`Graph.${forEachName}:  could not find the "${source}" source node in the graph.`);
+
+    //   if (!this._nodes.has(target))
+    //     throw new NotFoundGraphError(`Graph.${forEachName}:  could not find the "${target}" target node in the graph.`);
+
+    //   // Iterating over the edges between source & target
+    //   return createEdgeArrayForPath(this, type, direction, source, target);
+    // }
+
+    throw new InvalidArgumentsGraphError(`Graph.${forEachName}: too many arguments (expecting 1, 2 or 3 and got ${arguments.length}).`);
+  };
+}
+
+/**
+ * Function attaching an edge iterator method to the Graph prototype.
  *
  * @param {function} Class       - Target class.
  * @param {object}   description - Method description.
@@ -310,15 +407,12 @@ export function attachEdgeIteratorCreator(Class, description) {
   /**
    * Function returning an iterator over the graph's edges.
    *
-   * Arity 0: Return all the relevant edges.
+   * Arity 0: Iterate over all the relevant edges.
    *
-   * Arity 1a: Return all of a node's relevant edges.
+   * Arity 1: Iterate over all of a node's relevant edges.
    * @param  {any}   node   - Target node.
    *
-   * Arity 1b: Return the union of the relevant edges of the given bunch of nodes.
-   * @param  {bunch} bunch  - Bunch of nodes.
-   *
-   * Arity 2: Return the relevant edges across the given path.
+   * Arity 2: Iterate over the relevant edges across the given path.
    * @param  {any}   source - Source node.
    * @param  {any}   target - Target node.
    *
@@ -372,6 +466,7 @@ export function attachEdgeIteratorCreator(Class, description) {
 export function attachEdgeIterationMethods(Graph) {
   EDGES_ITERATION.forEach(description => {
     attachEdgeArrayCreator(Graph, description);
+    attachForEachEdge(Graph, description);
     attachEdgeIteratorCreator(Graph, description);
   });
 }
