@@ -355,8 +355,7 @@ function mergeEdge(
     if (!attributes)
       return alreadyExistingEdge;
 
-    if (!edgeData)
-      edgeData = graph._edges.get(alreadyExistingEdge);
+    edgeData = graph._edges.get(alreadyExistingEdge);
 
     // Merging the attributes
     assign(edgeData.attributes, attributes);
