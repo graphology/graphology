@@ -61,9 +61,9 @@ class EdgesIterator extends Iterator {}
 /**
  * Function collecting edges from the given object.
  *
- * @param  {array}            edges  - Edges array to populate.
- * @param  {object|undefined} object - Target object.
- * @return {array}                   - The found edges.
+ * @param  {array}  edges  - Edges array to populate.
+ * @param  {object} object - Target object.
+ * @return {array}         - The found edges.
  */
 function collect(edges, object) {
   for (const k in object) {
@@ -77,10 +77,10 @@ function collect(edges, object) {
 /**
  * Function collecting edges from the given object at given key.
  *
- * @param  {array}            edges  - Edges array to populate.
- * @param  {object|undefined} object - Target object.
- * @param  {mixed}            key    - Neighbor key.
- * @return {array}                   - The found edges.
+ * @param  {array}  edges  - Edges array to populate.
+ * @param  {object} object - Target object.
+ * @param  {mixed}  key    - Neighbor key.
+ * @return {array}         - The found edges.
  */
 function collectForKey(edges, object, key) {
 
@@ -214,6 +214,49 @@ function createEdgeArrayForNode(graph, type, direction, nodeData) {
 
   return edges;
 }
+
+/**
+ * Function iterating over a node's edges using a callback.
+ *
+ * @param  {Graph}    graph    - Target Graph instance.
+ * @param  {string}   type     - Type of edges to retrieve.
+ * @param  {string}  direction - In or out?
+ * @param  {any}     nodeData  - Target node's data.
+ * @param  {function} callback - Function to call.
+ */
+// TODO: need to store the edge data object in indices
+// function forEachEdgeForNode(graph, type, direction, nodeData, callback) {
+//   const edges = [];
+
+//   let e;
+
+//   if (type !== 'undirected') {
+
+//     if (direction !== 'out') {
+//       const o = nodeData.in;
+
+//       for (const k in o) {
+//         if (graph.multi)
+//           o[k].forEach()
+//         else {
+//           e = o[k];
+//           callback(e, e.attributes, e.source, e.target);
+//         }
+//       }
+
+//       collect(edges, nodeData.in);
+//     }
+//     if (direction !== 'in') {
+//       collect(edges, nodeData.out);
+//     }
+//   }
+
+//   if (type !== 'directed') {
+//     collect(edges, nodeData.undirected);
+//   }
+
+//   return edges;
+// }
 
 /**
  * Function creating an array of edges for the given path.
