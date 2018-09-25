@@ -52,7 +52,7 @@ export default function specs(Graph, implementation) {
       'Properties': properties(Graph, errorCheckers),
       'Mutation': mutation(Graph, errorCheckers),
       'Read': read(Graph, errorCheckers),
-      // 'Attributes': attributes(Graph, errorCheckers),
+      'Attributes': attributes(Graph, errorCheckers),
       // 'Iteration': iteration(Graph, errorCheckers),
       // 'Serialization': serialization(Graph, errorCheckers),
       // 'Events': events(Graph),

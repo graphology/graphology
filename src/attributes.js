@@ -73,6 +73,9 @@ function attachAttributeGetter(Class, method, type, EdgeDataClass) {
     else {
       element = '' + element;
       data = this._edges.get(element);
+
+      if (!data)
+        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
     }
 
     if (type !== 'mixed' && !(data instanceof EdgeDataClass))
@@ -129,6 +132,9 @@ function attachAttributesGetter(Class, method, type, EdgeDataClass) {
     else {
       element = '' + element;
       data = this._edges.get(element);
+
+      if (!data)
+        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
     }
 
     if (type !== 'mixed' && !(data instanceof EdgeDataClass))
@@ -189,6 +195,9 @@ function attachAttributeChecker(Class, method, type, EdgeDataClass) {
     else {
       element = '' + element;
       data = this._edges.get(element);
+
+      if (!data)
+        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
     }
 
     if (type !== 'mixed' && !(data instanceof EdgeDataClass))
@@ -201,12 +210,12 @@ function attachAttributeChecker(Class, method, type, EdgeDataClass) {
 /**
  * Attach an attribute setter method onto the provided class.
  *
- * @param {function} Class       - Target class.
- * @param {string}   method      - Method name.
- * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   type        - Type of the edge to find.
+ * @param {function} Class         - Target class.
+ * @param {string}   method        - Method name.
+ * @param {string}   type          - Type of the edge to find.
+ * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributeSetter(Class, method, checker, type) {
+function attachAttributeSetter(Class, method, type, EdgeDataClass) {
 
   /**
    * Set the desired attribute for the given element (node or edge).
@@ -228,6 +237,11 @@ function attachAttributeSetter(Class, method, checker, type) {
    * @throws {Error} - Will throw if any of the elements is not found.
    */
   Class.prototype[method] = function(element, name, value) {
+    let data;
+
+    if (this.type !== 'mixed' && type !== this.type)
+      throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
+
     if (arguments.length > 3) {
 
       if (this.multi)
@@ -239,25 +253,27 @@ function attachAttributeSetter(Class, method, checker, type) {
       name = arguments[2];
       value = arguments[3];
 
-      if (!this[checker](source, target))
-        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
+      data = getMatchingEdge(this, source, target, type);
 
-      element = getMatchingEdge(this, source, target, type);
+      if (!data)
+        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
     }
     else {
       element = '' + element;
+      data = this._edges.get(element);
+
+      if (!data)
+        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
     }
 
-    if (!this[checker](element))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
-
-    const data = this._edges.get(element);
+    if (type !== 'mixed' && !(data instanceof EdgeDataClass))
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
     data.attributes[name] = value;
 
     // Emitting
     this.emit('edgeAttributesUpdated', {
-      key: element,
+      key: data.key,
       type: 'set',
       meta: {
         name,
@@ -272,12 +288,12 @@ function attachAttributeSetter(Class, method, checker, type) {
 /**
  * Attach an attribute updater method onto the provided class.
  *
- * @param {function} Class       - Target class.
- * @param {string}   method      - Method name.
- * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   type        - Type of the edge to find.
+ * @param {function} Class         - Target class.
+ * @param {string}   method        - Method name.
+ * @param {string}   type          - Type of the edge to find.
+ * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributeUpdater(Class, method, checker, type) {
+function attachAttributeUpdater(Class, method, type, EdgeDataClass) {
 
   /**
    * Update the desired attribute for the given element (node or edge) using
@@ -300,6 +316,11 @@ function attachAttributeUpdater(Class, method, checker, type) {
    * @throws {Error} - Will throw if any of the elements is not found.
    */
   Class.prototype[method] = function(element, name, updater) {
+    let data;
+
+    if (this.type !== 'mixed' && type !== this.type)
+      throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
+
     if (arguments.length > 3) {
 
       if (this.multi)
@@ -311,28 +332,30 @@ function attachAttributeUpdater(Class, method, checker, type) {
       name = arguments[2];
       updater = arguments[3];
 
-      if (!this[checker](source, target))
-        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
+      data = getMatchingEdge(this, source, target, type);
 
-      element = getMatchingEdge(this, source, target, type);
+      if (!data)
+        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
     }
     else {
       element = '' + element;
-    }
+      data = this._edges.get(element);
 
-    if (!this[checker](element))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+      if (!data)
+        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+    }
 
     if (typeof updater !== 'function')
       throw new InvalidArgumentsGraphError(`Graph.${method}: updater should be a function.`);
 
-    const data = this._edges.get(element);
+    if (type !== 'mixed' && !(data instanceof EdgeDataClass))
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
     data.attributes[name] = updater(data.attributes[name]);
 
     // Emitting
     this.emit('edgeAttributesUpdated', {
-      key: element,
+      key: data.key,
       type: 'set',
       meta: {
         name,
@@ -347,12 +370,12 @@ function attachAttributeUpdater(Class, method, checker, type) {
 /**
  * Attach an attribute remover method onto the provided class.
  *
- * @param {function} Class       - Target class.
- * @param {string}   method      - Method name.
- * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   type        - Type of the edge to find.
+ * @param {function} Class         - Target class.
+ * @param {string}   method        - Method name.
+ * @param {string}   type          - Type of the edge to find.
+ * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributeRemover(Class, method, checker, type) {
+function attachAttributeRemover(Class, method, type, EdgeDataClass) {
 
   /**
    * Remove the desired attribute for the given element (node or edge).
@@ -372,6 +395,11 @@ function attachAttributeRemover(Class, method, checker, type) {
    * @throws {Error} - Will throw if any of the elements is not found.
    */
   Class.prototype[method] = function(element, name) {
+    let data;
+
+    if (this.type !== 'mixed' && type !== this.type)
+      throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
+
     if (arguments.length > 2) {
 
       if (this.multi)
@@ -382,25 +410,27 @@ function attachAttributeRemover(Class, method, checker, type) {
 
       name = arguments[2];
 
-      if (!this[checker](source, target))
-        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
+      data = getMatchingEdge(this, source, target, type);
 
-      element = getMatchingEdge(this, source, target, type);
+      if (!data)
+        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
     }
     else {
       element = '' + element;
+      data = this._edges.get(element);
+
+      if (!data)
+        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
     }
 
-    if (!this[checker](element))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
-
-    const data = this._edges.get(element);
+    if (type !== 'mixed' && !(data instanceof EdgeDataClass))
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
     delete data.attributes[name];
 
     // Emitting
     this.emit('edgeAttributesUpdated', {
-      key: element,
+      key: data.key,
       type: 'remove',
       meta: {
         name
@@ -414,12 +444,12 @@ function attachAttributeRemover(Class, method, checker, type) {
 /**
  * Attach an attribute replacer method onto the provided class.
  *
- * @param {function} Class       - Target class.
- * @param {string}   method      - Method name.
- * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   type        - Type of the edge to find.
+ * @param {function} Class         - Target class.
+ * @param {string}   method        - Method name.
+ * @param {string}   type          - Type of the edge to find.
+ * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributesReplacer(Class, method, checker, type) {
+function attachAttributesReplacer(Class, method, type, EdgeDataClass) {
 
   /**
    * Replace the attributes for the given element (node or edge).
@@ -439,6 +469,11 @@ function attachAttributesReplacer(Class, method, checker, type) {
    * @throws {Error} - Will throw if any of the elements is not found.
    */
   Class.prototype[method] = function(element, attributes) {
+    let data;
+
+    if (this.type !== 'mixed' && type !== this.type)
+      throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
+
     if (arguments.length > 2) {
 
       if (this.multi)
@@ -449,22 +484,24 @@ function attachAttributesReplacer(Class, method, checker, type) {
 
       attributes = arguments[2];
 
-      if (!this[checker](source, target))
-        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
+      data = getMatchingEdge(this, source, target, type);
 
-      element = getMatchingEdge(this, source, target, type);
+      if (!data)
+        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
     }
     else {
       element = '' + element;
-    }
+      data = this._edges.get(element);
 
-    if (!this[checker](element))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+      if (!data)
+        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+    }
 
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(`Graph.${method}: provided attributes are not a plain object.`);
 
-    const data = this._edges.get(element);
+    if (type !== 'mixed' && !(data instanceof EdgeDataClass))
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
     const oldAttributes = data.attributes;
 
@@ -472,7 +509,7 @@ function attachAttributesReplacer(Class, method, checker, type) {
 
     // Emitting
     this.emit('edgeAttributesUpdated', {
-      key: element,
+      key: data.key,
       type: 'replace',
       meta: {
         before: oldAttributes,
@@ -487,12 +524,12 @@ function attachAttributesReplacer(Class, method, checker, type) {
 /**
  * Attach an attribute merger method onto the provided class.
  *
- * @param {function} Class       - Target class.
- * @param {string}   method      - Method name.
- * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   type        - Type of the edge to find.
+ * @param {function} Class         - Target class.
+ * @param {string}   method        - Method name.
+ * @param {string}   type          - Type of the edge to find.
+ * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributesMerger(Class, method, checker, type) {
+function attachAttributesMerger(Class, method, type, EdgeDataClass) {
 
   /**
    * Replace the attributes for the given element (node or edge).
@@ -512,6 +549,11 @@ function attachAttributesMerger(Class, method, checker, type) {
    * @throws {Error} - Will throw if any of the elements is not found.
    */
   Class.prototype[method] = function(element, attributes) {
+    let data;
+
+    if (this.type !== 'mixed' && type !== this.type)
+      throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
+
     if (arguments.length > 2) {
 
       if (this.multi)
@@ -522,28 +564,30 @@ function attachAttributesMerger(Class, method, checker, type) {
 
       attributes = arguments[2];
 
-      if (!this[checker](source, target))
-        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
+      data = getMatchingEdge(this, source, target, type);
 
-      element = getMatchingEdge(this, source, target, type);
+      if (!data)
+        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
     }
     else {
       element = '' + element;
-    }
+      data = this._edges.get(element);
 
-    if (!this[checker](element))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+      if (!data)
+        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+    }
 
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(`Graph.${method}: provided attributes are not a plain object.`);
 
-    const data = this._edges.get(element);
+    if (type !== 'mixed' && !(data instanceof EdgeDataClass))
+      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
     assign(data.attributes, attributes);
 
     // Emitting
     this.emit('edgeAttributesUpdated', {
-      key: element,
+      key: data.key,
       type: 'merge',
       meta: {
         data: attributes
