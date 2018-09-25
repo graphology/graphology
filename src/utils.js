@@ -59,30 +59,6 @@ export function getMatchingEdge(graph, source, target, type) {
 }
 
 /**
- * Checks whether the given value is a potential bunch.
- *
- * @param  {mixed}   value - Target value.
- * @return {boolean}
- */
-export function isBunch(value) {
-  return (
-    !!value &&
-    typeof value === 'object' &&
-    (
-      (
-        Array.isArray(value) ||
-        (typeof Map === 'function' && value instanceof Map) ||
-        (typeof Set === 'function' && value instanceof Set)
-      ) ||
-      (
-        !(value instanceof Date) &&
-        !(value instanceof RegExp)
-      )
-    )
-  );
-}
-
-/**
  * Checks whether the given value is a Graph implementation instance.
  *
  * @param  {mixed}   value - Target value.
@@ -109,51 +85,6 @@ export function isPlainObject(value) {
     value !== null &&
     value.constructor === Object
   );
-}
-
-/**
- * Iterates over the provided bunch.
- *
- * @param {object}   bunch    - Target bunch.
- * @param {function} callback - Function to call.
- */
-export function overBunch(bunch, callback) {
-
-  // Array iteration
-  if (Array.isArray(bunch)) {
-    for (let i = 0, l = bunch.length; i < l; i++)
-      callback(bunch[i], null);
-  }
-
-  // Map & Set iteration
-  else if (typeof bunch.forEach === 'function') {
-    const iterator = bunch.entries();
-
-    let step;
-
-    while (step = iterator.next()) {
-      const {value, done} = step;
-
-      if (done)
-        break;
-
-      const [k, v] = value;
-
-      if (v === k)
-        callback(v, null);
-      else
-        callback(k, v);
-    }
-  }
-
-  // Plain object iteration
-  else {
-    for (const key in bunch) {
-      const attributes = bunch[key];
-
-      callback(key, attributes);
-    }
-  }
 }
 
 /**

@@ -5,7 +5,6 @@
  * Testing the mutation methods of the graph.
  */
 import assert from 'assert';
-import {BUNCH_TYPES, NON_BUNCH_TYPES, testBunches} from './helpers';
 
 export default function mutation(Graph, checkers) {
   const {
@@ -85,38 +84,6 @@ export default function mutation(Graph, checkers) {
         graph.addNode(4);
 
         assert.doesNotThrow(() => graph.mergeNode(4));
-      }
-    },
-
-    '#.addNodesFrom': {
-
-      'it should throw if the given bunch is not valid.': function() {
-        const graph = new Graph();
-
-        BUNCH_TYPES.forEach(bunch => {
-          assert.doesNotThrow(() => graph.addNodesFrom(bunch));
-        });
-
-        NON_BUNCH_TYPES.forEach(bunch => {
-          assert.throws(() => graph.addNodesFrom(bunch), /invalid/);
-        });
-      },
-
-      'it should be possible to add nodes from various bunches.': function() {
-
-        testBunches({Eliot: {age: 34}, Jasmin: {age: 25}}, (bunch, attr) => {
-          const graph = new Graph();
-          graph.addNodesFrom(bunch);
-
-          assert(graph.order, 2);
-          assert(graph.hasNode('Eliot'));
-          assert(graph.hasNode('Jasmin'));
-
-          if (attr) {
-            assert.strictEqual(graph.getNodeAttribute('Eliot', 'age'), 34);
-            assert.strictEqual(graph.getNodeAttribute('Jasmin', 'age'), 25);
-          }
-        });
       }
     },
 
@@ -469,105 +436,6 @@ export default function mutation(Graph, checkers) {
 
         assert.strictEqual(graph.order, 0);
         assert.strictEqual(graph.hasNode(key), false);
-      }
-    },
-
-    '#.dropEdges': {
-
-      'without arguments, it should drop every edge.': function() {
-        const graph = new Graph();
-
-        graph.addNodesFrom(['Lindsay', 'Martha']);
-        const edge = graph.addEdge('Lindsay', 'Martha');
-
-        graph.dropEdges();
-
-        assert.strictEqual(graph.order, 2);
-        assert.strictEqual(graph.size, 0);
-        assert.strictEqual(graph.hasNode('Lindsay'), true);
-        assert.strictEqual(graph.hasNode('Martha'), true);
-        assert.strictEqual(graph.hasEdge(edge), false);
-      },
-
-      'it will throw if supplied with an invalid bunch.': function() {
-        const graph = new Graph();
-
-        assert.throws(function() {
-          graph.dropEdges(null);
-        }, invalid());
-      },
-
-      'it should drop the supplied bunch from the graph.': function() {
-        const graph = new Graph();
-
-        graph.addNodesFrom(['Lindsay', 'Martha']);
-        const edge = graph.addEdge('Lindsay', 'Martha');
-
-        graph.dropEdges([edge]);
-
-        assert.strictEqual(graph.order, 2);
-        assert.strictEqual(graph.size, 0);
-        assert.strictEqual(graph.hasNode('Lindsay'), true);
-        assert.strictEqual(graph.hasNode('Martha'), true);
-        assert.strictEqual(graph.hasEdge(edge), false);
-      },
-
-      'it should drop every edges between source & target.': function() {
-        const graph = new Graph({multi: true});
-
-        graph.addNodesFrom(['Lindsay', 'Martha']);
-        graph.addEdge('Lindsay', 'Martha');
-        graph.addEdge('Lindsay', 'Martha');
-
-        assert.strictEqual(graph.size, 2);
-        assert.strictEqual(graph.edges('Lindsay', 'Martha').length, 2);
-
-        graph.dropEdges('Lindsay', 'Martha');
-
-        assert.strictEqual(graph.order, 2);
-        assert.strictEqual(graph.size, 0);
-        assert.strictEqual(graph.edges('Lindsay', 'Martha').length, 0);
-      }
-    },
-
-    '#.dropNodes': {
-
-      'without arguments, it should empty the graph.': function() {
-        const graph = new Graph();
-
-        graph.addNodesFrom(['Lindsay', 'Martha']);
-        const edge = graph.addEdge('Lindsay', 'Martha');
-
-        graph.dropNodes();
-
-        assert.strictEqual(graph.order, 0);
-        assert.strictEqual(graph.size, 0);
-        assert.strictEqual(graph.hasNode('Lindsay'), false);
-        assert.strictEqual(graph.hasNode('Martha'), false);
-        assert.strictEqual(graph.hasEdge(edge), false);
-      },
-
-      'it will throw if supplied with an invalid bunch.': function() {
-        const graph = new Graph();
-
-        assert.throws(function() {
-          graph.dropNodes(null);
-        }, invalid());
-      },
-
-      'it should drop the supplied bunch from the graph.': function() {
-        const graph = new Graph();
-
-        graph.addNodesFrom(['Lindsay', 'Martha']);
-        const edge = graph.addEdge('Lindsay', 'Martha');
-
-        graph.dropNodes(['Lindsay', 'Martha']);
-
-        assert.strictEqual(graph.order, 0);
-        assert.strictEqual(graph.size, 0);
-        assert.strictEqual(graph.hasNode('Lindsay'), false);
-        assert.strictEqual(graph.hasNode('Martha'), false);
-        assert.strictEqual(graph.hasEdge(edge), false);
       }
     },
 

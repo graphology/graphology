@@ -44,10 +44,8 @@ import {
 import {
   assign,
   getMatchingEdge,
-  isBunch,
   isGraph,
   isPlainObject,
-  overBunch,
   prettyPrint,
   privateProperty,
   readOnlyProperty,
@@ -446,53 +444,6 @@ function mergeEdge(
   graph.emit('edgeAdded', eventData);
 
   return edge;
-}
-
-/**
- * Internal method abstracting edges export.
- *
- * @param  {Graph}    graph     - Target graph.
- * @param  {string}   name      - Child method name.
- * @param  {function} predicate - Predicate to filter the bunch's edges.
- * @param  {mixed}    [bunch]   - Target edges.
- * @return {array[]}            - The serialized edges.
- *
- * @throws {Error} - Will throw if any of the edges is not found.
- */
-function exportEdges(graph, name, predicate, bunch) {
-  let edges = [];
-
-  if (!bunch) {
-
-    // Exporting every edges of the given type
-    if (name === 'exportEdges')
-      edges = graph.edges();
-    else if (name === 'exportDirectedEdges')
-      edges = graph.directedEdges();
-    else
-      edges = graph.undirectedEdges();
-  }
-  else {
-
-    // Exporting the bunch
-    if (!isBunch(bunch))
-      throw new InvalidArgumentsGraphError(`Graph.${name}: invalid bunch.`);
-
-    overBunch(bunch, edge => {
-      if (!graph.hasEdge(edge))
-        throw new NotFoundGraphError(`Graph.${name}: could not find the "${edge}" edge from the bunch in the graph.`);
-
-      if (!predicate || predicate(edge))
-        edges.push(edge);
-    });
-  }
-
-  const serializedEdges = new Array(edges.length);
-
-  for (let i = 0, l = edges.length; i < l; i++)
-    serializedEdges[i] = graph.exportEdge(edges[i]);
-
-  return serializedEdges;
 }
 
 /**
@@ -1205,25 +1156,6 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method used to add a nodes from a bunch.
-   *
-   * @param  {bunch}  bunch - The node.
-   * @return {Graph}        - Returns itself for chaining.
-   *
-   * @throws {Error} - Will throw if the given bunch is not valid.
-   */
-  addNodesFrom(bunch) {
-    if (!isBunch(bunch))
-      throw new InvalidArgumentsGraphError(`Graph.addNodesFrom: invalid bunch provided ("${bunch}").`);
-
-    overBunch(bunch, (node, attributes) => {
-      this.addNode(node, attributes);
-    });
-
-    return this;
-  }
-
-  /**
    * Method used to drop a single node & all its attached edges from the graph.
    *
    * @param  {any}    node - The node.
@@ -1335,73 +1267,6 @@ export default class Graph extends EventEmitter {
       source,
       target,
       undirected
-    });
-
-    return this;
-  }
-
-  /**
-   * Method used to drop a bunch of nodes or every node from the graph.
-   *
-   * @param  {bunch} nodes - Bunch of nodes.
-   * @return {Graph}
-   *
-   * @throws {Error} - Will throw if an invalid bunch is provided.
-   * @throws {Error} - Will throw if any of the nodes doesn't exist.
-   */
-  dropNodes(nodes) {
-    if (!arguments.length)
-      return this.clear();
-
-    if (!isBunch(nodes))
-      throw new InvalidArgumentsGraphError('Graph.dropNodes: invalid bunch.');
-
-    overBunch(nodes, node => {
-      this.dropNode(node);
-    });
-
-    return this;
-  }
-
-  /**
-   * Method used to drop a bunch of edges or every edges from the graph.
-   *
-   * Arity 1:
-   * @param  {bunch} edges - Bunch of edges.
-   *
-   * Arity 2:
-   * @param  {any}    source - Source node.
-   * @param  {any}    target - Target node.
-   *
-   * @return {Graph}
-   *
-   * @throws {Error} - Will throw if an invalid bunch is provided.
-   * @throws {Error} - Will throw if any of the edges doesn't exist.
-   */
-  dropEdges(edges) {
-    if (!arguments.length) {
-
-      // Dropping every edge from the graph
-      this._edges.clear();
-
-      // Without edges, we've got no 'structure'
-      this.clearIndex();
-
-      return this;
-    }
-
-    if (arguments.length === 2) {
-      const source = arguments[0],
-            target = arguments[1];
-
-      edges = this.edges(source, target);
-    }
-
-    if (!isBunch(edges))
-      throw new InvalidArgumentsGraphError('Graph.dropEdges: invalid bunch.');
-
-    overBunch(edges, edge => {
-      this.dropEdge(edge);
     });
 
     return this;
@@ -1921,104 +1786,32 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method exporting every nodes or the bunch ones.
-   *
-   * @param  {mixed}   [bunch] - Target nodes.
-   * @return {array[]}         - The serialized nodes.
-   *
-   * @throws {Error} - Will throw if any of the nodes is not found.
-   */
-  exportNodes(bunch) {
-    let nodes = [];
-
-    if (!arguments.length) {
-
-      // Exporting every node
-      nodes = this.nodes();
-    }
-    else {
-
-      // Exporting the bunch
-      if (!isBunch(bunch))
-        throw new InvalidArgumentsGraphError('Graph.exportNodes: invalid bunch.');
-
-      overBunch(bunch, node => {
-        if (!this.hasNode(node))
-          throw new NotFoundGraphError(`Graph.exportNodes: could not find the "${node}" node from the bunch in the graph.`);
-        nodes.push(node);
-      });
-    }
-
-    const serializedNodes = new Array(nodes.length);
-
-    for (let i = 0, l = nodes.length; i < l; i++)
-      serializedNodes[i] = this.exportNode(nodes[i]);
-
-    return serializedNodes;
-  }
-
-  /**
-   * Method exporting every edges or the bunch ones.
-   *
-   * @param  {mixed}   [bunch] - Target edges.
-   * @return {array[]}         - The serialized edges.
-   *
-   * @throws {Error} - Will throw if any of the edges is not found.
-   */
-  exportEdges(bunch) {
-    return exportEdges(
-      this,
-      'exportEdges',
-      null,
-      bunch
-    );
-  }
-
-  /**
-   * Method exporting every directed edges or the bunch ones which are directed.
-   *
-   * @param  {mixed}   [bunch] - Target edges.
-   * @return {array[]}         - The serialized edges.
-   *
-   * @throws {Error} - Will throw if any of the edges is not found.
-   */
-  exportDirectedEdges(bunch) {
-    return exportEdges(
-      this,
-      'exportDirectedEdges',
-      edge => this.directed(edge),
-      bunch
-    );
-  }
-
-  /**
-   * Method exporting every undirected edges or the bunch ones which are
-   * undirected
-   *
-   * @param  {mixed}   [bunch] - Target edges.
-   * @return {array[]}         - The serialized edges.
-   *
-   * @throws {Error} - Will throw if any of the edges is not found.
-   */
-  exportUndirectedEdges(bunch) {
-    return exportEdges(
-      this,
-      'exportUndirectedEdges',
-      edge => this.undirected(edge),
-      bunch
-    );
-  }
-
-  /**
    * Method used to export the whole graph.
    *
    * @return {object} - The serialized graph.
    */
   export() {
+
+    const nodes = new Array(this._nodes.size);
+
+    let i = 0;
+
+    this._nodes.forEach((data, key) => {
+      nodes[i++] = serializeNode(key, data);
+    });
+
+    const edges = new Array(this._edges.size);
+
+    i = 0;
+
+    this._edges.forEach((data, key) => {
+      edges[i++] = serializeEdge(key, data);
+    });
+
     return {
       attributes: this.getAttributes(),
-      nodes: this.exportNodes(),
-      edges: this.exportEdges()
+      nodes,
+      edges
     };
   }
 

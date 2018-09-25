@@ -7,6 +7,9 @@
 * Adding `#.forEachNode`.
 * Adding `#.inboundNeighbors` & `#.outboundNeighbors`.
 * Adding `#.inboundEdges` & `#.outboundEdges`.
+* Dropping `#.addNodesFrom`.
+* Dropping `#.dropNodes` & `#.dropEdges`.
+* Dropping plural serialization methods.
 * Fixing semantics of `#.inEdges` & `#.outEdges` for arity 2.
 * Improving performance of edges-related methods.
 * Improving performance of internal indices.

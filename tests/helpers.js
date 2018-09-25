@@ -57,23 +57,6 @@ export function sameMembers(a1, a2) {
 }
 
 /**
- * Bunches constants.
- */
-export const BUNCH_TYPES = [
-  [],
-  new Set(),
-  {},
-  new Map()
-];
-
-export const NON_BUNCH_TYPES = [
-  null,
-  false,
-  'test',
-  14
-];
-
-/**
  * Function spying on the execution of the provided function to ease some
  * tests, notably related to event handling.
  *
@@ -93,57 +76,4 @@ export function spy(target) {
   fn.times = 0;
 
   return fn;
-}
-
-/**
- * Helper to perform bunch tests thoroughly.
- *
- * @param {object|array} target - target object to copy as different bunches.
- * @param {function}            - Assertion function to run on each type.
- */
-export function testBunches(target, fn) {
-  let bunches = [];
-
-  if (Array.isArray(target)) {
-
-    const map = new Map(),
-          set = new Set(),
-          object = {};
-
-    for (let i = 0, l = target.length; i < l; i++) {
-      const item = target[i];
-      map.set(item, {});
-      set.add(item);
-      object[item] = {};
-    }
-
-    bunches = [
-      [target, false, 'array'],
-      [set, false, 'set'],
-      [object, true, 'object'],
-      [map, true, 'map']
-    ];
-  }
-  else {
-    const map = new Map(),
-          set = new Set(),
-          array = [];
-
-    for (const k in target) {
-      array.push(k);
-      set.add(k);
-      map.set(k, target[k]);
-    }
-
-    bunches = [
-      [array, false, 'array'],
-      [set, false, 'set'],
-      [target, true, 'object'],
-      [map, true, 'map']
-    ];
-  }
-
-  bunches.forEach(type => {
-    fn(...type);
-  });
 }
