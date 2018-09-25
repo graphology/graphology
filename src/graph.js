@@ -1914,40 +1914,6 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method used to import serialized nodes.
-   *
-   * @param  {array}   nodes - The serialized nodes.
-   * @param  {boolean} merge - Whether to merge the given nodes.
-   * @return {Graph}         - Returns itself for chaining.
-   */
-  importNodes(nodes, merge = false) {
-    if (!Array.isArray(nodes))
-      throw new InvalidArgumentsGraphError('Graph.importNodes: invalid argument. Expecting an array.');
-
-    for (let i = 0, l = nodes.length; i < l; i++)
-      this.importNode(nodes[i], merge);
-
-    return this;
-  }
-
-  /**
-   * Method used to import serialized edges.
-   *
-   * @param  {array}   edges - The serialized edges.
-   * @param  {boolean} merge - Whether to merge the given edges.
-   * @return {Graph}         - Returns itself for chaining.
-   */
-  importEdges(edges, merge = false) {
-    if (!Array.isArray(edges))
-      throw new InvalidArgumentsGraphError('Graph.importEdges: invalid argument. Expecting an array.');
-
-    for (let i = 0, l = edges.length; i < l; i++)
-      this.importEdge(edges[i], merge);
-
-    return this;
-  }
-
-  /**
    * Method used to import a serialized graph.
    *
    * @param  {object|Graph} data  - The serialized graph.
@@ -1977,11 +1943,12 @@ export default class Graph extends EventEmitter {
         this.replaceAttributes(data.attributes);
     }
 
+    // TODO: optimize
     if (data.nodes)
-      this.importNodes(data.nodes, merge);
+      data.nodes.forEach(node => this.importNode(node, merge));
 
     if (data.edges)
-      this.importEdges(data.edges, merge);
+      data.edges.forEach(edge => this.importEdge(edge, merge));
 
     return this;
   }

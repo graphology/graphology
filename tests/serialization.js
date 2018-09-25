@@ -204,63 +204,6 @@ export default function serialization(Graph, checkers) {
       }
     },
 
-    '#.importNodes': {
-      'it should throw if not given an array.': function() {
-        const graph = new Graph();
-
-        assert.throws(function() {
-          graph.importNodes({hello: 'world'});
-        }, invalid());
-      },
-
-      'it should correctly import the given nodes.': function() {
-        const graph = new Graph();
-
-        graph.importNodes([
-          {key: 'John'},
-          {key: 'Thomas', attributes: {age: 34}}
-        ]);
-
-        const nodes = graph.nodes();
-
-        assert.deepEqual(nodes, ['John', 'Thomas']);
-        assert.deepEqual(graph.getNodeAttributes('Thomas'), {age: 34});
-      }
-    },
-
-    '#.importEdges': {
-      'it should throw if not given an array.': function() {
-        const graph = new Graph();
-
-        assert.throws(function() {
-          graph.importEdges({hello: 'world'});
-        }, invalid());
-      },
-
-      'it should correctly import the given edges.': function() {
-        const graph = new Graph();
-
-        graph.addNodesFrom(['John', 'Thomas']);
-
-        graph.importEdges([
-          {
-            source: 'John',
-            target: 'Thomas'
-          },
-          {
-            key: 'J<->T',
-            source: 'John',
-            target: 'Thomas',
-            attributes: {weight: 2},
-            undirected: true
-          }
-        ]);
-
-        assert.strictEqual(graph.size, 2);
-        assert.deepEqual(graph.getEdgeAttributes('J<->T'), {weight: 2});
-      }
-    },
-
     '#.import': {
       'it should throw if the given data is invalid.': function() {
         const graph = new Graph();
