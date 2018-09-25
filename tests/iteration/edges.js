@@ -39,6 +39,9 @@ export default function edgesIteration(Graph, checkers) {
     'Forever'
   ]);
 
+  graph.replaceNodeAttributes('John', {age: 13});
+  graph.replaceNodeAttributes('Martha', {age: 15});
+
   graph.addDirectedEdgeWithKey('J->T', 'John', 'Thomas', {weight: 14});
   graph.addDirectedEdgeWithKey('J->M', 'John', 'Martha');
   graph.addDirectedEdgeWithKey('C->J', 'Catherine', 'John');
@@ -244,12 +247,15 @@ export default function edgesIteration(Graph, checkers) {
         'it should possible to use callback iterators.': function() {
           const edges = [];
 
-          graph[forEachName](function(key, attributes, source, target) {
+          graph[forEachName](function(key, attributes, source, target, sA, tA) {
             edges.push(key);
 
             assert.deepEqual(attributes, key === 'J->T' ? {weight: 14} : {});
             assert.strictEqual(source, graph.source(key));
             assert.strictEqual(target, graph.target(key));
+            console.log(sA, tA);
+            assert.deepEqual(graph.getNodeAttributes(source), sA);
+            assert.deepEqual(graph.getNodeAttributes(target), tA);
           });
 
           edges.sort();
