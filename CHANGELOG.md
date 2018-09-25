@@ -9,6 +9,7 @@
 * Fixing semantics of `#.inEdges` & `#.outEdges` for arity 2.
 * Improving performance of edges-related methods.
 * Improving performance of internal indices.
+* Improving performance of `#.mergeNode`.
 * Fixing edge-case deopt for `#.dropEdges`.
 
 ## 0.11.4

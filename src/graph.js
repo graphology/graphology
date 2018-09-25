@@ -1169,10 +1169,14 @@ export default class Graph extends EventEmitter {
    * @return {any}                 - The node.
    */
   mergeNode(node, attributes) {
+    if (attributes && !isPlainObject(attributes))
+      throw new InvalidArgumentsGraphError(`Graph.mergeNode: invalid attributes. Expecting an object but got "${attributes}"`);
+
+    // String coercion
     node = '' + node;
 
     // If the node already exists, we merge the attributes
-    const data = this._nodes.get(node);
+    let data = this._nodes.get(node);
 
     if (data) {
       if (attributes)
@@ -1180,8 +1184,27 @@ export default class Graph extends EventEmitter {
       return node;
     }
 
-    // Else, we create it
-    return this.addNode(node, attributes);
+    // Protecting the attributes
+    attributes = assign({}, this._options.defaultNodeAttributes, attributes);
+
+    const DataClass = this.type === 'mixed' ?
+      MixedNodeData :
+      (this.type === 'directed') ?
+        DirectedNodeData :
+        UndirectedNodeData;
+
+    data = new DataClass(attributes);
+
+    // Adding the node to internal register
+    this._nodes.set(node, data);
+
+    // Emitting
+    this.emit('nodeAdded', {
+      key: node,
+      attributes
+    });
+
+    return node;
   }
 
   /**
