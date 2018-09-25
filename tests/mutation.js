@@ -605,6 +605,23 @@ export default function mutation(Graph, checkers) {
         assert.strictEqual(graph.hasNode('Martha'), true);
         assert.strictEqual(graph.hasEdge(edge), true);
       }
+    },
+
+    '#.clearEdges': {
+      'it should drop every edge from the graph.': function() {
+        const graph = new Graph();
+
+        graph.addNodesFrom(['Lindsay', 'Martha']);
+        const edge = graph.addEdge('Lindsay', 'Martha');
+
+        graph.clearEdges();
+
+        assert.strictEqual(graph.order, 2);
+        assert.strictEqual(graph.size, 0);
+        assert.strictEqual(graph.hasNode('Lindsay'), true);
+        assert.strictEqual(graph.hasNode('Martha'), true);
+        assert.strictEqual(graph.hasEdge(edge), false);
+      }
     }
   };
 }

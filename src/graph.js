@@ -1414,14 +1414,31 @@ export default class Graph extends EventEmitter {
    */
   clear() {
 
-    // Dropping edges
+    // Clearing edges
     this._edges.clear();
 
-    // Dropping nodes
+    // Clearing nodes
     this._nodes.clear();
 
     // Emitting
     this.emit('cleared');
+  }
+
+  /**
+   * Method used to remove every edge from the graph.
+   *
+   * @return {Graph}
+   */
+  clearEdges() {
+
+    // Clearing edges
+    this._edges.clear();
+
+    // Clearing indices
+    this.clearIndex();
+
+    // Emitting
+    this.emit('edgesCleared');
   }
 
   /**---------------------------------------------------------------------------

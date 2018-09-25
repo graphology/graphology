@@ -2,6 +2,7 @@
 
 ## 0.12.0 (provisional)
 
+* Adding `#.clearEdges`.
 * Adding `#.forEachEdge`.
 * Adding `#.forEachNode`.
 * Adding `#.inboundNeighbors` & `#.outboundNeighbors`.
