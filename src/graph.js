@@ -1420,14 +1420,6 @@ export default class Graph extends EventEmitter {
     // Dropping nodes
     this._nodes.clear();
 
-    // Handling indices
-    for (const name in this._indices) {
-      const index = this._indices[name];
-
-      if (index.lazy)
-        index.computed = false;
-    }
-
     // Emitting
     this.emit('cleared');
   }
