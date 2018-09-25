@@ -210,6 +210,7 @@ function addEdge(
   const DataClass = undirected ? UndirectedEdgeData : DirectedEdgeData;
 
   const edgeData = new DataClass(
+    edge,
     mustGenerateKey,
     source,
     target,
@@ -395,6 +396,7 @@ function mergeEdge(
   const DataClass = undirected ? UndirectedEdgeData : DirectedEdgeData;
 
   edgeData = new DataClass(
+    edge,
     mustGenerateKey,
     source,
     target,
@@ -1203,37 +1205,33 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the edge doesn't exist.
    */
   dropEdge(edge) {
+    let edgeData;
+
     if (arguments.length > 1) {
       const source = '' + arguments[0],
             target = '' + arguments[1];
 
-      if (!this.hasNode(source))
-        throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${source}" source node in the graph.`);
+      edgeData = getMatchingEdge(this, source, target, this.type);
 
-      if (!this.hasNode(target))
-        throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${target}" target node in the graph.`);
-
-      if (!this.hasEdge(source, target))
+      if (!edgeData)
         throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${source}" -> "${target}" edge in the graph.`);
-
-      edge = getMatchingEdge(this, source, target, this.type);
     }
     else {
       edge = '' + edge;
 
-      if (!this.hasEdge(edge))
+      edgeData = this._edges.get(edge);
+
+      if (!edgeData)
         throw new NotFoundGraphError(`Graph.dropEdge: could not find the "${edge}" edge in the graph.`);
     }
 
-    const data = this._edges.get(edge);
-
     // Dropping the edge from the register
-    this._edges.delete(edge);
+    this._edges.delete(edgeData.key);
 
     // Updating related degrees
-    const {source, target, attributes} = data;
+    const {source, target, attributes} = edgeData;
 
-    const undirected = data instanceof UndirectedEdgeData;
+    const undirected = edgeData instanceof UndirectedEdgeData;
 
     const sourceData = this._nodes.get(source),
           targetData = this._nodes.get(target);
@@ -1253,7 +1251,7 @@ export default class Graph extends EventEmitter {
     }
 
     // Clearing index
-    clearEdgeFromStructureIndex(this, undirected, edge, data);
+    clearEdgeFromStructureIndex(this, undirected, edgeData);
 
     if (undirected)
       this._undirectedSize--;

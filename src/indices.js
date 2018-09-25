@@ -53,14 +53,13 @@ export function updateStructureIndex(
 /**
  * Function clearing the 'structure' index data related to the given edge.
  *
- * @param {Graph}    graph - Target Graph instance.
- * @param {EdgeData} edge  - Dropped edge's data.
- * @param {object}   data  - Attached data.
+ * @param {Graph}    graph    - Target Graph instance.
+ * @param {EdgeData} edgeData - Dropped edge's data.
  */
-export function clearEdgeFromStructureIndex(graph, undirected, edgeData, data) {
+export function clearEdgeFromStructureIndex(graph, undirected, edgeData) {
   const multi = graph.multi;
 
-  const {source, target} = data;
+  const {source, target} = edgeData;
 
   // NOTE: since the edge set is the same for source & target, we can only
   // affect source

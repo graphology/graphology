@@ -49,7 +49,7 @@ export default function specs(Graph, implementation) {
   const tests = {
     'Basic': {
       'Instantiation': instantiation(Graph, implementation, errorCheckers),
-      // 'Properties': properties(Graph, errorCheckers),
+      'Properties': properties(Graph, errorCheckers),
       // 'Mutation': mutation(Graph, errorCheckers),
       // 'Read': read(Graph, errorCheckers),
       // 'Attributes': attributes(Graph, errorCheckers),

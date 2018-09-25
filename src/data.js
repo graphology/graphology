@@ -100,14 +100,16 @@ UndirectedNodeData.prototype.upgradeToMixed = function() {
  * DirectedEdgeData class.
  *
  * @constructor
+ * @param {string}  string       - The edge's key.
  * @param {boolean} generatedKey - Was its key generated?
  * @param {string}  source       - Source of the edge.
  * @param {string}  target       - Target of the edge.
  * @param {object}  attributes   - Edge's attributes.
  */
-export function DirectedEdgeData(generatedKey, source, target, attributes) {
+export function DirectedEdgeData(key, generatedKey, source, target, attributes) {
 
   // Attributes
+  this.key = key;
   this.attributes = attributes;
 
   // Extremities
@@ -122,14 +124,16 @@ export function DirectedEdgeData(generatedKey, source, target, attributes) {
  * UndirectedEdgeData class.
  *
  * @constructor
+ * @param {string}  string       - The edge's key.
  * @param {boolean} generatedKey - Was its key generated?
  * @param {string}  source       - Source of the edge.
  * @param {string}  target       - Target of the edge.
  * @param {object}  attributes   - Edge's attributes.
  */
-export function UndirectedEdgeData(generatedKey, source, target, attributes) {
+export function UndirectedEdgeData(key, generatedKey, source, target, attributes) {
 
   // Attributes
+  this.key = key;
   this.attributes = attributes;
 
   // Extremities

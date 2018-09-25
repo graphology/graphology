@@ -42,6 +42,9 @@ export function getMatchingEdge(graph, source, target, type) {
 
   let edge = null;
 
+  if (!sourceData)
+    return edge;
+
   if (type === 'mixed') {
     edge = (
       (sourceData.out && sourceData.out[target]) ||
