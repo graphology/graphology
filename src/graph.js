@@ -535,6 +535,15 @@ export default class Graph extends EventEmitter {
 
     //-- Private properties
 
+    // Utilities
+    const NodeDataClass = options.type === 'mixed' ?
+      MixedNodeData :
+      (options.type === 'directed') ?
+        DirectedNodeData :
+        UndirectedNodeData;
+
+    privateProperty(this, 'NodeDataClass', NodeDataClass);
+
     // Indexes
     privateProperty(this, '_attributes', {});
     privateProperty(this, '_nodes', new Map());
@@ -1141,13 +1150,7 @@ export default class Graph extends EventEmitter {
     // Protecting the attributes
     attributes = assign({}, this._options.defaultNodeAttributes, attributes);
 
-    const DataClass = this.type === 'mixed' ?
-      MixedNodeData :
-      (this.type === 'directed') ?
-        DirectedNodeData :
-        UndirectedNodeData;
-
-    const data = new DataClass(attributes);
+    const data = new this.NodeDataClass(attributes);
 
     // Adding the node to internal register
     this._nodes.set(node, data);
@@ -1187,13 +1190,7 @@ export default class Graph extends EventEmitter {
     // Protecting the attributes
     attributes = assign({}, this._options.defaultNodeAttributes, attributes);
 
-    const DataClass = this.type === 'mixed' ?
-      MixedNodeData :
-      (this.type === 'directed') ?
-        DirectedNodeData :
-        UndirectedNodeData;
-
-    data = new DataClass(attributes);
+    data = new this.NodeDataClass(attributes);
 
     // Adding the node to internal register
     this._nodes.set(node, data);
@@ -2233,6 +2230,7 @@ export default class Graph extends EventEmitter {
     // Mutating the options & the instance
     this._options.type = 'mixed';
     readOnlyProperty(this, 'type', this._options.type);
+    privateProperty(this, 'NodeDataClass', MixedNodeData);
 
     return this;
   }
