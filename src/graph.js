@@ -209,7 +209,7 @@ function addEdge(
   // Storing some data
   const DataClass = undirected ? UndirectedEdgeData : DirectedEdgeData;
 
-  const data = new DataClass(
+  const edgeData = new DataClass(
     mustGenerateKey,
     source,
     target,
@@ -217,7 +217,7 @@ function addEdge(
   );
 
   // Adding the edge to the internal register
-  graph._edges.set(edge, data);
+  graph._edges.set(edge, edgeData);
 
   // Incrementing node degree counters
   if (source === target) {
@@ -241,7 +241,7 @@ function addEdge(
   updateStructureIndex(
     graph,
     undirected,
-    edge,
+    edgeData,
     source,
     target,
     sourceData,
@@ -394,7 +394,7 @@ function mergeEdge(
   // Storing some data
   const DataClass = undirected ? UndirectedEdgeData : DirectedEdgeData;
 
-  const data = new DataClass(
+  edgeData = new DataClass(
     mustGenerateKey,
     source,
     target,
@@ -402,7 +402,7 @@ function mergeEdge(
   );
 
   // Adding the edge to the internal register
-  graph._edges.set(edge, data);
+  graph._edges.set(edge, edgeData);
 
   // Incrementing node degree counters
   if (source === target) {
@@ -426,7 +426,7 @@ function mergeEdge(
   updateStructureIndex(
     graph,
     undirected,
-    edge,
+    edgeData,
     source,
     target,
     sourceData,

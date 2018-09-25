@@ -11,14 +11,14 @@
  * set that is the same for A -> B & B <- A.
  *
  * @param {Graph}    graph      - Target Graph instance.
- * @param {any}      edge       - Added edge.
+ * @param {EdgeData} edgeData   - Added edge's data.
  * @param {NodeData} sourceData - Source node's data.
  * @param {NodeData} targetData - Target node's data.
  */
 export function updateStructureIndex(
   graph,
   undirected,
-  edge,
+  edgeData,
   source,
   target,
   sourceData,
@@ -33,12 +33,12 @@ export function updateStructureIndex(
   let edgeOrSet = sourceData[outKey][target];
 
   if (typeof edgeOrSet === 'undefined') {
-    edgeOrSet = multi ? new Set() : edge;
+    edgeOrSet = multi ? new Set() : edgeData;
     sourceData[outKey][target] = edgeOrSet;
   }
 
   if (multi)
-    edgeOrSet.add(edge);
+    edgeOrSet.add(edgeData);
 
   // If selfLoop, we break here
   if (source === target)
@@ -53,11 +53,11 @@ export function updateStructureIndex(
 /**
  * Function clearing the 'structure' index data related to the given edge.
  *
- * @param {Graph}  graph - Target Graph instance.
- * @param {any}    edge  - Dropped edge.
- * @param {object} data  - Attached data.
+ * @param {Graph}    graph - Target Graph instance.
+ * @param {EdgeData} edge  - Dropped edge's data.
+ * @param {object}   data  - Attached data.
  */
-export function clearEdgeFromStructureIndex(graph, undirected, edge, data) {
+export function clearEdgeFromStructureIndex(graph, undirected, edgeData, data) {
   const multi = graph.multi;
 
   const {source, target} = data;
@@ -72,7 +72,7 @@ export function clearEdgeFromStructureIndex(graph, undirected, edge, data) {
   if (target in sourceIndex) {
 
     if (multi)
-      sourceIndex[target].delete(edge);
+      sourceIndex[target].delete(edgeData);
     else
       delete sourceIndex[target];
   }
