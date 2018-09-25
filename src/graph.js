@@ -212,8 +212,8 @@ function addEdge(
   const edgeData = new DataClass(
     edge,
     mustGenerateKey,
-    source,
-    target,
+    sourceData,
+    targetData,
     attributes
   );
 
@@ -398,8 +398,8 @@ function mergeEdge(
   edgeData = new DataClass(
     edge,
     mustGenerateKey,
-    source,
-    target,
+    sourceData,
+    targetData,
     attributes
   );
 
@@ -1103,7 +1103,7 @@ export default class Graph extends EventEmitter {
     // Protecting the attributes
     attributes = assign({}, this._options.defaultNodeAttributes, attributes);
 
-    const data = new this.NodeDataClass(attributes);
+    const data = new this.NodeDataClass(node, attributes);
 
     // Adding the node to internal register
     this._nodes.set(node, data);
@@ -1143,7 +1143,7 @@ export default class Graph extends EventEmitter {
     // Protecting the attributes
     attributes = assign({}, this._options.defaultNodeAttributes, attributes);
 
-    data = new this.NodeDataClass(attributes);
+    data = new this.NodeDataClass(node, attributes);
 
     // Adding the node to internal register
     this._nodes.set(node, data);
@@ -1229,14 +1229,15 @@ export default class Graph extends EventEmitter {
     this._edges.delete(edgeData.key);
 
     // Updating related degrees
-    const {source, target, attributes} = edgeData;
+    const {
+      source: sourceData,
+      target: targetData,
+      attributes
+    } = edgeData;
 
     const undirected = edgeData instanceof UndirectedEdgeData;
 
-    const sourceData = this._nodes.get(source),
-          targetData = this._nodes.get(target);
-
-    if (source === target) {
+    if (sourceData === targetData) {
       sourceData.selfLoops--;
     }
     else {
@@ -1262,8 +1263,8 @@ export default class Graph extends EventEmitter {
     this.emit('edgeDropped', {
       key: edge,
       attributes,
-      source,
-      target,
+      source: sourceData.key,
+      target: targetData.key,
       undirected
     });
 

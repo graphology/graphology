@@ -42,8 +42,8 @@ export function serializeNode(key, data) {
  */
 export function serializeEdge(key, data) {
   const serialized = {
-    source: data.source,
-    target: data.target
+    source: data.source.key,
+    target: data.target.key
   };
 
   // We export the key unless if it was provided by the user

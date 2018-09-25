@@ -59,12 +59,14 @@ export function updateStructureIndex(
 export function clearEdgeFromStructureIndex(graph, undirected, edgeData) {
   const multi = graph.multi;
 
-  const {source, target} = edgeData;
+  const {source: sourceData, target: targetData} = edgeData;
+
+  const source = sourceData.key,
+        target = targetData.key;
 
   // NOTE: since the edge set is the same for source & target, we can only
   // affect source
-  const sourceData = graph._nodes.get(source),
-        outKey = undirected ? 'undirected' : 'out',
+  const outKey = undirected ? 'undirected' : 'out',
         sourceIndex = sourceData[outKey];
 
   // NOTE: possible to clear empty sets from memory altogether
@@ -79,8 +81,7 @@ export function clearEdgeFromStructureIndex(graph, undirected, edgeData) {
   if (multi)
     return;
 
-  const targetData = graph._nodes.get(target),
-        inKey = undirected ? 'undirected' : 'in',
+  const inKey = undirected ? 'undirected' : 'in',
         targetIndex = targetData[inKey];
 
   delete targetIndex[source];

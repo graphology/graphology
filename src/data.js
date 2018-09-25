@@ -13,11 +13,13 @@
  * MixedNodeData class.
  *
  * @constructor
+ * @param {string} string     - The node's key.
  * @param {object} attributes - Node's attributes.
  */
-export function MixedNodeData(attributes) {
+export function MixedNodeData(key, attributes) {
 
   // Attributes
+  this.key = key;
   this.attributes = attributes;
 
   // Degrees
@@ -37,11 +39,13 @@ export function MixedNodeData(attributes) {
  * DirectedNodeData class.
  *
  * @constructor
+ * @param {string} string     - The node's key.
  * @param {object} attributes - Node's attributes.
  */
-export function DirectedNodeData(attributes) {
+export function DirectedNodeData(key, attributes) {
 
   // Attributes
+  this.key = key;
   this.attributes = attributes || {};
 
   // Degrees
@@ -69,11 +73,13 @@ DirectedNodeData.prototype.upgradeToMixed = function() {
  * UndirectedNodeData class.
  *
  * @constructor
+ * @param {string} string     - The node's key.
  * @param {object} attributes - Node's attributes.
  */
-export function UndirectedNodeData(attributes) {
+export function UndirectedNodeData(key, attributes) {
 
   // Attributes
+  this.key = key;
   this.attributes = attributes || {};
 
   // Degrees
