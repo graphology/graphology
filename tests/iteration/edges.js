@@ -253,7 +253,7 @@ export default function edgesIteration(Graph, checkers) {
             assert.deepEqual(attributes, key === 'J->T' ? {weight: 14} : {});
             assert.strictEqual(source, graph.source(key));
             assert.strictEqual(target, graph.target(key));
-            console.log(sA, tA);
+
             assert.deepEqual(graph.getNodeAttributes(source), sA);
             assert.deepEqual(graph.getNodeAttributes(target), tA);
           });
@@ -274,6 +274,25 @@ export default function edgesIteration(Graph, checkers) {
 
           assert.deepEqual(edges, data.node.edges);
           assert.deepEqual(graph[name]('Alone'), []);
+        },
+
+        'it should be possible to use callback iterators over a node\'s relevant edges.': function() {
+          const edges = [];
+
+          graph[forEachName](data.node.key, function(key, attributes, source, target, sA, tA) {
+            edges.push(key);
+
+            assert.deepEqual(attributes, key === 'J->T' ? {weight: 14} : {});
+            assert.strictEqual(source, graph.source(key));
+            assert.strictEqual(target, graph.target(key));
+
+            assert.deepEqual(graph.getNodeAttributes(source), sA);
+            assert.deepEqual(graph.getNodeAttributes(target), tA);
+          });
+
+          edges.sort();
+
+          assert.deepEqual(edges, data.node.edges.slice().sort());
         },
 
         'it should return all the relevant edges between source & target.': function() {

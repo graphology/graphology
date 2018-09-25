@@ -3,8 +3,8 @@
 ## 0.12.0 (provisional)
 
 * Adding `#.clearEdges`.
-* Adding `#.forEachEdge`.
-* Adding `#.forEachNode`.
+* Adding `#.forEachEdge` & alii.
+* Adding `#.forEachNode` & alii.
 * Adding `#.inboundNeighbors` & `#.outboundNeighbors`.
 * Adding `#.inboundEdges` & `#.outboundEdges`.
 * Dropping `#.addNodesFrom`.
