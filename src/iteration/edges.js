@@ -140,7 +140,12 @@ function forEachEdge(graph, type, callback) {
 
   if (type === 'mixed' || type === graph.type) {
     graph._edges.forEach((data, key) => {
-      callback(key, data.attributes, data.source, data.target);
+      callback(
+        key,
+        data.attributes,
+        data.source.key,
+        data.target.key
+      );
     });
   }
   else {
@@ -148,7 +153,12 @@ function forEachEdge(graph, type, callback) {
 
     graph._edges.forEach((data, key) => {
       if ((data instanceof UndirectedEdgeData) === mask)
-        callback(key, data.attributes, data.source, data.target);
+        callback(
+          key,
+          data.attributes,
+          data.source.key,
+          data.target.key
+        );
     });
   }
 }
