@@ -68,9 +68,9 @@ class EdgesIterator extends Iterator {}
 function collect(edges, object) {
   for (const k in object) {
     if (object[k] instanceof Set)
-      edges.push.apply(edges, take(object[k].values(), object[k].size));
+      object[k].forEach(edgeData => edges.push(edgeData.key));
     else
-      edges.push(object[k]);
+      edges.push(object[k].key);
   }
 }
 
@@ -79,18 +79,18 @@ function collect(edges, object) {
  *
  * @param  {array}  edges  - Edges array to populate.
  * @param  {object} object - Target object.
- * @param  {mixed}  key    - Neighbor key.
+ * @param  {mixed}  k      - Neighbor key.
  * @return {array}         - The found edges.
  */
-function collectForKey(edges, object, key) {
+function collectForKey(edges, object, k) {
 
-  if (!(key in object))
+  if (!(k in object))
     return;
 
-  if (object[key] instanceof Set)
-    edges.push.apply(edges, take(object[key].values(), object[key].size));
+  if (object[k] instanceof Set)
+    object[k].forEach(edgeData => edges.push(edgeData.key));
   else
-    edges.push(object[key]);
+    edges.push(object[k].key);
 
   return;
 }

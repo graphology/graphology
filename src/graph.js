@@ -333,6 +333,8 @@ function mergeEdge(
     }
   }
 
+  let alreadyExistingEdgeData;
+
   // Here, we might have a source / target collision
   if (
     !alreadyExistingEdge &&
@@ -344,20 +346,18 @@ function mergeEdge(
         typeof sourceData.out[target] !== 'undefined'
     )
   ) {
-    alreadyExistingEdge = getMatchingEdge(graph, source, target, undirected ? 'undirected' : 'directed');
+    alreadyExistingEdgeData = getMatchingEdge(graph, source, target, undirected ? 'undirected' : 'directed');
   }
 
   // Handling duplicates
-  if (alreadyExistingEdge) {
+  if (alreadyExistingEdgeData) {
 
     // We can skip the attribute merging part if the user did not provide them
     if (!attributes)
       return alreadyExistingEdge;
 
-    edgeData = graph._edges.get(alreadyExistingEdge);
-
     // Merging the attributes
-    assign(edgeData.attributes, attributes);
+    assign(alreadyExistingEdgeData.attributes, attributes);
     return alreadyExistingEdge;
   }
 
@@ -945,7 +945,7 @@ export default class Graph extends EventEmitter {
     if (!data)
       throw new NotFoundGraphError(`Graph.source: could not find the "${edge}" edge in the graph.`);
 
-    return data.source;
+    return data.source.key;
   }
 
   /**
@@ -964,7 +964,7 @@ export default class Graph extends EventEmitter {
     if (!data)
       throw new NotFoundGraphError(`Graph.target: could not find the "${edge}" edge in the graph.`);
 
-    return data.target;
+    return data.target.key;
   }
 
   /**
@@ -984,8 +984,8 @@ export default class Graph extends EventEmitter {
       throw new NotFoundGraphError(`Graph.extremities: could not find the "${edge}" edge in the graph.`);
 
     return [
-      edgeData.source,
-      edgeData.target
+      edgeData.source.key,
+      edgeData.target.key
     ];
   }
 
