@@ -15,6 +15,7 @@
 * Improving performance of internal indices.
 * Improving performance of `#.mergeNode`.
 * Fixing edge-case deopt for `#.dropEdges`.
+* Completely reworking internal indices.
 
 ## 0.11.4
 
