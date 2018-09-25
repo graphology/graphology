@@ -719,7 +719,10 @@ export default class Graph extends EventEmitter {
     if (!this._nodes.has(target))
       throw new NotFoundGraphError(`Graph.directedEdge: could not find the "${target}" target node in the graph.`);
 
-    return (sourceData.out && sourceData.out[target]) || undefined;
+    const edgeData = (sourceData.out && sourceData.out[target]) || undefined;
+
+    if (edgeData)
+      return edgeData.key;
   }
 
   /**
@@ -752,7 +755,10 @@ export default class Graph extends EventEmitter {
     if (!this._nodes.has(target))
       throw new NotFoundGraphError(`Graph.undirectedEdge: could not find the "${target}" target node in the graph.`);
 
-    return (sourceData.undirected && sourceData.undirected[target]) || undefined;
+    const edgeData = (sourceData.undirected && sourceData.undirected[target]) || undefined;
+
+    if (edgeData)
+      return edgeData.key;
   }
 
   /**
@@ -781,11 +787,14 @@ export default class Graph extends EventEmitter {
     if (!this._nodes.has(target))
       throw new NotFoundGraphError(`Graph.edge: could not find the "${target}" target node in the graph.`);
 
-    return (
+    const edgeData = (
       (sourceData.out && sourceData.out[target]) ||
       (sourceData.undirected && sourceData.undirected[target]) ||
       undefined
     );
+
+    if (edgeData)
+      return edgeData.key;
   }
 
   /**
@@ -1010,7 +1019,10 @@ export default class Graph extends EventEmitter {
     if (!data)
       throw new NotFoundGraphError(`Graph.opposite: could not find the "${edge}" edge in the graph.`);
 
-    const {source, target} = data;
+    const {source: sourceData, target: targetData} = data;
+
+    const source = sourceData.key,
+          target = targetData.key;
 
     if (node !== source && node !== target)
       throw new NotFoundGraphError(`Graph.opposite: the "${node}" node is not attached to the "${edge}" edge (${source}, ${target}).`);
