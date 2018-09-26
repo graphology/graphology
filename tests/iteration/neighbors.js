@@ -166,7 +166,7 @@ export default function neighborsIteration(Graph, checkers) {
   }
 
   function specificTests(name, data) {
-    const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1);
+    const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1);
 
     return {
 

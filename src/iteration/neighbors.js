@@ -308,7 +308,7 @@ function attachForEachNeighbor(Class, description) {
     direction
   } = description;
 
-  const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1);
+  const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1);
 
   /**
    * Function iterating over all the relevant neighbors using a callback.
