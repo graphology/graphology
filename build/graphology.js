@@ -184,10 +184,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.assign = assign;
 exports.getMatchingEdge = getMatchingEdge;
-exports.isBunch = isBunch;
 exports.isGraph = isGraph;
 exports.isPlainObject = isPlainObject;
-exports.overBunch = overBunch;
 exports.prettyPrint = prettyPrint;
 exports.privateProperty = privateProperty;
 exports.readOnlyProperty = readOnlyProperty;
@@ -236,6 +234,8 @@ function getMatchingEdge(graph, source, target, type) {
 
   var edge = null;
 
+  if (!sourceData) return edge;
+
   if (type === 'mixed') {
     edge = sourceData.out && sourceData.out[target] || sourceData.undirected && sourceData.undirected[target];
   } else if (type === 'directed') {
@@ -245,16 +245,6 @@ function getMatchingEdge(graph, source, target, type) {
   }
 
   return edge;
-}
-
-/**
- * Checks whether the given value is a potential bunch.
- *
- * @param  {mixed}   value - Target value.
- * @return {boolean}
- */
-function isBunch(value) {
-  return !!value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && (Array.isArray(value) || typeof Map === 'function' && value instanceof Map || typeof Set === 'function' && value instanceof Set || !(value instanceof Date) && !(value instanceof RegExp));
 }
 
 /**
@@ -275,53 +265,6 @@ function isGraph(value) {
  */
 function isPlainObject(value) {
   return (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && value !== null && value.constructor === Object;
-}
-
-/**
- * Iterates over the provided bunch.
- *
- * @param {object}   bunch    - Target bunch.
- * @param {function} callback - Function to call.
- */
-function overBunch(bunch, callback) {
-
-  // Array iteration
-  if (Array.isArray(bunch)) {
-    for (var i = 0, l = bunch.length; i < l; i++) {
-      callback(bunch[i], null);
-    }
-  }
-
-  // Map & Set iteration
-  else if (typeof bunch.forEach === 'function') {
-      var iterator = bunch.entries();
-
-      var step = void 0;
-
-      while (step = iterator.next()) {
-        var _step = step,
-            value = _step.value,
-            done = _step.done;
-
-
-        if (done) break;
-
-        var k = value[0],
-            v = value[1];
-
-
-        if (v === k) callback(v, null);else callback(k, v);
-      }
-    }
-
-    // Plain object iteration
-    else {
-        for (var key in bunch) {
-          var attributes = bunch[key];
-
-          callback(key, attributes);
-        }
-      }
 }
 
 /**
@@ -400,6 +343,172 @@ function incrementalId() {
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MixedNodeData = MixedNodeData;
+exports.DirectedNodeData = DirectedNodeData;
+exports.UndirectedNodeData = UndirectedNodeData;
+exports.DirectedEdgeData = DirectedEdgeData;
+exports.UndirectedEdgeData = UndirectedEdgeData;
+/**
+ * Graphology Internal Data Classes
+ * =================================
+ *
+ * Internal classes hopefully reduced to structs by engines & storing
+ * necessary information for nodes & edges.
+ *
+ * Note that those classes don't rely on the `class` keyword to avoid some
+ * cruft introduced by most of ES2015 transpilers.
+ */
+
+/**
+ * MixedNodeData class.
+ *
+ * @constructor
+ * @param {string} string     - The node's key.
+ * @param {object} attributes - Node's attributes.
+ */
+function MixedNodeData(key, attributes) {
+
+  // Attributes
+  this.key = key;
+  this.attributes = attributes;
+
+  // Degrees
+  this.inDegree = 0;
+  this.outDegree = 0;
+  this.undirectedDegree = 0;
+  this.directedSelfLoops = 0;
+  this.undirectedSelfLoops = 0;
+
+  // Indices
+  this.in = {};
+  this.out = {};
+  this.undirected = {};
+}
+
+/**
+ * DirectedNodeData class.
+ *
+ * @constructor
+ * @param {string} string     - The node's key.
+ * @param {object} attributes - Node's attributes.
+ */
+function DirectedNodeData(key, attributes) {
+
+  // Attributes
+  this.key = key;
+  this.attributes = attributes || {};
+
+  // Degrees
+  this.inDegree = 0;
+  this.outDegree = 0;
+  this.directedSelfLoops = 0;
+
+  // Indices
+  this.in = {};
+  this.out = {};
+}
+
+DirectedNodeData.prototype.upgradeToMixed = function () {
+
+  // Degrees
+  this.undirectedDegree = 0;
+  this.undirectedSelfLoops = 0;
+
+  // Indices
+  this.undirected = {};
+};
+
+/**
+ * UndirectedNodeData class.
+ *
+ * @constructor
+ * @param {string} string     - The node's key.
+ * @param {object} attributes - Node's attributes.
+ */
+function UndirectedNodeData(key, attributes) {
+
+  // Attributes
+  this.key = key;
+  this.attributes = attributes || {};
+
+  // Degrees
+  this.undirectedDegree = 0;
+  this.undirectedSelfLoops = 0;
+
+  // Indices
+  this.undirected = {};
+}
+
+UndirectedNodeData.prototype.upgradeToMixed = function () {
+
+  // Degrees
+  this.inDegree = 0;
+  this.outDegree = 0;
+  this.directedSelfLoops = 0;
+
+  // Indices
+  this.in = {};
+  this.out = {};
+};
+
+/**
+ * DirectedEdgeData class.
+ *
+ * @constructor
+ * @param {string}  string       - The edge's key.
+ * @param {boolean} generatedKey - Was its key generated?
+ * @param {string}  source       - Source of the edge.
+ * @param {string}  target       - Target of the edge.
+ * @param {object}  attributes   - Edge's attributes.
+ */
+function DirectedEdgeData(key, generatedKey, source, target, attributes) {
+
+  // Attributes
+  this.key = key;
+  this.attributes = attributes;
+
+  // Extremities
+  this.source = source;
+  this.target = target;
+
+  // Was its key generated?
+  this.generatedKey = generatedKey;
+}
+
+/**
+ * UndirectedEdgeData class.
+ *
+ * @constructor
+ * @param {string}  string       - The edge's key.
+ * @param {boolean} generatedKey - Was its key generated?
+ * @param {string}  source       - Source of the edge.
+ * @param {string}  target       - Target of the edge.
+ * @param {object}  attributes   - Edge's attributes.
+ */
+function UndirectedEdgeData(key, generatedKey, source, target, attributes) {
+
+  // Attributes
+  this.key = key;
+  this.attributes = attributes;
+
+  // Extremities
+  this.source = source;
+  this.target = target;
+
+  // Was its key generated?
+  this.generatedKey = generatedKey;
+}
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports) {
 
 /* eslint no-constant-condition: 0 */
@@ -443,162 +552,6 @@ module.exports = function take(iterator, n) {
   }
 };
 
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.MixedNodeData = MixedNodeData;
-exports.DirectedNodeData = DirectedNodeData;
-exports.UndirectedNodeData = UndirectedNodeData;
-exports.DirectedEdgeData = DirectedEdgeData;
-exports.UndirectedEdgeData = UndirectedEdgeData;
-/**
- * Graphology Internal Data Classes
- * =================================
- *
- * Internal classes hopefully reduced to structs by engines & storing
- * necessary information for nodes & edges.
- *
- * Note that those classes don't rely on the `class` keyword to avoid some
- * cruft introduced by most of ES2015 transpilers.
- */
-
-/**
- * MixedNodeData class.
- *
- * @constructor
- * @param {object} attributes - Node's attributes.
- */
-function MixedNodeData(attributes) {
-
-  // Attributes
-  this.attributes = attributes;
-
-  // Degrees
-  this.inDegree = 0;
-  this.outDegree = 0;
-  this.undirectedDegree = 0;
-  this.directedSelfLoops = 0;
-  this.undirectedSelfLoops = 0;
-
-  // Indices
-  this.in = {};
-  this.out = {};
-  this.undirected = {};
-}
-
-/**
- * DirectedNodeData class.
- *
- * @constructor
- * @param {object} attributes - Node's attributes.
- */
-function DirectedNodeData(attributes) {
-
-  // Attributes
-  this.attributes = attributes || {};
-
-  // Degrees
-  this.inDegree = 0;
-  this.outDegree = 0;
-  this.directedSelfLoops = 0;
-
-  // Indices
-  this.in = {};
-  this.out = {};
-}
-
-DirectedNodeData.prototype.upgradeToMixed = function () {
-
-  // Degrees
-  this.undirectedDegree = 0;
-  this.undirectedSelfLoops = 0;
-
-  // Indices
-  this.undirected = {};
-};
-
-/**
- * UndirectedNodeData class.
- *
- * @constructor
- * @param {object} attributes - Node's attributes.
- */
-function UndirectedNodeData(attributes) {
-
-  // Attributes
-  this.attributes = attributes || {};
-
-  // Degrees
-  this.undirectedDegree = 0;
-  this.undirectedSelfLoops = 0;
-
-  // Indices
-  this.undirected = {};
-}
-
-UndirectedNodeData.prototype.upgradeToMixed = function () {
-
-  // Degrees
-  this.inDegree = 0;
-  this.outDegree = 0;
-  this.directedSelfLoops = 0;
-
-  // Indices
-  this.in = {};
-  this.out = {};
-};
-
-/**
- * DirectedEdgeData class.
- *
- * @constructor
- * @param {boolean} generatedKey - Was its key generated?
- * @param {string}  source       - Source of the edge.
- * @param {string}  target       - Target of the edge.
- * @param {object}  attributes   - Edge's attributes.
- */
-function DirectedEdgeData(generatedKey, source, target, attributes) {
-
-  // Attributes
-  this.attributes = attributes;
-
-  // Extremities
-  this.source = source;
-  this.target = target;
-
-  // Was its key generated?
-  this.generatedKey = generatedKey;
-}
-
-/**
- * UndirectedEdgeData class.
- *
- * @constructor
- * @param {boolean} generatedKey - Was its key generated?
- * @param {string}  source       - Source of the edge.
- * @param {string}  target       - Target of the edge.
- * @param {object}  attributes   - Edge's attributes.
- */
-function UndirectedEdgeData(generatedKey, source, target, attributes) {
-
-  // Attributes
-  this.attributes = attributes;
-
-  // Extremities
-  this.source = source;
-  this.target = target;
-
-  // Was its key generated?
-  this.generatedKey = generatedKey;
-}
 
 /***/ }),
 /* 4 */
@@ -851,13 +804,13 @@ var _iterator = __webpack_require__(4);
 
 var _iterator2 = _interopRequireDefault(_iterator);
 
-var _take = __webpack_require__(2);
+var _take = __webpack_require__(3);
 
 var _take2 = _interopRequireDefault(_take);
 
 var _errors = __webpack_require__(0);
 
-var _data = __webpack_require__(3);
+var _data = __webpack_require__(2);
 
 var _indices = __webpack_require__(8);
 
@@ -931,8 +884,6 @@ var EDGE_ADD_METHODS = [{
  */
 var DEFAULTS = {
   allowSelfLoops: true,
-  defaultEdgeAttributes: {},
-  defaultNodeAttributes: {},
   edgeKeyGenerator: null,
   multi: false,
   type: 'mixed'
@@ -990,6 +941,7 @@ function addEdge(graph, name, mustGenerateKey, undirected, edge, source, target,
   // Coercion of source & target:
   source = '' + source;
   target = '' + target;
+  attributes = attributes || {};
 
   if (!graph.allowSelfLoops && source === target) throw new _errors.UsageGraphError('Graph.' + name + ': source & target are the same ("' + source + '"), thus creating a loop explicitly forbidden by this graph \'allowSelfLoops\' option set to false.');
 
@@ -999,9 +951,6 @@ function addEdge(graph, name, mustGenerateKey, undirected, edge, source, target,
   if (!sourceData) throw new _errors.NotFoundGraphError('Graph.' + name + ': source node "' + source + '" not found.');
 
   if (!targetData) throw new _errors.NotFoundGraphError('Graph.' + name + ': target node "' + target + '" not found.');
-
-  // Protecting the attributes
-  attributes = (0, _utils.assign)({}, graph._options.defaultEdgeAttributes, attributes);
 
   // Must the graph generate an id for this edge?
   var eventData = {
@@ -1028,10 +977,10 @@ function addEdge(graph, name, mustGenerateKey, undirected, edge, source, target,
   // Storing some data
   var DataClass = undirected ? _data.UndirectedEdgeData : _data.DirectedEdgeData;
 
-  var data = new DataClass(mustGenerateKey, source, target, attributes);
+  var edgeData = new DataClass(edge, mustGenerateKey, sourceData, targetData, attributes);
 
   // Adding the edge to the internal register
-  graph._edges.set(edge, data);
+  graph._edges.set(edge, edgeData);
 
   // Incrementing node degree counters
   if (source === target) {
@@ -1047,7 +996,7 @@ function addEdge(graph, name, mustGenerateKey, undirected, edge, source, target,
   }
 
   // Updating relevant index
-  (0, _indices.updateStructureIndex)(graph, undirected, edge, source, target, sourceData, targetData);
+  (0, _indices.updateStructureIndex)(graph, undirected, edgeData, source, target, sourceData, targetData);
 
   if (undirected) graph._undirectedSize++;else graph._directedSize++;
 
@@ -1089,6 +1038,7 @@ function mergeEdge(graph, name, mustGenerateKey, undirected, edge, source, targe
   // Coercion of source & target:
   source = '' + source;
   target = '' + target;
+  attributes = attributes || {};
 
   if (!graph.allowSelfLoops && source === target) throw new _errors.UsageGraphError('Graph.' + name + ': source & target are the same ("' + source + '"), thus creating a loop explicitly forbidden by this graph \'allowSelfLoops\' option set to false.');
 
@@ -1114,26 +1064,23 @@ function mergeEdge(graph, name, mustGenerateKey, undirected, edge, source, targe
     }
   }
 
+  var alreadyExistingEdgeData = void 0;
+
   // Here, we might have a source / target collision
   if (!alreadyExistingEdge && !graph.multi && sourceData && (undirected ? typeof sourceData.undirected[target] !== 'undefined' : typeof sourceData.out[target] !== 'undefined')) {
-    alreadyExistingEdge = (0, _utils.getMatchingEdge)(graph, source, target, undirected ? 'undirected' : 'directed');
+    alreadyExistingEdgeData = (0, _utils.getMatchingEdge)(graph, source, target, undirected ? 'undirected' : 'directed');
   }
 
   // Handling duplicates
-  if (alreadyExistingEdge) {
+  if (alreadyExistingEdgeData) {
 
     // We can skip the attribute merging part if the user did not provide them
     if (!attributes) return alreadyExistingEdge;
 
-    if (!edgeData) edgeData = graph._edges.get(alreadyExistingEdge);
-
     // Merging the attributes
-    (0, _utils.assign)(edgeData.attributes, attributes);
+    (0, _utils.assign)(alreadyExistingEdgeData.attributes, attributes);
     return alreadyExistingEdge;
   }
-
-  // Protecting the attributes
-  attributes = (0, _utils.assign)({}, graph._options.defaultEdgeAttributes, attributes);
 
   // Must the graph generate an id for this edge?
   var eventData = {
@@ -1164,10 +1111,10 @@ function mergeEdge(graph, name, mustGenerateKey, undirected, edge, source, targe
   // Storing some data
   var DataClass = undirected ? _data.UndirectedEdgeData : _data.DirectedEdgeData;
 
-  var data = new DataClass(mustGenerateKey, source, target, attributes);
+  edgeData = new DataClass(edge, mustGenerateKey, sourceData, targetData, attributes);
 
   // Adding the edge to the internal register
-  graph._edges.set(edge, data);
+  graph._edges.set(edge, edgeData);
 
   // Incrementing node degree counters
   if (source === target) {
@@ -1183,7 +1130,7 @@ function mergeEdge(graph, name, mustGenerateKey, undirected, edge, source, targe
   }
 
   // Updating relevant index
-  (0, _indices.updateStructureIndex)(graph, undirected, edge, source, target, sourceData, targetData);
+  (0, _indices.updateStructureIndex)(graph, undirected, edgeData, source, target, sourceData, targetData);
 
   if (undirected) graph._undirectedSize++;else graph._directedSize++;
 
@@ -1193,43 +1140,6 @@ function mergeEdge(graph, name, mustGenerateKey, undirected, edge, source, targe
   graph.emit('edgeAdded', eventData);
 
   return edge;
-}
-
-/**
- * Internal method abstracting edges export.
- *
- * @param  {Graph}    graph     - Target graph.
- * @param  {string}   name      - Child method name.
- * @param  {function} predicate - Predicate to filter the bunch's edges.
- * @param  {mixed}    [bunch]   - Target edges.
- * @return {array[]}            - The serialized edges.
- *
- * @throws {Error} - Will throw if any of the edges is not found.
- */
-function _exportEdges(graph, name, predicate, bunch) {
-  var edges = [];
-
-  if (!bunch) {
-
-    // Exporting every edges of the given type
-    if (name === 'exportEdges') edges = graph.edges();else if (name === 'exportDirectedEdges') edges = graph.directedEdges();else edges = graph.undirectedEdges();
-  } else {
-
-    // Exporting the bunch
-    if (!(0, _utils.isBunch)(bunch)) throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid bunch.');
-
-    (0, _utils.overBunch)(bunch, function (edge) {
-      if (!graph.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + edge + '" edge from the bunch in the graph.');
-
-      if (!predicate || predicate(edge)) edges.push(edge);
-    });
-  }
-
-  var serializedEdges = new Array(edges.length);
-
-  for (var i = 0, l = edges.length; i < l; i++) {
-    serializedEdges[i] = graph.exportEdge(edges[i]);
-  }return serializedEdges;
 }
 
 /**
@@ -1265,11 +1175,12 @@ var Graph = function (_EventEmitter) {
 
     if (typeof options.allowSelfLoops !== 'boolean') throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'allowSelfLoops\' option. Expecting a boolean but got "' + options.allowSelfLoops + '".');
 
-    if (!(0, _utils.isPlainObject)(options.defaultEdgeAttributes)) throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'defaultEdgeAttributes\' option. Expecting a plain object but got "' + options.defaultEdgeAttributes + '".');
-
-    if (!(0, _utils.isPlainObject)(options.defaultNodeAttributes)) throw new _errors.InvalidArgumentsGraphError('Graph.constructor: invalid \'defaultNodeAttributes\' option. Expecting a plain object but got "' + options.defaultNodeAttributes + '".');
-
     //-- Private properties
+
+    // Utilities
+    var NodeDataClass = options.type === 'mixed' ? _data.MixedNodeData : options.type === 'directed' ? _data.DirectedNodeData : _data.UndirectedNodeData;
+
+    (0, _utils.privateProperty)(_this2, 'NodeDataClass', NodeDataClass);
 
     // Indexes
     (0, _utils.privateProperty)(_this2, '_attributes', {});
@@ -1492,7 +1403,9 @@ var Graph = function (_EventEmitter) {
 
     if (!this._nodes.has(target)) throw new _errors.NotFoundGraphError('Graph.directedEdge: could not find the "' + target + '" target node in the graph.');
 
-    return sourceData.out && sourceData.out[target] || undefined;
+    var edgeData = sourceData.out && sourceData.out[target] || undefined;
+
+    if (edgeData) return edgeData.key;
   };
 
   /**
@@ -1523,7 +1436,9 @@ var Graph = function (_EventEmitter) {
 
     if (!this._nodes.has(target)) throw new _errors.NotFoundGraphError('Graph.undirectedEdge: could not find the "' + target + '" target node in the graph.');
 
-    return sourceData.undirected && sourceData.undirected[target] || undefined;
+    var edgeData = sourceData.undirected && sourceData.undirected[target] || undefined;
+
+    if (edgeData) return edgeData.key;
   };
 
   /**
@@ -1551,7 +1466,9 @@ var Graph = function (_EventEmitter) {
 
     if (!this._nodes.has(target)) throw new _errors.NotFoundGraphError('Graph.edge: could not find the "' + target + '" target node in the graph.');
 
-    return sourceData.out && sourceData.out[target] || sourceData.undirected && sourceData.undirected[target] || undefined;
+    var edgeData = sourceData.out && sourceData.out[target] || sourceData.undirected && sourceData.undirected[target] || undefined;
+
+    if (edgeData) return edgeData.key;
   };
 
   /**
@@ -1716,7 +1633,7 @@ var Graph = function (_EventEmitter) {
 
     if (!data) throw new _errors.NotFoundGraphError('Graph.source: could not find the "' + edge + '" edge in the graph.');
 
-    return data.source;
+    return data.source.key;
   };
 
   /**
@@ -1736,7 +1653,7 @@ var Graph = function (_EventEmitter) {
 
     if (!data) throw new _errors.NotFoundGraphError('Graph.target: could not find the "' + edge + '" edge in the graph.');
 
-    return data.target;
+    return data.target.key;
   };
 
   /**
@@ -1756,7 +1673,7 @@ var Graph = function (_EventEmitter) {
 
     if (!edgeData) throw new _errors.NotFoundGraphError('Graph.extremities: could not find the "' + edge + '" edge in the graph.');
 
-    return [edgeData.source, edgeData.target];
+    return [edgeData.source.key, edgeData.target.key];
   };
 
   /**
@@ -1780,9 +1697,12 @@ var Graph = function (_EventEmitter) {
 
     if (!data) throw new _errors.NotFoundGraphError('Graph.opposite: could not find the "' + edge + '" edge in the graph.');
 
-    var source = data.source,
-        target = data.target;
+    var sourceData = data.source,
+        targetData = data.target;
 
+
+    var source = sourceData.key,
+        target = targetData.key;
 
     if (node !== source && node !== target) throw new _errors.NotFoundGraphError('Graph.opposite: the "' + node + '" node is not attached to the "' + edge + '" edge (' + source + ', ' + target + ').');
 
@@ -1871,15 +1791,11 @@ var Graph = function (_EventEmitter) {
 
     // String coercion
     node = '' + node;
+    attributes = attributes || {};
 
     if (this._nodes.has(node)) throw new _errors.UsageGraphError('Graph.addNode: the "' + node + '" node already exist in the graph.');
 
-    // Protecting the attributes
-    attributes = (0, _utils.assign)({}, this._options.defaultNodeAttributes, attributes);
-
-    var DataClass = this.type === 'mixed' ? _data.MixedNodeData : this.type === 'directed' ? _data.DirectedNodeData : _data.UndirectedNodeData;
-
-    var data = new DataClass(attributes);
+    var data = new this.NodeDataClass(node, attributes);
 
     // Adding the node to internal register
     this._nodes.set(node, data);
@@ -1903,7 +1819,11 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.mergeNode = function mergeNode(node, attributes) {
+    if (attributes && !(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.mergeNode: invalid attributes. Expecting an object but got "' + attributes + '"');
+
+    // String coercion
     node = '' + node;
+    attributes = attributes || {};
 
     // If the node already exists, we merge the attributes
     var data = this._nodes.get(node);
@@ -1913,30 +1833,18 @@ var Graph = function (_EventEmitter) {
       return node;
     }
 
-    // Else, we create it
-    return this.addNode(node, attributes);
-  };
+    data = new this.NodeDataClass(node, attributes);
 
-  /**
-   * Method used to add a nodes from a bunch.
-   *
-   * @param  {bunch}  bunch - The node.
-   * @return {Graph}        - Returns itself for chaining.
-   *
-   * @throws {Error} - Will throw if the given bunch is not valid.
-   */
+    // Adding the node to internal register
+    this._nodes.set(node, data);
 
-
-  Graph.prototype.addNodesFrom = function addNodesFrom(bunch) {
-    var _this3 = this;
-
-    if (!(0, _utils.isBunch)(bunch)) throw new _errors.InvalidArgumentsGraphError('Graph.addNodesFrom: invalid bunch provided ("' + bunch + '").');
-
-    (0, _utils.overBunch)(bunch, function (node, attributes) {
-      _this3.addNode(node, attributes);
+    // Emitting
+    this.emit('nodeAdded', {
+      key: node,
+      attributes: attributes
     });
 
-    return this;
+    return node;
   };
 
   /**
@@ -1989,40 +1897,36 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.dropEdge = function dropEdge(edge) {
+    var edgeData = void 0;
+
     if (arguments.length > 1) {
-      var _source = '' + arguments[0],
-          _target = '' + arguments[1];
+      var source = '' + arguments[0],
+          target = '' + arguments[1];
 
-      if (!this.hasNode(_source)) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + _source + '" source node in the graph.');
+      edgeData = (0, _utils.getMatchingEdge)(this, source, target, this.type);
 
-      if (!this.hasNode(_target)) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + _target + '" target node in the graph.');
-
-      if (!this.hasEdge(_source, _target)) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + _source + '" -> "' + _target + '" edge in the graph.');
-
-      edge = (0, _utils.getMatchingEdge)(this, _source, _target, this.type);
+      if (!edgeData) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + source + '" -> "' + target + '" edge in the graph.');
     } else {
       edge = '' + edge;
 
-      if (!this.hasEdge(edge)) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + edge + '" edge in the graph.');
+      edgeData = this._edges.get(edge);
+
+      if (!edgeData) throw new _errors.NotFoundGraphError('Graph.dropEdge: could not find the "' + edge + '" edge in the graph.');
     }
 
-    var data = this._edges.get(edge);
-
     // Dropping the edge from the register
-    this._edges.delete(edge);
+    this._edges.delete(edgeData.key);
 
     // Updating related degrees
-    var source = data.source,
-        target = data.target,
-        attributes = data.attributes;
+    var _edgeData = edgeData,
+        sourceData = _edgeData.source,
+        targetData = _edgeData.target,
+        attributes = _edgeData.attributes;
 
 
-    var undirected = data instanceof _data.UndirectedEdgeData;
+    var undirected = edgeData instanceof _data.UndirectedEdgeData;
 
-    var sourceData = this._nodes.get(source),
-        targetData = this._nodes.get(target);
-
-    if (source === target) {
+    if (sourceData === targetData) {
       sourceData.selfLoops--;
     } else {
       if (undirected) {
@@ -2035,7 +1939,7 @@ var Graph = function (_EventEmitter) {
     }
 
     // Clearing index
-    (0, _indices.clearEdgeFromStructureIndex)(this, undirected, edge, data);
+    (0, _indices.clearEdgeFromStructureIndex)(this, undirected, edgeData);
 
     if (undirected) this._undirectedSize--;else this._directedSize--;
 
@@ -2043,81 +1947,9 @@ var Graph = function (_EventEmitter) {
     this.emit('edgeDropped', {
       key: edge,
       attributes: attributes,
-      source: source,
-      target: target,
+      source: sourceData.key,
+      target: targetData.key,
       undirected: undirected
-    });
-
-    return this;
-  };
-
-  /**
-   * Method used to drop a bunch of nodes or every node from the graph.
-   *
-   * @param  {bunch} nodes - Bunch of nodes.
-   * @return {Graph}
-   *
-   * @throws {Error} - Will throw if an invalid bunch is provided.
-   * @throws {Error} - Will throw if any of the nodes doesn't exist.
-   */
-
-
-  Graph.prototype.dropNodes = function dropNodes(nodes) {
-    var _this4 = this;
-
-    if (!arguments.length) return this.clear();
-
-    if (!(0, _utils.isBunch)(nodes)) throw new _errors.InvalidArgumentsGraphError('Graph.dropNodes: invalid bunch.');
-
-    (0, _utils.overBunch)(nodes, function (node) {
-      _this4.dropNode(node);
-    });
-
-    return this;
-  };
-
-  /**
-   * Method used to drop a bunch of edges or every edges from the graph.
-   *
-   * Arity 1:
-   * @param  {bunch} edges - Bunch of edges.
-   *
-   * Arity 2:
-   * @param  {any}    source - Source node.
-   * @param  {any}    target - Target node.
-   *
-   * @return {Graph}
-   *
-   * @throws {Error} - Will throw if an invalid bunch is provided.
-   * @throws {Error} - Will throw if any of the edges doesn't exist.
-   */
-
-
-  Graph.prototype.dropEdges = function dropEdges(edges) {
-    var _this5 = this;
-
-    if (!arguments.length) {
-
-      // Dropping every edge from the graph
-      this._edges.clear();
-
-      // Without edges, we've got no 'structure'
-      this.clearIndex();
-
-      return this;
-    }
-
-    if (arguments.length === 2) {
-      var source = arguments[0],
-          target = arguments[1];
-
-      edges = this.edges(source, target);
-    }
-
-    if (!(0, _utils.isBunch)(edges)) throw new _errors.InvalidArgumentsGraphError('Graph.dropEdges: invalid bunch.');
-
-    (0, _utils.overBunch)(edges, function (edge) {
-      _this5.dropEdge(edge);
     });
 
     return this;
@@ -2132,21 +1964,33 @@ var Graph = function (_EventEmitter) {
 
   Graph.prototype.clear = function clear() {
 
-    // Dropping edges
+    // Clearing edges
     this._edges.clear();
 
-    // Dropping nodes
+    // Clearing nodes
     this._nodes.clear();
-
-    // Handling indices
-    for (var name in this._indices) {
-      var index = this._indices[name];
-
-      if (index.lazy) index.computed = false;
-    }
 
     // Emitting
     this.emit('cleared');
+  };
+
+  /**
+   * Method used to remove every edge from the graph.
+   *
+   * @return {Graph}
+   */
+
+
+  Graph.prototype.clearEdges = function clearEdges() {
+
+    // Clearing edges
+    this._edges.clear();
+
+    // Clearing indices
+    this.clearIndex();
+
+    // Emitting
+    this.emit('edgesCleared');
   };
 
   /**---------------------------------------------------------------------------
@@ -2579,6 +2423,21 @@ var Graph = function (_EventEmitter) {
   };
 
   /**
+   * Method iterating over the graph's nodes using the given callback.
+   *
+   * @param  {function}  callback - Callback (key, attributes, index).
+   */
+
+
+  Graph.prototype.forEachNode = function forEachNode(callback) {
+    if (typeof callback !== 'function') throw new _errors.InvalidArgumentsGraphError('Graph.forEachNode: expecting a callback.');
+
+    this._nodes.forEach(function (data, key) {
+      callback(key, data.attributes);
+    });
+  };
+
+  /**
    * Method returning an iterator over the graph's nodes.
    *
    * @return {Iterator}
@@ -2637,94 +2496,6 @@ var Graph = function (_EventEmitter) {
   };
 
   /**
-   * Method exporting every nodes or the bunch ones.
-   *
-   * @param  {mixed}   [bunch] - Target nodes.
-   * @return {array[]}         - The serialized nodes.
-   *
-   * @throws {Error} - Will throw if any of the nodes is not found.
-   */
-
-
-  Graph.prototype.exportNodes = function exportNodes(bunch) {
-    var _this6 = this;
-
-    var nodes = [];
-
-    if (!arguments.length) {
-
-      // Exporting every node
-      nodes = this.nodes();
-    } else {
-
-      // Exporting the bunch
-      if (!(0, _utils.isBunch)(bunch)) throw new _errors.InvalidArgumentsGraphError('Graph.exportNodes: invalid bunch.');
-
-      (0, _utils.overBunch)(bunch, function (node) {
-        if (!_this6.hasNode(node)) throw new _errors.NotFoundGraphError('Graph.exportNodes: could not find the "' + node + '" node from the bunch in the graph.');
-        nodes.push(node);
-      });
-    }
-
-    var serializedNodes = new Array(nodes.length);
-
-    for (var i = 0, l = nodes.length; i < l; i++) {
-      serializedNodes[i] = this.exportNode(nodes[i]);
-    }return serializedNodes;
-  };
-
-  /**
-   * Method exporting every edges or the bunch ones.
-   *
-   * @param  {mixed}   [bunch] - Target edges.
-   * @return {array[]}         - The serialized edges.
-   *
-   * @throws {Error} - Will throw if any of the edges is not found.
-   */
-
-
-  Graph.prototype.exportEdges = function exportEdges(bunch) {
-    return _exportEdges(this, 'exportEdges', null, bunch);
-  };
-
-  /**
-   * Method exporting every directed edges or the bunch ones which are directed.
-   *
-   * @param  {mixed}   [bunch] - Target edges.
-   * @return {array[]}         - The serialized edges.
-   *
-   * @throws {Error} - Will throw if any of the edges is not found.
-   */
-
-
-  Graph.prototype.exportDirectedEdges = function exportDirectedEdges(bunch) {
-    var _this7 = this;
-
-    return _exportEdges(this, 'exportDirectedEdges', function (edge) {
-      return _this7.directed(edge);
-    }, bunch);
-  };
-
-  /**
-   * Method exporting every undirected edges or the bunch ones which are
-   * undirected
-   *
-   * @param  {mixed}   [bunch] - Target edges.
-   * @return {array[]}         - The serialized edges.
-   *
-   * @throws {Error} - Will throw if any of the edges is not found.
-   */
-
-
-  Graph.prototype.exportUndirectedEdges = function exportUndirectedEdges(bunch) {
-    var _this8 = this;
-
-    return _exportEdges(this, 'exportUndirectedEdges', function (edge) {
-      return _this8.undirected(edge);
-    }, bunch);
-  };
-
-  /**
    * Method used to export the whole graph.
    *
    * @return {object} - The serialized graph.
@@ -2732,10 +2503,27 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.export = function _export() {
+
+    var nodes = new Array(this._nodes.size);
+
+    var i = 0;
+
+    this._nodes.forEach(function (data, key) {
+      nodes[i++] = (0, _serialization.serializeNode)(key, data);
+    });
+
+    var edges = new Array(this._edges.size);
+
+    i = 0;
+
+    this._edges.forEach(function (data, key) {
+      edges[i++] = (0, _serialization.serializeEdge)(key, data);
+    });
+
     return {
       attributes: this.getAttributes(),
-      nodes: this.exportNodes(),
-      edges: this.exportEdges()
+      nodes: nodes,
+      edges: edges
     };
   };
 
@@ -2823,44 +2611,6 @@ var Graph = function (_EventEmitter) {
   };
 
   /**
-   * Method used to import serialized nodes.
-   *
-   * @param  {array}   nodes - The serialized nodes.
-   * @param  {boolean} merge - Whether to merge the given nodes.
-   * @return {Graph}         - Returns itself for chaining.
-   */
-
-
-  Graph.prototype.importNodes = function importNodes(nodes) {
-    var merge = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
-    if (!Array.isArray(nodes)) throw new _errors.InvalidArgumentsGraphError('Graph.importNodes: invalid argument. Expecting an array.');
-
-    for (var i = 0, l = nodes.length; i < l; i++) {
-      this.importNode(nodes[i], merge);
-    }return this;
-  };
-
-  /**
-   * Method used to import serialized edges.
-   *
-   * @param  {array}   edges - The serialized edges.
-   * @param  {boolean} merge - Whether to merge the given edges.
-   * @return {Graph}         - Returns itself for chaining.
-   */
-
-
-  Graph.prototype.importEdges = function importEdges(edges) {
-    var merge = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
-    if (!Array.isArray(edges)) throw new _errors.InvalidArgumentsGraphError('Graph.importEdges: invalid argument. Expecting an array.');
-
-    for (var i = 0, l = edges.length; i < l; i++) {
-      this.importEdge(edges[i], merge);
-    }return this;
-  };
-
-  /**
    * Method used to import a serialized graph.
    *
    * @param  {object|Graph} data  - The serialized graph.
@@ -2870,6 +2620,8 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.import = function _import(data) {
+    var _this3 = this;
+
     var merge = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
 
@@ -2889,9 +2641,14 @@ var Graph = function (_EventEmitter) {
       if (merge) this.mergeAttributes(data.attributes);else this.replaceAttributes(data.attributes);
     }
 
-    if (data.nodes) this.importNodes(data.nodes, merge);
+    // TODO: optimize
+    if (data.nodes) data.nodes.forEach(function (node) {
+      return _this3.importNode(node, merge);
+    });
 
-    if (data.edges) this.importEdges(data.edges, merge);
+    if (data.edges) data.edges.forEach(function (edge) {
+      return _this3.importEdge(edge, merge);
+    });
 
     return this;
   };
@@ -2949,6 +2706,7 @@ var Graph = function (_EventEmitter) {
     // Mutating the options & the instance
     this._options.type = 'mixed';
     (0, _utils.readOnlyProperty)(this, 'type', this._options.type);
+    (0, _utils.privateProperty)(this, 'NodeDataClass', _data.MixedNodeData);
 
     return this;
   };
@@ -3029,20 +2787,36 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.inspect = function inspect() {
+    var _this4 = this;
+
     var nodes = {};
     this._nodes.forEach(function (data, key) {
       nodes[key] = data.attributes;
     });
 
-    var edges = {};
+    var edges = {},
+        multiIndex = {};
+
     this._edges.forEach(function (data, key) {
       var direction = data instanceof _data.UndirectedEdgeData ? '--' : '->';
 
       var label = '';
 
-      if (!data.generatedKey) label += '[' + key + ']: ';
+      var desc = '(' + data.source.key + ')' + direction + '(' + data.target.key + ')';
 
-      label += '(' + data.source + ')' + direction + '(' + data.target + ')';
+      if (!data.generatedKey) {
+        label += '[' + key + ']: ';
+      } else if (_this4.multi) {
+        if (typeof multiIndex[desc] === 'undefined') {
+          multiIndex[desc] = 0;
+        } else {
+          multiIndex[desc]++;
+        }
+
+        label += multiIndex[desc] + '. ';
+      }
+
+      label += desc;
 
       edges[label] = data.attributes;
     });
@@ -3446,60 +3220,74 @@ exports.upgradeStructureIndexToMulti = upgradeStructureIndexToMulti;
  * set that is the same for A -> B & B <- A.
  *
  * @param {Graph}    graph      - Target Graph instance.
- * @param {any}      edge       - Added edge.
+ * @param {EdgeData} edgeData   - Added edge's data.
  * @param {NodeData} sourceData - Source node's data.
  * @param {NodeData} targetData - Target node's data.
  */
-function updateStructureIndex(graph, undirected, edge, source, target, sourceData, targetData) {
+function updateStructureIndex(graph, undirected, edgeData, source, target, sourceData, targetData) {
   var multi = graph.multi;
 
   var outKey = undirected ? 'undirected' : 'out',
       inKey = undirected ? 'undirected' : 'in';
 
   // Handling source
-  if (typeof sourceData[outKey][target] === 'undefined') sourceData[outKey][target] = multi ? new Set() : edge;
+  var edgeOrSet = sourceData[outKey][target];
 
-  if (multi) sourceData[outKey][target].add(edge);
+  if (typeof edgeOrSet === 'undefined') {
+    edgeOrSet = multi ? new Set() : edgeData;
+    sourceData[outKey][target] = edgeOrSet;
+  }
+
+  if (multi) edgeOrSet.add(edgeData);
 
   // If selfLoop, we break here
   if (source === target) return;
 
   // Handling target (we won't add the edge because it was already taken
   // care of with source above)
-  if (typeof targetData[inKey][source] === 'undefined') targetData[inKey][source] = sourceData[outKey][target];
+  if (typeof targetData[inKey][source] === 'undefined') targetData[inKey][source] = edgeOrSet;
 }
 
 /**
  * Function clearing the 'structure' index data related to the given edge.
  *
- * @param {Graph}  graph - Target Graph instance.
- * @param {any}    edge  - Dropped edge.
- * @param {object} data  - Attached data.
+ * @param {Graph}    graph    - Target Graph instance.
+ * @param {EdgeData} edgeData - Dropped edge's data.
  */
-function clearEdgeFromStructureIndex(graph, undirected, edge, data) {
+function clearEdgeFromStructureIndex(graph, undirected, edgeData) {
   var multi = graph.multi;
 
-  var source = data.source,
-      target = data.target;
+  var sourceData = edgeData.source,
+      targetData = edgeData.target;
+
+
+  var source = sourceData.key,
+      target = targetData.key;
 
   // NOTE: since the edge set is the same for source & target, we can only
   // affect source
-
-  var sourceData = graph._nodes.get(source),
-      outKey = undirected ? 'undirected' : 'out',
+  var outKey = undirected ? 'undirected' : 'out',
       sourceIndex = sourceData[outKey];
 
-  // NOTE: possible to clear empty sets from memory altogether
+  var inKey = undirected ? 'undirected' : 'in';
+
   if (target in sourceIndex) {
 
-    if (multi) sourceIndex[target].delete(edge);else delete sourceIndex[target];
+    if (multi) {
+      var set = sourceIndex[target];
+
+      if (set.size === 1) {
+        delete sourceIndex[target];
+        delete targetData[inKey][source];
+      } else {
+        set.delete(edgeData);
+      }
+    } else delete sourceIndex[target];
   }
 
   if (multi) return;
 
-  var targetData = graph._nodes.get(target),
-      inKey = undirected ? 'undirected' : 'in',
-      targetIndex = targetData[inKey];
+  var targetIndex = targetData[inKey];
 
   delete targetIndex[source];
 }
@@ -3573,21 +3361,17 @@ var _utils = __webpack_require__(1);
 
 var _errors = __webpack_require__(0);
 
+var _data = __webpack_require__(2);
+
 /**
  * Attach an attribute getter method onto the provided class.
  *
- * @param {function} Class       - Target class.
- * @param {string}   method      - Method name.
- * @param {string}   type        - Type of the edge to find.
+ * @param {function} Class         - Target class.
+ * @param {string}   method        - Method name.
+ * @param {string}   type          - Type of the edge to find.
+ * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-/**
- * Graphology Attributes methods
- * ==============================
- *
- * Attributes-related methods being exactly the same for nodes & edges,
- * we abstract them here for factorization reasons.
- */
-function attachAttributeGetter(Class, method, checker, type) {
+function attachAttributeGetter(Class, method, type, EdgeDataClass) {
 
   /**
    * Get the desired attribute for the given element (node or edge).
@@ -3607,6 +3391,10 @@ function attachAttributeGetter(Class, method, checker, type) {
    * @throws {Error} - Will throw if any of the elements is not found.
    */
   Class.prototype[method] = function (element, name) {
+    var data = void 0;
+
+    if (this.type !== 'mixed' && type !== this.type) throw new _errors.UsageGraphError('Graph.' + method + ': cannot find this type of edges in your ' + this.type + ' graph.');
+
     if (arguments.length > 2) {
 
       if (this.multi) throw new _errors.UsageGraphError('Graph.' + method + ': cannot use a {source,target} combo when asking about an edge\'s attributes in a MultiGraph since we cannot infer the one you want information about.');
@@ -3616,17 +3404,17 @@ function attachAttributeGetter(Class, method, checker, type) {
 
       name = arguments[2];
 
-      // TODO: possible to optimize by doing this check in `getMatchingEdge`
-      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+      data = (0, _utils.getMatchingEdge)(this, source, target, type);
 
-      element = (0, _utils.getMatchingEdge)(this, source, target, type);
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
     } else {
       element = '' + element;
+      data = this._edges.get(element);
+
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
     }
 
-    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
-
-    var data = this._edges.get(element);
+    if (type !== 'mixed' && !(data instanceof EdgeDataClass)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + type + ' edge in the graph.');
 
     return data.attributes[name];
   };
@@ -3637,10 +3425,17 @@ function attachAttributeGetter(Class, method, checker, type) {
  *
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
- * @param {string}   checker     - Name of the checker method to use.
  * @param {string}   type        - Type of the edge to find.
+ * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributesGetter(Class, method, checker, type) {
+/**
+ * Graphology Attributes methods
+ * ==============================
+ *
+ * Attributes-related methods being exactly the same for nodes & edges,
+ * we abstract them here for factorization reasons.
+ */
+function attachAttributesGetter(Class, method, type, EdgeDataClass) {
 
   /**
    * Retrieves all the target element's attributes.
@@ -3658,6 +3453,10 @@ function attachAttributesGetter(Class, method, checker, type) {
    * @throws {Error} - Will throw if any of the elements is not found.
    */
   Class.prototype[method] = function (element) {
+    var data = void 0;
+
+    if (this.type !== 'mixed' && type !== this.type) throw new _errors.UsageGraphError('Graph.' + method + ': cannot find this type of edges in your ' + this.type + ' graph.');
+
     if (arguments.length > 1) {
 
       if (this.multi) throw new _errors.UsageGraphError('Graph.' + method + ': cannot use a {source,target} combo when asking about an edge\'s attributes in a MultiGraph since we cannot infer the one you want information about.');
@@ -3665,16 +3464,17 @@ function attachAttributesGetter(Class, method, checker, type) {
       var source = '' + element,
           target = '' + arguments[1];
 
-      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+      data = (0, _utils.getMatchingEdge)(this, source, target, type);
 
-      element = (0, _utils.getMatchingEdge)(this, source, target, type);
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
     } else {
       element = '' + element;
+      data = this._edges.get(element);
+
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
     }
 
-    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
-
-    var data = this._edges.get(element);
+    if (type !== 'mixed' && !(data instanceof EdgeDataClass)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + type + ' edge in the graph.');
 
     return data.attributes;
   };
@@ -3685,10 +3485,10 @@ function attachAttributesGetter(Class, method, checker, type) {
  *
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
- * @param {string}   checker     - Name of the checker method to use.
  * @param {string}   type        - Type of the edge to find.
+ * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributeChecker(Class, method, checker, type) {
+function attachAttributeChecker(Class, method, type, EdgeDataClass) {
 
   /**
    * Checks whether the desired attribute is set for the given element (node or edge).
@@ -3708,6 +3508,10 @@ function attachAttributeChecker(Class, method, checker, type) {
    * @throws {Error} - Will throw if any of the elements is not found.
    */
   Class.prototype[method] = function (element, name) {
+    var data = void 0;
+
+    if (this.type !== 'mixed' && type !== this.type) throw new _errors.UsageGraphError('Graph.' + method + ': cannot find this type of edges in your ' + this.type + ' graph.');
+
     if (arguments.length > 2) {
 
       if (this.multi) throw new _errors.UsageGraphError('Graph.' + method + ': cannot use a {source,target} combo when asking about an edge\'s attributes in a MultiGraph since we cannot infer the one you want information about.');
@@ -3717,16 +3521,17 @@ function attachAttributeChecker(Class, method, checker, type) {
 
       name = arguments[2];
 
-      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+      data = (0, _utils.getMatchingEdge)(this, source, target, type);
 
-      element = (0, _utils.getMatchingEdge)(this, source, target, type);
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
     } else {
       element = '' + element;
+      data = this._edges.get(element);
+
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
     }
 
-    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
-
-    var data = this._edges.get(element);
+    if (type !== 'mixed' && !(data instanceof EdgeDataClass)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + type + ' edge in the graph.');
 
     return data.attributes.hasOwnProperty(name);
   };
@@ -3735,12 +3540,12 @@ function attachAttributeChecker(Class, method, checker, type) {
 /**
  * Attach an attribute setter method onto the provided class.
  *
- * @param {function} Class       - Target class.
- * @param {string}   method      - Method name.
- * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   type        - Type of the edge to find.
+ * @param {function} Class         - Target class.
+ * @param {string}   method        - Method name.
+ * @param {string}   type          - Type of the edge to find.
+ * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributeSetter(Class, method, checker, type) {
+function attachAttributeSetter(Class, method, type, EdgeDataClass) {
 
   /**
    * Set the desired attribute for the given element (node or edge).
@@ -3762,6 +3567,10 @@ function attachAttributeSetter(Class, method, checker, type) {
    * @throws {Error} - Will throw if any of the elements is not found.
    */
   Class.prototype[method] = function (element, name, value) {
+    var data = void 0;
+
+    if (this.type !== 'mixed' && type !== this.type) throw new _errors.UsageGraphError('Graph.' + method + ': cannot find this type of edges in your ' + this.type + ' graph.');
+
     if (arguments.length > 3) {
 
       if (this.multi) throw new _errors.UsageGraphError('Graph.' + method + ': cannot use a {source,target} combo when asking about an edge\'s attributes in a MultiGraph since we cannot infer the one you want information about.');
@@ -3772,22 +3581,23 @@ function attachAttributeSetter(Class, method, checker, type) {
       name = arguments[2];
       value = arguments[3];
 
-      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+      data = (0, _utils.getMatchingEdge)(this, source, target, type);
 
-      element = (0, _utils.getMatchingEdge)(this, source, target, type);
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
     } else {
       element = '' + element;
+      data = this._edges.get(element);
+
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
     }
 
-    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
-
-    var data = this._edges.get(element);
+    if (type !== 'mixed' && !(data instanceof EdgeDataClass)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + type + ' edge in the graph.');
 
     data.attributes[name] = value;
 
     // Emitting
     this.emit('edgeAttributesUpdated', {
-      key: element,
+      key: data.key,
       type: 'set',
       meta: {
         name: name,
@@ -3802,12 +3612,12 @@ function attachAttributeSetter(Class, method, checker, type) {
 /**
  * Attach an attribute updater method onto the provided class.
  *
- * @param {function} Class       - Target class.
- * @param {string}   method      - Method name.
- * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   type        - Type of the edge to find.
+ * @param {function} Class         - Target class.
+ * @param {string}   method        - Method name.
+ * @param {string}   type          - Type of the edge to find.
+ * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributeUpdater(Class, method, checker, type) {
+function attachAttributeUpdater(Class, method, type, EdgeDataClass) {
 
   /**
    * Update the desired attribute for the given element (node or edge) using
@@ -3830,6 +3640,10 @@ function attachAttributeUpdater(Class, method, checker, type) {
    * @throws {Error} - Will throw if any of the elements is not found.
    */
   Class.prototype[method] = function (element, name, updater) {
+    var data = void 0;
+
+    if (this.type !== 'mixed' && type !== this.type) throw new _errors.UsageGraphError('Graph.' + method + ': cannot find this type of edges in your ' + this.type + ' graph.');
+
     if (arguments.length > 3) {
 
       if (this.multi) throw new _errors.UsageGraphError('Graph.' + method + ': cannot use a {source,target} combo when asking about an edge\'s attributes in a MultiGraph since we cannot infer the one you want information about.');
@@ -3840,24 +3654,25 @@ function attachAttributeUpdater(Class, method, checker, type) {
       name = arguments[2];
       updater = arguments[3];
 
-      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+      data = (0, _utils.getMatchingEdge)(this, source, target, type);
 
-      element = (0, _utils.getMatchingEdge)(this, source, target, type);
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
     } else {
       element = '' + element;
-    }
+      data = this._edges.get(element);
 
-    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
+    }
 
     if (typeof updater !== 'function') throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': updater should be a function.');
 
-    var data = this._edges.get(element);
+    if (type !== 'mixed' && !(data instanceof EdgeDataClass)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + type + ' edge in the graph.');
 
     data.attributes[name] = updater(data.attributes[name]);
 
     // Emitting
     this.emit('edgeAttributesUpdated', {
-      key: element,
+      key: data.key,
       type: 'set',
       meta: {
         name: name,
@@ -3872,12 +3687,12 @@ function attachAttributeUpdater(Class, method, checker, type) {
 /**
  * Attach an attribute remover method onto the provided class.
  *
- * @param {function} Class       - Target class.
- * @param {string}   method      - Method name.
- * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   type        - Type of the edge to find.
+ * @param {function} Class         - Target class.
+ * @param {string}   method        - Method name.
+ * @param {string}   type          - Type of the edge to find.
+ * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributeRemover(Class, method, checker, type) {
+function attachAttributeRemover(Class, method, type, EdgeDataClass) {
 
   /**
    * Remove the desired attribute for the given element (node or edge).
@@ -3897,6 +3712,10 @@ function attachAttributeRemover(Class, method, checker, type) {
    * @throws {Error} - Will throw if any of the elements is not found.
    */
   Class.prototype[method] = function (element, name) {
+    var data = void 0;
+
+    if (this.type !== 'mixed' && type !== this.type) throw new _errors.UsageGraphError('Graph.' + method + ': cannot find this type of edges in your ' + this.type + ' graph.');
+
     if (arguments.length > 2) {
 
       if (this.multi) throw new _errors.UsageGraphError('Graph.' + method + ': cannot use a {source,target} combo when asking about an edge\'s attributes in a MultiGraph since we cannot infer the one you want information about.');
@@ -3906,22 +3725,23 @@ function attachAttributeRemover(Class, method, checker, type) {
 
       name = arguments[2];
 
-      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+      data = (0, _utils.getMatchingEdge)(this, source, target, type);
 
-      element = (0, _utils.getMatchingEdge)(this, source, target, type);
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
     } else {
       element = '' + element;
+      data = this._edges.get(element);
+
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
     }
 
-    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
-
-    var data = this._edges.get(element);
+    if (type !== 'mixed' && !(data instanceof EdgeDataClass)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + type + ' edge in the graph.');
 
     delete data.attributes[name];
 
     // Emitting
     this.emit('edgeAttributesUpdated', {
-      key: element,
+      key: data.key,
       type: 'remove',
       meta: {
         name: name
@@ -3935,12 +3755,12 @@ function attachAttributeRemover(Class, method, checker, type) {
 /**
  * Attach an attribute replacer method onto the provided class.
  *
- * @param {function} Class       - Target class.
- * @param {string}   method      - Method name.
- * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   type        - Type of the edge to find.
+ * @param {function} Class         - Target class.
+ * @param {string}   method        - Method name.
+ * @param {string}   type          - Type of the edge to find.
+ * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributesReplacer(Class, method, checker, type) {
+function attachAttributesReplacer(Class, method, type, EdgeDataClass) {
 
   /**
    * Replace the attributes for the given element (node or edge).
@@ -3960,6 +3780,10 @@ function attachAttributesReplacer(Class, method, checker, type) {
    * @throws {Error} - Will throw if any of the elements is not found.
    */
   Class.prototype[method] = function (element, attributes) {
+    var data = void 0;
+
+    if (this.type !== 'mixed' && type !== this.type) throw new _errors.UsageGraphError('Graph.' + method + ': cannot find this type of edges in your ' + this.type + ' graph.');
+
     if (arguments.length > 2) {
 
       if (this.multi) throw new _errors.UsageGraphError('Graph.' + method + ': cannot use a {source,target} combo when asking about an edge\'s attributes in a MultiGraph since we cannot infer the one you want information about.');
@@ -3969,18 +3793,19 @@ function attachAttributesReplacer(Class, method, checker, type) {
 
       attributes = arguments[2];
 
-      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+      data = (0, _utils.getMatchingEdge)(this, source, target, type);
 
-      element = (0, _utils.getMatchingEdge)(this, source, target, type);
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
     } else {
       element = '' + element;
-    }
+      data = this._edges.get(element);
 
-    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
+    }
 
     if (!(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': provided attributes are not a plain object.');
 
-    var data = this._edges.get(element);
+    if (type !== 'mixed' && !(data instanceof EdgeDataClass)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + type + ' edge in the graph.');
 
     var oldAttributes = data.attributes;
 
@@ -3988,7 +3813,7 @@ function attachAttributesReplacer(Class, method, checker, type) {
 
     // Emitting
     this.emit('edgeAttributesUpdated', {
-      key: element,
+      key: data.key,
       type: 'replace',
       meta: {
         before: oldAttributes,
@@ -4003,12 +3828,12 @@ function attachAttributesReplacer(Class, method, checker, type) {
 /**
  * Attach an attribute merger method onto the provided class.
  *
- * @param {function} Class       - Target class.
- * @param {string}   method      - Method name.
- * @param {string}   checker     - Name of the checker method to use.
- * @param {string}   type        - Type of the edge to find.
+ * @param {function} Class         - Target class.
+ * @param {string}   method        - Method name.
+ * @param {string}   type          - Type of the edge to find.
+ * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributesMerger(Class, method, checker, type) {
+function attachAttributesMerger(Class, method, type, EdgeDataClass) {
 
   /**
    * Replace the attributes for the given element (node or edge).
@@ -4028,6 +3853,10 @@ function attachAttributesMerger(Class, method, checker, type) {
    * @throws {Error} - Will throw if any of the elements is not found.
    */
   Class.prototype[method] = function (element, attributes) {
+    var data = void 0;
+
+    if (this.type !== 'mixed' && type !== this.type) throw new _errors.UsageGraphError('Graph.' + method + ': cannot find this type of edges in your ' + this.type + ' graph.');
+
     if (arguments.length > 2) {
 
       if (this.multi) throw new _errors.UsageGraphError('Graph.' + method + ': cannot use a {source,target} combo when asking about an edge\'s attributes in a MultiGraph since we cannot infer the one you want information about.');
@@ -4037,24 +3866,25 @@ function attachAttributesMerger(Class, method, checker, type) {
 
       attributes = arguments[2];
 
-      if (!this[checker](source, target)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
+      data = (0, _utils.getMatchingEdge)(this, source, target, type);
 
-      element = (0, _utils.getMatchingEdge)(this, source, target, type);
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find an edge for the given path ("' + source + '" - "' + target + '").');
     } else {
       element = '' + element;
-    }
+      data = this._edges.get(element);
 
-    if (!this[checker](element)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
+      if (!data) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" edge in the graph.');
+    }
 
     if (!(0, _utils.isPlainObject)(attributes)) throw new _errors.InvalidArgumentsGraphError('Graph.' + method + ': provided attributes are not a plain object.');
 
-    var data = this._edges.get(element);
+    if (type !== 'mixed' && !(data instanceof EdgeDataClass)) throw new _errors.NotFoundGraphError('Graph.' + method + ': could not find the "' + element + '" ' + type + ' edge in the graph.');
 
     (0, _utils.assign)(data.attributes, attributes);
 
     // Emitting
     this.emit('edgeAttributesUpdated', {
-      key: element,
+      key: data.key,
       type: 'merge',
       meta: {
         data: attributes
@@ -4122,13 +3952,13 @@ function attachAttributesMethods(Graph) {
 
 
     // For edges
-    attacher(Graph, name('Edge'), 'hasEdge', 'mixed');
+    attacher(Graph, name('Edge'), 'mixed', _data.DirectedEdgeData);
 
     // For directed edges
-    attacher(Graph, name('DirectedEdge'), 'hasDirectedEdge', 'directed');
+    attacher(Graph, name('DirectedEdge'), 'directed', _data.DirectedEdgeData);
 
     // For undirected edges
-    attacher(Graph, name('UndirectedEdge'), 'hasUndirectedEdge', 'undirected');
+    attacher(Graph, name('UndirectedEdge'), 'undirected', _data.UndirectedEdgeData);
   });
 }
 
@@ -4149,13 +3979,13 @@ var _iterator = __webpack_require__(4);
 
 var _iterator2 = _interopRequireDefault(_iterator);
 
-var _take = __webpack_require__(2);
+var _take = __webpack_require__(3);
 
 var _take2 = _interopRequireDefault(_take);
 
 var _errors = __webpack_require__(0);
 
-var _data = __webpack_require__(3);
+var _data = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4187,6 +4017,14 @@ var EDGES_ITERATION = [{
   type: 'directed',
   direction: 'out'
 }, {
+  name: 'inboundEdges',
+  type: 'mixed',
+  direction: 'in'
+}, {
+  name: 'outboundEdges',
+  type: 'mixed',
+  direction: 'out'
+}, {
   name: 'directedEdges',
   type: 'directed'
 }, {
@@ -4213,31 +4051,76 @@ var EdgesIterator = function (_Iterator) {
 /**
  * Function collecting edges from the given object.
  *
- * @param  {array}            edges  - Edges array to populate.
- * @param  {object|undefined} object - Target object.
- * @return {array}                   - The found edges.
+ * @param  {array}  edges  - Edges array to populate.
+ * @param  {object} object - Target object.
+ * @return {array}         - The found edges.
  */
 
 
 function collect(edges, object) {
   for (var k in object) {
-    if (object[k] instanceof Set) edges.push.apply(edges, (0, _take2.default)(object[k].values(), object[k].size));else edges.push(object[k]);
+    if (object[k] instanceof Set) object[k].forEach(function (edgeData) {
+      return edges.push(edgeData.key);
+    });else edges.push(object[k].key);
+  }
+}
+
+/**
+ * Function iterating over edges from the given object using a callback.
+ *
+ * @param {object}   object   - Target object.
+ * @param {function} callback - Function to call.
+ */
+function forEach(object, callback) {
+  for (var k in object) {
+    if (object[k] instanceof Set) object[k].forEach(function (edgeData) {
+      return callback(edgeData.key, edgeData.attributes, edgeData.source.key, edgeData.target.key, edgeData.source.attributes, edgeData.target.attributes);
+    });else {
+      var edgeData = object[k];
+
+      callback(edgeData.key, edgeData.attributes, edgeData.source.key, edgeData.target.key, edgeData.source.attributes, edgeData.target.attributes);
+    }
   }
 }
 
 /**
  * Function collecting edges from the given object at given key.
  *
- * @param  {array}            edges  - Edges array to populate.
- * @param  {object|undefined} object - Target object.
- * @param  {mixed}            key    - Neighbor key.
- * @return {array}                   - The found edges.
+ * @param  {array}  edges  - Edges array to populate.
+ * @param  {object} object - Target object.
+ * @param  {mixed}  k      - Neighbor key.
+ * @return {array}         - The found edges.
  */
-function collectForKey(edges, object, key) {
+function collectForKey(edges, object, k) {
 
-  if (!(key in object)) return;
+  if (!(k in object)) return;
 
-  if (object[key] instanceof Set) edges.push.apply(edges, (0, _take2.default)(object[key].values(), object[key].size));else edges.push(object[key]);
+  if (object[k] instanceof Set) object[k].forEach(function (edgeData) {
+    return edges.push(edgeData.key);
+  });else edges.push(object[k].key);
+
+  return;
+}
+
+/**
+ * Function iterating over the egdes from the object at given key using
+ * a callback.
+ *
+ * @param {object}   object   - Target object.
+ * @param {mixed}    k        - Neighbor key.
+ * @param {function} callback - Callback to use.
+ */
+function forEachForKey(object, k, callback) {
+
+  if (!(k in object)) return;
+
+  if (object[k] instanceof Set) object[k].forEach(function (edgeData) {
+    return callback(edgeData.key, edgeData.attributes, edgeData.source.key, edgeData.target.key, edgeData.source.attributes, edgeData.target.attributes);
+  });else {
+    var edgeData = object[k];
+
+    callback(edgeData.key, edgeData.attributes, edgeData.source.key, edgeData.target.key, edgeData.source.attributes, edgeData.target.attributes);
+  }
 
   return;
 }
@@ -4267,6 +4150,41 @@ function createEdgeArray(graph, type) {
   });
 
   return list;
+}
+
+/**
+ * Function iterating over a graph's edges using a callback.
+ *
+ * @param  {Graph}    graph    - Target Graph instance.
+ * @param  {string}   type     - Type of edges to retrieve.
+ * @param  {function} callback - Function to call.
+ */
+function forEachEdge(graph, type, callback) {
+  if (graph.size === 0) return;
+
+  if (type === 'mixed' || type === graph.type) {
+    graph._edges.forEach(function (data, key) {
+      var attributes = data.attributes,
+          source = data.source,
+          target = data.target;
+
+
+      callback(key, attributes, source.key, target.key, source.attributes, target.attributes);
+    });
+  } else {
+    var mask = type === 'undirected';
+
+    graph._edges.forEach(function (data, key) {
+      if (data instanceof _data.UndirectedEdgeData === mask) {
+        var attributes = data.attributes,
+            source = data.source,
+            target = data.target;
+
+
+        callback(key, attributes, source.key, target.key, source.attributes, target.attributes);
+      }
+    });
+  }
 }
 
 /**
@@ -4304,17 +4222,15 @@ function createEdgeIterator(graph, type) {
 /**
  * Function creating an array of edges for the given type & the given node.
  *
- * @param  {Graph}   graph     - Target Graph instance.
  * @param  {string}  type      - Type of edges to retrieve.
  * @param  {string}  direction - In or out?
  * @param  {any}     nodeData  - Target node's data.
  * @return {array}             - Array of edges.
  */
-function createEdgeArrayForNode(graph, type, direction, nodeData) {
+function createEdgeArrayForNode(type, direction, nodeData) {
   var edges = [];
 
   if (type !== 'undirected') {
-
     if (direction !== 'out') collect(edges, nodeData.in);
     if (direction !== 'in') collect(edges, nodeData.out);
   }
@@ -4327,24 +4243,42 @@ function createEdgeArrayForNode(graph, type, direction, nodeData) {
 }
 
 /**
+ * Function iterating over a node's edges using a callback.
+ *
+ * @param  {string}   type      - Type of edges to retrieve.
+ * @param  {string}   direction - In or out?
+ * @param  {any}      nodeData  - Target node's data.
+ * @param  {function} callback  - Function to call.
+ */
+function forEachEdgeForNode(type, direction, nodeData, callback) {
+
+  if (type !== 'undirected') {
+    if (direction !== 'out') forEach(nodeData.in, callback);
+    if (direction !== 'in') forEach(nodeData.out, callback);
+  }
+
+  if (type !== 'directed') {
+    forEach(nodeData.undirected, callback);
+  }
+}
+
+/**
  * Function creating an array of edges for the given path.
  *
- * @param  {Graph}   graph  - Target Graph instance.
- * @param  {string}  type   - Type of edges to retrieve.
- * @param  {any}     source - Source node.
- * @param  {any}     target - Target node.
- * @return {array}          - Array of edges.
+ * @param  {string}   type       - Type of edges to retrieve.
+ * @param  {string}   direction  - In or out?
+ * @param  {NodeData} sourceData - Source node's data.
+ * @param  {any}      target     - Target node.
+ * @return {array}               - Array of edges.
  */
-function createEdgeArrayForPath(graph, type, source, target) {
+function createEdgeArrayForPath(type, direction, sourceData, target) {
   var edges = [];
-
-  var sourceData = graph._nodes.get(source);
 
   if (type !== 'undirected') {
 
-    if (typeof sourceData.in !== 'undefined') collectForKey(edges, sourceData.in, target);
+    if (typeof sourceData.in !== 'undefined' && direction !== 'out') collectForKey(edges, sourceData.in, target);
 
-    if (typeof sourceData.out !== 'undefined') collectForKey(edges, sourceData.out, target);
+    if (typeof sourceData.out !== 'undefined' && direction !== 'in') collectForKey(edges, sourceData.out, target);
   }
 
   if (type !== 'directed') {
@@ -4352,6 +4286,28 @@ function createEdgeArrayForPath(graph, type, source, target) {
   }
 
   return edges;
+}
+
+/**
+ * Function iterating over edges for the given path using a callback.
+ *
+ * @param  {string}   type       - Type of edges to retrieve.
+ * @param  {string}   direction  - In or out?
+ * @param  {NodeData} sourceData - Source node's data.
+ * @param  {string}   target     - Target node.
+ * @param  {function} callback   - Function to call.
+ */
+function forEachEdgeForPath(type, direction, sourceData, target, callback) {
+  if (type !== 'undirected') {
+
+    if (typeof sourceData.in !== 'undefined' && direction !== 'out') forEachForKey(sourceData.in, target, callback);
+
+    if (typeof sourceData.out !== 'undefined' && direction !== 'in') forEachForKey(sourceData.out, target, callback);
+  }
+
+  if (type !== 'directed') {
+    if (typeof sourceData.undirected !== 'undefined') forEachForKey(sourceData.undirected, target, callback);
+  }
 }
 
 /**
@@ -4370,11 +4326,8 @@ function attachEdgeArrayCreator(Class, description) {
    *
    * Arity 0: Return all the relevant edges.
    *
-   * Arity 1a: Return all of a node's relevant edges.
+   * Arity 1: Return all of a node's relevant edges.
    * @param  {any}   node   - Target node.
-   *
-   * Arity 1b: Return the union of the relevant edges of the given bunch of nodes.
-   * @param  {bunch} bunch  - Bunch of nodes.
    *
    * Arity 2: Return the relevant edges across the given path.
    * @param  {any}   source - Source node.
@@ -4400,19 +4353,21 @@ function attachEdgeArrayCreator(Class, description) {
       if (typeof nodeData === 'undefined') throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + source + '" node in the graph.');
 
       // Iterating over a node's edges
-      return createEdgeArrayForNode(this, type, direction, nodeData);
+      return createEdgeArrayForNode(type, direction, nodeData);
     }
 
     if (arguments.length === 2) {
       source = '' + source;
       target = '' + target;
 
-      if (!this._nodes.has(source)) throw new _errors.NotFoundGraphError('Graph.' + name + ':  could not find the "' + source + '" source node in the graph.');
+      var sourceData = this._nodes.get(source);
+
+      if (!sourceData) throw new _errors.NotFoundGraphError('Graph.' + name + ':  could not find the "' + source + '" source node in the graph.');
 
       if (!this._nodes.has(target)) throw new _errors.NotFoundGraphError('Graph.' + name + ':  could not find the "' + target + '" target node in the graph.');
 
       // Iterating over the edges between source & target
-      return createEdgeArrayForPath(this, type, source, target);
+      return createEdgeArrayForPath(type, direction, sourceData, target);
     }
 
     throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': too many arguments (expecting 0, 1 or 2 and got ' + arguments.length + ').');
@@ -4420,7 +4375,81 @@ function attachEdgeArrayCreator(Class, description) {
 }
 
 /**
- * Function attaching an edge array iterator method to the Graph prototype.
+ * Function attaching a edge callback iterator method to the Graph prototype.
+ *
+ * @param {function} Class       - Target class.
+ * @param {object}   description - Method description.
+ */
+function attachForEachEdge(Class, description) {
+  var name = description.name,
+      type = description.type,
+      direction = description.direction;
+
+
+  var forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1);
+
+  /**
+   * Function iterating over the graph's relevant edges by applying the given
+   * callback.
+   *
+   * Arity 1: Iterate over all the relevant edges.
+   * @param  {function} callback - Callback to use.
+   *
+   * Arity 2: Iterate over all of a node's relevant edges.
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * Arity 3: Iterate over the relevant edges across the given path.
+   * @param  {any}      source   - Source node.
+   * @param  {any}      target   - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * @return {undefined}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  Class.prototype[forEachName] = function (source, target, callback) {
+
+    // Early termination
+    if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type) return;
+
+    if (arguments.length === 1) {
+      callback = source;
+      return forEachEdge(this, type, callback);
+    }
+
+    if (arguments.length === 2) {
+      source = '' + source;
+      callback = target;
+
+      var nodeData = this._nodes.get(source);
+
+      if (typeof nodeData === 'undefined') throw new _errors.NotFoundGraphError('Graph.' + forEachName + ': could not find the "' + source + '" node in the graph.');
+
+      // Iterating over a node's edges
+      return forEachEdgeForNode(type, direction, nodeData, callback);
+    }
+
+    if (arguments.length === 3) {
+      source = '' + source;
+      target = '' + target;
+
+      var sourceData = this._nodes.get(source);
+
+      if (!sourceData) throw new _errors.NotFoundGraphError('Graph.' + forEachName + ':  could not find the "' + source + '" source node in the graph.');
+
+      if (!this._nodes.has(target)) throw new _errors.NotFoundGraphError('Graph.' + forEachName + ':  could not find the "' + target + '" target node in the graph.');
+
+      // Iterating over the edges between source & target
+      return forEachEdgeForPath(type, direction, sourceData, target, callback);
+    }
+
+    throw new _errors.InvalidArgumentsGraphError('Graph.' + forEachName + ': too many arguments (expecting 1, 2 or 3 and got ' + arguments.length + ').');
+  };
+}
+
+/**
+ * Function attaching an edge iterator method to the Graph prototype.
  *
  * @param {function} Class       - Target class.
  * @param {object}   description - Method description.
@@ -4435,15 +4464,12 @@ function attachEdgeIteratorCreator(Class, description) {
   /**
    * Function returning an iterator over the graph's edges.
    *
-   * Arity 0: Return all the relevant edges.
+   * Arity 0: Iterate over all the relevant edges.
    *
-   * Arity 1a: Return all of a node's relevant edges.
+   * Arity 1: Iterate over all of a node's relevant edges.
    * @param  {any}   node   - Target node.
    *
-   * Arity 1b: Return the union of the relevant edges of the given bunch of nodes.
-   * @param  {bunch} bunch  - Bunch of nodes.
-   *
-   * Arity 2: Return the relevant edges across the given path.
+   * Arity 2: Iterate over the relevant edges across the given path.
    * @param  {any}   source - Source node.
    * @param  {any}   target - Target node.
    *
@@ -4495,6 +4521,7 @@ function attachEdgeIteratorCreator(Class, description) {
 function attachEdgeIterationMethods(Graph) {
   EDGES_ITERATION.forEach(function (description) {
     attachEdgeArrayCreator(Graph, description);
+    attachForEachEdge(Graph, description);
     attachEdgeIteratorCreator(Graph, description);
   });
 }
@@ -4511,7 +4538,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.attachNeighborIterationMethods = attachNeighborIterationMethods;
 
-var _take = __webpack_require__(2);
+var _take = __webpack_require__(3);
 
 var _take2 = _interopRequireDefault(_take);
 
@@ -4541,6 +4568,14 @@ var NEIGHBORS_ITERATION = [{
   type: 'directed',
   direction: 'out'
 }, {
+  name: 'inboundNeighbors',
+  type: 'mixed',
+  direction: 'in'
+}, {
+  name: 'outboundNeighbors',
+  type: 'mixed',
+  direction: 'out'
+}, {
   name: 'directedNeighbors',
   type: 'directed'
 }, {
@@ -4563,15 +4598,14 @@ function merge(neighbors, object) {
 }
 
 /**
- * Function creating a set of relevant neighbors for the given node.
+ * Function creating an array of relevant neighbors for the given node.
  *
- * @param  {Graph}        graph     - Target graph.
  * @param  {string}       type      - Type of neighbors.
  * @param  {string}       direction - Direction.
  * @param  {any}          nodeData  - Target node's data.
  * @return {Array}                  - The list of neighbors.
  */
-function createNeighborSetForNode(graph, type, direction, nodeData) {
+function createNeighborArrayForNode(type, direction, nodeData) {
 
   // If we want only undirected or in or out, we can roll some optimizations
   if (type !== 'mixed') {
@@ -4598,6 +4632,76 @@ function createNeighborSetForNode(graph, type, direction, nodeData) {
   }
 
   return (0, _take2.default)(neighbors.values(), neighbors.size);
+}
+
+/**
+ * Function iterating over the given node's relevant neighbors using a
+ * callback.
+ *
+ * @param  {string}   type      - Type of neighbors.
+ * @param  {string}   direction - Direction.
+ * @param  {any}      nodeData  - Target node's data.
+ * @param  {function} callback  - Callback to use.
+ */
+function forEachInObject(nodeData, object, callback) {
+  for (var k in object) {
+    var edgeData = object[k];
+
+    if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
+
+    var sourceData = edgeData.source,
+        targetData = edgeData.target;
+
+    var neighborData = sourceData === nodeData ? targetData : sourceData;
+
+    callback(neighborData.key, neighborData.attributes);
+  }
+}
+
+function forEachInObjectOnce(visited, nodeData, object, callback) {
+  for (var k in object) {
+    var edgeData = object[k];
+
+    if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
+
+    var sourceData = edgeData.source,
+        targetData = edgeData.target;
+
+    var neighborData = sourceData === nodeData ? targetData : sourceData;
+
+    if (visited.has(neighborData.key)) continue;
+
+    visited.add(neighborData.key);
+
+    callback(neighborData.key, neighborData.attributes);
+  }
+}
+
+function forEachNeighborForNode(type, direction, nodeData, callback) {
+
+  // If we want only undirected or in or out, we can roll some optimizations
+  if (type !== 'mixed') {
+    if (type === 'undirected') return forEachInObject(nodeData, nodeData.undirected, callback);
+
+    if (typeof direction === 'string') return forEachInObject(nodeData, nodeData[direction], callback);
+  }
+
+  // Else we need to keep a set of neighbors not to return duplicates
+  var visited = new Set();
+
+  if (type !== 'undirected') {
+
+    if (direction !== 'out') {
+      forEachInObjectOnce(visited, nodeData, nodeData.in, callback);
+    }
+    if (direction !== 'in') {
+      forEachInObjectOnce(visited, nodeData, nodeData.out, callback);
+    }
+  }
+
+  if (type !== 'directed') {
+    forEachInObjectOnce(visited, nodeData, nodeData.undirected, callback);
+  }
 }
 
 /**
@@ -4651,11 +4755,8 @@ function attachNeighborArrayCreator(Class, description) {
   /**
    * Function returning an array or the count of certain neighbors.
    *
-   * Arity 1a: Return all of a node's relevant neighbors.
+   * Arity 1: Return all of a node's relevant neighbors.
    * @param  {any}   node   - Target node.
-   *
-   * Arity 1b: Return the union of the relevant neighbors of the given bunch of nodes.
-   * @param  {bunch} bunch  - Bunch of nodes.
    *
    * Arity 2: Return whether the two nodes are indeed neighbors.
    * @param  {any}   source - Source node.
@@ -4689,12 +4790,51 @@ function attachNeighborArrayCreator(Class, description) {
       if (typeof nodeData === 'undefined') throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + node + '" node in the graph.');
 
       // Here, we want to iterate over a node's relevant neighbors
-      var neighbors = createNeighborSetForNode(this, type, direction, nodeData);
+      var neighbors = createNeighborArrayForNode(type === 'mixed' ? this.type : type, direction, nodeData);
 
       return neighbors;
     }
 
     throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': invalid number of arguments (expecting 1 or 2 and got ' + arguments.length + ').');
+  };
+}
+
+/**
+ * Function attaching a neighbors callback iterator method to the Graph prototype.
+ *
+ * @param {function} Class       - Target class.
+ * @param {object}   description - Method description.
+ */
+function attachForEachNeighbor(Class, description) {
+  var name = description.name,
+      type = description.type,
+      direction = description.direction;
+
+
+  var forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1);
+
+  /**
+   * Function iterating over all the relevant neighbors using a callback.
+   *
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   * @return {undefined}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  Class.prototype[forEachName] = function (node, callback) {
+
+    // Early termination
+    if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type) return;
+
+    node = '' + node;
+
+    var nodeData = this._nodes.get(node);
+
+    if (typeof nodeData === 'undefined') throw new _errors.NotFoundGraphError('Graph.' + forEachName + ': could not find the "' + node + '" node in the graph.');
+
+    // Here, we want to iterate over a node's relevant neighbors
+    forEachNeighborForNode(type === 'mixed' ? this.type : type, direction, nodeData, callback);
   };
 }
 
@@ -4706,6 +4846,7 @@ function attachNeighborArrayCreator(Class, description) {
 function attachNeighborIterationMethods(Graph) {
   NEIGHBORS_ITERATION.forEach(function (description) {
     attachNeighborArrayCreator(Graph, description);
+    attachForEachNeighbor(Graph, description);
   });
 }
 
@@ -4724,7 +4865,7 @@ exports.serializeEdge = serializeEdge;
 exports.validateSerializedNode = validateSerializedNode;
 exports.validateSerializedEdge = validateSerializedEdge;
 
-var _data = __webpack_require__(3);
+var _data = __webpack_require__(2);
 
 var _utils = __webpack_require__(1);
 
@@ -4754,7 +4895,7 @@ var _utils = __webpack_require__(1);
 function serializeNode(key, data) {
   var serialized = { key: key };
 
-  if (Object.keys(data.attributes).length) serialized.attributes = data.attributes;
+  if (Object.keys(data.attributes).length) serialized.attributes = (0, _utils.assign)({}, data.attributes);
 
   return serialized;
 }
@@ -4768,14 +4909,14 @@ function serializeNode(key, data) {
  */
 function serializeEdge(key, data) {
   var serialized = {
-    source: data.source,
-    target: data.target
+    source: data.source.key,
+    target: data.target.key
   };
 
   // We export the key unless if it was provided by the user
   if (!data.generatedKey) serialized.key = key;
 
-  if (Object.keys(data.attributes).length) serialized.attributes = data.attributes;
+  if (Object.keys(data.attributes).length) serialized.attributes = (0, _utils.assign)({}, data.attributes);
 
   if (data instanceof _data.UndirectedEdgeData) serialized.undirected = true;
 
