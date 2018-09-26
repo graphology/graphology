@@ -2096,7 +2096,7 @@ export default class Graph extends EventEmitter {
       if (!data.generatedKey)
         label += `[${key}]: `;
 
-      label += `(${data.source})${direction}(${data.target})`;
+      label += `(${data.source.key})${direction}(${data.target.key})`;
 
       edges[label] = data.attributes;
     });

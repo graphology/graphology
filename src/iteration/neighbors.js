@@ -283,7 +283,7 @@ function attachNeighborArrayCreator(Class, description) {
 
       // Here, we want to iterate over a node's relevant neighbors
       const neighbors = createNeighborArrayForNode(
-        type,
+        type === 'mixed' ? this.type : type,
         direction,
         nodeData
       );
@@ -334,7 +334,7 @@ function attachForEachNeighbor(Class, description) {
 
     // Here, we want to iterate over a node's relevant neighbors
     forEachNeighborForNode(
-      type,
+      type === 'mixed' ? this.type : type,
       direction,
       nodeData,
       callback
