@@ -2067,20 +2067,35 @@ export default class Graph extends EventEmitter {
    */
   inspect() {
     const nodes = {};
-    this._nodes.forEach(function(data, key) {
+    this._nodes.forEach((data, key) => {
       nodes[key] = data.attributes;
     });
 
-    const edges = {};
-    this._edges.forEach(function(data, key) {
+    const edges = {},
+          multiIndex = {};
+
+    this._edges.forEach((data, key) => {
       const direction = data instanceof UndirectedEdgeData ? '--' : '->';
 
       let label = '';
 
-      if (!data.generatedKey)
-        label += `[${key}]: `;
+      const desc = `(${data.source.key})${direction}(${data.target.key})`;
 
-      label += `(${data.source.key})${direction}(${data.target.key})`;
+      if (!data.generatedKey) {
+        label += `[${key}]: `;
+      }
+      else if (this.multi) {
+        if (typeof multiIndex[desc] === 'undefined') {
+          multiIndex[desc] = 0;
+        }
+        else {
+          multiIndex[desc]++;
+        }
+
+        label += `${multiIndex[desc]}. `;
+      }
+
+      label += desc;
 
       edges[label] = data.attributes;
     });

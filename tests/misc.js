@@ -18,6 +18,21 @@ export default function misc(Graph) {
           graph.addEdge('Benjamin', 'Audrey');
           graph.addUndirectedEdge('Benjamin', 'Audrey');
         });
+      },
+
+      'deleting the last edge between A & B should correctly clear neighbor index.': function() {
+        const graph = new Graph({multi: true});
+        graph.addNode('A');
+        graph.addNode('B');
+
+        graph.addEdge('A', 'B');
+        graph.addEdge('A', 'B');
+
+
+        graph.forEachEdge('A', edge => graph.dropEdge(edge));
+
+        assert.deepEqual(graph.neighbors('A'), []);
+        assert.deepEqual(graph.neighbors('B'), []);
       }
     },
 

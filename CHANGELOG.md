@@ -17,6 +17,7 @@
 * Improving performance of internal indices.
 * Improving performance of `#.mergeNode`.
 * Fixing edge-case deopt for `#.dropEdges`.
+* Fixing bug related to multigraphs' neighbors.
 * Attribute copy is now done on serialization.
 * Completely reworking internal indices.
 

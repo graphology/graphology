@@ -69,13 +69,21 @@ export function clearEdgeFromStructureIndex(graph, undirected, edgeData) {
   const outKey = undirected ? 'undirected' : 'out',
         sourceIndex = sourceData[outKey];
 
-  // NOTE: possible to clear empty sets from memory altogether
-  // TODO: should do it else inconsistent behaviors when deleting nodes
-  // and accessing neighbors in multigraphs!
+  const inKey = undirected ? 'undirected' : 'in';
+
   if (target in sourceIndex) {
 
-    if (multi)
-      sourceIndex[target].delete(edgeData);
+    if (multi) {
+      const set = sourceIndex[target];
+
+      if (set.size === 1) {
+        delete sourceIndex[target];
+        delete targetData[inKey][source];
+      }
+      else {
+        set.delete(edgeData);
+      }
+    }
     else
       delete sourceIndex[target];
   }
@@ -83,8 +91,7 @@ export function clearEdgeFromStructureIndex(graph, undirected, edgeData) {
   if (multi)
     return;
 
-  const inKey = undirected ? 'undirected' : 'in',
-        targetIndex = targetData[inKey];
+  const targetIndex = targetData[inKey];
 
   delete targetIndex[source];
 }
