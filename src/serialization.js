@@ -15,7 +15,7 @@
  * {nodes[], edges?[]}
  */
 import {UndirectedEdgeData} from './data';
-import {isPlainObject} from './utils';
+import {assign, isPlainObject} from './utils';
 
 /**
  * Formats internal node data into a serialized node.
@@ -28,7 +28,7 @@ export function serializeNode(key, data) {
   const serialized = {key};
 
   if (Object.keys(data.attributes).length)
-    serialized.attributes = data.attributes;
+    serialized.attributes = assign({}, data.attributes);
 
   return serialized;
 }
@@ -51,7 +51,7 @@ export function serializeEdge(key, data) {
     serialized.key = key;
 
   if (Object.keys(data.attributes).length)
-    serialized.attributes = data.attributes;
+    serialized.attributes = assign({}, data.attributes);
 
   if (data instanceof UndirectedEdgeData)
     serialized.undirected = true;

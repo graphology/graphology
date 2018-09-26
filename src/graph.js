@@ -101,8 +101,6 @@ const EDGE_ADD_METHODS = [
  */
 const DEFAULTS = {
   allowSelfLoops: true,
-  defaultEdgeAttributes: {},
-  defaultNodeAttributes: {},
   edgeKeyGenerator: null,
   multi: false,
   type: 'mixed'
@@ -159,6 +157,7 @@ function addEdge(
   // Coercion of source & target:
   source = '' + source;
   target = '' + target;
+  attributes = attributes || {};
 
   if (!graph.allowSelfLoops && source === target)
     throw new UsageGraphError(`Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
@@ -171,9 +170,6 @@ function addEdge(
 
   if (!targetData)
     throw new NotFoundGraphError(`Graph.${name}: target node "${target}" not found.`);
-
-  // Protecting the attributes
-  attributes = assign({}, graph._options.defaultEdgeAttributes, attributes);
 
   // Must the graph generate an id for this edge?
   const eventData = {
@@ -304,6 +300,7 @@ function mergeEdge(
   // Coercion of source & target:
   source = '' + source;
   target = '' + target;
+  attributes = attributes || {};
 
   if (!graph.allowSelfLoops && source === target)
     throw new UsageGraphError(`Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
@@ -360,9 +357,6 @@ function mergeEdge(
     assign(alreadyExistingEdgeData.attributes, attributes);
     return alreadyExistingEdge;
   }
-
-  // Protecting the attributes
-  attributes = assign({}, graph._options.defaultEdgeAttributes, attributes);
 
   // Must the graph generate an id for this edge?
   const eventData = {
@@ -479,12 +473,6 @@ export default class Graph extends EventEmitter {
 
     if (typeof options.allowSelfLoops !== 'boolean')
       throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'allowSelfLoops' option. Expecting a boolean but got "${options.allowSelfLoops}".`);
-
-    if (!isPlainObject(options.defaultEdgeAttributes))
-      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'defaultEdgeAttributes' option. Expecting a plain object but got "${options.defaultEdgeAttributes}".`);
-
-    if (!isPlainObject(options.defaultNodeAttributes))
-      throw new InvalidArgumentsGraphError(`Graph.constructor: invalid 'defaultNodeAttributes' option. Expecting a plain object but got "${options.defaultNodeAttributes}".`);
 
     //-- Private properties
 
@@ -1108,12 +1096,10 @@ export default class Graph extends EventEmitter {
 
     // String coercion
     node = '' + node;
+    attributes = attributes || {};
 
     if (this._nodes.has(node))
       throw new UsageGraphError(`Graph.addNode: the "${node}" node already exist in the graph.`);
-
-    // Protecting the attributes
-    attributes = assign({}, this._options.defaultNodeAttributes, attributes);
 
     const data = new this.NodeDataClass(node, attributes);
 
@@ -1142,6 +1128,7 @@ export default class Graph extends EventEmitter {
 
     // String coercion
     node = '' + node;
+    attributes = attributes || {};
 
     // If the node already exists, we merge the attributes
     let data = this._nodes.get(node);
@@ -1151,9 +1138,6 @@ export default class Graph extends EventEmitter {
         assign(data.attributes, attributes);
       return node;
     }
-
-    // Protecting the attributes
-    attributes = assign({}, this._options.defaultNodeAttributes, attributes);
 
     data = new this.NodeDataClass(node, attributes);
 

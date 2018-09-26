@@ -11,11 +11,13 @@
 * Dropping `#.addNodesFrom`.
 * Dropping `#.dropNodes` & `#.dropEdges`.
 * Dropping plural serialization methods.
+* Dropping `defaultNodeAttributes` & `defaultEdgeAttributes`.
 * Fixing semantics of `#.inEdges` & `#.outEdges` for arity 2.
 * Improving performance of edges-related methods.
 * Improving performance of internal indices.
 * Improving performance of `#.mergeNode`.
 * Fixing edge-case deopt for `#.dropEdges`.
+* Attribute copy is now done on serialization.
 * Completely reworking internal indices.
 
 ## 0.11.4
