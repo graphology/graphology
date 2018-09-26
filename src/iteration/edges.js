@@ -469,14 +469,17 @@ function attachForEachEdge(Class, description) {
    * Function iterating over the graph's relevant edges by applying the given
    * callback.
    *
-   * Arity 0: Iterate over all the relevant edges.
+   * Arity 1: Iterate over all the relevant edges.
+   * @param  {function} callback - Callback to use.
    *
-   * Arity 1: Iterate over all of a node's relevant edges.
-   * @param  {any}   node   - Target node.
+   * Arity 2: Iterate over all of a node's relevant edges.
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
    *
-   * Arity 2: Iterate over the relevant edges across the given path.
-   * @param  {any}   source - Source node.
-   * @param  {any}   target - Target node.
+   * Arity 3: Iterate over the relevant edges across the given path.
+   * @param  {any}      source   - Source node.
+   * @param  {any}      target   - Target node.
+   * @param  {function} callback - Callback to use.
    *
    * @return {undefined}
    *

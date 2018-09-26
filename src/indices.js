@@ -70,6 +70,8 @@ export function clearEdgeFromStructureIndex(graph, undirected, edgeData) {
         sourceIndex = sourceData[outKey];
 
   // NOTE: possible to clear empty sets from memory altogether
+  // TODO: should do it else inconsistent behaviors when deleting nodes
+  // and accessing neighbors in multigraphs!
   if (target in sourceIndex) {
 
     if (multi)

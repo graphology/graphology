@@ -37,6 +37,9 @@ export default function neighborsIteration(Graph, checkers) {
     'Forever'
   ]);
 
+  graph.replaceNodeAttributes('John', {age: 34});
+  graph.replaceNodeAttributes('Martha', {age: 35});
+
   graph.addDirectedEdgeWithKey('J->T', 'John', 'Thomas');
   graph.addDirectedEdgeWithKey('J->M', 'John', 'Martha');
   graph.addDirectedEdgeWithKey('C->J', 'Catherine', 'John');
@@ -163,6 +166,8 @@ export default function neighborsIteration(Graph, checkers) {
   }
 
   function specificTests(name, data) {
+    const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1);
+
     return {
 
       // Array-creators
@@ -179,6 +184,22 @@ export default function neighborsIteration(Graph, checkers) {
 
           assert.deepEqual(neighbors, data.node.neighbors);
           assert.deepEqual(graph[name]('Alone'), []);
+        }
+      },
+
+      // ForEach
+      ['#.' + forEachName]: {
+        'it should be possible to iterate over neighbors using a callback.': function() {
+          const neighbors = [];
+
+          graph[forEachName](data.node.key, function(target, attrs) {
+            neighbors.push(target);
+
+            assert.deepEqual(graph.getNodeAttributes(target), attrs);
+            assert.strictEqual(graph[name](data.node.key, target), true);
+          });
+
+          assert.deepEqual(neighbors, data.node.neighbors);
         }
       }
     };

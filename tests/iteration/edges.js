@@ -244,6 +244,29 @@ export default function edgesIteration(Graph, checkers) {
           assert.deepEqual(edges, data.all.slice().sort());
         },
 
+        'it should be possible to return an iterator over the relevant edges.': function() {
+          const iterator = graph[iteratorName]();
+
+          assert.deepEqual(take(iterator), data.all);
+        },
+
+        'it should return a node\'s relevant edges.': function() {
+          const edges = graph[name](data.node.key);
+
+          assert.deepEqual(edges, data.node.edges);
+          assert.deepEqual(graph[name]('Alone'), []);
+        },
+
+        'it should return all the relevant edges between source & target.': function() {
+          const edges = graph[name](data.path.source, data.path.target);
+
+          assert(sameMembers(edges, data.path.edges));
+          assert.deepEqual(graph[name]('Forever', 'Alone'), []);
+        }
+      },
+
+      // ForEach
+      ['#.' + forEachName]: {
         'it should possible to use callback iterators.': function() {
           const edges = [];
 
@@ -263,19 +286,6 @@ export default function edgesIteration(Graph, checkers) {
           assert.deepEqual(edges, data.all.slice().sort());
         },
 
-        'it should be possible to return an iterator over the relevant edges.': function() {
-          const iterator = graph[iteratorName]();
-
-          assert.deepEqual(take(iterator), data.all);
-        },
-
-        'it should return a node\'s relevant edges.': function() {
-          const edges = graph[name](data.node.key);
-
-          assert.deepEqual(edges, data.node.edges);
-          assert.deepEqual(graph[name]('Alone'), []);
-        },
-
         'it should be possible to use callback iterators over a node\'s relevant edges.': function() {
           const edges = [];
 
@@ -293,13 +303,6 @@ export default function edgesIteration(Graph, checkers) {
           edges.sort();
 
           assert.deepEqual(edges, data.node.edges.slice().sort());
-        },
-
-        'it should return all the relevant edges between source & target.': function() {
-          const edges = graph[name](data.path.source, data.path.target);
-
-          assert(sameMembers(edges, data.path.edges));
-          assert.deepEqual(graph[name]('Forever', 'Alone'), []);
         },
 
         'it should be possible to use callback iterators over all the relevant edges between source & target.': function() {

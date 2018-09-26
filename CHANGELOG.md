@@ -5,6 +5,7 @@
 * Adding `#.clearEdges`.
 * Adding `#.forEachEdge` & alii.
 * Adding `#.forEachNode` & alii.
+* Adding `#.forEachNeighbor` & alii.
 * Adding `#.inboundNeighbors` & `#.outboundNeighbors`.
 * Adding `#.inboundEdges` & `#.outboundEdges`.
 * Dropping `#.addNodesFrom`.

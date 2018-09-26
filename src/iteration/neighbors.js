@@ -65,15 +65,14 @@ function merge(neighbors, object) {
 }
 
 /**
- * Function creating a set of relevant neighbors for the given node.
+ * Function creating an array of relevant neighbors for the given node.
  *
- * @param  {Graph}        graph     - Target graph.
  * @param  {string}       type      - Type of neighbors.
  * @param  {string}       direction - Direction.
  * @param  {any}          nodeData  - Target node's data.
  * @return {Array}                  - The list of neighbors.
  */
-function createNeighborSetForNode(graph, type, direction, nodeData) {
+function createNeighborArrayForNode(type, direction, nodeData) {
 
   // If we want only undirected or in or out, we can roll some optimizations
   if (type !== 'mixed') {
@@ -102,6 +101,87 @@ function createNeighborSetForNode(graph, type, direction, nodeData) {
   }
 
   return take(neighbors.values(), neighbors.size);
+}
+
+/**
+ * Function iterating over the given node's relevant neighbors using a
+ * callback.
+ *
+ * @param  {string}   type      - Type of neighbors.
+ * @param  {string}   direction - Direction.
+ * @param  {any}      nodeData  - Target node's data.
+ * @param  {function} callback  - Callback to use.
+ */
+function forEachInObject(nodeData, object, callback) {
+  for (const k in object) {
+    let edgeData = object[k];
+
+    if (edgeData instanceof Set)
+      edgeData = edgeData.values().next().value;
+
+    const sourceData = edgeData.source,
+          targetData = edgeData.target;
+
+    const neighborData = sourceData === nodeData ? targetData : sourceData;
+
+    callback(
+      neighborData.key,
+      neighborData.attributes
+    );
+  }
+}
+
+function forEachInObjectOnce(visited, nodeData, object, callback) {
+  for (const k in object) {
+    let edgeData = object[k];
+
+    if (edgeData instanceof Set)
+      edgeData = edgeData.values().next().value;
+
+    const sourceData = edgeData.source,
+          targetData = edgeData.target;
+
+    const neighborData = sourceData === nodeData ? targetData : sourceData;
+
+    if (visited.has(neighborData.key))
+      continue;
+
+    visited.add(neighborData.key);
+
+    callback(
+      neighborData.key,
+      neighborData.attributes
+    );
+  }
+}
+
+function forEachNeighborForNode(type, direction, nodeData, callback) {
+
+  // If we want only undirected or in or out, we can roll some optimizations
+  if (type !== 'mixed') {
+    if (type === 'undirected')
+      return forEachInObject(nodeData, nodeData.undirected, callback);
+
+    if (typeof direction === 'string')
+      return forEachInObject(nodeData, nodeData[direction], callback);
+  }
+
+  // Else we need to keep a set of neighbors not to return duplicates
+  const visited = new Set();
+
+  if (type !== 'undirected') {
+
+    if (direction !== 'out') {
+      forEachInObjectOnce(visited, nodeData, nodeData.in, callback);
+    }
+    if (direction !== 'in') {
+      forEachInObjectOnce(visited, nodeData, nodeData.out, callback);
+    }
+  }
+
+  if (type !== 'directed') {
+    forEachInObjectOnce(visited, nodeData, nodeData.undirected, callback);
+  }
 }
 
 /**
@@ -157,11 +237,8 @@ function attachNeighborArrayCreator(Class, description) {
   /**
    * Function returning an array or the count of certain neighbors.
    *
-   * Arity 1a: Return all of a node's relevant neighbors.
+   * Arity 1: Return all of a node's relevant neighbors.
    * @param  {any}   node   - Target node.
-   *
-   * Arity 1b: Return the union of the relevant neighbors of the given bunch of nodes.
-   * @param  {bunch} bunch  - Bunch of nodes.
    *
    * Arity 2: Return whether the two nodes are indeed neighbors.
    * @param  {any}   source - Source node.
@@ -205,8 +282,7 @@ function attachNeighborArrayCreator(Class, description) {
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${node}" node in the graph.`);
 
       // Here, we want to iterate over a node's relevant neighbors
-      const neighbors = createNeighborSetForNode(
-        this,
+      const neighbors = createNeighborArrayForNode(
         type,
         direction,
         nodeData
@@ -220,6 +296,53 @@ function attachNeighborArrayCreator(Class, description) {
 }
 
 /**
+ * Function attaching a neighbors callback iterator method to the Graph prototype.
+ *
+ * @param {function} Class       - Target class.
+ * @param {object}   description - Method description.
+ */
+function attachForEachNeighbor(Class, description) {
+  const {
+    name,
+    type,
+    direction
+  } = description;
+
+  const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1);
+
+  /**
+   * Function iterating over all the relevant neighbors using a callback.
+   *
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   * @return {undefined}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  Class.prototype[forEachName] = function(node, callback) {
+
+    // Early termination
+    if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
+      return;
+
+    node = '' + node;
+
+    const nodeData = this._nodes.get(node);
+
+    if (typeof nodeData === 'undefined')
+      throw new NotFoundGraphError(`Graph.${forEachName}: could not find the "${node}" node in the graph.`);
+
+    // Here, we want to iterate over a node's relevant neighbors
+    forEachNeighborForNode(
+      type,
+      direction,
+      nodeData,
+      callback
+    );
+  };
+}
+
+/**
  * Function attaching every neighbor iteration method to the Graph class.
  *
  * @param {function} Graph - Graph class.
@@ -227,5 +350,6 @@ function attachNeighborArrayCreator(Class, description) {
 export function attachNeighborIterationMethods(Graph) {
   NEIGHBORS_ITERATION.forEach(description => {
     attachNeighborArrayCreator(Graph, description);
+    attachForEachNeighbor(Graph, description);
   });
 }
