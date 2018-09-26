@@ -128,6 +128,44 @@ function collectForKey(edges, object, k) {
 }
 
 /**
+ * Function iterating over the egdes from the object at given key using
+ * a callback.
+ *
+ * @param {object}   object   - Target object.
+ * @param {mixed}    k        - Neighbor key.
+ * @param {function} callback - Callback to use.
+ */
+function forEachForKey(object, k, callback) {
+
+  if (!(k in object))
+    return;
+
+  if (object[k] instanceof Set)
+    object[k].forEach(edgeData => callback(
+      edgeData.key,
+      edgeData.attributes,
+      edgeData.source.key,
+      edgeData.target.key,
+      edgeData.source.attributes,
+      edgeData.target.attributes
+    ));
+  else {
+    const edgeData = object[k];
+
+    callback(
+      edgeData.key,
+      edgeData.attributes,
+      edgeData.source.key,
+      edgeData.target.key,
+      edgeData.source.attributes,
+      edgeData.target.attributes
+    );
+  }
+
+  return;
+}
+
+/**
  * Function creating an array of edges for the given type.
  *
  * @param  {Graph}   graph - Target Graph instance.
@@ -293,7 +331,7 @@ function forEachEdgeForNode(type, direction, nodeData, callback) {
  *
  * @param  {string}   type       - Type of edges to retrieve.
  * @param  {string}   direction  - In or out?
- * @param  {NodeData} sourceData - Source node.
+ * @param  {NodeData} sourceData - Source node's data.
  * @param  {any}      target     - Target node.
  * @return {array}               - Array of edges.
  */
@@ -320,30 +358,27 @@ function createEdgeArrayForPath(type, direction, sourceData, target) {
 /**
  * Function iterating over edges for the given path using a callback.
  *
- * @param  {string}   type      - Type of edges to retrieve.
- * @param  {string}   direction - In or out?
- * @param  {any}      sourceData  - Target node's data.
- * @param  {function} callback  - Function to call.
+ * @param  {string}   type       - Type of edges to retrieve.
+ * @param  {string}   direction  - In or out?
+ * @param  {NodeData} sourceData - Source node's data.
+ * @param  {string}   target     - Target node.
+ * @param  {function} callback   - Function to call.
  */
-// function forEachEdgeForPath(type, direction, nodeData, callback) {
-//   const sourceData = graph._nodes.get(source);
+function forEachEdgeForPath(type, direction, sourceData, target, callback) {
+  if (type !== 'undirected') {
 
-//   if (type !== 'undirected') {
+    if (typeof sourceData.in !== 'undefined' && direction !== 'out')
+      forEachForKey(sourceData.in, target, callback);
 
-//     if (typeof sourceData.in !== 'undefined' && direction !== 'out')
-//       collectForKey(edges, sourceData.in, target);
+    if (typeof sourceData.out !== 'undefined' && direction !== 'in')
+      forEachForKey(sourceData.out, target, callback);
+  }
 
-//     if (typeof sourceData.out !== 'undefined' && direction !== 'in')
-//       collectForKey(edges, sourceData.out, target);
-//   }
-
-//   if (type !== 'directed') {
-//     if (typeof sourceData.undirected !== 'undefined')
-//       collectForKey(edges, sourceData.undirected, target);
-//   }
-
-//   return edges;
-// }
+  if (type !== 'directed') {
+    if (typeof sourceData.undirected !== 'undefined')
+      forEachForKey(sourceData.undirected, target, callback);
+  }
+}
 
 /**
  * Function attaching an edge array creator method to the Graph prototype.
@@ -471,19 +506,21 @@ function attachForEachEdge(Class, description) {
       return forEachEdgeForNode(type, direction, nodeData, callback);
     }
 
-    // if (arguments.length === 3) {
-    //   source = '' + source;
-    //   target = '' + target;
+    if (arguments.length === 3) {
+      source = '' + source;
+      target = '' + target;
 
-    //   if (!this._nodes.has(source))
-    //     throw new NotFoundGraphError(`Graph.${forEachName}:  could not find the "${source}" source node in the graph.`);
+      const sourceData = this._nodes.get(source);
 
-    //   if (!this._nodes.has(target))
-    //     throw new NotFoundGraphError(`Graph.${forEachName}:  could not find the "${target}" target node in the graph.`);
+      if (!sourceData)
+        throw new NotFoundGraphError(`Graph.${forEachName}:  could not find the "${source}" source node in the graph.`);
 
-    //   // Iterating over the edges between source & target
-    //   return createEdgeArrayForPath(this, type, direction, source, target);
-    // }
+      if (!this._nodes.has(target))
+        throw new NotFoundGraphError(`Graph.${forEachName}:  could not find the "${target}" target node in the graph.`);
+
+      // Iterating over the edges between source & target
+      return forEachEdgeForPath(type, direction, sourceData, target, callback);
+    }
 
     throw new InvalidArgumentsGraphError(`Graph.${forEachName}: too many arguments (expecting 1, 2 or 3 and got ${arguments.length}).`);
   };
