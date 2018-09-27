@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.0 (provisional)
+
+* Adding `#.nodeEntries`.
+
 ## 0.12.0
 
 * Adding `#.clearEdges`.

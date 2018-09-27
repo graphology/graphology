@@ -46,16 +46,18 @@ export default function nodesIteration(Graph, checkers) {
       }
     },
 
-    '#.nodesIterator': {
+    '#.nodeEntries': {
       'it should be possible to create a nodes iterator.': function() {
         const graph = new Graph();
         graph.addNodesFrom(['one', 'two', 'three']);
 
-        const iterator = graph.nodesIterator();
+        graph.replaceNodeAttributes('two', {hello: 'world'});
 
-        assert.strictEqual(iterator.next().value, 'one');
-        assert.strictEqual(iterator.next().value, 'two');
-        assert.strictEqual(iterator.next().value, 'three');
+        const iterator = graph.nodeEntries();
+
+        assert.deepEqual(iterator.next().value, ['one', {}]);
+        assert.deepEqual(iterator.next().value, ['two', {hello: 'world'}]);
+        assert.deepEqual(iterator.next().value, ['three', {}]);
         assert.strictEqual(iterator.next().done, true);
       }
     }

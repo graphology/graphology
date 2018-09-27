@@ -1727,14 +1727,23 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method returning an iterator over the graph's nodes.
+   * Method returning an iterator over the graph's node entries.
    *
    * @return {Iterator}
    */
-  nodesIterator() {
-    const iterator = this._nodes.keys();
+  nodeEntries() {
+    const iterator = this._nodes.entries();
 
-    return new NodesIterator(iterator.next.bind(iterator));
+    return new NodesIterator(() => {
+      const step = iterator.next();
+
+      if (step.done)
+        return {done: true};
+
+      const [node, data] = step.value;
+
+      return {value: [node, data.attributes], done: false};
+    });
   }
 
   /**---------------------------------------------------------------------------
