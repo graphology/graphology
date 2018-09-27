@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -343,6 +343,116 @@ function incrementalId() {
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports) {
+
+/**
+ * Obliterator Iterator Class
+ * ===========================
+ *
+ * Simple class representing the library's iterators.
+ */
+
+/**
+ * Iterator class.
+ *
+ * @constructor
+ * @param {function} next - Next function.
+ */
+function Iterator(next) {
+
+  // Hiding the given function
+  Object.defineProperty(this, '_next', {
+    writable: false,
+    enumerable: false,
+    value: next
+  });
+
+  // Is the iterator complete?
+  this.done = false;
+}
+
+/**
+ * Next function.
+ *
+ * @return {object}
+ */
+// NOTE: maybe this should dropped for performance?
+Iterator.prototype.next = function() {
+  if (this.done)
+    return {done: true};
+
+  var step = this._next();
+
+  if (step.done)
+    this.done = true;
+
+  return step;
+};
+
+/**
+ * If symbols are supported, we add `next` to `Symbol.iterator`.
+ */
+if (typeof Symbol !== 'undefined')
+  Iterator.prototype[Symbol.iterator] = function() {
+    return this;
+  };
+
+/**
+ * Returning an iterator of the given values.
+ *
+ * @param  {any...} values - Values.
+ * @return {Iterator}
+ */
+Iterator.of = function() {
+  var args = arguments,
+      l = args.length,
+      i = 0;
+
+  return new Iterator(function() {
+    if (i >= l)
+      return {done: true};
+
+    return {done: false, value: args[i++]};
+  });
+};
+
+/**
+ * Returning an empty iterator.
+ *
+ * @return {Iterator}
+ */
+Iterator.empty = function() {
+  var iterator = new Iterator(null);
+  iterator.done = true;
+
+  return iterator;
+};
+
+/**
+ * Returning whether the given value is an iterator.
+ *
+ * @param  {any} value - Value.
+ * @return {boolean}
+ */
+Iterator.is = function(value) {
+  if (value instanceof Iterator)
+    return true;
+
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof value.next === 'function'
+  );
+};
+
+/**
+ * Exporting.
+ */
+module.exports = Iterator;
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -508,7 +618,7 @@ function UndirectedEdgeData(key, generatedKey, source, target, attributes) {
 }
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 /* eslint no-constant-condition: 0 */
@@ -554,117 +664,52 @@ module.exports = function take(iterator, n) {
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
 
 /**
- * Obliterator Iterator Class
+ * Obliterator Chain Function
  * ===========================
  *
- * Simple class representing the library's iterators.
+ * Variadic function combining the given iterators.
  */
+var Iterator = __webpack_require__(2);
 
 /**
- * Iterator class.
+ * Chain.
  *
- * @constructor
- * @param {function} next - Next function.
- */
-function Iterator(next) {
-
-  // Hiding the given function
-  Object.defineProperty(this, '_next', {
-    writable: false,
-    enumerable: false,
-    value: next
-  });
-
-  // Is the iterator complete?
-  this.done = false;
-}
-
-/**
- * Next function.
- *
- * @return {object}
- */
-// NOTE: maybe this should dropped for performance?
-Iterator.prototype.next = function() {
-  if (this.done)
-    return {done: true};
-
-  var step = this._next();
-
-  if (step.done)
-    this.done = true;
-
-  return step;
-};
-
-/**
- * If symbols are supported, we add `next` to `Symbol.iterator`.
- */
-if (typeof Symbol !== 'undefined')
-  Iterator.prototype[Symbol.iterator] = function() {
-    return this;
-  };
-
-/**
- * Returning an iterator of the given values.
- *
- * @param  {any...} values - Values.
+ * @param  {...Iterator} iterators - Target iterators.
  * @return {Iterator}
  */
-Iterator.of = function() {
-  var args = arguments,
-      l = args.length,
-      i = 0;
+module.exports = function chain() {
+  var iterators = arguments,
+      current,
+      i = -1;
 
-  return new Iterator(function() {
-    if (i >= l)
-      return {done: true};
+  return new Iterator(function iterate() {
+    if (!current) {
+      i++;
 
-    return {done: false, value: args[i++]};
+      if (i >= iterators.length)
+        return {done: true};
+
+      current = iterators[i];
+    }
+
+    var step = current.next();
+
+    if (step.done) {
+      current = null;
+      return iterate();
+    }
+
+    return step;
   });
 };
-
-/**
- * Returning an empty iterator.
- *
- * @return {Iterator}
- */
-Iterator.empty = function() {
-  var iterator = new Iterator(null);
-  iterator.done = true;
-
-  return iterator;
-};
-
-/**
- * Returning whether the given value is an iterator.
- *
- * @param  {any} value - Value.
- * @return {boolean}
- */
-Iterator.is = function(value) {
-  if (value instanceof Iterator)
-    return true;
-
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    typeof value.next === 'function'
-  );
-};
-
-/**
- * Exporting.
- */
-module.exports = Iterator;
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -672,7 +717,7 @@ module.exports = Iterator;
 
 var _utils = __webpack_require__(1);
 
-var _graph = __webpack_require__(6);
+var _graph = __webpack_require__(7);
 
 var _graph2 = _interopRequireDefault(_graph);
 
@@ -788,7 +833,7 @@ _graph2.default.UsageGraphError = _errors.UsageGraphError;
 module.exports = _graph2.default;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -798,29 +843,29 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _events = __webpack_require__(7);
+var _events = __webpack_require__(8);
 
-var _iterator = __webpack_require__(4);
+var _iterator = __webpack_require__(2);
 
 var _iterator2 = _interopRequireDefault(_iterator);
 
-var _take = __webpack_require__(3);
+var _take = __webpack_require__(4);
 
 var _take2 = _interopRequireDefault(_take);
 
 var _errors = __webpack_require__(0);
 
-var _data = __webpack_require__(2);
+var _data = __webpack_require__(3);
 
-var _indices = __webpack_require__(8);
+var _indices = __webpack_require__(9);
 
-var _attributes = __webpack_require__(9);
+var _attributes = __webpack_require__(10);
 
-var _edges = __webpack_require__(10);
+var _edges = __webpack_require__(11);
 
-var _neighbors = __webpack_require__(11);
+var _neighbors = __webpack_require__(12);
 
-var _serialization = __webpack_require__(12);
+var _serialization = __webpack_require__(13);
 
 var _utils = __webpack_require__(1);
 
@@ -890,22 +935,6 @@ var DEFAULTS = {
 };
 
 /**
- * Helper classes.
- */
-
-var NodesIterator = function (_Iterator) {
-  _inherits(NodesIterator, _Iterator);
-
-  function NodesIterator() {
-    _classCallCheck(this, NodesIterator);
-
-    return _possibleConstructorReturn(this, _Iterator.apply(this, arguments));
-  }
-
-  return NodesIterator;
-}(_iterator2.default);
-
-/**
  * Abstract functions used by the Graph class for various methods.
  */
 
@@ -927,8 +956,6 @@ var NodesIterator = function (_Iterator) {
  * @throws {Error} - Will throw if source or target doesn't exist.
  * @throws {Error} - Will throw if the edge already exist.
  */
-
-
 function addEdge(graph, name, mustGenerateKey, undirected, edge, source, target, attributes) {
 
   // Checking validity of operation
@@ -1162,7 +1189,7 @@ var Graph = function (_EventEmitter) {
     _classCallCheck(this, Graph);
 
     //-- Solving options
-    var _this2 = _possibleConstructorReturn(this, _EventEmitter.call(this));
+    var _this = _possibleConstructorReturn(this, _EventEmitter.call(this));
 
     options = (0, _utils.assign)({}, DEFAULTS, options);
 
@@ -1180,41 +1207,41 @@ var Graph = function (_EventEmitter) {
     // Utilities
     var NodeDataClass = options.type === 'mixed' ? _data.MixedNodeData : options.type === 'directed' ? _data.DirectedNodeData : _data.UndirectedNodeData;
 
-    (0, _utils.privateProperty)(_this2, 'NodeDataClass', NodeDataClass);
+    (0, _utils.privateProperty)(_this, 'NodeDataClass', NodeDataClass);
 
     // Indexes
-    (0, _utils.privateProperty)(_this2, '_attributes', {});
-    (0, _utils.privateProperty)(_this2, '_nodes', new Map());
-    (0, _utils.privateProperty)(_this2, '_edges', new Map());
-    (0, _utils.privateProperty)(_this2, '_directedSize', 0);
-    (0, _utils.privateProperty)(_this2, '_undirectedSize', 0);
-    (0, _utils.privateProperty)(_this2, '_edgeKeyGenerator', options.edgeKeyGenerator || (0, _utils.incrementalId)());
+    (0, _utils.privateProperty)(_this, '_attributes', {});
+    (0, _utils.privateProperty)(_this, '_nodes', new Map());
+    (0, _utils.privateProperty)(_this, '_edges', new Map());
+    (0, _utils.privateProperty)(_this, '_directedSize', 0);
+    (0, _utils.privateProperty)(_this, '_undirectedSize', 0);
+    (0, _utils.privateProperty)(_this, '_edgeKeyGenerator', options.edgeKeyGenerator || (0, _utils.incrementalId)());
 
     // Options
-    (0, _utils.privateProperty)(_this2, '_options', options);
+    (0, _utils.privateProperty)(_this, '_options', options);
 
     // Emitter properties
     EMITTER_PROPS.forEach(function (prop) {
-      return (0, _utils.privateProperty)(_this2, prop, _this2[prop]);
+      return (0, _utils.privateProperty)(_this, prop, _this[prop]);
     });
 
     //-- Properties readers
-    (0, _utils.readOnlyProperty)(_this2, 'order', function () {
-      return _this2._nodes.size;
+    (0, _utils.readOnlyProperty)(_this, 'order', function () {
+      return _this._nodes.size;
     });
-    (0, _utils.readOnlyProperty)(_this2, 'size', function () {
-      return _this2._edges.size;
+    (0, _utils.readOnlyProperty)(_this, 'size', function () {
+      return _this._edges.size;
     });
-    (0, _utils.readOnlyProperty)(_this2, 'directedSize', function () {
-      return _this2._directedSize;
+    (0, _utils.readOnlyProperty)(_this, 'directedSize', function () {
+      return _this._directedSize;
     });
-    (0, _utils.readOnlyProperty)(_this2, 'undirectedSize', function () {
-      return _this2._undirectedSize;
+    (0, _utils.readOnlyProperty)(_this, 'undirectedSize', function () {
+      return _this._undirectedSize;
     });
-    (0, _utils.readOnlyProperty)(_this2, 'multi', _this2._options.multi);
-    (0, _utils.readOnlyProperty)(_this2, 'type', _this2._options.type);
-    (0, _utils.readOnlyProperty)(_this2, 'allowSelfLoops', _this2._options.allowSelfLoops);
-    return _this2;
+    (0, _utils.readOnlyProperty)(_this, 'multi', _this._options.multi);
+    (0, _utils.readOnlyProperty)(_this, 'type', _this._options.type);
+    (0, _utils.readOnlyProperty)(_this, 'allowSelfLoops', _this._options.allowSelfLoops);
+    return _this;
   }
 
   /**---------------------------------------------------------------------------
@@ -2412,6 +2439,51 @@ var Graph = function (_EventEmitter) {
    */
 
   /**
+   * Method iterating over the graph's adjacency using the given callback.
+   *
+   * @param  {function}  callback - Callback to use.
+   */
+
+
+  Graph.prototype.forEach = function forEach(callback) {
+    if (typeof callback !== 'function') throw new _errors.InvalidArgumentsGraphError('Graph.forEach: expecting a callback.');
+
+    this._edges.forEach(function (edgeData, key) {
+      var sourceData = edgeData.source,
+          targetData = edgeData.target;
+
+      callback(sourceData.key, targetData.key, sourceData.attributes, targetData.attributes, key, edgeData.attributes);
+    });
+  };
+
+  /**
+   * Method returning an iterator over the graph's adjacency.
+   *
+   * @return {Iterator}
+   */
+
+
+  Graph.prototype.adjacency = function adjacency() {
+    var iterator = this._edges.values();
+
+    return new _iterator2.default(function () {
+      var step = iterator.next();
+
+      if (step.done) return step;
+
+      var edgeData = step.value;
+
+      var sourceData = edgeData.source,
+          targetData = edgeData.target;
+
+      return {
+        done: false,
+        value: [sourceData.key, targetData.key, sourceData.attributes, targetData.attributes, edgeData.key, edgeData.attributes]
+      };
+    });
+  };
+
+  /**
    * Method returning the list of the graph's nodes.
    *
    * @return {array} - The nodes.
@@ -2438,16 +2510,24 @@ var Graph = function (_EventEmitter) {
   };
 
   /**
-   * Method returning an iterator over the graph's nodes.
+   * Method returning an iterator over the graph's node entries.
    *
    * @return {Iterator}
    */
 
 
-  Graph.prototype.nodesIterator = function nodesIterator() {
-    var iterator = this._nodes.keys();
+  Graph.prototype.nodeEntries = function nodeEntries() {
+    var iterator = this._nodes.values();
 
-    return new NodesIterator(iterator.next.bind(iterator));
+    return new _iterator2.default(function () {
+      var step = iterator.next();
+
+      if (step.done) return step;
+
+      var data = step.value;
+
+      return { value: [data.key, data.attributes], done: false };
+    });
   };
 
   /**---------------------------------------------------------------------------
@@ -2620,7 +2700,7 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.import = function _import(data) {
-    var _this3 = this;
+    var _this2 = this;
 
     var merge = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
@@ -2643,11 +2723,11 @@ var Graph = function (_EventEmitter) {
 
     // TODO: optimize
     if (data.nodes) data.nodes.forEach(function (node) {
-      return _this3.importNode(node, merge);
+      return _this2.importNode(node, merge);
     });
 
     if (data.edges) data.edges.forEach(function (edge) {
-      return _this3.importEdge(edge, merge);
+      return _this2.importEdge(edge, merge);
     });
 
     return this;
@@ -2787,7 +2867,7 @@ var Graph = function (_EventEmitter) {
 
 
   Graph.prototype.inspect = function inspect() {
-    var _this4 = this;
+    var _this3 = this;
 
     var nodes = {};
     this._nodes.forEach(function (data, key) {
@@ -2806,7 +2886,7 @@ var Graph = function (_EventEmitter) {
 
       if (!data.generatedKey) {
         label += '[' + key + ']: ';
-      } else if (_this4.multi) {
+      } else if (_this3.multi) {
         if (typeof multiIndex[desc] === 'undefined') {
           multiIndex[desc] = 0;
         } else {
@@ -2886,7 +2966,7 @@ EDGE_ADD_METHODS.forEach(function (method) {
 (0, _neighbors.attachNeighborIterationMethods)(Graph);
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -3194,7 +3274,7 @@ function isUndefined(arg) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3346,7 +3426,7 @@ function upgradeStructureIndexToMulti(graph) {
 }
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3361,7 +3441,7 @@ var _utils = __webpack_require__(1);
 
 var _errors = __webpack_require__(0);
 
-var _data = __webpack_require__(2);
+var _data = __webpack_require__(3);
 
 /**
  * Attach an attribute getter method onto the provided class.
@@ -3963,7 +4043,7 @@ function attachAttributesMethods(Graph) {
 }
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3975,32 +4055,23 @@ Object.defineProperty(exports, "__esModule", {
 exports.attachEdgeIteratorCreator = attachEdgeIteratorCreator;
 exports.attachEdgeIterationMethods = attachEdgeIterationMethods;
 
-var _iterator = __webpack_require__(4);
+var _iterator = __webpack_require__(2);
 
 var _iterator2 = _interopRequireDefault(_iterator);
 
-var _take = __webpack_require__(3);
+var _chain = __webpack_require__(5);
+
+var _chain2 = _interopRequireDefault(_chain);
+
+var _take = __webpack_require__(4);
 
 var _take2 = _interopRequireDefault(_take);
 
 var _errors = __webpack_require__(0);
 
-var _data = __webpack_require__(2);
+var _data = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Graphology Edge Iteration
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * ==========================
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Attaching some methods to the Graph class to be able to iterate over a
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * graph's edges.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
-
 
 /**
  * Definitions.
@@ -4033,30 +4104,19 @@ var EDGES_ITERATION = [{
 }];
 
 /**
- * Helper classes.
- */
-
-var EdgesIterator = function (_Iterator) {
-  _inherits(EdgesIterator, _Iterator);
-
-  function EdgesIterator() {
-    _classCallCheck(this, EdgesIterator);
-
-    return _possibleConstructorReturn(this, _Iterator.apply(this, arguments));
-  }
-
-  return EdgesIterator;
-}(_iterator2.default);
-
-/**
  * Function collecting edges from the given object.
  *
  * @param  {array}  edges  - Edges array to populate.
  * @param  {object} object - Target object.
  * @return {array}         - The found edges.
  */
-
-
+/**
+ * Graphology Edge Iteration
+ * ==========================
+ *
+ * Attaching some methods to the Graph class to be able to iterate over a
+ * graph's edges.
+ */
 function collect(edges, object) {
   for (var k in object) {
     if (object[k] instanceof Set) object[k].forEach(function (edgeData) {
@@ -4081,6 +4141,54 @@ function forEach(object, callback) {
       callback(edgeData.key, edgeData.attributes, edgeData.source.key, edgeData.target.key, edgeData.source.attributes, edgeData.target.attributes);
     }
   }
+}
+
+/**
+ * Function returning an iterator over edges from the given object.
+ *
+ * @param  {object}   object - Target object.
+ * @return {Iterator}
+ */
+function createIterator(object) {
+  var keys = Object.keys(object),
+      l = keys.length;
+
+  var inner = null,
+      i = 0;
+
+  return new _iterator2.default(function next() {
+    var edgeData = void 0;
+
+    if (inner) {
+      var step = inner.next();
+
+      if (step.done) {
+        inner = null;
+        i++;
+        return next();
+      }
+
+      edgeData = step.value;
+    } else {
+      if (i >= l) return { done: true };
+
+      var k = keys[i];
+
+      edgeData = object[k];
+
+      if (edgeData instanceof Set) {
+        inner = edgeData.values();
+        return next();
+      }
+
+      i++;
+    }
+
+    return {
+      done: false,
+      value: [edgeData.key, edgeData.attributes, edgeData.source.key, edgeData.target.key, edgeData.source.attributes, edgeData.target.attributes]
+    };
+  });
 }
 
 /**
@@ -4123,6 +4231,36 @@ function forEachForKey(object, k, callback) {
   }
 
   return;
+}
+
+/**
+ * Function returning an iterator over the egdes from the object at given key.
+ *
+ * @param  {object}   object   - Target object.
+ * @param  {mixed}    k        - Neighbor key.
+ * @return {Iterator}
+ */
+function createIteratorForKey(object, k) {
+  var v = object[k];
+
+  if (v instanceof Set) {
+    var iterator = v.values();
+
+    return new _iterator2.default(function () {
+      var step = iterator.next();
+
+      if (step.done) return step;
+
+      var edgeData = step.value;
+
+      return {
+        done: false,
+        value: [edgeData.key, edgeData.attributes, edgeData.source.key, edgeData.target.key, edgeData.source.attributes, edgeData.target.attributes]
+      };
+    });
+  }
+
+  return _iterator2.default.of([v.key, v.attributes, v.source.key, v.target.key, v.source.attributes, v.target.attributes]);
 }
 
 /**
@@ -4192,28 +4330,43 @@ function forEachEdge(graph, type, callback) {
  *
  * @param  {Graph}    graph - Target Graph instance.
  * @param  {string}   type  - Type of edges to retrieve.
- * @return {Iterator}       - Edge iterator.
+ * @return {Iterator}
  */
 function createEdgeIterator(graph, type) {
-  if (graph.size === 0) return EdgesIterator.empty();
+  if (graph.size === 0) return _iterator2.default.empty();
 
-  var inner = void 0;
+  var iterator = void 0;
 
   if (type === 'mixed') {
-    inner = graph._edges.keys();
-    return new EdgesIterator(inner.next.bind(inner));
+    iterator = graph._edges.values();
+
+    return new _iterator2.default(function next() {
+      var step = iterator.next();
+
+      if (step.done) return step;
+
+      var data = step.value;
+
+      var value = [data.key, data.attributes, data.source.key, data.target.key, data.source.attributes, data.target.attributes];
+
+      return { value: value, done: false };
+    });
   }
 
-  inner = graph._edges.entries();
+  iterator = graph._edges.values();
 
-  return new EdgesIterator(function next() {
-    var step = inner.next();
+  return new _iterator2.default(function next() {
+    var step = iterator.next();
 
     if (step.done) return step;
 
-    var data = step.value[1];
+    var data = step.value;
 
-    if (data instanceof _data.UndirectedEdgeData === (type === 'undirected')) return { value: step.value[0] };
+    if (data instanceof _data.UndirectedEdgeData === (type === 'undirected')) {
+      var value = [data.key, data.attributes, data.source.key, data.target.key, data.source.attributes, data.target.attributes];
+
+      return { value: value, done: false };
+    }
 
     return next();
   });
@@ -4260,6 +4413,29 @@ function forEachEdgeForNode(type, direction, nodeData, callback) {
   if (type !== 'directed') {
     forEach(nodeData.undirected, callback);
   }
+}
+
+/**
+ * Function iterating over a node's edges using a callback.
+ *
+ * @param  {string}   type      - Type of edges to retrieve.
+ * @param  {string}   direction - In or out?
+ * @param  {any}      nodeData  - Target node's data.
+ * @return {Iterator}
+ */
+function createEdgeIteratorForNode(type, direction, nodeData) {
+  var iterator = _iterator2.default.empty();
+
+  if (type !== 'undirected') {
+    if (direction !== 'out' && typeof nodeData.in !== 'undefined') iterator = (0, _chain2.default)(iterator, createIterator(nodeData.in));
+    if (direction !== 'in' && typeof nodeData.out !== 'undefined') iterator = (0, _chain2.default)(iterator, createIterator(nodeData.out));
+  }
+
+  if (type !== 'directed' && typeof nodeData.undirected !== 'undefined') {
+    iterator = (0, _chain2.default)(iterator, createIterator(nodeData.undirected));
+  }
+
+  return iterator;
 }
 
 /**
@@ -4311,6 +4487,32 @@ function forEachEdgeForPath(type, direction, sourceData, target, callback) {
 }
 
 /**
+ * Function returning an iterator over edges for the given path.
+ *
+ * @param  {string}   type       - Type of edges to retrieve.
+ * @param  {string}   direction  - In or out?
+ * @param  {NodeData} sourceData - Source node's data.
+ * @param  {string}   target     - Target node.
+ * @param  {function} callback   - Function to call.
+ */
+function createEdgeIteratorForPath(type, direction, sourceData, target) {
+  var iterator = _iterator2.default.empty();
+
+  if (type !== 'undirected') {
+
+    if (typeof sourceData.in !== 'undefined' && direction !== 'out' && target in sourceData.in) iterator = (0, _chain2.default)(iterator, createIteratorForKey(sourceData.in, target));
+
+    if (typeof sourceData.out !== 'undefined' && direction !== 'in' && target in sourceData.out) iterator = (0, _chain2.default)(iterator, createIteratorForKey(sourceData.out, target));
+  }
+
+  if (type !== 'directed') {
+    if (typeof sourceData.undirected !== 'undefined' && target in sourceData.undirected) iterator = (0, _chain2.default)(iterator, createIteratorForKey(sourceData.undirected, target));
+  }
+
+  return iterator;
+}
+
+/**
  * Function attaching an edge array creator method to the Graph prototype.
  *
  * @param {function} Class       - Target class.
@@ -4353,7 +4555,7 @@ function attachEdgeArrayCreator(Class, description) {
       if (typeof nodeData === 'undefined') throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + source + '" node in the graph.');
 
       // Iterating over a node's edges
-      return createEdgeArrayForNode(type, direction, nodeData);
+      return createEdgeArrayForNode(type === 'mixed' ? this.type : type, direction, nodeData);
     }
 
     if (arguments.length === 2) {
@@ -4427,7 +4629,7 @@ function attachForEachEdge(Class, description) {
       if (typeof nodeData === 'undefined') throw new _errors.NotFoundGraphError('Graph.' + forEachName + ': could not find the "' + source + '" node in the graph.');
 
       // Iterating over a node's edges
-      return forEachEdgeForNode(type, direction, nodeData, callback);
+      return forEachEdgeForNode(type === 'mixed' ? this.type : type, direction, nodeData, callback);
     }
 
     if (arguments.length === 3) {
@@ -4456,10 +4658,11 @@ function attachForEachEdge(Class, description) {
  */
 function attachEdgeIteratorCreator(Class, description) {
   var originalName = description.name,
-      type = description.type;
+      type = description.type,
+      direction = description.direction;
 
 
-  var name = originalName + 'Iterator';
+  var name = originalName.slice(0, -1) + 'Entries';
 
   /**
    * Function returning an iterator over the graph's edges.
@@ -4477,39 +4680,39 @@ function attachEdgeIteratorCreator(Class, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[name] = function () {
+  Class.prototype[name] = function (source, target) {
 
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type) return _iterator2.default.empty();
 
     if (!arguments.length) return createEdgeIterator(this, type);
 
-    // TODO: complete here...
-    // if (arguments.length === 1) {
-    //   source = '' + source;
+    if (arguments.length === 1) {
+      source = '' + source;
 
-    //   if (!this._nodes.has(source))
-    //     throw new NotFoundGraphError(`Graph.${name}: could not find the "${source}" node in the graph.`);
+      var sourceData = this._nodes.get(source);
 
-    //   // Iterating over a node's edges
-    //   return createEdgeArrayForNode(this, type, direction, source);
-    // }
+      if (!sourceData) throw new _errors.NotFoundGraphError('Graph.' + name + ': could not find the "' + source + '" node in the graph.');
 
-    // if (arguments.length === 2) {
-    //   source = '' + source;
-    //   target = '' + target;
+      // Iterating over a node's edges
+      return createEdgeIteratorForNode(type, direction, sourceData);
+    }
 
-    //   if (!this._nodes.has(source))
-    //     throw new NotFoundGraphError(`Graph.${name}:  could not find the "${source}" source node in the graph.`);
+    if (arguments.length === 2) {
+      source = '' + source;
+      target = '' + target;
 
-    //   if (!this._nodes.has(target))
-    //     throw new NotFoundGraphError(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
+      var _sourceData = this._nodes.get(source);
 
-    //   // Iterating over the edges between source & target
-    //   return createEdgeArrayForPath(this, type, source, target);
-    // }
+      if (!_sourceData) throw new _errors.NotFoundGraphError('Graph.' + name + ':  could not find the "' + source + '" source node in the graph.');
 
-    // throw new InvalidArgumentsGraphError(`Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${arguments.length}).`);
+      if (!this._nodes.has(target)) throw new _errors.NotFoundGraphError('Graph.' + name + ':  could not find the "' + target + '" target node in the graph.');
+
+      // Iterating over the edges between source & target
+      return createEdgeIteratorForPath(type, direction, _sourceData, target);
+    }
+
+    throw new _errors.InvalidArgumentsGraphError('Graph.' + name + ': too many arguments (expecting 0, 1 or 2 and got ' + arguments.length + ').');
   };
 }
 
@@ -4527,7 +4730,7 @@ function attachEdgeIterationMethods(Graph) {
 }
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4538,7 +4741,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.attachNeighborIterationMethods = attachNeighborIterationMethods;
 
-var _take = __webpack_require__(3);
+var _iterator = __webpack_require__(2);
+
+var _iterator2 = _interopRequireDefault(_iterator);
+
+var _chain = __webpack_require__(5);
+
+var _chain2 = _interopRequireDefault(_chain);
+
+var _take = __webpack_require__(4);
 
 var _take2 = _interopRequireDefault(_take);
 
@@ -4705,6 +4916,99 @@ function forEachNeighborForNode(type, direction, nodeData, callback) {
 }
 
 /**
+ * Function returning an iterator over the given node's relevant neighbors.
+ *
+ * @param  {string}   type      - Type of neighbors.
+ * @param  {string}   direction - Direction.
+ * @param  {any}      nodeData  - Target node's data.
+ * @return {Iterator}
+ */
+function createObjectIterator(nodeData, object) {
+  var keys = Object.keys(object),
+      l = keys.length;
+
+  var i = 0;
+
+  return new _iterator2.default(function () {
+    if (i >= l) return { done: true };
+
+    var edgeData = object[keys[i++]];
+
+    if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
+
+    var sourceData = edgeData.source,
+        targetData = edgeData.target;
+
+    var neighborData = sourceData === nodeData ? targetData : sourceData;
+
+    return {
+      done: false,
+      value: [neighborData.key, neighborData.attributes]
+    };
+  });
+}
+
+function createDedupedObjectIterator(visited, nodeData, object) {
+  var keys = Object.keys(object),
+      l = keys.length;
+
+  var i = 0;
+
+  return new _iterator2.default(function next() {
+    if (i >= l) return { done: true };
+
+    var edgeData = object[keys[i++]];
+
+    if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
+
+    var sourceData = edgeData.source,
+        targetData = edgeData.target;
+
+    var neighborData = sourceData === nodeData ? targetData : sourceData;
+
+    if (visited.has(neighborData.key)) return next();
+
+    visited.add(neighborData.key);
+
+    return {
+      done: false,
+      value: [neighborData.key, neighborData.attributes]
+    };
+  });
+}
+
+function createNeighborIterator(type, direction, nodeData) {
+
+  // If we want only undirected or in or out, we can roll some optimizations
+  if (type !== 'mixed') {
+    if (type === 'undirected') return createObjectIterator(nodeData, nodeData.undirected);
+
+    if (typeof direction === 'string') return createObjectIterator(nodeData, nodeData[direction]);
+  }
+
+  var iterator = _iterator2.default.empty();
+
+  // Else we need to keep a set of neighbors not to return duplicates
+  var visited = new Set();
+
+  if (type !== 'undirected') {
+
+    if (direction !== 'out') {
+      iterator = (0, _chain2.default)(iterator, createDedupedObjectIterator(visited, nodeData, nodeData.in));
+    }
+    if (direction !== 'in') {
+      iterator = (0, _chain2.default)(iterator, createDedupedObjectIterator(visited, nodeData, nodeData.out));
+    }
+  }
+
+  if (type !== 'directed') {
+    iterator = (0, _chain2.default)(iterator, createDedupedObjectIterator(visited, nodeData, nodeData.undirected));
+  }
+
+  return iterator;
+}
+
+/**
  * Function returning whether the given node has target neighbor.
  *
  * @param  {Graph}        graph     - Target graph.
@@ -4839,6 +5143,44 @@ function attachForEachNeighbor(Class, description) {
 }
 
 /**
+ * Function attaching a neighbors callback iterator method to the Graph prototype.
+ *
+ * @param {function} Class       - Target class.
+ * @param {object}   description - Method description.
+ */
+function attachNeighborIteratorCreator(Class, description) {
+  var name = description.name,
+      type = description.type,
+      direction = description.direction;
+
+
+  var iteratorName = name.slice(0, -1) + 'Entries';
+
+  /**
+   * Function returning an iterator over all the relevant neighbors.
+   *
+   * @param  {any}      node     - Target node.
+   * @return {Iterator}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  Class.prototype[iteratorName] = function (node) {
+
+    // Early termination
+    if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type) return _iterator2.default.empty();
+
+    node = '' + node;
+
+    var nodeData = this._nodes.get(node);
+
+    if (typeof nodeData === 'undefined') throw new _errors.NotFoundGraphError('Graph.' + iteratorName + ': could not find the "' + node + '" node in the graph.');
+
+    // Here, we want to iterate over a node's relevant neighbors
+    return createNeighborIterator(type === 'mixed' ? this.type : type, direction, nodeData);
+  };
+}
+
+/**
  * Function attaching every neighbor iteration method to the Graph class.
  *
  * @param {function} Graph - Graph class.
@@ -4847,11 +5189,12 @@ function attachNeighborIterationMethods(Graph) {
   NEIGHBORS_ITERATION.forEach(function (description) {
     attachNeighborArrayCreator(Graph, description);
     attachForEachNeighbor(Graph, description);
+    attachNeighborIteratorCreator(Graph, description);
   });
 }
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4865,7 +5208,7 @@ exports.serializeEdge = serializeEdge;
 exports.validateSerializedNode = validateSerializedNode;
 exports.validateSerializedEdge = validateSerializedEdge;
 
-var _data = __webpack_require__(2);
+var _data = __webpack_require__(3);
 
 var _utils = __webpack_require__(1);
 
