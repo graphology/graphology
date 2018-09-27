@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.13.1 (provisional)
+## 0.13.1
 
 * Fixing edge attributes methods with typed graphs.
 
