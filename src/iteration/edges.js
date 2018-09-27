@@ -356,7 +356,7 @@ function createEdgeIterator(graph, type) {
   let iterator;
 
   if (type === 'mixed') {
-    iterator = graph._edges.entries();
+    iterator = graph._edges.values();
 
     return new Iterator(function next() {
       const step = iterator.next();
@@ -364,10 +364,10 @@ function createEdgeIterator(graph, type) {
       if (step.done)
         return step;
 
-      const [edge, data] = step.value;
+      const data = step.value;
 
       const value = [
-        edge,
+        data.key,
         data.attributes,
         data.source.key,
         data.target.key,
@@ -379,7 +379,7 @@ function createEdgeIterator(graph, type) {
     });
   }
 
-  iterator = graph._edges.entries();
+  iterator = graph._edges.values();
 
   return new Iterator(function next() {
     const step = iterator.next();
@@ -387,11 +387,11 @@ function createEdgeIterator(graph, type) {
     if (step.done)
       return step;
 
-    const [edge, data] = step.value;
+    const data = step.value;
 
     if ((data instanceof UndirectedEdgeData) === (type === 'undirected')) {
       const value = [
-        edge,
+        data.key,
         data.attributes,
         data.source.key,
         data.target.key,

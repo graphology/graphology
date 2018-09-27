@@ -5,6 +5,7 @@
  * Testing the iteration-related methods of the graph.
  */
 import assert from 'assert';
+import take from 'obliterator/take';
 import nodes from './nodes';
 import edges from './edges';
 import neighbors from './neighbors';
@@ -20,6 +21,8 @@ export default function iteration(Graph, checkers) {
         graph.mergeEdge(2, 3);
         graph.mergeEdge(3, 1);
 
+        graph.replaceNodeAttributes(2, {hello: 'world'});
+
         const adjacency = [];
 
         graph.forEach(function(s, t, sa, ta, e, ea) {
@@ -34,6 +37,29 @@ export default function iteration(Graph, checkers) {
           [2, 3],
           [3, 1]
         ]);
+      },
+
+      'it should be possible to create an iterator over the graph\'s adjacency.': function() {
+        const graph = new Graph();
+
+        graph.mergeEdge(1, 2);
+        graph.mergeEdge(2, 3);
+        graph.mergeEdge(3, 1);
+
+        graph.replaceNodeAttributes(2, {hello: 'world'});
+
+        assert.deepEqual(take(graph.adjacency()), graph.edges().map(edge => {
+          const [source, target] = graph.extremities(edge);
+
+          return [
+            source,
+            target,
+            graph.getNodeAttributes(source),
+            graph.getNodeAttributes(target),
+            edge,
+            graph.getEdgeAttributes(edge)
+          ];
+        }));
       }
     },
     Nodes: nodes(Graph, checkers),

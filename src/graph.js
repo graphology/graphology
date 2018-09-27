@@ -1723,6 +1723,39 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method returning an iterator over the graph's adjacency.
+   *
+   * @return {Iterator}
+   */
+  adjacency() {
+    const iterator = this._edges.values();
+
+    return new Iterator(function() {
+      const step = iterator.next();
+
+      if (step.done)
+        return step;
+
+      const edgeData = step.value;
+
+      const sourceData = edgeData.source,
+            targetData = edgeData.target;
+
+      return {
+        done: false,
+        value: [
+          sourceData.key,
+          targetData.key,
+          sourceData.attributes,
+          targetData.attributes,
+          edgeData.key,
+          edgeData.attributes
+        ]
+      };
+    });
+  }
+
+  /**
    * Method returning the list of the graph's nodes.
    *
    * @return {array} - The nodes.
@@ -1751,7 +1784,7 @@ export default class Graph extends EventEmitter {
    * @return {Iterator}
    */
   nodeEntries() {
-    const iterator = this._nodes.entries();
+    const iterator = this._nodes.values();
 
     return new Iterator(() => {
       const step = iterator.next();
@@ -1759,9 +1792,9 @@ export default class Graph extends EventEmitter {
       if (step.done)
         return step;
 
-      const [node, data] = step.value;
+      const data = step.value;
 
-      return {value: [node, data.attributes], done: false};
+      return {value: [data.key, data.attributes], done: false};
     });
   }
 
