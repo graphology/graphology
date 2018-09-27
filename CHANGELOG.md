@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.1 (provisional)
+
+* Fixing edge attributes methods with typed graphs.
+
 ## 0.13.0
 
 * Adding `#.nodeEntries`.

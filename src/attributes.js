@@ -52,7 +52,7 @@ function attachAttributeGetter(Class, method, type, EdgeDataClass) {
   Class.prototype[method] = function(element, name) {
     let data;
 
-    if (this.type !== 'mixed' && type !== this.type)
+    if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
       throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
 
     if (arguments.length > 2) {
@@ -113,7 +113,7 @@ function attachAttributesGetter(Class, method, type, EdgeDataClass) {
   Class.prototype[method] = function(element) {
     let data;
 
-    if (this.type !== 'mixed' && type !== this.type)
+    if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
       throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
 
     if (arguments.length > 1) {
@@ -174,7 +174,7 @@ function attachAttributeChecker(Class, method, type, EdgeDataClass) {
   Class.prototype[method] = function(element, name) {
     let data;
 
-    if (this.type !== 'mixed' && type !== this.type)
+    if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
       throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
 
     if (arguments.length > 2) {
@@ -239,7 +239,7 @@ function attachAttributeSetter(Class, method, type, EdgeDataClass) {
   Class.prototype[method] = function(element, name, value) {
     let data;
 
-    if (this.type !== 'mixed' && type !== this.type)
+    if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
       throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
 
     if (arguments.length > 3) {
@@ -318,7 +318,7 @@ function attachAttributeUpdater(Class, method, type, EdgeDataClass) {
   Class.prototype[method] = function(element, name, updater) {
     let data;
 
-    if (this.type !== 'mixed' && type !== this.type)
+    if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
       throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
 
     if (arguments.length > 3) {
@@ -397,7 +397,7 @@ function attachAttributeRemover(Class, method, type, EdgeDataClass) {
   Class.prototype[method] = function(element, name) {
     let data;
 
-    if (this.type !== 'mixed' && type !== this.type)
+    if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
       throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
 
     if (arguments.length > 2) {
@@ -471,7 +471,7 @@ function attachAttributesReplacer(Class, method, type, EdgeDataClass) {
   Class.prototype[method] = function(element, attributes) {
     let data;
 
-    if (this.type !== 'mixed' && type !== this.type)
+    if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
       throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
 
     if (arguments.length > 2) {
@@ -551,7 +551,7 @@ function attachAttributesMerger(Class, method, type, EdgeDataClass) {
   Class.prototype[method] = function(element, attributes) {
     let data;
 
-    if (this.type !== 'mixed' && type !== this.type)
+    if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
       throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
 
     if (arguments.length > 2) {
