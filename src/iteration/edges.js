@@ -55,11 +55,6 @@ const EDGES_ITERATION = [
 ];
 
 /**
- * Helper classes.
- */
-class EdgesIterator extends Iterator {}
-
-/**
  * Function collecting edges from the given object.
  *
  * @param  {array}  edges  - Edges array to populate.
@@ -307,18 +302,18 @@ function forEachEdge(graph, type, callback) {
  *
  * @param  {Graph}    graph - Target Graph instance.
  * @param  {string}   type  - Type of edges to retrieve.
- * @return {EdgeIterator}
+ * @return {Iterator}
  */
 function createEdgeIterator(graph, type) {
   if (graph.size === 0)
-    return EdgesIterator.empty();
+    return Iterator.empty();
 
   let iterator;
 
   if (type === 'mixed') {
     iterator = graph._edges.entries();
 
-    return new EdgesIterator(function next() {
+    return new Iterator(function next() {
       const step = iterator.next();
 
       if (step.done)
@@ -341,7 +336,7 @@ function createEdgeIterator(graph, type) {
 
   iterator = graph._edges.entries();
 
-  return new EdgesIterator(function next() {
+  return new Iterator(function next() {
     const step = iterator.next();
 
     if (step.done)
@@ -419,7 +414,7 @@ function forEachEdgeForNode(type, direction, nodeData, callback) {
  * @param  {string}   type      - Type of edges to retrieve.
  * @param  {string}   direction - In or out?
  * @param  {any}      nodeData  - Target node's data.
- * @return {EdgeIterator}
+ * @return {Iterator}
  */
 function createEdgeIteratorForNode(type, direction, nodeData) {
   let iterator = Iterator.empty();
