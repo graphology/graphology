@@ -5,6 +5,7 @@
  * Testing the edges iteration-related methods of the graph.
  */
 import assert from 'assert';
+import take from 'obliterator/take';
 import {
   deepMerge
 } from '../helpers';
@@ -166,7 +167,8 @@ export default function neighborsIteration(Graph, checkers) {
   }
 
   function specificTests(name, data) {
-    const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1);
+    const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1),
+          iteratorName = name.slice(0, -1) + 'Entries';
 
     return {
 
@@ -200,6 +202,20 @@ export default function neighborsIteration(Graph, checkers) {
           });
 
           assert.deepEqual(neighbors, data.node.neighbors);
+        }
+      },
+
+      // Iterators
+      ['#.' + iteratorName]: {
+        'it should be possible to create an iterator over neighbors.': function() {
+          const iterator = graph[iteratorName](data.node.key);
+
+          assert.deepEqual(take(iterator), data.node.neighbors.map(neighbor => {
+            return [
+              neighbor,
+              graph.getNodeAttributes(neighbor)
+            ];
+          }));
         }
       }
     };

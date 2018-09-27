@@ -4,6 +4,7 @@
 
 * Adding `#.nodeEntries`.
 * Adding `#.edgeEntries`.
+* Adding `#.neighborEntries`.
 
 ## 0.12.0
 

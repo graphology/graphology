@@ -5,6 +5,8 @@
  * Attaching some methods to the Graph class to be able to iterate over
  * neighbors.
  */
+import Iterator from 'obliterator/iterator';
+import chain from 'obliterator/chain';
 import take from 'obliterator/take';
 
 import {
@@ -185,6 +187,106 @@ function forEachNeighborForNode(type, direction, nodeData, callback) {
 }
 
 /**
+ * Function returning an iterator over the given node's relevant neighbors.
+ *
+ * @param  {string}   type      - Type of neighbors.
+ * @param  {string}   direction - Direction.
+ * @param  {any}      nodeData  - Target node's data.
+ * @return {Iterator}
+ */
+function createObjectIterator(nodeData, object) {
+  const keys = Object.keys(object),
+        l = keys.length;
+
+  let i = 0;
+
+  return new Iterator(function() {
+    if (i >= l)
+      return {done: true};
+
+    let edgeData = object[keys[i++]];
+
+    if (edgeData instanceof Set)
+      edgeData = edgeData.values().next().value;
+
+    const sourceData = edgeData.source,
+          targetData = edgeData.target;
+
+    const neighborData = sourceData === nodeData ? targetData : sourceData;
+
+    return {
+      done: false,
+      value: [neighborData.key, neighborData.attributes]
+    };
+  });
+}
+
+function createDedupedObjectIterator(visited, nodeData, object) {
+  const keys = Object.keys(object),
+        l = keys.length;
+
+  let i = 0;
+
+  return new Iterator(function next() {
+    if (i >= l)
+      return {done: true};
+
+    let edgeData = object[keys[i++]];
+
+    if (edgeData instanceof Set)
+      edgeData = edgeData.values().next().value;
+
+    const sourceData = edgeData.source,
+          targetData = edgeData.target;
+
+    const neighborData = sourceData === nodeData ? targetData : sourceData;
+
+    if (visited.has(neighborData.key))
+      return next();
+
+    visited.add(neighborData.key);
+
+    return {
+      done: false,
+      value: [neighborData.key, neighborData.attributes]
+    };
+  });
+}
+
+function createNeighborIterator(type, direction, nodeData) {
+
+  // If we want only undirected or in or out, we can roll some optimizations
+  if (type !== 'mixed') {
+    if (type === 'undirected')
+      return createObjectIterator(nodeData, nodeData.undirected);
+
+    if (typeof direction === 'string')
+      return createObjectIterator(nodeData, nodeData[direction]);
+  }
+
+  let iterator = Iterator.empty();
+
+  // Else we need to keep a set of neighbors not to return duplicates
+  const visited = new Set();
+
+  if (type !== 'undirected') {
+
+    if (direction !== 'out') {
+      iterator = chain(iterator, createDedupedObjectIterator(visited, nodeData, nodeData.in));
+    }
+    if (direction !== 'in') {
+      iterator = chain(iterator, createDedupedObjectIterator(visited, nodeData, nodeData.out));
+    }
+  }
+
+  if (type !== 'directed') {
+    iterator = chain(iterator, createDedupedObjectIterator(visited, nodeData, nodeData.undirected));
+  }
+
+  return iterator;
+}
+
+/**
  * Function returning whether the given node has target neighbor.
  *
  * @param  {Graph}        graph     - Target graph.
@@ -343,6 +445,51 @@ function attachForEachNeighbor(Class, description) {
 }
 
 /**
+ * Function attaching a neighbors callback iterator method to the Graph prototype.
+ *
+ * @param {function} Class       - Target class.
+ * @param {object}   description - Method description.
+ */
+function attachNeighborIteratorCreator(Class, description) {
+  const {
+    name,
+    type,
+    direction
+  } = description;
+
+  const iteratorName = name.slice(0, -1) + 'Entries';
+
+  /**
+   * Function returning an iterator over all the relevant neighbors.
+   *
+   * @param  {any}      node     - Target node.
+   * @return {Iterator}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  Class.prototype[iteratorName] = function(node) {
+
+    // Early termination
+    if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
+      return Iterator.empty();
+
+    node = '' + node;
+
+    const nodeData = this._nodes.get(node);
+
+    if (typeof nodeData === 'undefined')
+      throw new NotFoundGraphError(`Graph.${iteratorName}: could not find the "${node}" node in the graph.`);
+
+    // Here, we want to iterate over a node's relevant neighbors
+    return createNeighborIterator(
+      type === 'mixed' ? this.type : type,
+      direction,
+      nodeData
+    );
+  };
+}
+
+/**
  * Function attaching every neighbor iteration method to the Graph class.
  *
  * @param {function} Graph - Graph class.
@@ -351,5 +498,6 @@ export function attachNeighborIterationMethods(Graph) {
   NEIGHBORS_ITERATION.forEach(description => {
     attachNeighborArrayCreator(Graph, description);
     attachForEachNeighbor(Graph, description);
+    attachNeighborIteratorCreator(Graph, description);
   });
 }
