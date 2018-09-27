@@ -335,6 +335,23 @@ export default function edgesIteration(Graph, checkers) {
               ];
             }));
           },
+
+          'it should be possible to return an iterator over a node\'s relevant edges.': function() {
+            const iterator = graph[iteratorName](data.node.key);
+
+            assert.deepEqual(take(iterator), data.node.edges.map(edge => {
+              const [source, target] = graph.extremities(edge);
+
+              return [
+                edge,
+                graph.getEdgeAttributes(edge),
+                source,
+                target,
+                graph.getNodeAttributes(source),
+                graph.getNodeAttributes(target)
+              ];
+            }));
+          }
         }
       }
     };

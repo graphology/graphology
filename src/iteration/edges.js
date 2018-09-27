@@ -6,6 +6,7 @@
  * graph's edges.
  */
 import Iterator from 'obliterator/iterator';
+import chain from 'obliterator/chain';
 import take from 'obliterator/take';
 
 import {
@@ -104,6 +105,63 @@ function forEach(object, callback) {
       );
     }
   }
+}
+
+/**
+ * Function returning an iterator over edges from the given object.
+ *
+ * @param  {object}   object - Target object.
+ * @return {Iterator}
+ */
+function createIterator(object) {
+  const keys = Object.keys(object),
+        l = keys.length;
+
+  let inner = null,
+      i = 0;
+
+  return new Iterator(function next() {
+    let edgeData;
+
+    if (inner) {
+      const step = inner.next();
+
+      if (step.done) {
+        inner = null;
+        i++;
+        return next();
+      }
+
+      edgeData = step.value;
+    }
+    else {
+      if (i >= l)
+        return {done: true};
+
+      const k = keys[i];
+
+      edgeData = object[k];
+
+      if (edgeData instanceof Set) {
+        inner = edgeData.values();
+        return next();
+      }
+
+      i++;
+    }
+
+    return {
+      done: false,
+      value: [
+        edgeData.key,
+        edgeData.attributes,
+        edgeData.source.key,
+        edgeData.target.key,
+        edgeData.source.attributes,
+        edgeData.target.attributes
+      ]
+    };
+  });
 }
 
 /**
@@ -249,7 +307,7 @@ function forEachEdge(graph, type, callback) {
  *
  * @param  {Graph}    graph - Target Graph instance.
  * @param  {string}   type  - Type of edges to retrieve.
- * @return {Iterator}       - Edge iterator.
+ * @return {EdgeIterator}
  */
 function createEdgeIterator(graph, type) {
   if (graph.size === 0)
@@ -353,6 +411,31 @@ function forEachEdgeForNode(type, direction, nodeData, callback) {
   if (type !== 'directed') {
     forEach(nodeData.undirected, callback);
   }
+}
+
+/**
+ * Function iterating over a node's edges using a callback.
+ *
+ * @param  {string}   type      - Type of edges to retrieve.
+ * @param  {string}   direction - In or out?
+ * @param  {any}      nodeData  - Target node's data.
+ * @return {EdgeIterator}
+ */
+function createEdgeIteratorForNode(type, direction, nodeData) {
+  let iterator = Iterator.empty();
+
+  if (type !== 'undirected') {
+    if (direction !== 'out' && typeof nodeData.in !== 'undefined')
+      iterator = chain(iterator, createIterator(nodeData.in));
+    if (direction !== 'in' && typeof nodeData.out !== 'undefined')
+      iterator = chain(iterator, createIterator(nodeData.out));
+  }
+
+  if (type !== 'directed' && typeof nodeData.undirected !== 'undefined') {
+    iterator = chain(iterator, createIterator(nodeData.undirected));
+  }
+
+  return iterator;
 }
 
 /**
@@ -577,7 +660,7 @@ export function attachEdgeIteratorCreator(Class, description) {
   const {
     name: originalName,
     type,
-    // direction
+    direction
   } = description;
 
   const name = originalName.slice(0, -1) + 'Entries';
@@ -598,7 +681,7 @@ export function attachEdgeIteratorCreator(Class, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[name] = function() {
+  Class.prototype[name] = function(source) {
 
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
@@ -607,17 +690,19 @@ export function attachEdgeIteratorCreator(Class, description) {
     if (!arguments.length)
       return createEdgeIterator(this, type);
 
+    if (arguments.length === 1) {
+      source = '' + source;
+
+      const sourceData = this._nodes.get(source);
+
+      if (!sourceData)
+        throw new NotFoundGraphError(`Graph.${name}: could not find the "${source}" node in the graph.`);
+
+      // Iterating over a node's edges
+      return createEdgeIteratorForNode(type, direction, sourceData);
+    }
+
     // TODO: complete here...
-    // if (arguments.length === 1) {
-    //   source = '' + source;
-
-    //   if (!this._nodes.has(source))
-    //     throw new NotFoundGraphError(`Graph.${name}: could not find the "${source}" node in the graph.`);
-
-    //   // Iterating over a node's edges
-    //   return createEdgeArrayForNode(this, type, direction, source);
-    // }
-
     // if (arguments.length === 2) {
     //   source = '' + source;
     //   target = '' + target;
