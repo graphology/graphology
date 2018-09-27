@@ -176,6 +176,7 @@ function createEdgeArray(graph, type) {
   if (graph.size === 0)
     return [];
 
+  // TODO: can optimize when type is mixed and graph is typed (like with neighbors)
   if (type === 'mixed' || type === graph.type)
     return take(graph._edges.keys(), graph._edges.size);
 
@@ -255,25 +256,54 @@ function createEdgeIterator(graph, type) {
   if (graph.size === 0)
     return EdgesIterator.empty();
 
-  let inner;
+  let iterator;
 
   if (type === 'mixed') {
-    inner = graph._edges.keys();
-    return new EdgesIterator(inner.next.bind(inner));
+    iterator = graph._edges.entries();
+
+    return new EdgesIterator(function next() {
+      const step = iterator.next();
+
+      if (step.done)
+        return step;
+
+      const [edge, data] = step.value;
+
+      const value = [
+        edge,
+        data.attributes,
+        data.source.key,
+        data.target.key,
+        data.source.attributes,
+        data.target.attributes
+      ];
+
+      return {value, done: false};
+    });
   }
 
-  inner = graph._edges.entries();
+  iterator = graph._edges.entries();
 
   return new EdgesIterator(function next() {
-    const step = inner.next();
+    const step = iterator.next();
 
     if (step.done)
       return step;
 
-    const data = step.value[1];
+    const [edge, data] = step.value;
 
-    if ((data instanceof UndirectedEdgeData) === (type === 'undirected'))
-      return {value: step.value[0]};
+    if ((data instanceof UndirectedEdgeData) === (type === 'undirected')) {
+      const value = [
+        edge,
+        data.attributes,
+        data.source.key,
+        data.target.key,
+        data.source.attributes,
+        data.target.attributes
+      ];
+
+      return {value, done: false};
+    }
 
     return next();
   });
@@ -542,7 +572,7 @@ export function attachEdgeIteratorCreator(Class, description) {
     // direction
   } = description;
 
-  const name = originalName + 'Iterator';
+  const name = originalName.slice(0, -1) + 'Entries';
 
   /**
    * Function returning an iterator over the graph's edges.

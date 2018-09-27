@@ -1738,7 +1738,7 @@ export default class Graph extends EventEmitter {
       const step = iterator.next();
 
       if (step.done)
-        return {done: true};
+        return step;
 
       const [node, data] = step.value;
 

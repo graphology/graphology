@@ -231,7 +231,7 @@ export default function edgesIteration(Graph, checkers) {
   }
 
   function specificTests(name, data) {
-    const iteratorName = name + 'Iterator',
+    const iteratorName = name.slice(0, -1) + 'Entries',
           forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1);
 
     return {
@@ -242,12 +242,6 @@ export default function edgesIteration(Graph, checkers) {
           const edges = graph[name]().sort();
 
           assert.deepEqual(edges, data.all.slice().sort());
-        },
-
-        'it should be possible to return an iterator over the relevant edges.': function() {
-          const iterator = graph[iteratorName]();
-
-          assert.deepEqual(take(iterator), data.all);
         },
 
         'it should return a node\'s relevant edges.': function() {
@@ -321,6 +315,26 @@ export default function edgesIteration(Graph, checkers) {
 
 
           assert(sameMembers(edges, data.path.edges));
+        },
+
+        // Iterators
+        ['#.' + iteratorName]: {
+          'it should be possible to return an iterator over the relevant edges.': function() {
+            const iterator = graph[iteratorName]();
+
+            assert.deepEqual(take(iterator), data.all.map(edge => {
+              const [source, target] = graph.extremities(edge);
+
+              return [
+                edge,
+                graph.getEdgeAttributes(edge),
+                source,
+                target,
+                graph.getNodeAttributes(source),
+                graph.getNodeAttributes(target)
+              ];
+            }));
+          },
         }
       }
     };

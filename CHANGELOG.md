@@ -3,6 +3,7 @@
 ## 0.13.0 (provisional)
 
 * Adding `#.nodeEntries`.
+* Adding `#.edgeEntries`.
 
 ## 0.12.0
 
