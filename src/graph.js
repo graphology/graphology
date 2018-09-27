@@ -1699,6 +1699,30 @@ export default class Graph extends EventEmitter {
    */
 
   /**
+   * Method iterating over the graph's adjacency using the given callback.
+   *
+   * @param  {function}  callback - Callback to use.
+   */
+  forEach(callback) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError('Graph.forEach: expecting a callback.');
+
+    this._edges.forEach((edgeData, key) => {
+      const sourceData = edgeData.source,
+            targetData = edgeData.target;
+
+      callback(
+        sourceData.key,
+        targetData.key,
+        sourceData.attributes,
+        targetData.attributes,
+        key,
+        edgeData.attributes
+      );
+    });
+  }
+
+  /**
    * Method returning the list of the graph's nodes.
    *
    * @return {array} - The nodes.
