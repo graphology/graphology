@@ -219,6 +219,51 @@ function forEachForKey(object, k, callback) {
 }
 
 /**
+ * Function returning an iterator over the egdes from the object at given key.
+ *
+ * @param  {object}   object   - Target object.
+ * @param  {mixed}    k        - Neighbor key.
+ * @return {Iterator}
+ */
+function createIteratorForKey(object, k) {
+  const v = object[k];
+
+  if (v instanceof Set) {
+    const iterator = v.values();
+
+    return new Iterator(function() {
+      const step = iterator.next();
+
+      if (step.done)
+        return step;
+
+      const edgeData = step.value;
+
+      return {
+        done: false,
+        value: [
+          edgeData.key,
+          edgeData.attributes,
+          edgeData.source.key,
+          edgeData.target.key,
+          edgeData.source.attributes,
+          edgeData.target.attributes
+        ]
+      };
+    });
+  }
+
+  return Iterator.of([
+    v.key,
+    v.attributes,
+    v.source.key,
+    v.target.key,
+    v.source.attributes,
+    v.target.attributes
+  ]);
+}
+
+/**
  * Function creating an array of edges for the given type.
  *
  * @param  {Graph}   graph - Target Graph instance.
@@ -488,6 +533,46 @@ function forEachEdgeForPath(type, direction, sourceData, target, callback) {
 }
 
 /**
+ * Function returning an iterator over edges for the given path.
+ *
+ * @param  {string}   type       - Type of edges to retrieve.
+ * @param  {string}   direction  - In or out?
+ * @param  {NodeData} sourceData - Source node's data.
+ * @param  {string}   target     - Target node.
+ * @param  {function} callback   - Function to call.
+ */
+function createEdgeIteratorForPath(type, direction, sourceData, target) {
+  let iterator = Iterator.empty();
+
+  if (type !== 'undirected') {
+
+    if (
+      typeof sourceData.in !== 'undefined' &&
+      direction !== 'out' &&
+      target in sourceData.in
+    )
+      iterator = chain(iterator, createIteratorForKey(sourceData.in, target));
+
+    if (
+      typeof sourceData.out !== 'undefined' &&
+      direction !== 'in' &&
+      target in sourceData.out
+    )
+      iterator = chain(iterator, createIteratorForKey(sourceData.out, target));
+  }
+
+  if (type !== 'directed') {
+    if (
+      typeof sourceData.undirected !== 'undefined' &&
+      target in sourceData.undirected
+    )
+      iterator = chain(iterator, createIteratorForKey(sourceData.undirected, target));
+  }
+
+  return iterator;
+}
+
+/**
  * Function attaching an edge array creator method to the Graph prototype.
  *
  * @param {function} Class       - Target class.
@@ -676,7 +761,7 @@ export function attachEdgeIteratorCreator(Class, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[name] = function(source) {
+  Class.prototype[name] = function(source, target) {
 
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
@@ -697,22 +782,23 @@ export function attachEdgeIteratorCreator(Class, description) {
       return createEdgeIteratorForNode(type, direction, sourceData);
     }
 
-    // TODO: complete here...
-    // if (arguments.length === 2) {
-    //   source = '' + source;
-    //   target = '' + target;
+    if (arguments.length === 2) {
+      source = '' + source;
+      target = '' + target;
 
-    //   if (!this._nodes.has(source))
-    //     throw new NotFoundGraphError(`Graph.${name}:  could not find the "${source}" source node in the graph.`);
+      const sourceData = this._nodes.get(source);
 
-    //   if (!this._nodes.has(target))
-    //     throw new NotFoundGraphError(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
+      if (!sourceData)
+        throw new NotFoundGraphError(`Graph.${name}:  could not find the "${source}" source node in the graph.`);
 
-    //   // Iterating over the edges between source & target
-    //   return createEdgeArrayForPath(this, type, source, target);
-    // }
+      if (!this._nodes.has(target))
+        throw new NotFoundGraphError(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
 
-    // throw new InvalidArgumentsGraphError(`Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${arguments.length}).`);
+      // Iterating over the edges between source & target
+      return createEdgeIteratorForPath(type, direction, sourceData, target);
+    }
+
+    throw new InvalidArgumentsGraphError(`Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${arguments.length}).`);
   };
 }
 

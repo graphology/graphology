@@ -315,43 +315,60 @@ export default function edgesIteration(Graph, checkers) {
 
 
           assert(sameMembers(edges, data.path.edges));
+        }
+      },
+
+      // Iterators
+      ['#.' + iteratorName]: {
+        'it should be possible to return an iterator over the relevant edges.': function() {
+          const iterator = graph[iteratorName]();
+
+          assert.deepEqual(take(iterator), data.all.map(edge => {
+            const [source, target] = graph.extremities(edge);
+
+            return [
+              edge,
+              graph.getEdgeAttributes(edge),
+              source,
+              target,
+              graph.getNodeAttributes(source),
+              graph.getNodeAttributes(target)
+            ];
+          }));
         },
 
-        // Iterators
-        ['#.' + iteratorName]: {
-          'it should be possible to return an iterator over the relevant edges.': function() {
-            const iterator = graph[iteratorName]();
+        'it should be possible to return an iterator over a node\'s relevant edges.': function() {
+          const iterator = graph[iteratorName](data.node.key);
 
-            assert.deepEqual(take(iterator), data.all.map(edge => {
-              const [source, target] = graph.extremities(edge);
+          assert.deepEqual(take(iterator), data.node.edges.map(edge => {
+            const [source, target] = graph.extremities(edge);
 
-              return [
-                edge,
-                graph.getEdgeAttributes(edge),
-                source,
-                target,
-                graph.getNodeAttributes(source),
-                graph.getNodeAttributes(target)
-              ];
-            }));
-          },
+            return [
+              edge,
+              graph.getEdgeAttributes(edge),
+              source,
+              target,
+              graph.getNodeAttributes(source),
+              graph.getNodeAttributes(target)
+            ];
+          }));
+        },
 
-          'it should be possible to return an iterator over a node\'s relevant edges.': function() {
-            const iterator = graph[iteratorName](data.node.key);
+        'it should be possible to return an iterator over relevant edges between source & target.': function() {
+          const iterator = graph[iteratorName](data.path.source, data.path.target);
 
-            assert.deepEqual(take(iterator), data.node.edges.map(edge => {
-              const [source, target] = graph.extremities(edge);
+          assert.deepEqual(take(iterator), data.path.edges.map(edge => {
+            const [source, target] = graph.extremities(edge);
 
-              return [
-                edge,
-                graph.getEdgeAttributes(edge),
-                source,
-                target,
-                graph.getNodeAttributes(source),
-                graph.getNodeAttributes(target)
-              ];
-            }));
-          }
+            return [
+              edge,
+              graph.getEdgeAttributes(edge),
+              source,
+              target,
+              graph.getNodeAttributes(source),
+              graph.getNodeAttributes(target)
+            ];
+          }));
         }
       }
     };
