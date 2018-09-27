@@ -176,7 +176,6 @@ function createEdgeArray(graph, type) {
   if (graph.size === 0)
     return [];
 
-  // TODO: can optimize when type is mixed and graph is typed (like with neighbors)
   if (type === 'mixed' || type === graph.type)
     return take(graph._edges.keys(), graph._edges.size);
 
@@ -457,7 +456,11 @@ function attachEdgeArrayCreator(Class, description) {
         throw new NotFoundGraphError(`Graph.${name}: could not find the "${source}" node in the graph.`);
 
       // Iterating over a node's edges
-      return createEdgeArrayForNode(type, direction, nodeData);
+      return createEdgeArrayForNode(
+        type === 'mixed' ? this.type : type,
+        direction,
+        nodeData
+      );
     }
 
     if (arguments.length === 2) {
@@ -536,7 +539,12 @@ function attachForEachEdge(Class, description) {
         throw new NotFoundGraphError(`Graph.${forEachName}: could not find the "${source}" node in the graph.`);
 
       // Iterating over a node's edges
-      return forEachEdgeForNode(type, direction, nodeData, callback);
+      return forEachEdgeForNode(
+        type === 'mixed' ? this.type : type,
+        direction,
+        nodeData,
+        callback
+      );
     }
 
     if (arguments.length === 3) {
