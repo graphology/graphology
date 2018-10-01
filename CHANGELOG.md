@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.14.0 (provisional)
+
+* Adding `Symbol.iterator` to the prototype.
+
 ## 0.13.1
 
 * Fixing edge attributes methods with typed graphs.

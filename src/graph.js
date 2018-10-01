@@ -2228,6 +2228,12 @@ EDGE_ADD_METHODS.forEach(method => {
 });
 
 /**
+ * Self iterator.
+ */
+if (typeof Symbol !== 'undefined')
+  Graph.prototype[Symbol.iterator] = Graph.prototype.adjacency;
+
+/**
  * Attributes-related.
  */
 attachAttributesMethods(Graph);

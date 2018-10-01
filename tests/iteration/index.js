@@ -60,6 +60,32 @@ export default function iteration(Graph, checkers) {
             graph.getEdgeAttributes(edge)
           ];
         }));
+      },
+
+      'it should be possible to iterate via Symbol.iterator.': function() {
+        if (typeof Symbol === 'undefined')
+          return;
+
+        const graph = new Graph();
+
+        graph.mergeEdge(1, 2);
+        graph.mergeEdge(2, 3);
+        graph.mergeEdge(3, 1);
+
+        graph.replaceNodeAttributes(2, {hello: 'world'});
+
+        assert.deepEqual(take(graph[Symbol.iterator]()), graph.edges().map(edge => {
+          const [source, target] = graph.extremities(edge);
+
+          return [
+            source,
+            target,
+            graph.getNodeAttributes(source),
+            graph.getNodeAttributes(target),
+            edge,
+            graph.getEdgeAttributes(edge)
+          ];
+        }));
       }
     },
     Nodes: nodes(Graph, checkers),
