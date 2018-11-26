@@ -2181,6 +2181,12 @@ export default class Graph extends EventEmitter {
 }
 
 /**
+ * Attaching custom inspect method for node >= 10.
+ */
+if (typeof Symbol !== 'undefined')
+  Graph.prototype[Symbol.for('nodejs.util.inspect.custom')] = Graph.prototype.inspect;
+
+/**
  * Attaching methods to the prototype.
  *
  * Here, we are attaching a wide variety of methods to the Graph class'

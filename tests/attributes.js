@@ -176,7 +176,6 @@ export default function attributes(Graph, checkers) {
         graph.addNodesFrom(['John', 'Thomas']);
         const edge = graph.addEdge('John', 'Thomas', {weight: 2});
 
-
         assert.deepEqual(graph.getEdgeAttributes(edge), {weight: 2});
         assert.deepEqual(graph.getEdgeAttributes('John', 'Thomas'), {weight: 2});
       },

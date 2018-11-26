@@ -3,6 +3,7 @@
 ## 0.14.0 (provisional)
 
 * Adding `Symbol.iterator` to the prototype.
+* Fixing custom inspection for node >= 10.
 
 ## 0.13.1
 
