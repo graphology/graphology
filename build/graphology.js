@@ -2920,6 +2920,14 @@ var Graph = function (_EventEmitter) {
 }(_events.EventEmitter);
 
 /**
+ * Attaching custom inspect method for node >= 10.
+ */
+
+
+exports.default = Graph;
+if (typeof Symbol !== 'undefined') Graph.prototype[Symbol.for('nodejs.util.inspect.custom')] = Graph.prototype.inspect;
+
+/**
  * Attaching methods to the prototype.
  *
  * Here, we are attaching a wide variety of methods to the Graph class'
@@ -2930,9 +2938,6 @@ var Graph = function (_EventEmitter) {
 /**
  * Related to edge addition.
  */
-
-
-exports.default = Graph;
 EDGE_ADD_METHODS.forEach(function (method) {
   ['add', 'merge'].forEach(function (verb) {
     var name = method.name(verb),
@@ -2949,6 +2954,11 @@ EDGE_ADD_METHODS.forEach(function (method) {
     }
   });
 });
+
+/**
+ * Self iterator.
+ */
+if (typeof Symbol !== 'undefined') Graph.prototype[Symbol.iterator] = Graph.prototype.adjacency;
 
 /**
  * Attributes-related.
