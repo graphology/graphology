@@ -375,6 +375,9 @@ function mergeEdge(
   if (!sourceData) {
     graph.addNode(source);
     sourceData = graph._nodes.get(source);
+
+    if (source === target)
+      targetData = sourceData;
   }
   if (!targetData) {
     graph.addNode(target);

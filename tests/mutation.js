@@ -315,6 +315,15 @@ export default function mutation(Graph, checkers) {
         graph.mergeUndirectedEdge('John', 'Martha', {weight: 34});
 
         assert.strictEqual(graph.size, 2);
+      },
+
+      'it should be possible to merge a self loop.': function() {
+        const graph = new Graph();
+
+        graph.mergeEdge('John', 'John', {type: 'IS'});
+
+        assert.strictEqual(graph.order, 1);
+        assert.strictEqual(graph.size, 1);
       }
     },
 

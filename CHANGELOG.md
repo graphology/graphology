@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.14.1 (provisional)
+
+* Fixing `#.mergeEdge` for the self loop case.
+
 ## 0.14.0
 
 * Adding `Symbol.iterator` to the prototype.
