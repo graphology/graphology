@@ -1129,6 +1129,8 @@ function mergeEdge(graph, name, mustGenerateKey, undirected, edge, source, targe
   if (!sourceData) {
     graph.addNode(source);
     sourceData = graph._nodes.get(source);
+
+    if (source === target) targetData = sourceData;
   }
   if (!targetData) {
     graph.addNode(target);

@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.14.1 (provisional)
+## 0.14.1
 
 * Fixing `#.mergeEdge` for the self loop case.
 
