@@ -3,6 +3,7 @@ var path = require('path');
 var production = !!~process.argv.indexOf('-p');
 
 module.exports = {
+  mode: 'production',
   entry: './src/index.js',
   output: {
     filename: production ? 'graphology.min.js' : 'graphology.js',
