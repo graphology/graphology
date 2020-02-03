@@ -6,11 +6,12 @@
   "scripts": {
     "build": "webpack --colors --progress && webpack --colors --progress -p",
     "clean": "rimraf dist specs",
-    "dist": "npm run clean && babel src --out-dir dist && babel tests --out-dir specs",
+    "dist": "npm run clean && babel src --out-dir dist && babel tests --out-dir specs && cp src/index.d.ts dist/index.d.ts",
     "lint": "eslint src tests test.js",
     "postpublish": "npm run clean",
     "prepublish": "npm run test && npm run lint && npm run dist && npm run build",
-    "test": "mocha -u exports --require @babel/register ./test.js"
+    "test": "mocha -u exports --require @babel/register ./test.js",
+    "test:types": "tsc --lib es2015,dom --noEmit --noImplicitAny --noImplicitReturns ./test-types.ts"
   },
   "files": [
     "build",
@@ -64,6 +65,7 @@
     "eslint": "^6.8.0",
     "mocha": "^7.0.1",
     "rimraf": "^3.0.1",
+    "typescript": "^3.7.5",
     "webpack": "^4.41.5",
     "webpack-cli": "3.3.10"
   },
