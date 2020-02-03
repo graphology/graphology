@@ -9,7 +9,7 @@
     "dist": "npm run clean && babel src --out-dir dist && babel tests --out-dir specs && cp src/index.d.ts dist/index.d.ts",
     "lint": "eslint src tests test.js",
     "postpublish": "npm run clean",
-    "prepublish": "npm run test && npm run lint && npm run dist && npm run build",
+    "prepublish": "npm test && npm run test:types && npm run lint && npm run dist && npm run build",
     "test": "mocha -u exports --require @babel/register ./test.js",
     "test:types": "tsc --lib es2015,dom --noEmit --noImplicitAny --noImplicitReturns ./test-types.ts"
   },
