@@ -1,4 +1,4 @@
-import AbstractGraph from '/Users/Yomgui/code/graphology-types';
+import AbstractGraph from 'graphology-types';
 
 export default class Graph extends AbstractGraph {}
 export class DirectedGraph extends Graph {}
