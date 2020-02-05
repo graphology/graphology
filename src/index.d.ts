@@ -1,10 +1,6 @@
-import {EventEmitter} from 'events';
-import AbstractGraph, {SerializedGraph} from '/Users/Yomgui/code/graphology-types';
+import AbstractGraph from '/Users/Yomgui/code/graphology-types';
 
-export default class Graph extends AbstractGraph {
-  static from(data: SerializedGraph): Graph;
-}
-
+export default class Graph extends AbstractGraph {}
 export class DirectedGraph extends Graph {}
 export class UndirectedGraph extends Graph {}
 export class MultiGraph extends Graph {}
