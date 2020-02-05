@@ -50,6 +50,7 @@
   "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
     "events": "~3.1.0",
+    "graphology-types": "0.15.0",
     "obliterator": "~1.5.0"
   },
   "devDependencies": {
