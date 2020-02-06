@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.15.1 (provisional)
+## 0.15.1
 
 * Adding missing `MultiGraph` export.
 * Adding missing error typings.
