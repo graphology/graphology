@@ -2021,10 +2021,11 @@ export default class Graph extends EventEmitter {
    * Method returning an empty copy of the graph, i.e. a graph without nodes
    * & edges but with the exact same options.
    *
-   * @return {Graph} - The empty copy.
+   * @param  {object} options - Options to merge with the current ones.
+   * @return {Graph}          - The empty copy.
    */
-  emptyCopy() {
-    return new Graph(this._options);
+  emptyCopy(options) {
+    return new Graph(assign({}, this._options, options));
   }
 
   /**

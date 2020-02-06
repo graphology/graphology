@@ -30,6 +30,18 @@ export default function utils(Graph) {
         PROPERTIES.forEach(property => {
           assert.strictEqual(graph[property], copy[property]);
         });
+      },
+
+      'it should be possible to pass options to merge.': function() {
+        const graph = new Graph({type: 'directed'});
+
+        const copy = graph.emptyCopy({type: 'undirected'});
+
+        assert.strictEqual(copy.type, 'undirected');
+
+        assert.throws(function() {
+          copy.addDirectedEdge('one', 'two');
+        }, /addDirectedEdge/);
       }
     },
 

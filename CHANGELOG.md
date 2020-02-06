@@ -3,6 +3,7 @@
 ## 0.15.0 (provisional)
 
 * TypeScript support.
+* Adding possibility to merge options using `#.emptyCopy`.
 
 ## 0.14.1
 
