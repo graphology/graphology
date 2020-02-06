@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.15.0 (provisional)
+
+* TypeScript support.
+
 ## 0.14.1
 
 * Fixing `#.mergeEdge` for the self loop case.
