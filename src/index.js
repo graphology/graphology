@@ -30,6 +30,13 @@ class UndirectedGraph extends Graph {
     );
   }
 }
+class MultiGraph extends Graph {
+  constructor(options) {
+    super(
+      assign({multi: true}, options)
+    );
+  }
+}
 class MultiDirectedGraph extends Graph {
   constructor(options) {
     super(
@@ -68,6 +75,7 @@ function attachStaticFromMethod(Class) {
 attachStaticFromMethod(Graph);
 attachStaticFromMethod(DirectedGraph);
 attachStaticFromMethod(UndirectedGraph);
+attachStaticFromMethod(MultiGraph);
 attachStaticFromMethod(MultiDirectedGraph);
 attachStaticFromMethod(MultiUndirectedGraph);
 
@@ -78,6 +86,7 @@ attachStaticFromMethod(MultiUndirectedGraph);
 Graph.Graph = Graph;
 Graph.DirectedGraph = DirectedGraph;
 Graph.UndirectedGraph = UndirectedGraph;
+Graph.MultiGraph = MultiGraph;
 Graph.MultiDirectedGraph = MultiDirectedGraph;
 Graph.MultiUndirectedGraph = MultiUndirectedGraph;
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.15.1 (provisional)
+
+* Adding missing `MultiGraph` export.
+* Adding missing error typings.
+
 ## 0.15.0
 
 * TypeScript support.
