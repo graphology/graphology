@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.15.2
+
+* More flexible dependency to `graphology-types`.
+
 ## 0.15.1
 
 * Adding missing `MultiGraph` export.

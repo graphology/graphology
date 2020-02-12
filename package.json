@@ -1,6 +1,6 @@
 {
   "name": "graphology",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "description": "A robust and multipurpose Graph object for JavaScript.",
   "main": "dist/index.js",
   "scripts": {
@@ -50,7 +50,7 @@
   "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
     "events": "~3.1.0",
-    "graphology-types": "0.15.0",
+    "graphology-types": "~0.15.2",
     "obliterator": "~1.5.0"
   },
   "devDependencies": {
