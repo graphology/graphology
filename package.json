@@ -49,9 +49,9 @@
   },
   "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
-    "events": "~3.1.0",
-    "graphology-types": "~0.15.2",
-    "obliterator": "~1.5.0"
+    "events": "^3.1.0",
+    "graphology-types": "^0.15.4",
+    "obliterator": "^1.6.1"
   },
   "devDependencies": {
     "@babel/cli": "7.8.4",
@@ -65,10 +65,10 @@
     "babel-loader": "8.0.6",
     "eslint": "^6.8.0",
     "mocha": "^7.0.1",
-    "rimraf": "^3.0.1",
-    "typescript": "^3.7.5",
-    "webpack": "^4.41.5",
-    "webpack-cli": "3.3.10"
+    "rimraf": "^3.0.2",
+    "typescript": "^3.8.2",
+    "webpack": "^4.41.6",
+    "webpack-cli": "3.3.11"
   },
   "babel": {
     "presets": [
