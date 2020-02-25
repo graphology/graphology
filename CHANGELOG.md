@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.16.0
+
+* Proper `#.nullCopy` & `#.emptyCopy` methods.
+
 ## 0.15.2
 
 * More flexible dependency to `graphology-types`.
