@@ -2024,7 +2024,7 @@ export default class Graph extends EventEmitter {
    * @param  {object} options - Options to merge with the current ones.
    * @return {Graph}          - The empty copy.
    */
-  emptyCopy(options) {
+  nullCopy(options) {
     return new Graph(assign({}, this._options, options));
   }
 

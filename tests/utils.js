@@ -15,13 +15,13 @@ const PROPERTIES = [
 
 export default function utils(Graph) {
   return {
-    '#.emptyCopy': {
+    '#.nullCopy': {
       'it should create an empty copy of the graph.': function() {
         const graph = new Graph();
         graph.addNodesFrom(['John', 'Thomas']);
         graph.addEdge('John', 'Thomas');
 
-        const copy = graph.emptyCopy();
+        const copy = graph.nullCopy();
 
         assert.deepEqual(copy.nodes(), []);
         assert.strictEqual(copy.order, 0);
@@ -35,7 +35,7 @@ export default function utils(Graph) {
       'it should be possible to pass options to merge.': function() {
         const graph = new Graph({type: 'directed'});
 
-        const copy = graph.emptyCopy({type: 'undirected'});
+        const copy = graph.nullCopy({type: 'undirected'});
 
         assert.strictEqual(copy.type, 'undirected');
 
