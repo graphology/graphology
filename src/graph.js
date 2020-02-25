@@ -2018,14 +2018,32 @@ export default class Graph extends EventEmitter {
    */
 
   /**
-   * Method returning an empty copy of the graph, i.e. a graph without nodes
+   * Method returning a null copy of the graph, i.e. a graph without nodes
    * & edges but with the exact same options.
+   *
+   * @param  {object} options - Options to merge with the current ones.
+   * @return {Graph}          - The null copy.
+   */
+  nullCopy(options) {
+    return new Graph(assign({}, this._options, options));
+  }
+
+  /**
+   * Method returning an empty copy of the graph, i.e. a graph without edges but
+   * with the exact same options.
    *
    * @param  {object} options - Options to merge with the current ones.
    * @return {Graph}          - The empty copy.
    */
-  nullCopy(options) {
-    return new Graph(assign({}, this._options, options));
+  emptyCopy(options) {
+    const graph = new Graph(assign({}, this._options, options));
+
+    this._nodes.forEach((nodeData, key) => {
+      nodeData = new graph.NodeDataClass(key, assign({}, nodeData.attributes));
+      graph._nodes.set(key, nodeData);
+    });
+
+    return graph;
   }
 
   /**

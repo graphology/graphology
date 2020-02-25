@@ -16,7 +16,7 @@ const PROPERTIES = [
 export default function utils(Graph) {
   return {
     '#.nullCopy': {
-      'it should create an empty copy of the graph.': function() {
+      'it should create an null copy of the graph.': function() {
         const graph = new Graph();
         graph.addNodesFrom(['John', 'Thomas']);
         graph.addEdge('John', 'Thomas');
@@ -36,6 +36,44 @@ export default function utils(Graph) {
         const graph = new Graph({type: 'directed'});
 
         const copy = graph.nullCopy({type: 'undirected'});
+
+        assert.strictEqual(copy.type, 'undirected');
+
+        assert.throws(function() {
+          copy.addDirectedEdge('one', 'two');
+        }, /addDirectedEdge/);
+      }
+    },
+
+    '#.emptyCopy': {
+      'it should create an empty copy of the graph.': function() {
+        const graph = new Graph();
+        graph.addNodesFrom(['John', 'Thomas']);
+        graph.addEdge('John', 'Thomas');
+
+        const copy = graph.emptyCopy();
+
+        assert.deepEqual(copy.nodes(), ['John', 'Thomas']);
+        assert.strictEqual(copy.order, 2);
+        assert.strictEqual(copy.size, 0);
+
+        PROPERTIES.forEach(property => {
+          assert.strictEqual(graph[property], copy[property]);
+        });
+
+        copy.mergeEdge('Mary', 'Thomas');
+        copy.setNodeAttribute('John', 'age', 32);
+
+        assert.strictEqual(copy.order, 3);
+        assert.strictEqual(copy.size, 1);
+        assert.deepEqual(copy.getNodeAttributes('John'), {age: 32});
+        assert.deepEqual(graph.getNodeAttributes('John'), {});
+      },
+
+      'it should be possible to pass options to merge.': function() {
+        const graph = new Graph({type: 'directed'});
+
+        const copy = graph.emptyCopy({type: 'undirected'});
 
         assert.strictEqual(copy.type, 'undirected');
 
