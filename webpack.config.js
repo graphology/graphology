@@ -9,7 +9,8 @@ module.exports = {
     filename: production ? 'graphology.min.js' : 'graphology.js',
     path: path.join(__dirname, 'build'),
     library: 'graphology',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
+    globalObject: 'this'
   },
   module: {
     rules: [
