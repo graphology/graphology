@@ -94,4 +94,15 @@ Graph.InvalidArgumentsGraphError = InvalidArgumentsGraphError;
 Graph.NotFoundGraphError = NotFoundGraphError;
 Graph.UsageGraphError = UsageGraphError;
 
-module.exports = Graph;
+export default Graph;
+export {
+  Graph,
+  DirectedGraph,
+  UndirectedGraph,
+  MultiGraph,
+  MultiDirectedGraph,
+  MultiUndirectedGraph,
+  InvalidArgumentsGraphError,
+  NotFoundGraphError,
+  UsageGraphError
+};
