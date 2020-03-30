@@ -79,6 +79,7 @@ attachStaticFromMethod(MultiGraph);
 attachStaticFromMethod(MultiDirectedGraph);
 attachStaticFromMethod(MultiUndirectedGraph);
 
+// TBD what to do with it
 /**
  * Attaching the various constructors to the Graph class itself so we can
  * keep CommonJS semantics so everyone can consume the library easily.
@@ -94,4 +95,18 @@ Graph.InvalidArgumentsGraphError = InvalidArgumentsGraphError;
 Graph.NotFoundGraphError = NotFoundGraphError;
 Graph.UsageGraphError = UsageGraphError;
 
-module.exports = Graph;
+export default Graph;
+
+/*
+export {
+  Graph,
+  DirectedGraph,
+  UndirectedGraph,
+  MultiGraph,
+  MultiDirectedGraph,
+  MultiUndirectedGraph,
+  InvalidArgumentsGraphError,
+  NotFoundGraphError,
+  UsageGraphError
+};
+*/
