@@ -1,4 +1,4 @@
-import Graph, {UndirectedGraph} from './src';
+import Graph, {UndirectedGraph} from './src/endpoint.esm';
 
 const graph: Graph = new Graph({type: 'directed'});
 

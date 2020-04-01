@@ -6,8 +6,14 @@ import babel from 'rollup-plugin-babel';
 import {terser} from 'rollup-plugin-terser';
 import visualizer from 'rollup-plugin-visualizer';
 
+const INPUTS = {
+  es: 'src/endpoint.esm.js',
+  cjs: 'src/endpoint.cjs.js',
+  umd: 'src/endpoint.cjs.js'
+};
+
 const bundle = (format, filename, options = {}) => ({
-  input: 'src/index.js',
+  input: INPUTS[format],
   output: {
     file: filename,
     format: format,
