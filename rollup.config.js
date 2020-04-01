@@ -3,7 +3,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import builtins from 'rollup-plugin-node-builtins';
 import commonjs from '@rollup/plugin-commonjs';
 import babel from 'rollup-plugin-babel';
-import { terser } from 'rollup-plugin-terser';
+import {terser} from 'rollup-plugin-terser';
 import visualizer from 'rollup-plugin-visualizer';
 
 const bundle = (format, filename, options = {}) => ({
@@ -24,25 +24,25 @@ const bundle = (format, filename, options = {}) => ({
   ],
   plugins: [
     ...(options.resolve ? [
-      resolve({ preferBuiltins: true }),
+      resolve({preferBuiltins: true}),
       builtins(),
       commonjs()
     ] : []),
     ...(options.babel ? [
-      babel({ exclude: 'node_modules/**' })
+      babel({exclude: 'node_modules/**'})
     ] : []),
     ...(options.minimize ? [
       terser()
     ] : []),
     ...(options.stats ? [
-      visualizer({ filename: filename.replace('.js', '') + '.stats.html' })
+      visualizer({filename: filename.replace('.js', '') + '.stats.html'})
     ] : []),
   ],
 });
 
 export default [
-  bundle('cjs', pkg.main, { babel: true }),
+  bundle('cjs', pkg.main, {babel: true}),
   bundle('es', pkg.module),
-  bundle('umd', pkg.browser.replace('.min', ''), { resolve: true, babel: true, stats: true }),
-  bundle('umd', pkg.browser, { resolve: true, babel: true, minimize: true }),
+  bundle('umd', pkg.browser.replace('.min', ''), {resolve: true, babel: true, stats: true}),
+  bundle('umd', pkg.browser, {resolve: true, babel: true, minimize: true}),
 ];
