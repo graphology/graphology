@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.17.0
+
+* Changing packaging system.
+* Fixing browser bundle.
+
 ## 0.16.0
 
 * Proper `#.nullCopy` & `#.emptyCopy` methods.
