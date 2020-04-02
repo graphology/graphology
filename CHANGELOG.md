@@ -5,6 +5,10 @@
 * Changing packaging system.
 * Fixing browser bundle.
 
+## 0.16.1
+
+* Bundle fixes (@zakjan).
+
 ## 0.16.0
 
 * Proper `#.nullCopy` & `#.emptyCopy` methods.
