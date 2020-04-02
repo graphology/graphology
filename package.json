@@ -3,6 +3,7 @@
   "version": "0.16.1",
   "description": "A robust and multipurpose Graph object for JavaScript.",
   "main": "dist/index.js",
+  "type": "dist/index.d.ts",
   "scripts": {
     "build": "webpack --colors --progress && webpack --colors --progress -p",
     "clean": "rimraf dist specs",
