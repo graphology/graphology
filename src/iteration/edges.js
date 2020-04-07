@@ -76,29 +76,31 @@ function collect(edges, object) {
  * @param {object}   object   - Target object.
  * @param {function} callback - Function to call.
  */
-function forEach(object, callback) {
+function forEachSimple(object, callback) {
   for (const k in object) {
-    if (object[k] instanceof Set)
-      object[k].forEach(edgeData => callback(
-        edgeData.key,
-        edgeData.attributes,
-        edgeData.source.key,
-        edgeData.target.key,
-        edgeData.source.attributes,
-        edgeData.target.attributes
-      ));
-    else {
-      const edgeData = object[k];
+    const edgeData = object[k];
 
-      callback(
-        edgeData.key,
-        edgeData.attributes,
-        edgeData.source.key,
-        edgeData.target.key,
-        edgeData.source.attributes,
-        edgeData.target.attributes
-      );
-    }
+    callback(
+      edgeData.key,
+      edgeData.attributes,
+      edgeData.source.key,
+      edgeData.target.key,
+      edgeData.source.attributes,
+      edgeData.target.attributes
+    );
+  }
+}
+
+function forEachMulti(object, callback) {
+  for (const k in object) {
+    object[k].forEach(edgeData => callback(
+      edgeData.key,
+      edgeData.attributes,
+      edgeData.source.key,
+      edgeData.target.key,
+      edgeData.source.attributes,
+      edgeData.target.attributes
+    ));
   }
 }
 
@@ -434,22 +436,24 @@ function createEdgeArrayForNode(type, direction, nodeData) {
 /**
  * Function iterating over a node's edges using a callback.
  *
+ * @param  {boolean}  multi     - Whether the graph is multi or not.
  * @param  {string}   type      - Type of edges to retrieve.
  * @param  {string}   direction - In or out?
  * @param  {any}      nodeData  - Target node's data.
  * @param  {function} callback  - Function to call.
  */
-function forEachEdgeForNode(type, direction, nodeData, callback) {
+function forEachEdgeForNode(multi, type, direction, nodeData, callback) {
+  const fn = multi ? forEachMulti : forEachSimple;
 
   if (type !== 'undirected') {
     if (direction !== 'out')
-      forEach(nodeData.in, callback);
+      fn(nodeData.in, callback);
     if (direction !== 'in')
-      forEach(nodeData.out, callback);
+      fn(nodeData.out, callback);
   }
 
   if (type !== 'directed') {
-    forEach(nodeData.undirected, callback);
+    fn(nodeData.undirected, callback);
   }
 }
 
@@ -702,7 +706,9 @@ function attachForEachEdge(Class, description) {
         throw new NotFoundGraphError(`Graph.${forEachName}: could not find the "${source}" node in the graph.`);
 
       // Iterating over a node's edges
+      // TODO: maybe attach the sub method to the instance dynamically?
       return forEachEdgeForNode(
+        this.multi,
         type === 'mixed' ? this.type : type,
         direction,
         nodeData,
