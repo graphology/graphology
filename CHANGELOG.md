@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.17.1
+
+* Optimizing `#.forEachEdge` methods.
+
 ## 0.17.0
 
 * Changing packaging system.
