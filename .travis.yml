@@ -1,6 +1,33 @@
 language: node_js
-node_js:
-  - "10"
-  - "11"
-  - "12"
-  - "13"
+matrix:
+  include:
+    - os: linux
+      node_js: "8"
+    - os: linux
+      node_js: "9"
+    - os: linux
+      node_js: "10"
+      env:
+        - CI_TEST_BUILD=true
+    - os: linux
+      node_js: "11"
+      env:
+        - CI_TEST_BUILD=true
+    - os: linux
+      node_js: "12"
+      env:
+        - CI_TEST_BUILD=true
+    - os: linux
+      node_js: "13"
+      env:
+        - CI_TEST_BUILD=true
+    - os: linux
+      node_js: "14"
+      env:
+        - CI_TEST_BUILD=true
+install: npm install --ignore-scripts
+script:
+  - npm run lint
+  - npm test
+  - npm test:types
+  - if [[ $CI_TEST_BUILD = true ]]; then make npm run build; fi
