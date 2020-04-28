@@ -30,4 +30,4 @@ script:
   - npm run lint
   - npm test
   - npm run test:types
-  - if [[ $CI_TEST_BUILD = true ]]; then make npm run build; fi
+  - if [[ $CI_TEST_BUILD = true ]]; then npm run build; fi
