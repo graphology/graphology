@@ -29,5 +29,5 @@ install: npm install --ignore-scripts
 script:
   - npm run lint
   - npm test
-  - npm test:types
+  - npm run test:types
   - if [[ $CI_TEST_BUILD = true ]]; then make npm run build; fi
