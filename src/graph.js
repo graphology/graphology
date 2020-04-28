@@ -1018,6 +1018,30 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Returns whether the given edge has the given node as extremity.
+   *
+   * @param  {any}     edge - The edge's key.
+   * @param  {any}     node - The node's key.
+   * @return {boolean}      - The related node.
+   *
+   * @throws {Error} - Will throw if either the node or the edge isn't in the graph.
+   */
+  hasExtremity(edge, node) {
+    edge = '' + edge;
+    node = '' + node;
+
+    const data = this._edges.get(edge);
+
+    if (!data)
+      throw new NotFoundGraphError(`Graph.hasExtremity: could not find the "${edge}" edge in the graph.`);
+
+    return (
+      data.source.key === node ||
+      data.target.key === node
+    );
+  }
+
+  /**
    * Method returning whether the given edge is undirected.
    *
    * @param  {any}     edge - The edge's key.

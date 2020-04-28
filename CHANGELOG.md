@@ -3,6 +3,7 @@
 ## 0.18.0
 
 * Adding `#.implementation`.
+* Adding `#.hasExtremity`.
 
 ## 0.17.1
 

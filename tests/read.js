@@ -326,6 +326,29 @@ export default function read(Graph, checkers) {
       }
     },
 
+    '#.hasExtremity': {
+
+      'it should throw if either the edge is not found in the graph.': function() {
+        const graph = new Graph();
+        graph.mergeEdge('Thomas', 'Laura');
+
+        assert.throws(function() {
+          graph.hasExtremity('inexisting-edge', 'Thomas');
+        }, notFound());
+      },
+
+      'it should return the correct answer.': function() {
+        const graph = new Graph();
+        graph.addNode('Jack');
+        const edge = graph.mergeEdge('Thomas', 'Estelle');
+
+        assert.strictEqual(graph.hasExtremity(edge, 'Thomas'), true);
+        assert.strictEqual(graph.hasExtremity(edge, 'Estelle'), true);
+        assert.strictEqual(graph.hasExtremity(edge, 'Jack'), false);
+        assert.strictEqual(graph.hasExtremity(edge, 'Who?'), false);
+      }
+    },
+
     '#.directed': {
 
       'it should throw if the edge is not in the graph.': function() {
