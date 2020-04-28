@@ -992,24 +992,20 @@ export default class Graph extends EventEmitter {
    * @param  {any}   edge - The edge's key.
    * @return {any}        - The related node.
    *
-   * @throws {Error} - Will throw if either the node or the edge isn't in the graph.
+   * @throws {Error} - Will throw if the edge isn't in the graph or if the
+   *                   edge & node are not related.
    */
   opposite(node, edge) {
     node = '' + node;
     edge = '' + edge;
-
-    if (!this._nodes.has(node))
-      throw new NotFoundGraphError(`Graph.opposite: could not find the "${node}" node in the graph.`);
 
     const data = this._edges.get(edge);
 
     if (!data)
       throw new NotFoundGraphError(`Graph.opposite: could not find the "${edge}" edge in the graph.`);
 
-    const {source: sourceData, target: targetData} = data;
-
-    const source = sourceData.key,
-          target = targetData.key;
+    const source = data.source.key,
+          target = data.target.key;
 
     if (node !== source && node !== target)
       throw new NotFoundGraphError(`Graph.opposite: the "${node}" node is not attached to the "${edge}" edge (${source}, ${target}).`);

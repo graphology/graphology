@@ -4,6 +4,7 @@
 
 * Adding `#.implementation`.
 * Adding `#.hasExtremity`.
+* Improving performance of `#.opposite`.
 
 ## 0.17.1
 
