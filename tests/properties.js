@@ -13,7 +13,8 @@ const PROPERTIES = [
   'undirectedSize',
   'type',
   'multi',
-  'allowSelfLoops'
+  'allowSelfLoops',
+  'implementation'
 ];
 
 export default function properties(Graph) {
@@ -173,6 +174,17 @@ export default function properties(Graph) {
       'it should be true by default.': function() {
         const graph = new Graph();
         assert.strictEqual(graph.allowSelfLoops, true);
+      }
+    },
+
+    /**
+     * Implementation.
+     */
+    '#.implementation': {
+
+      'it should exist and be a string.': function() {
+        const graph = new Graph();
+        assert.strictEqual(typeof graph.implementation, 'string');
       }
     }
   };

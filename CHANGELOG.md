@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.18.0
+
+* Adding `#.implementation`.
+
 ## 0.17.1
 
 * Optimizing `#.forEachEdge` methods.

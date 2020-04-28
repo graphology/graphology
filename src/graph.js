@@ -505,6 +505,7 @@ export default class Graph extends EventEmitter {
     readOnlyProperty(this, 'multi', this._options.multi);
     readOnlyProperty(this, 'type', this._options.type);
     readOnlyProperty(this, 'allowSelfLoops', this._options.allowSelfLoops);
+    readOnlyProperty(this, 'implementation', () => 'graphology');
   }
 
   /**---------------------------------------------------------------------------
