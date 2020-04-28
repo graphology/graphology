@@ -8,7 +8,8 @@ import assert from 'assert';
 import take from 'obliterator/take';
 import {
   deepMerge,
-  sameMembers
+  sameMembers,
+  addNodesFrom
 } from '../helpers';
 
 const METHODS = [
@@ -29,7 +30,7 @@ export default function edgesIteration(Graph, checkers) {
 
   const graph = new Graph({multi: true});
 
-  graph.addNodesFrom([
+  addNodesFrom(graph, [
     'John',
     'Thomas',
     'Martha',
@@ -378,7 +379,7 @@ export default function edgesIteration(Graph, checkers) {
     'Miscellaneous': {
       'simple graph indices should work.': function() {
         const simpleGraph = new Graph();
-        simpleGraph.addNodesFrom([1, 2, 3, 4]);
+        addNodesFrom(simpleGraph, [1, 2, 3, 4]);
         simpleGraph.addEdgeWithKey('1->2', 1, 2);
         simpleGraph.addEdgeWithKey('1->3', 1, 3);
         simpleGraph.addEdgeWithKey('1->4', 1, 4);

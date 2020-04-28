@@ -5,6 +5,7 @@
  * Testing the mutation methods of the graph.
  */
 import assert from 'assert';
+import {addNodesFrom} from './helpers';
 
 export default function mutation(Graph, checkers) {
   const {
@@ -257,7 +258,7 @@ export default function mutation(Graph, checkers) {
 
       'it should add the edge if it does not yet exist.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['John', 'Martha']);
+        addNodesFrom(graph, ['John', 'Martha']);
 
         graph.mergeEdge('John', 'Martha');
 
@@ -267,7 +268,7 @@ export default function mutation(Graph, checkers) {
 
       'it should do nothing if the edge already exists.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['John', 'Martha']);
+        addNodesFrom(graph, ['John', 'Martha']);
 
         graph.addEdge('John', 'Martha');
         graph.mergeEdge('John', 'Martha');
@@ -278,7 +279,7 @@ export default function mutation(Graph, checkers) {
 
       'it should merge existing attributes if any.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['John', 'Martha']);
+        addNodesFrom(graph, ['John', 'Martha']);
 
         graph.addEdge('John', 'Martha', {type: 'KNOWS'});
         graph.mergeEdge('John', 'Martha', {weight: 2});
@@ -331,7 +332,7 @@ export default function mutation(Graph, checkers) {
 
       'it should throw if the edge or nodes in the path are not found in the graph.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['John', 'Martha']);
+        addNodesFrom(graph, ['John', 'Martha']);
 
         assert.throws(function() {
           graph.dropEdge('Test');
@@ -352,7 +353,7 @@ export default function mutation(Graph, checkers) {
 
       'it should correctly remove the given edge from the graph.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['John', 'Margaret']);
+        addNodesFrom(graph, ['John', 'Margaret']);
         const edge = graph.addEdge('John', 'Margaret');
 
         graph.dropEdge(edge);
@@ -367,7 +368,7 @@ export default function mutation(Graph, checkers) {
 
       'it should be possible to remove an edge using source & target.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['John', 'Margaret']);
+        addNodesFrom(graph, ['John', 'Margaret']);
         graph.addEdge('John', 'Margaret');
 
         graph.dropEdge('John', 'Margaret');
@@ -393,7 +394,7 @@ export default function mutation(Graph, checkers) {
 
       'it should correctly remove the given edge from the graph.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['John', 'Margaret']);
+        addNodesFrom(graph, ['John', 'Margaret']);
         const edge = graph.addEdge('John', 'Margaret');
 
         graph.dropNode('Margaret');
@@ -432,7 +433,7 @@ export default function mutation(Graph, checkers) {
       'it should empty the graph.': function() {
         const graph = new Graph();
 
-        graph.addNodesFrom(['Lindsay', 'Martha']);
+        addNodesFrom(graph, ['Lindsay', 'Martha']);
         const edge = graph.addEdge('Lindsay', 'Martha');
 
         graph.clear();
@@ -447,12 +448,12 @@ export default function mutation(Graph, checkers) {
       'it should be possible to use the graph normally afterwards.': function() {
         const graph = new Graph();
 
-        graph.addNodesFrom(['Lindsay', 'Martha']);
+        addNodesFrom(graph, ['Lindsay', 'Martha']);
         graph.addEdge('Lindsay', 'Martha');
 
         graph.clear();
 
-        graph.addNodesFrom(['Lindsay', 'Martha']);
+        addNodesFrom(graph, ['Lindsay', 'Martha']);
         const edge = graph.addEdge('Lindsay', 'Martha');
 
         assert.strictEqual(graph.order, 2);
@@ -467,7 +468,7 @@ export default function mutation(Graph, checkers) {
       'it should drop every edge from the graph.': function() {
         const graph = new Graph();
 
-        graph.addNodesFrom(['Lindsay', 'Martha']);
+        addNodesFrom(graph, ['Lindsay', 'Martha']);
         const edge = graph.addEdge('Lindsay', 'Martha');
 
         graph.clearEdges();

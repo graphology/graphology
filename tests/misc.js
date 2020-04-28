@@ -5,13 +5,14 @@
  * Testing the miscellaneous things about the graph.
  */
 import assert from 'assert';
+import {addNodesFrom} from './helpers';
 
 export default function misc(Graph) {
   return {
     'Structure': {
       'a simple mixed graph can have A->B, B->A & A<->B': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['Audrey', 'Benjamin']);
+        addNodesFrom(graph, ['Audrey', 'Benjamin']);
 
         assert.doesNotThrow(function() {
           graph.addEdge('Audrey', 'Benjamin');

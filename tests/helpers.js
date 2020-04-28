@@ -77,3 +77,15 @@ export function spy(target) {
 
   return fn;
 }
+
+/**
+ * Function adding multiple nodes from an array to the given graph.
+ *
+ * @param {Graph} graph - Target graph.
+ * @param {array} nodes - Node array.
+ */
+export function addNodesFrom(graph, nodes) {
+  nodes.forEach(node => {
+    graph.addNode(node);
+  });
+}

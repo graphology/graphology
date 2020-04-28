@@ -5,6 +5,7 @@
  * Testing the nodes iteration-related methods of the graph.
  */
 import assert from 'assert';
+import {addNodesFrom} from '../helpers';
 
 export default function nodesIteration(Graph, checkers) {
   const {invalid} = checkers;
@@ -13,7 +14,7 @@ export default function nodesIteration(Graph, checkers) {
     '#.nodes': {
       'it should return the list of nodes of the graph.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['one', 'two', 'three']);
+        addNodesFrom(graph, ['one', 'two', 'three']);
 
         assert.deepEqual(graph.nodes(), ['one', 'two', 'three']);
       }
@@ -49,7 +50,7 @@ export default function nodesIteration(Graph, checkers) {
     '#.nodeEntries': {
       'it should be possible to create a nodes iterator.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['one', 'two', 'three']);
+        addNodesFrom(graph, ['one', 'two', 'three']);
 
         graph.replaceNodeAttributes('two', {hello: 'world'});
 

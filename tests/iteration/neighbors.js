@@ -7,7 +7,8 @@
 import assert from 'assert';
 import take from 'obliterator/take';
 import {
-  deepMerge
+  deepMerge,
+  addNodesFrom
 } from '../helpers';
 
 const METHODS = [
@@ -28,7 +29,7 @@ export default function neighborsIteration(Graph, checkers) {
 
   const graph = new Graph({multi: true});
 
-  graph.addNodesFrom([
+  addNodesFrom(graph, [
     'John',
     'Thomas',
     'Martha',

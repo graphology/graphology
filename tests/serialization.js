@@ -5,6 +5,7 @@
  * Testing the serialization methods of the graph.
  */
 import assert from 'assert';
+import {addNodesFrom} from './helpers';
 
 export default function serialization(Graph, checkers) {
   const {
@@ -43,7 +44,7 @@ export default function serialization(Graph, checkers) {
 
       'it should properly serialize edges.': function() {
         const graph = new Graph({multi: true});
-        graph.addNodesFrom(['John', 'Martha']);
+        addNodesFrom(graph, ['John', 'Martha']);
         graph.addEdgeWithKey('J->M•1', 'John', 'Martha');
         graph.addEdgeWithKey('J->M•2', 'John', 'Martha', {weight: 1});
         graph.addUndirectedEdgeWithKey('J<->M•1', 'John', 'Martha');
@@ -57,7 +58,7 @@ export default function serialization(Graph, checkers) {
 
       'it should not include generated keys.': function() {
         const graph = new Graph();
-        graph.addNodesFrom([1, 2, 3]);
+        addNodesFrom(graph, [1, 2, 3]);
 
         const edge1 = graph.addEdge(1, 2);
         const edge2 = graph.addEdgeWithKey('edge2', 2, 3);
@@ -79,7 +80,7 @@ export default function serialization(Graph, checkers) {
       'it should correctly return the serialized graph.': function() {
         const graph = new Graph({multi: true});
         graph.setAttribute('name', 'graph');
-        graph.addNodesFrom(['John', 'Jack', 'Martha']);
+        addNodesFrom(graph, ['John', 'Jack', 'Martha']);
         graph.setNodeAttribute('John', 'age', 34);
         graph.addEdgeWithKey('J->J•1', 'John', 'Jack');
         graph.addEdgeWithKey('J->J•2', 'John', 'Jack', {weight: 2});
@@ -173,7 +174,7 @@ export default function serialization(Graph, checkers) {
 
       'it should correctly import the given edge.': function() {
         const graph = new Graph({multi: true});
-        graph.addNodesFrom(['John', 'Thomas']);
+        addNodesFrom(graph, ['John', 'Thomas']);
 
         graph.importEdge({
           source: 'John',
@@ -194,7 +195,7 @@ export default function serialization(Graph, checkers) {
 
       'it should merge if the flag is true.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['John', 'Thomas']);
+        addNodesFrom(graph, ['John', 'Thomas']);
         graph.addEdge('John', 'Thomas');
 
         graph.importEdge({source: 'John', target: 'Thomas', attributes: {weight: 10}}, true);
@@ -215,7 +216,7 @@ export default function serialization(Graph, checkers) {
 
       'it should be possible to import a graph instance.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['John', 'Thomas']);
+        addNodesFrom(graph, ['John', 'Thomas']);
         graph.addEdge('John', 'Thomas');
 
         const other = new Graph();

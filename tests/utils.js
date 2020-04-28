@@ -5,6 +5,7 @@
  * Testing the utils methods.
  */
 import assert from 'assert';
+import {addNodesFrom} from './helpers';
 
 const PROPERTIES = [
   'type',
@@ -18,7 +19,7 @@ export default function utils(Graph) {
     '#.nullCopy': {
       'it should create an null copy of the graph.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['John', 'Thomas']);
+        addNodesFrom(graph, ['John', 'Thomas']);
         graph.addEdge('John', 'Thomas');
 
         const copy = graph.nullCopy();
@@ -48,7 +49,7 @@ export default function utils(Graph) {
     '#.emptyCopy': {
       'it should create an empty copy of the graph.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['John', 'Thomas']);
+        addNodesFrom(graph, ['John', 'Thomas']);
         graph.addEdge('John', 'Thomas');
 
         const copy = graph.emptyCopy();
@@ -86,7 +87,7 @@ export default function utils(Graph) {
     '#.copy': {
       'it should create a full copy of the graph.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['John', 'Thomas']);
+        addNodesFrom(graph, ['John', 'Thomas']);
         graph.addEdge('John', 'Thomas');
 
         const copy = graph.copy();
@@ -105,7 +106,7 @@ export default function utils(Graph) {
     '#.upgradeToMixed': {
       'it should correctly upgrade the given graph to a mixed one.': function() {
         const graph = new Graph({type: 'directed'});
-        graph.addNodesFrom([1, 2, 3]);
+        addNodesFrom(graph, [1, 2, 3]);
         graph.addEdgeWithKey('1->2', 1, 2);
 
         graph.upgradeToMixed();
@@ -122,7 +123,7 @@ export default function utils(Graph) {
     '#.upgradeToMulti': {
       'it should correctly upgrade the given graph to a multi one.': function() {
         const graph = new Graph();
-        graph.addNodesFrom([1, 2]);
+        addNodesFrom(graph, [1, 2]);
         graph.addEdgeWithKey('dA', 1, 2);
         graph.addUndirectedEdgeWithKey('uA', 1, 2);
 

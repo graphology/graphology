@@ -5,7 +5,7 @@
  * Testing the graph's events.
  */
 import assert from 'assert';
-import {spy} from './helpers';
+import {spy, addNodesFrom} from './helpers';
 
 const VALID_TYPES = new Set(['set', 'merge', 'replace', 'remove']);
 
@@ -42,7 +42,7 @@ export default function events(Graph) {
 
         graph.on('edgeAdded', handler);
 
-        graph.addNodesFrom(['John', 'Thomas']);
+        addNodesFrom(graph, ['John', 'Thomas']);
         graph.addEdgeWithKey('J->T', 'John', 'Thomas', {weight: 1});
 
         assert(handler.called);
@@ -81,7 +81,7 @@ export default function events(Graph) {
 
         graph.on('edgeDropped', handler);
 
-        graph.addNodesFrom(['John', 'Thomas']);
+        addNodesFrom(graph, ['John', 'Thomas']);
         graph.addEdgeWithKey('J->T', 'John', 'Thomas', {weight: 1});
         graph.dropEdge('J->T');
 
@@ -207,7 +207,7 @@ export default function events(Graph) {
 
         graph.on('edgeAttributesUpdated', handler);
 
-        graph.addNodesFrom(['John', 'Thomas']);
+        addNodesFrom(graph, ['John', 'Thomas']);
         graph.addEdgeWithKey('J->T', 'John', 'Thomas');
         graph.setEdgeAttribute('J->T', 'weight', 34);
         graph.replaceEdgeAttributes('J->T', {weight: 56});

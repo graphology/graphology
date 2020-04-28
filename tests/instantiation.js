@@ -6,7 +6,7 @@
  * Testing the instantiation of the graph.
  */
 import assert from 'assert';
-import {spy} from './helpers';
+import {addNodesFrom} from './helpers';
 
 const CONSTRUCTORS = [
   'DirectedGraph',
@@ -32,7 +32,7 @@ export default function instantiation(Graph, implementation, checkers) {
 
       'it should be possible to create a Graph from a Graph instance.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['John', 'Thomas']);
+        addNodesFrom(graph, ['John', 'Thomas']);
         graph.addEdge('John', 'Thomas');
 
         const other = Graph.from(graph);
@@ -102,7 +102,7 @@ export default function instantiation(Graph, implementation, checkers) {
           };
 
           const graph = new Graph({edgeKeyGenerator});
-          graph.addNodesFrom(['John', 'Martha', 'Clark']);
+          addNodesFrom(graph, ['John', 'Martha', 'Clark']);
           graph.addEdge('John', 'Martha');
           graph.addEdge('Martha', 'Clark');
 

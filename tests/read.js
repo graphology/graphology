@@ -5,6 +5,7 @@
  * Testing the read methods of the graph.
  */
 import assert from 'assert';
+import {addNodesFrom} from './helpers';
 
 export default function read(Graph, checkers) {
   const {
@@ -114,8 +115,8 @@ export default function read(Graph, checkers) {
         const directedGraph = new Graph({type: 'directed'}),
               undirectedGraph = new Graph({type: 'undirected'});
 
-        directedGraph.addNodesFrom([1, 2]);
-        undirectedGraph.addNodesFrom([1, 2]);
+        addNodesFrom(directedGraph, [1, 2]);
+        addNodesFrom(undirectedGraph, [1, 2]);
 
         assert.strictEqual(directedGraph.hasEdge(1, 2), false);
         assert.strictEqual(undirectedGraph.hasEdge(1, 2), false);
@@ -145,7 +146,7 @@ export default function read(Graph, checkers) {
 
       'it should return the correct edge.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['Jack', 'Lucy']);
+        addNodesFrom(graph, ['Jack', 'Lucy']);
         graph.addDirectedEdgeWithKey('J->L', 'Jack', 'Lucy');
         graph.addUndirectedEdgeWithKey('J<->L', 'Jack', 'Lucy');
 
@@ -181,7 +182,7 @@ export default function read(Graph, checkers) {
 
       'it should return the correct edge.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['Jack', 'Lucy']);
+        addNodesFrom(graph, ['Jack', 'Lucy']);
         graph.addDirectedEdgeWithKey('J->L', 'Jack', 'Lucy');
         graph.addUndirectedEdgeWithKey('J<->L', 'Jack', 'Lucy');
 
@@ -217,7 +218,7 @@ export default function read(Graph, checkers) {
 
       'it should return the correct edge.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['Jack', 'Lucy']);
+        addNodesFrom(graph, ['Jack', 'Lucy']);
         graph.addDirectedEdgeWithKey('J->L', 'Jack', 'Lucy');
         graph.addUndirectedEdgeWithKey('J<->L', 'Jack', 'Lucy');
 
@@ -306,7 +307,7 @@ export default function read(Graph, checkers) {
 
       'it should throw if the node & the edge are not related.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['Thomas', 'Isabella', 'Estelle']);
+        addNodesFrom(graph, ['Thomas', 'Isabella', 'Estelle']);
         graph.addEdgeWithKey('I->E', 'Isabella', 'Estelle');
 
         assert.throws(function() {
@@ -316,7 +317,7 @@ export default function read(Graph, checkers) {
 
       'it should return the correct node.': function() {
         const graph = new Graph();
-        graph.addNodesFrom(['Thomas', 'Estelle']);
+        addNodesFrom(graph, ['Thomas', 'Estelle']);
         const edge = graph.addEdge('Thomas', 'Estelle');
 
         assert.strictEqual(
@@ -441,7 +442,7 @@ export default function read(Graph, checkers) {
 
         'it should return the correct in degree.': function() {
           const graph = new Graph();
-          graph.addNodesFrom(['Helen', 'Sue', 'William', 'John']);
+          addNodesFrom(graph, ['Helen', 'Sue', 'William', 'John']);
           graph.addDirectedEdge('Helen', 'Sue');
           graph.addDirectedEdge('William', 'Sue');
 
@@ -455,7 +456,7 @@ export default function read(Graph, checkers) {
 
         'it should always return 0 in an undirected graph.': function() {
           const graph = new Graph({type: 'undirected'});
-          graph.addNodesFrom(['Helen', 'Sue']);
+          addNodesFrom(graph, ['Helen', 'Sue']);
           graph.addEdge('Helen', 'Sue');
 
           assert.strictEqual(graph.inDegree('Helen'), 0);
@@ -482,7 +483,7 @@ export default function read(Graph, checkers) {
 
         'it should return the correct out degree.': function() {
           const graph = new Graph();
-          graph.addNodesFrom(['Helen', 'Sue', 'William', 'John']);
+          addNodesFrom(graph, ['Helen', 'Sue', 'William', 'John']);
           graph.addDirectedEdge('Helen', 'Sue');
           graph.addDirectedEdge('Helen', 'William');
 
@@ -496,7 +497,7 @@ export default function read(Graph, checkers) {
 
         'it should always return 0 in an undirected graph.': function() {
           const graph = new Graph({type: 'undirected'});
-          graph.addNodesFrom(['Helen', 'Sue']);
+          addNodesFrom(graph, ['Helen', 'Sue']);
           graph.addEdge('Helen', 'Sue');
 
           assert.strictEqual(graph.outDegree('Sue'), 0);
@@ -523,7 +524,7 @@ export default function read(Graph, checkers) {
 
         'it should return the correct directed degree.': function() {
           const graph = new Graph();
-          graph.addNodesFrom(['Helen', 'Sue', 'William', 'John', 'Martha']);
+          addNodesFrom(graph, ['Helen', 'Sue', 'William', 'John', 'Martha']);
           graph.addDirectedEdge('Helen', 'Sue');
           graph.addDirectedEdge('Helen', 'William');
           graph.addDirectedEdge('Martha', 'Helen');
@@ -543,7 +544,7 @@ export default function read(Graph, checkers) {
 
         'it should always return 0 in an undirected graph.': function() {
           const graph = new Graph({type: 'undirected'});
-          graph.addNodesFrom(['Helen', 'Sue']);
+          addNodesFrom(graph, ['Helen', 'Sue']);
           graph.addEdge('Helen', 'Sue');
 
           assert.strictEqual(graph.inDegree('Helen'), 0);
@@ -570,7 +571,7 @@ export default function read(Graph, checkers) {
 
         'it should return the correct undirected degree.': function() {
           const graph = new Graph();
-          graph.addNodesFrom(['Helen', 'Sue', 'William', 'John']);
+          addNodesFrom(graph, ['Helen', 'Sue', 'William', 'John']);
           graph.addDirectedEdge('Helen', 'Sue');
           graph.addDirectedEdge('Helen', 'William');
           graph.addUndirectedEdge('Helen', 'John');
@@ -585,7 +586,7 @@ export default function read(Graph, checkers) {
 
         'it should always return 0 in a directed graph.': function() {
           const graph = new Graph({type: 'directed'});
-          graph.addNodesFrom(['Helen', 'Sue']);
+          addNodesFrom(graph, ['Helen', 'Sue']);
           graph.addEdge('Helen', 'Sue');
 
           assert.strictEqual(graph.undirectedDegree('Helen'), 0);
@@ -612,7 +613,7 @@ export default function read(Graph, checkers) {
 
         'it should return the correct degree.': function() {
           const graph = new Graph();
-          graph.addNodesFrom(['Helen', 'Sue', 'William', 'John', 'Martha']);
+          addNodesFrom(graph, ['Helen', 'Sue', 'William', 'John', 'Martha']);
           graph.addDirectedEdge('Helen', 'Sue');
           graph.addDirectedEdge('Helen', 'William');
           graph.addDirectedEdge('Martha', 'Helen');
@@ -635,8 +636,8 @@ export default function read(Graph, checkers) {
         const directedGraph = new Graph({type: 'directed'}),
               undirectedGraph = new Graph({type: 'undirected'});
 
-        directedGraph.addNodesFrom([1, 2]);
-        undirectedGraph.addNodesFrom([1, 2]);
+        addNodesFrom(directedGraph, [1, 2]);
+        addNodesFrom(undirectedGraph, [1, 2]);
 
         assert.strictEqual(directedGraph.degree(1), 0);
         assert.strictEqual(undirectedGraph.degree(1), 0);

@@ -38,12 +38,6 @@ export default function specs(Graph, implementation) {
 
   // Building error checkers
   const errorCheckers = {};
-
-  // Convenience helpers
-  Graph.prototype.addNodesFrom = function(nodes) {
-    nodes.forEach(node => this.addNode(node));
-  };
-
   errors.forEach(([fn, name]) => (errorCheckers[fn] = createErrorChecker(name)));
 
   const tests = {
