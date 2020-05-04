@@ -5,6 +5,7 @@
 * Adding `#.implementation`.
 * Adding `#.hasExtremity`.
 * Improving performance of `#.opposite`.
+* Improving serialization performance.
 
 ## 0.17.1
 

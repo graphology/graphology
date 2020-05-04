@@ -91,6 +91,21 @@ export function isPlainObject(value) {
 }
 
 /**
+ * Checks whether the given object is empty.
+ *
+ * @param  {object}  o - Target Object.
+ * @return {boolean}
+ */
+export function isEmpty(o) {
+  let k;
+
+  for (k in o)
+    return false;
+
+  return true;
+}
+
+/**
  * Pretty prints the given integer.
  *
  * @param  {number}  integer - Target integer.
