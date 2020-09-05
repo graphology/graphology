@@ -1,11 +1,12 @@
 # Changelog
 
-## 0.18.0
+## 0.18.0 (provisional)
 
 * Adding `#.implementation`.
 * Adding `#.hasExtremity`.
 * Improving performance of `#.opposite`.
 * Improving serialization performance.
+* Updating type declarations & adding generics.
 
 ## 0.17.1
 
