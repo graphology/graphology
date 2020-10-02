@@ -14,7 +14,10 @@ const PROPERTIES = [
   'type',
   'multi',
   'allowSelfLoops',
-  'implementation'
+  'implementation',
+  'selfLoopCount',
+  'directedSelfLoopCount',
+  'undirectedSelfLoopCount'
 ];
 
 export default function properties(Graph) {
@@ -185,6 +188,30 @@ export default function properties(Graph) {
       'it should exist and be a string.': function() {
         const graph = new Graph();
         assert.strictEqual(typeof graph.implementation, 'string');
+      }
+    },
+
+    /**
+     * Self Loop Count.
+     */
+    '#.selfLoopCount': {
+
+      'it should exist and be correct.': function() {
+        const graph = new Graph();
+
+        graph.mergeDirectedEdge('John', 'John');
+        graph.mergeDirectedEdge('Lucy', 'Lucy');
+        graph.mergeUndirectedEdge('Joana', 'Joana');
+
+        assert.strictEqual(graph.selfLoopCount, 3);
+        assert.strictEqual(graph.directedSelfLoopCount, 2);
+        assert.strictEqual(graph.undirectedSelfLoopCount, 1);
+
+        graph.forEachEdge(edge => graph.dropEdge(edge));
+
+        assert.strictEqual(graph.selfLoopCount, 0);
+        assert.strictEqual(graph.directedSelfLoopCount, 0);
+        assert.strictEqual(graph.undirectedSelfLoopCount, 0);
       }
     }
   };

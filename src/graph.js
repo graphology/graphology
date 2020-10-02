@@ -213,10 +213,14 @@ function addEdge(
 
   // Incrementing node degree counters
   if (source === target) {
-    if (undirected)
+    if (undirected) {
       sourceData.undirectedSelfLoops++;
-    else
+      graph._undirectedSelfLoopCount++;
+    }
+    else {
       sourceData.directedSelfLoops++;
+      graph._directedSelfLoopCount++;
+    }
   }
   else {
     if (undirected) {
@@ -400,10 +404,14 @@ function mergeEdge(
 
   // Incrementing node degree counters
   if (source === target) {
-    if (undirected)
+    if (undirected) {
       sourceData.undirectedSelfLoops++;
-    else
+      graph._undirectedSelfLoopCount++;
+    }
+    else {
       sourceData.directedSelfLoops++;
+      graph._directedSelfLoopCount++;
+    }
   }
   else {
     if (undirected) {
@@ -489,6 +497,8 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_edges', new Map());
     privateProperty(this, '_directedSize', 0);
     privateProperty(this, '_undirectedSize', 0);
+    privateProperty(this, '_directedSelfLoopCount', 0);
+    privateProperty(this, '_undirectedSelfLoopCount', 0);
     privateProperty(this, '_edgeKeyGenerator', options.edgeKeyGenerator || incrementalId());
 
     // Options
@@ -502,6 +512,9 @@ export default class Graph extends EventEmitter {
     readOnlyProperty(this, 'size', () => this._edges.size);
     readOnlyProperty(this, 'directedSize', () => this._directedSize);
     readOnlyProperty(this, 'undirectedSize', () => this._undirectedSize);
+    readOnlyProperty(this, 'selfLoopCount', () => this._directedSelfLoopCount + this._undirectedSelfLoopCount);
+    readOnlyProperty(this, 'directedSelfLoopCount', () => this._directedSelfLoopCount);
+    readOnlyProperty(this, 'undirectedSelfLoopCount', () => this._undirectedSelfLoopCount);
     readOnlyProperty(this, 'multi', this._options.multi);
     readOnlyProperty(this, 'type', this._options.type);
     readOnlyProperty(this, 'allowSelfLoops', this._options.allowSelfLoops);
@@ -1255,9 +1268,11 @@ export default class Graph extends EventEmitter {
     if (sourceData === targetData) {
       if (undirected) {
         sourceData.undirectedSelfLoops--;
+        this._undirectedSelfLoopCount--;
       }
       else {
         sourceData.directedSelfLoops--;
+        this._directedSelfLoopCount--;
       }
     }
     else {
