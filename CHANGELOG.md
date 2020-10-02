@@ -5,6 +5,7 @@
 * Adding `#.implementation`.
 * Adding `#.hasExtremity`.
 * Adding `#.selfLoopCount`, `#.directedSelfLoopCount` & `#.undirectedSelfLoopCount`.
+* Serializing options & accepting them with `#.from` static methods.
 * Improving performance of `#.opposite`.
 * Improving serialization performance.
 * Updating type declarations & adding generics.

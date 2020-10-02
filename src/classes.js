@@ -93,7 +93,11 @@ function attachStaticFromMethod(Class) {
    * @return {Class}
    */
   Class.from = function(data, options) {
-    const instance = new Class(options);
+
+    // Merging given options with serialized ones
+    const finalOptions = assign({}, data.options, options);
+
+    const instance = new Class(finalOptions);
     instance.import(data);
 
     return instance;

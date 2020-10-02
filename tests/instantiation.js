@@ -70,6 +70,44 @@ export default function instantiation(Graph, implementation, checkers) {
 
         assert.strictEqual(graph.type, 'directed');
         assert.strictEqual(graph.getAttribute('name'), 'Awesome graph');
+      },
+
+      'it should be possible to take options from the serialized format.': function() {
+        const graph = Graph.from({
+          node: [
+            {key: 'John'}
+          ],
+          attributes: {
+            name: 'Awesome graph'
+          },
+          options: {
+            type: 'directed',
+            multi: true
+          }
+        });
+
+        assert.strictEqual(graph.type, 'directed');
+        assert.strictEqual(graph.multi, true);
+        assert.strictEqual(graph.getAttribute('name'), 'Awesome graph');
+      },
+
+      'given options should take precedence over the serialization ones.': function() {
+        const graph = Graph.from({
+          node: [
+            {key: 'John'}
+          ],
+          attributes: {
+            name: 'Awesome graph'
+          },
+          options: {
+            type: 'directed',
+            multi: true
+          }
+        }, {type: 'undirected'});
+
+        assert.strictEqual(graph.type, 'undirected');
+        assert.strictEqual(graph.multi, true);
+        assert.strictEqual(graph.getAttribute('name'), 'Awesome graph');
       }
     },
 
