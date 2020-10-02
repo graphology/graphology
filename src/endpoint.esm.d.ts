@@ -1,4 +1,4 @@
-import { AbstractGraph, Attributes } from 'graphology-types';
+import {AbstractGraph, Attributes} from 'graphology-types';
 
 export default class Graph<NodeAttributes extends Attributes = Attributes, EdgeAttributes extends Attributes = Attributes, GraphAttributes extends Attributes = Attributes> extends AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes> {}
 export class DirectedGraph<NodeAttributes extends Attributes = Attributes, EdgeAttributes extends Attributes = Attributes, GraphAttributes extends Attributes = Attributes> extends Graph<NodeAttributes, EdgeAttributes, GraphAttributes> {}
