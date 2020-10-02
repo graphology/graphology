@@ -32,8 +32,8 @@ export default function misc(Graph) {
 
         graph.forEachEdge('A', edge => graph.dropEdge(edge));
 
-        assert.deepEqual(graph.neighbors('A'), []);
-        assert.deepEqual(graph.neighbors('B'), []);
+        assert.deepStrictEqual(graph.neighbors('A'), []);
+        assert.deepStrictEqual(graph.neighbors('B'), []);
       }
     },
 

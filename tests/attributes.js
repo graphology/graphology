@@ -142,13 +142,13 @@ export default function attributes(Graph, checkers) {
         const graph = new Graph();
         graph.setAttribute('name', 'graph');
 
-        assert.deepEqual(graph.getAttributes(), {name: 'graph'});
+        assert.deepStrictEqual(graph.getAttributes(), {name: 'graph'});
       },
 
       'it should return an empty object if the node does not have attributes.': function() {
         const graph = new Graph();
 
-        assert.deepEqual(graph.getAttributes(), {});
+        assert.deepStrictEqual(graph.getAttributes(), {});
       }
     },
 
@@ -158,14 +158,14 @@ export default function attributes(Graph, checkers) {
         const graph = new Graph();
         graph.addNode('Martha', {age: 34});
 
-        assert.deepEqual(graph.getNodeAttributes('Martha'), {age: 34});
+        assert.deepStrictEqual(graph.getNodeAttributes('Martha'), {age: 34});
       },
 
       'it should return an empty object if the node does not have attributes.': function() {
         const graph = new Graph();
         graph.addNode('Martha');
 
-        assert.deepEqual(graph.getNodeAttributes('Martha'), {});
+        assert.deepStrictEqual(graph.getNodeAttributes('Martha'), {});
       }
     },
 
@@ -176,8 +176,8 @@ export default function attributes(Graph, checkers) {
         addNodesFrom(graph, ['John', 'Thomas']);
         const edge = graph.addEdge('John', 'Thomas', {weight: 2});
 
-        assert.deepEqual(graph.getEdgeAttributes(edge), {weight: 2});
-        assert.deepEqual(graph.getEdgeAttributes('John', 'Thomas'), {weight: 2});
+        assert.deepStrictEqual(graph.getEdgeAttributes(edge), {weight: 2});
+        assert.deepStrictEqual(graph.getEdgeAttributes('John', 'Thomas'), {weight: 2});
       },
 
       'it should also work with typed edges.': function() {
@@ -186,8 +186,8 @@ export default function attributes(Graph, checkers) {
         graph.addDirectedEdge('John', 'Thomas', {weight: 2});
         graph.addUndirectedEdge('John', 'Thomas', {weight: 3});
 
-        assert.deepEqual(graph.getDirectedEdgeAttributes('John', 'Thomas', 'weight'), {weight: 2});
-        assert.deepEqual(graph.getUndirectedEdgeAttributes('John', 'Thomas', 'weight'), {weight: 3});
+        assert.deepStrictEqual(graph.getDirectedEdgeAttributes('John', 'Thomas', 'weight'), {weight: 2});
+        assert.deepStrictEqual(graph.getUndirectedEdgeAttributes('John', 'Thomas', 'weight'), {weight: 3});
       },
 
       'it should return an empty object if the edge does not have attributes.': function() {
@@ -195,7 +195,7 @@ export default function attributes(Graph, checkers) {
         addNodesFrom(graph, ['John', 'Thomas']);
         const edge = graph.addEdge('John', 'Thomas');
 
-        assert.deepEqual(graph.getEdgeAttributes(edge), {});
+        assert.deepStrictEqual(graph.getEdgeAttributes(edge), {});
       }
     },
 
@@ -455,7 +455,7 @@ export default function attributes(Graph, checkers) {
         graph.removeAttribute('name');
 
         assert.strictEqual(graph.hasAttribute('name'), false);
-        assert.deepEqual(graph.getAttributes(), {});
+        assert.deepStrictEqual(graph.getAttributes(), {});
       }
     },
 
@@ -467,7 +467,7 @@ export default function attributes(Graph, checkers) {
         graph.removeNodeAttribute('Martha', 'age');
 
         assert.strictEqual(graph.hasNodeAttribute('Martha', 'age'), false);
-        assert.deepEqual(graph.getNodeAttributes('Martha'), {});
+        assert.deepStrictEqual(graph.getNodeAttributes('Martha'), {});
       }
     },
 
@@ -482,7 +482,7 @@ export default function attributes(Graph, checkers) {
         assert.strictEqual(graph.hasEdgeAttribute(edge, 'weight'), false);
         assert.strictEqual(graph.hasEdgeAttribute(edge, 'size'), false);
 
-        assert.deepEqual(graph.getEdgeAttributes(edge), {});
+        assert.deepStrictEqual(graph.getEdgeAttributes(edge), {});
       },
 
       'it should also work with typed edges.': function() {
@@ -514,7 +514,7 @@ export default function attributes(Graph, checkers) {
 
         graph.replaceAttributes({name: 'other graph'});
 
-        assert.deepEqual(graph.getAttributes(), {name: 'other graph'});
+        assert.deepStrictEqual(graph.getAttributes(), {name: 'other graph'});
       }
     },
 
@@ -534,7 +534,7 @@ export default function attributes(Graph, checkers) {
 
         graph.replaceNodeAttributes('John', {age: 23, eyes: 'blue'});
 
-        assert.deepEqual(graph.getNodeAttributes('John'), {age: 23, eyes: 'blue'});
+        assert.deepStrictEqual(graph.getNodeAttributes('John'), {age: 23, eyes: 'blue'});
       }
     },
 
@@ -558,8 +558,8 @@ export default function attributes(Graph, checkers) {
         graph.replaceDirectedEdgeAttributes('John', 'Thomas', {weight: 2});
         graph.replaceUndirectedEdgeAttributes('John', 'Thomas', {weight: 3});
 
-        assert.deepEqual(graph.getDirectedEdgeAttributes('John', 'Thomas'), {weight: 2});
-        assert.deepEqual(graph.getUndirectedEdgeAttributes('John', 'Thomas'), {weight: 3});
+        assert.deepStrictEqual(graph.getDirectedEdgeAttributes('John', 'Thomas'), {weight: 2});
+        assert.deepStrictEqual(graph.getUndirectedEdgeAttributes('John', 'Thomas'), {weight: 3});
       },
 
       'it should correctly replace attributes.': function() {
@@ -569,7 +569,7 @@ export default function attributes(Graph, checkers) {
 
         graph.replaceEdgeAttributes(edge, {weight: 4, type: 'KNOWS'});
 
-        assert.deepEqual(graph.getEdgeAttributes(edge), {weight: 4, type: 'KNOWS'});
+        assert.deepStrictEqual(graph.getEdgeAttributes(edge), {weight: 4, type: 'KNOWS'});
       }
     },
 
@@ -588,7 +588,7 @@ export default function attributes(Graph, checkers) {
 
         graph.mergeAttributes({color: 'blue'});
 
-        assert.deepEqual(graph.getAttributes(), {name: 'graph', color: 'blue'});
+        assert.deepStrictEqual(graph.getAttributes(), {name: 'graph', color: 'blue'});
       }
     },
 
@@ -608,7 +608,7 @@ export default function attributes(Graph, checkers) {
 
         graph.mergeNodeAttributes('John', {eyes: 'blue'});
 
-        assert.deepEqual(graph.getNodeAttributes('John'), {age: 45, eyes: 'blue'});
+        assert.deepStrictEqual(graph.getNodeAttributes('John'), {age: 45, eyes: 'blue'});
       }
     },
 
@@ -632,8 +632,8 @@ export default function attributes(Graph, checkers) {
         graph.mergeDirectedEdgeAttributes('John', 'Thomas', {weight: 2});
         graph.mergeUndirectedEdgeAttributes('John', 'Thomas', {weight: 3});
 
-        assert.deepEqual(graph.getDirectedEdgeAttributes('John', 'Thomas'), {weight: 2, test: 0});
-        assert.deepEqual(graph.getUndirectedEdgeAttributes('John', 'Thomas'), {weight: 3, test: 0});
+        assert.deepStrictEqual(graph.getDirectedEdgeAttributes('John', 'Thomas'), {weight: 2, test: 0});
+        assert.deepStrictEqual(graph.getUndirectedEdgeAttributes('John', 'Thomas'), {weight: 3, test: 0});
       },
 
       'it should correctly merge attributes.': function() {
@@ -643,7 +643,7 @@ export default function attributes(Graph, checkers) {
 
         graph.mergeEdgeAttributes(edge, {type: 'KNOWS'});
 
-        assert.deepEqual(graph.getEdgeAttributes(edge), {weight: 1, type: 'KNOWS'});
+        assert.deepStrictEqual(graph.getEdgeAttributes(edge), {weight: 1, type: 'KNOWS'});
       }
     }
   });

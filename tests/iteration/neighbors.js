@@ -185,8 +185,8 @@ export default function neighborsIteration(Graph, checkers) {
         'it should return the correct neighbors array.': function() {
           const neighbors = graph[name](data.node.key);
 
-          assert.deepEqual(neighbors, data.node.neighbors);
-          assert.deepEqual(graph[name]('Alone'), []);
+          assert.deepStrictEqual(neighbors, data.node.neighbors);
+          assert.deepStrictEqual(graph[name]('Alone'), []);
         }
       },
 
@@ -198,11 +198,11 @@ export default function neighborsIteration(Graph, checkers) {
           graph[forEachName](data.node.key, function(target, attrs) {
             neighbors.push(target);
 
-            assert.deepEqual(graph.getNodeAttributes(target), attrs);
+            assert.deepStrictEqual(graph.getNodeAttributes(target), attrs);
             assert.strictEqual(graph[name](data.node.key, target), true);
           });
 
-          assert.deepEqual(neighbors, data.node.neighbors);
+          assert.deepStrictEqual(neighbors, data.node.neighbors);
         }
       },
 
@@ -211,7 +211,7 @@ export default function neighborsIteration(Graph, checkers) {
         'it should be possible to create an iterator over neighbors.': function() {
           const iterator = graph[iteratorName](data.node.key);
 
-          assert.deepEqual(take(iterator), data.node.neighbors.map(neighbor => {
+          assert.deepStrictEqual(take(iterator), data.node.neighbors.map(neighbor => {
             return [
               neighbor,
               graph.getNodeAttributes(neighbor)

@@ -16,7 +16,7 @@ export default function nodesIteration(Graph, checkers) {
         const graph = new Graph();
         addNodesFrom(graph, ['one', 'two', 'three']);
 
-        assert.deepEqual(graph.nodes(), ['one', 'two', 'three']);
+        assert.deepStrictEqual(graph.nodes(), ['one', 'two', 'three']);
       }
     },
 
@@ -39,7 +39,7 @@ export default function nodesIteration(Graph, checkers) {
 
         graph.forEachNode(function(key, attributes) {
           assert.strictEqual(key, count ? 'Martha' : 'John');
-          assert.deepEqual(attributes, count ? {age: 33} : {age: 34});
+          assert.deepStrictEqual(attributes, count ? {age: 33} : {age: 34});
           count++;
         });
 
@@ -56,9 +56,9 @@ export default function nodesIteration(Graph, checkers) {
 
         const iterator = graph.nodeEntries();
 
-        assert.deepEqual(iterator.next().value, ['one', {}]);
-        assert.deepEqual(iterator.next().value, ['two', {hello: 'world'}]);
-        assert.deepEqual(iterator.next().value, ['three', {}]);
+        assert.deepStrictEqual(iterator.next().value, ['one', {}]);
+        assert.deepStrictEqual(iterator.next().value, ['two', {hello: 'world'}]);
+        assert.deepStrictEqual(iterator.next().value, ['three', {}]);
         assert.strictEqual(iterator.next().done, true);
       }
     }

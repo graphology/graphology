@@ -47,7 +47,7 @@ export default function mutation(Graph, checkers) {
         const graph = new Graph();
         graph.mergeNode('John');
 
-        assert.deepEqual(graph.nodes(), ['John']);
+        assert.deepStrictEqual(graph.nodes(), ['John']);
       },
 
       'it should do nothing if the node already exists.': function() {
@@ -55,7 +55,7 @@ export default function mutation(Graph, checkers) {
         graph.addNode('John');
         graph.mergeNode('John');
 
-        assert.deepEqual(graph.nodes(), ['John']);
+        assert.deepStrictEqual(graph.nodes(), ['John']);
       },
 
       'it should merge the attributes.': function() {
@@ -63,8 +63,8 @@ export default function mutation(Graph, checkers) {
         graph.addNode('John', {eyes: 'blue'});
         graph.mergeNode('John', {age: 15});
 
-        assert.deepEqual(graph.nodes(), ['John']);
-        assert.deepEqual(graph.getNodeAttributes('John'), {
+        assert.deepStrictEqual(graph.nodes(), ['John']);
+        assert.deepStrictEqual(graph.getNodeAttributes('John'), {
           eyes: 'blue',
           age: 15
         });
@@ -126,7 +126,7 @@ export default function mutation(Graph, checkers) {
 
         const loop = graph.addDirectedEdge('Thomas', 'Thomas');
 
-        assert.deepEqual(graph.extremities(loop), ['Thomas', 'Thomas']);
+        assert.deepStrictEqual(graph.extremities(loop), ['Thomas', 'Thomas']);
       },
 
       'it should throw if the graph is not multi & we try to add twice the same edge.': function() {
@@ -286,7 +286,7 @@ export default function mutation(Graph, checkers) {
 
         assert.strictEqual(graph.size, 1);
         assert.strictEqual(graph.hasEdge('John', 'Martha'), true);
-        assert.deepEqual(graph.getEdgeAttributes('John', 'Martha'), {
+        assert.deepStrictEqual(graph.getEdgeAttributes('John', 'Martha'), {
           type: 'KNOWS',
           weight: 2
         });
@@ -298,7 +298,7 @@ export default function mutation(Graph, checkers) {
 
         assert.strictEqual(graph.order, 2);
         assert.strictEqual(graph.size, 1);
-        assert.deepEqual(graph.nodes(), ['John', 'Martha']);
+        assert.deepStrictEqual(graph.nodes(), ['John', 'Martha']);
       },
 
       'it should throw in case of inconsistencies.': function() {

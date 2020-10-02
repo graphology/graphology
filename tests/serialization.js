@@ -28,8 +28,8 @@ export default function serialization(Graph, checkers) {
         graph.addNode('John');
         graph.addNode('Jack', {age: 34});
 
-        assert.deepEqual(graph.exportNode('John'), {key: 'John'});
-        assert.deepEqual(graph.exportNode('Jack'), {key: 'Jack', attributes: {age: 34}});
+        assert.deepStrictEqual(graph.exportNode('John'), {key: 'John'});
+        assert.deepStrictEqual(graph.exportNode('Jack'), {key: 'Jack', attributes: {age: 34}});
       }
     },
 
@@ -50,10 +50,10 @@ export default function serialization(Graph, checkers) {
         graph.addUndirectedEdgeWithKey('J<->M•1', 'John', 'Martha');
         graph.addUndirectedEdgeWithKey('J<->M•2', 'John', 'Martha', {weight: 2});
 
-        assert.deepEqual(graph.exportEdge('J->M•1'), {key: 'J->M•1', source: 'John', target: 'Martha'});
-        assert.deepEqual(graph.exportEdge('J->M•2'), {key: 'J->M•2', source: 'John', target: 'Martha', attributes: {weight: 1}});
-        assert.deepEqual(graph.exportEdge('J<->M•1'), {key: 'J<->M•1', source: 'John', target: 'Martha', undirected: true});
-        assert.deepEqual(graph.exportEdge('J<->M•2'), {key: 'J<->M•2', source: 'John', target: 'Martha', attributes: {weight: 2}, undirected: true});
+        assert.deepStrictEqual(graph.exportEdge('J->M•1'), {key: 'J->M•1', source: 'John', target: 'Martha'});
+        assert.deepStrictEqual(graph.exportEdge('J->M•2'), {key: 'J->M•2', source: 'John', target: 'Martha', attributes: {weight: 1}});
+        assert.deepStrictEqual(graph.exportEdge('J<->M•1'), {key: 'J<->M•1', source: 'John', target: 'Martha', undirected: true});
+        assert.deepStrictEqual(graph.exportEdge('J<->M•2'), {key: 'J<->M•2', source: 'John', target: 'Martha', attributes: {weight: 2}, undirected: true});
       },
 
       'it should not include generated keys.': function() {
@@ -63,12 +63,12 @@ export default function serialization(Graph, checkers) {
         const edge1 = graph.addEdge(1, 2);
         const edge2 = graph.addEdgeWithKey('edge2', 2, 3);
 
-        assert.deepEqual(graph.exportEdge(edge1), {
+        assert.deepStrictEqual(graph.exportEdge(edge1), {
           source: '1',
           target: '2'
         });
 
-        assert.deepEqual(graph.exportEdge(edge2), {
+        assert.deepStrictEqual(graph.exportEdge(edge2), {
           source: '2',
           target: '3',
           key: 'edge2'
@@ -88,7 +88,7 @@ export default function serialization(Graph, checkers) {
         graph.addUndirectedEdgeWithKey('J<->J•1', 'John', 'Jack');
         graph.addUndirectedEdgeWithKey('J<->J•2', 'John', 'Jack', {weight: 3});
 
-        assert.deepEqual(
+        assert.deepStrictEqual(
           graph.export(),
           {
             attributes: {
@@ -138,8 +138,8 @@ export default function serialization(Graph, checkers) {
         graph.importNode({key: 'John'});
         graph.importNode({key: 'Jack', attributes: {age: 34}});
 
-        assert.deepEqual(graph.nodes(), ['John', 'Jack']);
-        assert.deepEqual(graph.getNodeAttributes('Jack'), {age: 34});
+        assert.deepStrictEqual(graph.nodes(), ['John', 'Jack']);
+        assert.deepStrictEqual(graph.getNodeAttributes('Jack'), {age: 34});
       },
 
       'it should merge if the flag is true.': function() {
@@ -147,7 +147,7 @@ export default function serialization(Graph, checkers) {
         graph.addNode('John');
         graph.importNode({key: 'John', attributes: {age: 34}}, true);
 
-        assert.deepEqual(graph.nodes(), ['John']);
+        assert.deepStrictEqual(graph.nodes(), ['John']);
         assert.strictEqual(graph.getNodeAttribute('John', 'age'), 34);
       }
     },
@@ -195,7 +195,7 @@ export default function serialization(Graph, checkers) {
         });
 
         assert.strictEqual(graph.size, 2);
-        assert.deepEqual(graph.getEdgeAttributes('J<->T'), {weight: 2});
+        assert.deepStrictEqual(graph.getEdgeAttributes('J<->T'), {weight: 2});
       },
 
       'it should merge if the flag is true.': function() {
@@ -227,8 +227,8 @@ export default function serialization(Graph, checkers) {
         const other = new Graph();
         other.import(graph);
 
-        assert.deepEqual(graph.nodes(), other.nodes());
-        assert.deepEqual(graph.edges(), other.edges());
+        assert.deepStrictEqual(graph.nodes(), other.nodes());
+        assert.deepStrictEqual(graph.edges(), other.edges());
       },
 
       'it should be possible to import a serialized graph.': function() {
@@ -243,7 +243,7 @@ export default function serialization(Graph, checkers) {
           ]
         });
 
-        assert.deepEqual(graph.nodes(), ['John', 'Thomas']);
+        assert.deepStrictEqual(graph.nodes(), ['John', 'Thomas']);
         assert.strictEqual(graph.hasEdge('John', 'Thomas'), true);
       },
 
@@ -256,7 +256,7 @@ export default function serialization(Graph, checkers) {
           ]
         }, true);
 
-        assert.deepEqual(graph.nodes(), ['John', 'Thomas']);
+        assert.deepStrictEqual(graph.nodes(), ['John', 'Thomas']);
         assert.strictEqual(graph.size, 1);
         assert.strictEqual(graph.hasEdge('John', 'Thomas'), true);
       },
@@ -270,7 +270,7 @@ export default function serialization(Graph, checkers) {
           }
         });
 
-        assert.deepEqual(graph.getAttributes(), {name: 'graph'});
+        assert.deepStrictEqual(graph.getAttributes(), {name: 'graph'});
       }
     }
   };

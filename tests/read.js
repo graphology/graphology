@@ -286,7 +286,7 @@ export default function read(Graph, checkers) {
 
         const edge = graph.addDirectedEdge('John', 'Martha');
 
-        assert.deepEqual(graph.extremities(edge), ['John', 'Martha']);
+        assert.deepStrictEqual(graph.extremities(edge), ['John', 'Martha']);
       }
     },
 

@@ -37,8 +37,8 @@ export default function instantiation(Graph, implementation, checkers) {
 
         const other = Graph.from(graph);
 
-        assert.deepEqual(graph.nodes(), other.nodes());
-        assert.deepEqual(graph.edges(), other.edges());
+        assert.deepStrictEqual(graph.nodes(), other.nodes());
+        assert.deepStrictEqual(graph.edges(), other.edges());
       },
 
       'it should be possible to create a Graph from a serialized graph': function() {
@@ -52,7 +52,7 @@ export default function instantiation(Graph, implementation, checkers) {
           ]
         });
 
-        assert.deepEqual(graph.nodes(), ['John', 'Thomas']);
+        assert.deepStrictEqual(graph.nodes(), ['John', 'Thomas']);
         assert.strictEqual(graph.hasEdge('John', 'Thomas'), true);
       },
 
@@ -106,7 +106,7 @@ export default function instantiation(Graph, implementation, checkers) {
           graph.addEdge('John', 'Martha');
           graph.addEdge('Martha', 'Clark');
 
-          assert.deepEqual(graph.edges(), ['John->Martha', 'Martha->Clark']);
+          assert.deepStrictEqual(graph.edges(), ['John->Martha', 'Martha->Clark']);
         }
       },
 

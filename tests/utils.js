@@ -24,7 +24,7 @@ export default function utils(Graph) {
 
         const copy = graph.nullCopy();
 
-        assert.deepEqual(copy.nodes(), []);
+        assert.deepStrictEqual(copy.nodes(), []);
         assert.strictEqual(copy.order, 0);
         assert.strictEqual(copy.size, 0);
 
@@ -54,7 +54,7 @@ export default function utils(Graph) {
 
         const copy = graph.emptyCopy();
 
-        assert.deepEqual(copy.nodes(), ['John', 'Thomas']);
+        assert.deepStrictEqual(copy.nodes(), ['John', 'Thomas']);
         assert.strictEqual(copy.order, 2);
         assert.strictEqual(copy.size, 0);
 
@@ -67,8 +67,8 @@ export default function utils(Graph) {
 
         assert.strictEqual(copy.order, 3);
         assert.strictEqual(copy.size, 1);
-        assert.deepEqual(copy.getNodeAttributes('John'), {age: 32});
-        assert.deepEqual(graph.getNodeAttributes('John'), {});
+        assert.deepStrictEqual(copy.getNodeAttributes('John'), {age: 32});
+        assert.deepStrictEqual(graph.getNodeAttributes('John'), {});
       },
 
       'it should be possible to pass options to merge.': function() {
@@ -92,8 +92,8 @@ export default function utils(Graph) {
 
         const copy = graph.copy();
 
-        assert.deepEqual(copy.nodes(), graph.nodes());
-        assert.deepEqual(copy.edges(), graph.edges());
+        assert.deepStrictEqual(copy.nodes(), graph.nodes());
+        assert.deepStrictEqual(copy.edges(), graph.edges());
         assert.strictEqual(copy.order, 2);
         assert.strictEqual(copy.size, 1);
 
@@ -136,7 +136,7 @@ export default function utils(Graph) {
 
         assert.strictEqual(graph.size, 4);
 
-        assert.deepEqual(graph.edges(), ['dA', 'uA', 'dB', 'uB']);
+        assert.deepStrictEqual(graph.edges(), ['dA', 'uA', 'dB', 'uB']);
       }
     }
   };

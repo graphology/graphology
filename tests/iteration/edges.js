@@ -242,21 +242,21 @@ export default function edgesIteration(Graph, checkers) {
         'it should return all the relevant edges.': function() {
           const edges = graph[name]().sort();
 
-          assert.deepEqual(edges, data.all.slice().sort());
+          assert.deepStrictEqual(edges, data.all.slice().sort());
         },
 
         'it should return a node\'s relevant edges.': function() {
           const edges = graph[name](data.node.key);
 
-          assert.deepEqual(edges, data.node.edges);
-          assert.deepEqual(graph[name]('Alone'), []);
+          assert.deepStrictEqual(edges, data.node.edges);
+          assert.deepStrictEqual(graph[name]('Alone'), []);
         },
 
         'it should return all the relevant edges between source & target.': function() {
           const edges = graph[name](data.path.source, data.path.target);
 
           assert(sameMembers(edges, data.path.edges));
-          assert.deepEqual(graph[name]('Forever', 'Alone'), []);
+          assert.deepStrictEqual(graph[name]('Forever', 'Alone'), []);
         }
       },
 
@@ -268,17 +268,17 @@ export default function edgesIteration(Graph, checkers) {
           graph[forEachName](function(key, attributes, source, target, sA, tA) {
             edges.push(key);
 
-            assert.deepEqual(attributes, key === 'J->T' ? {weight: 14} : {});
+            assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
             assert.strictEqual(source, graph.source(key));
             assert.strictEqual(target, graph.target(key));
 
-            assert.deepEqual(graph.getNodeAttributes(source), sA);
-            assert.deepEqual(graph.getNodeAttributes(target), tA);
+            assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
+            assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
           });
 
           edges.sort();
 
-          assert.deepEqual(edges, data.all.slice().sort());
+          assert.deepStrictEqual(edges, data.all.slice().sort());
         },
 
         'it should be possible to use callback iterators over a node\'s relevant edges.': function() {
@@ -287,17 +287,17 @@ export default function edgesIteration(Graph, checkers) {
           graph[forEachName](data.node.key, function(key, attributes, source, target, sA, tA) {
             edges.push(key);
 
-            assert.deepEqual(attributes, key === 'J->T' ? {weight: 14} : {});
+            assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
             assert.strictEqual(source, graph.source(key));
             assert.strictEqual(target, graph.target(key));
 
-            assert.deepEqual(graph.getNodeAttributes(source), sA);
-            assert.deepEqual(graph.getNodeAttributes(target), tA);
+            assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
+            assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
           });
 
           edges.sort();
 
-          assert.deepEqual(edges, data.node.edges.slice().sort());
+          assert.deepStrictEqual(edges, data.node.edges.slice().sort());
         },
 
         'it should be possible to use callback iterators over all the relevant edges between source & target.': function() {
@@ -306,12 +306,12 @@ export default function edgesIteration(Graph, checkers) {
           graph[forEachName](data.path.source, data.path.target, function(key, attributes, source, target, sA, tA) {
             edges.push(key);
 
-            assert.deepEqual(attributes, key === 'J->T' ? {weight: 14} : {});
+            assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
             assert.strictEqual(source, graph.source(key));
             assert.strictEqual(target, graph.target(key));
 
-            assert.deepEqual(graph.getNodeAttributes(source), sA);
-            assert.deepEqual(graph.getNodeAttributes(target), tA);
+            assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
+            assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
           });
 
 
@@ -324,7 +324,7 @@ export default function edgesIteration(Graph, checkers) {
         'it should be possible to return an iterator over the relevant edges.': function() {
           const iterator = graph[iteratorName]();
 
-          assert.deepEqual(take(iterator), data.all.map(edge => {
+          assert.deepStrictEqual(take(iterator), data.all.map(edge => {
             const [source, target] = graph.extremities(edge);
 
             return [
@@ -341,7 +341,7 @@ export default function edgesIteration(Graph, checkers) {
         'it should be possible to return an iterator over a node\'s relevant edges.': function() {
           const iterator = graph[iteratorName](data.node.key);
 
-          assert.deepEqual(take(iterator), data.node.edges.map(edge => {
+          assert.deepStrictEqual(take(iterator), data.node.edges.map(edge => {
             const [source, target] = graph.extremities(edge);
 
             return [
@@ -358,7 +358,7 @@ export default function edgesIteration(Graph, checkers) {
         'it should be possible to return an iterator over relevant edges between source & target.': function() {
           const iterator = graph[iteratorName](data.path.source, data.path.target);
 
-          assert.deepEqual(take(iterator), data.path.edges.map(edge => {
+          assert.deepStrictEqual(take(iterator), data.path.edges.map(edge => {
             const [source, target] = graph.extremities(edge);
 
             return [
@@ -384,7 +384,7 @@ export default function edgesIteration(Graph, checkers) {
         simpleGraph.addEdgeWithKey('1->3', 1, 3);
         simpleGraph.addEdgeWithKey('1->4', 1, 4);
 
-        assert.deepEqual(simpleGraph.edges(1), ['1->2', '1->3', '1->4']);
+        assert.deepStrictEqual(simpleGraph.edges(1), ['1->2', '1->3', '1->4']);
       },
 
       'it should also work with typed graphs.': function() {
@@ -394,8 +394,8 @@ export default function edgesIteration(Graph, checkers) {
         undirected.mergeEdgeWithKey('1--2', 1, 2);
         directed.mergeEdgeWithKey('1->2', 1, 2);
 
-        assert.deepEqual(undirected.edges(1, 2), ['1--2']);
-        assert.deepEqual(directed.edges(1, 2), ['1->2']);
+        assert.deepStrictEqual(undirected.edges(1, 2), ['1--2']);
+        assert.deepStrictEqual(directed.edges(1, 2), ['1->2']);
       }
     }
   };

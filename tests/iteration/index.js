@@ -27,15 +27,15 @@ export default function iteration(Graph, checkers) {
 
         graph.forEach(function(s, t, sa, ta, e, ea) {
           adjacency.push([s, t]);
-          assert.deepEqual(sa, graph.getNodeAttributes(s));
-          assert.deepEqual(ta, graph.getNodeAttributes(t));
-          assert.deepEqual(ea, graph.getEdgeAttributes(e));
+          assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
+          assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
+          assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
         });
 
-        assert.deepEqual(adjacency, [
-          [1, 2],
-          [2, 3],
-          [3, 1]
+        assert.deepStrictEqual(adjacency, [
+          ['1', '2'],
+          ['2', '3'],
+          ['3', '1']
         ]);
       },
 
@@ -48,7 +48,7 @@ export default function iteration(Graph, checkers) {
 
         graph.replaceNodeAttributes(2, {hello: 'world'});
 
-        assert.deepEqual(take(graph.adjacency()), graph.edges().map(edge => {
+        assert.deepStrictEqual(take(graph.adjacency()), graph.edges().map(edge => {
           const [source, target] = graph.extremities(edge);
 
           return [
@@ -74,7 +74,7 @@ export default function iteration(Graph, checkers) {
 
         graph.replaceNodeAttributes(2, {hello: 'world'});
 
-        assert.deepEqual(take(graph[Symbol.iterator]()), graph.edges().map(edge => {
+        assert.deepStrictEqual(take(graph[Symbol.iterator]()), graph.edges().map(edge => {
           const [source, target] = graph.extremities(edge);
 
           return [

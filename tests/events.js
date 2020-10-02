@@ -17,7 +17,7 @@ export default function events(Graph) {
 
         const handler = spy(data => {
           assert.strictEqual(data.key, 'John');
-          assert.deepEqual(data.attributes, {age: 34});
+          assert.deepStrictEqual(data.attributes, {age: 34});
         });
 
         graph.on('nodeAdded', handler);
@@ -34,7 +34,7 @@ export default function events(Graph) {
 
         const handler = spy(data => {
           assert.strictEqual(data.key, 'J->T');
-          assert.deepEqual(data.attributes, {weight: 1});
+          assert.deepStrictEqual(data.attributes, {weight: 1});
           assert.strictEqual(data.source, 'John');
           assert.strictEqual(data.target, 'Thomas');
           assert.strictEqual(data.undirected, false);
@@ -55,7 +55,7 @@ export default function events(Graph) {
 
         const handler = spy(data => {
           assert.strictEqual(data.key, 'John');
-          assert.deepEqual(data.attributes, {age: 34});
+          assert.deepStrictEqual(data.attributes, {age: 34});
         });
 
         graph.on('nodeDropped', handler);
@@ -73,7 +73,7 @@ export default function events(Graph) {
 
         const handler = spy(data => {
           assert.strictEqual(data.key, 'J->T');
-          assert.deepEqual(data.attributes, {weight: 1});
+          assert.deepStrictEqual(data.attributes, {weight: 1});
           assert.strictEqual(data.source, 'John');
           assert.strictEqual(data.target, 'Thomas');
           assert.strictEqual(data.undirected, false);
@@ -117,14 +117,14 @@ export default function events(Graph) {
             assert.strictEqual(meta.value, 'Awesome graph');
           }
           else if (type === 'replace') {
-            assert.deepEqual(meta.before, {name: 'Awesome graph'});
-            assert.deepEqual(meta.after, {name: 'Shitty graph'});
+            assert.deepStrictEqual(meta.before, {name: 'Awesome graph'});
+            assert.deepStrictEqual(meta.after, {name: 'Shitty graph'});
           }
           else if (type === 'remove') {
             assert.strictEqual(meta.name, 'name');
           }
           else {
-            assert.deepEqual(meta.data, {name: 'Shitty graph', author: 'John'});
+            assert.deepStrictEqual(meta.data, {name: 'Shitty graph', author: 'John'});
           }
         });
 
@@ -155,14 +155,14 @@ export default function events(Graph) {
             assert.strictEqual(meta.value, 34);
           }
           else if (type === 'replace') {
-            assert.deepEqual(meta.before, {age: 34});
-            assert.deepEqual(meta.after, {age: 56});
+            assert.deepStrictEqual(meta.before, {age: 34});
+            assert.deepStrictEqual(meta.after, {age: 56});
           }
           else if (type === 'remove') {
             assert.strictEqual(meta.name, 'eyes');
           }
           else {
-            assert.deepEqual(meta.data, {eyes: 'blue'});
+            assert.deepStrictEqual(meta.data, {eyes: 'blue'});
           }
         });
 
@@ -194,14 +194,14 @@ export default function events(Graph) {
             assert.strictEqual(meta.value, 34);
           }
           else if (type === 'replace') {
-            assert.deepEqual(meta.before, {weight: 34});
-            assert.deepEqual(meta.after, {weight: 56});
+            assert.deepStrictEqual(meta.before, {weight: 34});
+            assert.deepStrictEqual(meta.after, {weight: 56});
           }
           else if (type === 'remove') {
             assert.strictEqual(meta.name, 'type');
           }
           else {
-            assert.deepEqual(meta.data, {type: 'KNOWS'});
+            assert.deepStrictEqual(meta.data, {type: 'KNOWS'});
           }
         });
 

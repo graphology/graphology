@@ -20,7 +20,7 @@ export default function knownMethods(Graph) {
         graph.addUndirectedEdgeWithKey('J<->J•1', 'John', 'Jack');
         graph.addUndirectedEdgeWithKey('J<->J•2', 'John', 'Jack', {weight: 3});
 
-        assert.deepEqual(graph.toJSON(), graph.export());
+        assert.deepStrictEqual(graph.toJSON(), graph.export());
       }
     },
 
