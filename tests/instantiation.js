@@ -11,6 +11,7 @@ import {addNodesFrom} from './helpers';
 const CONSTRUCTORS = [
   'DirectedGraph',
   'UndirectedGraph',
+  'MultiGraph',
   'MultiDirectedGraph',
   'MultiUndirectedGraph'
 ];
@@ -18,6 +19,7 @@ const CONSTRUCTORS = [
 const OPTIONS = [
   {multi: false, type: 'directed'},
   {multi: false, type: 'undirected'},
+  {multi: true, type: 'mixed'},
   {multi: true, type: 'directed'},
   {multi: true, type: 'undirected'}
 ];
