@@ -1253,7 +1253,12 @@ export default class Graph extends EventEmitter {
     const undirected = edgeData instanceof UndirectedEdgeData;
 
     if (sourceData === targetData) {
-      sourceData.selfLoops--;
+      if (undirected) {
+        sourceData.undirectedSelfLoops--;
+      }
+      else {
+        sourceData.directedSelfLoops--;
+      }
     }
     else {
       if (undirected) {
