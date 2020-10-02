@@ -105,7 +105,12 @@ export default function serialization(Graph, checkers) {
               {key: 'J->J•3', source: 'John', target: 'Jack'},
               {key: 'J<->J•1', source: 'John', target: 'Jack', undirected: true},
               {key: 'J<->J•2', source: 'John', target: 'Jack', attributes: {weight: 3}, undirected: true}
-            ]
+            ],
+            options: {
+              allowSelfLoops: true,
+              multi: true,
+              type: 'mixed'
+            }
           }
         );
       }

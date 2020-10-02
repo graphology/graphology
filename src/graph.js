@@ -1911,7 +1911,12 @@ export default class Graph extends EventEmitter {
     return {
       attributes: this.getAttributes(),
       nodes,
-      edges
+      edges,
+      options: {
+        type: this.type,
+        multi: this.multi,
+        allowSelfLoops: this.allowSelfLoops
+      }
     };
   }
 
