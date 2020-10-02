@@ -155,6 +155,26 @@ export default function instantiation(Graph, implementation, checkers) {
           assert.strictEqual(graph.multi, multi);
           assert.strictEqual(graph.type, type);
         });
+      },
+
+      'alternative constructors should throw if given inconsistent options.': function() {
+        CONSTRUCTORS.forEach((name, index) => {
+          const {
+            multi,
+            type
+          } = OPTIONS[index];
+
+          assert.throws(function() {
+            const graph = new implementation[name]({multi: !multi});
+          }, invalid());
+
+          if (type === 'mixed')
+            return;
+
+          assert.throws(function() {
+            const graph = new implementation[name]({type: type === 'directed' ? 'undirected' : 'directed'});
+          }, invalid());
+        });
       }
     }
   };

@@ -19,37 +19,64 @@ import {
  */
 class DirectedGraph extends Graph {
   constructor(options) {
-    super(
-      assign({type: 'directed'}, options)
-    );
+    const finalOptions = assign({type: 'directed'}, options);
+
+    if ('multi' in finalOptions && finalOptions.multi !== false)
+      throw new InvalidArgumentsGraphError('DirectedGraph.from: inconsistent indication that the graph should be multi in given options!');
+
+    if (finalOptions.type !== 'directed')
+    throw new InvalidArgumentsGraphError('DirectedGraph.from: inconsistent "' + finalOptions.type + '" type in given options!');
+
+    super(finalOptions);
   }
 }
 class UndirectedGraph extends Graph {
   constructor(options) {
-    super(
-      assign({type: 'undirected'}, options)
-    );
+    const finalOptions = assign({type: 'undirected'}, options);
+
+    if ('multi' in finalOptions && finalOptions.multi !== false)
+      throw new InvalidArgumentsGraphError('UndirectedGraph.from: inconsistent indication that the graph should be multi in given options!');
+
+    if (finalOptions.type !== 'undirected')
+      throw new InvalidArgumentsGraphError('UndirectedGraph.from: inconsistent "' + finalOptions.type + '" type in given options!');
+
+    super(finalOptions);
   }
 }
 class MultiGraph extends Graph {
   constructor(options) {
-    super(
-      assign({multi: true}, options)
-    );
+    const finalOptions = assign({multi: true}, options);
+
+    if ('multi' in finalOptions && finalOptions.multi !== true)
+      throw new InvalidArgumentsGraphError('MultiGraph.from: inconsistent indication that the graph should be simple in given options!');
+
+    super(finalOptions);
   }
 }
 class MultiDirectedGraph extends Graph {
   constructor(options) {
-    super(
-      assign({multi: true, type: 'directed'}, options)
-    );
+    const finalOptions = assign({type: 'directed', multi: true}, options);
+
+    if ('multi' in finalOptions && finalOptions.multi !== true)
+      throw new InvalidArgumentsGraphError('MultiDirectedGraph.from: inconsistent indication that the graph should be simple in given options!');
+
+    if (finalOptions.type !== 'directed')
+      throw new InvalidArgumentsGraphError('MultiDirectedGraph.from: inconsistent "' + finalOptions.type + '" type in given options!');
+
+    super(finalOptions);
   }
 }
 class MultiUndirectedGraph extends Graph {
   constructor(options) {
-    super(
-      assign({multi: true, type: 'undirected'}, options)
-    );
+    const finalOptions = assign({type: 'undirected', multi: true}, options);
+
+    if ('multi' in finalOptions && finalOptions.multi !== true)
+      throw new InvalidArgumentsGraphError('MultiUndirectedGraph.from: inconsistent indication that the graph should be simple in given options!');
+
+    if (finalOptions.type !== 'undirected')
+      throw new InvalidArgumentsGraphError('MultiUndirectedGraph.from: inconsistent "' + finalOptions.type + '" type in given options!');
+
+    super(finalOptions);
   }
 }
 
