@@ -1058,13 +1058,13 @@ export default class Graph extends EventEmitter {
    *
    * @throws {Error} - Will throw if the edge isn't in the graph.
    */
-  undirected(edge) {
+  isUndirected(edge) {
     edge = '' + edge;
 
     const data = this._edges.get(edge);
 
     if (!data)
-      throw new NotFoundGraphError(`Graph.undirected: could not find the "${edge}" edge in the graph.`);
+      throw new NotFoundGraphError(`Graph.isUndirected: could not find the "${edge}" edge in the graph.`);
 
     return data instanceof UndirectedEdgeData;
   }
@@ -1077,13 +1077,13 @@ export default class Graph extends EventEmitter {
    *
    * @throws {Error} - Will throw if the edge isn't in the graph.
    */
-  directed(edge) {
+  isDirected(edge) {
     edge = '' + edge;
 
     const data = this._edges.get(edge);
 
     if (!data)
-      throw new NotFoundGraphError(`Graph.directed: could not find the "${edge}" edge in the graph.`);
+      throw new NotFoundGraphError(`Graph.isDirected: could not find the "${edge}" edge in the graph.`);
 
     return data instanceof DirectedEdgeData;
   }

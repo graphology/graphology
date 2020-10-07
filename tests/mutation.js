@@ -170,8 +170,8 @@ export default function mutation(Graph, checkers) {
         directedGraph.addNode('Martha');
         const directedEdge = directedGraph.addEdge('John', 'Martha');
 
-        assert(graph.directed(mixedEdge));
-        assert(directedGraph.directed(directedEdge));
+        assert(graph.isDirected(mixedEdge));
+        assert(directedGraph.isDirected(directedEdge));
       },
 
       'it should add an undirected edge if the graph is undirected.': function() {
@@ -181,7 +181,7 @@ export default function mutation(Graph, checkers) {
         graph.addNode('Martha');
         const edge = graph.addEdge('John', 'Martha');
 
-        assert(graph.undirected(edge));
+        assert(graph.isUndirected(edge));
       }
     },
 
@@ -239,8 +239,8 @@ export default function mutation(Graph, checkers) {
         directedGraph.addNode('Martha');
         const directedEdge = directedGraph.addEdgeWithKey('J->M', 'John', 'Martha');
 
-        assert(graph.directed(mixedEdge));
-        assert(directedGraph.directed(directedEdge));
+        assert(graph.isDirected(mixedEdge));
+        assert(directedGraph.isDirected(directedEdge));
       },
 
       'it should add an undirected edge if the graph is undirected.': function() {
@@ -250,7 +250,7 @@ export default function mutation(Graph, checkers) {
         graph.addNode('Martha');
         const edge = graph.addEdgeWithKey('J<->M', 'John', 'Martha');
 
-        assert(graph.undirected(edge));
+        assert(graph.isUndirected(edge));
       }
     },
 

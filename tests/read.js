@@ -350,13 +350,13 @@ export default function read(Graph, checkers) {
       }
     },
 
-    '#.directed': {
+    '#.isDirected': {
 
       'it should throw if the edge is not in the graph.': function() {
         const graph = new Graph();
 
         assert.throws(function() {
-          graph.directed('test');
+          graph.isDirected('test');
         }, notFound());
       },
 
@@ -369,18 +369,18 @@ export default function read(Graph, checkers) {
         const directedEdge = graph.addDirectedEdge('John', 'Rachel'),
               undirectedEdge = graph.addUndirectedEdge('Rachel', 'Suzan');
 
-        assert.strictEqual(graph.directed(directedEdge), true);
-        assert.strictEqual(graph.directed(undirectedEdge), false);
+        assert.strictEqual(graph.isDirected(directedEdge), true);
+        assert.strictEqual(graph.isDirected(undirectedEdge), false);
       }
     },
 
-    '#.undirected': {
+    '#.isUndirected': {
 
       'it should throw if the edge is not in the graph.': function() {
         const graph = new Graph();
 
         assert.throws(function() {
-          graph.undirected('test');
+          graph.isUndirected('test');
         }, notFound());
       },
 
@@ -393,8 +393,8 @@ export default function read(Graph, checkers) {
         const directedEdge = graph.addDirectedEdge('John', 'Rachel'),
               undirectedEdge = graph.addUndirectedEdge('Rachel', 'Suzan');
 
-        assert.strictEqual(graph.undirected(directedEdge), false);
-        assert.strictEqual(graph.undirected(undirectedEdge), true);
+        assert.strictEqual(graph.isUndirected(directedEdge), false);
+        assert.strictEqual(graph.isUndirected(undirectedEdge), true);
       },
     },
 
