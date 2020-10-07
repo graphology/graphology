@@ -1657,8 +1657,9 @@ export default class Graph extends EventEmitter {
       throw new InvalidArgumentsGraphError('Graph.updateAttribute: updater should be a function.');
 
     const attributes = data.attributes;
+    const value = updater(attributes[name]);
 
-    attributes[name] = updater(attributes[name]);
+    attributes[name] = value;
 
     // Emitting
     this.emit('nodeAttributesUpdated', {
@@ -1666,7 +1667,7 @@ export default class Graph extends EventEmitter {
       type: 'set',
       meta: {
         name,
-        value: attributes[name]
+        value
       }
     });
 
