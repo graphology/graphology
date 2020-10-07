@@ -1102,9 +1102,28 @@ export default class Graph extends EventEmitter {
     const data = this._edges.get(edge);
 
     if (!data)
-      throw new NotFoundGraphError(`Graph.selfLoop: could not find the "${edge}" edge in the graph.`);
+      throw new NotFoundGraphError(`Graph.isSelfLoop: could not find the "${edge}" edge in the graph.`);
 
     return data.source === data.target;
+  }
+
+  /**
+   * Method returning whether the given edge has a generated key.
+   *
+   * @param  {any}     edge - The edge's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the edge isn't in the graph.
+   */
+  hasGeneratedKey(edge) {
+    edge = '' + edge;
+
+    const data = this._edges.get(edge);
+
+    if (!data)
+      throw new NotFoundGraphError(`Graph.hasGeneratedKey: could not find the "${edge}" edge in the graph.`);
+
+    return data.generatedKey;
   }
 
   /**---------------------------------------------------------------------------

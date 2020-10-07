@@ -5,6 +5,7 @@
 * Adding `#.implementation`.
 * Adding `#.hasExtremity`.
 * Adding `#.selfLoopCount`, `#.directedSelfLoopCount` & `#.undirectedSelfLoopCount`.
+* Adding `#.hasGeneratedKey`.
 * Renaming `#.directed` & `#.undirected` to `#.isDirected` & `#.isUndirected`.
 * Renanming `#.selfLoop` to `#.isSelfLoop`.
 * Serializing options & accepting them with `#.from` static methods.
