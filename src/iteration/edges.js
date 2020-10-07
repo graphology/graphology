@@ -61,13 +61,14 @@ const EDGES_ITERATION = [
  * @param  {object} object - Target object.
  * @return {array}         - The found edges.
  */
-function collect(edges, object) {
-  for (const k in object) {
-    if (object[k] instanceof Set)
-      object[k].forEach(edgeData => edges.push(edgeData.key));
-    else
-      edges.push(object[k].key);
-  }
+function collectSimple(edges, object) {
+  for (const k in object)
+    edges.push(object[k].key);
+}
+
+function collectMulti(edges, object) {
+  for (const k in object)
+    object[k].forEach(edgeData => edges.push(edgeData.key));
 }
 
 /**
@@ -411,23 +412,26 @@ function createEdgeIterator(graph, type) {
 /**
  * Function creating an array of edges for the given type & the given node.
  *
+ * @param  {boolean} multi     - Whether the graph is multi or not.
  * @param  {string}  type      - Type of edges to retrieve.
  * @param  {string}  direction - In or out?
  * @param  {any}     nodeData  - Target node's data.
  * @return {array}             - Array of edges.
  */
-function createEdgeArrayForNode(type, direction, nodeData) {
+function createEdgeArrayForNode(multi, type, direction, nodeData) {
   const edges = [];
+
+  const fn = multi ? collectMulti : collectSimple;
 
   if (type !== 'undirected') {
     if (direction !== 'out')
-      collect(edges, nodeData.in);
+      fn(edges, nodeData.in);
     if (direction !== 'in')
-      collect(edges, nodeData.out);
+      fn(edges, nodeData.out);
   }
 
   if (type !== 'directed') {
-    collect(edges, nodeData.undirected);
+    fn(edges, nodeData.undirected);
   }
 
   return edges;
@@ -624,6 +628,7 @@ function attachEdgeArrayCreator(Class, description) {
 
       // Iterating over a node's edges
       return createEdgeArrayForNode(
+        this.multi,
         type === 'mixed' ? this.type : type,
         direction,
         nodeData
