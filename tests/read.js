@@ -398,12 +398,12 @@ export default function read(Graph, checkers) {
       },
     },
 
-    '#.selfLoop': {
+    '#.isSelfLoop': {
       'it should throw if the edge is not in the graph.': function() {
         const graph = new Graph();
 
         assert.throws(function() {
-          graph.selfLoop('test');
+          graph.isSelfLoop('test');
         }, notFound());
       },
 
@@ -415,8 +415,8 @@ export default function read(Graph, checkers) {
         const selfLoop = graph.addDirectedEdge('John', 'John'),
               edge = graph.addUndirectedEdge('John', 'Rachel');
 
-        assert.strictEqual(graph.selfLoop(selfLoop), true);
-        assert.strictEqual(graph.selfLoop(edge), false);
+        assert.strictEqual(graph.isSelfLoop(selfLoop), true);
+        assert.strictEqual(graph.isSelfLoop(edge), false);
       },
     },
 

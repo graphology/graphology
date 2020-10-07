@@ -1096,7 +1096,7 @@ export default class Graph extends EventEmitter {
    *
    * @throws {Error} - Will throw if the edge isn't in the graph.
    */
-  selfLoop(edge) {
+  isSelfLoop(edge) {
     edge = '' + edge;
 
     const data = this._edges.get(edge);

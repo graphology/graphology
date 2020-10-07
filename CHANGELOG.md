@@ -6,6 +6,7 @@
 * Adding `#.hasExtremity`.
 * Adding `#.selfLoopCount`, `#.directedSelfLoopCount` & `#.undirectedSelfLoopCount`.
 * Renaming `#.directed` & `#.undirected` to `#.isDirected` & `#.isUndirected`.
+* Renanming `#.selfLoop` to `#.isSelfLoop`.
 * Serializing options & accepting them with `#.from` static methods.
 * Improving performance of `#.opposite`.
 * Improving serialization performance.
