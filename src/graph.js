@@ -1445,14 +1445,16 @@ export default class Graph extends EventEmitter {
     if (typeof updater !== 'function')
       throw new InvalidArgumentsGraphError('Graph.updateAttribute: updater should be a function.');
 
-    this._attributes[name] = updater(this._attributes[name]);
+    const value = this._attributes[name];
+
+    this._attributes[name] = updater(value);
 
     // Emitting
     this.emit('attributesUpdated', {
       type: 'set',
       meta: {
         name,
-        value: this._attributes[name]
+        value
       }
     });
 
@@ -1519,7 +1521,7 @@ export default class Graph extends EventEmitter {
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError('Graph.mergeAttributes: provided attributes are not a plain object.');
 
-    this._attributes = assign(this._attributes, attributes);
+    assign(this._attributes, attributes);
 
     // Emitting
     this.emit('attributesUpdated', {

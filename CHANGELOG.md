@@ -13,6 +13,7 @@
 * Improving serialization performance.
 * Updating type declarations & adding generics.
 * Optimizing various degree methods.
+* Optimizing graph attributes methods.
 
 ## 0.17.1
 
