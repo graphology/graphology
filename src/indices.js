@@ -41,7 +41,7 @@ export function updateStructureIndex(
     edgeOrSet.add(edgeData);
 
   // If selfLoop, we break here
-  if (source === target)
+  if (source === target && undirected)
     return;
 
   // Handling target (we won't add the edge because it was already taken
