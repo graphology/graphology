@@ -871,13 +871,20 @@ export default class Graph extends EventEmitter {
 
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
       throw new NotFoundGraphError(`Graph.directedDegree: could not find the "${node}" node in the graph.`);
 
     if (this.type === 'undirected')
       return 0;
 
-    return this.inDegree(node, selfLoops) + this.outDegree(node, selfLoops);
+    const loops = selfLoops ? nodeData.directedSelfLoops : 0;
+
+    const inDegree = nodeData.inDegree + loops;
+    const outDegree = nodeData.outDegree + loops;
+
+    return inDegree + outDegree;
   }
 
   /**
@@ -896,16 +903,17 @@ export default class Graph extends EventEmitter {
 
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
       throw new NotFoundGraphError(`Graph.undirectedDegree: could not find the "${node}" node in the graph.`);
 
     if (this.type === 'directed')
       return 0;
 
-    const data = this._nodes.get(node),
-          loops = selfLoops ? (data.undirectedSelfLoops * 2) : 0;
+    const loops = selfLoops ? nodeData.undirectedSelfLoops : 0;
 
-    return data.undirectedDegree + loops;
+    return nodeData.undirectedDegree + loops * 2;
   }
 
   /**
@@ -924,16 +932,27 @@ export default class Graph extends EventEmitter {
 
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
       throw new NotFoundGraphError(`Graph.degree: could not find the "${node}" node in the graph.`);
 
     let degree = 0;
+    let loops = 0;
 
-    if (this.type !== 'undirected')
-      degree += this.directedDegree(node, selfLoops);
+    if (this.type !== 'directed') {
+      if (selfLoops)
+        loops = nodeData.undirectedSelfLoops;
 
-    if (this.type !== 'directed')
-      degree += this.undirectedDegree(node, selfLoops);
+      degree += nodeData.undirectedDegree + loops * 2;
+    }
+
+    if (this.type !== 'undirected') {
+      if (selfLoops)
+        loops = nodeData.directedSelfLoops;
+
+      degree += nodeData.inDegree + nodeData.outDegree + loops * 2;
+    }
 
     return degree;
   }

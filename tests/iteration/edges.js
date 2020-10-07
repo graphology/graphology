@@ -399,17 +399,17 @@ export default function edgesIteration(Graph, checkers) {
       },
 
       'self loops should appear when using #.inEdges.': function() {
-        const graph = new Graph({type: 'directed'});
+        const directed = new Graph({type: 'directed'});
 
-        graph.addNode('Lucy');
-        graph.addEdgeWithKey('Lucy', 'Lucy', 'Lucy');
+        directed.addNode('Lucy');
+        directed.addEdgeWithKey('Lucy', 'Lucy', 'Lucy');
 
-        assert.deepStrictEqual(graph.inEdges('Lucy'), ['Lucy']);
-        assert.deepStrictEqual(Array.from(graph.inEdgeEntries('Lucy')).map(x => x[0]), ['Lucy']);
+        assert.deepStrictEqual(directed.inEdges('Lucy'), ['Lucy']);
+        assert.deepStrictEqual(Array.from(directed.inEdgeEntries('Lucy')).map(x => x[0]), ['Lucy']);
 
         let count = 0;
 
-        graph.forEachInEdge('Lucy', edge => {
+        directed.forEachInEdge('Lucy', edge => {
           assert.strictEqual(edge, 'Lucy');
           count++;
         });
