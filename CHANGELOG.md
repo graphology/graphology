@@ -14,6 +14,7 @@
 * Updating type declarations & adding generics.
 * Optimizing various degree methods.
 * Optimizing graph attributes methods.
+* Fixing edges & neighbors iteration regarding self loops in the directed case.
 
 ## 0.17.1
 

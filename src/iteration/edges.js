@@ -77,8 +77,11 @@ function collectMulti(edges, object) {
  * @param {object}   object   - Target object.
  * @param {function} callback - Function to call.
  */
-function forEachSimple(object, callback) {
+function forEachSimple(object, callback, avoid) {
   for (const k in object) {
+    if (k === avoid)
+      continue;
+
     const edgeData = object[k];
 
     callback(
@@ -92,8 +95,11 @@ function forEachSimple(object, callback) {
   }
 }
 
-function forEachMulti(object, callback) {
+function forEachMulti(object, callback, avoid) {
   for (const k in object) {
+    if (k === avoid)
+      continue;
+
     object[k].forEach(edgeData => callback(
       edgeData.key,
       edgeData.attributes,
@@ -111,7 +117,7 @@ function forEachMulti(object, callback) {
  * @param  {object}   object - Target object.
  * @return {Iterator}
  */
-function createIterator(object) {
+function createIterator(object, avoid) {
   const keys = Object.keys(object),
         l = keys.length;
 
@@ -137,6 +143,11 @@ function createIterator(object) {
         return {done: true};
 
       const k = keys[i];
+
+      if (k === avoid) {
+        i++;
+        return next();
+      }
 
       edgeData = object[k];
 
@@ -428,6 +439,10 @@ function createEdgeArrayForNode(multi, type, direction, nodeData) {
       fn(edges, nodeData.in);
     if (direction !== 'in')
       fn(edges, nodeData.out);
+
+    // Handling self loop edge case
+    if (!direction && nodeData.directedSelfLoops > 0)
+      edges.splice(edges.lastIndexOf(nodeData.key), 1);
   }
 
   if (type !== 'directed') {
@@ -453,7 +468,7 @@ function forEachEdgeForNode(multi, type, direction, nodeData, callback) {
     if (direction !== 'out')
       fn(nodeData.in, callback);
     if (direction !== 'in')
-      fn(nodeData.out, callback);
+      fn(nodeData.out, callback, !direction ? nodeData.key : null);
   }
 
   if (type !== 'directed') {
@@ -476,7 +491,7 @@ function createEdgeIteratorForNode(type, direction, nodeData) {
     if (direction !== 'out' && typeof nodeData.in !== 'undefined')
       iterator = chain(iterator, createIterator(nodeData.in));
     if (direction !== 'in' && typeof nodeData.out !== 'undefined')
-      iterator = chain(iterator, createIterator(nodeData.out));
+      iterator = chain(iterator, createIterator(nodeData.out, !direction ? nodeData.key : null));
   }
 
   if (type !== 'directed' && typeof nodeData.undirected !== 'undefined') {

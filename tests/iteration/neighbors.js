@@ -222,7 +222,45 @@ export default function neighborsIteration(Graph, checkers) {
     };
   }
 
-  const tests = {};
+  const tests = {
+    'Miscellaneous': {
+      'self loops should appear when using #.inNeighbors and should appear only once with #.neighbors.': function() {
+        const directed = new Graph({type: 'directed'});
+
+        directed.addNode('Lucy');
+        directed.addEdgeWithKey('test', 'Lucy', 'Lucy');
+
+        assert.deepStrictEqual(directed.inNeighbors('Lucy'), ['Lucy']);
+        assert.deepStrictEqual(
+          Array.from(directed.inNeighborEntries('Lucy')).map(x => x[0]),
+          ['Lucy']
+        );
+
+        let neighbors = [];
+
+        directed.forEachInNeighbor('Lucy', neighbor => {
+          neighbors.push(neighbor);
+        });
+
+        assert.deepStrictEqual(neighbors, ['Lucy']);
+
+        assert.deepStrictEqual(directed.neighbors('Lucy'), ['Lucy']);
+
+        neighbors = [];
+
+        directed.forEachNeighbor('Lucy', neighbor => {
+          neighbors.push(neighbor);
+        });
+
+        assert.deepStrictEqual(neighbors, ['Lucy']);
+
+        assert.deepStrictEqual(
+          Array.from(directed.neighborEntries('Lucy')).map(x => x[0]),
+          ['Lucy']
+        );
+      }
+    }
+  };
 
   // Common tests
   METHODS.forEach(name => deepMerge(tests, commonTests(name)));

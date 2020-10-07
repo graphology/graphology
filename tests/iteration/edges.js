@@ -398,25 +398,40 @@ export default function edgesIteration(Graph, checkers) {
         assert.deepStrictEqual(directed.edges(1, 2), ['1->2']);
       },
 
-      'self loops should appear when using #.inEdges.': function() {
+      'self loops should appear when using #.inEdges and should appear only once with #.edges.': function() {
         const directed = new Graph({type: 'directed'});
 
         directed.addNode('Lucy');
         directed.addEdgeWithKey('Lucy', 'Lucy', 'Lucy');
 
         assert.deepStrictEqual(directed.inEdges('Lucy'), ['Lucy']);
-        assert.deepStrictEqual(Array.from(directed.inEdgeEntries('Lucy')).map(x => x[0]), ['Lucy']);
+        assert.deepStrictEqual(
+          Array.from(directed.inEdgeEntries('Lucy')).map(x => x[0]),
+          ['Lucy']
+        );
 
-        let count = 0;
+        let edges = [];
 
         directed.forEachInEdge('Lucy', edge => {
-          assert.strictEqual(edge, 'Lucy');
-          count++;
+          edges.push(edge);
         });
 
-        assert.strictEqual(count, 1);
+        assert.deepStrictEqual(edges, ['Lucy']);
 
-        // assert.deepStrictEqual(graph.edges('Lucy'), ['Lucy']);
+        assert.deepStrictEqual(directed.edges('Lucy'), ['Lucy']);
+
+        edges = [];
+
+        directed.forEachEdge('Lucy', edge => {
+          edges.push(edge);
+        });
+
+        assert.deepStrictEqual(edges, ['Lucy']);
+
+        assert.deepStrictEqual(
+          Array.from(directed.edgeEntries('Lucy')).map(x => x[0]),
+          ['Lucy']
+        );
       }
     }
   };
