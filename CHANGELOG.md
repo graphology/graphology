@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.18.0 (provisional)
+## 0.18.0
 
 * Adding `#.implementation`.
 * Adding `#.hasExtremity`.
