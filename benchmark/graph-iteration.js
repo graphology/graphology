@@ -9,11 +9,19 @@ const I = 1000;
 
 const g = new Graph();
 
-let i, v;
+let i, v, j, l;
 let it, step;
 
 while (g.order < N)
   g.mergeEdge(randomString(4, 50), randomString(4, 50));
+
+// console.time('nodes array');
+// for (i = 0; i < I; i++) {
+//   it = g.nodes();
+//   for (j = 0, l = it.length; j < l; j++)
+//     v = g.getNodeAttributes(it[j]);
+// }
+// console.timeEnd('nodes array');
 
 console.time('forEachNode');
 for (i = 0; i < I; i++)
