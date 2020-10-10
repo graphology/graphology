@@ -246,17 +246,22 @@ function createIterator(object, avoid) {
  * @param  {mixed}  k      - Neighbor key.
  * @return {array}         - The found edges.
  */
-function collectForKey(edges, object, k) {
+function collectForKeySimple(edges, object, k) {
+  const edgeData = object[k];
 
-  if (!(k in object))
+  if (!edgeData)
     return;
 
-  if (object[k] instanceof Set)
-    object[k].forEach(edgeData => edges.push(edgeData.key));
-  else
-    edges.push(object[k].key);
+  edges.push(edgeData.key);
+}
 
-  return;
+function collectForKeyMulti(edges, object, k) {
+  const edgesData = object[k];
+
+  if (!edgesData)
+    return;
+
+  edgesData.forEach(edgeData => edges.push(edgeData.key));
 }
 
 /**
@@ -570,26 +575,29 @@ function createEdgeIteratorForNode(type, direction, nodeData) {
  * Function creating an array of edges for the given path.
  *
  * @param  {string}   type       - Type of edges to retrieve.
+ * @param  {boolean}  multi      - Whether the graph is multi.
  * @param  {string}   direction  - In or out?
  * @param  {NodeData} sourceData - Source node's data.
  * @param  {any}      target     - Target node.
  * @return {array}               - Array of edges.
  */
-function createEdgeArrayForPath(type, direction, sourceData, target) {
+function createEdgeArrayForPath(type, multi, direction, sourceData, target) {
+  const fn = multi ? collectForKeyMulti : collectForKeySimple;
+
   const edges = [];
 
   if (type !== 'undirected') {
 
     if (typeof sourceData.in !== 'undefined' && direction !== 'out')
-      collectForKey(edges, sourceData.in, target);
+      fn(edges, sourceData.in, target);
 
     if (typeof sourceData.out !== 'undefined' && direction !== 'in')
-      collectForKey(edges, sourceData.out, target);
+      fn(edges, sourceData.out, target);
   }
 
   if (type !== 'directed') {
     if (typeof sourceData.undirected !== 'undefined')
-      collectForKey(edges, sourceData.undirected, target);
+      fn(edges, sourceData.undirected, target);
   }
 
   return edges;
@@ -728,7 +736,7 @@ function attachEdgeArrayCreator(Class, description) {
         throw new NotFoundGraphError(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
 
       // Iterating over the edges between source & target
-      return createEdgeArrayForPath(type, direction, sourceData, target);
+      return createEdgeArrayForPath(type, this.multi, direction, sourceData, target);
     }
 
     throw new InvalidArgumentsGraphError(`Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${arguments.length}).`);

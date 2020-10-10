@@ -4,6 +4,7 @@
 
 * Adding `#.forEachUntil`.
 * Adding `#.forEachNodeUntil`.
+* Optimizing `#.forEachEdge(A, B)`.
 
 ## 0.18.0
 
