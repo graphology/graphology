@@ -272,34 +272,39 @@ function collectForKeyMulti(edges, object, k) {
  * @param {mixed}    k        - Neighbor key.
  * @param {function} callback - Callback to use.
  */
-function forEachForKey(object, k, callback) {
+function forEachForKeySimple(object, k, callback) {
+  const edgeData = object[k];
 
-  if (!(k in object))
+  if (!edgeData)
     return;
 
-  if (object[k] instanceof Set)
-    object[k].forEach(edgeData => callback(
-      edgeData.key,
-      edgeData.attributes,
-      edgeData.source.key,
-      edgeData.target.key,
-      edgeData.source.attributes,
-      edgeData.target.attributes
-    ));
-  else {
-    const edgeData = object[k];
+  const sourceData = edgeData.source;
+  const targetData = edgeData.target;
 
-    callback(
-      edgeData.key,
-      edgeData.attributes,
-      edgeData.source.key,
-      edgeData.target.key,
-      edgeData.source.attributes,
-      edgeData.target.attributes
-    );
-  }
+  callback(
+    edgeData.key,
+    edgeData.attributes,
+    sourceData.key,
+    targetData.key,
+    sourceData.attributes,
+    targetData.attributes
+  );
+}
 
-  return;
+function forEachForKeyMulti(object, k, callback) {
+  const edgesData = object[k];
+
+  if (!edgesData)
+    return;
+
+  edgesData.forEach(edgeData => callback(
+    edgeData.key,
+    edgeData.attributes,
+    edgeData.source.key,
+    edgeData.target.key,
+    edgeData.source.attributes,
+    edgeData.target.attributes
+  ));
 }
 
 /**
@@ -607,24 +612,27 @@ function createEdgeArrayForPath(type, multi, direction, sourceData, target) {
  * Function iterating over edges for the given path using a callback.
  *
  * @param  {string}   type       - Type of edges to retrieve.
+ * @param  {boolean}  multi      - Whether the graph is multi.
  * @param  {string}   direction  - In or out?
  * @param  {NodeData} sourceData - Source node's data.
  * @param  {string}   target     - Target node.
  * @param  {function} callback   - Function to call.
  */
-function forEachEdgeForPath(type, direction, sourceData, target, callback) {
+function forEachEdgeForPath(type, multi, direction, sourceData, target, callback) {
+  const fn = multi ? forEachForKeyMulti : forEachForKeySimple;
+
   if (type !== 'undirected') {
 
     if (typeof sourceData.in !== 'undefined' && direction !== 'out')
-      forEachForKey(sourceData.in, target, callback);
+      fn(sourceData.in, target, callback);
 
     if (typeof sourceData.out !== 'undefined' && direction !== 'in')
-      forEachForKey(sourceData.out, target, callback);
+      fn(sourceData.out, target, callback);
   }
 
   if (type !== 'directed') {
     if (typeof sourceData.undirected !== 'undefined')
-      forEachForKey(sourceData.undirected, target, callback);
+      fn(sourceData.undirected, target, callback);
   }
 }
 
@@ -822,7 +830,7 @@ function attachForEachEdge(Class, description) {
         throw new NotFoundGraphError(`Graph.${forEachName}:  could not find the "${target}" target node in the graph.`);
 
       // Iterating over the edges between source & target
-      return forEachEdgeForPath(type, direction, sourceData, target, callback);
+      return forEachEdgeForPath(type, this.multi, direction, sourceData, target, callback);
     }
 
     throw new InvalidArgumentsGraphError(`Graph.${forEachName}: too many arguments (expecting 1, 2 or 3 and got ${arguments.length}).`);
