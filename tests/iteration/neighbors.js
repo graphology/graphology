@@ -169,6 +169,7 @@ export default function neighborsIteration(Graph, checkers) {
 
   function specificTests(name, data) {
     const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1),
+          forEachUntilName = forEachName + 'Until',
           iteratorName = name.slice(0, -1) + 'Entries';
 
     return {
@@ -203,6 +204,24 @@ export default function neighborsIteration(Graph, checkers) {
           });
 
           assert.deepStrictEqual(neighbors, data.node.neighbors);
+        }
+      },
+
+      // ForEachUntil
+      ['#.' + forEachUntilName]: {
+        'it should be possible to iterate over neighbors using a breakable callback.': function() {
+          const neighbors = [];
+
+          graph[forEachUntilName](data.node.key, function(target, attrs) {
+            neighbors.push(target);
+
+            assert.deepStrictEqual(graph.getNodeAttributes(target), attrs);
+            assert.strictEqual(graph[name](data.node.key, target), true);
+
+            return true;
+          });
+
+          assert.deepStrictEqual(neighbors, data.node.neighbors.slice(0, 1));
         }
       },
 
