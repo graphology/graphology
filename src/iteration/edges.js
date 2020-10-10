@@ -112,6 +112,71 @@ function forEachMulti(object, callback, avoid) {
 }
 
 /**
+ * Function iterating over edges from the given object using a callback until
+ * the return value of the callback is truthy.
+ *
+ * @param {object}   object   - Target object.
+ * @param {function} callback - Function to call.
+ */
+// function forEachSimpleUntil(object, callback, avoid) {
+//   let shouldBreak = false;
+
+//   for (const k in object) {
+//     if (k === avoid)
+//       continue;
+
+//     const edgeData = object[k];
+
+//     shouldBreak = callback(
+//       edgeData.key,
+//       edgeData.attributes,
+//       edgeData.source.key,
+//       edgeData.target.key,
+//       edgeData.source.attributes,
+//       edgeData.target.attributes
+//     );
+
+//     if (shouldBreak)
+//       return true;
+//   }
+
+//   return false;
+// }
+
+// function forEachMultiUntil(object, callback, avoid) {
+//   let iterator, step, edgeData, source, target;
+
+//   let shouldBreak = false;
+
+//   for (const k in object) {
+//     if (k === avoid)
+//       continue;
+
+//     iterator = object[k].values();
+
+//     while ((step = iterator.next(), step.done !== true)) {
+//       edgeData = step.value;
+//       source = edgeData.source;
+//       target = edgeData.target;
+
+//       shouldBreak = callback(
+//         edgeData.key,
+//         edgeData.attributes,
+//         source.key,
+//         target.key,
+//         source.attributes,
+//         target.attributes
+//       );
+
+//       if (shouldBreak)
+//         return true;
+//     }
+//   }
+
+//   return false;
+// }
+
+/**
  * Function returning an iterator over edges from the given object.
  *
  * @param  {object}   object - Target object.
