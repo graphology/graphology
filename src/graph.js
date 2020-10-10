@@ -1808,6 +1808,40 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method iterating over the graph's adjacency using the given callback return
+   * a truthy value to stop iteration.
+   *
+   * @param  {function}  callback - Callback to use.
+   */
+  forEachUntil(callback) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError('Graph.forEachUntil: expecting a callback.');
+
+    const iterator = this._edges.values();
+
+    let shouldBreak = false;
+    let step, edgeData, sourceData, targetData;
+
+    while ((step = iterator.next(), step.done !== true)) {
+      edgeData = step.value;
+      sourceData = edgeData.source;
+      targetData = edgeData.target;
+
+      shouldBreak = callback(
+        sourceData.key,
+        targetData.key,
+        sourceData.attributes,
+        targetData.attributes,
+        edgeData.key,
+        edgeData.attributes
+      );
+
+      if (shouldBreak)
+        break;
+    }
+  }
+
+  /**
    * Method returning an iterator over the graph's adjacency.
    *
    * @return {Iterator}

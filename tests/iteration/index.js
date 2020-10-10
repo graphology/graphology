@@ -39,6 +39,33 @@ export default function iteration(Graph, checkers) {
         ]);
       },
 
+      'it should be possible to iterate over the graph\'s adjacency using callbacks until returning true.': function() {
+        const graph = new Graph();
+
+        graph.mergeEdge(1, 2);
+        graph.mergeEdge(2, 3);
+        graph.mergeEdge(3, 1);
+
+        graph.replaceNodeAttributes(2, {hello: 'world'});
+
+        const adjacency = [];
+
+        graph.forEachUntil(function(s, t, sa, ta, e, ea) {
+          adjacency.push([s, t]);
+          assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
+          assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
+          assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
+
+          if (sa.hello === 'world')
+            return true;
+        });
+
+        assert.deepStrictEqual(adjacency, [
+          ['1', '2'],
+          ['2', '3']
+        ]);
+      },
+
       'it should be possible to create an iterator over the graph\'s adjacency.': function() {
         const graph = new Graph();
 
