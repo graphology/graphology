@@ -1,3 +1,6 @@
+/* eslint no-unused-vars: 0 */
+// TODO: drop this ^
+
 /**
  * Graphology Edge Iteration
  * ==========================
@@ -118,63 +121,63 @@ function forEachMulti(object, callback, avoid) {
  * @param {object}   object   - Target object.
  * @param {function} callback - Function to call.
  */
-// function forEachSimpleUntil(object, callback, avoid) {
-//   let shouldBreak = false;
+function forEachSimpleUntil(object, callback, avoid) {
+  let shouldBreak = false;
 
-//   for (const k in object) {
-//     if (k === avoid)
-//       continue;
+  for (const k in object) {
+    if (k === avoid)
+      continue;
 
-//     const edgeData = object[k];
+    const edgeData = object[k];
 
-//     shouldBreak = callback(
-//       edgeData.key,
-//       edgeData.attributes,
-//       edgeData.source.key,
-//       edgeData.target.key,
-//       edgeData.source.attributes,
-//       edgeData.target.attributes
-//     );
+    shouldBreak = callback(
+      edgeData.key,
+      edgeData.attributes,
+      edgeData.source.key,
+      edgeData.target.key,
+      edgeData.source.attributes,
+      edgeData.target.attributes
+    );
 
-//     if (shouldBreak)
-//       return true;
-//   }
+    if (shouldBreak)
+      return true;
+  }
 
-//   return false;
-// }
+  return false;
+}
 
-// function forEachMultiUntil(object, callback, avoid) {
-//   let iterator, step, edgeData, source, target;
+function forEachMultiUntil(object, callback, avoid) {
+  let iterator, step, edgeData, source, target;
 
-//   let shouldBreak = false;
+  let shouldBreak = false;
 
-//   for (const k in object) {
-//     if (k === avoid)
-//       continue;
+  for (const k in object) {
+    if (k === avoid)
+      continue;
 
-//     iterator = object[k].values();
+    iterator = object[k].values();
 
-//     while ((step = iterator.next(), step.done !== true)) {
-//       edgeData = step.value;
-//       source = edgeData.source;
-//       target = edgeData.target;
+    while ((step = iterator.next(), step.done !== true)) {
+      edgeData = step.value;
+      source = edgeData.source;
+      target = edgeData.target;
 
-//       shouldBreak = callback(
-//         edgeData.key,
-//         edgeData.attributes,
-//         source.key,
-//         target.key,
-//         source.attributes,
-//         target.attributes
-//       );
+      shouldBreak = callback(
+        edgeData.key,
+        edgeData.attributes,
+        source.key,
+        target.key,
+        source.attributes,
+        target.attributes
+      );
 
-//       if (shouldBreak)
-//         return true;
-//     }
-//   }
+      if (shouldBreak)
+        return true;
+    }
+  }
 
-//   return false;
-// }
+  return false;
+}
 
 /**
  * Function returning an iterator over edges from the given object.
@@ -308,6 +311,63 @@ function forEachForKeyMulti(object, k, callback) {
 }
 
 /**
+ * Function iterating over the egdes from the object at given key using
+ * a callback until it returns a truthy value to stop iteration.
+ *
+ * @param {object}   object   - Target object.
+ * @param {mixed}    k        - Neighbor key.
+ * @param {function} callback - Callback to use.
+ */
+function forEachForKeySimpleUntil(object, k, callback) {
+  const edgeData = object[k];
+
+  if (!edgeData)
+    return;
+
+  const sourceData = edgeData.source;
+  const targetData = edgeData.target;
+
+  return callback(
+    edgeData.key,
+    edgeData.attributes,
+    sourceData.key,
+    targetData.key,
+    sourceData.attributes,
+    targetData.attributes
+  );
+}
+
+function forEachForKeyMultiUntil(object, k, callback) {
+  const edgesData = object[k];
+
+  if (!edgesData)
+    return;
+
+  let shouldBreak = false;
+
+  const iterator = edgesData.values();
+  let step, edgeData;
+
+  while ((step = iterator.next(), step.done !== true)) {
+    edgeData = step.value;
+
+    shouldBreak = callback(
+      edgeData.key,
+      edgeData.attributes,
+      edgeData.source.key,
+      edgeData.target.key,
+      edgeData.source.attributes,
+      edgeData.target.attributes
+    );
+
+    if (shouldBreak)
+      return true;
+  }
+
+  return false;
+}
+
+/**
  * Function returning an iterator over the egdes from the object at given key.
  *
  * @param  {object}   object   - Target object.
@@ -428,6 +488,68 @@ function forEachEdge(graph, type, callback) {
         );
       }
     });
+  }
+}
+
+/**
+ * Function iterating over a graph's edges using a callback until it returns
+ * a truthy value to stop iteration.
+ *
+ * @param  {Graph}    graph    - Target Graph instance.
+ * @param  {string}   type     - Type of edges to retrieve.
+ * @param  {function} callback - Function to call.
+ */
+function forEachEdgeUntil(graph, type, callback) {
+  if (graph.size === 0)
+    return;
+
+  const iterator = graph._edges.values();
+
+  let shouldBreak = false;
+  let step, data;
+
+  if (type === 'mixed' || type === graph.type) {
+
+    while ((step = iterator.next(), step.done !== true)) {
+      data = step.value;
+      const {key, attributes, source, target} = data;
+
+      shouldBreak = callback(
+        key,
+        attributes,
+        source.key,
+        target.key,
+        source.attributes,
+        target.attributes
+      );
+
+      if (shouldBreak)
+        return;
+    }
+  }
+  else {
+    const mask = type === 'undirected';
+
+    while ((step = iterator.next(), step.done !== true)) {
+      data = step.value;
+
+      if ((data instanceof UndirectedEdgeData) !== mask)
+        continue;
+
+      const {key, attributes, source, target} = data;
+
+      shouldBreak = callback(
+        key,
+        attributes,
+        source.key,
+        target.key,
+        source.attributes,
+        target.attributes
+      );
+
+      if (shouldBreak)
+        return;
+    }
   }
 }
 
@@ -838,6 +960,93 @@ function attachForEachEdge(Class, description) {
 }
 
 /**
+ * Function attaching a breakable edge callback iterator method to the Graph
+ * prototype.
+ *
+ * @param {function} Class       - Target class.
+ * @param {object}   description - Method description.
+ */
+function attachForEachEdgeUntil(Class, description) {
+  const {
+    name,
+    type,
+    direction
+  } = description;
+
+  const forEachUntilName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1) + 'Until';
+
+  /**
+   * Function iterating over the graph's relevant edges by applying the given
+   * callback and breaking as soon as the callback return a truthy value.
+   *
+   * Arity 1: Iterate over all the relevant edges.
+   * @param  {function} callback - Callback to use.
+   *
+   * Arity 2: Iterate over all of a node's relevant edges.
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * Arity 3: Iterate over the relevant edges across the given path.
+   * @param  {any}      source   - Source node.
+   * @param  {any}      target   - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * @return {undefined}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  Class.prototype[forEachUntilName] = function(source, target, callback) {
+
+    // Early termination
+    if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
+      return;
+
+    if (arguments.length === 1) {
+      callback = source;
+      return forEachEdgeUntil(this, type, callback);
+    }
+
+    // if (arguments.length === 2) {
+    //   source = '' + source;
+    //   callback = target;
+
+    //   const nodeData = this._nodes.get(source);
+
+    //   if (typeof nodeData === 'undefined')
+    //     throw new NotFoundGraphError(`Graph.${forEachUntilName}: could not find the "${source}" node in the graph.`);
+
+    //   // Iterating over a node's edges
+    //   // TODO: maybe attach the sub method to the instance dynamically?
+    //   return forEachEdgeForNode(
+    //     this.multi,
+    //     type === 'mixed' ? this.type : type,
+    //     direction,
+    //     nodeData,
+    //     callback
+    //   );
+    // }
+
+    // if (arguments.length === 3) {
+    //   source = '' + source;
+    //   target = '' + target;
+
+    //   const sourceData = this._nodes.get(source);
+
+    //   if (!sourceData)
+    //     throw new NotFoundGraphError(`Graph.${forEachUntilName}:  could not find the "${source}" source node in the graph.`);
+
+    //   if (!this._nodes.has(target))
+    //     throw new NotFoundGraphError(`Graph.${forEachUntilName}:  could not find the "${target}" target node in the graph.`);
+
+    //   // Iterating over the edges between source & target
+    //   return forEachEdgeForPath(type, this.multi, direction, sourceData, target, callback);
+    // }
+
+    throw new InvalidArgumentsGraphError(`Graph.${forEachUntilName}: too many arguments (expecting 1, 2 or 3 and got ${arguments.length}).`);
+  };
+}
+
+/**
  * Function attaching an edge iterator method to the Graph prototype.
  *
  * @param {function} Class       - Target class.
@@ -918,6 +1127,7 @@ export function attachEdgeIterationMethods(Graph) {
   EDGES_ITERATION.forEach(description => {
     attachEdgeArrayCreator(Graph, description);
     attachForEachEdge(Graph, description);
+    attachForEachEdgeUntil(Graph, description);
     attachEdgeIteratorCreator(Graph, description);
   });
 }
