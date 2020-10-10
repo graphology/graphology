@@ -47,6 +47,36 @@ export default function nodesIteration(Graph, checkers) {
       }
     },
 
+    '#.forEachNodeUntil': {
+      'it should throw if given callback is not a function.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.forEachNodeUntil(null);
+        }, invalid());
+      },
+
+      'it should be possible to iterate over nodes and their attributes until the callback returns true.': function() {
+        const graph = new Graph();
+
+        graph.addNode('John', {age: 34});
+        graph.addNode('Martha', {age: 33});
+
+        let count = 0;
+
+        graph.forEachNodeUntil(function(key, attributes) {
+          assert.strictEqual(key, 'John');
+          assert.deepStrictEqual(attributes, {age: 34});
+          count++;
+
+          if (key === 'John')
+            return true;
+        });
+
+        assert.strictEqual(count, 1);
+      }
+    },
+
     '#.nodeEntries': {
       'it should be possible to create a nodes iterator.': function() {
         const graph = new Graph();

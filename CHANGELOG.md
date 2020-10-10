@@ -3,6 +3,7 @@
 ## 0.19.0 (provisional)
 
 * Adding `#.forEachUntil`.
+* Adding `#.forEachNodeUntil`.
 
 ## 0.18.0
 
