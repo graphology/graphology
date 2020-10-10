@@ -233,7 +233,8 @@ export default function edgesIteration(Graph, checkers) {
 
   function specificTests(name, data) {
     const iteratorName = name.slice(0, -1) + 'Entries',
-          forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1);
+          forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1),
+          forEachUntilName = forEachName + 'Until';
 
     return {
 
@@ -314,9 +315,66 @@ export default function edgesIteration(Graph, checkers) {
             assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
           });
 
-
           assert(sameMembers(edges, data.path.edges));
         }
+      },
+
+      // ForEachUntil
+      ['#.' + forEachUntilName]: {
+        'it should possible to use breakable callback iterators.': function() {
+          const edges = [];
+
+          graph[forEachUntilName](function(key, attributes, source, target, sA, tA) {
+            edges.push(key);
+
+            assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
+            assert.strictEqual(source, graph.source(key));
+            assert.strictEqual(target, graph.target(key));
+
+            assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
+            assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+            return true;
+          });
+
+          assert.strictEqual(edges.length, 1);
+        },
+
+        // 'it should be possible to use breakable callback iterators over a node\'s relevant edges.': function() {
+        //   const edges = [];
+
+        //   graph[forEachUntilName](data.node.key, function(key, attributes, source, target, sA, tA) {
+        //     edges.push(key);
+
+        //     assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
+        //     assert.strictEqual(source, graph.source(key));
+        //     assert.strictEqual(target, graph.target(key));
+
+        //     assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
+        //     assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+        //   });
+
+        //   edges.sort();
+
+        //   assert.deepStrictEqual(edges, data.node.edges.slice().sort());
+        // },
+
+        // 'it should be possible to use breakable callback iterators over all the relevant edges between source & target.': function() {
+        //   const edges = [];
+
+        //   graph[forEachUntilName](data.path.source, data.path.target, function(key, attributes, source, target, sA, tA) {
+        //     edges.push(key);
+
+        //     assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
+        //     assert.strictEqual(source, graph.source(key));
+        //     assert.strictEqual(target, graph.target(key));
+
+        //     assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
+        //     assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+        //   });
+
+        //   assert(sameMembers(edges, data.path.edges));
+        // }
       },
 
       // Iterators
