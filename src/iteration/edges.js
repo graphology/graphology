@@ -1,6 +1,3 @@
-/* eslint no-unused-vars: 0 */
-// TODO: drop this ^
-
 /**
  * Graphology Edge Iteration
  * ==========================
@@ -674,6 +671,44 @@ function forEachEdgeForNode(multi, type, direction, nodeData, callback) {
 }
 
 /**
+ * Function iterating over a node's edges using a callback until it returns
+ * a truthy value to stop iteration.
+ *
+ * @param  {boolean}  multi     - Whether the graph is multi or not.
+ * @param  {string}   type      - Type of edges to retrieve.
+ * @param  {string}   direction - In or out?
+ * @param  {any}      nodeData  - Target node's data.
+ * @param  {function} callback  - Function to call.
+ */
+function forEachEdgeForNodeUntil(multi, type, direction, nodeData, callback) {
+  const fn = multi ? forEachMultiUntil : forEachSimpleUntil;
+
+  let shouldBreak = false;
+
+  if (type !== 'undirected') {
+    if (direction !== 'out') {
+      shouldBreak = fn(nodeData.in, callback);
+
+      if (shouldBreak)
+        return;
+    }
+    if (direction !== 'in') {
+      shouldBreak = fn(nodeData.out, callback, !direction ? nodeData.key : null);
+
+      if (shouldBreak)
+        return;
+    }
+  }
+
+  if (type !== 'directed') {
+    shouldBreak = fn(nodeData.undirected, callback);
+
+    if (shouldBreak)
+      return;
+  }
+}
+
+/**
  * Function iterating over a node's edges using a callback.
  *
  * @param  {string}   type      - Type of edges to retrieve.
@@ -755,6 +790,49 @@ function forEachEdgeForPath(type, multi, direction, sourceData, target, callback
   if (type !== 'directed') {
     if (typeof sourceData.undirected !== 'undefined')
       fn(sourceData.undirected, target, callback);
+  }
+}
+
+/**
+ * Function iterating over edges for the given path using a callback until
+ * it returns a truthy value to stop iteration.
+ *
+ * @param  {string}   type       - Type of edges to retrieve.
+ * @param  {boolean}  multi      - Whether the graph is multi.
+ * @param  {string}   direction  - In or out?
+ * @param  {NodeData} sourceData - Source node's data.
+ * @param  {string}   target     - Target node.
+ * @param  {function} callback   - Function to call.
+ */
+function forEachEdgeForPathUntil(type, multi, direction, sourceData, target, callback) {
+  const fn = multi ? forEachForKeyMultiUntil : forEachForKeySimpleUntil;
+
+  let shouldBreak = false;
+
+  if (type !== 'undirected') {
+
+    if (typeof sourceData.in !== 'undefined' && direction !== 'out') {
+      shouldBreak = fn(sourceData.in, target, callback);
+
+      if (shouldBreak)
+        return;
+    }
+
+    if (typeof sourceData.out !== 'undefined' && direction !== 'in') {
+      shouldBreak = fn(sourceData.out, target, callback);
+
+      if (shouldBreak)
+        return;
+    }
+  }
+
+  if (type !== 'directed') {
+    if (typeof sourceData.undirected !== 'undefined') {
+      shouldBreak = fn(sourceData.undirected, target, callback);
+
+      if (shouldBreak)
+        return;
+    }
   }
 }
 
@@ -1006,41 +1084,41 @@ function attachForEachEdgeUntil(Class, description) {
       return forEachEdgeUntil(this, type, callback);
     }
 
-    // if (arguments.length === 2) {
-    //   source = '' + source;
-    //   callback = target;
+    if (arguments.length === 2) {
+      source = '' + source;
+      callback = target;
 
-    //   const nodeData = this._nodes.get(source);
+      const nodeData = this._nodes.get(source);
 
-    //   if (typeof nodeData === 'undefined')
-    //     throw new NotFoundGraphError(`Graph.${forEachUntilName}: could not find the "${source}" node in the graph.`);
+      if (typeof nodeData === 'undefined')
+        throw new NotFoundGraphError(`Graph.${forEachUntilName}: could not find the "${source}" node in the graph.`);
 
-    //   // Iterating over a node's edges
-    //   // TODO: maybe attach the sub method to the instance dynamically?
-    //   return forEachEdgeForNode(
-    //     this.multi,
-    //     type === 'mixed' ? this.type : type,
-    //     direction,
-    //     nodeData,
-    //     callback
-    //   );
-    // }
+      // Iterating over a node's edges
+      // TODO: maybe attach the sub method to the instance dynamically?
+      return forEachEdgeForNodeUntil(
+        this.multi,
+        type === 'mixed' ? this.type : type,
+        direction,
+        nodeData,
+        callback
+      );
+    }
 
-    // if (arguments.length === 3) {
-    //   source = '' + source;
-    //   target = '' + target;
+    if (arguments.length === 3) {
+      source = '' + source;
+      target = '' + target;
 
-    //   const sourceData = this._nodes.get(source);
+      const sourceData = this._nodes.get(source);
 
-    //   if (!sourceData)
-    //     throw new NotFoundGraphError(`Graph.${forEachUntilName}:  could not find the "${source}" source node in the graph.`);
+      if (!sourceData)
+        throw new NotFoundGraphError(`Graph.${forEachUntilName}:  could not find the "${source}" source node in the graph.`);
 
-    //   if (!this._nodes.has(target))
-    //     throw new NotFoundGraphError(`Graph.${forEachUntilName}:  could not find the "${target}" target node in the graph.`);
+      if (!this._nodes.has(target))
+        throw new NotFoundGraphError(`Graph.${forEachUntilName}:  could not find the "${target}" target node in the graph.`);
 
-    //   // Iterating over the edges between source & target
-    //   return forEachEdgeForPath(type, this.multi, direction, sourceData, target, callback);
-    // }
+      // Iterating over the edges between source & target
+      return forEachEdgeForPathUntil(type, this.multi, direction, sourceData, target, callback);
+    }
 
     throw new InvalidArgumentsGraphError(`Graph.${forEachUntilName}: too many arguments (expecting 1, 2 or 3 and got ${arguments.length}).`);
   };
