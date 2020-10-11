@@ -6,14 +6,14 @@
  */
 
 /**
- * Very simple Object.assign-like function.
+ * Object.assign-like polyfill.
  *
  * @param  {object} target       - First object.
  * @param  {object} [...objects] - Objects to merge.
  * @return {object}
  */
-export function assign() {
-  const target = arguments[0] || {};
+function assignPolyfill() {
+  const target = arguments[0];
 
   for (let i = 1, l = arguments.length; i < l; i++) {
     if (!arguments[i])
@@ -25,6 +25,13 @@ export function assign() {
 
   return target;
 }
+
+let assign = assignPolyfill;
+
+if (typeof Object.assign === 'function')
+  assign = Object.assign;
+
+export {assign};
 
 /**
  * Function returning the first matching edge for given path.
