@@ -19,6 +19,7 @@ const bundle = (format, filename, options = {}) => ({
     format: format,
     name: 'graphology',
     sourcemap: true,
+    exports: format === 'cjs' ? 'default' : undefined
   },
   external: [
     ...(!options.resolve ? [
