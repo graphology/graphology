@@ -368,14 +368,11 @@ function mergeEdge(
   if (
     !alreadyExistingEdge &&
     !graph.multi &&
-    sourceData &&
-    (
-      undirected ?
-        typeof sourceData.undirected[target] !== 'undefined' :
-        typeof sourceData.out[target] !== 'undefined'
-    )
+    sourceData
   ) {
-    alreadyExistingEdgeData = getMatchingEdge(graph, source, target, undirected ? 'undirected' : 'directed');
+    alreadyExistingEdgeData = undirected ?
+      sourceData.undirected[target] :
+      sourceData.out[target];
   }
 
   // Handling duplicates
