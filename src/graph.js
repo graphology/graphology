@@ -2181,7 +2181,7 @@ export default class Graph extends EventEmitter {
    * @return {Graph}          - The empty copy.
    */
   emptyCopy(options) {
-    const graph = new Graph(assign({}, this._options, options));
+    const graph = this.nullCopy(options);
 
     this._nodes.forEach((nodeData, key) => {
       nodeData = new graph.NodeDataClass(key, assign({}, nodeData.attributes));
