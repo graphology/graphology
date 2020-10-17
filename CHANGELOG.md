@@ -9,6 +9,7 @@
 * Optimizing `#.edges(A, B)`.
 * Optimizing `#.forEachEdge(A, B)`.
 * Fixing `#.edges(A, B)` with directed self loops.
+* Fixing case when `nodeAdded` events would not be fired when using `#.emptyCopy`.
 
 ## 0.18.0
 
