@@ -8,6 +8,7 @@
 * Adding `#.forEachNeighborUntil`.
 * Optimizing `#.edges(A, B)`.
 * Optimizing `#.forEachEdge(A, B)`.
+* Fixing `#.edges(A, B)` with directed self loops.
 
 ## 0.18.0
 

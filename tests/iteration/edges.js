@@ -494,17 +494,17 @@ export default function edgesIteration(Graph, checkers) {
         );
       },
 
-      // 'it should be possible to retrieve self loops.': function() {
-      //   const loopy = new Graph();
+      'it should be possible to retrieve self loops.': function() {
+        const loopy = new Graph();
 
-      //   loopy.addNode('John');
-      //   loopy.addEdgeWithKey('d', 'John', 'John');
-      //   loopy.addUndirectedEdgeWithKey('u', 'John', 'John');
+        loopy.addNode('John');
+        loopy.addEdgeWithKey('d', 'John', 'John');
+        loopy.addUndirectedEdgeWithKey('u', 'John', 'John');
 
-      //   assert.deepStrictEqual(new Set(loopy.edges('John', 'John')), new Set(['d', 'u']));
-      //   assert.deepStrictEqual(loopy.directedEdges('John', 'John'), ['d']);
-      //   assert.deepStrictEqual(loopy.undirectedEdges('John', 'John'), ['u']);
-      // }
+        assert.deepStrictEqual(new Set(loopy.edges('John', 'John')), new Set(['d', 'u']));
+        assert.deepStrictEqual(loopy.directedEdges('John', 'John'), ['d']);
+        assert.deepStrictEqual(loopy.undirectedEdges('John', 'John'), ['u']);
+      }
     }
   };
 

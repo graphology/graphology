@@ -755,6 +755,10 @@ function createEdgeArrayForPath(type, multi, direction, sourceData, target) {
 
     if (typeof sourceData.out !== 'undefined' && direction !== 'in')
       fn(edges, sourceData.out, target);
+
+    // Handling self loop edge case
+    if (!direction && sourceData.directedSelfLoops > 0)
+      edges.splice(edges.lastIndexOf(sourceData.key), 1);
   }
 
   if (type !== 'directed') {
