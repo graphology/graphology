@@ -379,6 +379,25 @@ export default function mutation(Graph, checkers) {
         assert.strictEqual(graph.degree('Margaret'), 0);
         assert.strictEqual(graph.hasEdge('John', 'Margaret'), false);
         assert.strictEqual(graph.hasDirectedEdge('John', 'Margaret'), false);
+      },
+
+      'it should work with self loops.': function() {
+        const graph = new Graph();
+        graph.mergeEdge('John', 'John');
+        graph.dropEdge('John', 'John');
+
+        assert.deepStrictEqual(graph.edges(), []);
+        assert.deepStrictEqual(graph.edges('John'), []);
+        assert.strictEqual(graph.size, 0);
+
+        const multiGraph = new Graph({multi: true});
+        multiGraph.mergeEdgeWithKey('j', 'John', 'John');
+        multiGraph.mergeEdgeWithKey('k', 'John', 'John');
+        multiGraph.dropEdge('j');
+
+        assert.deepStrictEqual(multiGraph.edges(), ['k']);
+        assert.deepStrictEqual(multiGraph.edges('John'), ['k']);
+        assert.strictEqual(multiGraph.size, 1);
       }
     },
 

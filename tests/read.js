@@ -53,6 +53,14 @@ export default function read(Graph, checkers) {
         assert.strictEqual(graph.hasDirectedEdge('Martha', 'Thomas'), false);
         assert.strictEqual(graph.hasDirectedEdge('Catherine', 'John'), false);
         assert.strictEqual(graph.hasDirectedEdge('John', 'Catherine'), false);
+      },
+
+      'it should work with self loops.': function() {
+        const graph = new Graph();
+        graph.mergeDirectedEdge('Lucy', 'Lucy');
+
+        assert.strictEqual(graph.hasDirectedEdge('Lucy', 'Lucy'), true);
+        assert.strictEqual(graph.hasUndirectedEdge('Lucy', 'Lucy'), false);
       }
     },
 
@@ -81,6 +89,14 @@ export default function read(Graph, checkers) {
         assert.strictEqual(graph.hasUndirectedEdge('Martha', 'Thomas'), false);
         assert.strictEqual(graph.hasUndirectedEdge('Catherine', 'John'), true);
         assert.strictEqual(graph.hasUndirectedEdge('John', 'Catherine'), true);
+      },
+
+      'it should work with self loops.': function() {
+        const graph = new Graph();
+        graph.mergeUndirectedEdge('Lucy', 'Lucy');
+
+        assert.strictEqual(graph.hasDirectedEdge('Lucy', 'Lucy'), false);
+        assert.strictEqual(graph.hasUndirectedEdge('Lucy', 'Lucy'), true);
       }
     },
 
@@ -120,6 +136,15 @@ export default function read(Graph, checkers) {
 
         assert.strictEqual(directedGraph.hasEdge(1, 2), false);
         assert.strictEqual(undirectedGraph.hasEdge(1, 2), false);
+      },
+
+      'it should work with self loops.': function() {
+        const graph = new Graph();
+        graph.mergeUndirectedEdge('Lucy', 'Lucy');
+
+        assert.strictEqual(graph.hasDirectedEdge('Lucy', 'Lucy'), false);
+        assert.strictEqual(graph.hasUndirectedEdge('Lucy', 'Lucy'), true);
+        assert.strictEqual(graph.hasEdge('Lucy', 'Lucy'), true);
       }
     },
 
