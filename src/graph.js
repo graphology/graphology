@@ -111,6 +111,39 @@ const DEFAULTS = {
  */
 
 /**
+ * Internal method used to add a node to the given graph
+ *
+ * @param  {Graph}   graph           - Target graph.
+ * @param  {any}     node            - The node's key.
+ * @param  {object}  [attributes]    - Optional attributes.
+ * @return {NodeData}                - Created node data.
+ */
+function addNode(graph, node, attributes) {
+  if (attributes && !isPlainObject(attributes))
+    throw new InvalidArgumentsGraphError(`Graph.addNode: invalid attributes. Expecting an object but got "${attributes}"`);
+
+  // String coercion
+  node = '' + node;
+  attributes = attributes || {};
+
+  if (graph._nodes.has(node))
+    throw new UsageGraphError(`Graph.addNode: the "${node}" node already exist in the graph.`);
+
+  const data = new graph.NodeDataClass(node, attributes);
+
+  // Adding the node to internal register
+  graph._nodes.set(node, data);
+
+  // Emitting
+  graph.emit('nodeAdded', {
+    key: node,
+    attributes
+  });
+
+  return data;
+}
+
+/**
  * Internal method used to add an arbitrary edge to the given graph.
  *
  * @param  {Graph}   graph           - Target graph.
@@ -377,15 +410,13 @@ function mergeEdge(
     throw new UsageGraphError(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
 
   if (!sourceData) {
-    graph.addNode(source);
-    sourceData = graph._nodes.get(source);
+    sourceData = addNode(graph, source);
 
     if (source === target)
       targetData = sourceData;
   }
   if (!targetData) {
-    graph.addNode(target);
-    targetData = graph._nodes.get(target);
+    targetData = addNode(graph, target);
   }
 
   // Storing some data
@@ -1161,28 +1192,9 @@ export default class Graph extends EventEmitter {
    * @throws {Error} - Will throw if the given attributes are not an object.
    */
   addNode(node, attributes) {
-    if (attributes && !isPlainObject(attributes))
-      throw new InvalidArgumentsGraphError(`Graph.addNode: invalid attributes. Expecting an object but got "${attributes}"`);
+    const nodeData = addNode(this, node, attributes);
 
-    // String coercion
-    node = '' + node;
-    attributes = attributes || {};
-
-    if (this._nodes.has(node))
-      throw new UsageGraphError(`Graph.addNode: the "${node}" node already exist in the graph.`);
-
-    const data = new this.NodeDataClass(node, attributes);
-
-    // Adding the node to internal register
-    this._nodes.set(node, data);
-
-    // Emitting
-    this.emit('nodeAdded', {
-      key: node,
-      attributes
-    });
-
-    return node;
+    return nodeData.key;
   }
 
   /**
