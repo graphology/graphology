@@ -70,6 +70,20 @@ export default function mutation(Graph, checkers) {
         });
       },
 
+      // 'it should be possible to pass an updater function.': function() {
+      //   const graph = new Graph();
+      //   graph.addNode('Noemie', {count: 1});
+
+      //   graph.mergeNode('Noemie', attr => {
+      //     return {
+      //       ...attr,
+      //       count: attr.count + 1
+      //     };
+      //   });
+
+      //   assert.deepStrictEqual(graph.getNodeAttributes('Noemie'), {count: 2});
+      // },
+
       'it should coerce keys to string.': function() {
         const graph = new Graph();
         graph.addNode(4);

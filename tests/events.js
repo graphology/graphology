@@ -175,7 +175,43 @@ export default function events(Graph) {
         graph.removeNodeAttribute('John', 'eyes');
 
         assert.strictEqual(handler.times, 4);
-      }
+      },
+
+      // 'it should fire when a node is merged.': function() {
+      //   const graph = new Graph();
+
+      //   const handler = spy(payload => {
+      //     const {key, type, meta} = payload;
+
+      //     assert.strictEqual(type, 'replace');
+      //     assert.strictEqual(key, 'John');
+      //     assert.deepStrictEqual(meta, {
+      //       before: {
+      //         count: 1
+      //       },
+      //       after: {
+      //         count: 2
+      //       }
+      //     });
+      //   });
+
+      //   graph.on('nodeAttributesUpdated', handler);
+
+      //   const updater = attr => {
+      //     if (!attr)
+      //       return {count: 1};
+
+      //     return {
+      //       ...attr,
+      //       count: attr.count + 1
+      //     };
+      //   };
+
+      //   graph.mergeNode('John', updater);
+      //   graph.mergeNode('John', updater);
+
+      //   assert.strictEqual(handler.times, 1);
+      // }
     },
 
     'edgeAttributesUpdated': {
