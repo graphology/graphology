@@ -70,25 +70,57 @@ export default function mutation(Graph, checkers) {
         });
       },
 
-      // 'it should be possible to pass an updater function.': function() {
-      //   const graph = new Graph();
-      //   graph.addNode('Noemie', {count: 1});
-
-      //   graph.mergeNode('Noemie', attr => {
-      //     return {
-      //       ...attr,
-      //       count: attr.count + 1
-      //     };
-      //   });
-
-      //   assert.deepStrictEqual(graph.getNodeAttributes('Noemie'), {count: 2});
-      // },
-
       'it should coerce keys to string.': function() {
         const graph = new Graph();
         graph.addNode(4);
 
         assert.doesNotThrow(() => graph.mergeNode(4));
+      }
+    },
+
+    '#.updateNode': {
+
+      'it should add the node if it does not exist yet.': function() {
+        const graph = new Graph();
+        graph.updateNode('John');
+
+        assert.deepStrictEqual(graph.nodes(), ['John']);
+      },
+
+      'it should do nothing if the node already exists.': function() {
+        const graph = new Graph();
+        graph.addNode('John');
+        graph.updateNode('John');
+
+        assert.deepStrictEqual(graph.nodes(), ['John']);
+      },
+
+      'it should update the attributes.': function() {
+        const graph = new Graph();
+        graph.addNode('John', {eyes: 'blue', count: 1});
+        graph.updateNode('John', attr => ({...attr, count: attr.count + 1}));
+
+        assert.deepStrictEqual(graph.nodes(), ['John']);
+        assert.deepStrictEqual(graph.getNodeAttributes('John'), {
+          eyes: 'blue',
+          count: 2
+        });
+      },
+
+      'it should be possible to start from blank attributes.': function() {
+        const graph = new Graph();
+        graph.updateNode('John', () => ({count: 2}));
+
+        assert.deepStrictEqual(graph.getNodeAttributes('John'), {
+          count: 2
+        });
+      },
+
+      'it should coerce keys to string.': function() {
+        const graph = new Graph();
+        graph.addNode(4);
+
+        assert.doesNotThrow(() => graph.updateNode(4));
       }
     },
 

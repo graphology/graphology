@@ -6,6 +6,7 @@
 * Adding `#.forEachNodeUntil`.
 * Adding `#.forEachEdgeUntil`.
 * Adding `#.forEachNeighborUntil`.
+* Adding `#.updateNode`.
 * Optimizing `#.edges(A, B)`.
 * Optimizing `#.forEachEdge(A, B)`.
 * Optimizing `#.mergeEdge`.

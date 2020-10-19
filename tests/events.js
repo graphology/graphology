@@ -140,7 +140,7 @@ export default function events(Graph) {
     },
 
     'nodeAttributesUpdated': {
-      'it should fire when a node is updated.': function() {
+      'it should fire when a node\'s attributes are updated.': function() {
         const graph = new Graph();
 
         const handler = spy(payload => {
@@ -196,11 +196,35 @@ export default function events(Graph) {
         graph.mergeNode('John', {count: 2});
 
         assert.strictEqual(handler.times, 1);
+      },
+
+      'it should fire when a node is updated.': function() {
+        const graph = new Graph();
+
+        const handler = spy(payload => {
+          assert.deepStrictEqual(payload, {
+            type: 'replace',
+            key: 'John',
+            meta: {
+              before: {count: 1},
+              after: {count: 2}
+            }
+          });
+
+          assert.deepStrictEqual(graph.getNodeAttributes(payload.key), {count: 2});
+        });
+
+        graph.on('nodeAttributesUpdated', handler);
+
+        graph.mergeNode('John', {count: 1});
+        graph.updateNode('John', attr => ({...attr, count: attr.count + 1}));
+
+        assert.strictEqual(handler.times, 1);
       }
     },
 
     'edgeAttributesUpdated': {
-      'it should fire when a node is updated.': function() {
+      'it should fire when an edge\'s attributes are updated.': function() {
         const graph = new Graph();
 
         const handler = spy(payload => {

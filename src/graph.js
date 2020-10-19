@@ -1251,6 +1251,57 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method used to add a node if it does not exist in the graph or else to
+   * update its attributes using a function.
+   *
+   * @param  {any}      node      - The node.
+   * @param  {function} [updater] - Optional updater function.
+   * @return {any}                - The node.
+   */
+  updateNode(node, updater) {
+    if (updater && typeof updater !== 'function')
+      throw new InvalidArgumentsGraphError(`Graph.updateNode: invalid updater function. Expecting a function but got "${updater}"`);
+
+    // String coercion
+    node = '' + node;
+
+    // If the node already exists, we update the attributes
+    let data = this._nodes.get(node);
+
+    if (data) {
+      if (updater) {
+        const oldAttributes = data.attributes;
+        data.attributes = updater(oldAttributes);
+
+        this.emit('nodeAttributesUpdated', {
+          type: 'replace',
+          key: node,
+          meta: {
+            before: oldAttributes,
+            after: data.attributes
+          }
+        });
+      }
+      return node;
+    }
+
+    const attributes = updater ? updater({}) : {};
+
+    data = new this.NodeDataClass(node, attributes);
+
+    // Adding the node to internal register
+    this._nodes.set(node, data);
+
+    // Emitting
+    this.emit('nodeAdded', {
+      key: node,
+      attributes
+    });
+
+    return node;
+  }
+
+  /**
    * Method used to drop a single node & all its attached edges from the graph.
    *
    * @param  {any}    node - The node.
