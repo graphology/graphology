@@ -787,8 +787,9 @@ function forEachEdgeForPath(type, multi, direction, sourceData, target, callback
     if (typeof sourceData.in !== 'undefined' && direction !== 'out')
       fn(sourceData.in, target, callback);
 
-    if (typeof sourceData.out !== 'undefined' && direction !== 'in')
-      fn(sourceData.out, target, callback);
+    if (sourceData.key !== target)
+      if (typeof sourceData.out !== 'undefined' && direction !== 'in')
+        fn(sourceData.out, target, callback);
   }
 
   if (type !== 'directed') {
@@ -822,12 +823,13 @@ function forEachEdgeForPathUntil(type, multi, direction, sourceData, target, cal
         return;
     }
 
-    if (typeof sourceData.out !== 'undefined' && direction !== 'in') {
-      shouldBreak = fn(sourceData.out, target, callback);
+    if (sourceData.key !== target)
+      if (typeof sourceData.out !== 'undefined' && direction !== 'in') {
+        shouldBreak = fn(sourceData.out, target, callback, !direction ? sourceData.key : null);
 
-      if (shouldBreak)
-        return;
-    }
+        if (shouldBreak)
+          return;
+      }
   }
 
   if (type !== 'directed') {

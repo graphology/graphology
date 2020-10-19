@@ -504,6 +504,20 @@ export default function edgesIteration(Graph, checkers) {
         assert.deepStrictEqual(new Set(loopy.edges('John', 'John')), new Set(['d', 'u']));
         assert.deepStrictEqual(loopy.directedEdges('John', 'John'), ['d']);
         assert.deepStrictEqual(loopy.undirectedEdges('John', 'John'), ['u']);
+
+        let edges = [];
+        loopy.forEachDirectedEdge('John', 'John', edge => {
+          edges.push(edge);
+        });
+
+        assert.deepStrictEqual(edges, ['d']);
+
+        edges = [];
+        loopy.forEachUndirectedEdge('John', 'John', edge => {
+          edges.push(edge);
+        });
+
+        assert.deepStrictEqual(edges, ['u']);
       }
     }
   };
