@@ -380,10 +380,19 @@ function mergeEdge(
 
     // We can skip the attribute merging part if the user did not provide them
     if (!attributes)
-      return alreadyExistingEdge;
+      return alreadyExistingEdgeData.key;
 
     // Merging the attributes
     assign(alreadyExistingEdgeData.attributes, attributes);
+
+    graph.emit('edgeAttributesUpdated', {
+      type: 'merge',
+      key: alreadyExistingEdgeData.key,
+      meta: {
+        data: attributes
+      }
+    });
+
     return alreadyExistingEdge;
   }
 

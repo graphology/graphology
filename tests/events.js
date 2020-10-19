@@ -236,6 +236,27 @@ export default function events(Graph) {
         graph.removeEdgeAttribute('J->T', 'type');
 
         assert.strictEqual(handler.times, 4);
+      },
+
+      'it should fire when an edge is merged.': function() {
+        const graph = new Graph();
+
+        const handler = spy(payload => {
+          assert.deepStrictEqual(payload, {
+            type: 'merge',
+            key: graph.edge('John', 'Mary'),
+            meta: {data: {weight: 2}}
+          });
+
+          assert.deepStrictEqual(graph.getEdgeAttributes(payload.key), {weight: 2});
+        });
+
+        graph.on('edgeAttributesUpdated', handler);
+
+        graph.mergeEdge('John', 'Mary', {weight: 1});
+        graph.mergeEdge('John', 'Mary', {weight: 2});
+
+        assert.strictEqual(handler.times, 1);
       }
     }
   };

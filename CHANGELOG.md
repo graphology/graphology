@@ -12,6 +12,7 @@
 * Fixing `#.edges(A, B)` with directed self loops.
 * Fixing case when `nodeAdded` events would not be fired when using `#.emptyCopy`.
 * Correctly emitting `nodeAttributesUpdated` event when node is merged.
+* Correctly emitting `edgeAttributesUpdated` event when edge is merged.
 
 ## 0.18.0
 
