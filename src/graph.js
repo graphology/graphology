@@ -1213,8 +1213,17 @@ export default class Graph extends EventEmitter {
     let data = this._nodes.get(node);
 
     if (data) {
-      if (attributes)
+      if (attributes) {
         assign(data.attributes, attributes);
+
+        this.emit('nodeAttributesUpdated', {
+          type: 'merge',
+          key: node,
+          meta: {
+            data: attributes
+          }
+        });
+      }
       return node;
     }
 

@@ -177,41 +177,26 @@ export default function events(Graph) {
         assert.strictEqual(handler.times, 4);
       },
 
-      // 'it should fire when a node is merged.': function() {
-      //   const graph = new Graph();
+      'it should fire when a node is merged.': function() {
+        const graph = new Graph();
 
-      //   const handler = spy(payload => {
-      //     const {key, type, meta} = payload;
+        const handler = spy(payload => {
+          assert.deepStrictEqual(payload, {
+            type: 'merge',
+            key: 'John',
+            meta: {data: {count: 2}}
+          });
 
-      //     assert.strictEqual(type, 'replace');
-      //     assert.strictEqual(key, 'John');
-      //     assert.deepStrictEqual(meta, {
-      //       before: {
-      //         count: 1
-      //       },
-      //       after: {
-      //         count: 2
-      //       }
-      //     });
-      //   });
+          assert.deepStrictEqual(graph.getNodeAttributes(payload.key), {count: 2});
+        });
 
-      //   graph.on('nodeAttributesUpdated', handler);
+        graph.on('nodeAttributesUpdated', handler);
 
-      //   const updater = attr => {
-      //     if (!attr)
-      //       return {count: 1};
+        graph.mergeNode('John', {count: 1});
+        graph.mergeNode('John', {count: 2});
 
-      //     return {
-      //       ...attr,
-      //       count: attr.count + 1
-      //     };
-      //   };
-
-      //   graph.mergeNode('John', updater);
-      //   graph.mergeNode('John', updater);
-
-      //   assert.strictEqual(handler.times, 1);
-      // }
+        assert.strictEqual(handler.times, 1);
+      }
     },
 
     'edgeAttributesUpdated': {
