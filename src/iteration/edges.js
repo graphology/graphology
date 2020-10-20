@@ -529,56 +529,39 @@ function createEdgeIterator(graph, type) {
   if (graph.size === 0)
     return Iterator.empty();
 
-  let iterator;
+  const shouldFilter = type !== 'mixed' && type !== graph.type;
+  const mask = type === 'undirected';
 
-  if (type === 'mixed') {
-    iterator = graph._edges.values();
+  const iterator = graph._edges.values();
 
-    return new Iterator(function next() {
-      const step = iterator.next();
+  return new Iterator(function next() {
+    let step, data;
+
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      step = iterator.next();
 
       if (step.done)
         return step;
 
-      const data = step.value;
+      data = step.value;
 
-      const value = [
-        data.key,
-        data.attributes,
-        data.source.key,
-        data.target.key,
-        data.source.attributes,
-        data.target.attributes
-      ];
+      if (shouldFilter && (data instanceof UndirectedEdgeData) !== mask)
+        continue;
 
-      return {value, done: false};
-    });
-  }
-
-  iterator = graph._edges.values();
-
-  return new Iterator(function next() {
-    const step = iterator.next();
-
-    if (step.done)
-      return step;
-
-    const data = step.value;
-
-    if ((data instanceof UndirectedEdgeData) === (type === 'undirected')) {
-      const value = [
-        data.key,
-        data.attributes,
-        data.source.key,
-        data.target.key,
-        data.source.attributes,
-        data.target.attributes
-      ];
-
-      return {value, done: false};
+      break;
     }
 
-    return next();
+    const value = [
+      data.key,
+      data.attributes,
+      data.source.key,
+      data.target.key,
+      data.source.attributes,
+      data.target.attributes
+    ];
+
+    return {value, done: false};
   });
 }
 

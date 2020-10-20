@@ -18,6 +18,7 @@
 * Fixing `#.edges(A, B)` with directed self loops.
 * Fixing `#.mergeEdgeWithKey` edge cases.
 * Fixing `#.mergeAttributes` event payload.
+* Fixing `#.edgeEntries` stack overflow with undirected edges.
 * Dropping `before` and `after` from `replace` events metadata.
 * Dropping `value` from `set` events metadata.
 * Dropping overkill `toString` method.
