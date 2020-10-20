@@ -452,40 +452,25 @@ function forEachEdge(graph, type, callback) {
   if (graph.size === 0)
     return;
 
-  if (type === 'mixed' || type === graph.type) {
-    graph._edges.forEach((data, key) => {
+  const shouldFilter = type !== 'mixed' && type !== graph.type;
+  const mask = type === 'undirected';
 
-      const {attributes, source, target} = data;
+  graph._edges.forEach((data, key) => {
 
-      callback(
-        key,
-        attributes,
-        source.key,
-        target.key,
-        source.attributes,
-        target.attributes
-      );
-    });
-  }
-  else {
-    const mask = type === 'undirected';
+    if (shouldFilter && (data instanceof UndirectedEdgeData) !== mask)
+      return;
 
-    graph._edges.forEach((data, key) => {
-      if ((data instanceof UndirectedEdgeData) === mask) {
+    const {attributes, source, target} = data;
 
-        const {attributes, source, target} = data;
-
-        callback(
-          key,
-          attributes,
-          source.key,
-          target.key,
-          source.attributes,
-          target.attributes
-        );
-      }
-    });
-  }
+    callback(
+      key,
+      attributes,
+      source.key,
+      target.key,
+      source.attributes,
+      target.attributes
+    );
+  });
 }
 
 /**
