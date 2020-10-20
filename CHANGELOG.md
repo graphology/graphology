@@ -20,6 +20,7 @@
 * Fixing `#.mergeAttributes` event payload.
 * Dropping `before` and `after` from `replace` events metadata.
 * Dropping `value` from `set` events metadata.
+* Dropping overkill `toString` method.
 * Correctly emitting `nodeAttributesUpdated` event when node is merged.
 * Correctly emitting `edgeAttributesUpdated` event when edge is merged.
 

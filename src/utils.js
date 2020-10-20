@@ -113,29 +113,6 @@ export function isEmpty(o) {
 }
 
 /**
- * Pretty prints the given integer.
- *
- * @param  {number}  integer - Target integer.
- * @return {string}          - The pretty string.
- */
-export function prettyPrint(integer) {
-  const string = '' + integer;
-
-  let prettyString = '';
-
-  for (let i = 0, l = string.length; i < l; i++) {
-    const j = l - i - 1;
-
-    prettyString = string[j] + prettyString;
-
-    if (!((i - 2) % 3) && i !== l - 1)
-      prettyString = ',' + prettyString;
-  }
-
-  return prettyString;
-}
-
-/**
  * Creates a "private" property for the given member name by concealing it
  * using the `enumerable` option.
  *

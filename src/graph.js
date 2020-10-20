@@ -46,7 +46,6 @@ import {
   getMatchingEdge,
   isGraph,
   isPlainObject,
-  prettyPrint,
   privateProperty,
   readOnlyProperty,
   incrementalId
@@ -2373,16 +2372,10 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method used to perform string coercion and returning useful information
-   * about the Graph instance.
-   *
-   * @return {string} - String representation of the graph.
+   * Method returning [object Graph].
    */
   toString() {
-    const pluralOrder = this.order > 1 || this.order === 0,
-          pluralSize = this.size > 1 || this.size === 0;
-
-    return `Graph<${prettyPrint(this.order)} node${pluralOrder ? 's' : ''}, ${prettyPrint(this.size)} edge${pluralSize ? 's' : ''}>`;
+    return '[object Graph]';
   }
 
   /**
