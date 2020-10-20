@@ -374,6 +374,91 @@ export default function mutation(Graph, checkers) {
       }
     },
 
+    '#.updateEdge': {
+
+      'it should add the edge if it does not yet exist.': function() {
+        const graph = new Graph();
+        addNodesFrom(graph, ['John', 'Martha']);
+
+        graph.updateEdge('John', 'Martha');
+
+        assert.strictEqual(graph.size, 1);
+        assert.strictEqual(graph.hasEdge('John', 'Martha'), true);
+      },
+
+      'it should do nothing if the edge already exists.': function() {
+        const graph = new Graph();
+        addNodesFrom(graph, ['John', 'Martha']);
+
+        graph.addEdge('John', 'Martha');
+        graph.updateEdge('John', 'Martha');
+
+        assert.strictEqual(graph.size, 1);
+        assert.strictEqual(graph.hasEdge('John', 'Martha'), true);
+      },
+
+      'it should be possible to start from blank attributes.': function() {
+        const graph = new Graph();
+        addNodesFrom(graph, ['John', 'Martha']);
+
+        graph.updateEdge('John', 'Martha', attr => ({...attr, weight: 3}));
+
+        assert.strictEqual(graph.size, 1);
+        assert.strictEqual(graph.hasEdge('John', 'Martha'), true);
+        assert.deepStrictEqual(graph.getEdgeAttributes('John', 'Martha'), {weight: 3});
+      },
+
+      'it should update existing attributes if any.': function() {
+        const graph = new Graph();
+        addNodesFrom(graph, ['John', 'Martha']);
+
+        graph.addEdge('John', 'Martha', {type: 'KNOWS'});
+        graph.updateEdge('John', 'Martha', attr => ({...attr, weight: 2}));
+
+        assert.strictEqual(graph.size, 1);
+        assert.strictEqual(graph.hasEdge('John', 'Martha'), true);
+        assert.deepStrictEqual(graph.getEdgeAttributes('John', 'Martha'), {
+          type: 'KNOWS',
+          weight: 2
+        });
+      },
+
+      'it should add missing nodes in the path.': function() {
+        const graph = new Graph();
+        graph.updateEdge('John', 'Martha');
+
+        assert.strictEqual(graph.order, 2);
+        assert.strictEqual(graph.size, 1);
+        assert.deepStrictEqual(graph.nodes(), ['John', 'Martha']);
+      },
+
+      'it should throw in case of inconsistencies.': function() {
+        const graph = new Graph();
+        graph.updateEdgeWithKey('J->M', 'John', 'Martha');
+
+        assert.throws(function() {
+          graph.updateEdgeWithKey('J->M', 'John', 'Thomas');
+        }, usage());
+      },
+
+      'it should distinguish between typed edges.': function() {
+        const graph = new Graph();
+        graph.updateEdge('John', 'Martha', () => ({type: 'LIKES'}));
+        graph.updateUndirectedEdge('John', 'Martha', () => ({weight: 34}));
+
+        assert.strictEqual(graph.size, 2);
+      },
+
+      'it should be possible to merge a self loop.': function() {
+        const graph = new Graph();
+
+        graph.updateEdge('John', 'John', () => ({type: 'IS'}));
+
+        assert.strictEqual(graph.order, 1);
+        assert.strictEqual(graph.size, 1);
+      }
+    },
+
     '#.dropEdge': {
 
       'it should throw if the edge or nodes in the path are not found in the graph.': function() {

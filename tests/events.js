@@ -281,6 +281,30 @@ export default function events(Graph) {
         graph.mergeEdge('John', 'Mary', {weight: 2});
 
         assert.strictEqual(handler.times, 1);
+      },
+
+      'it should fire when an edge is updated.': function() {
+        const graph = new Graph();
+
+        const handler = spy(payload => {
+          assert.deepStrictEqual(payload, {
+            type: 'replace',
+            key: 'j->m',
+            meta: {
+              before: {weight: 1},
+              after: {weight: 2}
+            }
+          });
+
+          assert.deepStrictEqual(graph.getEdgeAttributes(payload.key), {weight: 2});
+        });
+
+        graph.on('edgeAttributesUpdated', handler);
+
+        graph.mergeEdgeWithKey('j->m', 'John', 'Mary', {weight: 1});
+        graph.updateEdgeWithKey('j->m', 'John', 'Mary', attr => ({...attr, weight: attr.weight + 1}));
+
+        assert.strictEqual(handler.times, 1);
       }
     }
   };

@@ -301,6 +301,7 @@ function addEdge(
  * @param  {any}     source          - The source node.
  * @param  {any}     target          - The target node.
  * @param  {object}  [attributes]    - Optional attributes.
+ * @param  {boolean} [asUpdater]       - Are we updating or merging?
  * @return {any}                     - The edge.
  *
  * @throws {Error} - Will throw if the graph is of the wrong type.
@@ -316,7 +317,8 @@ function mergeEdge(
   edge,
   source,
   target,
-  attributes
+  attributes,
+  asUpdater
 ) {
 
   // Checking validity of operation
@@ -326,13 +328,27 @@ function mergeEdge(
   if (undirected && graph.type === 'directed')
     throw new UsageGraphError(`Graph.${name}: you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.`);
 
-  if (attributes && !isPlainObject(attributes))
-    throw new InvalidArgumentsGraphError(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
+  if (attributes) {
+    if (asUpdater) {
+      if (typeof attributes !== 'function')
+        throw new InvalidArgumentsGraphError(`Graph.${name}: invalid updater function. Expecting a function but got "${attributes}"`);
+    }
+    else {
+      if (!isPlainObject(attributes))
+        throw new InvalidArgumentsGraphError(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
+    }
+  }
 
   // Coercion of source & target:
   source = '' + source;
   target = '' + target;
-  attributes = attributes || {};
+
+  let updater;
+
+  if (asUpdater) {
+    updater = attributes;
+    attributes = undefined;
+  }
 
   if (!graph.allowSelfLoops && source === target)
     throw new UsageGraphError(`Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
@@ -342,7 +358,7 @@ function mergeEdge(
       edgeData;
 
   // Do we need to handle duplicate?
-  let alreadyExistingEdge = null;
+  let alreadyExistingEdgeData;
 
   if (!mustGenerateKey) {
     edgeData = graph._edges.get(edge);
@@ -352,21 +368,19 @@ function mergeEdge(
       // Here, we need to ensure, if the user gave a key, that source & target
       // are coherent
       if (
-        (edgeData.source !== source || edgeData.target !== target) ||
-        (undirected && (edgeData.source !== target || edgeData.target !== source))
+        (edgeData.source.key !== source || edgeData.target.key !== target) ||
+        (undirected && (edgeData.source.key !== target || edgeData.target.key !== source))
       ) {
-        throw new UsageGraphError(`Graph.${name}: inconsistency detected when attempting to merge the "${edge}" edge with "${source}" source & "${target}" target vs. (${edgeData.source}, ${edgeData.target}).`);
+        throw new UsageGraphError(`Graph.${name}: inconsistency detected when attempting to merge the "${edge}" edge with "${source}" source & "${target}" target vs. ("${edgeData.source.key}", "${edgeData.target.key}").`);
       }
 
-      alreadyExistingEdge = edge;
+      alreadyExistingEdgeData = edgeData;
     }
   }
 
-  let alreadyExistingEdgeData;
-
   // Here, we might have a source / target collision
   if (
-    !alreadyExistingEdge &&
+    !alreadyExistingEdgeData &&
     !graph.multi &&
     sourceData
   ) {
@@ -379,22 +393,44 @@ function mergeEdge(
   if (alreadyExistingEdgeData) {
 
     // We can skip the attribute merging part if the user did not provide them
-    if (!attributes)
+    if (asUpdater ? !updater : !attributes)
       return alreadyExistingEdgeData.key;
 
+    // Updating the attributes
+    if (asUpdater) {
+      const oldAttributes = alreadyExistingEdgeData.attributes;
+      alreadyExistingEdgeData.attributes = updater(oldAttributes);
+
+      graph.emit('edgeAttributesUpdated', {
+        type: 'replace',
+        key: alreadyExistingEdgeData.key,
+        meta: {
+          before: oldAttributes,
+          after: alreadyExistingEdgeData.attributes
+        }
+      });
+    }
+
     // Merging the attributes
-    assign(alreadyExistingEdgeData.attributes, attributes);
+    else {
+      assign(alreadyExistingEdgeData.attributes, attributes);
 
-    graph.emit('edgeAttributesUpdated', {
-      type: 'merge',
-      key: alreadyExistingEdgeData.key,
-      meta: {
-        data: attributes
-      }
-    });
+      graph.emit('edgeAttributesUpdated', {
+        type: 'merge',
+        key: alreadyExistingEdgeData.key,
+        meta: {
+          data: attributes
+        }
+      });
+    }
 
-    return alreadyExistingEdge;
+    return alreadyExistingEdgeData.key;
   }
+
+  attributes = attributes || {};
+
+  if (asUpdater && updater)
+    attributes = updater(attributes);
 
   // Must the graph generate an id for this edge?
   const eventData = {
@@ -2450,7 +2486,7 @@ if (typeof Symbol !== 'undefined')
  * Related to edge addition.
  */
 EDGE_ADD_METHODS.forEach(method => {
-  ['add', 'merge'].forEach(verb => {
+  ['add', 'merge', 'update'].forEach(verb => {
     const name = method.name(verb),
           fn = verb === 'add' ? addEdge : mergeEdge;
 
@@ -2464,7 +2500,8 @@ EDGE_ADD_METHODS.forEach(method => {
           null,
           source,
           target,
-          attributes
+          attributes,
+          verb === 'update'
         );
       };
     }
@@ -2478,7 +2515,8 @@ EDGE_ADD_METHODS.forEach(method => {
           edge,
           source,
           target,
-          attributes
+          attributes,
+          verb === 'update'
         );
       };
     }
