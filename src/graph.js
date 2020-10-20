@@ -1856,6 +1856,16 @@ export default class Graph extends EventEmitter {
     return this;
   }
 
+  /**
+   * Method used to update each node's attributes using the given function.
+   *
+   * @param {function}  updater - Updater function to use.
+   * @param {object}    [hints] - Optional hints.
+   */
+  updateEachNodeAttributes() {
+
+  }
+
   /**---------------------------------------------------------------------------
    * Iteration-related methods
    **---------------------------------------------------------------------------

@@ -177,6 +177,21 @@ export function readOnlyProperty(target, name, value) {
 }
 
 /**
+ * Returns whether the given object constitute valid hints.
+ *
+ * @param {object} hints - Target object.
+ */
+export function validateHints(hints) {
+  if (!isPlainObject(hints))
+    return false;
+
+  if (hints.names && !Array.isArray(hints.names))
+    return false;
+
+  return true;
+}
+
+/**
  * Creates a function generating incremental ids for edges.
  *
  * @return {function}
