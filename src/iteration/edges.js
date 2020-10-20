@@ -420,8 +420,12 @@ function createEdgeArray(graph, type) {
   if (graph.size === 0)
     return [];
 
-  if (type === 'mixed' || type === graph.type)
+  if (type === 'mixed' || type === graph.type) {
+    if (typeof Array.from === 'function')
+      return Array.from(graph._edges.keys());
+
     return take(graph._edges.keys(), graph._edges.size);
+  }
 
   const size = type === 'undirected' ?
     graph.undirectedSize :
@@ -430,13 +434,17 @@ function createEdgeArray(graph, type) {
   const list = new Array(size),
         mask = type === 'undirected';
 
-  let i = 0;
+  const iterator = graph._edges.values();
 
-  graph._edges.forEach((data, edge) => {
+  let i = 0;
+  let step, data;
+
+  while ((step = iterator.next(), step.done !== true)) {
+    data = step.value;
 
     if ((data instanceof UndirectedEdgeData) === mask)
-      list[i++] = edge;
-  });
+      list[i++] = data.key;
+  }
 
   return list;
 }

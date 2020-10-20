@@ -1973,6 +1973,9 @@ export default class Graph extends EventEmitter {
    * @return {array} - The nodes.
    */
   nodes() {
+    if (typeof Array.from === 'function')
+      return Array.from(this._nodes.keys());
+
     return take(this._nodes.keys(), this._nodes.size);
   }
 

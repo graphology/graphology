@@ -15,6 +15,7 @@
 * Optimizing `#.edges(A, B)`.
 * Optimizing `#.forEachEdge`.
 * Optimizing `#.mergeEdge`.
+* Optimizing `#.edges` and `#.nodes`.
 * Fixing `#.edges(A, B)` with directed self loops.
 * Fixing `#.mergeEdgeWithKey` edge cases.
 * Fixing `#.mergeAttributes` event payload.
