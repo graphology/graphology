@@ -275,10 +275,8 @@ function attachAttributeSetter(Class, method, type, EdgeDataClass) {
     this.emit('edgeAttributesUpdated', {
       key: data.key,
       type: 'set',
-      meta: {
-        name,
-        value
-      }
+      attributes: data.attributes,
+      name
     });
 
     return this;
@@ -357,10 +355,8 @@ function attachAttributeUpdater(Class, method, type, EdgeDataClass) {
     this.emit('edgeAttributesUpdated', {
       key: data.key,
       type: 'set',
-      meta: {
-        name,
-        value: data.attributes[name]
-      }
+      attributes: data.attributes,
+      name
     });
 
     return this;
@@ -432,9 +428,8 @@ function attachAttributeRemover(Class, method, type, EdgeDataClass) {
     this.emit('edgeAttributesUpdated', {
       key: data.key,
       type: 'remove',
-      meta: {
-        name
-      }
+      attributes: data.attributes,
+      name
     });
 
     return this;
@@ -503,18 +498,13 @@ function attachAttributesReplacer(Class, method, type, EdgeDataClass) {
     if (type !== 'mixed' && !(data instanceof EdgeDataClass))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
-    const oldAttributes = data.attributes;
-
     data.attributes = attributes;
 
     // Emitting
     this.emit('edgeAttributesUpdated', {
       key: data.key,
       type: 'replace',
-      meta: {
-        before: oldAttributes,
-        after: attributes
-      }
+      attributes: data.attributes
     });
 
     return this;
@@ -589,9 +579,8 @@ function attachAttributesMerger(Class, method, type, EdgeDataClass) {
     this.emit('edgeAttributesUpdated', {
       key: data.key,
       type: 'merge',
-      meta: {
-        data: attributes
-      }
+      attributes: data.attributes,
+      data: attributes
     });
 
     return this;

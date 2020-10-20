@@ -7,11 +7,20 @@
 * Adding `#.forEachEdgeUntil`.
 * Adding `#.forEachNeighborUntil`.
 * Adding `#.updateNode`.
+* Adding `#.updateEdge`.
+* Adding `attributes` to `attributesUpdated` events.
+* Adding `attributes` to `nodeAttributesUpdated` events.
+* Adding `attributes` to `edgeAttributesUpdated` events.
+* Optimizing `*AttributesUpdated` events payload.
 * Optimizing `#.edges(A, B)`.
 * Optimizing `#.forEachEdge(A, B)`.
 * Optimizing `#.mergeEdge`.
 * Fixing `#.edges(A, B)` with directed self loops.
 * Fixing case when `nodeAdded` events would not be fired when using `#.emptyCopy`.
+* Fixing `#.mergeEdgeWithKey` edge cases.
+* Fixing `#.mergeAttributes` event payload.
+* Dropping `before` and `after` from `replace` events metadata.
+* Dropping `value` from `set` events metadata.
 * Correctly emitting `nodeAttributesUpdated` event when node is merged.
 * Correctly emitting `edgeAttributesUpdated` event when edge is merged.
 

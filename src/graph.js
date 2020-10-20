@@ -301,6 +301,7 @@ function addEdge(
  * @param  {any}     source          - The source node.
  * @param  {any}     target          - The target node.
  * @param  {object}  [attributes]    - Optional attributes.
+ * @param  {boolean} [asUpdater]       - Are we updating or merging?
  * @return {any}                     - The edge.
  *
  * @throws {Error} - Will throw if the graph is of the wrong type.
@@ -316,7 +317,8 @@ function mergeEdge(
   edge,
   source,
   target,
-  attributes
+  attributes,
+  asUpdater
 ) {
 
   // Checking validity of operation
@@ -326,13 +328,27 @@ function mergeEdge(
   if (undirected && graph.type === 'directed')
     throw new UsageGraphError(`Graph.${name}: you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.`);
 
-  if (attributes && !isPlainObject(attributes))
-    throw new InvalidArgumentsGraphError(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
+  if (attributes) {
+    if (asUpdater) {
+      if (typeof attributes !== 'function')
+        throw new InvalidArgumentsGraphError(`Graph.${name}: invalid updater function. Expecting a function but got "${attributes}"`);
+    }
+    else {
+      if (!isPlainObject(attributes))
+        throw new InvalidArgumentsGraphError(`Graph.${name}: invalid attributes. Expecting an object but got "${attributes}"`);
+    }
+  }
 
   // Coercion of source & target:
   source = '' + source;
   target = '' + target;
-  attributes = attributes || {};
+
+  let updater;
+
+  if (asUpdater) {
+    updater = attributes;
+    attributes = undefined;
+  }
 
   if (!graph.allowSelfLoops && source === target)
     throw new UsageGraphError(`Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`);
@@ -342,7 +358,7 @@ function mergeEdge(
       edgeData;
 
   // Do we need to handle duplicate?
-  let alreadyExistingEdge = null;
+  let alreadyExistingEdgeData;
 
   if (!mustGenerateKey) {
     edgeData = graph._edges.get(edge);
@@ -352,21 +368,19 @@ function mergeEdge(
       // Here, we need to ensure, if the user gave a key, that source & target
       // are coherent
       if (
-        (edgeData.source !== source || edgeData.target !== target) ||
-        (undirected && (edgeData.source !== target || edgeData.target !== source))
+        (edgeData.source.key !== source || edgeData.target.key !== target) ||
+        (undirected && (edgeData.source.key !== target || edgeData.target.key !== source))
       ) {
-        throw new UsageGraphError(`Graph.${name}: inconsistency detected when attempting to merge the "${edge}" edge with "${source}" source & "${target}" target vs. (${edgeData.source}, ${edgeData.target}).`);
+        throw new UsageGraphError(`Graph.${name}: inconsistency detected when attempting to merge the "${edge}" edge with "${source}" source & "${target}" target vs. ("${edgeData.source.key}", "${edgeData.target.key}").`);
       }
 
-      alreadyExistingEdge = edge;
+      alreadyExistingEdgeData = edgeData;
     }
   }
 
-  let alreadyExistingEdgeData;
-
   // Here, we might have a source / target collision
   if (
-    !alreadyExistingEdge &&
+    !alreadyExistingEdgeData &&
     !graph.multi &&
     sourceData
   ) {
@@ -379,22 +393,40 @@ function mergeEdge(
   if (alreadyExistingEdgeData) {
 
     // We can skip the attribute merging part if the user did not provide them
-    if (!attributes)
+    if (asUpdater ? !updater : !attributes)
       return alreadyExistingEdgeData.key;
 
+    // Updating the attributes
+    if (asUpdater) {
+      const oldAttributes = alreadyExistingEdgeData.attributes;
+      alreadyExistingEdgeData.attributes = updater(oldAttributes);
+
+      graph.emit('edgeAttributesUpdated', {
+        type: 'replace',
+        key: alreadyExistingEdgeData.key,
+        attributes: alreadyExistingEdgeData.attributes,
+      });
+    }
+
     // Merging the attributes
-    assign(alreadyExistingEdgeData.attributes, attributes);
+    else {
+      assign(alreadyExistingEdgeData.attributes, attributes);
 
-    graph.emit('edgeAttributesUpdated', {
-      type: 'merge',
-      key: alreadyExistingEdgeData.key,
-      meta: {
+      graph.emit('edgeAttributesUpdated', {
+        type: 'merge',
+        key: alreadyExistingEdgeData.key,
+        attributes: alreadyExistingEdgeData.attributes,
         data: attributes
-      }
-    });
+      });
+    }
 
-    return alreadyExistingEdge;
+    return alreadyExistingEdgeData.key;
   }
+
+  attributes = attributes || {};
+
+  if (asUpdater && updater)
+    attributes = updater(attributes);
 
   // Must the graph generate an id for this edge?
   const eventData = {
@@ -1228,9 +1260,8 @@ export default class Graph extends EventEmitter {
         this.emit('nodeAttributesUpdated', {
           type: 'merge',
           key: node,
-          meta: {
-            data: attributes
-          }
+          attributes: data.attributes,
+          data: attributes
         });
       }
       return node;
@@ -1276,10 +1307,7 @@ export default class Graph extends EventEmitter {
         this.emit('nodeAttributesUpdated', {
           type: 'replace',
           key: node,
-          meta: {
-            before: oldAttributes,
-            after: data.attributes
-          }
+          attributes: data.attributes
         });
       }
       return node;
@@ -1503,10 +1531,8 @@ export default class Graph extends EventEmitter {
     // Emitting
     this.emit('attributesUpdated', {
       type: 'set',
-      meta: {
-        name,
-        value
-      }
+      attributes: this._attributes,
+      name
     });
 
     return this;
@@ -1530,10 +1556,8 @@ export default class Graph extends EventEmitter {
     // Emitting
     this.emit('attributesUpdated', {
       type: 'set',
-      meta: {
-        name,
-        value
-      }
+      attributes: this._attributes,
+      name
     });
 
     return this;
@@ -1551,9 +1575,8 @@ export default class Graph extends EventEmitter {
     // Emitting
     this.emit('attributesUpdated', {
       type: 'remove',
-      meta: {
-        name
-      }
+      attributes: this._attributes,
+      name
     });
 
     return this;
@@ -1571,17 +1594,12 @@ export default class Graph extends EventEmitter {
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError('Graph.replaceAttributes: provided attributes are not a plain object.');
 
-    const before = this._attributes;
-
     this._attributes = attributes;
 
     // Emitting
     this.emit('attributesUpdated', {
       type: 'replace',
-      meta: {
-        before,
-        after: attributes
-      }
+      attributes: this._attributes
     });
 
     return this;
@@ -1604,9 +1622,8 @@ export default class Graph extends EventEmitter {
     // Emitting
     this.emit('attributesUpdated', {
       type: 'merge',
-      meta: {
-        data: this._attributes
-      }
+      attributes: this._attributes,
+      data: attributes
     });
 
     return this;
@@ -1699,10 +1716,8 @@ export default class Graph extends EventEmitter {
     this.emit('nodeAttributesUpdated', {
       key: node,
       type: 'set',
-      meta: {
-        name,
-        value
-      }
+      attributes: data.attributes,
+      name
     });
 
     return this;
@@ -1743,10 +1758,8 @@ export default class Graph extends EventEmitter {
     this.emit('nodeAttributesUpdated', {
       key: node,
       type: 'set',
-      meta: {
-        name,
-        value
-      }
+      attributes: data.attributes,
+      name
     });
 
     return this;
@@ -1775,9 +1788,8 @@ export default class Graph extends EventEmitter {
     this.emit('nodeAttributesUpdated', {
       key: node,
       type: 'remove',
-      meta: {
-        name
-      }
+      attributes: data.attributes,
+      name
     });
 
     return this;
@@ -1804,18 +1816,13 @@ export default class Graph extends EventEmitter {
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError('Graph.replaceNodeAttributes: provided attributes are not a plain object.');
 
-    const oldAttributes = data.attributes;
-
     data.attributes = attributes;
 
     // Emitting
     this.emit('nodeAttributesUpdated', {
       key: node,
       type: 'replace',
-      meta: {
-        before: oldAttributes,
-        after: attributes
-      }
+      attributes: data.attributes
     });
 
     return this;
@@ -1848,9 +1855,8 @@ export default class Graph extends EventEmitter {
     this.emit('nodeAttributesUpdated', {
       key: node,
       type: 'merge',
-      meta: {
-        data: attributes
-      }
+      attributes: data.attributes,
+      data: attributes
     });
 
     return this;
@@ -2460,7 +2466,7 @@ if (typeof Symbol !== 'undefined')
  * Related to edge addition.
  */
 EDGE_ADD_METHODS.forEach(method => {
-  ['add', 'merge'].forEach(verb => {
+  ['add', 'merge', 'update'].forEach(verb => {
     const name = method.name(verb),
           fn = verb === 'add' ? addEdge : mergeEdge;
 
@@ -2474,7 +2480,8 @@ EDGE_ADD_METHODS.forEach(method => {
           null,
           source,
           target,
-          attributes
+          attributes,
+          verb === 'update'
         );
       };
     }
@@ -2488,7 +2495,8 @@ EDGE_ADD_METHODS.forEach(method => {
           edge,
           source,
           target,
-          attributes
+          attributes,
+          verb === 'update'
         );
       };
     }
