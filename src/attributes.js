@@ -276,9 +276,7 @@ function attachAttributeSetter(Class, method, type, EdgeDataClass) {
       key: data.key,
       type: 'set',
       attributes: data.attributes,
-      meta: {
-        name
-      }
+      name
     });
 
     return this;
@@ -358,9 +356,7 @@ function attachAttributeUpdater(Class, method, type, EdgeDataClass) {
       key: data.key,
       type: 'set',
       attributes: data.attributes,
-      meta: {
-        name
-      }
+      name
     });
 
     return this;
@@ -433,9 +429,7 @@ function attachAttributeRemover(Class, method, type, EdgeDataClass) {
       key: data.key,
       type: 'remove',
       attributes: data.attributes,
-      meta: {
-        name
-      }
+      name
     });
 
     return this;
@@ -510,8 +504,7 @@ function attachAttributesReplacer(Class, method, type, EdgeDataClass) {
     this.emit('edgeAttributesUpdated', {
       key: data.key,
       type: 'replace',
-      attributes: data.attributes,
-      meta: {}
+      attributes: data.attributes
     });
 
     return this;
@@ -587,9 +580,7 @@ function attachAttributesMerger(Class, method, type, EdgeDataClass) {
       key: data.key,
       type: 'merge',
       attributes: data.attributes,
-      meta: {
-        data: attributes
-      }
+      data: attributes
     });
 
     return this;

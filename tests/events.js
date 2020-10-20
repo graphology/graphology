@@ -108,18 +108,16 @@ export default function events(Graph) {
         const graph = new Graph();
 
         const handler = spy(payload => {
-          const {type, meta} = payload;
+          assert(VALID_TYPES.has(payload.type));
 
-          assert(VALID_TYPES.has(type));
-
-          if (type === 'set') {
-            assert.strictEqual(meta.name, 'name');
+          if (payload.type === 'set') {
+            assert.strictEqual(payload.name, 'name');
           }
-          else if (type === 'remove') {
-            assert.strictEqual(meta.name, 'name');
+          else if (payload.type === 'remove') {
+            assert.strictEqual(payload.name, 'name');
           }
-          else if (type === 'merge') {
-            assert.deepStrictEqual(meta.data, {name: 'Shitty graph', author: 'John'});
+          else if (payload.type === 'merge') {
+            assert.deepStrictEqual(payload.data, {author: 'John'});
           }
 
           assert.deepStrictEqual(payload.attributes, graph.getAttributes());
@@ -141,23 +139,21 @@ export default function events(Graph) {
         const graph = new Graph();
 
         const handler = spy(payload => {
-          const {key, type, meta} = payload;
+          assert.strictEqual(payload.key, 'John');
 
-          assert.strictEqual(key, 'John');
+          assert(VALID_TYPES.has(payload.type));
 
-          assert(VALID_TYPES.has(type));
-
-          if (type === 'set') {
-            assert.strictEqual(meta.name, 'age');
+          if (payload.type === 'set') {
+            assert.strictEqual(payload.name, 'age');
           }
-          else if (type === 'remove') {
-            assert.strictEqual(meta.name, 'eyes');
+          else if (payload.type === 'remove') {
+            assert.strictEqual(payload.name, 'eyes');
           }
-          else if (type === 'merge') {
-            assert.deepStrictEqual(meta.data, {eyes: 'blue'});
+          else if (payload.type === 'merge') {
+            assert.deepStrictEqual(payload.data, {eyes: 'blue'});
           }
 
-          assert.strictEqual(payload.attributes, graph.getNodeAttributes(key));
+          assert.strictEqual(payload.attributes, graph.getNodeAttributes(payload.key));
         });
 
         graph.on('nodeAttributesUpdated', handler);
@@ -179,7 +175,7 @@ export default function events(Graph) {
             type: 'merge',
             key: 'John',
             attributes: {count: 2},
-            meta: {data: {count: 2}}
+            data: {count: 2}
           });
 
           assert.deepStrictEqual(graph.getNodeAttributes(payload.key), {count: 2});
@@ -200,8 +196,7 @@ export default function events(Graph) {
           assert.deepStrictEqual(payload, {
             type: 'replace',
             key: 'John',
-            attributes: {count: 2},
-            meta: {}
+            attributes: {count: 2}
           });
 
           assert.deepStrictEqual(graph.getNodeAttributes(payload.key), {count: 2});
@@ -221,23 +216,21 @@ export default function events(Graph) {
         const graph = new Graph();
 
         const handler = spy(payload => {
-          const {key, type, meta} = payload;
+          assert.strictEqual(payload.key, 'J->T');
 
-          assert.strictEqual(key, 'J->T');
+          assert(VALID_TYPES.has(payload.type));
 
-          assert(VALID_TYPES.has(type));
-
-          if (type === 'set') {
-            assert.strictEqual(meta.name, 'weight');
+          if (payload.type === 'set') {
+            assert.strictEqual(payload.name, 'weight');
           }
-          else if (type === 'remove') {
-            assert.strictEqual(meta.name, 'type');
+          else if (payload.type === 'remove') {
+            assert.strictEqual(payload.name, 'type');
           }
-          else if (type === 'merge') {
-            assert.deepStrictEqual(meta.data, {type: 'KNOWS'});
+          else if (payload.type === 'merge') {
+            assert.deepStrictEqual(payload.data, {type: 'KNOWS'});
           }
 
-          assert.strictEqual(payload.attributes, graph.getEdgeAttributes(key));
+          assert.strictEqual(payload.attributes, graph.getEdgeAttributes(payload.key));
         });
 
         graph.on('edgeAttributesUpdated', handler);
@@ -260,7 +253,7 @@ export default function events(Graph) {
             type: 'merge',
             key: graph.edge('John', 'Mary'),
             attributes: {weight: 2},
-            meta: {data: {weight: 2}}
+            data: {weight: 2}
           });
 
           assert.deepStrictEqual(graph.getEdgeAttributes(payload.key), {weight: 2});
@@ -281,8 +274,7 @@ export default function events(Graph) {
           assert.deepStrictEqual(payload, {
             type: 'replace',
             key: 'j->m',
-            attributes: {weight: 2},
-            meta: {}
+            attributes: {weight: 2}
           });
 
           assert.deepStrictEqual(graph.getEdgeAttributes(payload.key), {weight: 2});
