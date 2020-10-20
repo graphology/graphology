@@ -23,25 +23,25 @@ while (g.order < N)
 // }
 // console.timeEnd('nodes array');
 
-console.time('forEachNode');
-for (i = 0; i < I; i++)
-  g.forEachNode(node => (v = node));
-console.timeEnd('forEachNode');
+// console.time('forEachNode');
+// for (i = 0; i < I; i++)
+//   g.forEachNode(node => (v = node));
+// console.timeEnd('forEachNode');
 
-console.time('for...of node');
-for (i = 0; i < I; i++) {
-  for (const node of g.nodeEntries())
-    v = node;
-}
-console.timeEnd('for...of node');
+// console.time('for...of node');
+// for (i = 0; i < I; i++) {
+//   for (const node of g.nodeEntries())
+//     v = node;
+// }
+// console.timeEnd('for...of node');
 
-console.time('step node');
-for (i = 0; i < I; i++) {
-  it = g.nodeEntries();
-  while ((step = it.next(), !step.done))
-    v = step.value[0];
-}
-console.timeEnd('step node');
+// console.time('step node');
+// for (i = 0; i < I; i++) {
+//   it = g.nodeEntries();
+//   while ((step = it.next(), !step.done))
+//     v = step.value[0];
+// }
+// console.timeEnd('step node');
 
 // ---
 
@@ -50,12 +50,12 @@ for (i = 0; i < I; i++)
   g.forEachEdge(edge => (v = edge));
 console.timeEnd('forEachEdge');
 
-console.time('for...of edge');
-for (i = 0; i < I; i++) {
-  for (const edge of g.edgeEntries())
-    v = edge;
-}
-console.timeEnd('for...of edge');
+// console.time('for...of edge');
+// for (i = 0; i < I; i++) {
+//   for (const edge of g.edgeEntries())
+//     v = edge;
+// }
+// console.timeEnd('for...of edge');
 
 console.time('step edge');
 for (i = 0; i < I; i++) {

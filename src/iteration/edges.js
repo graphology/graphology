@@ -455,12 +455,16 @@ function forEachEdge(graph, type, callback) {
   const shouldFilter = type !== 'mixed' && type !== graph.type;
   const mask = type === 'undirected';
 
-  graph._edges.forEach((data, key) => {
+  let step, data;
+  const iterator = graph._edges.values();
+
+  while ((step = iterator.next(), step.done !== true)) {
+    data = step.value;
 
     if (shouldFilter && (data instanceof UndirectedEdgeData) !== mask)
-      return;
+      continue;
 
-    const {attributes, source, target} = data;
+    const {key, attributes, source, target} = data;
 
     callback(
       key,
@@ -470,7 +474,7 @@ function forEachEdge(graph, type, callback) {
       source.attributes,
       target.attributes
     );
-  });
+  }
 }
 
 /**
@@ -485,53 +489,32 @@ function forEachEdgeUntil(graph, type, callback) {
   if (graph.size === 0)
     return;
 
+  const shouldFilter = type !== 'mixed' && type !== graph.type;
+  const mask = type === 'undirected';
+
+  let step, data;
+  let shouldBreak = false;
   const iterator = graph._edges.values();
 
-  let shouldBreak = false;
-  let step, data;
+  while ((step = iterator.next(), step.done !== true)) {
+    data = step.value;
 
-  if (type === 'mixed' || type === graph.type) {
+    if (shouldFilter && (data instanceof UndirectedEdgeData) !== mask)
+      continue;
 
-    while ((step = iterator.next(), step.done !== true)) {
-      data = step.value;
-      const {key, attributes, source, target} = data;
+    const {key, attributes, source, target} = data;
 
-      shouldBreak = callback(
-        key,
-        attributes,
-        source.key,
-        target.key,
-        source.attributes,
-        target.attributes
-      );
+    shouldBreak = callback(
+      key,
+      attributes,
+      source.key,
+      target.key,
+      source.attributes,
+      target.attributes
+    );
 
-      if (shouldBreak)
-        return;
-    }
-  }
-  else {
-    const mask = type === 'undirected';
-
-    while ((step = iterator.next(), step.done !== true)) {
-      data = step.value;
-
-      if ((data instanceof UndirectedEdgeData) !== mask)
-        continue;
-
-      const {key, attributes, source, target} = data;
-
-      shouldBreak = callback(
-        key,
-        attributes,
-        source.key,
-        target.key,
-        source.attributes,
-        target.attributes
-      );
-
-      if (shouldBreak)
-        return;
-    }
+    if (shouldBreak)
+      break;
   }
 }
 

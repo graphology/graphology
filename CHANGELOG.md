@@ -13,7 +13,7 @@
 * Adding `attributes` to `edgeAttributesUpdated` events.
 * Optimizing `*AttributesUpdated` events payload.
 * Optimizing `#.edges(A, B)`.
-* Optimizing `#.forEachEdge(A, B)`.
+* Optimizing `#.forEachEdge`.
 * Optimizing `#.mergeEdge`.
 * Fixing `#.edges(A, B)` with directed self loops.
 * Fixing `#.mergeEdgeWithKey` edge cases.
