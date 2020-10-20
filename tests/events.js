@@ -156,6 +156,8 @@ export default function events(Graph) {
           else if (type === 'merge') {
             assert.deepStrictEqual(meta.data, {eyes: 'blue'});
           }
+
+          assert.strictEqual(payload.attributes, graph.getNodeAttributes(key));
         });
 
         graph.on('nodeAttributesUpdated', handler);
@@ -176,6 +178,7 @@ export default function events(Graph) {
           assert.deepStrictEqual(payload, {
             type: 'merge',
             key: 'John',
+            attributes: {count: 2},
             meta: {data: {count: 2}}
           });
 
@@ -197,6 +200,7 @@ export default function events(Graph) {
           assert.deepStrictEqual(payload, {
             type: 'replace',
             key: 'John',
+            attributes: {count: 2},
             meta: {}
           });
 

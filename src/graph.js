@@ -1261,6 +1261,7 @@ export default class Graph extends EventEmitter {
         this.emit('nodeAttributesUpdated', {
           type: 'merge',
           key: node,
+          attributes: data.attributes,
           meta: {
             data: attributes
           }
@@ -1309,6 +1310,7 @@ export default class Graph extends EventEmitter {
         this.emit('nodeAttributesUpdated', {
           type: 'replace',
           key: node,
+          attributes: data.attributes,
           meta: {}
         });
       }
@@ -1724,6 +1726,7 @@ export default class Graph extends EventEmitter {
     this.emit('nodeAttributesUpdated', {
       key: node,
       type: 'set',
+      attributes: data.attributes,
       meta: {
         name,
         value
@@ -1768,6 +1771,7 @@ export default class Graph extends EventEmitter {
     this.emit('nodeAttributesUpdated', {
       key: node,
       type: 'set',
+      attributes: data.attributes,
       meta: {
         name,
         value
@@ -1800,6 +1804,7 @@ export default class Graph extends EventEmitter {
     this.emit('nodeAttributesUpdated', {
       key: node,
       type: 'remove',
+      attributes: data.attributes,
       meta: {
         name
       }
@@ -1835,6 +1840,7 @@ export default class Graph extends EventEmitter {
     this.emit('nodeAttributesUpdated', {
       key: node,
       type: 'replace',
+      attributes: data.attributes,
       meta: {}
     });
 
@@ -1868,6 +1874,7 @@ export default class Graph extends EventEmitter {
     this.emit('nodeAttributesUpdated', {
       key: node,
       type: 'merge',
+      attributes: data.attributes,
       meta: {
         data: attributes
       }
