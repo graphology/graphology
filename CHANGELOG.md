@@ -8,6 +8,7 @@
 * Adding `#.forEachNeighborUntil`.
 * Adding `#.updateNode`.
 * Adding `#.updateEdge`.
+* Adding `attributes` to `attributesUpdated` events.
 * Adding `attributes` to `nodeAttributesUpdated` events.
 * Adding `attributes` to `edgeAttributesUpdated` events.
 * Optimizing `#.edges(A, B)`.

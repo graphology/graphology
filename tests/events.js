@@ -122,6 +122,8 @@ export default function events(Graph) {
           else if (type === 'merge') {
             assert.deepStrictEqual(meta.data, {name: 'Shitty graph', author: 'John'});
           }
+
+          assert.deepStrictEqual(payload.attributes, graph.getAttributes());
         });
 
         graph.on('attributesUpdated', handler);
