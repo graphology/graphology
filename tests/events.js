@@ -237,6 +237,8 @@ export default function events(Graph) {
           else if (type === 'merge') {
             assert.deepStrictEqual(meta.data, {type: 'KNOWS'});
           }
+
+          assert.strictEqual(payload.attributes, graph.getEdgeAttributes(key));
         });
 
         graph.on('edgeAttributesUpdated', handler);
@@ -258,6 +260,7 @@ export default function events(Graph) {
           assert.deepStrictEqual(payload, {
             type: 'merge',
             key: graph.edge('John', 'Mary'),
+            attributes: {weight: 2},
             meta: {data: {weight: 2}}
           });
 
@@ -279,6 +282,7 @@ export default function events(Graph) {
           assert.deepStrictEqual(payload, {
             type: 'replace',
             key: 'j->m',
+            attributes: {weight: 2},
             meta: {}
           });
 

@@ -404,6 +404,7 @@ function mergeEdge(
       graph.emit('edgeAttributesUpdated', {
         type: 'replace',
         key: alreadyExistingEdgeData.key,
+        attributes: alreadyExistingEdgeData.attributes,
         meta: {}
       });
     }
@@ -415,6 +416,7 @@ function mergeEdge(
       graph.emit('edgeAttributesUpdated', {
         type: 'merge',
         key: alreadyExistingEdgeData.key,
+        attributes: alreadyExistingEdgeData.attributes,
         meta: {
           data: attributes
         }

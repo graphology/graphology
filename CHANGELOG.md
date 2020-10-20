@@ -9,6 +9,7 @@
 * Adding `#.updateNode`.
 * Adding `#.updateEdge`.
 * Adding `attributes` to `nodeAttributesUpdated` events.
+* Adding `attributes` to `edgeAttributesUpdated` events.
 * Optimizing `#.edges(A, B)`.
 * Optimizing `#.forEachEdge(A, B)`.
 * Optimizing `#.mergeEdge`.
