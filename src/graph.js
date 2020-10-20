@@ -404,10 +404,7 @@ function mergeEdge(
       graph.emit('edgeAttributesUpdated', {
         type: 'replace',
         key: alreadyExistingEdgeData.key,
-        meta: {
-          before: oldAttributes,
-          after: alreadyExistingEdgeData.attributes
-        }
+        meta: {}
       });
     }
 
@@ -1312,10 +1309,7 @@ export default class Graph extends EventEmitter {
         this.emit('nodeAttributesUpdated', {
           type: 'replace',
           key: node,
-          meta: {
-            before: oldAttributes,
-            after: data.attributes
-          }
+          meta: {}
         });
       }
       return node;
@@ -1607,17 +1601,12 @@ export default class Graph extends EventEmitter {
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError('Graph.replaceAttributes: provided attributes are not a plain object.');
 
-    const before = this._attributes;
-
     this._attributes = attributes;
 
     // Emitting
     this.emit('attributesUpdated', {
       type: 'replace',
-      meta: {
-        before,
-        after: attributes
-      }
+      meta: {}
     });
 
     return this;
@@ -1840,18 +1829,13 @@ export default class Graph extends EventEmitter {
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError('Graph.replaceNodeAttributes: provided attributes are not a plain object.');
 
-    const oldAttributes = data.attributes;
-
     data.attributes = attributes;
 
     // Emitting
     this.emit('nodeAttributesUpdated', {
       key: node,
       type: 'replace',
-      meta: {
-        before: oldAttributes,
-        after: attributes
-      }
+      meta: {}
     });
 
     return this;

@@ -503,18 +503,13 @@ function attachAttributesReplacer(Class, method, type, EdgeDataClass) {
     if (type !== 'mixed' && !(data instanceof EdgeDataClass))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
-    const oldAttributes = data.attributes;
-
     data.attributes = attributes;
 
     // Emitting
     this.emit('edgeAttributesUpdated', {
       key: data.key,
       type: 'replace',
-      meta: {
-        before: oldAttributes,
-        after: attributes
-      }
+      meta: {}
     });
 
     return this;
