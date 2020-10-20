@@ -2280,13 +2280,9 @@ export default class Graph extends EventEmitter {
     this._nodes.forEach((nodeData, key) => {
       const attributes = assign({}, nodeData.attributes);
 
+      // NOTE: no need to emit events since user cannot access the instance yet
       nodeData = new graph.NodeDataClass(key, attributes);
       graph._nodes.set(key, nodeData);
-
-      this.emit('nodeAdded', {
-        key,
-        attributes
-      });
     });
 
     return graph;

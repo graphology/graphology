@@ -16,7 +16,6 @@
 * Optimizing `#.forEachEdge(A, B)`.
 * Optimizing `#.mergeEdge`.
 * Fixing `#.edges(A, B)` with directed self loops.
-* Fixing case when `nodeAdded` events would not be fired when using `#.emptyCopy`.
 * Fixing `#.mergeEdgeWithKey` edge cases.
 * Fixing `#.mergeAttributes` event payload.
 * Dropping `before` and `after` from `replace` events metadata.
