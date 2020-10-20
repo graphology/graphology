@@ -143,6 +143,23 @@ function addNode(graph, node, attributes) {
 }
 
 /**
+ * Same as the above but without sanity checks because we call this in contexts
+ * where necessary checks were already done.
+ */
+function unsafeAddNode(graph, node, attributes) {
+  const data = new graph.NodeDataClass(node, attributes);
+
+  graph._nodes.set(node, data);
+
+  graph.emit('nodeAdded', {
+    key: node,
+    attributes
+  });
+
+  return data;
+}
+
+/**
  * Internal method used to add an arbitrary edge to the given graph.
  *
  * @param  {Graph}   graph           - Target graph.
@@ -447,13 +464,13 @@ function mergeEdge(
     throw new UsageGraphError(`Graph.${name}: the "${edge}" edge already exists in the graph.`);
 
   if (!sourceData) {
-    sourceData = addNode(graph, source);
+    sourceData = unsafeAddNode(graph, source, {});
 
     if (source === target)
       targetData = sourceData;
   }
   if (!targetData) {
-    targetData = addNode(graph, target);
+    targetData = unsafeAddNode(graph, target, {});
   }
 
   // Storing some data
