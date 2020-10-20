@@ -277,8 +277,7 @@ function attachAttributeSetter(Class, method, type, EdgeDataClass) {
       type: 'set',
       attributes: data.attributes,
       meta: {
-        name,
-        value
+        name
       }
     });
 
@@ -360,8 +359,7 @@ function attachAttributeUpdater(Class, method, type, EdgeDataClass) {
       type: 'set',
       attributes: data.attributes,
       meta: {
-        name,
-        value: data.attributes[name]
+        name
       }
     });
 

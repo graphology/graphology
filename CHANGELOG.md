@@ -18,6 +18,7 @@
 * Fixing case when `nodeAdded` events would not be fired when using `#.emptyCopy`.
 * Fixing `#.mergeEdgeWithKey` edge cases.
 * Dropping `before` and `after` from `replace` events metadata.
+* Dropping `value` from `set` events metadata.
 * Correctly emitting `nodeAttributesUpdated` event when node is merged.
 * Correctly emitting `edgeAttributesUpdated` event when edge is merged.
 

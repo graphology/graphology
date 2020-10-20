@@ -114,7 +114,6 @@ export default function events(Graph) {
 
           if (type === 'set') {
             assert.strictEqual(meta.name, 'name');
-            assert.strictEqual(meta.value, 'Awesome graph');
           }
           else if (type === 'remove') {
             assert.strictEqual(meta.name, 'name');
@@ -150,7 +149,6 @@ export default function events(Graph) {
 
           if (type === 'set') {
             assert.strictEqual(meta.name, 'age');
-            assert.strictEqual(meta.value, 34);
           }
           else if (type === 'remove') {
             assert.strictEqual(meta.name, 'eyes');
@@ -231,7 +229,6 @@ export default function events(Graph) {
 
           if (type === 'set') {
             assert.strictEqual(meta.name, 'weight');
-            assert.strictEqual(meta.value, 34);
           }
           else if (type === 'remove') {
             assert.strictEqual(meta.name, 'type');

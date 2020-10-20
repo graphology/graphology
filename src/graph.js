@@ -1539,8 +1539,7 @@ export default class Graph extends EventEmitter {
       type: 'set',
       attributes: this._attributes,
       meta: {
-        name,
-        value
+        name
       }
     });
 
@@ -1567,8 +1566,7 @@ export default class Graph extends EventEmitter {
       type: 'set',
       attributes: this._attributes,
       meta: {
-        name,
-        value
+        name
       }
     });
 
@@ -1735,8 +1733,7 @@ export default class Graph extends EventEmitter {
       type: 'set',
       attributes: data.attributes,
       meta: {
-        name,
-        value
+        name
       }
     });
 
@@ -1780,8 +1777,7 @@ export default class Graph extends EventEmitter {
       type: 'set',
       attributes: data.attributes,
       meta: {
-        name,
-        value
+        name
       }
     });
 
