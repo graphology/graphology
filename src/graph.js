@@ -2260,12 +2260,28 @@ export default class Graph extends EventEmitter {
         this.replaceAttributes(data.attributes);
     }
 
-    // TODO: optimize
-    if (data.nodes)
-      data.nodes.forEach(node => this.importNode(node, merge));
+    let i, l, list;
 
-    if (data.edges)
-      data.edges.forEach(edge => this.importEdge(edge, merge));
+    if (data.nodes) {
+      list = data.nodes;
+
+      if (!Array.isArray(list))
+        throw new InvalidArgumentsGraphError('Graph.import: invalid nodes. Expecting an array.');
+
+
+      for (i = 0, l = list.length; i < l; i++)
+        this.importNode(list[i], merge);
+    }
+
+    if (data.edges) {
+      list = data.edges;
+
+      if (!Array.isArray(list))
+        throw new InvalidArgumentsGraphError('Graph.import: invalid edges. Expecting an array.');
+
+      for (i = 0, l = list.length; i < l; i++)
+        this.importEdge(list[i], merge);
+    }
 
     return this;
   }
