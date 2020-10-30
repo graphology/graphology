@@ -329,6 +329,46 @@ export default function events(Graph) {
 
         assert.strictEqual(handler.times, 1);
       }
+    },
+
+    'eachEdgeAttributesUpdated': {
+      'it should fire when using #.updateEachEdgeAttributes.': function() {
+        const graph = new Graph();
+
+        graph.mergeEdgeWithKey(0, 'John', 'Lucy', {weight: 1});
+        graph.mergeEdgeWithKey(1, 'John', 'Mary', {weight: 10});
+
+        const handler = spy(payload => {
+          assert.strictEqual(payload.hints, null);
+        });
+
+        graph.on('eachEdgeAttributesUpdated', handler);
+
+        graph.updateEachEdgeAttributes((node, attr) => {
+          return {...attr, age: attr.weight + 1};
+        });
+
+        assert.strictEqual(handler.times, 1);
+      },
+
+      'it should provide hints when user gave them.': function() {
+        const graph = new Graph();
+
+        graph.mergeEdgeWithKey(0, 'John', 'Lucy', {weight: 1});
+        graph.mergeEdgeWithKey(1, 'John', 'Mary', {weight: 10});
+
+        const handler = spy(payload => {
+          assert.deepStrictEqual(payload.hints, {attributes: ['weight']});
+        });
+
+        graph.on('eachEdgeAttributesUpdated', handler);
+
+        graph.updateEachEdgeAttributes((node, attr) => {
+          return {...attr, weight: attr.weight + 1};
+        }, {attributes: ['weight']});
+
+        assert.strictEqual(handler.times, 1);
+      }
     }
   };
 }

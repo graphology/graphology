@@ -682,6 +682,41 @@ export default function attributes(Graph, checkers) {
           {age: 14}
         ]);
       }
+    },
+
+    '#.updateEachEdgeAttributes': {
+
+      'it should throw when given invalid arguments.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.updateEachEdgeAttributes(null);
+        }, invalid());
+
+        assert.throws(function() {
+          graph.updateEachEdgeAttributes(Function.prototype, 'test');
+        }, invalid());
+
+        assert.throws(function() {
+          graph.updateEachEdgeAttributes(Function.prototype, {attributes: 'yes'});
+        }, invalid());
+      },
+
+      'it should update each node\'s attributes.': function() {
+        const graph = new Graph();
+
+        graph.mergeEdgeWithKey(0, 'John', 'Lucy', {weight: 1});
+        graph.mergeEdgeWithKey(1, 'John', 'Mary', {weight: 10});
+
+        graph.updateEachEdgeAttributes((edge, attr) => {
+          return {...attr, weight: attr.weight + 1};
+        });
+
+        assert.deepStrictEqual(graph.edges().map(n => graph.getEdgeAttributes(n)), [
+          {weight: 2},
+          {weight: 11}
+        ]);
+      }
     }
   });
 }

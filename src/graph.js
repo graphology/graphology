@@ -1909,6 +1909,33 @@ export default class Graph extends EventEmitter {
     });
   }
 
+  /**
+   * Method used to update each edge's attributes using the given function.
+   *
+   * @param {function}  updater - Updater function to use.
+   * @param {object}    [hints] - Optional hints.
+   */
+  updateEachEdgeAttributes(updater, hints) {
+    if (typeof updater !== 'function')
+      throw new InvalidArgumentsGraphError('Graph.updateEachEdgeAttributes: expecting an updater function.');
+
+    if (hints && !validateHints(hints))
+      throw new InvalidArgumentsGraphError('Graph.updateEachEdgeAttributes: invalid hints. Expecting an object having the following shape: {attributes?: [string]}');
+
+    const iterator = this._edges.values();
+
+    let step, edgeData;
+
+    while ((step = iterator.next(), step.done !== true)) {
+      edgeData = step.value;
+      edgeData.attributes = updater(edgeData.key, edgeData.attributes);
+    }
+
+    this.emit('eachEdgeAttributesUpdated', {
+      hints: hints ? hints : null
+    });
+  }
+
   /**---------------------------------------------------------------------------
    * Iteration-related methods
    **---------------------------------------------------------------------------
