@@ -123,52 +123,94 @@ export default function iteration(Graph, checkers) {
       },
 
       'it should be possible to create an iterator over the graph\'s adjacency.': function() {
-        const graph = new Graph();
+        const edgeKeyGenerator = ({undirected, source, target}) => {
+          return `${source}${undirected ? '--' : '->'}${target}`;
+        };
 
-        graph.mergeEdge(1, 2);
-        graph.mergeEdge(2, 3);
-        graph.mergeEdge(3, 1);
+        const graph = new Graph({edgeKeyGenerator});
+
+        graph.addNode(1);
+        graph.addNode(2);
+        graph.addNode(3);
+
+        graph.addEdge(1, 2);
+        graph.addEdge(2, 3);
+        graph.addEdge(3, 1);
+        graph.addUndirectedEdge(1, 2);
 
         graph.replaceNodeAttributes(2, {hello: 'world'});
 
-        assert.deepStrictEqual(take(graph.adjacency()), graph.edges().map(edge => {
-          const [source, target] = graph.extremities(edge);
+        const adj = take(graph.adjacency())
+          .map(p => [p[0], p[1], p[4]]);
 
-          return [
-            source,
-            target,
-            graph.getNodeAttributes(source),
-            graph.getNodeAttributes(target),
-            edge,
-            graph.getEdgeAttributes(edge)
-          ];
-        }));
+        assert.deepStrictEqual(adj, [
+          ['1', '2', '1->2'],
+          ['1', '2', '1--2'],
+          ['2', '3', '2->3'],
+          ['2', '1', '1--2'],
+          ['3', '1', '3->1']
+        ]);
+      },
+
+      'it should be possible to create an iterator over a multi graph\'s adjacency.': function() {
+        const graph = new Graph({multi: true});
+
+        graph.addNode(1);
+        graph.addNode(2);
+        graph.addNode(3);
+
+        graph.addEdgeWithKey(0, 1, 2);
+        graph.addEdgeWithKey(1, 2, 3);
+        graph.addEdgeWithKey(2, 3, 1);
+        graph.addEdgeWithKey(3, 2, 3);
+        graph.addUndirectedEdgeWithKey(4, 1, 2);
+
+        graph.replaceNodeAttributes(2, {hello: 'world'});
+
+        const adj = take(graph.adjacency())
+          .map(p => [p[0], p[1], p[4]]);
+
+        assert.deepStrictEqual(adj, [
+          ['1', '2', '0'],
+          ['1', '2', '4'],
+          ['2', '3', '1'],
+          ['2', '3', '3'],
+          ['2', '1', '4'],
+          ['3', '1', '2']
+        ]);
       },
 
       'it should be possible to iterate via Symbol.iterator.': function() {
         if (typeof Symbol === 'undefined')
           return;
 
-        const graph = new Graph();
+        const edgeKeyGenerator = ({undirected, source, target}) => {
+          return `${source}${undirected ? '--' : '->'}${target}`;
+        };
 
-        graph.mergeEdge(1, 2);
-        graph.mergeEdge(2, 3);
-        graph.mergeEdge(3, 1);
+        const graph = new Graph({edgeKeyGenerator});
+
+        graph.addNode(1);
+        graph.addNode(2);
+        graph.addNode(3);
+
+        graph.addEdge(1, 2);
+        graph.addEdge(2, 3);
+        graph.addEdge(3, 1);
+        graph.addUndirectedEdge(1, 2);
 
         graph.replaceNodeAttributes(2, {hello: 'world'});
 
-        assert.deepStrictEqual(take(graph[Symbol.iterator]()), graph.edges().map(edge => {
-          const [source, target] = graph.extremities(edge);
+        const adj = take(graph[Symbol.iterator]())
+          .map(p => [p[0], p[1], p[4]]);
 
-          return [
-            source,
-            target,
-            graph.getNodeAttributes(source),
-            graph.getNodeAttributes(target),
-            edge,
-            graph.getEdgeAttributes(edge)
-          ];
-        }));
+        assert.deepStrictEqual(adj, [
+          ['1', '2', '1->2'],
+          ['1', '2', '1--2'],
+          ['2', '3', '2->3'],
+          ['2', '1', '1--2'],
+          ['3', '1', '3->1']
+        ]);
       }
     },
     Nodes: nodes(Graph, checkers),

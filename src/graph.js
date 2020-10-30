@@ -32,7 +32,12 @@ import {
 import {attachAttributesMethods} from './attributes';
 import {attachEdgeIterationMethods} from './iteration/edges';
 import {attachNeighborIterationMethods} from './iteration/neighbors';
-import {forEachAdjacencySimple, forEachAdjacencyMulti} from './iteration/adjacency';
+import {
+  forEachAdjacencySimple,
+  forEachAdjacencyMulti,
+  createAdjacencyIteratorSimple,
+  createAdjacencyIteratorMulti
+} from './iteration/adjacency';
 
 import {
   serializeNode,
@@ -1928,31 +1933,10 @@ export default class Graph extends EventEmitter {
    * @return {Iterator}
    */
   adjacency() {
-    const iterator = this._edges.values();
+    if (this.multi)
+      return createAdjacencyIteratorMulti(this);
 
-    return new Iterator(function() {
-      const step = iterator.next();
-
-      if (step.done)
-        return step;
-
-      const edgeData = step.value;
-
-      const sourceData = edgeData.source,
-            targetData = edgeData.target;
-
-      return {
-        done: false,
-        value: [
-          sourceData.key,
-          targetData.key,
-          sourceData.attributes,
-          targetData.attributes,
-          edgeData.key,
-          edgeData.attributes
-        ]
-      };
-    });
+    return createAdjacencyIteratorSimple(this);
   }
 
   /**
