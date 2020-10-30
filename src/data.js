@@ -46,7 +46,7 @@ export function DirectedNodeData(key, attributes) {
 
   // Attributes
   this.key = key;
-  this.attributes = attributes || {};
+  this.attributes = attributes;
 
   // Degrees
   this.inDegree = 0;
@@ -80,7 +80,7 @@ export function UndirectedNodeData(key, attributes) {
 
   // Attributes
   this.key = key;
-  this.attributes = attributes || {};
+  this.attributes = attributes;
 
   // Degrees
   this.undirectedDegree = 0;
