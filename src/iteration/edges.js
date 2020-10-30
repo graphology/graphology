@@ -88,7 +88,9 @@ function forEachSimple(object, callback, avoid) {
       edgeData.source.key,
       edgeData.target.key,
       edgeData.source.attributes,
-      edgeData.target.attributes
+      edgeData.target.attributes,
+      edgeData.undirected,
+      edgeData.generatedKey
     );
   }
 }
@@ -104,7 +106,9 @@ function forEachMulti(object, callback, avoid) {
       edgeData.source.key,
       edgeData.target.key,
       edgeData.source.attributes,
-      edgeData.target.attributes
+      edgeData.target.attributes,
+      edgeData.undirected,
+      edgeData.generatedKey
     ));
   }
 }
@@ -131,7 +135,9 @@ function forEachSimpleUntil(object, callback, avoid) {
       edgeData.source.key,
       edgeData.target.key,
       edgeData.source.attributes,
-      edgeData.target.attributes
+      edgeData.target.attributes,
+      edgeData.undirected,
+      edgeData.generatedKey
     );
 
     if (shouldBreak)
@@ -163,7 +169,9 @@ function forEachMultiUntil(object, callback, avoid) {
         source.key,
         target.key,
         source.attributes,
-        target.attributes
+        target.attributes,
+        edgeData.undirected,
+        edgeData.generatedKey
       );
 
       if (shouldBreak)
@@ -285,7 +293,9 @@ function forEachForKeySimple(object, k, callback) {
     sourceData.key,
     targetData.key,
     sourceData.attributes,
-    targetData.attributes
+    targetData.attributes,
+    edgeData.undirected,
+    edgeData.generatedKey
   );
 }
 
@@ -301,7 +311,9 @@ function forEachForKeyMulti(object, k, callback) {
     edgeData.source.key,
     edgeData.target.key,
     edgeData.source.attributes,
-    edgeData.target.attributes
+    edgeData.target.attributes,
+    edgeData.undirected,
+    edgeData.generatedKey
   ));
 }
 
@@ -328,7 +340,9 @@ function forEachForKeySimpleUntil(object, k, callback) {
     sourceData.key,
     targetData.key,
     sourceData.attributes,
-    targetData.attributes
+    targetData.attributes,
+    edgeData.undirected,
+    edgeData.generatedKey
   );
 }
 
@@ -352,7 +366,9 @@ function forEachForKeyMultiUntil(object, k, callback) {
       edgeData.source.key,
       edgeData.target.key,
       edgeData.source.attributes,
-      edgeData.target.attributes
+      edgeData.target.attributes,
+      edgeData.undirected,
+      edgeData.generatedKey
     );
 
     if (shouldBreak)
@@ -478,7 +494,9 @@ function forEachEdge(graph, type, callback) {
       source.key,
       target.key,
       source.attributes,
-      target.attributes
+      target.attributes,
+      data.undirected,
+      data.generatedKey
     );
   }
 }
@@ -516,7 +534,9 @@ function forEachEdgeUntil(graph, type, callback) {
       source.key,
       target.key,
       source.attributes,
-      target.attributes
+      target.attributes,
+      data.undirected,
+      data.generatedKey
     );
 
     if (shouldBreak)

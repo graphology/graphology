@@ -266,7 +266,7 @@ export default function edgesIteration(Graph, checkers) {
         'it should possible to use callback iterators.': function() {
           const edges = [];
 
-          graph[forEachName](function(key, attributes, source, target, sA, tA) {
+          graph[forEachName](function(key, attributes, source, target, sA, tA, u, g) {
             edges.push(key);
 
             assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
@@ -275,6 +275,9 @@ export default function edgesIteration(Graph, checkers) {
 
             assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
             assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+            assert.strictEqual(graph.isUndirected(key), u);
+            assert.strictEqual(graph.hasGeneratedKey(key), g);
           });
 
           edges.sort();
@@ -285,7 +288,7 @@ export default function edgesIteration(Graph, checkers) {
         'it should be possible to use callback iterators over a node\'s relevant edges.': function() {
           const edges = [];
 
-          graph[forEachName](data.node.key, function(key, attributes, source, target, sA, tA) {
+          graph[forEachName](data.node.key, function(key, attributes, source, target, sA, tA, u, g) {
             edges.push(key);
 
             assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
@@ -294,6 +297,9 @@ export default function edgesIteration(Graph, checkers) {
 
             assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
             assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+            assert.strictEqual(graph.isUndirected(key), u);
+            assert.strictEqual(graph.hasGeneratedKey(key), g);
           });
 
           edges.sort();
@@ -304,7 +310,7 @@ export default function edgesIteration(Graph, checkers) {
         'it should be possible to use callback iterators over all the relevant edges between source & target.': function() {
           const edges = [];
 
-          graph[forEachName](data.path.source, data.path.target, function(key, attributes, source, target, sA, tA) {
+          graph[forEachName](data.path.source, data.path.target, function(key, attributes, source, target, sA, tA, u, g) {
             edges.push(key);
 
             assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
@@ -313,6 +319,9 @@ export default function edgesIteration(Graph, checkers) {
 
             assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
             assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+            assert.strictEqual(graph.isUndirected(key), u);
+            assert.strictEqual(graph.hasGeneratedKey(key), g);
           });
 
           assert(sameMembers(edges, data.path.edges));
@@ -324,7 +333,7 @@ export default function edgesIteration(Graph, checkers) {
         'it should possible to use breakable callback iterators.': function() {
           const edges = [];
 
-          graph[forEachUntilName](function(key, attributes, source, target, sA, tA) {
+          graph[forEachUntilName](function(key, attributes, source, target, sA, tA, u, g) {
             edges.push(key);
 
             assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
@@ -333,6 +342,9 @@ export default function edgesIteration(Graph, checkers) {
 
             assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
             assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+            assert.strictEqual(graph.isUndirected(key), u);
+            assert.strictEqual(graph.hasGeneratedKey(key), g);
 
             return true;
           });
@@ -343,7 +355,7 @@ export default function edgesIteration(Graph, checkers) {
         'it should be possible to use breakable callback iterators over a node\'s relevant edges.': function() {
           const edges = [];
 
-          graph[forEachUntilName](data.node.key, function(key, attributes, source, target, sA, tA) {
+          graph[forEachUntilName](data.node.key, function(key, attributes, source, target, sA, tA, u, g) {
             edges.push(key);
 
             assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
@@ -352,6 +364,9 @@ export default function edgesIteration(Graph, checkers) {
 
             assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
             assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+            assert.strictEqual(graph.isUndirected(key), u);
+            assert.strictEqual(graph.hasGeneratedKey(key), g);
 
             return true;
           });
@@ -362,7 +377,7 @@ export default function edgesIteration(Graph, checkers) {
         'it should be possible to use breakable callback iterators over all the relevant edges between source & target.': function() {
           const edges = [];
 
-          graph[forEachUntilName](data.path.source, data.path.target, function(key, attributes, source, target, sA, tA) {
+          graph[forEachUntilName](data.path.source, data.path.target, function(key, attributes, source, target, sA, tA, u, g) {
             edges.push(key);
 
             assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
@@ -371,6 +386,9 @@ export default function edgesIteration(Graph, checkers) {
 
             assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
             assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+            assert.strictEqual(graph.isUndirected(key), u);
+            assert.strictEqual(graph.hasGeneratedKey(key), g);
 
             return true;
           });

@@ -11,6 +11,7 @@
 * Adding `attributes` to `attributesUpdated` events.
 * Adding `attributes` to `nodeAttributesUpdated` events.
 * Adding `attributes` to `edgeAttributesUpdated` events.
+* Passing `undirected` & `generatedKey` to `#.forEachEdge` callbacks.
 * Optimizing `*AttributesUpdated` events payload.
 * Optimizing `#.edges(A, B)`.
 * Optimizing `#.forEachEdge`.
