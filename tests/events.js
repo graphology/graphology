@@ -287,6 +287,48 @@ export default function events(Graph) {
 
         assert.strictEqual(handler.times, 1);
       }
+    },
+
+    'eachNodeAttributesUpdated': {
+      'it should fire when using #.updateEachNodeAttributes.': function() {
+        const graph = new Graph();
+
+        graph.addNode('John', {age: 34});
+        graph.addNode('Mary', {age: 56});
+        graph.addNode('Suz', {age: 13});
+
+        const handler = spy(payload => {
+          assert.strictEqual(payload.hints, null);
+        });
+
+        graph.on('eachNodeAttributesUpdated', handler);
+
+        graph.updateEachNodeAttributes((node, attr) => {
+          return {...attr, age: attr.age + 1};
+        });
+
+        assert.strictEqual(handler.times, 1);
+      },
+
+      'it should provide hints when user gave them.': function() {
+        const graph = new Graph();
+
+        graph.addNode('John', {age: 34});
+        graph.addNode('Mary', {age: 56});
+        graph.addNode('Suz', {age: 13});
+
+        const handler = spy(payload => {
+          assert.deepStrictEqual(payload.hints, {attributes: ['age']});
+        });
+
+        graph.on('eachNodeAttributesUpdated', handler);
+
+        graph.updateEachNodeAttributes((node, attr) => {
+          return {...attr, age: attr.age + 1};
+        }, {attributes: ['age']});
+
+        assert.strictEqual(handler.times, 1);
+      }
     }
   };
 }

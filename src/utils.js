@@ -162,7 +162,7 @@ export function validateHints(hints) {
   if (!isPlainObject(hints))
     return false;
 
-  if (hints.names && !Array.isArray(hints.names))
+  if (hints.attributes && !Array.isArray(hints.attributes))
     return false;
 
   return true;

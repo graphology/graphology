@@ -645,6 +645,43 @@ export default function attributes(Graph, checkers) {
 
         assert.deepStrictEqual(graph.getEdgeAttributes(edge), {weight: 1, type: 'KNOWS'});
       }
+    },
+
+    '#.updateEachNodeAttributes': {
+
+      'it should throw when given invalid arguments.': function() {
+        const graph = new Graph();
+
+        assert.throws(function() {
+          graph.updateEachNodeAttributes(null);
+        }, invalid());
+
+        assert.throws(function() {
+          graph.updateEachNodeAttributes(Function.prototype, 'test');
+        }, invalid());
+
+        assert.throws(function() {
+          graph.updateEachNodeAttributes(Function.prototype, {attributes: 'yes'});
+        }, invalid());
+      },
+
+      'it should update each node\'s attributes.': function() {
+        const graph = new Graph();
+
+        graph.addNode('John', {age: 34});
+        graph.addNode('Mary', {age: 56});
+        graph.addNode('Suz', {age: 13});
+
+        graph.updateEachNodeAttributes((node, attr) => {
+          return {...attr, age: attr.age + 1};
+        });
+
+        assert.deepStrictEqual(graph.nodes().map(n => graph.getNodeAttributes(n)), [
+          {age: 35},
+          {age: 57},
+          {age: 14}
+        ]);
+      }
     }
   });
 }

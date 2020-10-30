@@ -53,7 +53,8 @@ import {
   isPlainObject,
   privateProperty,
   readOnlyProperty,
-  incrementalId
+  incrementalId,
+  validateHints
 } from './utils';
 
 /**
@@ -1887,8 +1888,25 @@ export default class Graph extends EventEmitter {
    * @param {function}  updater - Updater function to use.
    * @param {object}    [hints] - Optional hints.
    */
-  updateEachNodeAttributes() {
+  updateEachNodeAttributes(updater, hints) {
+    if (typeof updater !== 'function')
+      throw new InvalidArgumentsGraphError('Graph.updateEachNodeAttributes: expecting an updater function.');
 
+    if (hints && !validateHints(hints))
+      throw new InvalidArgumentsGraphError('Graph.updateEachNodeAttributes: invalid hints. Expecting an object having the following shape: {attributes?: [string]}');
+
+    const iterator = this._nodes.values();
+
+    let step, nodeData;
+
+    while ((step = iterator.next(), step.done !== true)) {
+      nodeData = step.value;
+      nodeData.attributes = updater(nodeData.key, nodeData.attributes);
+    }
+
+    this.emit('eachNodeAttributesUpdated', {
+      hints: hints ? hints : null
+    });
   }
 
   /**---------------------------------------------------------------------------
