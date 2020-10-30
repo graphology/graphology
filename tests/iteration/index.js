@@ -90,27 +90,35 @@ export default function iteration(Graph, checkers) {
       'it should be possible to iterate over the graph\'s adjacency using callbacks until returning true.': function() {
         const graph = new Graph();
 
-        graph.mergeEdge(1, 2);
-        graph.mergeEdge(2, 3);
-        graph.mergeEdge(3, 1);
+        graph.addNode(1);
+        graph.addNode(2);
+        graph.addNode(3);
+
+        graph.addEdge(1, 2);
+        graph.addEdge(2, 3);
+        graph.addEdge(3, 1);
+        graph.addUndirectedEdge(1, 2);
 
         graph.replaceNodeAttributes(2, {hello: 'world'});
 
         const adjacency = [];
 
-        graph.forEachUntil(function(s, t, sa, ta, e, ea) {
-          adjacency.push([s, t]);
+        graph.forEachUntil(function(s, t, sa, ta, e, ea, u, g) {
+          adjacency.push([u, s, t]);
           assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
           assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
           assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
+          assert.strictEqual(graph.isUndirected(e), u);
+          assert.strictEqual(graph.hasGeneratedKey(e), g);
 
           if (sa.hello === 'world')
             return true;
         });
 
         assert.deepStrictEqual(adjacency, [
-          ['1', '2'],
-          ['2', '3']
+          [false, '1', '2'],
+          [true, '1', '2'],
+          [false, '2', '3']
         ]);
       },
 

@@ -1901,9 +1901,9 @@ export default class Graph extends EventEmitter {
       throw new InvalidArgumentsGraphError('Graph.forEach: expecting a callback.');
 
     if (this.multi)
-      forEachAdjacencyMulti(this, callback);
+      forEachAdjacencyMulti(false, this, callback);
     else
-      forEachAdjacencySimple(this, callback);
+      forEachAdjacencySimple(false, this, callback);
   }
 
   /**
@@ -1914,30 +1914,12 @@ export default class Graph extends EventEmitter {
    */
   forEachUntil(callback) {
     if (typeof callback !== 'function')
-      throw new InvalidArgumentsGraphError('Graph.forEachUntil: expecting a callback.');
+      throw new InvalidArgumentsGraphError('Graph.forEach: expecting a callback.');
 
-    const iterator = this._edges.values();
-
-    let shouldBreak = false;
-    let step, edgeData, sourceData, targetData;
-
-    while ((step = iterator.next(), step.done !== true)) {
-      edgeData = step.value;
-      sourceData = edgeData.source;
-      targetData = edgeData.target;
-
-      shouldBreak = callback(
-        sourceData.key,
-        targetData.key,
-        sourceData.attributes,
-        targetData.attributes,
-        edgeData.key,
-        edgeData.attributes
-      );
-
-      if (shouldBreak)
-        break;
-    }
+    if (this.multi)
+      forEachAdjacencyMulti(true, this, callback);
+    else
+      forEachAdjacencySimple(true, this, callback);
   }
 
   /**

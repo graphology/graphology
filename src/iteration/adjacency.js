@@ -9,15 +9,16 @@
 /**
  * Function iterating over a simple graph's adjacency using a callback.
  *
- * @param {Graph}    graph    - Target Graph instance.
- * @param {callback} function - Iteration callback.
+ * @param {boolean}  breakable - Can we break?
+ * @param {Graph}    graph     - Target Graph instance.
+ * @param {callback} function  - Iteration callback.
  */
-export function forEachAdjacencySimple(graph, callback) {
+export function forEachAdjacencySimple(breakable, graph, callback) {
   const iterator = graph._nodes.values();
 
   const type = graph.type;
 
-  let step, sourceData, neighbor, adj, edgeData, targetData;
+  let step, sourceData, neighbor, adj, edgeData, targetData, shouldBreak;
 
   while ((step = iterator.next(), step.done !== true)) {
     sourceData = step.value;
@@ -29,7 +30,7 @@ export function forEachAdjacencySimple(graph, callback) {
         edgeData = adj[neighbor];
         targetData = edgeData.target;
 
-        callback(
+        shouldBreak = callback(
           sourceData.key,
           targetData.key,
           sourceData.attributes,
@@ -39,6 +40,9 @@ export function forEachAdjacencySimple(graph, callback) {
           edgeData.undirected,
           edgeData.generatedKey
         );
+
+        if (breakable && shouldBreak)
+          return;
       }
     }
 
@@ -52,7 +56,7 @@ export function forEachAdjacencySimple(graph, callback) {
         if (targetData.key !== neighbor)
           targetData = edgeData.source;
 
-        callback(
+        shouldBreak = callback(
           sourceData.key,
           targetData.key,
           sourceData.attributes,
@@ -62,6 +66,9 @@ export function forEachAdjacencySimple(graph, callback) {
           edgeData.undirected,
           edgeData.generatedKey
         );
+
+        if (breakable && shouldBreak)
+          return;
       }
     }
   }
@@ -70,15 +77,16 @@ export function forEachAdjacencySimple(graph, callback) {
 /**
  * Function iterating over a multi graph's adjacency using a callback.
  *
+ * @param {boolean}  breakable - Can we break?
  * @param {Graph}    graph    - Target Graph instance.
  * @param {callback} function - Iteration callback.
  */
-export function forEachAdjacencyMulti(graph, callback) {
+export function forEachAdjacencyMulti(breakable, graph, callback) {
   const iterator = graph._nodes.values();
 
   const type = graph.type;
 
-  let step, sourceData, neighbor, container, containerStep, adj, edgeData, targetData;
+  let step, sourceData, neighbor, container, containerStep, adj, edgeData, targetData, shouldBreak;
 
   while ((step = iterator.next(), step.done !== true)) {
     sourceData = step.value;
@@ -93,7 +101,7 @@ export function forEachAdjacencyMulti(graph, callback) {
           edgeData = containerStep.value;
           targetData = edgeData.target;
 
-          callback(
+          shouldBreak = callback(
             sourceData.key,
             targetData.key,
             sourceData.attributes,
@@ -103,6 +111,9 @@ export function forEachAdjacencyMulti(graph, callback) {
             edgeData.undirected,
             edgeData.generatedKey
           );
+
+          if (breakable && shouldBreak)
+            return;
         }
       }
     }
@@ -120,7 +131,7 @@ export function forEachAdjacencyMulti(graph, callback) {
           if (targetData.key !== neighbor)
             targetData = edgeData.source;
 
-          callback(
+          shouldBreak = callback(
             sourceData.key,
             targetData.key,
             sourceData.attributes,
@@ -130,6 +141,9 @@ export function forEachAdjacencyMulti(graph, callback) {
             edgeData.undirected,
             edgeData.generatedKey
           );
+
+          if (breakable && shouldBreak)
+            return;
         }
       }
     }
