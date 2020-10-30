@@ -21,6 +21,10 @@ matrix:
       node_js: "14"
       env:
         - CI_TEST_BUILD=true
+    - os: linux
+      node_js: "15"
+      env:
+        - CI_TEST_BUILD=true
 install: npm install --ignore-scripts
 script:
   - npm run lint

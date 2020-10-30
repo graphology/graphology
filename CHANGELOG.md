@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.19.0 (provisional)
+## 0.19.0
 
 * Adding `#.forEachUntil`.
 * Adding `#.forEachNodeUntil`.
@@ -30,6 +30,7 @@
 * Dropping overkill `toString` method.
 * Correctly emitting `nodeAttributesUpdated` event when node is merged.
 * Correctly emitting `edgeAttributesUpdated` event when edge is merged.
+* `graphology-types` is now a peer dependency.
 
 ## 0.18.0
 
