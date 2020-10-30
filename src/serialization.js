@@ -14,7 +14,6 @@
  * Serialized Graph:
  * {nodes[], edges?[]}
  */
-import {UndirectedEdgeData} from './data';
 import {assign, isPlainObject, isEmpty} from './utils';
 
 /**
@@ -53,7 +52,7 @@ export function serializeEdge(key, data) {
   if (!isEmpty(data.attributes))
     serialized.attributes = assign({}, data.attributes);
 
-  if (data instanceof UndirectedEdgeData)
+  if (data.undirected)
     serialized.undirected = true;
 
   return serialized;

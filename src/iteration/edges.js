@@ -14,8 +14,6 @@ import {
   NotFoundGraphError
 } from '../errors';
 
-import {UndirectedEdgeData} from '../data';
-
 /**
  * Definitions.
  */
@@ -442,7 +440,7 @@ function createEdgeArray(graph, type) {
   while ((step = iterator.next(), step.done !== true)) {
     data = step.value;
 
-    if ((data instanceof UndirectedEdgeData) === mask)
+    if (data.undirected === mask)
       list[i++] = data.key;
   }
 
@@ -469,7 +467,7 @@ function forEachEdge(graph, type, callback) {
   while ((step = iterator.next(), step.done !== true)) {
     data = step.value;
 
-    if (shouldFilter && (data instanceof UndirectedEdgeData) !== mask)
+    if (shouldFilter && data.undirected !== mask)
       continue;
 
     const {key, attributes, source, target} = data;
@@ -507,7 +505,7 @@ function forEachEdgeUntil(graph, type, callback) {
   while ((step = iterator.next(), step.done !== true)) {
     data = step.value;
 
-    if (shouldFilter && (data instanceof UndirectedEdgeData) !== mask)
+    if (shouldFilter && data.undirected !== mask)
       continue;
 
     const {key, attributes, source, target} = data;
@@ -554,7 +552,7 @@ function createEdgeIterator(graph, type) {
 
       data = step.value;
 
-      if (shouldFilter && (data instanceof UndirectedEdgeData) !== mask)
+      if (shouldFilter && data.undirected !== mask)
         continue;
 
       break;

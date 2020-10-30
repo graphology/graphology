@@ -19,8 +19,7 @@ import {
   MixedNodeData,
   DirectedNodeData,
   UndirectedNodeData,
-  DirectedEdgeData,
-  UndirectedEdgeData
+  EdgeData
 } from './data';
 
 import {
@@ -247,9 +246,8 @@ function addEdge(
   }
 
   // Storing some data
-  const DataClass = undirected ? UndirectedEdgeData : DirectedEdgeData;
-
-  const edgeData = new DataClass(
+  const edgeData = new EdgeData(
+    undirected,
     edge,
     mustGenerateKey,
     sourceData,
@@ -474,9 +472,8 @@ function mergeEdge(
   }
 
   // Storing some data
-  const DataClass = undirected ? UndirectedEdgeData : DirectedEdgeData;
-
-  edgeData = new DataClass(
+  edgeData = new EdgeData(
+    undirected,
     edge,
     mustGenerateKey,
     sourceData,
@@ -648,7 +645,7 @@ export default class Graph extends EventEmitter {
 
       return (
         !!edgeData &&
-        edgeData instanceof DirectedEdgeData
+        !edgeData.undirected
       );
     }
     else if (arguments.length === 2) {
@@ -701,7 +698,7 @@ export default class Graph extends EventEmitter {
 
       return (
         !!edgeData &&
-        edgeData instanceof UndirectedEdgeData
+        edgeData.undirected
       );
     }
     else if (arguments.length === 2) {
@@ -1170,7 +1167,7 @@ export default class Graph extends EventEmitter {
     if (!data)
       throw new NotFoundGraphError(`Graph.isUndirected: could not find the "${edge}" edge in the graph.`);
 
-    return data instanceof UndirectedEdgeData;
+    return data.undirected;
   }
 
   /**
@@ -1189,7 +1186,7 @@ export default class Graph extends EventEmitter {
     if (!data)
       throw new NotFoundGraphError(`Graph.isDirected: could not find the "${edge}" edge in the graph.`);
 
-    return data instanceof DirectedEdgeData;
+    return !data.undirected;
   }
 
   /**
@@ -1423,7 +1420,7 @@ export default class Graph extends EventEmitter {
       attributes
     } = edgeData;
 
-    const undirected = edgeData instanceof UndirectedEdgeData;
+    const undirected = edgeData.undirected;
 
     if (sourceData === targetData) {
       if (undirected) {
@@ -2429,7 +2426,7 @@ export default class Graph extends EventEmitter {
           multiIndex = {};
 
     this._edges.forEach((data, key) => {
-      const direction = data instanceof UndirectedEdgeData ? '--' : '->';
+      const direction = data.undirected ? '--' : '->';
 
       let label = '';
 

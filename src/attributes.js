@@ -17,20 +17,14 @@ import {
   UsageGraphError
 } from './errors';
 
-import {
-  DirectedEdgeData,
-  UndirectedEdgeData
-} from './data';
-
 /**
  * Attach an attribute getter method onto the provided class.
  *
  * @param {function} Class         - Target class.
  * @param {string}   method        - Method name.
  * @param {string}   type          - Type of the edge to find.
- * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributeGetter(Class, method, type, EdgeDataClass) {
+function attachAttributeGetter(Class, method, type) {
 
   /**
    * Get the desired attribute for the given element (node or edge).
@@ -78,7 +72,7 @@ function attachAttributeGetter(Class, method, type, EdgeDataClass) {
         throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
     }
 
-    if (type !== 'mixed' && !(data instanceof EdgeDataClass))
+    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
     return data.attributes[name];
@@ -91,9 +85,8 @@ function attachAttributeGetter(Class, method, type, EdgeDataClass) {
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
  * @param {string}   type        - Type of the edge to find.
- * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributesGetter(Class, method, type, EdgeDataClass) {
+function attachAttributesGetter(Class, method, type) {
 
   /**
    * Retrieves all the target element's attributes.
@@ -137,7 +130,7 @@ function attachAttributesGetter(Class, method, type, EdgeDataClass) {
         throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
     }
 
-    if (type !== 'mixed' && !(data instanceof EdgeDataClass))
+    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
     return data.attributes;
@@ -150,9 +143,8 @@ function attachAttributesGetter(Class, method, type, EdgeDataClass) {
  * @param {function} Class       - Target class.
  * @param {string}   method      - Method name.
  * @param {string}   type        - Type of the edge to find.
- * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributeChecker(Class, method, type, EdgeDataClass) {
+function attachAttributeChecker(Class, method, type) {
 
   /**
    * Checks whether the desired attribute is set for the given element (node or edge).
@@ -200,7 +192,7 @@ function attachAttributeChecker(Class, method, type, EdgeDataClass) {
         throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
     }
 
-    if (type !== 'mixed' && !(data instanceof EdgeDataClass))
+    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
     return data.attributes.hasOwnProperty(name);
@@ -213,9 +205,8 @@ function attachAttributeChecker(Class, method, type, EdgeDataClass) {
  * @param {function} Class         - Target class.
  * @param {string}   method        - Method name.
  * @param {string}   type          - Type of the edge to find.
- * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributeSetter(Class, method, type, EdgeDataClass) {
+function attachAttributeSetter(Class, method, type) {
 
   /**
    * Set the desired attribute for the given element (node or edge).
@@ -266,7 +257,7 @@ function attachAttributeSetter(Class, method, type, EdgeDataClass) {
         throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
     }
 
-    if (type !== 'mixed' && !(data instanceof EdgeDataClass))
+    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
     data.attributes[name] = value;
@@ -289,9 +280,8 @@ function attachAttributeSetter(Class, method, type, EdgeDataClass) {
  * @param {function} Class         - Target class.
  * @param {string}   method        - Method name.
  * @param {string}   type          - Type of the edge to find.
- * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributeUpdater(Class, method, type, EdgeDataClass) {
+function attachAttributeUpdater(Class, method, type) {
 
   /**
    * Update the desired attribute for the given element (node or edge) using
@@ -346,7 +336,7 @@ function attachAttributeUpdater(Class, method, type, EdgeDataClass) {
     if (typeof updater !== 'function')
       throw new InvalidArgumentsGraphError(`Graph.${method}: updater should be a function.`);
 
-    if (type !== 'mixed' && !(data instanceof EdgeDataClass))
+    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
     data.attributes[name] = updater(data.attributes[name]);
@@ -369,9 +359,8 @@ function attachAttributeUpdater(Class, method, type, EdgeDataClass) {
  * @param {function} Class         - Target class.
  * @param {string}   method        - Method name.
  * @param {string}   type          - Type of the edge to find.
- * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributeRemover(Class, method, type, EdgeDataClass) {
+function attachAttributeRemover(Class, method, type) {
 
   /**
    * Remove the desired attribute for the given element (node or edge).
@@ -419,7 +408,7 @@ function attachAttributeRemover(Class, method, type, EdgeDataClass) {
         throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
     }
 
-    if (type !== 'mixed' && !(data instanceof EdgeDataClass))
+    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
     delete data.attributes[name];
@@ -442,9 +431,8 @@ function attachAttributeRemover(Class, method, type, EdgeDataClass) {
  * @param {function} Class         - Target class.
  * @param {string}   method        - Method name.
  * @param {string}   type          - Type of the edge to find.
- * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributesReplacer(Class, method, type, EdgeDataClass) {
+function attachAttributesReplacer(Class, method, type) {
 
   /**
    * Replace the attributes for the given element (node or edge).
@@ -495,7 +483,7 @@ function attachAttributesReplacer(Class, method, type, EdgeDataClass) {
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(`Graph.${method}: provided attributes are not a plain object.`);
 
-    if (type !== 'mixed' && !(data instanceof EdgeDataClass))
+    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
     data.attributes = attributes;
@@ -517,9 +505,8 @@ function attachAttributesReplacer(Class, method, type, EdgeDataClass) {
  * @param {function} Class         - Target class.
  * @param {string}   method        - Method name.
  * @param {string}   type          - Type of the edge to find.
- * @param {Class}    EdgeDataClass - Class of the edges to filter.
  */
-function attachAttributesMerger(Class, method, type, EdgeDataClass) {
+function attachAttributesMerger(Class, method, type) {
 
   /**
    * Replace the attributes for the given element (node or edge).
@@ -570,7 +557,7 @@ function attachAttributesMerger(Class, method, type, EdgeDataClass) {
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(`Graph.${method}: provided attributes are not a plain object.`);
 
-    if (type !== 'mixed' && !(data instanceof EdgeDataClass))
+    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
       throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
 
     assign(data.attributes, attributes);
@@ -637,24 +624,21 @@ export function attachAttributesMethods(Graph) {
     attacher(
       Graph,
       name('Edge'),
-      'mixed',
-      DirectedEdgeData
+      'mixed'
     );
 
     // For directed edges
     attacher(
       Graph,
       name('DirectedEdge'),
-      'directed',
-      DirectedEdgeData
+      'directed'
     );
 
     // For undirected edges
     attacher(
       Graph,
       name('UndirectedEdge'),
-      'undirected',
-      UndirectedEdgeData
+      'undirected'
     );
   });
 }
