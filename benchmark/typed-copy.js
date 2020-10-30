@@ -4,8 +4,8 @@ const updateStructureIndex = require('../src/indices').updateStructureIndex;
 const data = require('../src/data');
 
 const {
-  UndirectedEdgeData,
-  DirectedEdgeData
+  EdgeData,
+  MixedNodeData
 } = data;
 
 const randomString = require('pandemonium/random-string');
@@ -33,7 +33,7 @@ function directedCopy(fromGraph, strict = false) {
   while ((step = iterator.next(), step.done !== true)) {
     edgeData = step.value;
 
-    if (edgeData instanceof UndirectedEdgeData)
+    if (edgeData.undirected)
       continue;
 
     source = edgeData.source.key;
@@ -41,7 +41,8 @@ function directedCopy(fromGraph, strict = false) {
     sourceData = toGraph._nodes.get(source);
     targetData = toGraph._nodes.get(target);
 
-    const copy = new DirectedEdgeData(
+    const copy = new EdgeData(
+      false,
       edgeData.key,
       edgeData.generatedKey,
       sourceData,
@@ -73,6 +74,57 @@ function directedCopy(fromGraph, strict = false) {
   return toGraph;
 }
 
+function directedCopyThroughAdjacency(fromGraph, strict = false) {
+  const type = strict ? 'directed' : 'mixed';
+
+  const toGraph = fromGraph.emptyCopy({type});
+  toGraph._undirectedSelfLoopCount = fromGraph._undirectedSelfLoopCount;
+  toGraph._undirectedSize = fromGraph._undirectedSize;
+
+  let sourceData = new MixedNodeData(null);
+
+  fromGraph.forEach((source, target, sa, ta, edge, ea, u) => {
+    if (u)
+      return;
+
+    if (source !== sourceData.key)
+      sourceData = toGraph._nodes.get(source);
+
+    const targetData = toGraph._nodes.get(target);
+
+    const copy = new EdgeData(
+      false,
+      edge,
+      true,
+      sourceData,
+      targetData,
+      Object.assign({}, ea)
+    );
+
+    toGraph._edges.set(copy.key, copy);
+
+    if (source === target) {
+      sourceData.directedSelfLoops++;
+    }
+    else {
+      sourceData.outDegree++;
+      targetData.inDegree++;
+    }
+
+    updateStructureIndex(
+      toGraph,
+      false,
+      copy,
+      source,
+      target,
+      sourceData,
+      targetData
+    );
+  });
+
+  return toGraph;
+}
+
 for (i = 0; i < N; i++) {
   s = randomString(4, 50);
   t = randomString(4, 50);
@@ -94,4 +146,9 @@ console.log(copy.size);
 console.time('directedCopy');
 copy = directedCopy(g);
 console.timeEnd('directedCopy');
+console.log(copy.size);
+
+console.time('directedCopyThroughAdjacency');
+copy = directedCopyThroughAdjacency(g);
+console.timeEnd('directedCopyThroughAdjacency');
 console.log(copy.size);
