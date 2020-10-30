@@ -54,6 +54,16 @@ function flatTraversal() {
   assert.strictEqual(e, g.directedSize + g.undirectedSize * 2);
 }
 
+function newTraversal() {
+  let e = 0;
+
+  g.forEach(key => {
+    e++;
+  });
+
+  assert.strictEqual(e, g.directedSize + g.undirectedSize * 2);
+}
+
 console.time('basic');
 basicTraversal();
 console.timeEnd('basic');
@@ -61,3 +71,7 @@ console.timeEnd('basic');
 console.time('flat');
 flatTraversal();
 console.timeEnd('flat');
+
+console.time('new');
+newTraversal();
+console.timeEnd('new');

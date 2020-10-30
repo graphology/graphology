@@ -32,6 +32,7 @@ import {
 import {attachAttributesMethods} from './attributes';
 import {attachEdgeIterationMethods} from './iteration/edges';
 import {attachNeighborIterationMethods} from './iteration/neighbors';
+import {forEachAdjacencySimple, forEachAdjacencyMulti} from './iteration/adjacency';
 
 import {
   serializeNode,
@@ -1899,19 +1900,10 @@ export default class Graph extends EventEmitter {
     if (typeof callback !== 'function')
       throw new InvalidArgumentsGraphError('Graph.forEach: expecting a callback.');
 
-    this._edges.forEach((edgeData, key) => {
-      const sourceData = edgeData.source,
-            targetData = edgeData.target;
-
-      callback(
-        sourceData.key,
-        targetData.key,
-        sourceData.attributes,
-        targetData.attributes,
-        key,
-        edgeData.attributes
-      );
-    });
+    if (this.multi)
+      forEachAdjacencyMulti(this, callback);
+    else
+      forEachAdjacencySimple(this, callback);
   }
 
   /**
