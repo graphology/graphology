@@ -23,6 +23,8 @@ function directedCopy(fromGraph, strict = false) {
   const type = strict ? 'directed' : 'mixed';
 
   const toGraph = fromGraph.emptyCopy({type});
+  toGraph._undirectedSelfLoopCount = fromGraph._undirectedSelfLoopCount;
+  toGraph._undirectedSize = fromGraph._undirectedSize;
 
   const iterator = fromGraph._edges.values();
 
@@ -51,7 +53,6 @@ function directedCopy(fromGraph, strict = false) {
 
     if (source === target) {
       sourceData.directedSelfLoops++;
-      toGraph._undirectedSelfLoopCount++;
     }
     else {
       sourceData.outDegree++;
@@ -67,8 +68,6 @@ function directedCopy(fromGraph, strict = false) {
       sourceData,
       targetData
     );
-
-    toGraph._directedSize++;
   }
 
   return toGraph;
