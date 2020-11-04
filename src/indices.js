@@ -30,11 +30,12 @@ export function updateStructureIndex(
         inKey = undirected ? 'undirected' : 'in';
 
   // Handling source
-  let edgeOrSet = sourceData[outKey][target];
+  let adj = sourceData[outKey];
+  let edgeOrSet = adj[target];
 
   if (typeof edgeOrSet === 'undefined') {
     edgeOrSet = multi ? new Set() : edgeData;
-    sourceData[outKey][target] = edgeOrSet;
+    adj[target] = edgeOrSet;
   }
 
   if (multi)
@@ -46,8 +47,9 @@ export function updateStructureIndex(
 
   // Handling target (we won't add the edge because it was already taken
   // care of with source above)
-  if (typeof targetData[inKey][source] === 'undefined')
-    targetData[inKey][source] = edgeOrSet;
+  adj = targetData[inKey];
+  if (typeof adj[source] === 'undefined')
+    adj[source] = edgeOrSet;
 }
 
 /**
