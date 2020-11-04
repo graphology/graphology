@@ -26,30 +26,49 @@ export function updateStructureIndex(
 ) {
   const multi = graph.multi;
 
-  const outKey = undirected ? 'undirected' : 'out',
-        inKey = undirected ? 'undirected' : 'in';
+  let outKey = 'out';
+  let inKey = 'in';
 
-  // Handling source
-  let adj = sourceData[outKey];
-  let edgeOrSet = adj[target];
+  if (undirected)
+    outKey = inKey = 'undirected';
 
-  if (typeof edgeOrSet === 'undefined') {
-    edgeOrSet = multi ? new Set() : edgeData;
-    adj[target] = edgeOrSet;
+  let adj, container;
+
+  if (multi) {
+
+      // Handling source
+    adj = sourceData[outKey];
+    container = adj[target];
+
+    if (typeof container === 'undefined') {
+      container = new Set();
+      adj[target] = container;
+    }
+
+    container.add(edgeData);
+
+    // If selfLoop, we break here
+    if (source === target && undirected)
+      return;
+
+    // Handling target (we won't add the edge because it was already taken
+    // care of with source above)
+    adj = targetData[inKey];
+    if (typeof adj[source] === 'undefined')
+      adj[source] = container;
   }
+  else {
 
-  if (multi)
-    edgeOrSet.add(edgeData);
+      // Handling source
+      sourceData[outKey][target] = edgeData;
 
-  // If selfLoop, we break here
-  if (source === target && undirected)
-    return;
+      // If selfLoop, we break here
+      if (source === target && undirected)
+        return;
 
-  // Handling target (we won't add the edge because it was already taken
-  // care of with source above)
-  adj = targetData[inKey];
-  if (typeof adj[source] === 'undefined')
-    adj[source] = edgeOrSet;
+      // Handling target
+      targetData[inKey][source] = edgeData;
+  }
 }
 
 /**
