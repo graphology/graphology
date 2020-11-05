@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.19.1 (provisional)
+
+* Optimizing `#.dropNode`.
+
 ## 0.19.0
 
 * Adding `#.forEachUntil`.

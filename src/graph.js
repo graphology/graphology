@@ -1360,17 +1360,16 @@ export default class Graph extends EventEmitter {
   dropNode(node) {
     node = '' + node;
 
-    if (!this.hasNode(node))
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
       throw new NotFoundGraphError(`Graph.dropNode: could not find the "${node}" node in the graph.`);
 
     // Removing attached edges
-    const edges = this.edges(node);
-
-    // NOTE: we could go faster here
-    for (let i = 0, l = edges.length; i < l; i++)
-      this.dropEdge(edges[i]);
-
-    const data = this._nodes.get(node);
+    // TODO: we could do faster
+    this.forEachEdge(edge => {
+      this.dropEdge(edge);
+    });
 
     // Dropping the node from the register
     this._nodes.delete(node);
@@ -1378,7 +1377,7 @@ export default class Graph extends EventEmitter {
     // Emitting
     this.emit('nodeDropped', {
       key: node,
-      attributes: data.attributes
+      attributes: nodeData.attributes
     });
   }
 
