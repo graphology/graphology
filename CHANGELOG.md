@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.19.1 (provisional)
+## 0.19.1
 
 * Optimizing `#.dropNode`.
 
