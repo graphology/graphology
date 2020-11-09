@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.19.2 (provisional)
+## 0.19.2
 
 * Fixing `#.dropNode` bug.
 
