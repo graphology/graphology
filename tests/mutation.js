@@ -546,11 +546,12 @@ export default function mutation(Graph, checkers) {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Margaret']);
         const edge = graph.addEdge('John', 'Margaret');
+        graph.mergeEdge('Jack', 'Trudy');
 
         graph.dropNode('Margaret');
 
-        assert.strictEqual(graph.order, 1);
-        assert.strictEqual(graph.size, 0);
+        assert.strictEqual(graph.order, 3);
+        assert.strictEqual(graph.size, 1);
         assert.strictEqual(graph.hasNode('Margaret'), false);
         assert.strictEqual(graph.hasEdge(edge), false);
         assert.strictEqual(graph.degree('John'), 0);

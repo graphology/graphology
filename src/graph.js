@@ -1367,7 +1367,7 @@ export default class Graph extends EventEmitter {
 
     // Removing attached edges
     // TODO: we could do faster
-    this.forEachEdge(edge => {
+    this.forEachEdge(node, edge => {
       this.dropEdge(edge);
     });
 
