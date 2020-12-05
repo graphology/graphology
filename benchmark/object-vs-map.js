@@ -42,6 +42,13 @@ if (process.argv[2] === 'object') {
   for (k in o)
     v = o[k];
   console.timeEnd('object iter');
+
+  if (integerKeys) {
+    console.time('object iter monotonic');
+    for (k = 0; k < N; k++)
+      v = o[k];
+    console.timeEnd('object iter monotonic');
+  }
 }
 else {
   console.time('map write');
