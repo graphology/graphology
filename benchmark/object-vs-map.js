@@ -1,6 +1,5 @@
+const random = require('pandemonium/random');
 const randomString = require('pandemonium/random-string');
-
-const key = () => randomString(3, 87);
 
 const N = 500000;
 
@@ -11,8 +10,17 @@ const m = new Map();
 
 const keys = new Array(N);
 
+const integerKeys = process.argv[3] === 'integers';
+
+const key = () => {
+  if (integerKeys)
+    return random(N, N * 2);
+
+  return randomString(3, 87);
+};
+
 for (i = 0; i < N; i++)
-  keys[i] = key();
+  keys[i] = integerKeys ? i : key();
 
 if (process.argv[2] === 'object') {
   console.time('object write');
