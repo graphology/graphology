@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.19.3
+
+* Fixing issues related to `rollup` bundling.
+
 ## 0.19.2
 
 * Fixing `#.dropNode` bug.
