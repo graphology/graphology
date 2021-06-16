@@ -36,7 +36,7 @@ export function updateStructureIndex(
 
   if (multi) {
 
-      // Handling source
+    // Handling source
     adj = sourceData[outKey];
     container = adj[target];
 
@@ -59,15 +59,15 @@ export function updateStructureIndex(
   }
   else {
 
-      // Handling source
-      sourceData[outKey][target] = edgeData;
+    // Handling source
+    sourceData[outKey][target] = edgeData;
 
-      // If selfLoop, we break here
-      if (source === target && undirected)
-        return;
+    // If selfLoop, we break here
+    if (source === target && undirected)
+      return;
 
-      // Handling target
-      targetData[inKey][source] = edgeData;
+    // Handling target
+    targetData[inKey][source] = edgeData;
   }
 }
 
