@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/graphology/graphology.svg)](https://travis-ci.org/graphology/graphology)
+[![Build Status](https://github.com/graphology/graphology/workflows/Tests/badge.svg)](https://github.com/graphology/graphology/actions)
 
 # Graphology
 
