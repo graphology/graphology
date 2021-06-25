@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.20.0
+
+* Changing default edge key generator to simple incremental id.
+
 ## 0.19.3
 
 * Fixing issues related to `rollup` bundling.
