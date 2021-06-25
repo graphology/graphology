@@ -177,6 +177,6 @@ export function incrementalId() {
   let i = 0;
 
   return () => {
-    return `_geid${i++}_`;
+    return i++;
   };
 }
