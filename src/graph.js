@@ -1966,9 +1966,9 @@ export default class Graph extends EventEmitter {
       throw new InvalidArgumentsGraphError('Graph.forEach: expecting a callback.');
 
     if (this.multi)
-      forEachAdjacencyMulti(true, this, callback);
-    else
-      forEachAdjacencySimple(true, this, callback);
+      return forEachAdjacencyMulti(true, this, callback);
+
+    return forEachAdjacencySimple(true, this, callback);
   }
 
   /**

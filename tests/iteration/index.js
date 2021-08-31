@@ -103,7 +103,7 @@ export default function iteration(Graph, checkers) {
 
         const adjacency = [];
 
-        graph.forEachUntil(function(s, t, sa, ta, e, ea, u, g) {
+        let broke = graph.forEachUntil(function(s, t, sa, ta, e, ea, u, g) {
           adjacency.push([u, s, t]);
           assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
           assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
@@ -115,11 +115,19 @@ export default function iteration(Graph, checkers) {
             return true;
         });
 
+        assert.strictEqual(broke, true);
+
         assert.deepStrictEqual(adjacency, [
           [false, '1', '2'],
           [true, '1', '2'],
           [false, '2', '3']
         ]);
+
+        broke = graph.forEachUntil(function() {
+          return false;
+        });
+
+        assert.strictEqual(broke, false);
       },
 
       'it should be possible to create an iterator over the graph\'s adjacency.': function() {
