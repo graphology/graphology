@@ -270,13 +270,13 @@ function forEachNeighborForNodeUntil(type, direction, nodeData, callback) {
       shouldBreak = forEachInObjectOnceUntil(visited, nodeData, nodeData.in, callback);
 
       if (shouldBreak)
-        return;
+        return true;
     }
     if (direction !== 'in') {
       shouldBreak = forEachInObjectOnceUntil(visited, nodeData, nodeData.out, callback);
 
       if (shouldBreak)
-        return;
+        return true;
     }
   }
 
@@ -284,8 +284,10 @@ function forEachNeighborForNodeUntil(type, direction, nodeData, callback) {
     shouldBreak = forEachInObjectOnceUntil(visited, nodeData, nodeData.undirected, callback);
 
     if (shouldBreak)
-      return;
+      return true;
   }
+
+  return false;
 }
 
 /**
@@ -585,7 +587,7 @@ function attachForEachNeighborUntil(Class, description) {
       throw new NotFoundGraphError(`Graph.${forEachUntilName}: could not find the "${node}" node in the graph.`);
 
     // Here, we want to iterate over a node's relevant neighbors
-    forEachNeighborForNodeUntil(
+    return forEachNeighborForNodeUntil(
       type === 'mixed' ? this.type : type,
       direction,
       nodeData,

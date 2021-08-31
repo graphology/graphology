@@ -212,7 +212,7 @@ export default function neighborsIteration(Graph, checkers) {
         'it should be possible to iterate over neighbors using a breakable callback.': function() {
           const neighbors = [];
 
-          graph[forEachUntilName](data.node.key, function(target, attrs) {
+          let broke = graph[forEachUntilName](data.node.key, function(target, attrs) {
             neighbors.push(target);
 
             assert.deepStrictEqual(graph.getNodeAttributes(target), attrs);
@@ -221,7 +221,14 @@ export default function neighborsIteration(Graph, checkers) {
             return true;
           });
 
+          assert.strictEqual(broke, true);
           assert.deepStrictEqual(neighbors, data.node.neighbors.slice(0, 1));
+
+          broke = graph[forEachUntilName](data.node.key, function() {
+            return false;
+          });
+
+          assert.strictEqual(broke, false);
         }
       },
 
