@@ -64,7 +64,7 @@ export default function nodesIteration(Graph, checkers) {
 
         let count = 0;
 
-        graph.forEachNodeUntil(function(key, attributes) {
+        let broke = graph.forEachNodeUntil(function(key, attributes) {
           assert.strictEqual(key, 'John');
           assert.deepStrictEqual(attributes, {age: 34});
           count++;
@@ -73,7 +73,14 @@ export default function nodesIteration(Graph, checkers) {
             return true;
         });
 
+        assert.strictEqual(broke, true);
         assert.strictEqual(count, 1);
+
+        broke = graph.forEachNodeUntil(function() {
+          return false;
+        });
+
+        assert.strictEqual(broke, false);
       }
     },
 

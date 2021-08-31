@@ -2023,14 +2023,16 @@ export default class Graph extends EventEmitter {
 
     let step, nodeData, shouldBreak;
 
-    while ((step = iterator.next(), step !== true)) {
+    while ((step = iterator.next(), step.done !== true)) {
       nodeData = step.value;
 
       shouldBreak = callback(nodeData.key, nodeData.attributes);
 
       if (shouldBreak)
-        break;
+        return true;
     }
+
+    return false;
   }
 
   /**
