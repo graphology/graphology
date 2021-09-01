@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.21.0
+
+* `*Until` methods now return whether they broke.
+* Fixing a bug with `#.forEachNodeUntil`.
+
 ## 0.20.0
 
 * Changing default edge key generator to simple incremental id.
