@@ -333,7 +333,7 @@ export default function edgesIteration(Graph, checkers) {
         'it should possible to use breakable callback iterators.': function() {
           const edges = [];
 
-          graph[forEachUntilName](function(key, attributes, source, target, sA, tA, u, g) {
+          let broke = graph[forEachUntilName](function(key, attributes, source, target, sA, tA, u, g) {
             edges.push(key);
 
             assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
@@ -349,13 +349,20 @@ export default function edgesIteration(Graph, checkers) {
             return true;
           });
 
+          assert.strictEqual(broke, true);
           assert.strictEqual(edges.length, 1);
+
+          broke = graph[forEachUntilName](function() {
+            return false;
+          });
+
+          assert.strictEqual(broke, false);
         },
 
         'it should be possible to use breakable callback iterators over a node\'s relevant edges.': function() {
           const edges = [];
 
-          graph[forEachUntilName](data.node.key, function(key, attributes, source, target, sA, tA, u, g) {
+          let broke = graph[forEachUntilName](data.node.key, function(key, attributes, source, target, sA, tA, u, g) {
             edges.push(key);
 
             assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
@@ -371,13 +378,20 @@ export default function edgesIteration(Graph, checkers) {
             return true;
           });
 
+          assert.strictEqual(broke, true);
           assert.strictEqual(edges.length, 1);
+
+          broke = graph[forEachUntilName](data.node.key, function() {
+            return false;
+          });
+
+          assert.strictEqual(broke, false);
         },
 
         'it should be possible to use breakable callback iterators over all the relevant edges between source & target.': function() {
           const edges = [];
 
-          graph[forEachUntilName](data.path.source, data.path.target, function(key, attributes, source, target, sA, tA, u, g) {
+          let broke = graph[forEachUntilName](data.path.source, data.path.target, function(key, attributes, source, target, sA, tA, u, g) {
             edges.push(key);
 
             assert.deepStrictEqual(attributes, key === 'J->T' ? {weight: 14} : {});
@@ -393,7 +407,14 @@ export default function edgesIteration(Graph, checkers) {
             return true;
           });
 
+          assert.strictEqual(broke, graph[name](data.path.source, data.path.target).length ? true : false);
           assert.strictEqual(edges.length, graph[name](data.path.source, data.path.target).length ? 1 : 0);
+
+          broke = graph[forEachUntilName](data.path.source, data.path.target, function() {
+            return false;
+          });
+
+          assert.strictEqual(broke, false);
         }
       },
 

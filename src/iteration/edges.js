@@ -329,7 +329,7 @@ function forEachForKeySimpleUntil(object, k, callback) {
   const edgeData = object[k];
 
   if (!edgeData)
-    return;
+    return false;
 
   const sourceData = edgeData.source;
   const targetData = edgeData.target;
@@ -350,7 +350,7 @@ function forEachForKeyMultiUntil(object, k, callback) {
   const edgesData = object[k];
 
   if (!edgesData)
-    return;
+    return false;
 
   let shouldBreak = false;
 
@@ -511,7 +511,7 @@ function forEachEdge(graph, type, callback) {
  */
 function forEachEdgeUntil(graph, type, callback) {
   if (graph.size === 0)
-    return;
+    return false;
 
   const shouldFilter = type !== 'mixed' && type !== graph.type;
   const mask = type === 'undirected';
@@ -540,8 +540,10 @@ function forEachEdgeUntil(graph, type, callback) {
     );
 
     if (shouldBreak)
-      break;
+      return true;
   }
+
+  return false;
 }
 
 /**
@@ -667,13 +669,13 @@ function forEachEdgeForNodeUntil(multi, type, direction, nodeData, callback) {
       shouldBreak = fn(nodeData.in, callback);
 
       if (shouldBreak)
-        return;
+        return true;
     }
     if (direction !== 'in') {
       shouldBreak = fn(nodeData.out, callback, !direction ? nodeData.key : null);
 
       if (shouldBreak)
-        return;
+        return true;
     }
   }
 
@@ -681,8 +683,10 @@ function forEachEdgeForNodeUntil(multi, type, direction, nodeData, callback) {
     shouldBreak = fn(nodeData.undirected, callback);
 
     if (shouldBreak)
-      return;
+      return true;
   }
+
+  return false;
 }
 
 /**
@@ -797,7 +801,7 @@ function forEachEdgeForPathUntil(type, multi, direction, sourceData, target, cal
       shouldBreak = fn(sourceData.in, target, callback);
 
       if (shouldBreak)
-        return;
+        return true;
     }
 
     if (sourceData.key !== target)
@@ -805,7 +809,7 @@ function forEachEdgeForPathUntil(type, multi, direction, sourceData, target, cal
         shouldBreak = fn(sourceData.out, target, callback, !direction ? sourceData.key : null);
 
         if (shouldBreak)
-          return;
+          return true;
       }
   }
 
@@ -814,9 +818,11 @@ function forEachEdgeForPathUntil(type, multi, direction, sourceData, target, cal
       shouldBreak = fn(sourceData.undirected, target, callback);
 
       if (shouldBreak)
-        return;
+        return true;
     }
   }
+
+  return false;
 }
 
 /**
@@ -1060,7 +1066,7 @@ function attachForEachEdgeUntil(Class, description) {
 
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
-      return;
+      return false;
 
     if (arguments.length === 1) {
       callback = source;
