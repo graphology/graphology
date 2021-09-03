@@ -4,6 +4,7 @@
   "scripts": {
     "lint": "lerna run lint",
     "postinstall": "lerna bootstrap && link-parent-bin",
+    "reinstall": "lerna clean --yes && rimraf node_modules && npm i",
     "test": "lerna run test"
   },
   "devDependencies": {
