@@ -1,0 +1,61 @@
+{
+  "name": "graphology-utils",
+  "version": "2.1.1",
+  "description": "Miscellaneous utils for graphology.",
+  "main": "index.js",
+  "files": [
+    "*.d.ts",
+    "add-edge.js",
+    "add-node.js",
+    "index.js",
+    "infer-type.js",
+    "is-graph.js",
+    "is-graph-constructor.js",
+    "memoized-for-each.js",
+    "merge-clique.js",
+    "merge-cycle.js",
+    "merge-path.js",
+    "merge-star.js",
+    "rename-graph-keys.js",
+    "update-graph-keys.js"
+  ],
+  "types": "./index.d.ts",
+  "scripts": {
+    "prepublishOnly": "npm run lint && npm test",
+    "lint": "eslint '**/*.js'",
+    "test": "mocha test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology-utils.git"
+  },
+  "keywords": [
+    "graph",
+    "graphology",
+    "utils"
+  ],
+  "contributors": [
+    {
+      "name": "Guillaume Plique",
+      "url": "http://github.com/Yomguithereal"
+    },
+    {
+      "name": "Jules Farjas",
+      "url": "http://github.com/farjasju"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology-utils/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology-utils#readme",
+  "peerDependencies": {
+    "graphology-types": ">=0.19.0"
+  },
+  "eslintConfig": {
+    "extends": "@yomguithereal/eslint-config",
+    "globals": {
+      "Set": true
+    }
+  }
+}

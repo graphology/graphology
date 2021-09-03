@@ -3,7 +3,3 @@
 node_modules
 *.log
 Notes.md
-
-# Transpiled folders
-dist
-specs

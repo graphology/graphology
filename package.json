@@ -1,61 +1,10 @@
 {
-  "name": "graphology",
-  "version": "0.21.0",
-  "description": "A robust and multipurpose Graph object for JavaScript.",
-  "main": "dist/graphology.cjs.js",
-  "module": "dist/graphology.esm.js",
-  "browser": "dist/graphology.umd.min.js",
-  "types": "dist/graphology.d.ts",
+  "name": "root",
+  "private": true,
   "scripts": {
-    "clean": "rimraf dist specs",
-    "build": "npm run clean && rollup -c && babel tests --out-dir specs && cp src/endpoint.esm.d.ts dist/graphology.d.ts",
-    "lint": "eslint rollup.config.js src tests test.js",
-    "postpublish": "npm run clean",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run test:types && npm run lint",
-    "test": "mocha -u exports --require @babel/register ./test.js",
-    "test:types": "tsc --lib es2015,dom --noEmit --noImplicitAny --noImplicitReturns ./test-types.ts"
-  },
-  "files": [
-    "dist",
-    "specs"
-  ],
-  "keywords": [
-    "graph",
-    "graph theory",
-    "directed",
-    "undirected",
-    "network"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/graphology/graphology.git"
-  },
-  "contributors": [
-    {
-      "name": "Alexis Jacomy",
-      "url": "http://github.com/jacomyal"
-    },
-    {
-      "name": "Benjamin Ooghe-Tabanou",
-      "url": "http://github.com/boogheta"
-    },
-    {
-      "name": "Guillaume Plique",
-      "url": "http://github.com/Yomguithereal"
-    }
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/graphology/graphology/issues"
-  },
-  "homepage": "https://github.com/graphology/graphology#readme",
-  "dependencies": {
-    "events": "^3.3.0",
-    "obliterator": "^1.6.1"
-  },
-  "peerDependencies": {
-    "graphology-types": ">=0.19.0"
+    "lint": "lerna run lint",
+    "postinstall": "lerna bootstrap && link-parent-bin",
+    "test": "lerna run test"
   },
   "devDependencies": {
     "@babel/cli": "7.14.8",
@@ -68,10 +17,15 @@
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@yomguithereal/eslint-config": "^4.0.0",
+    "@yomguithereal/prettier-config": "^1.1.0",
     "eslint": "^7.32.0",
+    "graphology": "^0.20.0",
     "graphology-types": "0.19.3",
+    "lerna": "^4.0.0",
+    "link-parent-bin": "^2.0.0",
     "mocha": "^9.1.1",
     "pandemonium": "^2.0.0",
+    "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
     "rollup": "^2.56.3",
     "rollup-plugin-babel": "^4.4.0",
@@ -79,41 +33,9 @@
     "rollup-plugin-visualizer": "^5.5.2",
     "typescript": "^4.4.2"
   },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ],
-    "plugins": [
-      [
-        "@babel/transform-classes",
-        {
-          "loose": true
-        }
-      ],
-      [
-        "@babel/transform-destructuring",
-        {
-          "loose": true
-        }
-      ],
-      [
-        "@babel/transform-spread",
-        {
-          "loose": true
-        }
-      ]
-    ]
-  },
-  "eslintConfig": {
-    "extends": [
-      "@yomguithereal/eslint-config/es6"
-    ],
-    "rules": {
-      "object-shorthand": 0,
-      "quote-props": 0
-    },
-    "parserOptions": {
-      "ecmaVersion": 2018
-    }
+  "dependencies": {
+    "graphology": "file:packages/graphology",
+    "graphology-types": "file:packages/types",
+    "graphology-utils": "file:packages/utils"
   }
 }
