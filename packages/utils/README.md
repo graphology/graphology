@@ -1,5 +1,3 @@
-[![Build Status](https://github.com/graphology/graphology-utils/workflows/Tests/badge.svg)](https://github.com/graphology/graphology-utils/actions)
-
 # Graphology Utils
 
 Miscellaneous utility functions to be used with [`graphology`](https://graphology.github.io).
