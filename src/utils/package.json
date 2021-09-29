@@ -53,9 +53,6 @@
     "graphology-types": ">=0.19.0"
   },
   "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config",
-    "globals": {
-      "Set": true
-    }
+    "extends": "@yomguithereal/eslint-config"
   }
 }

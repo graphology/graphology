@@ -1,0 +1,64 @@
+{
+  "name": "graphology-metrics",
+  "version": "1.14.2",
+  "description": "Miscellaneous graph metrics for graphology.",
+  "main": "index.js",
+  "files": [
+    "*.js",
+    "*.d.ts",
+    "centrality",
+    "layout-quality"
+  ],
+  "scripts": {
+    "lint": "eslint **/*.js",
+    "prepublishOnly": "npm run lint && npm test",
+    "test": "mocha --recursive test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology-metrics.git"
+  },
+  "keywords": [
+    "betweenness",
+    "centrality",
+    "density",
+    "diameter",
+    "eccentricity",
+    "extent",
+    "graph",
+    "graphology",
+    "metrics",
+    "modularity"
+  ],
+  "contributors": [
+    {
+      "name": "Guillaume Plique",
+      "url": "http://github.com/Yomguithereal"
+    },
+    {
+      "name": "Tanguy Lucci",
+      "url": "https://github.com/luccitan"
+    },
+    {
+      "name": "Pauline Breteau",
+      "url": "https://github.com/paubre"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology-metrics/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology-metrics#readme",
+  "peerDependencies": {
+    "graphology-types": ">=0.19.0"
+  },
+  "eslintConfig": {
+    "extends": "@yomguithereal/eslint-config"
+  },
+  "dependencies": {
+    "graphology-shortest-path": "^1.4.1",
+    "graphology-utils": "^2.1.1",
+    "lodash": "^4.17.21",
+    "mnemonist": "^0.38.3"
+  }
+}
