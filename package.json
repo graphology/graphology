@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "graphology": "file:src/graphology",
+    "graphology-assertions": "file:src/assertions",
     "graphology-canvas": "file:src/canvas",
     "graphology-components": "file:src/components",
     "graphology-generators": "file:src/generators",
