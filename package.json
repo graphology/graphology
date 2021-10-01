@@ -53,6 +53,7 @@
     "graphology-metrics": "file:src/metrics",
     "graphology-minivan": "file:src/minivan",
     "graphology-operators": "file:src/operators",
+    "graphology-pagerank": "file:src/pagerank",
     "graphology-shortest-path": "file:src/shortest-path",
     "graphology-simple-path": "file:src/simple-path",
     "graphology-svg": "file:src/svg",
