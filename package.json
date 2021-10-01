@@ -19,6 +19,7 @@
     "@rollup/plugin-node-resolve": "^13.0.5",
     "@yomguithereal/eslint-config": "^4.1.0",
     "@yomguithereal/prettier-config": "^1.1.0",
+    "canvas": "^2.8.0",
     "chai": "^4.3.4",
     "eslint": "^7.32.0",
     "graphology": "^0.20.0",
