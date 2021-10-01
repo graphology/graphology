@@ -383,6 +383,7 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
 
   // Serializing graph data
   var serialized = graph.export();
+  delete serialized.options;
   bundle.graph = serialized;
   bundle.settings = {
     type: graph.type,

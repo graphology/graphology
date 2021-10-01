@@ -22,7 +22,7 @@
     "chai": "^4.3.4",
     "chai-roughly": "^1.0.0",
     "eslint": "^7.32.0",
-    "graphology": "^0.20.0",
+    "graphology": "^0.21.0",
     "graphology-types": "0.19.3",
     "lerna": "^4.0.0",
     "link-parent-bin": "^2.0.0",
