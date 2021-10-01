@@ -1,0 +1,675 @@
+{
+  "$id": "https://raw.githubusercontent.com/graphology/graphology-minivan/master/schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Minivan Graph Bundle",
+  "description": "A file describing both a graph's data as well as elementes related to its visual grammar.",
+  "version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "title": "Title.",
+      "type": "string"
+    },
+    "authors": {
+      "title": "List of authors.",
+      "type": "array",
+      "items": {
+        "title": "Author.",
+        "type": "string"
+      }
+    },
+    "description": {
+      "title": "Description of the bundled graph.",
+      "type": "string"
+    },
+    "url": {
+      "title": "Url for the graph.",
+      "type": "string",
+      "format": "uri"
+    },
+    "doi": {
+      "title": "DOI",
+      "type": "string"
+    },
+    "bundleVersion": {
+      "title": "Version of the bundle used.",
+      "type": "string"
+    },
+    "consolidated": {
+      "title": "Whether the bundle has been consolidated or not.",
+      "type": "boolean"
+    },
+    "date": {
+      "title": "Date.",
+      "type": "string"
+    },
+    "settings": {
+      "title": "Graph settings.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "title": "Graph type.",
+          "type": "string",
+          "enum": ["mixed", "directed", "undirected"]
+        },
+        "multi": {
+          "title": "MultiGraph?",
+          "type": "boolean"
+        }
+      }
+    },
+    "graph": {
+      "additionalProperties": false,
+      "title": "Graph data.",
+      "type": "object",
+      "properties": {
+        "attributes": {
+          "title": "Graph-level attributes.",
+          "type": "object"
+        },
+        "nodes": {
+          "title": "List of nodes.",
+          "type": "array",
+          "items": {
+            "title": "Node.",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Node's key.",
+                "type": "string"
+              },
+              "attributes": {
+                "title": "Node's attributes.",
+                "type": "object"
+              }
+            },
+            "required": ["key"]
+          }
+        },
+        "edges": {
+          "title": "List of edges.",
+          "type": "array",
+          "items": {
+            "title": "Edge.",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Edge's key.",
+                "type": "string"
+              },
+              "source": {
+                "title": "Edge's source node.",
+                "type": "string"
+              },
+              "target": {
+                "title": "Edge's target node.",
+                "type": "string"
+              },
+              "attributes": {
+                "title": "Edge's attributes.",
+                "type": "object"
+              },
+              "undirected": {
+                "title": "Whether the edge is undirected.",
+                "type": "boolean"
+              }
+            },
+            "required": ["source", "target"]
+          }
+        }
+      }
+    },
+    "model": {
+      "additionalProperties": false,
+      "title": "Model of the graph.",
+      "type": "object",
+      "properties": {
+        "defaultNodeColor": {
+          "title": "Name of the attribute to use for default node color.",
+          "type": "string"
+        },
+        "defaultNodeSize": {
+          "title": "Name of the attribute to use for default node size.",
+          "type": "string"
+        },
+        "defaultEdgeColor": {
+          "title": "Name of the attribute to use for default edge color.",
+          "type": "string"
+        },
+        "defaultEdgeSize": {
+          "title": "Name of the attribute to use for default node color.",
+          "type": "string"
+        },
+        "nodeAttributes": {
+          "title": "Metadata about the nodes' attributes in the graph.",
+          "type": "array",
+          "items": {
+            "title": "Node attribute.",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "slug": {
+                    "title": "Node attribute's slug. Must be unique and url safe.",
+                    "type": "string"
+                  },
+                  "label": {
+                    "title": "Node attribute's human-readable label.",
+                    "type": "string"
+                  },
+                  "key": {
+                    "title": "Node attribute's data key.",
+                    "type": "string"
+                  },
+                  "count": {
+                    "title": "Number of nodes having this attribute.",
+                    "type": "integer"
+                  },
+                  "type": {
+                    "title": "Type of attribute.",
+                    "type": "string",
+                    "enum": ["ignore"]
+                  }
+                }
+              },
+
+              {
+                "type": "object",
+                "properties": {
+                  "slug": {
+                    "title": "Node attribute's slug. Must be unique and url safe.",
+                    "type": "string"
+                  },
+                  "label": {
+                    "title": "Node attribute's human-readable label.",
+                    "type": "string"
+                  },
+                  "key": {
+                    "title": "Node attribute's data key.",
+                    "type": "string"
+                  },
+                  "count": {
+                    "title": "Number of nodes having this attribute.",
+                    "type": "integer"
+                  },
+                  "type": {
+                    "title": "Type of attribute.",
+                    "type": "string",
+                    "enum": ["ranking-size"]
+                  },
+                  "integer": {
+                    "title": "Whether this number attribute contains integers.",
+                    "type": "boolean"
+                  },
+                  "min": {
+                    "title": "Minimum value.",
+                    "type": "number"
+                  },
+                  "max": {
+                    "title": "Maximum value.",
+                    "type": "number"
+                  },
+                  "areaScaling": {
+                    "title": "Size scale options.",
+                    "type": "object",
+                    "properties": {
+                      "min": {
+                        "title": "Scale minimum.",
+                        "type": "number"
+                      },
+                      "max": {
+                        "title": "Scale maximum.",
+                        "type": "number"
+                      },
+                      "interpolation": {
+                        "title": "Scale interpolation.",
+                        "type": "string",
+                        "enum": ["linear", "pow-2", "pow-3"]
+                      }
+                    }
+                  }
+                }
+              },
+
+              {
+                "type": "object",
+                "properties": {
+                  "slug": {
+                    "title": "Node attribute's slug. Must be unique and url safe.",
+                    "type": "string"
+                  },
+                  "label": {
+                    "title": "Node attribute's human-readable label.",
+                    "type": "string"
+                  },
+                  "key": {
+                    "title": "Node attribute's data key.",
+                    "type": "string"
+                  },
+                  "count": {
+                    "title": "Number of nodes having this attribute.",
+                    "type": "integer"
+                  },
+                  "type": {
+                    "title": "Type of attribute.",
+                    "type": "string",
+                    "enum": ["ranking-color"]
+                  },
+                  "integer": {
+                    "title": "Whether this number attribute contains integers.",
+                    "type": "boolean"
+                  },
+                  "min": {
+                    "title": "Minimum value.",
+                    "type": "number"
+                  },
+                  "max": {
+                    "title": "Maximum value.",
+                    "type": "number"
+                  },
+                  "colorScale": {
+                    "title": "Color scale.",
+                    "type": "string",
+                    "enum": [
+                      "interpolateGreys",
+                      "interpolateGreens",
+                      "interpolateBlues",
+                      "interpolatePurples",
+                      "interpolateReds",
+                      "interpolateOranges",
+                      "interpolateViridis",
+                      "interpolateInferno",
+                      "interpolateMagma",
+                      "interpolatePlasma",
+                      "interpolateWarm",
+                      "interpolateCool",
+                      "interpolateCubehelixDefault",
+                      "interpolateBuGn",
+                      "interpolateBuPu",
+                      "interpolateGnBu",
+                      "interpolateOrRd",
+                      "interpolatePuBuGn",
+                      "interpolatePuBu",
+                      "interpolatePuRd",
+                      "interpolateRdPu",
+                      "interpolateYlGnBu",
+                      "interpolateYlGn",
+                      "interpolateYlOrBr",
+                      "interpolateYlOrRd"
+                    ]
+                  },
+                  "truncateScale": {
+                    "title": "Whether to truncate the scale?",
+                    "type": "boolean"
+                  },
+                  "invertScale": {
+                    "title": "Whether to invert the scale?",
+                    "type": "boolean"
+                  }
+                }
+              },
+
+              {
+                "type": "object",
+                "properties": {
+                  "slug": {
+                    "title": "Node attribute's slug. Must be unique and url safe.",
+                    "type": "string"
+                  },
+                  "label": {
+                    "title": "Node attribute's human-readable label.",
+                    "type": "string"
+                  },
+                  "key": {
+                    "title": "Node attribute's data key.",
+                    "type": "string"
+                  },
+                  "count": {
+                    "title": "Number of nodes having this attribute.",
+                    "type": "integer"
+                  },
+                  "type": {
+                    "title": "Type of attribute.",
+                    "type": "string",
+                    "enum": ["partition"]
+                  },
+                  "cardinality": {
+                    "title": "Number of modalities.",
+                    "type": "number"
+                  },
+                  "stats": {
+                    "title": "Attribute's precomputed statistics.",
+                    "type": "object",
+                    "properties": {
+                      "modularity": {
+                        "title": "Modularity score for this partition.",
+                        "type": "number"
+                      }
+                    }
+                  },
+                  "modalitiesOrder": {
+                    "title": "Display order of the attribute's modalities.",
+                    "type": "array",
+                    "items": {
+                      "title": "Attribute's modality key.",
+                      "type": "string"
+                    }
+                  },
+                  "modalities": {
+                    "title": "The attribute's modalities in case of partition.",
+                    "type": "object",
+                    "additionalProperties": {
+                      "title": "Attribute modality.",
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "title": "Modality's value.",
+                          "type": ["string", "number"]
+                        },
+                        "color": {
+                          "title": "The modality's partition color.",
+                          "type": "string"
+                        },
+                        "count": {
+                          "title": "Number of nodes having this modality for this attribute.",
+                          "type": "integer"
+                        },
+                        "internalEdges": {
+                          "title": "Number of edges between nodes from this modality.",
+                          "type": "integer"
+                        },
+                        "inboundEdges": {
+                          "title": "Number of edges goind to a node from this modality.",
+                          "type": "integer"
+                        },
+                        "outboundEdges": {
+                          "title": "Number of edges going from a node from this modality.",
+                          "type": "integer"
+                        },
+                        "externalEdges": {
+                          "title": "Number of edges between nodes from this modality and other nodes.",
+                          "type": "integer"
+                        },
+                        "internalNormalizedDensity": {
+                          "title": "Internal normalized density.",
+                          "type": "number"
+                        },
+                        "inboundNormalizedDensity": {
+                          "title": "Inbound normalized density.",
+                          "type": "number"
+                        },
+                        "outboundNormalizedDensity": {
+                          "title": "Outbound normalized density.",
+                          "type": "number"
+                        },
+                        "externalNormalizedDensity": {
+                          "title": "External normalized density.",
+                          "type": "number"
+                        },
+                        "flow": {
+                          "title": "Modality's flow.",
+                          "type": "object",
+                          "additionalProperties": {
+                            "title": "Target property.",
+                            "type": "object",
+                            "properties": {
+                              "count": {
+                                "title": "Number of edges between modalities.",
+                                "type": "integer"
+                              },
+                              "expected": {
+                                "title": "Expected number of edges between modalities.",
+                                "type": "number"
+                              },
+                              "normalizedDensity": {
+                                "title": "Normalized edge density between modalities.",
+                                "type": "number"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "edgeAttributes": {
+          "title": "Metadata about the edges' attributes in the graph.",
+          "type": "array",
+          "items": {
+            "title": "Edge attribute.",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "slug": {
+                    "title": "Edge attribute's slug. Must be unique and url safe.",
+                    "type": "string"
+                  },
+                  "label": {
+                    "title": "Edge attribute's human-readable label.",
+                    "type": "string"
+                  },
+                  "key": {
+                    "title": "Edge attribute's data key.",
+                    "type": "string"
+                  },
+                  "count": {
+                    "title": "Number of edges having this attribute.",
+                    "type": "integer"
+                  },
+                  "type": {
+                    "title": "Type of attribute.",
+                    "type": "string",
+                    "enum": ["ignore"]
+                  }
+                }
+              },
+
+              {
+                "type": "object",
+                "properties": {
+                  "slug": {
+                    "title": "Edge attribute's slug. Must be unique and url safe.",
+                    "type": "string"
+                  },
+                  "label": {
+                    "title": "Edge attribute's human-readable label.",
+                    "type": "string"
+                  },
+                  "key": {
+                    "title": "Edge attribute's data key.",
+                    "type": "string"
+                  },
+                  "count": {
+                    "title": "Number of edges having this attribute.",
+                    "type": "integer"
+                  },
+                  "type": {
+                    "title": "Type of attribute.",
+                    "type": "string",
+                    "enum": ["ranking-size"]
+                  },
+                  "integer": {
+                    "title": "Whether this number attribute contains integers.",
+                    "type": "boolean"
+                  },
+                  "min": {
+                    "title": "Minimum value.",
+                    "type": "number"
+                  },
+                  "max": {
+                    "title": "Maximum value.",
+                    "type": "number"
+                  },
+                  "areaScaling": {
+                    "title": "Size scale options.",
+                    "type": "object",
+                    "properties": {
+                      "min": {
+                        "title": "Scale minimum.",
+                        "type": "number"
+                      },
+                      "max": {
+                        "title": "Scale maximum.",
+                        "type": "number"
+                      },
+                      "interpolation": {
+                        "title": "Scale interpolation.",
+                        "type": "string",
+                        "enum": ["linear", "pow-2", "pow-3"]
+                      }
+                    }
+                  }
+                }
+              },
+
+              {
+                "type": "object",
+                "properties": {
+                  "slug": {
+                    "title": "Edge attribute's slug. Must be unique and url safe.",
+                    "type": "string"
+                  },
+                  "label": {
+                    "title": "Edge attribute's human-readable label.",
+                    "type": "string"
+                  },
+                  "key": {
+                    "title": "Edge attribute's data key.",
+                    "type": "string"
+                  },
+                  "count": {
+                    "title": "Number of edges having this attribute.",
+                    "type": "integer"
+                  },
+                  "type": {
+                    "title": "Type of attribute.",
+                    "type": "string",
+                    "enum": ["ranking-color"]
+                  },
+                  "integer": {
+                    "title": "Whether this number attribute contains integers.",
+                    "type": "boolean"
+                  },
+                  "min": {
+                    "title": "Minimum value.",
+                    "type": "number"
+                  },
+                  "max": {
+                    "title": "Maximum value.",
+                    "type": "number"
+                  },
+                  "colorScale": {
+                    "title": "Color scale.",
+                    "type": "string",
+                    "enum": [
+                      "interpolateGreys",
+                      "interpolateGreens",
+                      "interpolateBlues",
+                      "interpolatePurples",
+                      "interpolateReds",
+                      "interpolateOranges",
+                      "interpolateViridis",
+                      "interpolateInferno",
+                      "interpolateMagma",
+                      "interpolatePlasma",
+                      "interpolateWarm",
+                      "interpolateCool",
+                      "interpolateCubehelixDefault",
+                      "interpolateBuGn",
+                      "interpolateBuPu",
+                      "interpolateGnBu",
+                      "interpolateOrRd",
+                      "interpolatePuBuGn",
+                      "interpolatePuBu",
+                      "interpolatePuRd",
+                      "interpolateRdPu",
+                      "interpolateYlGnBu",
+                      "interpolateYlGn",
+                      "interpolateYlOrBr",
+                      "interpolateYlOrRd"
+                    ]
+                  },
+                  "truncateScale": {
+                    "title": "Whether to truncate the scale?",
+                    "type": "boolean"
+                  },
+                  "invertScale": {
+                    "title": "Whether to invert the scale?",
+                    "type": "boolean"
+                  }
+                }
+              },
+
+              {
+                "type": "object",
+                "properties": {
+                  "slug": {
+                    "title": "Edge attribute's slug. Must be unique and url safe.",
+                    "type": "string"
+                  },
+                  "label": {
+                    "title": "Edge attribute's human-readable label.",
+                    "type": "string"
+                  },
+                  "key": {
+                    "title": "Edge attribute's data key.",
+                    "type": "string"
+                  },
+                  "count": {
+                    "title": "Number of edges having this attribute.",
+                    "type": "integer"
+                  },
+                  "type": {
+                    "title": "Type of attribute.",
+                    "type": "string",
+                    "enum": ["partition"]
+                  },
+                  "cardinality": {
+                    "title": "Number of modalities.",
+                    "type": "number"
+                  },
+                  "modalitiesOrder": {
+                    "title": "Display order of the attribute's modalities.",
+                    "type": "array",
+                    "items": {
+                      "title": "Attribute's modality key.",
+                      "type": "string"
+                    }
+                  },
+                  "modalities": {
+                    "title": "The attribute's modalities in case of partition.",
+                    "type": "object",
+                    "additionalProperties": {
+                      "title": "Attribute modality.",
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "title": "Modality's value.",
+                          "type": ["string", "number"]
+                        },
+                        "color": {
+                          "title": "The modality's partition color.",
+                          "type": "string"
+                        },
+                        "edges": {
+                          "title": "Number of edges having this modality for this attribute.",
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
