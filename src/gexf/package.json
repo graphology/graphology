@@ -1,0 +1,49 @@
+{
+  "name": "graphology-gexf",
+  "version": "0.8.0",
+  "description": "GEXF parser & writer for graphology.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "*.d.ts",
+    "index.js",
+    "browser",
+    "common",
+    "node"
+  ],
+  "scripts": {
+    "lint": "eslint ./**/*.js",
+    "prepublishOnly": "npm run lint && npm test",
+    "test:browser": "mocha ./test/browser/endpoint.js",
+    "test": "npm run test:browser"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology-gexf.git"
+  },
+  "keywords": [
+    "graph",
+    "graphology",
+    "gexf"
+  ],
+  "author": {
+    "name": "Guillaume Plique",
+    "url": "http://github.com/Yomguithereal"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology-gexf/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology-gexf#readme",
+  "peerDependencies": {
+    "graphology-types": ">=0.19.0"
+  },
+  "dependencies": {
+    "graphology-utils": "^2.1.0",
+    "xml-writer": "^1.7.0",
+    "xmldom": "^0.6.0"
+  },
+  "eslintConfig": {
+    "extends": "@yomguithereal/eslint-config"
+  }
+}

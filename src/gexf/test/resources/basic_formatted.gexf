@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http:///www.gexf.net/1.1draft/viz">
+  <meta lastmodifieddate="2105-12-23">
+    <author>Yomguithereal</author>
+    <title>Basic Graph</title>
+  </meta>
+  <graph defaultedgetype="directed">
+    <attributes class="node">
+      <attribute id="female" title="female" type="boolean"/>
+      <attribute id="surname" title="surname" type="string"/>
+    </attributes>
+    <attributes class="edge">
+      <attribute id="number" title="number" type="integer"/>
+    </attributes>
+    <nodes>
+      <node id="Suzy" label="(Node) - Suzy, Ghost">
+        <attvalues>
+          <attvalue for="female" value="true"/>
+          <attvalue for="surname" value="Ghost"/>
+        </attvalues>
+        <viz:color r="234" g="34" b="12" a="0.6"/>
+        <viz:position x="12" y="35"/>
+      </node>
+      <node id="John" label="(Node) - John, Appleseed">
+        <attvalues>
+          <attvalue for="female" value="false"/>
+          <attvalue for="surname" value="Appleseed"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+        <viz:position x="45" y="0"/>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="J-S" source="John" target="Suzy" weight="228" label="(Edge) - Fine edge">
+        <attvalues>
+          <attvalue for="number" value="12"/>
+        </attvalues>
+        <viz:shape value="dotted"/>
+      </edge>
+      <edge id="J~S" type="undirected" source="John" target="Suzy">
+        <attvalues/>
+      </edge>
+    </edges>
+  </graph>
+</gexf>

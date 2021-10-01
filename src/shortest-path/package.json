@@ -1,0 +1,51 @@
+{
+  "name": "graphology-shortest-path",
+  "version": "1.4.1",
+  "description": "Shortest path functions for graphology.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "*.d.ts",
+    "dijkstra.js",
+    "index.js",
+    "indexed-brandes.js",
+    "unweighted.js"
+  ],
+  "scripts": {
+    "lint": "eslint *.js",
+    "prepublish": "npm run lint && npm test",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology-shortest-path.git"
+  },
+  "keywords": [
+    "graph",
+    "graphology",
+    "shortest path",
+    "dijkstra",
+    "a star"
+  ],
+  "author": {
+    "name": "Guillaume Plique",
+    "url": "http://github.com/Yomguithereal"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology-shortest-path/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology-shortest-path#readme",
+  "peerDependencies": {
+    "graphology-types": ">=0.19.0"
+  },
+  "dependencies": {
+    "@yomguithereal/helpers": "^1.1.1",
+    "graphology-indices": "^0.13.3",
+    "graphology-utils": "^2.0.0",
+    "mnemonist": "^0.38.1"
+  },
+  "eslintConfig": {
+    "extends": "@yomguithereal/eslint-config"
+  }
+}

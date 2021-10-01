@@ -33,11 +33,19 @@
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-visualizer": "^5.5.2",
+    "seedrandom": "^3.0.5",
     "typescript": "^4.4.3"
   },
   "dependencies": {
     "graphology": "file:src/graphology",
+    "graphology-components": "file:src/components",
+    "graphology-generators": "file:src/generators",
+    "graphology-gexf": "file:src/gexf",
+    "graphology-indices": "file:src/indices",
+    "graphology-layout": "file:src/layout",
     "graphology-metrics": "file:src/metrics",
+    "graphology-operators": "file:src/operators",
+    "graphology-shortest-path": "file:src/shortest-path",
     "graphology-types": "file:src/types",
     "graphology-utils": "file:src/utils"
   }

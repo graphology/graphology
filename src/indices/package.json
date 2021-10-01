@@ -1,0 +1,45 @@
+{
+  "name": "graphology-indices",
+  "version": "0.13.3",
+  "description": "Miscellaneous indices for graphology.",
+  "main": "index.js",
+  "files": [
+    "*.d.ts",
+    "index.js",
+    "neighborhood",
+    "sorted-components.js"
+  ],
+  "scripts": {
+    "lint": "eslint '**/*.js'",
+    "prepublish": "npm run lint && npm test",
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology-indices.git"
+  },
+  "keywords": [
+    "graph",
+    "graphology",
+    "indices"
+  ],
+  "author": {
+    "name": "Guillaume Plique",
+    "url": "http://github.com/Yomguithereal"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology-indices/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology-indices#readme",
+  "peerDependencies": {
+    "graphology-types": ">=0.19.0"
+  },
+  "dependencies": {
+    "graphology-utils": "^1.7.0",
+    "mnemonist": "^0.38.0"
+  },
+  "eslintConfig": {
+    "extends": "@yomguithereal/eslint-config"
+  }
+}

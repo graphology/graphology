@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf version="1.1" xmlns="http://www.gexf.net/1.1draft" xmlns:viz="http:///www.gexf.net/1.1draft/viz">
+	<meta lastmodifieddate="2010-05-29+01:27">
+		<Creator>Yomguithereal</Creator>
+		<Title>An edge viz test graph</Title>
+	</meta>
+	<graph defaultedgetype="directed" idtype="string" type="static">
+		<attributes class="node" mode="static">
+			<attribute id="authority" title="Authority" type="float"/>
+			<attribute id="hub" title="Hub" type="float"/>
+		</attributes>
+		<nodes count="2">
+			<node id="0.0" label="Myriel">
+				<attvalues>
+					<attvalue for="authority" value="0.01880342"/>
+					<attvalue for="hub" value="0.01880342"/>
+				</attvalues>
+				<viz:size value="22.714287"/>
+				<viz:color b="45" g="72" r="216"/>
+				<viz:position x="268.72385" y="91.18155" z="0.0"/>
+			</node>
+			<node id="1.0" label="Napoleon">
+				<attvalues>
+					<attvalue for="authority" value="0.0034188034"/>
+					<attvalue for="hub" value="0.0034188034"/>
+				</attvalues>
+				<viz:size value="15.0"/>
+				<viz:color b="0" g="0" r="179"/>
+				<viz:position x="296.39902" y="57.118374" z="0.0"/>
+			</node>
+		</nodes>
+		<edges count="1">
+			<edge id="0" source="1.0" target="0.0">
+				<viz:color b="0" g="0" r="179" a="0.5"/>
+				<viz:thickness value="2.0"/>
+				<viz:shape value="dotted"/>
+			</edge>
+		</edges>
+	</graph>
+</gexf>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http:///www.gexf.net/1.1draft/viz">
+  <meta lastmodifieddate="2105-12-23">
+    <author>Yomguithereal</author>
+    <title>Basic Graph</title>
+  </meta>
+  <graph defaultedgetype="directed">
+    <attributes class="node">
+      <attribute id="male" title="male" type="boolean"/>
+      <attribute id="age" title="age" type="integer"/>
+      <attribute id="surname" title="surname" type="string"/>
+      <attribute id="mixed" title="mixed" type="string"/>
+    </attributes>
+    <attributes class="edge">
+      <attribute id="number" title="number" type="integer"/>
+    </attributes>
+    <nodes>
+      <node id="Suzy" label="Suzy, Ghost">
+        <attvalues>
+          <attvalue for="male" value="false"/>
+          <attvalue for="age" value="22"/>
+          <attvalue for="surname" value="Ghost"/>
+          <attvalue for="mixed" value="45"/>
+        </attvalues>
+        <viz:color r="234" g="34" b="12" a="0.6"/>
+        <viz:size value="34"/>
+        <viz:position x="12" y="35"/>
+        <viz:shape value="circle"/>
+      </node>
+      <node id="John" label="John, Appleseed">
+        <attvalues>
+          <attvalue for="male" value="true"/>
+          <attvalue for="age" value="34"/>
+          <attvalue for="surname" value="Appleseed"/>
+          <attvalue for="mixed" value="hello"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+        <viz:size value="103"/>
+        <viz:position x="45" y="0"/>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="J-S" source="John" target="Suzy" weight="456" label="Fine edge">
+        <attvalues>
+          <attvalue for="number" value="12"/>
+        </attvalues>
+        <viz:color r="204" g="207" b="255"/>
+        <viz:shape value="dotted"/>
+        <viz:thickness value="34"/>
+      </edge>
+      <edge id="J~S" type="undirected" source="John" target="Suzy"/>
+    </edges>
+  </graph>
+</gexf>

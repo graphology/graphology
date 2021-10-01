@@ -1,0 +1,45 @@
+{
+  "name": "graphology-components",
+  "version": "1.1.0",
+  "description": "Connected components for graphology.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "*.d.ts",
+    "index.js"
+  ],
+  "scripts": {
+    "lint": "eslint *.js",
+    "prepublish": "npm run lint && npm test",
+    "test": "mocha test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology-components.git"
+  },
+  "keywords": [
+    "graph",
+    "graphology",
+    "components",
+    "connected components"
+  ],
+  "author": {
+    "name": "Guillaume Plique",
+    "url": "http://github.com/Yomguithereal"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology-components/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology-components#readme",
+  "peerDependencies": {
+    "graphology-types": ">=0.19.0"
+  },
+  "dependencies": {
+    "@yomguithereal/helpers": "^1.1.1",
+    "graphology-utils": "^1.8.0"
+  },
+  "eslintConfig": {
+    "extends": "@yomguithereal/eslint-config"
+  }
+}
