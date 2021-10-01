@@ -1,0 +1,46 @@
+{
+  "name": "graphology-simple-path",
+  "version": "0.1.0",
+  "description": "Simple path related functions for graphology.",
+  "main": "index.js",
+  "files": [
+    "*.d.ts",
+    "index.js"
+  ],
+  "types": "./index.d.ts",
+  "scripts": {
+    "lint": "eslint '**/*.js'",
+    "prepublish": "npm run lint && npm test",
+    "test": "mocha test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology-simple-path.git"
+  },
+  "keywords": [
+    "graph",
+    "graphology",
+    "simple path"
+  ],
+  "contributors": [
+    {
+      "name": "Guillaume Plique",
+      "url": "http://github.com/Yomguithereal"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology-simple-path/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology-simple-path#readme",
+  "eslintConfig": {
+    "extends": "@yomguithereal/eslint-config"
+  },
+  "peerDependencies": {
+    "graphology-types": ">=0.19.0"
+  },
+  "dependencies": {
+    "graphology-utils": "^1.8.0",
+    "mnemonist": "^0.38.0"
+  }
+}
