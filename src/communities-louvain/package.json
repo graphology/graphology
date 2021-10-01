@@ -1,0 +1,55 @@
+{
+  "name": "graphology-communities-louvain",
+  "version": "1.4.1",
+  "description": "Louvain community detection for graphology.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "*.d.ts",
+    "index.js"
+  ],
+  "scripts": {
+    "lint": "eslint *.js test/*.js",
+    "prepublish": "npm run lint && npm test",
+    "test": "mocha test"
+  },
+  "keywords": [
+    "community",
+    "detection",
+    "graph",
+    "graphology",
+    "louvain"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology-communities-louvain.git"
+  },
+  "contributors": [
+    {
+      "name": "Guillaume Plique",
+      "url": "http://github.com/Yomguithereal"
+    },
+    {
+      "name": "Tanguy Lucci",
+      "url": "https://github.com/luccitan"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology-communities-louvain/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology-communities-louvain#readme",
+  "peerDependencies": {
+    "graphology-types": ">=0.19.0"
+  },
+  "dependencies": {
+    "graphology-indices": "^0.13.3",
+    "graphology-utils": "^2.0.0",
+    "lodash": "^4.17.20",
+    "mnemonist": "^0.38.1",
+    "pandemonium": "^2.0.0"
+  },
+  "eslintConfig": {
+    "extends": "@yomguithereal/eslint-config"
+  }
+}
