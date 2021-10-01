@@ -1,0 +1,46 @@
+{
+  "name": "graphology-svg",
+  "version": "0.1.2",
+  "description": "SVG rendering routines for graphology.",
+  "main": "index.js",
+  "files": [
+    "components",
+    "defaults.js",
+    "index.js",
+    "renderer.js",
+    "helpers.js"
+  ],
+  "scripts": {
+    "ftest": "node test/ftest.js",
+    "lint": "eslint '**/*.js'",
+    "prepublish": "npm run lint && npm test",
+    "test": "mocha test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology-svg.git"
+  },
+  "keywords": [
+    "graph",
+    "graphology",
+    "svg"
+  ],
+  "contributors": [
+    {
+      "name": "Alexis Jacomy",
+      "url": "http://github.com/jacomyal"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology-svg/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology-svg#readme",
+  "eslintConfig": {
+    "extends": "@yomguithereal/eslint-config"
+  },
+  "dependencies": {
+    "graphology-utils": "^1.5.0",
+    "lodash": "^4.17.15"
+  }
+}

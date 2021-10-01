@@ -52,6 +52,7 @@
     "graphology-minivan": "file:src/minivan",
     "graphology-operators": "file:src/operators",
     "graphology-shortest-path": "file:src/shortest-path",
+    "graphology-svg": "file:src/svg",
     "graphology-types": "file:src/types",
     "graphology-utils": "file:src/utils"
   }
