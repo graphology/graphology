@@ -1,0 +1,52 @@
+{
+  "name": "graphology-communities-leiden",
+  "version": "0.0.1",
+  "description": "Leiden community detection for graphology.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "*.d.ts",
+    "index.js",
+    "utils.js"
+  ],
+  "scripts": {
+    "*lint": "eslint *.js test/*.js",
+    "prepublish": "npm test",
+    "test": "mocha test"
+  },
+  "keywords": [
+    "community",
+    "detection",
+    "graph",
+    "graphology",
+    "leiden"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology-communities-leiden.git"
+  },
+  "contributors": [
+    {
+      "name": "Guillaume Plique",
+      "url": "http://github.com/Yomguithereal"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology-communities-leiden/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology-communities-leiden#readme",
+  "peerDependencies": {
+    "graphology-types": ">=0.19.0"
+  },
+  "dependencies": {
+    "graphology-indices": "^0.13.3",
+    "graphology-utils": "^1.8.0",
+    "lodash": "^4.17.20",
+    "mnemonist": "^0.38.1",
+    "pandemonium": "^2.0.0"
+  },
+  "eslintConfig": {
+    "extends": "@yomguithereal/eslint-config"
+  }
+}

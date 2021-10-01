@@ -42,6 +42,7 @@
     "graphology-assertions": "file:src/assertions",
     "graphology-canvas": "file:src/canvas",
     "graphology-communities-louvain": "file:src/communities-louvain",
+    "graphology-communities-leiden": "file:src/communities-leiden",
     "graphology-components": "file:src/components",
     "graphology-generators": "file:src/generators",
     "graphology-gexf": "file:src/gexf",
