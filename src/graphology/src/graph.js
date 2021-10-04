@@ -1799,7 +1799,7 @@ export default class Graph extends EventEmitter {
     const data = this._nodes.get(node);
 
     if (!data)
-      throw new NotFoundGraphError(`Graph.hasNodeAttribute: could not find the "${node}" node in the graph.`);
+      throw new NotFoundGraphError(`Graph.removeNodeAttribute: could not find the "${node}" node in the graph.`);
 
     delete data.attributes[name];
 

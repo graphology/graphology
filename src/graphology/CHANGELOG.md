@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.21.1 (provisional)
+
+* Fixing `#.removeNodeAttribute` error message.
+
 ## 0.21.0
 
 * `*Until` methods now return whether they broke.
