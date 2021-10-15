@@ -14,8 +14,7 @@
     "social"
   ],
   "scripts": {
-    "lint": "eslint **/*.js",
-    "prepublish": "npm run lint && npm test",
+    "prepublishOnly": "npm test",
     "test": "mocha test.js"
   },
   "repository": {
@@ -47,8 +46,5 @@
     "graphology-metrics": "^1.14.0",
     "graphology-utils": "^1.8.0",
     "lodash": "^4.17.20"
-  },
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
   }
 }

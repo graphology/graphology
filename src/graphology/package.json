@@ -9,10 +9,9 @@
   "scripts": {
     "clean": "rimraf dist specs",
     "build": "npm run clean && rollup -c && babel tests --out-dir specs && cp src/endpoint.esm.d.ts dist/graphology.d.ts",
-    "lint": "eslint rollup.config.js src tests test.js",
     "postpublish": "npm run clean",
     "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run test:types && npm run lint",
+    "prepublishOnly": "npm test && npm run test:types",
     "test": "mocha -u exports --require @babel/register ./test.js",
     "test:types": "tsc --lib es2015,dom --noEmit --noImplicitAny --noImplicitReturns ./test-types.ts"
   },
@@ -81,17 +80,5 @@
         }
       ]
     ]
-  },
-  "eslintConfig": {
-    "extends": [
-      "@yomguithereal/eslint-config/es6"
-    ],
-    "rules": {
-      "object-shorthand": 0,
-      "quote-props": 0
-    },
-    "parserOptions": {
-      "ecmaVersion": 2018
-    }
   }
 }

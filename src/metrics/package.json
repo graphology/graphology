@@ -10,8 +10,7 @@
     "layout-quality"
   ],
   "scripts": {
-    "lint": "eslint **/*.js",
-    "prepublishOnly": "npm run lint && npm test",
+    "prepublishOnly": "npm test",
     "test": "mocha --recursive test"
   },
   "repository": {
@@ -51,9 +50,6 @@
   "homepage": "https://github.com/graphology/graphology-metrics#readme",
   "peerDependencies": {
     "graphology-types": ">=0.20.0"
-  },
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
   },
   "dependencies": {
     "graphology-shortest-path": "^1.4.1",

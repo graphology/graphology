@@ -12,8 +12,7 @@
     "random.js"
   ],
   "scripts": {
-    "lint": "eslint '*.js' test",
-    "prepublish": "npm run lint && npm test",
+    "prepublishOnly": "npm test",
     "test": "mocha --recursive test"
   },
   "repository": {
@@ -37,9 +36,6 @@
     "url": "https://github.com/graphology/graphology-layout/issues"
   },
   "homepage": "https://github.com/graphology/graphology-layout#readme",
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
-  },
   "peerDependencies": {
     "graphology-types": ">=0.19.0"
   },

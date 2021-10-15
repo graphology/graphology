@@ -16,8 +16,7 @@
     "union.js"
   ],
   "scripts": {
-    "lint": "eslint *.js",
-    "prepublish": "npm run lint && npm test",
+    "prepublishOnly": "npm test",
     "test": "mocha test.js"
   },
   "repository": {
@@ -45,8 +44,5 @@
   },
   "dependencies": {
     "graphology-utils": "^2.0.0"
-  },
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
   }
 }

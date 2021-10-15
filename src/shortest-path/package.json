@@ -12,8 +12,7 @@
     "unweighted.js"
   ],
   "scripts": {
-    "lint": "eslint *.js",
-    "prepublish": "npm run lint && npm test",
+    "prepublishOnly": "npm test",
     "test": "mocha"
   },
   "repository": {
@@ -44,8 +43,5 @@
     "graphology-indices": "^0.13.3",
     "graphology-utils": "^2.0.0",
     "mnemonist": "^0.38.1"
-  },
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
   }
 }

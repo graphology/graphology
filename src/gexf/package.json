@@ -12,8 +12,7 @@
     "node"
   ],
   "scripts": {
-    "lint": "eslint ./**/*.js",
-    "prepublishOnly": "npm run lint && npm test",
+    "prepublishOnly": "npm test",
     "test:browser": "mocha ./test/browser/endpoint.js",
     "test": "npm run test:browser"
   },
@@ -42,8 +41,5 @@
     "graphology-utils": "^2.1.0",
     "xml-writer": "^1.7.0",
     "xmldom": "^0.6.0"
-  },
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
   }
 }

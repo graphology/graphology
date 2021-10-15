@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "lint": "lerna run lint",
+    "lint": "eslint './src/**/*.js'",
     "postinstall": "lerna bootstrap && link-parent-bin -c src",
     "prettier": "prettier --write './src/**/*.js' './src/**/*.ts'",
     "reinstall": "lerna clean --yes && rimraf node_modules && npm i",
@@ -18,11 +18,12 @@
     "@babel/register": "7.15.3",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
-    "@yomguithereal/eslint-config": "^4.3.0",
+    "@yomguithereal/eslint-config": "^4.4.0",
     "@yomguithereal/prettier-config": "^1.2.0",
     "chai": "^4.3.4",
     "chai-roughly": "^1.0.0",
     "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.3.0",
     "lerna": "^4.0.0",
     "link-parent-bin": "^2.0.0",
     "lodash": "^4.17.21",
@@ -65,5 +66,11 @@
     "graphology-types": "file:src/types",
     "graphology-utils": "file:src/utils"
   },
-  "prettier": "@yomguithereal/prettier-config"
+  "prettier": "@yomguithereal/prettier-config",
+  "eslintConfig": {
+    "extends": [
+      "@yomguithereal/eslint-config",
+      "eslint-config-prettier"
+    ]
+  }
 }

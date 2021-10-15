@@ -21,8 +21,7 @@
   ],
   "types": "./index.d.ts",
   "scripts": {
-    "prepublishOnly": "npm run lint && npm test",
-    "lint": "eslint '**/*.js'",
+    "prepublishOnly": "npm test",
     "test": "mocha test.js"
   },
   "repository": {
@@ -51,8 +50,5 @@
   "homepage": "https://github.com/graphology/graphology-utils#readme",
   "peerDependencies": {
     "graphology-types": ">=0.20.0"
-  },
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
   }
 }

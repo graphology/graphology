@@ -1,0 +1,10 @@
+{
+  "extends": ["@yomguithereal/eslint-config/es6", "eslint-config-prettier"],
+  "rules": {
+    "object-shorthand": 0,
+    "quote-props": 0
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018
+  }
+}

@@ -10,8 +10,7 @@
     "utils.js"
   ],
   "scripts": {
-    "*lint": "eslint *.js test/*.js",
-    "prepublish": "npm test",
+    "prepublishOnly": "npm test",
     "test": "mocha test"
   },
   "keywords": [
@@ -45,8 +44,5 @@
     "lodash": "^4.17.20",
     "mnemonist": "^0.38.1",
     "pandemonium": "^2.0.0"
-  },
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
   }
 }

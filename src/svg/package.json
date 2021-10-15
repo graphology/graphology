@@ -12,8 +12,7 @@
   ],
   "scripts": {
     "ftest": "node test/ftest.js",
-    "lint": "eslint '**/*.js'",
-    "prepublish": "npm run lint && npm test",
+    "prepublishOnly": "npm test",
     "test": "mocha test/index.js"
   },
   "repository": {
@@ -36,9 +35,6 @@
     "url": "https://github.com/graphology/graphology-svg/issues"
   },
   "homepage": "https://github.com/graphology/graphology-svg#readme",
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
-  },
   "dependencies": {
     "graphology-utils": "^1.5.0",
     "lodash": "^4.17.15"

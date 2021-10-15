@@ -16,8 +16,7 @@
   "scripts": {
     "bench": "node bench.js",
     "clean": "rimraf webworker.js",
-    "lint": "eslint '*.js'",
-    "prepublish": "npm run clean && npm test && npm run lint && npm run template",
+    "prepublishOnly": "npm run clean && npm test && npm run template",
     "template": "node ./scripts/template-webworker.js > webworker.js",
     "test": "mocha test.js"
   },
@@ -40,9 +39,6 @@
     "url": "https://github.com/graphology/graphology-layout-noverlap/issues"
   },
   "homepage": "https://github.com/graphology/graphology-layout-noverlap#readme",
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
-  },
   "peerDependencies": {
     "graphology-types": ">=0.19.0"
   },

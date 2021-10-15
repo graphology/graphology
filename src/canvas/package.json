@@ -16,9 +16,7 @@
   ],
   "scripts": {
     "ftest": "node test/ftest.js",
-    "lint": "eslint '**/*.js'",
-    "prepublish": "npm run lint && npm test",
-    "prepublishOnly": "npm run prepublish",
+    "prepublishOnly": "npm test",
     "test": "mocha test/index.js"
   },
   "repository": {
@@ -42,9 +40,6 @@
     "url": "https://github.com/graphology/graphology-canvas/issues"
   },
   "homepage": "https://github.com/graphology/graphology-canvas#readme",
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
-  },
   "dependencies": {
     "graphology-utils": "^2.0.0",
     "lodash": "^4.17.20"

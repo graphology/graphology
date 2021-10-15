@@ -7,7 +7,6 @@
     "index.js"
   ],
   "scripts": {
-    "lint": "eslint *.js",
     "test": "mocha test.js"
   },
   "repository": {
@@ -28,9 +27,6 @@
     "url": "https://github.com/graphology/graphology-hits/issues"
   },
   "homepage": "https://github.com/graphology/graphology-hits#readme",
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
-  },
   "dependencies": {
     "graphology-utils": "^2.0.0",
     "lodash": "^4.16.3"

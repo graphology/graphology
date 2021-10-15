@@ -10,8 +10,7 @@
     "sorted-components.js"
   ],
   "scripts": {
-    "lint": "eslint '**/*.js'",
-    "prepublish": "npm run lint && npm test",
+    "prepublishOnly": "npm test",
     "test": "mocha test"
   },
   "repository": {
@@ -38,8 +37,5 @@
   "dependencies": {
     "graphology-utils": "^1.7.0",
     "mnemonist": "^0.38.0"
-  },
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
   }
 }

@@ -12,8 +12,7 @@
   ],
   "types": "./index.d.ts",
   "scripts": {
-    "lint": "eslint '**/*.js'",
-    "prepublishOnly": "npm run lint && npm test",
+    "prepublishOnly": "npm test",
     "test": "mocha test.js"
   },
   "repository": {
@@ -38,9 +37,6 @@
     "url": "https://github.com/graphology/graphology-traversal/issues"
   },
   "homepage": "https://github.com/graphology/graphology-traversal#readme",
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
-  },
   "peerDependencies": {
     "graphology-types": ">=0.20.0"
   },

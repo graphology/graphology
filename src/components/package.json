@@ -9,8 +9,7 @@
     "index.js"
   ],
   "scripts": {
-    "lint": "eslint *.js",
-    "prepublish": "npm run lint && npm test",
+    "prepublishOnly": "npm test",
     "test": "mocha test.js"
   },
   "repository": {
@@ -38,8 +37,5 @@
   "dependencies": {
     "@yomguithereal/helpers": "^1.1.1",
     "graphology-utils": "^1.8.0"
-  },
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
   }
 }
