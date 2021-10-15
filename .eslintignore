@@ -2,3 +2,6 @@ src/graphology/dist
 src/graphology/specs
 benchmark
 scripts
+
+# TEMPORARY
+src/communities-leiden

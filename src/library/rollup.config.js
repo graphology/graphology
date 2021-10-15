@@ -5,7 +5,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import {terser} from 'rollup-plugin-terser';
 
 const bundle = (input, filename, options = {}) => ({
-  input: input,
+  input,
   output: {
     file: filename,
     format: 'umd',

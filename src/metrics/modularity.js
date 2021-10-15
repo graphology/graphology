@@ -256,14 +256,14 @@ function undirectedDenseModularity(graph, options) {
 
   var result = collectForUndirectedDense(graph, options);
 
-  var communities = result.communities,
-    weightedDegrees = result.weightedDegrees;
+  var communities = result.communities;
+  var weightedDegrees = result.weightedDegrees;
 
   var M = result.M;
 
   var nodes = graph.nodes();
 
-  var i, j, l, Aij, didj;
+  var i, j, l, Aij, didj, edgeAttributes;
 
   var S = 0;
 
@@ -298,15 +298,15 @@ function directedDenseModularity(graph, options) {
 
   var result = collectForDirectedDense(graph, options);
 
-  var communities = result.communities,
-    weightedInDegrees = result.weightedInDegrees,
-    weightedOutDegrees = result.weightedOutDegrees;
+  var communities = result.communities;
+  var weightedInDegrees = result.weightedInDegrees;
+  var weightedOutDegrees = result.weightedOutDegrees;
 
   var M = result.M;
 
   var nodes = graph.nodes();
 
-  var i, j, l, Aij, didj;
+  var i, j, l, Aij, didj, edgeAttributes;
 
   var S = 0;
 
@@ -421,14 +421,7 @@ function undirectedSparseModularity(graph, options) {
     options.attributes.weight
   );
 
-  graph.forEachUndirectedEdge(function (
-    edge,
-    edgeAttr,
-    source,
-    target,
-    sourceAttr,
-    targetAttr
-  ) {
+  graph.forEachUndirectedEdge(function (edge, edgeAttr, source, target) {
     var weight = getWeight(edgeAttr);
 
     M += weight;
@@ -471,14 +464,7 @@ function directedSparseModularity(graph, options) {
     options.attributes.weight
   );
 
-  graph.forEachDirectedEdge(function (
-    edge,
-    edgeAttr,
-    source,
-    target,
-    sourceAttr,
-    targetAttr
-  ) {
+  graph.forEachDirectedEdge(function (edge, edgeAttr, source, target) {
     var weight = getWeight(edgeAttr);
 
     M += weight;

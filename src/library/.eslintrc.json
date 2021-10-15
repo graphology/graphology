@@ -1,0 +1,6 @@
+{
+  "extends": ["@yomguithereal/eslint-config/es6", "eslint-config-prettier"],
+  "parserOptions": {
+    "ecmaVersion": 2018
+  }
+}

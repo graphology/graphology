@@ -45,10 +45,10 @@ function abstractBetweennessCentrality(assign, graph, options) {
   // Solving options
   options = defaults({}, options, DEFAULTS);
 
-  var weightAttribute = options.attributes.weight,
-    centralityAttribute = options.attributes.centrality,
-    normalized = options.normalized,
-    weighted = options.weighted;
+  var weightAttribute = options.attributes.weight;
+  var centralityAttribute = options.attributes.centrality;
+  var normalized = options.normalized;
+  var weighted = options.weighted;
 
   var brandes = weighted
     ? createDijkstraIndexedBrandes(graph, weightAttribute)
@@ -58,8 +58,8 @@ function abstractBetweennessCentrality(assign, graph, options) {
 
   var result, S, P, sigma, coefficient, i, j, m, v, w;
 
-  var delta = new Float64Array(N),
-    centralities = new Float64Array(N);
+  var delta = new Float64Array(N);
+  var centralities = new Float64Array(N);
 
   // Iterating over each node
   for (i = 0; i < N; i++) {

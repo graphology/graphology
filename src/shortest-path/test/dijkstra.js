@@ -95,10 +95,10 @@ describe('dijkstra', function () {
   describe('brandes', function () {
     var nodeToIndex = {},
       indexToNode = graph.nodes(),
-      i = 0;
+      b = 0;
 
     graph.forEachNode(function (node) {
-      nodeToIndex[node] = i++;
+      nodeToIndex[node] = b++;
     });
 
     var expected = [

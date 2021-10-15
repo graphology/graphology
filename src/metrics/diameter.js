@@ -15,15 +15,15 @@ module.exports = function diameter(graph) {
 
   if (graph.size === 0) return Infinity;
 
-  var diameter = -Infinity,
+  var D = -Infinity,
     ecc = 0;
   var nodes = graph.nodes();
 
   for (var i = 0, l = nodes.length; i < l; i++) {
     ecc = eccentricity(graph, nodes[i]);
-    if (ecc > diameter) diameter = ecc;
-    if (diameter === Infinity) break;
+    if (ecc > D) D = ecc;
+    if (D === Infinity) break;
   }
 
-  return diameter;
+  return D;
 };

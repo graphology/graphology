@@ -44,6 +44,8 @@ function getWeightedGraph1() {
 }
 
 function getWeightedGraph2(w) {
+  w = w || 'weight';
+
   var graph = new DirectedGraph();
 
   var edges = [
@@ -60,7 +62,10 @@ function getWeightedGraph2(w) {
   ];
 
   edges.forEach(function (edge) {
-    graph.mergeEdge(edge[0], edge[1], {[w || 'weight']: edge[2]});
+    var attr = {};
+    attr[w] = edge[2];
+
+    graph.mergeEdge(edge[0], edge[1], attr);
   });
 
   return graph;
