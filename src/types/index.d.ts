@@ -514,7 +514,9 @@ declare abstract class AbstractGraph<
   ): this;
   updateAttribute<AttributeName extends keyof GraphAttributes>(
     name: AttributeName,
-    updater: (value: any) => any
+    updater: (
+      value: GraphAttributes[AttributeName] | undefined
+    ) => GraphAttributes[AttributeName]
   ): this;
   removeAttribute<AttributeName extends keyof GraphAttributes>(
     name: AttributeName
@@ -540,7 +542,9 @@ declare abstract class AbstractGraph<
   updateNodeAttribute<AttributeName extends keyof NodeAttributes>(
     node: unknown,
     name: AttributeName,
-    updater: (value: any) => any
+    updater: (
+      value: NodeAttributes[AttributeName] | undefined
+    ) => NodeAttributes[AttributeName]
   ): this;
   removeNodeAttribute<AttributeName extends keyof NodeAttributes>(
     node: unknown,
@@ -571,7 +575,9 @@ declare abstract class AbstractGraph<
   updateEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
     edge: unknown,
     name: AttributeName,
-    updater: (value: any) => any
+    updater: (
+      value: EdgeAttributes[AttributeName] | undefined
+    ) => EdgeAttributes[AttributeName]
   ): this;
   removeEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
     edge: unknown,
