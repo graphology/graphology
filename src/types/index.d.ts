@@ -552,6 +552,7 @@ declare abstract class AbstractGraph<
   ): this;
   replaceNodeAttributes(node: unknown, attributes: NodeAttributes): this;
   mergeNodeAttributes(node: unknown, attributes: Partial<NodeAttributes>): this;
+
   updateEachNodeAttributes(
     updater: NodeUpdateIterationCallback<NodeAttributes>,
     hints?: UpdateHints
@@ -585,10 +586,203 @@ declare abstract class AbstractGraph<
   ): this;
   replaceEdgeAttributes(edge: unknown, attributes: EdgeAttributes): this;
   mergeEdgeAttributes(edge: unknown, attributes: Partial<EdgeAttributes>): this;
+
+  getDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): EdgeAttributes[AttributeName];
+  getDirectedEdgeAttributes(edge: unknown): EdgeAttributes;
+  hasDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): boolean;
+  setDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName,
+    value: EdgeAttributes[AttributeName]
+  ): this;
+  updateDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName,
+    updater: (
+      value: EdgeAttributes[AttributeName] | undefined
+    ) => EdgeAttributes[AttributeName]
+  ): this;
+  removeDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): this;
+  replaceDirectedEdgeAttributes(
+    edge: unknown,
+    attributes: EdgeAttributes
+  ): this;
+  mergeDirectedEdgeAttributes(
+    edge: unknown,
+    attributes: Partial<EdgeAttributes>
+  ): this;
+
+  getUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): EdgeAttributes[AttributeName];
+  getUndirectedEdgeAttributes(edge: unknown): EdgeAttributes;
+  hasUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): boolean;
+  setUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName,
+    value: EdgeAttributes[AttributeName]
+  ): this;
+  updateUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName,
+    updater: (
+      value: EdgeAttributes[AttributeName] | undefined
+    ) => EdgeAttributes[AttributeName]
+  ): this;
+  removeUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): this;
+  replaceUndirectedEdgeAttributes(
+    edge: unknown,
+    attributes: EdgeAttributes
+  ): this;
+  mergeUndirectedEdgeAttributes(
+    edge: unknown,
+    attributes: Partial<EdgeAttributes>
+  ): this;
+
   updateEachEdgeAttributes(
     updater: EdgeUpdateIterationCallback<EdgeAttributes>,
     hints?: UpdateHints
   ): void;
+
+  // Edge attribute methods (source, target)
+  getEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName
+  ): EdgeAttributes[AttributeName];
+  getEdgeAttributes(source: unknown, target: unknown): EdgeAttributes;
+  hasEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName
+  ): boolean;
+  setEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName,
+    value: EdgeAttributes[AttributeName]
+  ): this;
+  updateEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName,
+    updater: (
+      value: EdgeAttributes[AttributeName] | undefined
+    ) => EdgeAttributes[AttributeName]
+  ): this;
+  removeEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName
+  ): this;
+  replaceEdgeAttributes(
+    source: unknown,
+    target: unknown,
+    attributes: EdgeAttributes
+  ): this;
+  mergeEdgeAttributes(
+    source: unknown,
+    target: unknown,
+    attributes: Partial<EdgeAttributes>
+  ): this;
+
+  getDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName
+  ): EdgeAttributes[AttributeName];
+  getDirectedEdgeAttributes(source: unknown, target: unknown): EdgeAttributes;
+  hasDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName
+  ): boolean;
+  setDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName,
+    value: EdgeAttributes[AttributeName]
+  ): this;
+  updateDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName,
+    updater: (
+      value: EdgeAttributes[AttributeName] | undefined
+    ) => EdgeAttributes[AttributeName]
+  ): this;
+  removeDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName
+  ): this;
+  replaceDirectedEdgeAttributes(
+    source: unknown,
+    target: unknown,
+    attributes: EdgeAttributes
+  ): this;
+  mergeDirectedEdgeAttributes(
+    source: unknown,
+    target: unknown,
+    attributes: Partial<EdgeAttributes>
+  ): this;
+
+  getUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName
+  ): EdgeAttributes[AttributeName];
+  getUndirectedEdgeAttributes(source: unknown, target: unknown): EdgeAttributes;
+  hasUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName
+  ): boolean;
+  setUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName,
+    value: EdgeAttributes[AttributeName]
+  ): this;
+  updateUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName,
+    updater: (
+      value: EdgeAttributes[AttributeName] | undefined
+    ) => EdgeAttributes[AttributeName]
+  ): this;
+  removeUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    source: unknown,
+    target: unknown,
+    name: AttributeName
+  ): this;
+  replaceUndirectedEdgeAttributes(
+    source: unknown,
+    target: unknown,
+    attributes: EdgeAttributes
+  ): this;
+  mergeUndirectedEdgeAttributes(
+    source: unknown,
+    target: unknown,
+    attributes: Partial<EdgeAttributes>
+  ): this;
 
   // Iteration methods
   [Symbol.iterator](): IterableIterator<
