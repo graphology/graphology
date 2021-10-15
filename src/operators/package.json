@@ -1,6 +1,6 @@
 {
   "name": "graphology-operators",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Miscellaneous operators for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/graphology/graphology-operators#readme",
   "peerDependencies": {
-    "graphology-types": ">=0.19.0"
+    "graphology-types": ">=0.20.0"
   },
   "dependencies": {
     "graphology-utils": "^2.0.0"
