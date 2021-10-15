@@ -72,7 +72,7 @@ If you need to run the layout's computation in a web worker, the library comes w
 *Example*
 
 ```js
-import NoverlapLayout from 'graphology-layout-forceatlas2/worker';
+import NoverlapLayout from 'graphology-layout-noverlap/worker';
 
 const layout = new NoverlapLayout(graph);
 
