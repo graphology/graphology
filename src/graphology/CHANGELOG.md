@@ -1,8 +1,9 @@
 # Changelog
 
-## 0.21.1 (provisional)
+## 0.21.1
 
 * Fixing `#.removeNodeAttribute` error message.
+* Upgrading types to `0.20.0`.
 
 ## 0.21.0
 
