@@ -10,9 +10,6 @@
  */
 type Attributes = {[key: string]: any};
 
-type NodeKey = string | number;
-type EdgeKey = string | number;
-
 type GraphType = 'mixed' | 'directed' | 'undirected';
 
 type UpdateHints = {attributes?: Array<string>};
@@ -23,7 +20,7 @@ type EdgeKeyGeneratorFunction<EdgeAttributes extends Attributes = Attributes> =
     source: string;
     target: string;
     attributes: EdgeAttributes;
-  }) => EdgeKey;
+  }) => unknown;
 
 type GraphOptions<EdgeAttributes extends Attributes = Attributes> = {
   allowSelfLoops?: boolean;
@@ -362,144 +359,144 @@ declare abstract class AbstractGraph<
   undirectedSelfLoopCount: number;
 
   // Read methods
-  hasNode(node: NodeKey): boolean;
-  hasDirectedEdge(edge: EdgeKey): boolean;
-  hasDirectedEdge(source: NodeKey, target: NodeKey): boolean;
-  hasUndirectedEdge(edge: EdgeKey): boolean;
-  hasUndirectedEdge(source: NodeKey, target: NodeKey): boolean;
-  hasEdge(edge: EdgeKey): boolean;
-  hasEdge(source: NodeKey, target: NodeKey): boolean;
-  directedEdge(source: NodeKey, target: NodeKey): string | undefined;
-  undirectedEdge(source: NodeKey, target: NodeKey): string | undefined;
-  edge(source: NodeKey, target: NodeKey): string | undefined;
-  inDegree(node: NodeKey, selfLoops?: boolean): number;
-  outDegree(node: NodeKey, selfLoops?: boolean): number;
-  directedDegree(node: NodeKey, selfLoops?: boolean): number;
-  undirectedDegree(node: NodeKey, selfLoops?: boolean): number;
-  degree(node: NodeKey, selfLoops?: boolean): number;
-  source(edge: EdgeKey): string;
-  target(edge: EdgeKey): string;
-  extremities(edge: EdgeKey): [string, string];
-  opposite(node: NodeKey, edge: EdgeKey): string;
-  isUndirected(edge: EdgeKey): boolean;
-  isDirected(edge: EdgeKey): boolean;
-  isSelfLoop(edge: EdgeKey): boolean;
-  hasExtremity(edge: EdgeKey, node: NodeKey): boolean;
-  hasGeneratedKey(edge: EdgeKey): boolean;
-  neighbors(source: NodeKey, target: NodeKey): boolean;
-  undirectedNeighbors(source: NodeKey, target: NodeKey): boolean;
-  directedNeighbors(source: NodeKey, target: NodeKey): boolean;
-  inNeighbors(source: NodeKey, target: NodeKey): boolean;
-  outNeighbors(source: NodeKey, target: NodeKey): boolean;
-  inboundNeighbors(source: NodeKey, target: NodeKey): boolean;
-  outboundNeighbors(source: NodeKey, target: NodeKey): boolean;
+  hasNode(node: unknown): boolean;
+  hasDirectedEdge(edge: unknown): boolean;
+  hasDirectedEdge(source: unknown, target: unknown): boolean;
+  hasUndirectedEdge(edge: unknown): boolean;
+  hasUndirectedEdge(source: unknown, target: unknown): boolean;
+  hasEdge(edge: unknown): boolean;
+  hasEdge(source: unknown, target: unknown): boolean;
+  directedEdge(source: unknown, target: unknown): string | undefined;
+  undirectedEdge(source: unknown, target: unknown): string | undefined;
+  edge(source: unknown, target: unknown): string | undefined;
+  inDegree(node: unknown, selfLoops?: boolean): number;
+  outDegree(node: unknown, selfLoops?: boolean): number;
+  directedDegree(node: unknown, selfLoops?: boolean): number;
+  undirectedDegree(node: unknown, selfLoops?: boolean): number;
+  degree(node: unknown, selfLoops?: boolean): number;
+  source(edge: unknown): string;
+  target(edge: unknown): string;
+  extremities(edge: unknown): [string, string];
+  opposite(node: unknown, edge: unknown): string;
+  isUndirected(edge: unknown): boolean;
+  isDirected(edge: unknown): boolean;
+  isSelfLoop(edge: unknown): boolean;
+  hasExtremity(edge: unknown, node: unknown): boolean;
+  hasGeneratedKey(edge: unknown): boolean;
+  neighbors(source: unknown, target: unknown): boolean;
+  undirectedNeighbors(source: unknown, target: unknown): boolean;
+  directedNeighbors(source: unknown, target: unknown): boolean;
+  inNeighbors(source: unknown, target: unknown): boolean;
+  outNeighbors(source: unknown, target: unknown): boolean;
+  inboundNeighbors(source: unknown, target: unknown): boolean;
+  outboundNeighbors(source: unknown, target: unknown): boolean;
 
   // Mutation methods
-  addNode(node: NodeKey, attributes?: NodeAttributes): string;
-  mergeNode(node: NodeKey, attributes?: Partial<NodeAttributes>): string;
+  addNode(node: unknown, attributes?: NodeAttributes): string;
+  mergeNode(node: unknown, attributes?: Partial<NodeAttributes>): string;
   updateNode(
-    node: NodeKey,
+    node: unknown,
     updater?: (attributes: NodeAttributes) => NodeAttributes
   ): string;
   addEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     attributes?: EdgeAttributes
   ): string;
   mergeEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     attributes?: Partial<EdgeAttributes>
   ): string;
   updateEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     updater?: (attributes: EdgeAttributes) => EdgeAttributes
   ): string;
   addDirectedEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     attributes?: EdgeAttributes
   ): string;
   mergeDirectedEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     attributes?: Partial<EdgeAttributes>
   ): string;
   updateDirectedEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     updater?: (attributes: EdgeAttributes) => EdgeAttributes
   ): string;
   addUndirectedEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     attributes?: EdgeAttributes
   ): string;
   mergeUndirectedEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     attributes?: Partial<EdgeAttributes>
   ): string;
   updateUndirectedEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     updater?: (attributes: EdgeAttributes) => EdgeAttributes
   ): string;
   addEdgeWithKey(
-    edge: EdgeKey,
-    source: NodeKey,
-    target: NodeKey,
+    edge: unknown,
+    source: unknown,
+    target: unknown,
     attributes?: EdgeAttributes
   ): string;
   mergeEdgeWithKey(
-    edge: EdgeKey,
-    source: NodeKey,
-    target: NodeKey,
+    edge: unknown,
+    source: unknown,
+    target: unknown,
     attributes?: Partial<EdgeAttributes>
   ): string;
   updateEdgeWithKey(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     updater?: (attributes: EdgeAttributes) => EdgeAttributes
   ): string;
   addDirectedEdgeWithKey(
-    edge: EdgeKey,
-    source: NodeKey,
-    target: NodeKey,
+    edge: unknown,
+    source: unknown,
+    target: unknown,
     attributes?: EdgeAttributes
   ): string;
   mergeDirectedEdgeWithKey(
-    edge: EdgeKey,
-    source: NodeKey,
-    target: NodeKey,
+    edge: unknown,
+    source: unknown,
+    target: unknown,
     attributes?: Partial<EdgeAttributes>
   ): string;
   updateDirectedEdgeWithKey(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     updater?: (attributes: EdgeAttributes) => EdgeAttributes
   ): string;
   addUndirectedEdgeWithKey(
-    edge: EdgeKey,
-    source: NodeKey,
-    target: NodeKey,
+    edge: unknown,
+    source: unknown,
+    target: unknown,
     attributes?: EdgeAttributes
   ): string;
   mergeUndirectedEdgeWithKey(
-    edge: EdgeKey,
-    source: NodeKey,
-    target: NodeKey,
+    edge: unknown,
+    source: unknown,
+    target: unknown,
     attributes?: Partial<EdgeAttributes>
   ): string;
   updateUndirectedEdgeWithKey(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     updater?: (attributes: EdgeAttributes) => EdgeAttributes
   ): string;
-  dropNode(node: NodeKey): void;
-  dropEdge(edge: EdgeKey): void;
-  dropEdge(source: NodeKey, target: NodeKey): void;
+  dropNode(node: unknown): void;
+  dropEdge(edge: unknown): void;
+  dropEdge(source: unknown, target: unknown): void;
   clear(): void;
   clearEdges(): void;
 
@@ -514,65 +511,65 @@ declare abstract class AbstractGraph<
   mergeAttributes(attributes: Partial<GraphAttributes>): this;
 
   // Node attribute methods
-  getNodeAttribute(node: NodeKey, name: string): any;
-  getNodeAttributes(node: NodeKey): NodeAttributes;
-  hasNodeAttribute(node: NodeKey, name: string): boolean;
-  setNodeAttribute(node: NodeKey, name: string, value: any): this;
+  getNodeAttribute(node: unknown, name: string): any;
+  getNodeAttributes(node: unknown): NodeAttributes;
+  hasNodeAttribute(node: unknown, name: string): boolean;
+  setNodeAttribute(node: unknown, name: string, value: any): this;
   updateNodeAttribute(
-    node: NodeKey,
+    node: unknown,
     name: string,
     updater: (value: any) => any
   ): this;
-  removeNodeAttribute(node: NodeKey, name: string): this;
-  replaceNodeAttributes(node: NodeKey, attributes: NodeAttributes): this;
-  mergeNodeAttributes(node: NodeKey, attributes: Partial<NodeAttributes>): this;
+  removeNodeAttribute(node: unknown, name: string): this;
+  replaceNodeAttributes(node: unknown, attributes: NodeAttributes): this;
+  mergeNodeAttributes(node: unknown, attributes: Partial<NodeAttributes>): this;
   updateEachNodeAttributes(
     updater: NodeUpdateIterationCallback<NodeAttributes>,
     hints?: UpdateHints
   ): void;
 
   // Edge attribute methods
-  getEdgeAttribute(edge: EdgeKey, name: string): any;
-  getEdgeAttributes(edge: EdgeKey): EdgeAttributes;
-  hasEdgeAttribute(edge: EdgeKey, name: string): boolean;
-  setEdgeAttribute(edge: EdgeKey, name: string, value: any): this;
+  getEdgeAttribute(edge: unknown, name: string): any;
+  getEdgeAttributes(edge: unknown): EdgeAttributes;
+  hasEdgeAttribute(edge: unknown, name: string): boolean;
+  setEdgeAttribute(edge: unknown, name: string, value: any): this;
   updateEdgeAttribute(
-    edge: EdgeKey,
+    edge: unknown,
     name: string,
     updater: (value: any) => any
   ): this;
-  removeEdgeAttribute(edge: EdgeKey, name: string): this;
-  replaceEdgeAttributes(edge: EdgeKey, attributes: EdgeAttributes): this;
-  mergeEdgeAttributes(edge: EdgeKey, attributes: Partial<EdgeAttributes>): this;
+  removeEdgeAttribute(edge: unknown, name: string): this;
+  replaceEdgeAttributes(edge: unknown, attributes: EdgeAttributes): this;
+  mergeEdgeAttributes(edge: unknown, attributes: Partial<EdgeAttributes>): this;
   updateEachEdgeAttributes(
     updater: EdgeUpdateIterationCallback<EdgeAttributes>,
     hints?: UpdateHints
   ): void;
 
-  getEdgeAttribute(source: NodeKey, target: NodeKey, name: string): any;
-  getEdgeAttributes(source: NodeKey, target: NodeKey): EdgeAttributes;
-  hasEdgeAttribute(source: NodeKey, target: NodeKey, name: string): boolean;
+  getEdgeAttribute(source: unknown, target: unknown, name: string): any;
+  getEdgeAttributes(source: unknown, target: unknown): EdgeAttributes;
+  hasEdgeAttribute(source: unknown, target: unknown, name: string): boolean;
   setEdgeAttribute(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     name: string,
     value: any
   ): this;
   updateEdgeAttribute(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     name: string,
     updater: (value: any) => any
   ): this;
-  removeEdgeAttribute(source: NodeKey, target: NodeKey, name: string): this;
+  removeEdgeAttribute(source: unknown, target: unknown, name: string): this;
   replaceEdgeAttributes(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     attributes: EdgeAttributes
   ): this;
   mergeEdgeAttributes(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     attributes: Partial<EdgeAttributes>
   ): this;
 
@@ -596,343 +593,343 @@ declare abstract class AbstractGraph<
   nodeEntries(): IterableIterator<NodeEntry<NodeAttributes>>;
 
   edges(): Array<string>;
-  edges(node: NodeKey): Array<string>;
-  edges(source: NodeKey, target: NodeKey): Array<string>;
+  edges(node: unknown): Array<string>;
+  edges(source: unknown, target: unknown): Array<string>;
   undirectedEdges(): Array<string>;
-  undirectedEdges(node: NodeKey): Array<string>;
-  undirectedEdges(source: NodeKey, target: NodeKey): Array<string>;
+  undirectedEdges(node: unknown): Array<string>;
+  undirectedEdges(source: unknown, target: unknown): Array<string>;
   directedEdges(): Array<string>;
-  directedEdges(node: NodeKey): Array<string>;
-  directedEdges(source: NodeKey, target: NodeKey): Array<string>;
+  directedEdges(node: unknown): Array<string>;
+  directedEdges(source: unknown, target: unknown): Array<string>;
   inEdges(): Array<string>;
-  inEdges(node: NodeKey): Array<string>;
-  inEdges(source: NodeKey, target: NodeKey): Array<string>;
+  inEdges(node: unknown): Array<string>;
+  inEdges(source: unknown, target: unknown): Array<string>;
   outEdges(): Array<string>;
-  outEdges(node: NodeKey): Array<string>;
-  outEdges(source: NodeKey, target: NodeKey): Array<string>;
+  outEdges(node: unknown): Array<string>;
+  outEdges(source: unknown, target: unknown): Array<string>;
   inboundEdges(): Array<string>;
-  inboundEdges(node: NodeKey): Array<string>;
-  inboundEdges(source: NodeKey, target: NodeKey): Array<string>;
+  inboundEdges(node: unknown): Array<string>;
+  inboundEdges(source: unknown, target: unknown): Array<string>;
   outboundEdges(): Array<string>;
-  outboundEdges(node: NodeKey): Array<string>;
-  outboundEdges(source: NodeKey, target: NodeKey): Array<string>;
+  outboundEdges(node: unknown): Array<string>;
+  outboundEdges(source: unknown, target: unknown): Array<string>;
   forEachEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachEdge(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachUndirectedEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachUndirectedEdge(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachUndirectedEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachDirectedEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachDirectedEdge(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachDirectedEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachInEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachInEdge(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachInEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachOutEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachOutEdge(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachOutEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachInboundEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachInboundEdge(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachInboundEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachOutboundEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachOutboundEdge(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachOutboundEdge(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachEdgeUntil(
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachEdgeUntil(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachEdgeUntil(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachUndirectedEdgeUntil(
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachUndirectedEdgeUntil(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachUndirectedEdgeUntil(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachDirectedEdgeUntil(
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachDirectedEdgeUntil(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachDirectedEdgeUntil(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachInEdgeUntil(
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachInEdgeUntil(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachInEdgeUntil(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachOutEdgeUntil(
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachOutEdgeUntil(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachOutEdgeUntil(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachInboundEdgeUntil(
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachInboundEdgeUntil(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachInboundEdgeUntil(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachOutboundEdgeUntil(
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachOutboundEdgeUntil(
-    node: NodeKey,
+    node: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   forEachOutboundEdgeUntil(
-    source: NodeKey,
-    target: NodeKey,
+    source: unknown,
+    target: unknown,
     callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
   ): boolean;
   edgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   edgeEntries(
-    node: NodeKey
+    node: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   edgeEntries(
-    source: NodeKey,
-    target: NodeKey
+    source: unknown,
+    target: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   undirectedEdgeEntries(): IterableIterator<
     EdgeEntry<NodeAttributes, EdgeAttributes>
   >;
   undirectedEdgeEntries(
-    node: NodeKey
+    node: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   undirectedEdgeEntries(
-    source: NodeKey,
-    target: NodeKey
+    source: unknown,
+    target: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   directedEdgeEntries(): IterableIterator<
     EdgeEntry<NodeAttributes, EdgeAttributes>
   >;
   directedEdgeEntries(
-    node: NodeKey
+    node: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   directedEdgeEntries(
-    source: NodeKey,
-    target: NodeKey
+    source: unknown,
+    target: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   inEdgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   inEdgeEntries(
-    node: NodeKey
+    node: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   inEdgeEntries(
-    source: NodeKey,
-    target: NodeKey
+    source: unknown,
+    target: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   outEdgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   outEdgeEntries(
-    node: NodeKey
+    node: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   outEdgeEntries(
-    source: NodeKey,
-    target: NodeKey
+    source: unknown,
+    target: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   inboundEdgeEntries(): IterableIterator<
     EdgeEntry<NodeAttributes, EdgeAttributes>
   >;
   inboundEdgeEntries(
-    node: NodeKey
+    node: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   inboundEdgeEntries(
-    source: NodeKey,
-    target: NodeKey
+    source: unknown,
+    target: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   outboundEdgeEntries(): IterableIterator<
     EdgeEntry<NodeAttributes, EdgeAttributes>
   >;
   outboundEdgeEntries(
-    node: NodeKey
+    node: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   outboundEdgeEntries(
-    source: NodeKey,
-    target: NodeKey
+    source: unknown,
+    target: unknown
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
 
-  neighbors(node: NodeKey): Array<string>;
-  undirectedNeighbors(node: NodeKey): Array<string>;
-  directedNeighbors(node: NodeKey): Array<string>;
-  inNeighbors(node: NodeKey): Array<string>;
-  outNeighbors(node: NodeKey): Array<string>;
-  inboundNeighbors(node: NodeKey): Array<string>;
-  outboundNeighbors(node: NodeKey): Array<string>;
+  neighbors(node: unknown): Array<string>;
+  undirectedNeighbors(node: unknown): Array<string>;
+  directedNeighbors(node: unknown): Array<string>;
+  inNeighbors(node: unknown): Array<string>;
+  outNeighbors(node: unknown): Array<string>;
+  inboundNeighbors(node: unknown): Array<string>;
+  outboundNeighbors(node: unknown): Array<string>;
   forEachNeighbor(
-    node: NodeKey,
+    node: unknown,
     callback: NodeIterationCallback<NodeAttributes>
   ): void;
   forEachUndirectedNeighbor(
-    node: NodeKey,
+    node: unknown,
     callback: NodeIterationCallback<NodeAttributes>
   ): void;
   forEachDirectedNeighbor(
-    node: NodeKey,
+    node: unknown,
     callback: NodeIterationCallback<NodeAttributes>
   ): void;
   forEachInNeighbor(
-    node: NodeKey,
+    node: unknown,
     callback: NodeIterationCallback<NodeAttributes>
   ): void;
   forEachOutNeighbor(
-    node: NodeKey,
+    node: unknown,
     callback: NodeIterationCallback<NodeAttributes>
   ): void;
   forEachInboundNeighbor(
-    node: NodeKey,
+    node: unknown,
     callback: NodeIterationCallback<NodeAttributes>
   ): void;
   forEachOutboundNeighbor(
-    node: NodeKey,
+    node: unknown,
     callback: NodeIterationCallback<NodeAttributes>
   ): void;
   forEachNeighborUntil(
-    node: NodeKey,
+    node: unknown,
     callback: NodeUntilIterationCallback<NodeAttributes>
   ): boolean;
   forEachUndirectedNeighborUntil(
-    node: NodeKey,
+    node: unknown,
     callback: NodeUntilIterationCallback<NodeAttributes>
   ): boolean;
   forEachDirectedNeighborUntil(
-    node: NodeKey,
+    node: unknown,
     callback: NodeUntilIterationCallback<NodeAttributes>
   ): boolean;
   forEachInNeighborUntil(
-    node: NodeKey,
+    node: unknown,
     callback: NodeUntilIterationCallback<NodeAttributes>
   ): boolean;
   forEachOutNeighborUntil(
-    node: NodeKey,
+    node: unknown,
     callback: NodeUntilIterationCallback<NodeAttributes>
   ): boolean;
   forEachInboundNeighborUntil(
-    node: NodeKey,
+    node: unknown,
     callback: NodeUntilIterationCallback<NodeAttributes>
   ): boolean;
   forEachOutboundNeighborUntil(
-    node: NodeKey,
+    node: unknown,
     callback: NodeUntilIterationCallback<NodeAttributes>
   ): boolean;
-  neighborEntries(node: NodeKey): IterableIterator<NodeEntry<NodeAttributes>>;
+  neighborEntries(node: unknown): IterableIterator<NodeEntry<NodeAttributes>>;
   undirectedNeighborEntries(
-    node: NodeKey
+    node: unknown
   ): IterableIterator<NodeEntry<NodeAttributes>>;
   directedNeighborEntries(
-    node: NodeKey
+    node: unknown
   ): IterableIterator<NodeEntry<NodeAttributes>>;
-  inNeighborEntries(node: NodeKey): IterableIterator<NodeEntry<NodeAttributes>>;
+  inNeighborEntries(node: unknown): IterableIterator<NodeEntry<NodeAttributes>>;
   outNeighborEntries(
-    node: NodeKey
+    node: unknown
   ): IterableIterator<NodeEntry<NodeAttributes>>;
   inboundNeighborEntries(
-    node: NodeKey
+    node: unknown
   ): IterableIterator<NodeEntry<NodeAttributes>>;
   outboundNeighborEntries(
-    node: NodeKey
+    node: unknown
   ): IterableIterator<NodeEntry<NodeAttributes>>;
 
   // Serialization methods
-  exportNode(node: NodeKey): SerializedNode<NodeAttributes>;
-  exportEdge(edge: EdgeKey): SerializedEdge<EdgeAttributes>;
+  exportNode(node: unknown): SerializedNode<NodeAttributes>;
+  exportEdge(edge: unknown): SerializedEdge<EdgeAttributes>;
   export(): SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
   importNode(data: SerializedNode<NodeAttributes>, merge?: boolean): this;
   importEdge(data: SerializedEdge<EdgeAttributes>, merge?: boolean): this;
@@ -994,8 +991,6 @@ type GraphConstructor<
 export {
   AbstractGraph,
   Attributes,
-  NodeKey,
-  EdgeKey,
   GraphType,
   EdgeKeyGeneratorFunction,
   GraphOptions,

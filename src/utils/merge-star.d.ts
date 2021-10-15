@@ -1,3 +1,3 @@
-import Graph, {NodeKey} from 'graphology-types';
+import Graph from 'graphology-types';
 
-export default function mergeStar(graph: Graph, nodes: Array<NodeKey>): void;
+export default function mergeStar(graph: Graph, nodes: Array<unknown>): void;

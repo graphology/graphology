@@ -1,4 +1,4 @@
-import {Attributes, NodeKey, EdgeKey} from 'graphology-types';
+import {Attributes} from 'graphology-types';
 
 type RGBAColor = {
   r: number,
@@ -33,12 +33,12 @@ type FormattedEdge<FormattedAttributes> = {
 export type NodeFormatter<
   NodeAttributes extends Attributes = Attributes,
   FormattedAttributes extends Attributes = Attributes
-> = (key: NodeKey, attributes: NodeAttributes) => FormattedNode<FormattedAttributes>;
+> = (key: string, attributes: NodeAttributes) => FormattedNode<FormattedAttributes>;
 
 export type EdgeFormatter<
   EdgeAttributes extends Attributes = Attributes,
   FormattedAttributes extends Attributes = Attributes
-> = (key: EdgeKey, attributes: EdgeAttributes) => FormattedEdge<FormattedAttributes>;
+> = (key: string, attributes: EdgeAttributes) => FormattedEdge<FormattedAttributes>;
 
 export type GexfWriterOptions<
   NodeAttributes extends Attributes = Attributes,

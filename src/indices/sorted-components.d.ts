@@ -1,9 +1,9 @@
-import Graph, {NodeKey} from 'graphology-types';
+import Graph from 'graphology-types';
 
 export default class SortedComponentsIndex {
   orders: Uint32Array;
   offsets: Uint32Array;
-  nodes: Array<NodeKey>;
+  nodes: Array<string>;
   count: number;
 
   constructor(graph: Graph);

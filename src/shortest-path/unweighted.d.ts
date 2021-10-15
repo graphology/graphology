@@ -1,23 +1,23 @@
-import Graph, {NodeKey} from 'graphology-types';
+import Graph from 'graphology-types';
 
-type ShortestPath = Array<NodeKey>;
+type ShortestPath = Array<string>;
 type ShortestPathMapping = {[key: string]: ShortestPath};
 type ShortestPathLengthMapping = {[key: string]: number};
 
 type BrandesResult = [
-  Array<NodeKey>,
-  {[key: string]: Array<NodeKey>},
+  Array<string>,
+  {[key: string]: Array<string>},
   {[key: string]: number}
 ];
 
 interface IUnweightedShortestPath {
-  (graph: Graph, source: NodeKey): ShortestPathMapping;
-  (graph: Graph, source: NodeKey, target: NodeKey): ShortestPath | null;
+  (graph: Graph, source: unknown): ShortestPathMapping;
+  (graph: Graph, source: unknown, target: unknown): ShortestPath | null;
 
-  bidirectional(graph: Graph, source: NodeKey, target: NodeKey): ShortestPath | null;
-  singleSource(graph: Graph, source: NodeKey): ShortestPathMapping;
-  singleSourceLength(graph: Graph, source: NodeKey): ShortestPathLengthMapping;
-  brandes(graph: Graph, source: NodeKey): BrandesResult;
+  bidirectional(graph: Graph, source: unknown, target: unknown): ShortestPath | null;
+  singleSource(graph: Graph, source: unknown): ShortestPathMapping;
+  singleSourceLength(graph: Graph, source: unknown): ShortestPathLengthMapping;
+  brandes(graph: Graph, source: unknown): BrandesResult;
 }
 
 declare const shortestPath: IUnweightedShortestPath;

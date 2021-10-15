@@ -1,19 +1,19 @@
-import Graph, {NodeKey, EdgeKey, Attributes} from 'graphology-types';
+import Graph, {Attributes} from 'graphology-types';
 
 export default function updateGraphKeys<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  nodeKeyUpdater: (key: NodeKey, attributes: NodeAttributes) => NodeKey,
+  nodeKeyUpdater: (key: string, attributes: NodeAttributes) => unknown,
   edgeKeyUpdater: (
-    key: EdgeKey,
+    key: string,
     attributes: EdgeAttributes,
-    source: NodeKey,
-    target: NodeKey,
+    source: string,
+    target: string,
     sourceAttributes: NodeAttributes,
     targetAttributes: NodeAttributes,
     undirected: boolean,
     generatedKey: boolean
-  ) => EdgeKey
+  ) => unknown
 ): Graph;

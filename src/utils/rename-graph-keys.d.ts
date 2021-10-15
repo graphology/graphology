@@ -1,7 +1,7 @@
-import Graph, {NodeKey, EdgeKey} from 'graphology-types';
+import Graph from 'graphology-types';
 
 export default function renameGraphKeys(
   graph: Graph,
-  nodeKeyMapping: Record<NodeKey, NodeKey> = {},
-  edgeKeyMapping: Record<EdgeKey, EdgeKey> = {}
+  nodeKeyMapping: Record<string, unknown>,
+  edgeKeyMapping: Record<string, unknown>
 ): Graph;

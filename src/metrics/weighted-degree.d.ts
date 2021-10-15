@@ -1,4 +1,4 @@
-import Graph, {NodeKey} from 'graphology-types';
+import Graph from 'graphology-types';
 
 type WeightedDegreeOptions = {
   attributes?: {
@@ -11,10 +11,10 @@ type WeightedDegreeMapping = {[key: string]: number};
 
 interface IWeightedDegreeBase {
   (graph: Graph, options?: WeightedDegreeOptions): WeightedDegreeMapping;
-  (graph: Graph, node: NodeKey, options?: WeightedDegreeOptions): number;
+  (graph: Graph, node: unknown, options?: WeightedDegreeOptions): number;
 
   assign(graph: Graph, options?: WeightedDegreeOptions): void;
-  assign(graph: Graph, node: NodeKey, options?: WeightedDegreeOptions): void;
+  assign(graph: Graph, node: unknown, options?: WeightedDegreeOptions): void;
 }
 
 interface IWeightedDegree extends IWeightedDegreeBase {

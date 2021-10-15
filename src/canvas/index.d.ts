@@ -1,4 +1,4 @@
-import Graph, {Attributes, NodeKey, EdgeKey} from 'graphology-types';
+import Graph, {Attributes} from 'graphology-types';
 
 export type CanvasRendererSettings<
   NodeAttributes extends Attributes = Attributes,
@@ -10,11 +10,11 @@ export type CanvasRendererSettings<
   height?: number;
   nodes?: {
     defaultColor?: string;
-    reducer?: (settings: CanvasRendererSettings, node: NodeKey, attributes: NodeAttributes) => Attributes;
+    reducer?: (settings: CanvasRendererSettings, node: string, attributes: NodeAttributes) => Attributes;
   },
   edges?: {
     defaultColor?: string;
-    reducer?: (settings: CanvasRendererSettings, edge: EdgeKey, attributes: EdgeAttributes) => Attributes;
+    reducer?: (settings: CanvasRendererSettings, edge: string, attributes: EdgeAttributes) => Attributes;
   }
 };
 

@@ -1,10 +1,10 @@
-import Graph, {NodeKey} from 'graphology-types';
+import Graph from 'graphology-types';
 
 type SingleSourceDijkstraResult = {[key: string]: string[];}
 type BidirectionalDijstraResult = string[];
 type BrandesResult = [
-  Array<NodeKey>,
-  {[key: string]: Array<NodeKey>},
+  Array<string>,
+  {[key: string]: Array<string>},
   {[key: string]: number}
 ];
 
