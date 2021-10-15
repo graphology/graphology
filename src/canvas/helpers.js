@@ -15,17 +15,16 @@ var CAMERA = {
 
 function reduceNodes(graph, settings) {
   var containerWidth = settings.width,
-      containerHeight = settings.height;
+    containerHeight = settings.height;
 
   var xMin = Infinity,
-      xMax = -Infinity,
-      yMin = Infinity,
-      yMax = -Infinity;
+    xMax = -Infinity,
+    yMin = Infinity,
+    yMax = -Infinity;
 
   var data = {};
 
-  graph.forEachNode(function(node, attr) {
-
+  graph.forEachNode(function (node, attr) {
     // Applying user's reducing logic
     if (typeof settings.nodes.reducer === 'function')
       attr = settings.nodes.reducer(settings, node, attr);
@@ -34,18 +33,14 @@ function reduceNodes(graph, settings) {
     data[node] = attr;
 
     // Finding bounds
-    if (attr.x < xMin)
-      xMin = attr.x;
-    if (attr.x > xMax)
-      xMax = attr.x;
-    if (attr.y < yMin)
-      yMin = attr.y;
-    if (attr.y > yMax)
-      yMax = attr.y;
+    if (attr.x < xMin) xMin = attr.x;
+    if (attr.x > xMax) xMax = attr.x;
+    if (attr.y < yMin) yMin = attr.y;
+    if (attr.y > yMax) yMax = attr.y;
   });
 
   var graphWidth = xMax - xMin,
-      graphHeight = yMax - yMin;
+    graphHeight = yMax - yMin;
 
   var ratio = Math.max(graphWidth, graphHeight) || 1;
 

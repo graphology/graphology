@@ -9,7 +9,7 @@
  * Amer. J. Soc. 105, 493-527, 1999.
  */
 var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
-    empty = require('../classic/empty.js');
+  empty = require('../classic/empty.js');
 
 /**
  * Function returning a caveman graph with desired properties.
@@ -21,23 +21,21 @@ var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
  */
 module.exports = function caveman(GraphClass, l, k) {
   if (!isGraphConstructor(GraphClass))
-    throw new Error('graphology-generators/community/caveman: invalid Graph constructor.');
+    throw new Error(
+      'graphology-generators/community/caveman: invalid Graph constructor.'
+    );
 
   var m = l * k;
 
   var graph = empty(GraphClass, m);
 
-  if (k < 2)
-    return graph;
+  if (k < 2) return graph;
 
-  var i,
-      j,
-      s;
+  var i, j, s;
 
   for (i = 0; i < m; i += k) {
     for (j = i; j < i + k; j++) {
-      for (s = j + 1; s < i + k; s++)
-        graph.addEdge(j, s);
+      for (s = j + 1; s < i + k; s++) graph.addEdge(j, s);
     }
   }
 

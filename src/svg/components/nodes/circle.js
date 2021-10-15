@@ -6,9 +6,17 @@
  */
 module.exports = function drawNode(settings, data) {
   return (
-    '<circle cx="' + data.x + '" ' +
-            'cy="' + data.y + '" ' +
-            'r="' + data.size + '" ' +
-            'fill="' + data.color + '" />'
+    '<circle cx="' +
+    data.x +
+    '" ' +
+    'cy="' +
+    data.y +
+    '" ' +
+    'r="' +
+    data.size +
+    '" ' +
+    'fill="' +
+    data.color +
+    '" />'
   );
 };

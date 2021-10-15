@@ -10,8 +10,7 @@ var extent = stats.extent;
 require('util').inspect.defaultOptions.depth = null;
 
 function rename(k1, k2, o) {
-  if (k1 === k2)
-    return;
+  if (k1 === k2) return;
 
   if (k1 in o) {
     o[k2] = o[k1];
@@ -20,21 +19,16 @@ function rename(k1, k2, o) {
 }
 
 function frequencySorter(a, b) {
-  if (a.count > b.count)
-    return -1;
+  if (a.count > b.count) return -1;
 
-  if (a.count < b.count)
-    return 1;
+  if (a.count < b.count) return 1;
 
-  if (a.value < b.value)
-    return -1;
+  if (a.value < b.value) return -1;
 
-  if (a.value > b.value)
-    return 1;
+  if (a.value > b.value) return 1;
 
   return 0;
 }
-
 
 var bundle = require(process.argv.slice(-1)[0]);
 
@@ -50,14 +44,11 @@ var newBundle = {
   bundleVersion: '1.0.0'
 };
 
-if (bundle.authors)
-  newBundle.authors = bundle.authors;
+if (bundle.authors) newBundle.authors = bundle.authors;
 
-if (bundle.url)
-  newBundle.url = bundle.url;
+if (bundle.url) newBundle.url = bundle.url;
 
-if (bundle.date)
-  newBundle.date = bundle.date;
+if (bundle.date) newBundle.date = bundle.date;
 
 newBundle.model = {};
 
@@ -74,7 +65,7 @@ if (bundle.defaultEdgeSize)
   newBundle.model.defaultEdgeSize = bundle.defaultEdgeSize;
 
 if (bundle.nodeAttributes) {
-  newBundle.model.nodeAttributes = bundle.nodeAttributes.map(function(attr) {
+  newBundle.model.nodeAttributes = bundle.nodeAttributes.map(function (attr) {
     var oldId = attr.id;
 
     attr.slug = slugify(oldId);
@@ -85,7 +76,7 @@ if (bundle.nodeAttributes) {
 
     if (attr.type === 'partition') {
       var oldModalities = attr.modalities,
-          data = attr.data;
+        data = attr.data;
 
       attr = {
         slug: attr.slug,
@@ -100,9 +91,9 @@ if (bundle.nodeAttributes) {
         }
       };
 
-      oldModalities.forEach(function(m) {
+      oldModalities.forEach(function (m) {
         var matchingData = data.modalitiesIndex[m.value],
-            matchingFlow = data.modalityFlow[m.value];
+          matchingFlow = data.modalityFlow[m.value];
 
         var flow = {};
 
@@ -133,7 +124,7 @@ if (bundle.nodeAttributes) {
 
       attr.modalitiesOrder = values(attr.modalities)
         .sort(frequencySorter)
-        .map(function(modalityItem) {
+        .map(function (modalityItem) {
           return modalityItem.value;
         });
     }
@@ -143,8 +134,7 @@ if (bundle.nodeAttributes) {
       delete attr.id;
       delete attr.name;
       delete attr.areaScaling;
-    }
-    else if (attr.type === 'ranking-size') {
+    } else if (attr.type === 'ranking-size') {
       delete attr.id;
       delete attr.name;
       delete attr.colorScale;
@@ -157,9 +147,11 @@ if (bundle.nodeAttributes) {
       (attr.type === 'ranking-color' || attr.type === 'ranking-size') &&
       (!('min' in attr) || !('max' in attr))
     ) {
-      var minmax = extent(bundle.g.nodes.map(function(node) {
-        return node.attributes[attr.key];
-      }));
+      var minmax = extent(
+        bundle.g.nodes.map(function (node) {
+          return node.attributes[attr.key];
+        })
+      );
 
       attr.min = minmax[0];
       attr.max = minmax[1];
@@ -172,7 +164,7 @@ if (bundle.nodeAttributes) {
 }
 
 if (bundle.edgeAttributes) {
-  newBundle.model.edgeAttributes = bundle.edgeAttributes.map(function(attr) {
+  newBundle.model.edgeAttributes = bundle.edgeAttributes.map(function (attr) {
     var oldId = attr.id;
 
     attr.slug = slugify(oldId);
@@ -194,7 +186,7 @@ if (bundle.edgeAttributes) {
         modalities: {}
       };
 
-      oldModalities.forEach(function(m) {
+      oldModalities.forEach(function (m) {
         attr.cardinality++;
 
         attr.modalities[m.value] = {
@@ -206,7 +198,7 @@ if (bundle.edgeAttributes) {
 
       attr.modalitiesOrder = values(attr.modalities)
         .sort(frequencySorter)
-        .map(function(modalityItem) {
+        .map(function (modalityItem) {
           return modalityItem.value;
         });
     }
@@ -216,8 +208,7 @@ if (bundle.edgeAttributes) {
       delete attr.id;
       delete attr.name;
       delete attr.areaScaling;
-    }
-    else if (attr.type === 'ranking-size') {
+    } else if (attr.type === 'ranking-size') {
       delete attr.id;
       delete attr.name;
       delete attr.colorScale;
@@ -230,9 +221,11 @@ if (bundle.edgeAttributes) {
       (attr.type === 'ranking-color' || attr.type === 'ranking-size') &&
       (!('min' in attr) || !('max' in attr))
     ) {
-      var minmax = extent(bundle.g.edges.map(function(edge) {
-        return edge.attributes[attr.key];
-      }));
+      var minmax = extent(
+        bundle.g.edges.map(function (edge) {
+          return edge.attributes[attr.key];
+        })
+      );
 
       attr.min = minmax[0];
       attr.max = minmax[1];
@@ -245,13 +238,11 @@ if (bundle.edgeAttributes) {
 }
 
 function batchRename(r, l) {
-  l.forEach(function(item) {
-    if (!item.attributes)
-      return;
+  l.forEach(function (item) {
+    if (!item.attributes) return;
 
     for (var k in item.attributes) {
-      if (k in r)
-        r[k](item.attributes);
+      if (k in r) r[k](item.attributes);
     }
   });
 }

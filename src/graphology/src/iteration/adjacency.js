@@ -21,7 +21,7 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
 
   let step, sourceData, neighbor, adj, edgeData, targetData, shouldBreak;
 
-  while ((step = iterator.next(), step.done !== true)) {
+  while (((step = iterator.next()), step.done !== true)) {
     sourceData = step.value;
 
     if (type !== 'undirected') {
@@ -42,8 +42,7 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
           edgeData.generatedKey
         );
 
-        if (breakable && shouldBreak)
-          return true;
+        if (breakable && shouldBreak) return true;
       }
     }
 
@@ -54,8 +53,7 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
         edgeData = adj[neighbor];
         targetData = edgeData.target;
 
-        if (targetData.key !== neighbor)
-          targetData = edgeData.source;
+        if (targetData.key !== neighbor) targetData = edgeData.source;
 
         shouldBreak = callback(
           sourceData.key,
@@ -68,8 +66,7 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
           edgeData.generatedKey
         );
 
-        if (breakable && shouldBreak)
-          return true;
+        if (breakable && shouldBreak) return true;
       }
     }
   }
@@ -89,9 +86,17 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
 
   const type = graph.type;
 
-  let step, sourceData, neighbor, container, containerStep, adj, edgeData, targetData, shouldBreak;
+  let step,
+    sourceData,
+    neighbor,
+    container,
+    containerStep,
+    adj,
+    edgeData,
+    targetData,
+    shouldBreak;
 
-  while ((step = iterator.next(), step.done !== true)) {
+  while (((step = iterator.next()), step.done !== true)) {
     sourceData = step.value;
 
     if (type !== 'undirected') {
@@ -100,7 +105,9 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
       for (neighbor in adj) {
         container = adj[neighbor].values();
 
-        while ((containerStep = container.next(), containerStep.done !== true)) {
+        while (
+          ((containerStep = container.next()), containerStep.done !== true)
+        ) {
           edgeData = containerStep.value;
           targetData = edgeData.target;
 
@@ -115,8 +122,7 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
             edgeData.generatedKey
           );
 
-          if (breakable && shouldBreak)
-            return true;
+          if (breakable && shouldBreak) return true;
         }
       }
     }
@@ -127,12 +133,13 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
       for (neighbor in adj) {
         container = adj[neighbor].values();
 
-        while ((containerStep = container.next(), containerStep.done !== true)) {
+        while (
+          ((containerStep = container.next()), containerStep.done !== true)
+        ) {
           edgeData = containerStep.value;
           targetData = edgeData.target;
 
-          if (targetData.key !== neighbor)
-            targetData = edgeData.source;
+          if (targetData.key !== neighbor) targetData = edgeData.source;
 
           shouldBreak = callback(
             sourceData.key,
@@ -145,8 +152,7 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
             edgeData.generatedKey
           );
 
-          if (breakable && shouldBreak)
-            return true;
+          if (breakable && shouldBreak) return true;
         }
       }
     }
@@ -161,10 +167,10 @@ export function createAdjacencyIteratorSimple(graph) {
   const type = graph.type;
 
   let state = 'outer',
-      sourceData,
-      neighbors,
-      adj,
-      offset;
+    sourceData,
+    neighbors,
+    adj,
+    offset;
 
   return new Iterator(function next() {
     let step;
@@ -172,8 +178,7 @@ export function createAdjacencyIteratorSimple(graph) {
     if (state === 'outer') {
       step = iterator.next();
 
-      if (step.done === true)
-        return step;
+      if (step.done === true) return step;
 
       sourceData = step.value;
 
@@ -209,10 +214,8 @@ export function createAdjacencyIteratorSimple(graph) {
 
     // Inner
     if (offset >= neighbors.length) {
-      if (state === 'inner-undirected')
-        state = 'outer';
-      else
-        state = 'undirected';
+      if (state === 'inner-undirected') state = 'outer';
+      else state = 'undirected';
 
       return next();
     }
@@ -244,11 +247,11 @@ export function createAdjacencyIteratorMulti(graph) {
   const type = graph.type;
 
   let state = 'outer',
-      sourceData,
-      neighbors,
-      container = null,
-      adj,
-      offset;
+    sourceData,
+    neighbors,
+    container = null,
+    adj,
+    offset;
 
   return new Iterator(function next() {
     let step;
@@ -256,8 +259,7 @@ export function createAdjacencyIteratorMulti(graph) {
     if (state === 'outer') {
       step = iterator.next();
 
-      if (step.done === true)
-        return step;
+      if (step.done === true) return step;
 
       sourceData = step.value;
 
@@ -293,10 +295,8 @@ export function createAdjacencyIteratorMulti(graph) {
 
     // Inner
     if (!container && offset >= neighbors.length) {
-      if (state === 'inner-undirected')
-        state = 'outer';
-      else
-        state = 'undirected';
+      if (state === 'inner-undirected') state = 'outer';
+      else state = 'undirected';
 
       return next();
     }

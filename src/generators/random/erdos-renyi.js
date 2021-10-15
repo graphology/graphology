@@ -5,7 +5,7 @@
  * Function generating binomial graphs.
  */
 var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
-    density = require('graphology-metrics/density');
+  density = require('graphology-metrics/density');
 
 /**
  * Generates a binomial graph graph with n nodes.
@@ -19,11 +19,13 @@ var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
  */
 function erdosRenyi(GraphClass, options) {
   if (!isGraphConstructor(GraphClass))
-    throw new Error('graphology-generators/random/erdos-renyi: invalid Graph constructor.');
+    throw new Error(
+      'graphology-generators/random/erdos-renyi: invalid Graph constructor.'
+    );
 
   var order = options.order,
-      probability = options.probability,
-      rng = options.rng || Math.random;
+    probability = options.probability,
+    rng = options.rng || Math.random;
 
   var graph = new GraphClass();
 
@@ -34,36 +36,36 @@ function erdosRenyi(GraphClass, options) {
   }
 
   if (typeof order !== 'number' || order <= 0)
-    throw new Error('graphology-generators/random/erdos-renyi: invalid `order`. Should be a positive number.');
+    throw new Error(
+      'graphology-generators/random/erdos-renyi: invalid `order`. Should be a positive number.'
+    );
 
   if (typeof probability !== 'number' || probability < 0 || probability > 1)
-    throw new Error('graphology-generators/random/erdos-renyi: invalid `probability`. Should be a number between 0 and 1. Or maybe you gave an `approximateSize` exceeding the graph\'s density.');
+    throw new Error(
+      "graphology-generators/random/erdos-renyi: invalid `probability`. Should be a number between 0 and 1. Or maybe you gave an `approximateSize` exceeding the graph's density."
+    );
 
   if (typeof rng !== 'function')
-    throw new Error('graphology-generators/random/erdos-renyi: invalid `rng`. Should be a function.');
+    throw new Error(
+      'graphology-generators/random/erdos-renyi: invalid `rng`. Should be a function.'
+    );
 
   var i, j;
 
-  for (i = 0; i < order; i++)
-    graph.addNode(i);
+  for (i = 0; i < order; i++) graph.addNode(i);
 
-  if (probability <= 0)
-    return graph;
+  if (probability <= 0) return graph;
 
   for (i = 0; i < order; i++) {
     for (j = i + 1; j < order; j++) {
       if (graph.type !== 'directed') {
-        if (rng() < probability)
-          graph.addUndirectedEdge(i, j);
+        if (rng() < probability) graph.addUndirectedEdge(i, j);
       }
 
       if (graph.type !== 'undirected') {
+        if (rng() < probability) graph.addDirectedEdge(i, j);
 
-        if (rng() < probability)
-          graph.addDirectedEdge(i, j);
-
-        if (rng() < probability)
-          graph.addDirectedEdge(j, i);
+        if (rng() < probability) graph.addDirectedEdge(j, i);
       }
     }
   }
@@ -84,11 +86,13 @@ function erdosRenyi(GraphClass, options) {
  */
 function erdosRenyiSparse(GraphClass, options) {
   if (!isGraphConstructor(GraphClass))
-    throw new Error('graphology-generators/random/erdos-renyi: invalid Graph constructor.');
+    throw new Error(
+      'graphology-generators/random/erdos-renyi: invalid Graph constructor.'
+    );
 
   var order = options.order,
-      probability = options.probability,
-      rng = options.rng || Math.random;
+    probability = options.probability,
+    rng = options.rng || Math.random;
 
   var graph = new GraphClass();
 
@@ -99,24 +103,28 @@ function erdosRenyiSparse(GraphClass, options) {
   }
 
   if (typeof order !== 'number' || order <= 0)
-    throw new Error('graphology-generators/random/erdos-renyi: invalid `order`. Should be a positive number.');
+    throw new Error(
+      'graphology-generators/random/erdos-renyi: invalid `order`. Should be a positive number.'
+    );
 
   if (typeof probability !== 'number' || probability < 0 || probability > 1)
-    throw new Error('graphology-generators/random/erdos-renyi: invalid `probability`. Should be a number between 0 and 1. Or maybe you gave an `approximateSize` exceeding the graph\'s density.');
+    throw new Error(
+      "graphology-generators/random/erdos-renyi: invalid `probability`. Should be a number between 0 and 1. Or maybe you gave an `approximateSize` exceeding the graph's density."
+    );
 
   if (typeof rng !== 'function')
-    throw new Error('graphology-generators/random/erdos-renyi: invalid `rng`. Should be a function.');
+    throw new Error(
+      'graphology-generators/random/erdos-renyi: invalid `rng`. Should be a function.'
+    );
 
-  for (var i = 0; i < order; i++)
-    graph.addNode(i);
+  for (var i = 0; i < order; i++) graph.addNode(i);
 
-  if (probability <= 0)
-    return graph;
+  if (probability <= 0) return graph;
 
   var w = -1,
-      lp = Math.log(1 - probability),
-      lr,
-      v;
+    lp = Math.log(1 - probability),
+    lr,
+    v;
 
   if (graph.type !== 'undirected') {
     v = 0;
@@ -135,12 +143,10 @@ function erdosRenyiSparse(GraphClass, options) {
         v++;
 
         // Avoiding self loops
-        if (v === w)
-          w++;
+        if (v === w) w++;
       }
 
-      if (v < order)
-        graph.addDirectedEdge(v, w);
+      if (v < order) graph.addDirectedEdge(v, w);
     }
   }
 
@@ -159,8 +165,7 @@ function erdosRenyiSparse(GraphClass, options) {
         v++;
       }
 
-      if (v < order)
-        graph.addUndirectedEdge(v, w);
+      if (v < order) graph.addUndirectedEdge(v, w);
     }
   }
 

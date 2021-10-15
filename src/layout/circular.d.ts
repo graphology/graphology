@@ -2,14 +2,14 @@ import Graph from 'graphology-types';
 
 export type CircularLayoutOptions = {
   attributes?: {
-    x: string,
-    y: string
-  },
-  center?: number,
-  scale?: number
+    x: string;
+    y: string;
+  };
+  center?: number;
+  scale?: number;
 };
 
-type LayoutMapping = {[key: string]: {x: number, y: number}};
+type LayoutMapping = {[key: string]: {x: number; y: number}};
 
 interface ICircularLayout {
   (graph: Graph, options?: CircularLayoutOptions): LayoutMapping;

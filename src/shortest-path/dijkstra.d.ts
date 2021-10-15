@@ -1,6 +1,6 @@
 import Graph from 'graphology-types';
 
-type SingleSourceDijkstraResult = {[key: string]: string[];}
+type SingleSourceDijkstraResult = {[key: string]: string[]};
 type BidirectionalDijstraResult = string[];
 type BrandesResult = [
   Array<string>,
@@ -8,10 +8,18 @@ type BrandesResult = [
   {[key: string]: number}
 ];
 
-
 interface IDijkstra {
-  bidirectional(graph: Graph, source: string, target: string, weightAttribute: string): BidirectionalDijstraResult;
-  singleSource(graph: Graph, source: string, weightAttribute: string): SingleSourceDijkstraResult;
+  bidirectional(
+    graph: Graph,
+    source: string,
+    target: string,
+    weightAttribute: string
+  ): BidirectionalDijstraResult;
+  singleSource(
+    graph: Graph,
+    source: string,
+    weightAttribute: string
+  ): SingleSourceDijkstraResult;
   brandes(graph: Graph, source: string, weightAttribute: string): BrandesResult;
 }
 

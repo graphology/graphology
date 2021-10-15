@@ -11,7 +11,7 @@
  * http://doi.org/10.1073/pnas.0601602103
  */
 var isGraph = require('graphology-utils/is-graph'),
-    iwanthue = require('iwanthue');
+  iwanthue = require('iwanthue');
 
 var slugify = require('./slugify.js');
 
@@ -27,10 +27,7 @@ var NODE_ATTRIBUTES_TO_IGNORE = new Set([
   'color'
 ]);
 
-var EDGE_ATTRIBUTES_TO_IGNORE = new Set([
-  'label',
-  'color'
-]);
+var EDGE_ATTRIBUTES_TO_IGNORE = new Set(['label', 'color']);
 
 // TODO: use this to validate hints
 // var VALID_ATTR_TYPES = new Set([
@@ -79,39 +76,32 @@ var DEFAULT_COLOR_SPACE = {
  * Helpers.
  */
 function makeHintOrAttribute(bundle, graph, hints) {
-
-  return function(name) {
-    if (hints && hints[name])
-      bundle[name] = hints[name];
-    else if (graph.hasAttribute(name))
-      bundle[name] = graph.getAttribute(name);
+  return function (name) {
+    if (hints && hints[name]) bundle[name] = hints[name];
+    else if (graph.hasAttribute(name)) bundle[name] = graph.getAttribute(name);
   };
 }
 
 function guessType(val) {
-  if (typeof val === 'string')
-    return 'string';
+  if (typeof val === 'string') return 'string';
 
   if (typeof val === 'number') {
-    if (val === (val | 0))
-      return 'integer';
+    if (val === (val | 0)) return 'integer';
 
     return 'float';
   }
 
   // NOTE: for now we consider non-scalar & booleans as strings
-  if (typeof val === 'object' || typeof val === 'boolean')
-    return 'string';
+  if (typeof val === 'object' || typeof val === 'boolean') return 'string';
 
-  if (!val)
-    return 'null-value';
+  if (!val) return 'null-value';
 
   return 'unknown';
 }
 
 function findAvailableSlug(index, name) {
   var slug,
-      i = -1;
+    i = -1;
 
   do {
     slug = slugify(name + (i < 0 ? '' : i.toString()));
@@ -124,8 +114,7 @@ function findAvailableSlug(index, name) {
 function indexBy(a) {
   var index = {};
 
-  for (var i = 0, l = a.length; i < l; i++)
-    index[a[i].key] = a[i];
+  for (var i = 0, l = a.length; i < l; i++) index[a[i].key] = a[i];
 
   return index;
 }
@@ -133,51 +122,40 @@ function indexBy(a) {
 function objectValues(o) {
   var values = [];
 
-  for (var k in o)
-    values.push(o[k]);
+  for (var k in o) values.push(o[k]);
 
   return values;
 }
 
 function cast(attr, val) {
-
   if (attr.type === 'partition') {
     if (val === undefined) {
       return 'undefined';
-    }
-    else if (val === null) {
+    } else if (val === null) {
       return 'null';
-    }
-    else {
+    } else {
       return val.toString();
     }
   }
 
-  if (attr.integer)
-    return Math.trunc(+val);
+  if (attr.integer) return Math.trunc(+val);
 
   return val;
 }
 
 var USER_SPEC_MERGERS = {
-  areaScaling: function(user, defaults) {
-    return Object.assign(
-      {},
-      defaults,
-      user
-    );
+  areaScaling: function (user, defaults) {
+    return Object.assign({}, defaults, user);
   }
 };
 
 function userSpecOrDefault(userSpec, name, defaultValue) {
-  if (!userSpec)
-    return defaultValue;
+  if (!userSpec) return defaultValue;
 
   if (name in userSpec) {
     var merger = USER_SPEC_MERGERS[name];
 
-    if (merger)
-      return merger(userSpec[name], defaultValue);
+    if (merger) return merger(userSpec[name], defaultValue);
 
     return userSpec[name];
   }
@@ -186,31 +164,34 @@ function userSpecOrDefault(userSpec, name, defaultValue) {
 }
 
 function generatePalette(count, name, userSettings) {
-  if (count === 1)
-    return [DEFAULT_COLOR_DARK];
+  if (count === 1) return [DEFAULT_COLOR_DARK];
 
-  var settings = Object.assign({}, {
-    colorSpace: DEFAULT_COLOR_SPACE,
-    seed: name,
-    clustering: 'force-vector'
-  }, userSettings);
+  var settings = Object.assign(
+    {},
+    {
+      colorSpace: DEFAULT_COLOR_SPACE,
+      seed: name,
+      clustering: 'force-vector'
+    },
+    userSettings
+  );
 
   return iwanthue(count, settings);
 }
 
 var DEFAULT_NODE_COLOR_ORDER = {
-  'partition': 2,
+  partition: 2,
   'ranking-color': 1
 };
 
 function findSuitableDefaultColorAndSize(attributes) {
   var bestColorAttr = null,
-      bestColorValue = -Infinity;
+    bestColorValue = -Infinity;
 
   var bestSizeAttr = null,
-      bestSizeValue = -Infinity;
+    bestSizeValue = -Infinity;
 
-  attributes.forEach(function(attr) {
+  attributes.forEach(function (attr) {
     var colorValue = DEFAULT_NODE_COLOR_ORDER[attr.type] || 0;
 
     if (colorValue !== 0 && colorValue > bestColorValue) {
@@ -233,17 +214,13 @@ function findSuitableDefaultColorAndSize(attributes) {
 }
 
 function frequencySorter(a, b) {
-  if (a.count > b.count)
-    return -1;
+  if (a.count > b.count) return -1;
 
-  if (a.count < b.count)
-    return 1;
+  if (a.count < b.count) return 1;
 
-  if (a.value < b.value)
-    return -1;
+  if (a.value < b.value) return -1;
 
-  if (a.value > b.value)
-    return 1;
+  if (a.value > b.value) return 1;
 
   return 0;
 }
@@ -262,15 +239,10 @@ function performTypeInference(items, whiteList, ignore, sampleSize) {
     item = items[i];
     attr = item.attributes;
 
-    if (!attr)
-      continue;
+    if (!attr) continue;
 
     for (k in attr) {
-      if (
-        (whiteList && !whiteList.has(k)) ||
-        ignore.has(k)
-      )
-        continue;
+      if ((whiteList && !whiteList.has(k)) || ignore.has(k)) continue;
 
       v = attr[k];
 
@@ -286,34 +258,30 @@ function performTypeInference(items, whiteList, ignore, sampleSize) {
 }
 
 // Exporting a convenient version of type inference
-exports.performTypeInference = function(graph, options) {
+exports.performTypeInference = function (graph, options) {
   options = options || {};
 
   var ignore = new Set();
 
   var sampleSize = options.sampleSize || DEFAULT_TYPE_INFERENCE_SAMPLE_SIZE;
 
-  var nodes = graph.nodes().slice(0, sampleSize).map(function(key) {
-    return graph.exportNode(key);
-  });
+  var nodes = graph
+    .nodes()
+    .slice(0, sampleSize)
+    .map(function (key) {
+      return graph.exportNode(key);
+    });
 
-  var edges = graph.edges().slice(0, sampleSize).map(function(key) {
-    return graph.exportEdge(key);
-  });
+  var edges = graph
+    .edges()
+    .slice(0, sampleSize)
+    .map(function (key) {
+      return graph.exportEdge(key);
+    });
 
   return {
-    nodes: performTypeInference(
-      nodes,
-      null,
-      ignore,
-      sampleSize
-    ),
-    edges: performTypeInference(
-      edges,
-      null,
-      ignore,
-      sampleSize
-    )
+    nodes: performTypeInference(nodes, null, ignore, sampleSize),
+    edges: performTypeInference(edges, null, ignore, sampleSize)
   };
 };
 
@@ -343,7 +311,9 @@ exports.performTypeInference = function(graph, options) {
 // TODO: possibility to pass already serialized graph
 exports.buildBundle = function buildBundle(graph, hints, settings) {
   if (!isGraph(graph))
-    throw new Error('graphology-minivan: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-minivan: the given graph is not a valid graphology instance.'
+    );
 
   hints = hints || {};
   settings = settings || {};
@@ -354,18 +324,18 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
   // Extracting information from user's model
   var userModel = hints.model || {};
 
-  var userNodeAttributes = userModel.nodeAttributes ?
-    indexBy(userModel.nodeAttributes) :
-    null;
-  var userEdgeAttributes = userModel.edgeAttributes ?
-    indexBy(userModel.edgeAttributes) :
-    null;
-  var nodeAttributesWhiteList = userNodeAttributes ?
-    new Set(Object.keys(userNodeAttributes)) :
-    null;
-  var edgeAttributesWhiteList = userEdgeAttributes ?
-    new Set(Object.keys(userEdgeAttributes)) :
-    null;
+  var userNodeAttributes = userModel.nodeAttributes
+    ? indexBy(userModel.nodeAttributes)
+    : null;
+  var userEdgeAttributes = userModel.edgeAttributes
+    ? indexBy(userModel.edgeAttributes)
+    : null;
+  var nodeAttributesWhiteList = userNodeAttributes
+    ? new Set(Object.keys(userNodeAttributes))
+    : null;
+  var edgeAttributesWhiteList = userEdgeAttributes
+    ? new Set(Object.keys(userEdgeAttributes))
+    : null;
 
   var bundle = {
     bundleVersion: '1.0.0',
@@ -420,9 +390,9 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
   var i, l, k, v, node, edge, attr, type;
 
   var nodeAttributes = {},
-      edgeAttributes = {},
-      nodePartitionAttributes = {},
-      allocatedSlugs = new Set();
+    edgeAttributes = {},
+    nodePartitionAttributes = {},
+    allocatedSlugs = new Set();
 
   var attrType, spec, slug, userSpec;
 
@@ -453,19 +423,29 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
       spec.modalities = {};
 
       nodePartitionAttributes[k] = spec;
-    }
-    else if (attrType !== 'ignore') {
+    } else if (attrType !== 'ignore') {
       spec.min = Infinity;
       spec.max = -Infinity;
       spec.integer = userSpecOrDefault(userSpec, 'integer', type === 'integer');
     }
 
     if (attrType === 'ranking-color') {
-      spec.colorScale = userSpecOrDefault(userSpec, 'colorScale', DEFAULT_COLOR_SCALE);
-      spec.invertScale = userSpecOrDefault(userSpec, 'invertScale', DEFAULT_INVERT_SCALE);
-      spec.truncateScale = userSpecOrDefault(userSpec, 'truncateScale', DEFAULT_TRUNCATE_SCALE);
-    }
-    else if (attrType === 'ranking-size') {
+      spec.colorScale = userSpecOrDefault(
+        userSpec,
+        'colorScale',
+        DEFAULT_COLOR_SCALE
+      );
+      spec.invertScale = userSpecOrDefault(
+        userSpec,
+        'invertScale',
+        DEFAULT_INVERT_SCALE
+      );
+      spec.truncateScale = userSpecOrDefault(
+        userSpec,
+        'truncateScale',
+        DEFAULT_TRUNCATE_SCALE
+      );
+    } else if (attrType === 'ranking-size') {
       spec.areaScaling = userSpecOrDefault(userSpec, 'areaScaling', {
         min: DEFAULT_MIN_NODE_SIZE,
         max: DEFAULT_MAX_NODE_SIZE,
@@ -498,19 +478,29 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
     if (attrType === 'partition') {
       spec.cardinality = 0;
       spec.modalities = {};
-    }
-    else if (attrType !== 'ignore') {
+    } else if (attrType !== 'ignore') {
       spec.min = Infinity;
       spec.max = -Infinity;
       spec.integer = userSpecOrDefault(userSpec, 'integer', type === 'integer');
     }
 
     if (attrType === 'ranking-color') {
-      spec.colorScale = userSpecOrDefault(userSpec, 'colorScale', DEFAULT_COLOR_SCALE);
-      spec.invertScale = userSpecOrDefault(userSpec, 'invertScale', DEFAULT_INVERT_SCALE);
-      spec.truncateScale = userSpecOrDefault(userSpec, 'truncateScale', DEFAULT_TRUNCATE_SCALE);
-    }
-    else if (attrType === 'ranking-size') {
+      spec.colorScale = userSpecOrDefault(
+        userSpec,
+        'colorScale',
+        DEFAULT_COLOR_SCALE
+      );
+      spec.invertScale = userSpecOrDefault(
+        userSpec,
+        'invertScale',
+        DEFAULT_INVERT_SCALE
+      );
+      spec.truncateScale = userSpecOrDefault(
+        userSpec,
+        'truncateScale',
+        DEFAULT_TRUNCATE_SCALE
+      );
+    } else if (attrType === 'ranking-size') {
       spec.areaScaling = userSpecOrDefault(userSpec, 'areaScaling', {
         min: DEFAULT_MIN_NODE_SIZE,
         max: DEFAULT_MAX_NODE_SIZE,
@@ -529,8 +519,7 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
     node = serialized.nodes[i];
     attr = node.attributes;
 
-    if (!attr)
-      continue;
+    if (!attr) continue;
 
     for (k in nodeAttributes) {
       spec = nodeAttributes[k];
@@ -572,16 +561,12 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
             externalNormalizedDensity: 0,
             flow: {}
           };
-        }
-        else {
+        } else {
           spec.modalities[v].count++;
         }
-      }
-      else {
-        if (v < spec.min)
-          spec.min = v;
-        if (v > spec.max)
-          spec.max = v;
+      } else {
+        if (v < spec.min) spec.min = v;
+        if (v > spec.max) spec.max = v;
       }
     }
   }
@@ -609,8 +594,7 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
     edge = serialized.edges[i];
     attr = edge.attributes;
 
-    if (!attr)
-      continue;
+    if (!attr) continue;
 
     // Modalities flow
     // NOTE: it seems that minivan version only computes directed statistics!
@@ -621,8 +605,7 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
         sourceModality = graph.getNodeAttribute(edge.source, k);
         targetModality = graph.getNodeAttribute(edge.target, k);
 
-        if (!sourceModality || !targetModality)
-          continue;
+        if (!sourceModality || !targetModality) continue;
 
         sourceModality = cast(spec, sourceModality);
         targetModality = cast(spec, targetModality);
@@ -631,8 +614,7 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
 
         if (sourceModality === targetModality) {
           o.internalEdges += 1;
-        }
-        else {
+        } else {
           o.outboundEdges += 1;
           o.externalEdges += 1;
           spec.modalities[targetModality].inboundEdges += 1;
@@ -675,16 +657,12 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
             value: v,
             edges: 1
           };
-        }
-        else {
+        } else {
           spec.modalities[v].nodes++;
         }
-      }
-      else {
-        if (v < spec.min)
-          spec.min = v;
-        if (v > spec.max)
-          spec.max = v;
+      } else {
+        if (v < spec.min) spec.min = v;
+        if (v > spec.max) spec.max = v;
       }
     }
   }
@@ -705,7 +683,11 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
         continue;
       }
 
-      palette = generatePalette(spec.cardinality, spec.key, settings.iwanthueSettings);
+      palette = generatePalette(
+        spec.cardinality,
+        spec.key,
+        settings.iwanthueSettings
+      );
 
       p = 0;
       for (m in spec.modalities) {
@@ -713,26 +695,22 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
 
         // Updating flow
         if (consolidated) {
-
           for (vf in modality.flow) {
             targetModality = spec.modalities[vf];
 
-            modality.flow[vf].expected = (
-              (modality.internalEdges + modality.outboundEdges) *
-              (targetModality.internalEdges + targetModality.inboundEdges) /
-              (2 * graph.size)
-            );
+            modality.flow[vf].expected =
+              ((modality.internalEdges + modality.outboundEdges) *
+                (targetModality.internalEdges + targetModality.inboundEdges)) /
+              (2 * graph.size);
 
             if (isNaN(modality.flow[vf].expected))
               modality.flow[vf].expected = 0;
 
-            nd = (
+            nd =
               (modality.flow[vf].count - modality.flow[vf].expected) /
-              (4 * graph.size)
-            );
+              (4 * graph.size);
 
-            if (isNaN(nd))
-              nd = 0;
+            if (isNaN(nd)) nd = 0;
 
             modality.flow[vf].normalizedDensity = nd;
 
@@ -744,14 +722,14 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
               targetModality.externalNormalizedDensity += nd;
 
               spec.stats.modularity -= nd;
-            }
-            else {
+            } else {
               spec.stats.modularity += nd;
             }
           }
 
           // Updating normalized densities
-          modality.internalNormalizedDensity = modality.flow[m].normalizedDensity;
+          modality.internalNormalizedDensity =
+            modality.flow[m].normalizedDensity;
         }
 
         if (
@@ -769,8 +747,7 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
         if (spec.cardinality / graph.order >= MIN_PROPORTION_FOR_COLOR) {
           modality.color = palette[p];
           p++;
-        }
-        else {
+        } else {
           modality.color = DEFAULT_COLOR_DARK;
         }
       }
@@ -779,11 +756,10 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
       if (userSpec && userSpec.modalitiesOrder) {
         // TODO: check that user did not forget modalities
         spec.modalitiesOrder = userSpec.modalitiesOrder;
-      }
-      else {
+      } else {
         ordering = objectValues(spec.modalities)
           .sort(frequencySorter)
-          .map(function(modalityItem) {
+          .map(function (modalityItem) {
             return modalityItem.value;
           });
 
@@ -802,7 +778,11 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
         continue;
       }
 
-      palette = generatePalette(spec.cardinality, spec.key, settings.iwanthueSettings);
+      palette = generatePalette(
+        spec.cardinality,
+        spec.key,
+        settings.iwanthueSettings
+      );
 
       p = 0;
       for (m in spec.modalities) {
@@ -823,8 +803,7 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
         if (spec.cardinality / graph.order >= MIN_PROPORTION_FOR_COLOR) {
           modality.color = palette[p];
           p++;
-        }
-        else {
+        } else {
           modality.color = DEFAULT_COLOR_BRIGHT;
         }
       }
@@ -833,11 +812,10 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
       if (userSpec && userSpec.modalitiesOrder) {
         // TODO: check that user did not forget modalities
         spec.modalitiesOrder = userSpec.modalitiesOrder;
-      }
-      else {
+      } else {
         ordering = objectValues(spec.modalities)
           .sort(frequencySorter)
-          .map(function(modalityItem) {
+          .map(function (modalityItem) {
             return modalityItem.value;
           });
 
@@ -856,8 +834,12 @@ exports.buildBundle = function buildBundle(graph, hints, settings) {
   };
 
   // Default color & size attributes
-  var suitableDefaultNodeAttributes = findSuitableDefaultColorAndSize(bundle.model.nodeAttributes),
-      suitableDefaultEdgeAttributes = findSuitableDefaultColorAndSize(bundle.model.edgeAttributes);
+  var suitableDefaultNodeAttributes = findSuitableDefaultColorAndSize(
+      bundle.model.nodeAttributes
+    ),
+    suitableDefaultEdgeAttributes = findSuitableDefaultColorAndSize(
+      bundle.model.edgeAttributes
+    );
 
   if (userModel && userModel.defaultNodeSize)
     bundle.model.defaultNodeSize = userModel.defaultNodeSize;

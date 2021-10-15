@@ -18,10 +18,7 @@ export function capitalize(string) {
 export function deepMerge(...objects) {
   const o = objects[0];
 
-  let t,
-      i,
-      l,
-      k;
+  let t, i, l, k;
 
   for (i = 1, l = objects.length; i < l; i++) {
     t = objects[i];
@@ -29,8 +26,7 @@ export function deepMerge(...objects) {
     for (k in t) {
       if (typeof t[k] === 'object') {
         o[k] = deepMerge(o[k] || {}, t[k]);
-      }
-      else {
+      } else {
         o[k] = t[k];
       }
     }
@@ -43,14 +39,12 @@ export function deepMerge(...objects) {
  * Checking that two arrays have the same members.
  */
 export function sameMembers(a1, a2) {
-  if (a1.length !== a2.length)
-    return false;
+  if (a1.length !== a2.length) return false;
 
   const set = new Set(a1);
 
   for (let i = 0, l = a2.length; i < l; i++) {
-    if (!set.has(a2[i]))
-      return false;
+    if (!set.has(a2[i])) return false;
   }
 
   return true;
@@ -64,12 +58,11 @@ export function sameMembers(a1, a2) {
  * @param {function}        - The spy.
  */
 export function spy(target) {
-  const fn = function() {
+  const fn = function () {
     fn.called = true;
     fn.times++;
 
-    if (typeof target === 'function')
-      return target.apply(null, arguments);
+    if (typeof target === 'function') return target.apply(null, arguments);
   };
 
   fn.called = false;

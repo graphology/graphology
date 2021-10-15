@@ -45,12 +45,14 @@ var EDGES = [
  */
 module.exports = function florentineFamilies(GraphClass) {
   if (!isGraphConstructor(GraphClass))
-    throw new Error('graphology-generators/social/florentine-families: invalid Graph constructor.');
+    throw new Error(
+      'graphology-generators/social/florentine-families: invalid Graph constructor.'
+    );
 
   var graph = new GraphClass(),
-      edge,
-      i,
-      l;
+    edge,
+    i,
+    l;
 
   for (i = 0, l = EDGES.length; i < l; i++) {
     edge = EDGES[i];

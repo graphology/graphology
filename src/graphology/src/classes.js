@@ -22,10 +22,16 @@ class DirectedGraph extends Graph {
     const finalOptions = assign({type: 'directed'}, options);
 
     if ('multi' in finalOptions && finalOptions.multi !== false)
-      throw new InvalidArgumentsGraphError('DirectedGraph.from: inconsistent indication that the graph should be multi in given options!');
+      throw new InvalidArgumentsGraphError(
+        'DirectedGraph.from: inconsistent indication that the graph should be multi in given options!'
+      );
 
     if (finalOptions.type !== 'directed')
-    throw new InvalidArgumentsGraphError('DirectedGraph.from: inconsistent "' + finalOptions.type + '" type in given options!');
+      throw new InvalidArgumentsGraphError(
+        'DirectedGraph.from: inconsistent "' +
+          finalOptions.type +
+          '" type in given options!'
+      );
 
     super(finalOptions);
   }
@@ -35,10 +41,16 @@ class UndirectedGraph extends Graph {
     const finalOptions = assign({type: 'undirected'}, options);
 
     if ('multi' in finalOptions && finalOptions.multi !== false)
-      throw new InvalidArgumentsGraphError('UndirectedGraph.from: inconsistent indication that the graph should be multi in given options!');
+      throw new InvalidArgumentsGraphError(
+        'UndirectedGraph.from: inconsistent indication that the graph should be multi in given options!'
+      );
 
     if (finalOptions.type !== 'undirected')
-      throw new InvalidArgumentsGraphError('UndirectedGraph.from: inconsistent "' + finalOptions.type + '" type in given options!');
+      throw new InvalidArgumentsGraphError(
+        'UndirectedGraph.from: inconsistent "' +
+          finalOptions.type +
+          '" type in given options!'
+      );
 
     super(finalOptions);
   }
@@ -48,7 +60,9 @@ class MultiGraph extends Graph {
     const finalOptions = assign({multi: true}, options);
 
     if ('multi' in finalOptions && finalOptions.multi !== true)
-      throw new InvalidArgumentsGraphError('MultiGraph.from: inconsistent indication that the graph should be simple in given options!');
+      throw new InvalidArgumentsGraphError(
+        'MultiGraph.from: inconsistent indication that the graph should be simple in given options!'
+      );
 
     super(finalOptions);
   }
@@ -58,10 +72,16 @@ class MultiDirectedGraph extends Graph {
     const finalOptions = assign({type: 'directed', multi: true}, options);
 
     if ('multi' in finalOptions && finalOptions.multi !== true)
-      throw new InvalidArgumentsGraphError('MultiDirectedGraph.from: inconsistent indication that the graph should be simple in given options!');
+      throw new InvalidArgumentsGraphError(
+        'MultiDirectedGraph.from: inconsistent indication that the graph should be simple in given options!'
+      );
 
     if (finalOptions.type !== 'directed')
-      throw new InvalidArgumentsGraphError('MultiDirectedGraph.from: inconsistent "' + finalOptions.type + '" type in given options!');
+      throw new InvalidArgumentsGraphError(
+        'MultiDirectedGraph.from: inconsistent "' +
+          finalOptions.type +
+          '" type in given options!'
+      );
 
     super(finalOptions);
   }
@@ -71,10 +91,16 @@ class MultiUndirectedGraph extends Graph {
     const finalOptions = assign({type: 'undirected', multi: true}, options);
 
     if ('multi' in finalOptions && finalOptions.multi !== true)
-      throw new InvalidArgumentsGraphError('MultiUndirectedGraph.from: inconsistent indication that the graph should be simple in given options!');
+      throw new InvalidArgumentsGraphError(
+        'MultiUndirectedGraph.from: inconsistent indication that the graph should be simple in given options!'
+      );
 
     if (finalOptions.type !== 'undirected')
-      throw new InvalidArgumentsGraphError('MultiUndirectedGraph.from: inconsistent "' + finalOptions.type + '" type in given options!');
+      throw new InvalidArgumentsGraphError(
+        'MultiUndirectedGraph.from: inconsistent "' +
+          finalOptions.type +
+          '" type in given options!'
+      );
 
     super(finalOptions);
   }
@@ -84,7 +110,6 @@ class MultiUndirectedGraph extends Graph {
  * Attaching static #.from method to each of the constructors.
  */
 function attachStaticFromMethod(Class) {
-
   /**
    * Builds a graph from serialized data or another graph's data.
    *
@@ -92,8 +117,7 @@ function attachStaticFromMethod(Class) {
    * @param  {object}                [options] - Options.
    * @return {Class}
    */
-  Class.from = function(data, options) {
-
+  Class.from = function (data, options) {
     // Merging given options with serialized ones
     const finalOptions = assign({}, data.options, options);
 

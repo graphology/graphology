@@ -22,7 +22,10 @@ export class InvalidArgumentsGraphError extends GraphError {
 
     // This is V8 specific to enhance stack readability
     if (typeof Error.captureStackTrace === 'function')
-      Error.captureStackTrace(this, InvalidArgumentsGraphError.prototype.constructor);
+      Error.captureStackTrace(
+        this,
+        InvalidArgumentsGraphError.prototype.constructor
+      );
   }
 }
 

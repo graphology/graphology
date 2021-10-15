@@ -8,48 +8,40 @@ var isGraph = require('graphology-utils/is-graph');
 
 module.exports = function toDirected(graph, options) {
   if (!isGraph(graph))
-    throw new Error('graphology-operators/to-directed: expecting a valid graphology instance.');
+    throw new Error(
+      'graphology-operators/to-directed: expecting a valid graphology instance.'
+    );
 
-  if (typeof options === 'function')
-    options = {mergeEdge: options};
+  if (typeof options === 'function') options = {mergeEdge: options};
 
   options = options || {};
 
-  var mergeEdge = typeof options.mergeEdge === 'function' ?
-    options.mergeEdge :
-    null;
+  var mergeEdge =
+    typeof options.mergeEdge === 'function' ? options.mergeEdge : null;
 
-  if (graph.type === 'directed')
-    return graph.copy();
+  if (graph.type === 'directed') return graph.copy();
 
   var directedGraph = graph.emptyCopy({type: 'directed'});
 
   // Adding directed edges
-  graph.forEachDirectedEdge(function(edge, attr, source, target) {
-    directedGraph.addDirectedEdge(
-      source,
-      target,
-      Object.assign({}, attr)
-    );
+  graph.forEachDirectedEdge(function (edge, attr, source, target) {
+    directedGraph.addDirectedEdge(source, target, Object.assign({}, attr));
   });
 
   // Merging undirected edges
-  graph.forEachUndirectedEdge(function(edge, attr, source, target) {
-    var existingOutEdge = graph.type === 'mixed' && directedGraph.edge(source, target),
-        existingInEdge = graph.type === 'mixed' && directedGraph.edge(target, source);
+  graph.forEachUndirectedEdge(function (edge, attr, source, target) {
+    var existingOutEdge =
+        graph.type === 'mixed' && directedGraph.edge(source, target),
+      existingInEdge =
+        graph.type === 'mixed' && directedGraph.edge(target, source);
 
     if (existingOutEdge) {
       directedGraph.replaceEdgeAttributes(
         existingOutEdge,
         mergeEdge(directedGraph.getEdgeAttributes(existingOutEdge), attr)
       );
-    }
-    else {
-      directedGraph.addDirectedEdge(
-        source,
-        target,
-        Object.assign({}, attr)
-      );
+    } else {
+      directedGraph.addDirectedEdge(source, target, Object.assign({}, attr));
     }
 
     if (existingInEdge) {
@@ -57,13 +49,8 @@ module.exports = function toDirected(graph, options) {
         existingInEdge,
         mergeEdge(directedGraph.getEdgeAttributes(existingInEdge), attr)
       );
-    }
-    else {
-      directedGraph.addDirectedEdge(
-        target,
-        source,
-        Object.assign({}, attr)
-      );
+    } else {
+      directedGraph.addDirectedEdge(target, source, Object.assign({}, attr));
     }
   });
 

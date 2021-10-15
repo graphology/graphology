@@ -3,25 +3,23 @@
  * ============================
  */
 var assert = require('assert'),
-    Graph = require('graphology'),
-    lib = require('./index.js');
+  Graph = require('graphology'),
+  lib = require('./index.js');
 
 var sameNodes = lib.sameNodes,
-    sameNodesDeep = lib.sameNodesDeep;
+  sameNodesDeep = lib.sameNodesDeep;
 
 function addNodesFrom(g, nodes) {
-  nodes.forEach(function(node) {
+  nodes.forEach(function (node) {
     g.addNode(node);
   });
 }
 
-describe('graphology-utils', function() {
-
-  describe('#.sameNodes', function() {
-
-    it('should return `true` if both graphs\' nodes are the same.', function() {
+describe('graphology-utils', function () {
+  describe('#.sameNodes', function () {
+    it("should return `true` if both graphs' nodes are the same.", function () {
       var G = new Graph(),
-          H = new Graph();
+        H = new Graph();
 
       addNodesFrom(G, ['John', 'Martha', 'Elvis']);
       addNodesFrom(H, ['Martha', 'Elvis']);
@@ -38,11 +36,10 @@ describe('graphology-utils', function() {
     });
   });
 
-  describe('#.sameNodesDeep', function() {
-
-    it('should return `true` if both graphs\' nodes & their attributes are the same.', function() {
+  describe('#.sameNodesDeep', function () {
+    it("should return `true` if both graphs' nodes & their attributes are the same.", function () {
       var G = new Graph(),
-          H = new Graph();
+        H = new Graph();
 
       addNodesFrom(G, ['John', 'Martha', 'Elvis']);
       addNodesFrom(H, ['Martha', 'Elvis']);

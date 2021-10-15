@@ -23,26 +23,22 @@ function componentGrid(assign, graph, options) {
 
   var ci, col, ri;
 
-  for (ci = 0; ci < containerSize; ci++)
-    cols[ci] = 0;
+  for (ci = 0; ci < containerSize; ci++) cols[ci] = 0;
 
   // Iterating over components
-  components:
-  for (i = 0; i < index.count;) {
+  components: for (i = 0; i < index.count; ) {
     order = index.orders[i];
     squareSize = squareCeil(order);
 
-    for (ci = 0; ci < cols.length;) {
+    for (ci = 0; ci < cols.length; ) {
       col = cols[ci];
 
       if (
-        (col + squareSize <= containerSize) &&
-        (ci + squareSize <= containerSize)
+        col + squareSize <= containerSize &&
+        ci + squareSize <= containerSize
       ) {
-
         // We found a suitable horizontal spot
-        for (ri = ci; ri < (ci + squareSize); ri++)
-          cols[ri] += squareSize;
+        for (ri = ci; ri < ci + squareSize; ri++) cols[ri] += squareSize;
 
         coordinates[i++] = [col, ci];
 
@@ -60,8 +56,8 @@ function componentGrid(assign, graph, options) {
 
   var coord, j, l, node, attr, coordX, coordY;
 
-  var xRatio = (options.width / containerSize);
-  var yRatio = (options.height / containerSize);
+  var xRatio = options.width / containerSize;
+  var yRatio = options.height / containerSize;
 
   for (i = 0; i < index.count; i++) {
     coord = coordinates[i];

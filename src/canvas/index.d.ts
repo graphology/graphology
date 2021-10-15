@@ -10,12 +10,20 @@ export type CanvasRendererSettings<
   height?: number;
   nodes?: {
     defaultColor?: string;
-    reducer?: (settings: CanvasRendererSettings, node: string, attributes: NodeAttributes) => Attributes;
-  },
+    reducer?: (
+      settings: CanvasRendererSettings,
+      node: string,
+      attributes: NodeAttributes
+    ) => Attributes;
+  };
   edges?: {
     defaultColor?: string;
-    reducer?: (settings: CanvasRendererSettings, edge: string, attributes: EdgeAttributes) => Attributes;
-  }
+    reducer?: (
+      settings: CanvasRendererSettings,
+      edge: string,
+      attributes: EdgeAttributes
+    ) => Attributes;
+  };
 };
 
 export function render<
@@ -40,8 +48,4 @@ export function renderAsync<
 export function renderAsync<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
->(
-  graph: Graph,
-  context: CanvasRenderingContext2D,
-  callback: () => void
-): void;
+>(graph: Graph, context: CanvasRenderingContext2D, callback: () => void): void;

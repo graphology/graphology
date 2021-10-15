@@ -17,11 +17,10 @@ module.exports = function renameGraphKeys(
   var renamed = graph.nullCopy();
 
   // Renaming nodes
-  graph.forEachNode(function(key, attr) {
+  graph.forEachNode(function (key, attr) {
     var renamedKey = nodeKeyMapping[key];
 
-    if (typeof renamedKey === 'undefined')
-      renamedKey = key;
+    if (typeof renamedKey === 'undefined') renamedKey = key;
 
     renamed.addNode(renamedKey, attr);
   });
@@ -29,8 +28,7 @@ module.exports = function renameGraphKeys(
   // Renaming edges
   var currentSource, currentSourceRenamed;
 
-  graph.forEach(function(source, target, _sa, _ta, key, attr, undirected) {
-
+  graph.forEach(function (source, target, _sa, _ta, key, attr, undirected) {
     // Leveraging the ordered adjacency to save lookups
     if (source !== currentSource) {
       currentSource = source;
@@ -42,13 +40,11 @@ module.exports = function renameGraphKeys(
 
     var targetRenamed = nodeKeyMapping[target];
 
-    if (typeof targetRenamed === 'undefined')
-      targetRenamed = target;
+    if (typeof targetRenamed === 'undefined') targetRenamed = target;
 
     var renamedKey = edgeKeyMapping[key];
 
-    if (typeof renamedKey === 'undefined')
-      renamedKey = key;
+    if (typeof renamedKey === 'undefined') renamedKey = key;
 
     copyEdge(
       renamed,

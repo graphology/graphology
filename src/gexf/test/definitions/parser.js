@@ -140,21 +140,21 @@ module.exports = [
       node: {
         key: 'ncs4',
         attributes: {
-          'label': 'http://cupuladospovos.org.br',
-          'Label2': 'cupuladospovos.org.br',
+          label: 'http://cupuladospovos.org.br',
+          Label2: 'cupuladospovos.org.br',
           'Nature of institution:': 'Event',
-          'Category': 'Social Ecology',
+          Category: 'Social Ecology',
           'Latest Six Posts Frequency': 'Dially',
-          'Language': 'Portuguese',
+          Language: 'Portuguese',
           'Information Resources': 'Multimedia',
-          'indegree': 12,
-          'outdegree': 31,
-          'degree': 43,
-          'size': 11.7894535,
-          'x': -168.71039,
-          'y': 5.129696,
-          'z': 0,
-          'color': 'rgb(144,107,198)'
+          indegree: 12,
+          outdegree: 31,
+          degree: 43,
+          size: 11.7894535,
+          x: -168.71039,
+          y: 5.129696,
+          z: 0,
+          color: 'rgb(144,107,198)'
         }
       },
       size: 1107,

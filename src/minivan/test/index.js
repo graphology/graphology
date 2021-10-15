@@ -99,24 +99,22 @@ function loadGexfResource(name) {
 var NORDIC_DESIGN = loadResource('nordic-design');
 var ARCTIC = loadGexfResource('arctic');
 
-describe('graphology-minivan', function() {
-  describe('serialization', function() {
-
-    it('should throw if given an invalid graph.', function() {
-      assert.throws(function() {
+describe('graphology-minivan', function () {
+  describe('serialization', function () {
+    it('should throw if given an invalid graph.', function () {
+      assert.throws(function () {
         buildBundle({hello: 'world'});
       });
     });
 
-    it('should produce a correct bundle.', function() {
+    it('should produce a correct bundle.', function () {
       var graph = UndirectedGraph.from(GRAPHS.basic);
 
       var bundle = buildBundle(graph, {url: 'http://supergraph.sv'});
 
       var errors = validate(bundle);
 
-      if (errors)
-        console.error('Validation error:', errors);
+      if (errors) console.error('Validation error:', errors);
 
       assert(!errors);
 
@@ -128,7 +126,7 @@ describe('graphology-minivan', function() {
       assert.strictEqual(model.defaultEdgeColor, 'predicate');
     });
 
-    it('should work even when some attributes are lacking.', function() {
+    it('should work even when some attributes are lacking.', function () {
       var data = deepclone(GRAPHS.basic);
 
       delete data.nodes[1].attributes;
@@ -136,12 +134,12 @@ describe('graphology-minivan', function() {
 
       var graph = UndirectedGraph.from(data);
 
-      assert.doesNotThrow(function() {
+      assert.doesNotThrow(function () {
         buildBundle(graph);
       });
     });
 
-    it('should respect given hints.', function() {
+    it('should respect given hints.', function () {
       var graph = UndirectedGraph.from(GRAPHS.basic);
 
       // TODO: support to have only key of attr to index
@@ -156,7 +154,7 @@ describe('graphology-minivan', function() {
               integer: true,
               areaScaling: {
                 interpolation: 'pow-2',
-                max: 1000,
+                max: 1000
               }
             },
             {
@@ -174,7 +172,7 @@ describe('graphology-minivan', function() {
 
       var bundle = buildBundle(graph, hints);
 
-      var centralityAttr = bundle.model.nodeAttributes.find(function(attr) {
+      var centralityAttr = bundle.model.nodeAttributes.find(function (attr) {
         return attr.key === 'centrality';
       });
 
@@ -194,30 +192,32 @@ describe('graphology-minivan', function() {
         }
       });
 
-      var categoryAttr = bundle.model.nodeAttributes.find(function(attr) {
+      var categoryAttr = bundle.model.nodeAttributes.find(function (attr) {
         return attr.key === 'category';
       });
 
       assert.strictEqual(categoryAttr.modalities.vegetable.color, '#00FF00');
     });
 
-    it('should be possible to pass custom iwanthue settings.', function() {
+    it('should be possible to pass custom iwanthue settings.', function () {
       var graph = UndirectedGraph.from(GRAPHS.basic);
 
-      var bundle = buildBundle(graph, null, {iwanthueSettings: {clustering: 'k-means'}});
+      var bundle = buildBundle(graph, null, {
+        iwanthueSettings: {clustering: 'k-means'}
+      });
 
-      var categoryAttr = bundle.model.nodeAttributes.find(function(attr) {
+      var categoryAttr = bundle.model.nodeAttributes.find(function (attr) {
         return attr.key === 'category';
       });
 
-      var colors = Object.keys(categoryAttr.modalities).map(function(m) {
+      var colors = Object.keys(categoryAttr.modalities).map(function (m) {
         return categoryAttr.modalities[m].color;
       });
 
       assert.deepEqual(colors, ['#aac790', '#c9a2ca']);
     });
 
-    it('should be idempotent.', function() {
+    it('should be idempotent.', function () {
       var graph = new Graph(NORDIC_DESIGN.settings);
       graph.import(NORDIC_DESIGN.graph);
 
@@ -227,34 +227,34 @@ describe('graphology-minivan', function() {
       expect(bundle).to.roughly.deep.equal(NORDIC_DESIGN);
     });
 
-    it('should be faster when we don\'t consolidate.', function() {
+    it("should be faster when we don't consolidate.", function () {
       var graph = new Graph(NORDIC_DESIGN.settings);
       graph.import(NORDIC_DESIGN.graph);
 
       buildBundle(graph, NORDIC_DESIGN, {consolidate: false});
     });
 
-    it('should drop some partition types heuristically.', function() {
+    it('should drop some partition types heuristically.', function () {
       var graph = new Graph(NORDIC_DESIGN.settings);
       graph.import(NORDIC_DESIGN.graph);
 
       var bundle = buildBundle(graph);
 
-      assert(!bundle.model.nodeAttributes.some(function(attr) {
-        return (
-          (attr.key === 'name' && attr.type !== 'ignore') ||
-          (attr.key === 'homepage' && attr.type !== 'ignore') ||
-          (attr.key === 'prefixes' && attr.type !== 'ignore')
-        );
-      }));
+      assert(
+        !bundle.model.nodeAttributes.some(function (attr) {
+          return (
+            (attr.key === 'name' && attr.type !== 'ignore') ||
+            (attr.key === 'homepage' && attr.type !== 'ignore') ||
+            (attr.key === 'prefixes' && attr.type !== 'ignore')
+          );
+        })
+      );
 
-      var partitions = bundle
-        .model
-        .nodeAttributes
-        .filter(function(attr) {
+      var partitions = bundle.model.nodeAttributes
+        .filter(function (attr) {
           return attr.type === 'partition';
         })
-        .map(function(attr) {
+        .map(function (attr) {
           return {
             key: attr.key,
             cardinality: attr.cardinality
@@ -313,14 +313,14 @@ describe('graphology-minivan', function() {
       ]);
     });
 
-    it('should be able to process a graph from a gexf file while automatically hiding attributes.', function() {
+    it('should be able to process a graph from a gexf file while automatically hiding attributes.', function () {
       var bundle = buildBundle(ARCTIC);
 
       var errors = validate(bundle);
 
       assert(!errors);
 
-      var nodeDefAttribute = bundle.model.nodeAttributes.find(function(attr) {
+      var nodeDefAttribute = bundle.model.nodeAttributes.find(function (attr) {
         return attr.key === 'nodedef';
       });
 
@@ -333,10 +333,10 @@ describe('graphology-minivan', function() {
       });
     });
 
-    it('should respect hints, albeit against its own heuristics.', function() {
+    it('should respect hints, albeit against its own heuristics.', function () {
       var graph = new UndirectedGraph();
 
-      range(100).forEach(function(i) {
+      range(100).forEach(function (i) {
         graph.addNode(i, {ref: '' + i});
       });
 
@@ -344,12 +344,14 @@ describe('graphology-minivan', function() {
 
       assert.strictEqual(bundle.model.nodeAttributes[0].type, 'ignore');
 
-      bundle = buildBundle(graph, {model: {nodeAttributes: [{key: 'ref', type: 'partition'}]}});
+      bundle = buildBundle(graph, {
+        model: {nodeAttributes: [{key: 'ref', type: 'partition'}]}
+      });
 
       assert.strictEqual(bundle.model.nodeAttributes[0].type, 'partition');
     });
 
-    it('should respect the ignore hints.', function() {
+    it('should respect the ignore hints.', function () {
       var graph = UndirectedGraph.from(GRAPHS.basic);
 
       var bundle = buildBundle(graph, {
@@ -364,7 +366,6 @@ describe('graphology-minivan', function() {
               type: 'ignore'
             },
             {
-
               key: 'category',
               type: 'ignore'
             }
@@ -372,17 +373,19 @@ describe('graphology-minivan', function() {
         }
       });
 
-      assert(bundle.model.nodeAttributes.every(function(attr) {
-        return attr.type === 'ignore';
-      }));
+      assert(
+        bundle.model.nodeAttributes.every(function (attr) {
+          return attr.type === 'ignore';
+        })
+      );
     });
 
-    it('should respect modalities order given by user.', function() {
+    it('should respect modalities order given by user.', function () {
       var graph = UndirectedGraph.from(GRAPHS.basic);
 
       var bundle = buildBundle(graph);
 
-      var ordering = bundle.model.nodeAttributes.find(function(attr) {
+      var ordering = bundle.model.nodeAttributes.find(function (attr) {
         return attr.key === 'category';
       }).modalitiesOrder;
 
@@ -400,7 +403,7 @@ describe('graphology-minivan', function() {
         }
       });
 
-      ordering = bundle.model.nodeAttributes.find(function(attr) {
+      ordering = bundle.model.nodeAttributes.find(function (attr) {
         return attr.key === 'category';
       }).modalitiesOrder;
 
@@ -408,8 +411,8 @@ describe('graphology-minivan', function() {
     });
   });
 
-  describe('helpers', function() {
-    it('should be possible to use standalone type inference.', function() {
+  describe('helpers', function () {
+    it('should be possible to use standalone type inference.', function () {
       var graph = UndirectedGraph.from(GRAPHS.basic);
 
       var inference = lib.performTypeInference(graph);

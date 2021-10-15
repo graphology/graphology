@@ -5,11 +5,7 @@
  * Attributes-related methods being exactly the same for nodes & edges,
  * we abstract them here for factorization reasons.
  */
-import {
-  assign,
-  isPlainObject,
-  getMatchingEdge
-} from './utils';
+import {assign, isPlainObject, getMatchingEdge} from './utils';
 
 import {
   InvalidArgumentsGraphError,
@@ -25,7 +21,6 @@ import {
  * @param {string}   type          - Type of the edge to find.
  */
 function attachAttributeGetter(Class, method, type) {
-
   /**
    * Get the desired attribute for the given element (node or edge).
    *
@@ -43,37 +38,45 @@ function attachAttributeGetter(Class, method, type) {
    * @throws {Error} - Will throw if too many arguments are provided.
    * @throws {Error} - Will throw if any of the elements is not found.
    */
-  Class.prototype[method] = function(element, name) {
+  Class.prototype[method] = function (element, name) {
     let data;
 
     if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
-      throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
+      throw new UsageGraphError(
+        `Graph.${method}: cannot find this type of edges in your ${this.type} graph.`
+      );
 
     if (arguments.length > 2) {
-
       if (this.multi)
-        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+        throw new UsageGraphError(
+          `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
+        );
 
       const source = '' + element,
-            target = '' + name;
+        target = '' + name;
 
       name = arguments[2];
 
       data = getMatchingEdge(this, source, target, type);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
-    }
-    else {
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
+        );
+    } else {
       element = '' + element;
       data = this._edges.get(element);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find the "${element}" edge in the graph.`
+        );
     }
 
     if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
+      throw new NotFoundGraphError(
+        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
+      );
 
     return data.attributes[name];
   };
@@ -87,7 +90,6 @@ function attachAttributeGetter(Class, method, type) {
  * @param {string}   type        - Type of the edge to find.
  */
 function attachAttributesGetter(Class, method, type) {
-
   /**
    * Retrieves all the target element's attributes.
    *
@@ -103,35 +105,43 @@ function attachAttributesGetter(Class, method, type) {
    * @throws {Error} - Will throw if too many arguments are provided.
    * @throws {Error} - Will throw if any of the elements is not found.
    */
-  Class.prototype[method] = function(element) {
+  Class.prototype[method] = function (element) {
     let data;
 
     if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
-      throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
+      throw new UsageGraphError(
+        `Graph.${method}: cannot find this type of edges in your ${this.type} graph.`
+      );
 
     if (arguments.length > 1) {
-
       if (this.multi)
-        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+        throw new UsageGraphError(
+          `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
+        );
 
       const source = '' + element,
-            target = '' + arguments[1];
+        target = '' + arguments[1];
 
       data = getMatchingEdge(this, source, target, type);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
-    }
-    else {
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
+        );
+    } else {
       element = '' + element;
       data = this._edges.get(element);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find the "${element}" edge in the graph.`
+        );
     }
 
     if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
+      throw new NotFoundGraphError(
+        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
+      );
 
     return data.attributes;
   };
@@ -145,7 +155,6 @@ function attachAttributesGetter(Class, method, type) {
  * @param {string}   type        - Type of the edge to find.
  */
 function attachAttributeChecker(Class, method, type) {
-
   /**
    * Checks whether the desired attribute is set for the given element (node or edge).
    *
@@ -163,37 +172,45 @@ function attachAttributeChecker(Class, method, type) {
    * @throws {Error} - Will throw if too many arguments are provided.
    * @throws {Error} - Will throw if any of the elements is not found.
    */
-  Class.prototype[method] = function(element, name) {
+  Class.prototype[method] = function (element, name) {
     let data;
 
     if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
-      throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
+      throw new UsageGraphError(
+        `Graph.${method}: cannot find this type of edges in your ${this.type} graph.`
+      );
 
     if (arguments.length > 2) {
-
       if (this.multi)
-        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+        throw new UsageGraphError(
+          `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
+        );
 
       const source = '' + element,
-            target = '' + name;
+        target = '' + name;
 
       name = arguments[2];
 
       data = getMatchingEdge(this, source, target, type);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
-    }
-    else {
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
+        );
+    } else {
       element = '' + element;
       data = this._edges.get(element);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find the "${element}" edge in the graph.`
+        );
     }
 
     if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
+      throw new NotFoundGraphError(
+        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
+      );
 
     return data.attributes.hasOwnProperty(name);
   };
@@ -207,7 +224,6 @@ function attachAttributeChecker(Class, method, type) {
  * @param {string}   type          - Type of the edge to find.
  */
 function attachAttributeSetter(Class, method, type) {
-
   /**
    * Set the desired attribute for the given element (node or edge).
    *
@@ -227,19 +243,22 @@ function attachAttributeSetter(Class, method, type) {
    * @throws {Error} - Will throw if too many arguments are provided.
    * @throws {Error} - Will throw if any of the elements is not found.
    */
-  Class.prototype[method] = function(element, name, value) {
+  Class.prototype[method] = function (element, name, value) {
     let data;
 
     if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
-      throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
+      throw new UsageGraphError(
+        `Graph.${method}: cannot find this type of edges in your ${this.type} graph.`
+      );
 
     if (arguments.length > 3) {
-
       if (this.multi)
-        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+        throw new UsageGraphError(
+          `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
+        );
 
       const source = '' + element,
-            target = '' + name;
+        target = '' + name;
 
       name = arguments[2];
       value = arguments[3];
@@ -247,18 +266,23 @@ function attachAttributeSetter(Class, method, type) {
       data = getMatchingEdge(this, source, target, type);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
-    }
-    else {
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
+        );
+    } else {
       element = '' + element;
       data = this._edges.get(element);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find the "${element}" edge in the graph.`
+        );
     }
 
     if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
+      throw new NotFoundGraphError(
+        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
+      );
 
     data.attributes[name] = value;
 
@@ -282,7 +306,6 @@ function attachAttributeSetter(Class, method, type) {
  * @param {string}   type          - Type of the edge to find.
  */
 function attachAttributeUpdater(Class, method, type) {
-
   /**
    * Update the desired attribute for the given element (node or edge) using
    * the provided function.
@@ -303,19 +326,22 @@ function attachAttributeUpdater(Class, method, type) {
    * @throws {Error} - Will throw if too many arguments are provided.
    * @throws {Error} - Will throw if any of the elements is not found.
    */
-  Class.prototype[method] = function(element, name, updater) {
+  Class.prototype[method] = function (element, name, updater) {
     let data;
 
     if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
-      throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
+      throw new UsageGraphError(
+        `Graph.${method}: cannot find this type of edges in your ${this.type} graph.`
+      );
 
     if (arguments.length > 3) {
-
       if (this.multi)
-        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+        throw new UsageGraphError(
+          `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
+        );
 
       const source = '' + element,
-            target = '' + name;
+        target = '' + name;
 
       name = arguments[2];
       updater = arguments[3];
@@ -323,21 +349,28 @@ function attachAttributeUpdater(Class, method, type) {
       data = getMatchingEdge(this, source, target, type);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
-    }
-    else {
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
+        );
+    } else {
       element = '' + element;
       data = this._edges.get(element);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find the "${element}" edge in the graph.`
+        );
     }
 
     if (typeof updater !== 'function')
-      throw new InvalidArgumentsGraphError(`Graph.${method}: updater should be a function.`);
+      throw new InvalidArgumentsGraphError(
+        `Graph.${method}: updater should be a function.`
+      );
 
     if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
+      throw new NotFoundGraphError(
+        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
+      );
 
     data.attributes[name] = updater(data.attributes[name]);
 
@@ -361,7 +394,6 @@ function attachAttributeUpdater(Class, method, type) {
  * @param {string}   type          - Type of the edge to find.
  */
 function attachAttributeRemover(Class, method, type) {
-
   /**
    * Remove the desired attribute for the given element (node or edge).
    *
@@ -379,37 +411,45 @@ function attachAttributeRemover(Class, method, type) {
    * @throws {Error} - Will throw if too many arguments are provided.
    * @throws {Error} - Will throw if any of the elements is not found.
    */
-  Class.prototype[method] = function(element, name) {
+  Class.prototype[method] = function (element, name) {
     let data;
 
     if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
-      throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
+      throw new UsageGraphError(
+        `Graph.${method}: cannot find this type of edges in your ${this.type} graph.`
+      );
 
     if (arguments.length > 2) {
-
       if (this.multi)
-        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+        throw new UsageGraphError(
+          `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
+        );
 
       const source = '' + element,
-            target = '' + name;
+        target = '' + name;
 
       name = arguments[2];
 
       data = getMatchingEdge(this, source, target, type);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
-    }
-    else {
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
+        );
+    } else {
       element = '' + element;
       data = this._edges.get(element);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find the "${element}" edge in the graph.`
+        );
     }
 
     if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
+      throw new NotFoundGraphError(
+        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
+      );
 
     delete data.attributes[name];
 
@@ -433,7 +473,6 @@ function attachAttributeRemover(Class, method, type) {
  * @param {string}   type          - Type of the edge to find.
  */
 function attachAttributesReplacer(Class, method, type) {
-
   /**
    * Replace the attributes for the given element (node or edge).
    *
@@ -451,40 +490,50 @@ function attachAttributesReplacer(Class, method, type) {
    * @throws {Error} - Will throw if too many arguments are provided.
    * @throws {Error} - Will throw if any of the elements is not found.
    */
-  Class.prototype[method] = function(element, attributes) {
+  Class.prototype[method] = function (element, attributes) {
     let data;
 
     if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
-      throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
+      throw new UsageGraphError(
+        `Graph.${method}: cannot find this type of edges in your ${this.type} graph.`
+      );
 
     if (arguments.length > 2) {
-
       if (this.multi)
-        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+        throw new UsageGraphError(
+          `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
+        );
 
       const source = '' + element,
-            target = '' + attributes;
+        target = '' + attributes;
 
       attributes = arguments[2];
 
       data = getMatchingEdge(this, source, target, type);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
-    }
-    else {
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
+        );
+    } else {
       element = '' + element;
       data = this._edges.get(element);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find the "${element}" edge in the graph.`
+        );
     }
 
     if (!isPlainObject(attributes))
-      throw new InvalidArgumentsGraphError(`Graph.${method}: provided attributes are not a plain object.`);
+      throw new InvalidArgumentsGraphError(
+        `Graph.${method}: provided attributes are not a plain object.`
+      );
 
     if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
+      throw new NotFoundGraphError(
+        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
+      );
 
     data.attributes = attributes;
 
@@ -507,7 +556,6 @@ function attachAttributesReplacer(Class, method, type) {
  * @param {string}   type          - Type of the edge to find.
  */
 function attachAttributesMerger(Class, method, type) {
-
   /**
    * Replace the attributes for the given element (node or edge).
    *
@@ -525,40 +573,50 @@ function attachAttributesMerger(Class, method, type) {
    * @throws {Error} - Will throw if too many arguments are provided.
    * @throws {Error} - Will throw if any of the elements is not found.
    */
-  Class.prototype[method] = function(element, attributes) {
+  Class.prototype[method] = function (element, attributes) {
     let data;
 
     if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
-      throw new UsageGraphError(`Graph.${method}: cannot find this type of edges in your ${this.type} graph.`);
+      throw new UsageGraphError(
+        `Graph.${method}: cannot find this type of edges in your ${this.type} graph.`
+      );
 
     if (arguments.length > 2) {
-
       if (this.multi)
-        throw new UsageGraphError(`Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`);
+        throw new UsageGraphError(
+          `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
+        );
 
       const source = '' + element,
-            target = '' + attributes;
+        target = '' + attributes;
 
       attributes = arguments[2];
 
       data = getMatchingEdge(this, source, target, type);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`);
-    }
-    else {
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
+        );
+    } else {
       element = '' + element;
       data = this._edges.get(element);
 
       if (!data)
-        throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" edge in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find the "${element}" edge in the graph.`
+        );
     }
 
     if (!isPlainObject(attributes))
-      throw new InvalidArgumentsGraphError(`Graph.${method}: provided attributes are not a plain object.`);
+      throw new InvalidArgumentsGraphError(
+        `Graph.${method}: provided attributes are not a plain object.`
+      );
 
     if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(`Graph.${method}: could not find the "${element}" ${type} edge in the graph.`);
+      throw new NotFoundGraphError(
+        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
+      );
 
     assign(data.attributes, attributes);
 
@@ -618,27 +676,14 @@ const ATTRIBUTES_METHODS = [
  * @param {function} Graph - Target class.
  */
 export function attachAttributesMethods(Graph) {
-  ATTRIBUTES_METHODS.forEach(function({name, attacher}) {
-
+  ATTRIBUTES_METHODS.forEach(function ({name, attacher}) {
     // For edges
-    attacher(
-      Graph,
-      name('Edge'),
-      'mixed'
-    );
+    attacher(Graph, name('Edge'), 'mixed');
 
     // For directed edges
-    attacher(
-      Graph,
-      name('DirectedEdge'),
-      'directed'
-    );
+    attacher(Graph, name('DirectedEdge'), 'directed');
 
     // For undirected edges
-    attacher(
-      Graph,
-      name('UndirectedEdge'),
-      'undirected'
-    );
+    attacher(Graph, name('UndirectedEdge'), 'undirected');
   });
 }

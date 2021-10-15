@@ -9,10 +9,7 @@ import Iterator from 'obliterator/iterator';
 import chain from 'obliterator/chain';
 import take from 'obliterator/take';
 
-import {
-  InvalidArgumentsGraphError,
-  NotFoundGraphError
-} from '../errors';
+import {InvalidArgumentsGraphError, NotFoundGraphError} from '../errors';
 
 /**
  * Definitions.
@@ -60,8 +57,7 @@ const EDGES_ITERATION = [
  * @return {array}         - The found edges.
  */
 function collectSimple(edges, object) {
-  for (const k in object)
-    edges.push(object[k].key);
+  for (const k in object) edges.push(object[k].key);
 }
 
 function collectMulti(edges, object) {
@@ -77,8 +73,7 @@ function collectMulti(edges, object) {
  */
 function forEachSimple(object, callback, avoid) {
   for (const k in object) {
-    if (k === avoid)
-      continue;
+    if (k === avoid) continue;
 
     const edgeData = object[k];
 
@@ -97,19 +92,20 @@ function forEachSimple(object, callback, avoid) {
 
 function forEachMulti(object, callback, avoid) {
   for (const k in object) {
-    if (k === avoid)
-      continue;
+    if (k === avoid) continue;
 
-    object[k].forEach(edgeData => callback(
-      edgeData.key,
-      edgeData.attributes,
-      edgeData.source.key,
-      edgeData.target.key,
-      edgeData.source.attributes,
-      edgeData.target.attributes,
-      edgeData.undirected,
-      edgeData.generatedKey
-    ));
+    object[k].forEach(edgeData =>
+      callback(
+        edgeData.key,
+        edgeData.attributes,
+        edgeData.source.key,
+        edgeData.target.key,
+        edgeData.source.attributes,
+        edgeData.target.attributes,
+        edgeData.undirected,
+        edgeData.generatedKey
+      )
+    );
   }
 }
 
@@ -124,8 +120,7 @@ function forEachSimpleUntil(object, callback, avoid) {
   let shouldBreak = false;
 
   for (const k in object) {
-    if (k === avoid)
-      continue;
+    if (k === avoid) continue;
 
     const edgeData = object[k];
 
@@ -140,8 +135,7 @@ function forEachSimpleUntil(object, callback, avoid) {
       edgeData.generatedKey
     );
 
-    if (shouldBreak)
-      return true;
+    if (shouldBreak) return true;
   }
 
   return false;
@@ -153,12 +147,11 @@ function forEachMultiUntil(object, callback, avoid) {
   let shouldBreak = false;
 
   for (const k in object) {
-    if (k === avoid)
-      continue;
+    if (k === avoid) continue;
 
     iterator = object[k].values();
 
-    while ((step = iterator.next(), step.done !== true)) {
+    while (((step = iterator.next()), step.done !== true)) {
       edgeData = step.value;
       source = edgeData.source;
       target = edgeData.target;
@@ -174,8 +167,7 @@ function forEachMultiUntil(object, callback, avoid) {
         edgeData.generatedKey
       );
 
-      if (shouldBreak)
-        return true;
+      if (shouldBreak) return true;
     }
   }
 
@@ -190,10 +182,10 @@ function forEachMultiUntil(object, callback, avoid) {
  */
 function createIterator(object, avoid) {
   const keys = Object.keys(object),
-        l = keys.length;
+    l = keys.length;
 
   let inner = null,
-      i = 0;
+    i = 0;
 
   return new Iterator(function next() {
     let edgeData;
@@ -208,10 +200,8 @@ function createIterator(object, avoid) {
       }
 
       edgeData = step.value;
-    }
-    else {
-      if (i >= l)
-        return {done: true};
+    } else {
+      if (i >= l) return {done: true};
 
       const k = keys[i];
 
@@ -255,8 +245,7 @@ function createIterator(object, avoid) {
 function collectForKeySimple(edges, object, k) {
   const edgeData = object[k];
 
-  if (!edgeData)
-    return;
+  if (!edgeData) return;
 
   edges.push(edgeData.key);
 }
@@ -264,8 +253,7 @@ function collectForKeySimple(edges, object, k) {
 function collectForKeyMulti(edges, object, k) {
   const edgesData = object[k];
 
-  if (!edgesData)
-    return;
+  if (!edgesData) return;
 
   edgesData.forEach(edgeData => edges.push(edgeData.key));
 }
@@ -281,8 +269,7 @@ function collectForKeyMulti(edges, object, k) {
 function forEachForKeySimple(object, k, callback) {
   const edgeData = object[k];
 
-  if (!edgeData)
-    return;
+  if (!edgeData) return;
 
   const sourceData = edgeData.source;
   const targetData = edgeData.target;
@@ -302,19 +289,20 @@ function forEachForKeySimple(object, k, callback) {
 function forEachForKeyMulti(object, k, callback) {
   const edgesData = object[k];
 
-  if (!edgesData)
-    return;
+  if (!edgesData) return;
 
-  edgesData.forEach(edgeData => callback(
-    edgeData.key,
-    edgeData.attributes,
-    edgeData.source.key,
-    edgeData.target.key,
-    edgeData.source.attributes,
-    edgeData.target.attributes,
-    edgeData.undirected,
-    edgeData.generatedKey
-  ));
+  edgesData.forEach(edgeData =>
+    callback(
+      edgeData.key,
+      edgeData.attributes,
+      edgeData.source.key,
+      edgeData.target.key,
+      edgeData.source.attributes,
+      edgeData.target.attributes,
+      edgeData.undirected,
+      edgeData.generatedKey
+    )
+  );
 }
 
 /**
@@ -328,8 +316,7 @@ function forEachForKeyMulti(object, k, callback) {
 function forEachForKeySimpleUntil(object, k, callback) {
   const edgeData = object[k];
 
-  if (!edgeData)
-    return false;
+  if (!edgeData) return false;
 
   const sourceData = edgeData.source;
   const targetData = edgeData.target;
@@ -349,15 +336,14 @@ function forEachForKeySimpleUntil(object, k, callback) {
 function forEachForKeyMultiUntil(object, k, callback) {
   const edgesData = object[k];
 
-  if (!edgesData)
-    return false;
+  if (!edgesData) return false;
 
   let shouldBreak = false;
 
   const iterator = edgesData.values();
   let step, edgeData;
 
-  while ((step = iterator.next(), step.done !== true)) {
+  while (((step = iterator.next()), step.done !== true)) {
     edgeData = step.value;
 
     shouldBreak = callback(
@@ -371,8 +357,7 @@ function forEachForKeyMultiUntil(object, k, callback) {
       edgeData.generatedKey
     );
 
-    if (shouldBreak)
-      return true;
+    if (shouldBreak) return true;
   }
 
   return false;
@@ -391,11 +376,10 @@ function createIteratorForKey(object, k) {
   if (v instanceof Set) {
     const iterator = v.values();
 
-    return new Iterator(function() {
+    return new Iterator(function () {
       const step = iterator.next();
 
-      if (step.done)
-        return step;
+      if (step.done) return step;
 
       const edgeData = step.value;
 
@@ -431,8 +415,7 @@ function createIteratorForKey(object, k) {
  * @return {array}         - Array of edges.
  */
 function createEdgeArray(graph, type) {
-  if (graph.size === 0)
-    return [];
+  if (graph.size === 0) return [];
 
   if (type === 'mixed' || type === graph.type) {
     if (typeof Array.from === 'function')
@@ -441,23 +424,21 @@ function createEdgeArray(graph, type) {
     return take(graph._edges.keys(), graph._edges.size);
   }
 
-  const size = type === 'undirected' ?
-    graph.undirectedSize :
-    graph.directedSize;
+  const size =
+    type === 'undirected' ? graph.undirectedSize : graph.directedSize;
 
   const list = new Array(size),
-        mask = type === 'undirected';
+    mask = type === 'undirected';
 
   const iterator = graph._edges.values();
 
   let i = 0;
   let step, data;
 
-  while ((step = iterator.next(), step.done !== true)) {
+  while (((step = iterator.next()), step.done !== true)) {
     data = step.value;
 
-    if (data.undirected === mask)
-      list[i++] = data.key;
+    if (data.undirected === mask) list[i++] = data.key;
   }
 
   return list;
@@ -471,8 +452,7 @@ function createEdgeArray(graph, type) {
  * @param  {function} callback - Function to call.
  */
 function forEachEdge(graph, type, callback) {
-  if (graph.size === 0)
-    return;
+  if (graph.size === 0) return;
 
   const shouldFilter = type !== 'mixed' && type !== graph.type;
   const mask = type === 'undirected';
@@ -480,11 +460,10 @@ function forEachEdge(graph, type, callback) {
   let step, data;
   const iterator = graph._edges.values();
 
-  while ((step = iterator.next(), step.done !== true)) {
+  while (((step = iterator.next()), step.done !== true)) {
     data = step.value;
 
-    if (shouldFilter && data.undirected !== mask)
-      continue;
+    if (shouldFilter && data.undirected !== mask) continue;
 
     const {key, attributes, source, target} = data;
 
@@ -510,8 +489,7 @@ function forEachEdge(graph, type, callback) {
  * @param  {function} callback - Function to call.
  */
 function forEachEdgeUntil(graph, type, callback) {
-  if (graph.size === 0)
-    return false;
+  if (graph.size === 0) return false;
 
   const shouldFilter = type !== 'mixed' && type !== graph.type;
   const mask = type === 'undirected';
@@ -520,11 +498,10 @@ function forEachEdgeUntil(graph, type, callback) {
   let shouldBreak = false;
   const iterator = graph._edges.values();
 
-  while ((step = iterator.next(), step.done !== true)) {
+  while (((step = iterator.next()), step.done !== true)) {
     data = step.value;
 
-    if (shouldFilter && data.undirected !== mask)
-      continue;
+    if (shouldFilter && data.undirected !== mask) continue;
 
     const {key, attributes, source, target} = data;
 
@@ -539,8 +516,7 @@ function forEachEdgeUntil(graph, type, callback) {
       data.generatedKey
     );
 
-    if (shouldBreak)
-      return true;
+    if (shouldBreak) return true;
   }
 
   return false;
@@ -554,8 +530,7 @@ function forEachEdgeUntil(graph, type, callback) {
  * @return {Iterator}
  */
 function createEdgeIterator(graph, type) {
-  if (graph.size === 0)
-    return Iterator.empty();
+  if (graph.size === 0) return Iterator.empty();
 
   const shouldFilter = type !== 'mixed' && type !== graph.type;
   const mask = type === 'undirected';
@@ -569,13 +544,11 @@ function createEdgeIterator(graph, type) {
     while (true) {
       step = iterator.next();
 
-      if (step.done)
-        return step;
+      if (step.done) return step;
 
       data = step.value;
 
-      if (shouldFilter && data.undirected !== mask)
-        continue;
+      if (shouldFilter && data.undirected !== mask) continue;
 
       break;
     }
@@ -608,10 +581,8 @@ function createEdgeArrayForNode(multi, type, direction, nodeData) {
   const fn = multi ? collectMulti : collectSimple;
 
   if (type !== 'undirected') {
-    if (direction !== 'out')
-      fn(edges, nodeData.in);
-    if (direction !== 'in')
-      fn(edges, nodeData.out);
+    if (direction !== 'out') fn(edges, nodeData.in);
+    if (direction !== 'in') fn(edges, nodeData.out);
 
     // Handling self loop edge case
     if (!direction && nodeData.directedSelfLoops > 0)
@@ -638,8 +609,7 @@ function forEachEdgeForNode(multi, type, direction, nodeData, callback) {
   const fn = multi ? forEachMulti : forEachSimple;
 
   if (type !== 'undirected') {
-    if (direction !== 'out')
-      fn(nodeData.in, callback);
+    if (direction !== 'out') fn(nodeData.in, callback);
     if (direction !== 'in')
       fn(nodeData.out, callback, !direction ? nodeData.key : null);
   }
@@ -668,22 +638,23 @@ function forEachEdgeForNodeUntil(multi, type, direction, nodeData, callback) {
     if (direction !== 'out') {
       shouldBreak = fn(nodeData.in, callback);
 
-      if (shouldBreak)
-        return true;
+      if (shouldBreak) return true;
     }
     if (direction !== 'in') {
-      shouldBreak = fn(nodeData.out, callback, !direction ? nodeData.key : null);
+      shouldBreak = fn(
+        nodeData.out,
+        callback,
+        !direction ? nodeData.key : null
+      );
 
-      if (shouldBreak)
-        return true;
+      if (shouldBreak) return true;
     }
   }
 
   if (type !== 'directed') {
     shouldBreak = fn(nodeData.undirected, callback);
 
-    if (shouldBreak)
-      return true;
+    if (shouldBreak) return true;
   }
 
   return false;
@@ -704,7 +675,10 @@ function createEdgeIteratorForNode(type, direction, nodeData) {
     if (direction !== 'out' && typeof nodeData.in !== 'undefined')
       iterator = chain(iterator, createIterator(nodeData.in));
     if (direction !== 'in' && typeof nodeData.out !== 'undefined')
-      iterator = chain(iterator, createIterator(nodeData.out, !direction ? nodeData.key : null));
+      iterator = chain(
+        iterator,
+        createIterator(nodeData.out, !direction ? nodeData.key : null)
+      );
   }
 
   if (type !== 'directed' && typeof nodeData.undirected !== 'undefined') {
@@ -730,7 +704,6 @@ function createEdgeArrayForPath(type, multi, direction, sourceData, target) {
   const edges = [];
 
   if (type !== 'undirected') {
-
     if (typeof sourceData.in !== 'undefined' && direction !== 'out')
       fn(edges, sourceData.in, target);
 
@@ -760,11 +733,17 @@ function createEdgeArrayForPath(type, multi, direction, sourceData, target) {
  * @param  {string}   target     - Target node.
  * @param  {function} callback   - Function to call.
  */
-function forEachEdgeForPath(type, multi, direction, sourceData, target, callback) {
+function forEachEdgeForPath(
+  type,
+  multi,
+  direction,
+  sourceData,
+  target,
+  callback
+) {
   const fn = multi ? forEachForKeyMulti : forEachForKeySimple;
 
   if (type !== 'undirected') {
-
     if (typeof sourceData.in !== 'undefined' && direction !== 'out')
       fn(sourceData.in, target, callback);
 
@@ -790,26 +769,35 @@ function forEachEdgeForPath(type, multi, direction, sourceData, target, callback
  * @param  {string}   target     - Target node.
  * @param  {function} callback   - Function to call.
  */
-function forEachEdgeForPathUntil(type, multi, direction, sourceData, target, callback) {
+function forEachEdgeForPathUntil(
+  type,
+  multi,
+  direction,
+  sourceData,
+  target,
+  callback
+) {
   const fn = multi ? forEachForKeyMultiUntil : forEachForKeySimpleUntil;
 
   let shouldBreak = false;
 
   if (type !== 'undirected') {
-
     if (typeof sourceData.in !== 'undefined' && direction !== 'out') {
       shouldBreak = fn(sourceData.in, target, callback);
 
-      if (shouldBreak)
-        return true;
+      if (shouldBreak) return true;
     }
 
     if (sourceData.key !== target)
       if (typeof sourceData.out !== 'undefined' && direction !== 'in') {
-        shouldBreak = fn(sourceData.out, target, callback, !direction ? sourceData.key : null);
+        shouldBreak = fn(
+          sourceData.out,
+          target,
+          callback,
+          !direction ? sourceData.key : null
+        );
 
-        if (shouldBreak)
-          return true;
+        if (shouldBreak) return true;
       }
   }
 
@@ -817,8 +805,7 @@ function forEachEdgeForPathUntil(type, multi, direction, sourceData, target, cal
     if (typeof sourceData.undirected !== 'undefined') {
       shouldBreak = fn(sourceData.undirected, target, callback);
 
-      if (shouldBreak)
-        return true;
+      if (shouldBreak) return true;
     }
   }
 
@@ -838,7 +825,6 @@ function createEdgeIteratorForPath(type, direction, sourceData, target) {
   let iterator = Iterator.empty();
 
   if (type !== 'undirected') {
-
     if (
       typeof sourceData.in !== 'undefined' &&
       direction !== 'out' &&
@@ -859,7 +845,10 @@ function createEdgeIteratorForPath(type, direction, sourceData, target) {
       typeof sourceData.undirected !== 'undefined' &&
       target in sourceData.undirected
     )
-      iterator = chain(iterator, createIteratorForKey(sourceData.undirected, target));
+      iterator = chain(
+        iterator,
+        createIteratorForKey(sourceData.undirected, target)
+      );
   }
 
   return iterator;
@@ -872,11 +861,7 @@ function createEdgeIteratorForPath(type, direction, sourceData, target) {
  * @param {object}   description - Method description.
  */
 function attachEdgeArrayCreator(Class, description) {
-  const {
-    name,
-    type,
-    direction
-  } = description;
+  const {name, type, direction} = description;
 
   /**
    * Function returning an array of certain edges.
@@ -894,14 +879,12 @@ function attachEdgeArrayCreator(Class, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[name] = function(source, target) {
-
+  Class.prototype[name] = function (source, target) {
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
       return [];
 
-    if (!arguments.length)
-      return createEdgeArray(this, type);
+    if (!arguments.length) return createEdgeArray(this, type);
 
     if (arguments.length === 1) {
       source = '' + source;
@@ -909,7 +892,9 @@ function attachEdgeArrayCreator(Class, description) {
       const nodeData = this._nodes.get(source);
 
       if (typeof nodeData === 'undefined')
-        throw new NotFoundGraphError(`Graph.${name}: could not find the "${source}" node in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${name}: could not find the "${source}" node in the graph.`
+        );
 
       // Iterating over a node's edges
       return createEdgeArrayForNode(
@@ -927,16 +912,28 @@ function attachEdgeArrayCreator(Class, description) {
       const sourceData = this._nodes.get(source);
 
       if (!sourceData)
-        throw new NotFoundGraphError(`Graph.${name}:  could not find the "${source}" source node in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${name}:  could not find the "${source}" source node in the graph.`
+        );
 
       if (!this._nodes.has(target))
-        throw new NotFoundGraphError(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${name}:  could not find the "${target}" target node in the graph.`
+        );
 
       // Iterating over the edges between source & target
-      return createEdgeArrayForPath(type, this.multi, direction, sourceData, target);
+      return createEdgeArrayForPath(
+        type,
+        this.multi,
+        direction,
+        sourceData,
+        target
+      );
     }
 
-    throw new InvalidArgumentsGraphError(`Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${arguments.length}).`);
+    throw new InvalidArgumentsGraphError(
+      `Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${arguments.length}).`
+    );
   };
 }
 
@@ -947,11 +944,7 @@ function attachEdgeArrayCreator(Class, description) {
  * @param {object}   description - Method description.
  */
 function attachForEachEdge(Class, description) {
-  const {
-    name,
-    type,
-    direction
-  } = description;
+  const {name, type, direction} = description;
 
   const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1);
 
@@ -975,11 +968,9 @@ function attachForEachEdge(Class, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[forEachName] = function(source, target, callback) {
-
+  Class.prototype[forEachName] = function (source, target, callback) {
     // Early termination
-    if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
-      return;
+    if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type) return;
 
     if (arguments.length === 1) {
       callback = source;
@@ -993,7 +984,9 @@ function attachForEachEdge(Class, description) {
       const nodeData = this._nodes.get(source);
 
       if (typeof nodeData === 'undefined')
-        throw new NotFoundGraphError(`Graph.${forEachName}: could not find the "${source}" node in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${forEachName}: could not find the "${source}" node in the graph.`
+        );
 
       // Iterating over a node's edges
       // TODO: maybe attach the sub method to the instance dynamically?
@@ -1013,16 +1006,29 @@ function attachForEachEdge(Class, description) {
       const sourceData = this._nodes.get(source);
 
       if (!sourceData)
-        throw new NotFoundGraphError(`Graph.${forEachName}:  could not find the "${source}" source node in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${forEachName}:  could not find the "${source}" source node in the graph.`
+        );
 
       if (!this._nodes.has(target))
-        throw new NotFoundGraphError(`Graph.${forEachName}:  could not find the "${target}" target node in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${forEachName}:  could not find the "${target}" target node in the graph.`
+        );
 
       // Iterating over the edges between source & target
-      return forEachEdgeForPath(type, this.multi, direction, sourceData, target, callback);
+      return forEachEdgeForPath(
+        type,
+        this.multi,
+        direction,
+        sourceData,
+        target,
+        callback
+      );
     }
 
-    throw new InvalidArgumentsGraphError(`Graph.${forEachName}: too many arguments (expecting 1, 2 or 3 and got ${arguments.length}).`);
+    throw new InvalidArgumentsGraphError(
+      `Graph.${forEachName}: too many arguments (expecting 1, 2 or 3 and got ${arguments.length}).`
+    );
   };
 }
 
@@ -1034,13 +1040,10 @@ function attachForEachEdge(Class, description) {
  * @param {object}   description - Method description.
  */
 function attachForEachEdgeUntil(Class, description) {
-  const {
-    name,
-    type,
-    direction
-  } = description;
+  const {name, type, direction} = description;
 
-  const forEachUntilName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1) + 'Until';
+  const forEachUntilName =
+    'forEach' + name[0].toUpperCase() + name.slice(1, -1) + 'Until';
 
   /**
    * Function iterating over the graph's relevant edges by applying the given
@@ -1062,8 +1065,7 @@ function attachForEachEdgeUntil(Class, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[forEachUntilName] = function(source, target, callback) {
-
+  Class.prototype[forEachUntilName] = function (source, target, callback) {
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
       return false;
@@ -1080,7 +1082,9 @@ function attachForEachEdgeUntil(Class, description) {
       const nodeData = this._nodes.get(source);
 
       if (typeof nodeData === 'undefined')
-        throw new NotFoundGraphError(`Graph.${forEachUntilName}: could not find the "${source}" node in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${forEachUntilName}: could not find the "${source}" node in the graph.`
+        );
 
       // Iterating over a node's edges
       // TODO: maybe attach the sub method to the instance dynamically?
@@ -1100,16 +1104,29 @@ function attachForEachEdgeUntil(Class, description) {
       const sourceData = this._nodes.get(source);
 
       if (!sourceData)
-        throw new NotFoundGraphError(`Graph.${forEachUntilName}:  could not find the "${source}" source node in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${forEachUntilName}:  could not find the "${source}" source node in the graph.`
+        );
 
       if (!this._nodes.has(target))
-        throw new NotFoundGraphError(`Graph.${forEachUntilName}:  could not find the "${target}" target node in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${forEachUntilName}:  could not find the "${target}" target node in the graph.`
+        );
 
       // Iterating over the edges between source & target
-      return forEachEdgeForPathUntil(type, this.multi, direction, sourceData, target, callback);
+      return forEachEdgeForPathUntil(
+        type,
+        this.multi,
+        direction,
+        sourceData,
+        target,
+        callback
+      );
     }
 
-    throw new InvalidArgumentsGraphError(`Graph.${forEachUntilName}: too many arguments (expecting 1, 2 or 3 and got ${arguments.length}).`);
+    throw new InvalidArgumentsGraphError(
+      `Graph.${forEachUntilName}: too many arguments (expecting 1, 2 or 3 and got ${arguments.length}).`
+    );
   };
 }
 
@@ -1120,11 +1137,7 @@ function attachForEachEdgeUntil(Class, description) {
  * @param {object}   description - Method description.
  */
 export function attachEdgeIteratorCreator(Class, description) {
-  const {
-    name: originalName,
-    type,
-    direction
-  } = description;
+  const {name: originalName, type, direction} = description;
 
   const name = originalName.slice(0, -1) + 'Entries';
 
@@ -1144,14 +1157,12 @@ export function attachEdgeIteratorCreator(Class, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[name] = function(source, target) {
-
+  Class.prototype[name] = function (source, target) {
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
       return Iterator.empty();
 
-    if (!arguments.length)
-      return createEdgeIterator(this, type);
+    if (!arguments.length) return createEdgeIterator(this, type);
 
     if (arguments.length === 1) {
       source = '' + source;
@@ -1159,7 +1170,9 @@ export function attachEdgeIteratorCreator(Class, description) {
       const sourceData = this._nodes.get(source);
 
       if (!sourceData)
-        throw new NotFoundGraphError(`Graph.${name}: could not find the "${source}" node in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${name}: could not find the "${source}" node in the graph.`
+        );
 
       // Iterating over a node's edges
       return createEdgeIteratorForNode(type, direction, sourceData);
@@ -1172,16 +1185,22 @@ export function attachEdgeIteratorCreator(Class, description) {
       const sourceData = this._nodes.get(source);
 
       if (!sourceData)
-        throw new NotFoundGraphError(`Graph.${name}:  could not find the "${source}" source node in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${name}:  could not find the "${source}" source node in the graph.`
+        );
 
       if (!this._nodes.has(target))
-        throw new NotFoundGraphError(`Graph.${name}:  could not find the "${target}" target node in the graph.`);
+        throw new NotFoundGraphError(
+          `Graph.${name}:  could not find the "${target}" target node in the graph.`
+        );
 
       // Iterating over the edges between source & target
       return createEdgeIteratorForPath(type, direction, sourceData, target);
     }
 
-    throw new InvalidArgumentsGraphError(`Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${arguments.length}).`);
+    throw new InvalidArgumentsGraphError(
+      `Graph.${name}: too many arguments (expecting 0, 1 or 2 and got ${arguments.length}).`
+    );
   };
 }
 

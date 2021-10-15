@@ -142,8 +142,8 @@
  * https://github.com/igraph/igraph/blob/eca5e809aab1aa5d4eca1e381389bcde9cf10490/src/community.c#L906
  */
 var defaults = require('lodash/defaultsDeep'),
-    isGraph = require('graphology-utils/is-graph'),
-    inferType = require('graphology-utils/infer-type');
+  isGraph = require('graphology-utils/is-graph'),
+  inferType = require('graphology-utils/infer-type');
 
 var DEFAULTS = {
   attributes: {
@@ -155,18 +155,15 @@ var DEFAULTS = {
   weighted: true
 };
 
-function createWeightGetter(weighted, weightAttribute) {
-  return function(attr) {
-    if (!attr)
-      return 0;
+function createWeightGetter(weighted, weightAttribute) {
+  return function (attr) {
+    if (!attr) return 0;
 
-    if (!weighted)
-      return 1;
+    if (!weighted) return 1;
 
     var w = attr[weightAttribute];
 
-    if (typeof w !== 'number')
-      w = 1;
+    if (typeof w !== 'number') w = 1;
 
     return w;
   };
@@ -174,24 +171,27 @@ function createWeightGetter(weighted, weightAttribute) {
 
 function collectForUndirectedDense(graph, options) {
   var communities = new Array(graph.order),
-      weightedDegrees = new Float64Array(graph.order),
-      M = 0;
+    weightedDegrees = new Float64Array(graph.order),
+    M = 0;
 
   var ids = {};
 
-  var getWeight = createWeightGetter(options.weighted, options.attributes.weight);
+  var getWeight = createWeightGetter(
+    options.weighted,
+    options.attributes.weight
+  );
 
   // Collecting communities
   var i = 0;
-  graph.forEachNode(function(node, attr) {
+  graph.forEachNode(function (node, attr) {
     ids[node] = i;
-    communities[i++] = options.communities ?
-      options.communities[node] :
-      attr[options.attributes.community];
+    communities[i++] = options.communities
+      ? options.communities[node]
+      : attr[options.attributes.community];
   });
 
   // Collecting weights
-  graph.forEachUndirectedEdge(function(edge, attr, source, target) {
+  graph.forEachUndirectedEdge(function (edge, attr, source, target) {
     var weight = getWeight(attr);
 
     M += weight;
@@ -199,8 +199,7 @@ function collectForUndirectedDense(graph, options) {
     weightedDegrees[ids[source]] += weight;
 
     // NOTE: we double degree only if we don't have a loop
-    if (source !== target)
-      weightedDegrees[ids[target]] += weight;
+    if (source !== target) weightedDegrees[ids[target]] += weight;
   });
 
   return {
@@ -213,25 +212,28 @@ function collectForUndirectedDense(graph, options) {
 
 function collectForDirectedDense(graph, options) {
   var communities = new Array(graph.order),
-      weightedInDegrees = new Float64Array(graph.order),
-      weightedOutDegrees = new Float64Array(graph.order),
-      M = 0;
+    weightedInDegrees = new Float64Array(graph.order),
+    weightedOutDegrees = new Float64Array(graph.order),
+    M = 0;
 
   var ids = {};
 
-  var getWeight = createWeightGetter(options.weighted, options.attributes.weight);
+  var getWeight = createWeightGetter(
+    options.weighted,
+    options.attributes.weight
+  );
 
   // Collecting communities
   var i = 0;
-  graph.forEachNode(function(node, attr) {
+  graph.forEachNode(function (node, attr) {
     ids[node] = i;
-    communities[i++] = options.communities ?
-      options.communities[node] :
-      attr[options.attributes.community];
+    communities[i++] = options.communities
+      ? options.communities[node]
+      : attr[options.attributes.community];
   });
 
   // Collecting weights
-  graph.forEachDirectedEdge(function(edge, attr, source, target) {
+  graph.forEachDirectedEdge(function (edge, attr, source, target) {
     var weight = getWeight(attr);
 
     M += weight;
@@ -255,7 +257,7 @@ function undirectedDenseModularity(graph, options) {
   var result = collectForUndirectedDense(graph, options);
 
   var communities = result.communities,
-      weightedDegrees = result.weightedDegrees;
+    weightedDegrees = result.weightedDegrees;
 
   var M = result.M;
 
@@ -268,16 +270,13 @@ function undirectedDenseModularity(graph, options) {
   var M2 = M * 2;
 
   for (i = 0, l = graph.order; i < l; i++) {
-
     // NOTE: it is important to parse the whole matrix here, diagonal and
     // lower part included. A lot of implementation differ here because
     // they process only a part of the matrix
     for (j = 0; j < l; j++) {
-
       // NOTE: Kronecker's delta
       // NOTE: we could go from O(n^2) to O(avg.C^2)
-      if (communities[i] !== communities[j])
-        continue;
+      if (communities[i] !== communities[j]) continue;
 
       edgeAttributes = graph.undirectedEdge(nodes[i], nodes[j]);
 
@@ -287,8 +286,7 @@ function undirectedDenseModularity(graph, options) {
       // We add twice if we have a self loop
       if (i === j && typeof edgeAttributes !== 'undefined')
         S += (Aij - (didj / M2) * resolution) * 2;
-      else
-        S += (Aij - (didj / M2) * resolution);
+      else S += Aij - (didj / M2) * resolution;
     }
   }
 
@@ -301,8 +299,8 @@ function directedDenseModularity(graph, options) {
   var result = collectForDirectedDense(graph, options);
 
   var communities = result.communities,
-      weightedInDegrees = result.weightedInDegrees,
-      weightedOutDegrees = result.weightedOutDegrees;
+    weightedInDegrees = result.weightedInDegrees,
+    weightedOutDegrees = result.weightedOutDegrees;
 
   var M = result.M;
 
@@ -313,16 +311,13 @@ function directedDenseModularity(graph, options) {
   var S = 0;
 
   for (i = 0, l = graph.order; i < l; i++) {
-
     // NOTE: it is important to parse the whole matrix here, diagonal and
     // lower part included. A lot of implementation differ here because
     // they process only a part of the matrix
     for (j = 0; j < l; j++) {
-
       // NOTE: Kronecker's delta
       // NOTE: we could go from O(n^2) to O(avg.C^2)
-      if (communities[i] !== communities[j])
-        continue;
+      if (communities[i] !== communities[j]) continue;
 
       edgeAttributes = graph.directedEdge(nodes[i], nodes[j]);
 
@@ -339,25 +334,27 @@ function directedDenseModularity(graph, options) {
 
 function collectCommunitesForUndirected(graph, options) {
   var communities = {},
-      totalWeights = {},
-      internalWeights = {};
+    totalWeights = {},
+    internalWeights = {};
 
-  if (options.communities)
-    communities = options.communities;
+  if (options.communities) communities = options.communities;
 
-  graph.forEachNode(function(node, attr) {
+  graph.forEachNode(function (node, attr) {
     var community;
 
     if (!options.communities) {
       community = attr[options.attributes.community];
       communities[node] = community;
-    }
-    else {
+    } else {
       community = communities[node];
     }
 
     if (typeof community === 'undefined')
-      throw new Error('graphology-metrics/modularity: the "' + node + '" node is not in the partition.');
+      throw new Error(
+        'graphology-metrics/modularity: the "' +
+          node +
+          '" node is not in the partition.'
+      );
 
     totalWeights[community] = 0;
     internalWeights[community] = 0;
@@ -372,26 +369,28 @@ function collectCommunitesForUndirected(graph, options) {
 
 function collectCommunitesForDirected(graph, options) {
   var communities = {},
-      totalInWeights = {},
-      totalOutWeights = {},
-      internalWeights = {};
+    totalInWeights = {},
+    totalOutWeights = {},
+    internalWeights = {};
 
-  if (options.communities)
-    communities = options.communities;
+  if (options.communities) communities = options.communities;
 
-  graph.forEachNode(function(node, attr) {
+  graph.forEachNode(function (node, attr) {
     var community;
 
     if (!options.communities) {
       community = attr[options.attributes.community];
       communities[node] = community;
-    }
-    else {
+    } else {
       community = communities[node];
     }
 
     if (typeof community === 'undefined')
-      throw new Error('graphology-metrics/modularity: the "' + node + '" node is not in the partition.');
+      throw new Error(
+        'graphology-metrics/modularity: the "' +
+          node +
+          '" node is not in the partition.'
+      );
 
     totalInWeights[community] = 0;
     totalOutWeights[community] = 0;
@@ -414,12 +413,22 @@ function undirectedSparseModularity(graph, options) {
   var M = 0;
 
   var totalWeights = result.totalWeights,
-      internalWeights = result.internalWeights,
-      communities = result.communities;
+    internalWeights = result.internalWeights,
+    communities = result.communities;
 
-  var getWeight = createWeightGetter(options.weighted, options.attributes.weight);
+  var getWeight = createWeightGetter(
+    options.weighted,
+    options.attributes.weight
+  );
 
-  graph.forEachUndirectedEdge(function(edge, edgeAttr, source, target, sourceAttr, targetAttr) {
+  graph.forEachUndirectedEdge(function (
+    edge,
+    edgeAttr,
+    source,
+    target,
+    sourceAttr,
+    targetAttr
+  ) {
     var weight = getWeight(edgeAttr);
 
     M += weight;
@@ -430,17 +439,17 @@ function undirectedSparseModularity(graph, options) {
     totalWeights[sourceCommunity] += weight;
     totalWeights[targetCommunity] += weight;
 
-    if (sourceCommunity !== targetCommunity)
-      return;
+    if (sourceCommunity !== targetCommunity) return;
 
     internalWeights[sourceCommunity] += weight * 2;
   });
 
   var Q = 0,
-      M2 = M * 2;
+    M2 = M * 2;
 
   for (var C in internalWeights)
-    Q += internalWeights[C] / M2 - Math.pow(totalWeights[C] / M2, 2) * resolution;
+    Q +=
+      internalWeights[C] / M2 - Math.pow(totalWeights[C] / M2, 2) * resolution;
 
   return Q;
 }
@@ -453,13 +462,23 @@ function directedSparseModularity(graph, options) {
   var M = 0;
 
   var totalInWeights = result.totalInWeights,
-      totalOutWeights = result.totalOutWeights,
-      internalWeights = result.internalWeights,
-      communities = result.communities;
+    totalOutWeights = result.totalOutWeights,
+    internalWeights = result.internalWeights,
+    communities = result.communities;
 
-  var getWeight = createWeightGetter(options.weighted, options.attributes.weight);
+  var getWeight = createWeightGetter(
+    options.weighted,
+    options.attributes.weight
+  );
 
-  graph.forEachDirectedEdge(function(edge, edgeAttr, source, target, sourceAttr, targetAttr) {
+  graph.forEachDirectedEdge(function (
+    edge,
+    edgeAttr,
+    source,
+    target,
+    sourceAttr,
+    targetAttr
+  ) {
     var weight = getWeight(edgeAttr);
 
     M += weight;
@@ -470,8 +489,7 @@ function directedSparseModularity(graph, options) {
     totalOutWeights[sourceCommunity] += weight;
     totalInWeights[targetCommunity] += weight;
 
-    if (sourceCommunity !== targetCommunity)
-      return;
+    if (sourceCommunity !== targetCommunity) return;
 
     internalWeights[sourceCommunity] += weight;
   });
@@ -479,74 +497,99 @@ function directedSparseModularity(graph, options) {
   var Q = 0;
 
   for (var C in internalWeights)
-    Q += (internalWeights[C] / M) - (totalInWeights[C] * totalOutWeights[C] / Math.pow(M, 2)) * resolution;
+    Q +=
+      internalWeights[C] / M -
+      ((totalInWeights[C] * totalOutWeights[C]) / Math.pow(M, 2)) * resolution;
 
   return Q;
 }
 
 // NOTE: the formula is a bit unclear here but nodeCommunityDegree should be
 // given as the edges count * 2
-function undirectedModularityDelta(M, communityTotalWeight, nodeDegree, nodeCommunityDegree) {
+function undirectedModularityDelta(
+  M,
+  communityTotalWeight,
+  nodeDegree,
+  nodeCommunityDegree
+) {
   return (
-    (nodeCommunityDegree / (2 * M)) -
-    (
-      (communityTotalWeight * nodeDegree) / (2 * (M * M))
-    )
+    nodeCommunityDegree / (2 * M) -
+    (communityTotalWeight * nodeDegree) / (2 * (M * M))
   );
 }
 
-function directedModularityDelta(M, communityTotalInWeight, communityTotalOutWeight, nodeInDegree, nodeOutDegree, nodeCommunityDegree) {
+function directedModularityDelta(
+  M,
+  communityTotalInWeight,
+  communityTotalOutWeight,
+  nodeInDegree,
+  nodeOutDegree,
+  nodeCommunityDegree
+) {
   return (
-    (nodeCommunityDegree / M) -
-    (
-      ((nodeOutDegree * communityTotalInWeight) + (nodeInDegree * communityTotalOutWeight)) /
+    nodeCommunityDegree / M -
+    (nodeOutDegree * communityTotalInWeight +
+      nodeInDegree * communityTotalOutWeight) /
       (M * M)
-    )
   );
 }
 
 function denseModularity(graph, options) {
   if (!isGraph(graph))
-    throw new Error('graphology-metrics/modularity: given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-metrics/modularity: given graph is not a valid graphology instance.'
+    );
 
   if (graph.size === 0)
-    throw new Error('graphology-metrics/modularity: cannot compute modularity of an empty graph.');
+    throw new Error(
+      'graphology-metrics/modularity: cannot compute modularity of an empty graph.'
+    );
 
   if (graph.multi)
-    throw new Error('graphology-metrics/modularity: cannot compute modularity of a multi graph. Cast it to a simple one beforehand.');
+    throw new Error(
+      'graphology-metrics/modularity: cannot compute modularity of a multi graph. Cast it to a simple one beforehand.'
+    );
 
   var trueType = inferType(graph);
 
   if (trueType === 'mixed')
-    throw new Error('graphology-metrics/modularity: cannot compute modularity of a mixed graph.');
+    throw new Error(
+      'graphology-metrics/modularity: cannot compute modularity of a mixed graph.'
+    );
 
   options = defaults({}, options || {}, DEFAULTS);
 
-  if (trueType === 'directed')
-    return directedDenseModularity(graph, options);
+  if (trueType === 'directed') return directedDenseModularity(graph, options);
 
   return undirectedDenseModularity(graph, options);
 }
 
 function sparseModularity(graph, options) {
   if (!isGraph(graph))
-    throw new Error('graphology-metrics/modularity: given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-metrics/modularity: given graph is not a valid graphology instance.'
+    );
 
   if (graph.size === 0)
-    throw new Error('graphology-metrics/modularity: cannot compute modularity of an empty graph.');
+    throw new Error(
+      'graphology-metrics/modularity: cannot compute modularity of an empty graph.'
+    );
 
   if (graph.multi)
-    throw new Error('graphology-metrics/modularity: cannot compute modularity of a multi graph. Cast it to a simple one beforehand.');
+    throw new Error(
+      'graphology-metrics/modularity: cannot compute modularity of a multi graph. Cast it to a simple one beforehand.'
+    );
 
   var trueType = inferType(graph);
 
   if (trueType === 'mixed')
-    throw new Error('graphology-metrics/modularity: cannot compute modularity of a mixed graph.');
+    throw new Error(
+      'graphology-metrics/modularity: cannot compute modularity of a mixed graph.'
+    );
 
   options = defaults({}, options || {}, DEFAULTS);
 
-  if (trueType === 'directed')
-    return directedSparseModularity(graph, options);
+  if (trueType === 'directed') return directedSparseModularity(graph, options);
 
   return undirectedSparseModularity(graph, options);
 }

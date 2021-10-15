@@ -42,18 +42,27 @@ var DEFAULT_WEIGHT_ATTRIBUTE = 'weight';
  */
 function abstractWeightedDegree(name, assign, edgeGetter, graph, options) {
   if (!isGraph(graph))
-    throw new Error('graphology-metrics/' + name + ': the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-metrics/' +
+        name +
+        ': the given graph is not a valid graphology instance.'
+    );
 
   if (edgeGetter !== 'edges' && graph.type === 'undirected')
-    throw new Error('graphology-metrics/' + name + ': cannot compute ' + name + ' on an undirected graph.');
+    throw new Error(
+      'graphology-metrics/' +
+        name +
+        ': cannot compute ' +
+        name +
+        ' on an undirected graph.'
+    );
 
   var singleNode = null;
 
   // Solving arguments
   if (arguments.length === 5 && typeof arguments[4] !== 'object') {
     singleNode = arguments[4];
-  }
-  else if (arguments.length === 6) {
+  } else if (arguments.length === 6) {
     singleNode = arguments[4];
     options = arguments[5];
   }
@@ -64,13 +73,9 @@ function abstractWeightedDegree(name, assign, edgeGetter, graph, options) {
   var attributes = options.attributes || {};
 
   var weightAttribute = attributes.weight || DEFAULT_WEIGHT_ATTRIBUTE,
-      weightedDegreeAttribute = attributes.weightedDegree || name;
+    weightedDegreeAttribute = attributes.weightedDegree || name;
 
-  var edges,
-      d,
-      w,
-      i,
-      l;
+  var edges, d, w, i, l;
 
   // Computing weighted degree for a single node
   if (singleNode) {
@@ -80,15 +85,13 @@ function abstractWeightedDegree(name, assign, edgeGetter, graph, options) {
     for (i = 0, l = edges.length; i < l; i++) {
       w = graph.getEdgeAttribute(edges[i], weightAttribute);
 
-      if (typeof w === 'number')
-        d += w;
+      if (typeof w === 'number') d += w;
     }
 
     if (assign) {
       graph.setNodeAttribute(singleNode, weightedDegreeAttribute, d);
       return;
-    }
-    else {
+    } else {
       return d;
     }
   }
@@ -96,10 +99,10 @@ function abstractWeightedDegree(name, assign, edgeGetter, graph, options) {
   // Computing weighted degree for every node
   // TODO: it might be more performant to iterate on the edges here.
   var nodes = graph.nodes(),
-      node,
-      weightedDegrees = {},
-      j,
-      m;
+    node,
+    weightedDegrees = {},
+    j,
+    m;
 
   for (i = 0, l = nodes.length; i < l; i++) {
     node = nodes[i];
@@ -109,30 +112,56 @@ function abstractWeightedDegree(name, assign, edgeGetter, graph, options) {
     for (j = 0, m = edges.length; j < m; j++) {
       w = graph.getEdgeAttribute(edges[j], weightAttribute);
 
-      if (typeof w === 'number')
-        d += w;
+      if (typeof w === 'number') d += w;
     }
 
-    if (assign)
-      graph.setNodeAttribute(node, weightedDegreeAttribute, d);
-    else
-      weightedDegrees[node] = d;
+    if (assign) graph.setNodeAttribute(node, weightedDegreeAttribute, d);
+    else weightedDegrees[node] = d;
   }
 
-  if (!assign)
-    return weightedDegrees;
+  if (!assign) return weightedDegrees;
 }
 
 /**
  * Building various functions to export.
  */
-var weightedDegree = abstractWeightedDegree.bind(null, 'weightedDegree', false, 'edges'),
-    weightedInDegree = abstractWeightedDegree.bind(null, 'weightedInDegree', false, 'inEdges'),
-    weightedOutDegree = abstractWeightedDegree.bind(null, 'weightedOutDegree', false, 'outEdges');
+var weightedDegree = abstractWeightedDegree.bind(
+    null,
+    'weightedDegree',
+    false,
+    'edges'
+  ),
+  weightedInDegree = abstractWeightedDegree.bind(
+    null,
+    'weightedInDegree',
+    false,
+    'inEdges'
+  ),
+  weightedOutDegree = abstractWeightedDegree.bind(
+    null,
+    'weightedOutDegree',
+    false,
+    'outEdges'
+  );
 
-weightedDegree.assign = abstractWeightedDegree.bind(null, 'weightedDegree', true, 'edges');
-weightedInDegree.assign = abstractWeightedDegree.bind(null, 'weightedInDegree', true, 'inEdges');
-weightedOutDegree.assign = abstractWeightedDegree.bind(null, 'weightedOutDegree', true, 'outEdges');
+weightedDegree.assign = abstractWeightedDegree.bind(
+  null,
+  'weightedDegree',
+  true,
+  'edges'
+);
+weightedInDegree.assign = abstractWeightedDegree.bind(
+  null,
+  'weightedInDegree',
+  true,
+  'inEdges'
+);
+weightedOutDegree.assign = abstractWeightedDegree.bind(
+  null,
+  'weightedOutDegree',
+  true,
+  'outEdges'
+);
 
 /**
  * Exporting.

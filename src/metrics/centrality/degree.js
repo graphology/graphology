@@ -24,10 +24,20 @@ function abstractDegreeCentrality(assign, method, graph, options) {
   var name = method + 'Centrality';
 
   if (!isGraph(graph))
-    throw new Error('graphology-centrality/' + name + ': the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-centrality/' +
+        name +
+        ': the given graph is not a valid graphology instance.'
+    );
 
   if (method !== 'degree' && graph.type === 'undirected')
-    throw new Error('graphology-centrality/' + name + ': cannot compute ' + method + ' centrality on an undirected graph.');
+    throw new Error(
+      'graphology-centrality/' +
+        name +
+        ': cannot compute ' +
+        method +
+        ' centrality on an undirected graph.'
+    );
 
   // Solving options
   options = options || {};
@@ -38,28 +48,23 @@ function abstractDegreeCentrality(assign, method, graph, options) {
 
   // Variables
   var order = graph.order,
-      nodes = graph.nodes(),
-      getDegree = graph[method].bind(graph),
-      centralities = {};
+    nodes = graph.nodes(),
+    getDegree = graph[method].bind(graph),
+    centralities = {};
 
-  if (order === 0)
-    return assign ? undefined : centralities;
+  if (order === 0) return assign ? undefined : centralities;
 
   var s = 1 / (order - 1);
 
   // Iteration variables
-  var node,
-      centrality,
-      i;
+  var node, centrality, i;
 
   for (i = 0; i < order; i++) {
     node = nodes[i];
     centrality = getDegree(node) * s;
 
-    if (assign)
-      graph.setNodeAttribute(node, centralityAttribute, centrality);
-    else
-      centralities[node] = centrality;
+    if (assign) graph.setNodeAttribute(node, centralityAttribute, centrality);
+    else centralities[node] = centrality;
   }
 
   return assign ? undefined : centralities;
@@ -69,12 +74,20 @@ function abstractDegreeCentrality(assign, method, graph, options) {
  * Building various functions to export.
  */
 var degreeCentrality = abstractDegreeCentrality.bind(null, false, 'degree'),
-    inDegreeCentrality = abstractDegreeCentrality.bind(null, false, 'inDegree'),
-    outDegreeCentrality = abstractDegreeCentrality.bind(null, false, 'outDegree');
+  inDegreeCentrality = abstractDegreeCentrality.bind(null, false, 'inDegree'),
+  outDegreeCentrality = abstractDegreeCentrality.bind(null, false, 'outDegree');
 
 degreeCentrality.assign = abstractDegreeCentrality.bind(null, true, 'degree');
-inDegreeCentrality.assign = abstractDegreeCentrality.bind(null, true, 'inDegree');
-outDegreeCentrality.assign = abstractDegreeCentrality.bind(null, true, 'outDegree');
+inDegreeCentrality.assign = abstractDegreeCentrality.bind(
+  null,
+  true,
+  'inDegree'
+);
+outDegreeCentrality.assign = abstractDegreeCentrality.bind(
+  null,
+  true,
+  'outDegree'
+);
 
 /**
  * Exporting.

@@ -21,15 +21,12 @@ const PROPERTIES = [
 ];
 
 export default function properties(Graph) {
-
   return {
-
     /**
      * Regarding all properties.
      */
-    'misc': {
-
-      'all expected properties should be set.': function() {
+    misc: {
+      'all expected properties should be set.': function () {
         const graph = new Graph();
 
         PROPERTIES.forEach(property => {
@@ -37,12 +34,12 @@ export default function properties(Graph) {
         });
       },
 
-      'properties should be read-only.': function() {
+      'properties should be read-only.': function () {
         const graph = new Graph();
 
         // Attempting to mutate the properties
         PROPERTIES.forEach(property => {
-          assert.throws(function() {
+          assert.throws(function () {
             graph[property] = 'test';
           }, TypeError);
         });
@@ -53,13 +50,12 @@ export default function properties(Graph) {
      * Order.
      */
     '#.order': {
-
-      'it should be 0 if the graph is empty.': function() {
+      'it should be 0 if the graph is empty.': function () {
         const graph = new Graph();
         assert.strictEqual(graph.order, 0);
       },
 
-      'adding nodes should increase order.': function() {
+      'adding nodes should increase order.': function () {
         const graph = new Graph();
         graph.addNode('John');
         graph.addNode('Jack');
@@ -71,13 +67,12 @@ export default function properties(Graph) {
      * Size.
      */
     '#.size': {
-
-      'it should be 0 if the graph is empty.': function() {
+      'it should be 0 if the graph is empty.': function () {
         const graph = new Graph();
         assert.strictEqual(graph.size, 0);
       },
 
-      'adding & dropping edges should affect size.': function() {
+      'adding & dropping edges should affect size.': function () {
         const graph = new Graph();
         graph.addNode('John');
         graph.addNode('Jack');
@@ -93,13 +88,12 @@ export default function properties(Graph) {
      * Directed Size.
      */
     '#.directedSize': {
-
-      'it should be 0 if the graph is empty.': function() {
+      'it should be 0 if the graph is empty.': function () {
         const graph = new Graph();
         assert.strictEqual(graph.directedSize, 0);
       },
 
-      'adding & dropping edges should affect directed size.': function() {
+      'adding & dropping edges should affect directed size.': function () {
         const graph = new Graph();
         graph.addNode('John');
         graph.addNode('Jack');
@@ -122,13 +116,12 @@ export default function properties(Graph) {
      * Undirected Size.
      */
     '#.undirectedSize': {
-
-      'it should be 0 if the graph is empty.': function() {
+      'it should be 0 if the graph is empty.': function () {
         const graph = new Graph();
         assert.strictEqual(graph.undirectedSize, 0);
       },
 
-      'adding & dropping edges should affect undirected size.': function() {
+      'adding & dropping edges should affect undirected size.': function () {
         const graph = new Graph();
         graph.addNode('John');
         graph.addNode('Jack');
@@ -151,8 +144,7 @@ export default function properties(Graph) {
      * Multi.
      */
     '#.multi': {
-
-      'it should be false by default.': function() {
+      'it should be false by default.': function () {
         const graph = new Graph();
         assert.strictEqual(graph.multi, false);
       }
@@ -162,8 +154,7 @@ export default function properties(Graph) {
      * Type.
      */
     '#.type': {
-
-      'it should be "mixed" by default.': function() {
+      'it should be "mixed" by default.': function () {
         const graph = new Graph();
         assert.strictEqual(graph.type, 'mixed');
       }
@@ -173,8 +164,7 @@ export default function properties(Graph) {
      * Self loops.
      */
     '#.allowSelfLoops': {
-
-      'it should be true by default.': function() {
+      'it should be true by default.': function () {
         const graph = new Graph();
         assert.strictEqual(graph.allowSelfLoops, true);
       }
@@ -184,8 +174,7 @@ export default function properties(Graph) {
      * Implementation.
      */
     '#.implementation': {
-
-      'it should exist and be a string.': function() {
+      'it should exist and be a string.': function () {
         const graph = new Graph();
         assert.strictEqual(typeof graph.implementation, 'string');
       }
@@ -195,8 +184,7 @@ export default function properties(Graph) {
      * Self Loop Count.
      */
     '#.selfLoopCount': {
-
-      'it should exist and be correct.': function() {
+      'it should exist and be correct.': function () {
         const graph = new Graph();
 
         graph.mergeDirectedEdge('John', 'John');

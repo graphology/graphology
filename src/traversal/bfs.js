@@ -16,30 +16,31 @@ var TraversalRecord = require('./utils').TraversalRecord;
  */
 function bfs(graph, callback) {
   if (!isGraph(graph))
-    throw new Error('graphology-traversal/bfs: expecting a graphology instance.');
+    throw new Error(
+      'graphology-traversal/bfs: expecting a graphology instance.'
+    );
 
   if (typeof callback !== 'function')
-    throw new Error('graphology-traversal/bfs: given callback is not a function.');
+    throw new Error(
+      'graphology-traversal/bfs: given callback is not a function.'
+    );
 
   // Early termination
-  if (graph.order === 0)
-    return;
+  if (graph.order === 0) return;
 
   var seen = new Set();
   var queue = new FixedDeque(Array, graph.order);
   var record, depth;
 
   function neighborCallback(neighbor, attr) {
-    if (seen.has(neighbor))
-      return;
+    if (seen.has(neighbor)) return;
 
     seen.add(neighbor);
     queue.push(new TraversalRecord(neighbor, attr, depth + 1));
   }
 
-  graph.forEachNode(function(node, attr) {
-    if (seen.has(node))
-      return;
+  graph.forEachNode(function (node, attr) {
+    if (seen.has(node)) return;
 
     seen.add(node);
     queue.push(new TraversalRecord(node, attr, 0));
@@ -65,14 +66,17 @@ function bfs(graph, callback) {
  */
 function bfsFromNode(graph, node, callback) {
   if (!isGraph(graph))
-    throw new Error('graphology-traversal/dfs: expecting a graphology instance.');
+    throw new Error(
+      'graphology-traversal/dfs: expecting a graphology instance.'
+    );
 
   if (typeof callback !== 'function')
-    throw new Error('graphology-traversal/dfs: given callback is not a function.');
+    throw new Error(
+      'graphology-traversal/dfs: given callback is not a function.'
+    );
 
   // Early termination
-  if (graph.order === 0)
-    return;
+  if (graph.order === 0) return;
 
   node = '' + node;
 
@@ -81,8 +85,7 @@ function bfsFromNode(graph, node, callback) {
   var depth, record;
 
   function neighborCallback(neighbor, attr) {
-    if (seen.has(neighbor))
-      return;
+    if (seen.has(neighbor)) return;
 
     seen.add(neighbor);
     queue.push(new TraversalRecord(neighbor, attr, depth + 1));

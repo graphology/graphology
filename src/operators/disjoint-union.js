@@ -19,7 +19,9 @@ module.exports = function disjointUnion(G, H) {
     throw new Error('graphology-operators/disjoint-union: invalid graph.');
 
   if (G.multi !== H.multi)
-    throw new Error('graphology-operators/disjoint-union: both graph should be simple or multi.');
+    throw new Error(
+      'graphology-operators/disjoint-union: both graph should be simple or multi.'
+    );
 
   var R = G.nullCopy();
 
@@ -29,7 +31,7 @@ module.exports = function disjointUnion(G, H) {
   var i = 0;
 
   // Adding nodes
-  G.forEachNode(function(key, attr) {
+  G.forEachNode(function (key, attr) {
     labelsG[key] = i;
 
     copyNode(R, i, attr);
@@ -37,7 +39,7 @@ module.exports = function disjointUnion(G, H) {
     i++;
   });
 
-  H.forEachNode(function(key, attr) {
+  H.forEachNode(function (key, attr) {
     labelsH[key] = i;
 
     copyNode(R, i, attr);
@@ -48,7 +50,16 @@ module.exports = function disjointUnion(G, H) {
   // Adding edges
   i = 0;
 
-  G.forEachEdge(function(key, attr, source, target, _s, _t, undirected, generatedKey) {
+  G.forEachEdge(function (
+    key,
+    attr,
+    source,
+    target,
+    _s,
+    _t,
+    undirected,
+    generatedKey
+  ) {
     copyEdge(
       R,
       undirected,
@@ -60,7 +71,16 @@ module.exports = function disjointUnion(G, H) {
     );
   });
 
-  H.forEachEdge(function(key, attr, source, target, _s, _t, undirected, generatedKey) {
+  H.forEachEdge(function (
+    key,
+    attr,
+    source,
+    target,
+    _s,
+    _t,
+    undirected,
+    generatedKey
+  ) {
     copyEdge(
       R,
       undirected,

@@ -8,19 +8,17 @@ var strings = Array.from(new Array(S), () => randomString(4, 100));
 let i, s;
 
 console.time('ninja cast');
-for (i = 0; i < N; i++)
-  s = '' + strings[i % S];
+for (i = 0; i < N; i++) s = '' + strings[i % S];
 console.timeEnd('ninja cast');
 
 console.time('toString');
-for (i = 0; i < N; i++)
-  s = strings[i % S].toString();
+for (i = 0; i < N; i++) s = strings[i % S].toString();
 console.timeEnd('toString');
 
 console.time('condition');
 for (i = 0; i < N; i++) {
   s = strings[i % S];
-  s = typeof s === 'string' ? s : ('' + s);
+  s = typeof s === 'string' ? s : '' + s;
 }
 console.timeEnd('condition');
 

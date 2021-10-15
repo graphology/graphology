@@ -7,7 +7,11 @@ var ORDER = 50000;
 var SIZE = 100000;
 var CLUSTERS = 10;
 
-var graph = generateClusters(Graph.UndirectedGraph, {order: ORDER, size: SIZE, clusters: CLUSTERS});
+var graph = generateClusters(Graph.UndirectedGraph, {
+  order: ORDER,
+  size: SIZE,
+  clusters: CLUSTERS
+});
 randomLayout.assign(graph);
 
 console.time('layout');

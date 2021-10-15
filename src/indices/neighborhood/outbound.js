@@ -25,8 +25,7 @@ function OutboundNeighborhoodIndex(graph) {
 
   var n = 0;
 
-  for (i = 0, l = graph.order; i < l; i++)
-    ids[this.nodes[i]] = i;
+  for (i = 0, l = graph.order; i < l; i++) ids[this.nodes[i]] = i;
 
   for (i = 0, l = graph.order; i < l; i++) {
     node = this.nodes[i];
@@ -42,19 +41,19 @@ function OutboundNeighborhoodIndex(graph) {
   this.starts[i] = upperBound;
 }
 
-OutboundNeighborhoodIndex.prototype.bounds = function(i) {
+OutboundNeighborhoodIndex.prototype.bounds = function (i) {
   return [this.starts[i], this.starts[i + 1]];
 };
 
-OutboundNeighborhoodIndex.prototype.project = function() {
+OutboundNeighborhoodIndex.prototype.project = function () {
   var self = this;
 
   var projection = {};
 
-  self.nodes.forEach(function(node, i) {
+  self.nodes.forEach(function (node, i) {
     projection[node] = Array.from(
       self.neighborhood.slice(self.starts[i], self.starts[i + 1])
-    ).map(function(j) {
+    ).map(function (j) {
       return self.nodes[j];
     });
   });
@@ -62,18 +61,17 @@ OutboundNeighborhoodIndex.prototype.project = function() {
   return projection;
 };
 
-OutboundNeighborhoodIndex.prototype.collect = function(results) {
+OutboundNeighborhoodIndex.prototype.collect = function (results) {
   var i, l;
 
   var o = {};
 
-  for (i = 0, l = results.length; i < l; i++)
-    o[this.nodes[i]] = results[i];
+  for (i = 0, l = results.length; i < l; i++) o[this.nodes[i]] = results[i];
 
   return o;
 };
 
-OutboundNeighborhoodIndex.prototype.assign = function(prop, results) {
+OutboundNeighborhoodIndex.prototype.assign = function (prop, results) {
   var i, l;
 
   for (i = 0, l = results.length; i < l; i++)
@@ -106,8 +104,7 @@ function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
 
   var n = 0;
 
-  for (i = 0, l = graph.order; i < l; i++)
-    ids[this.nodes[i]] = i;
+  for (i = 0, l = graph.order; i < l; i++) ids[this.nodes[i]] = i;
 
   for (i = 0, l = graph.order; i < l; i++) {
     node = this.nodes[i];
@@ -120,8 +117,7 @@ function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
       neighbor = graph.opposite(node, edge);
       weight = graph.getEdgeAttribute(edge, weightAttribute);
 
-      if (typeof weight !== 'number')
-        weight = 1;
+      if (typeof weight !== 'number') weight = 1;
 
       // NOTE: for weighted mixed beware of merging weights if twice the same neighbor
       this.neighborhood[n] = ids[neighbor];
@@ -133,9 +129,13 @@ function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
   this.starts[i] = upperBound;
 }
 
-WeightedOutboundNeighborhoodIndex.prototype.bounds = OutboundNeighborhoodIndex.prototype.bounds;
-WeightedOutboundNeighborhoodIndex.prototype.project = OutboundNeighborhoodIndex.prototype.project;
-WeightedOutboundNeighborhoodIndex.prototype.collect = OutboundNeighborhoodIndex.prototype.collect;
-WeightedOutboundNeighborhoodIndex.prototype.assign = OutboundNeighborhoodIndex.prototype.assign;
+WeightedOutboundNeighborhoodIndex.prototype.bounds =
+  OutboundNeighborhoodIndex.prototype.bounds;
+WeightedOutboundNeighborhoodIndex.prototype.project =
+  OutboundNeighborhoodIndex.prototype.project;
+WeightedOutboundNeighborhoodIndex.prototype.collect =
+  OutboundNeighborhoodIndex.prototype.collect;
+WeightedOutboundNeighborhoodIndex.prototype.assign =
+  OutboundNeighborhoodIndex.prototype.assign;
 
 exports.WeightedOutboundNeighborhoodIndex = WeightedOutboundNeighborhoodIndex;

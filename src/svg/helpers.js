@@ -9,15 +9,15 @@ var defaults = require('./defaults.js');
 // Taken from @jacomyma (graph-recipes)
 function reduceNodes(graph, settings) {
   var width = settings.width,
-      height = settings.height;
+    height = settings.height;
 
   var xBarycenter = 0,
-      yBarycenter = 0,
-      totalWeight = 0;
+    yBarycenter = 0,
+    totalWeight = 0;
 
   var data = {};
 
-  graph.forEachNode(function(node, attr) {
+  graph.forEachNode(function (node, attr) {
     // Applying user's reducing logic
     if (typeof settings.nodes.reducer === 'function')
       attr = settings.nodes.reducer(settings, node, attr);
@@ -66,7 +66,7 @@ var ESCAPE_PATTERN = /["'<>&]/g;
 
 var ESCAPE_MAP = {
   '"': '&quot;',
-  '\'': '&apos;',
+  "'": '&apos;',
   '<': '&lt;',
   '>': '&gt;',
   '&': '&amp;'

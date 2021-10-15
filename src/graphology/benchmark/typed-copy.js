@@ -3,10 +3,7 @@ require('@babel/register');
 const updateStructureIndex = require('../src/indices').updateStructureIndex;
 const data = require('../src/data');
 
-const {
-  EdgeData,
-  MixedNodeData
-} = data;
+const {EdgeData, MixedNodeData} = data;
 
 const randomString = require('pandemonium/random-string');
 
@@ -30,11 +27,10 @@ function directedCopy(fromGraph, strict = false) {
 
   let step, edgeData, source, target, sourceData, targetData;
 
-  while ((step = iterator.next(), step.done !== true)) {
+  while (((step = iterator.next()), step.done !== true)) {
     edgeData = step.value;
 
-    if (edgeData.undirected)
-      continue;
+    if (edgeData.undirected) continue;
 
     source = edgeData.source.key;
     target = edgeData.target.key;
@@ -54,8 +50,7 @@ function directedCopy(fromGraph, strict = false) {
 
     if (source === target) {
       sourceData.directedSelfLoops++;
-    }
-    else {
+    } else {
       sourceData.outDegree++;
       targetData.inDegree++;
     }
@@ -83,12 +78,10 @@ function directedCopyThroughAdjacency(fromGraph, strict = false) {
 
   let sourceData = new MixedNodeData(null);
 
-  fromGraph.forEach((source, target, sa, ta, edge, ea, u) => {
-    if (u)
-      return;
+  fromGraph.forEach((source, target, sa, ta, edge, ea, u) => {
+    if (u) return;
 
-    if (source !== sourceData.key)
-      sourceData = toGraph._nodes.get(source);
+    if (source !== sourceData.key) sourceData = toGraph._nodes.get(source);
 
     const targetData = toGraph._nodes.get(target);
 
@@ -105,8 +98,7 @@ function directedCopyThroughAdjacency(fromGraph, strict = false) {
 
     if (source === target) {
       sourceData.directedSelfLoops++;
-    }
-    else {
+    } else {
       sourceData.outDegree++;
       targetData.inDegree++;
     }
@@ -129,10 +121,8 @@ for (i = 0; i < N; i++) {
   s = randomString(4, 50);
   t = randomString(4, 50);
 
-  if (i % 2 === 0)
-    g.mergeDirectedEdge(s, t);
-  else
-    g.mergeUndirectedEdge(s, t);
+  if (i % 2 === 0) g.mergeDirectedEdge(s, t);
+  else g.mergeUndirectedEdge(s, t);
 }
 
 console.time('copy');

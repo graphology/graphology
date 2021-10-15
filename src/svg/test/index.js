@@ -3,10 +3,10 @@
  * =========================
  */
 var assert = require('chai').assert,
-    renderSVG = require('../renderer'),
-    helpers = require('../helpers'),
-    DEFAULTS = require('../defaults').DEFAULTS,
-    Graph = require('graphology');
+  renderSVG = require('../renderer'),
+  helpers = require('../helpers'),
+  DEFAULTS = require('../defaults').DEFAULTS,
+  Graph = require('graphology');
 
 function getBasicGraph() {
   var graph = new Graph();
@@ -26,7 +26,7 @@ describe('renderer.js', function () {
   });
 });
 
-describe('helpers.js#reduceNodes', function() {
+describe('helpers.js#reduceNodes', function () {
   it('should produce different output data when the graph is flipped (regression #3)', function () {
     var graph = getBasicGraph();
     var data = helpers.reduceNodes(graph, DEFAULTS);
@@ -43,15 +43,19 @@ describe('helpers.js#reduceNodes', function() {
     });
     var dataFlipped2 = helpers.reduceNodes(graph, DEFAULTS);
 
-    [[data, dataFlipped1],
-     [data, dataFlipped2],
-     [dataFlipped1, dataFlipped2]].forEach(function(arr) {
+    [
+      [data, dataFlipped1],
+      [data, dataFlipped2],
+      [dataFlipped1, dataFlipped2]
+    ].forEach(function (arr) {
       var data0 = arr[0],
-          data1 = arr[1];
+        data1 = arr[1];
 
       for (var k in data0) {
-        var isXTooClose = Math.abs(data0[k].x - data1[k].x) < Math.abs(data0[k].x / 1000);
-        var isYTooClose = Math.abs(data0[k].y - data1[k].y) < Math.abs(data0[k].y / 1000);
+        var isXTooClose =
+          Math.abs(data0[k].x - data1[k].x) < Math.abs(data0[k].x / 1000);
+        var isYTooClose =
+          Math.abs(data0[k].y - data1[k].y) < Math.abs(data0[k].y / 1000);
 
         // At least one coordinate should be different
         assert.ok(!isXTooClose || !isYTooClose);

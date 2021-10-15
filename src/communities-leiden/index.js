@@ -40,12 +40,12 @@
  * https://github.com/vtraag/leidenalg
  */
 var defaults = require('lodash/defaultsDeep'),
-    isGraph = require('graphology-utils/is-graph'),
-    inferType = require('graphology-utils/infer-type'),
-    SparseMap = require('mnemonist/sparse-map'),
-    SparseQueueSet = require('mnemonist/sparse-queue-set'),
-    createRandomIndex = require('pandemonium/random-index').createRandomIndex,
-    utils = require('./utils.js');
+  isGraph = require('graphology-utils/is-graph'),
+  inferType = require('graphology-utils/infer-type'),
+  SparseMap = require('mnemonist/sparse-map'),
+  SparseQueueSet = require('mnemonist/sparse-queue-set'),
+  createRandomIndex = require('pandemonium/random-index').createRandomIndex,
+  utils = require('./utils.js');
 
 var indices = require('graphology-indices/neighborhood/louvain');
 var addWeightToCommunity = utils.addWeightToCommunity;
@@ -68,16 +68,20 @@ var DEFAULTS = {
 
 var EPSILON = 1e-10;
 
-function tieBreaker(bestCommunity, currentCommunity, targetCommunity, delta, bestDelta) {
+function tieBreaker(
+  bestCommunity,
+  currentCommunity,
+  targetCommunity,
+  delta,
+  bestDelta
+) {
   if (Math.abs(delta - bestDelta) < EPSILON) {
     if (bestCommunity === currentCommunity) {
       return false;
-    }
-    else {
+    } else {
       return targetCommunity > bestCommunity;
     }
-  }
-  else if (delta > bestDelta) {
+  } else if (delta > bestDelta) {
     return true;
   }
 
@@ -107,31 +111,27 @@ function undirectedLeiden(detailed, graph, options) {
 
   // Traversal
   var queue = new SparseQueueSet(index.C),
-      start,
-      end,
-      weight,
-      ci,
-      ri,
-      s,
-      i,
-      j,
-      l;
+    start,
+    end,
+    weight,
+    ci,
+    ri,
+    s,
+    i,
+    j,
+    l;
 
   // Metrics
-  var degree,
-      targetCommunityDegree;
+  var degree, targetCommunityDegree;
 
   // Moves
-  var bestCommunity,
-      bestDelta,
-      deltaIsBetter,
-      delta;
+  var bestCommunity, bestDelta, deltaIsBetter, delta;
 
   // Details
   var deltaComputations = 0,
-      nodesVisited = 0,
-      moves = [],
-      currentMoves;
+    nodesVisited = 0,
+    moves = [],
+    currentMoves;
 
   while (true) {
     l = index.C;
@@ -178,12 +178,18 @@ function undirectedLeiden(detailed, graph, options) {
         currentCommunity
       );
       bestCommunity = currentCommunity;
-        var poss = [[currentCommunity, bestDelta, 'own', index.counts[currentCommunity] === 1]];
+      var poss = [
+        [
+          currentCommunity,
+          bestDelta,
+          'own',
+          index.counts[currentCommunity] === 1
+        ]
+      ];
       for (ci = 0; ci < communities.size; ci++) {
         targetCommunity = communities.dense[ci];
 
-        if (targetCommunity === currentCommunity)
-          continue;
+        if (targetCommunity === currentCommunity) continue;
 
         targetCommunityDegree = communities.vals[ci];
 
@@ -195,7 +201,7 @@ function undirectedLeiden(detailed, graph, options) {
           targetCommunityDegree,
           targetCommunity
         );
-          poss.push([targetCommunity, delta, 'other']);
+        poss.push([targetCommunity, delta, 'other']);
         deltaIsBetter = tieBreaker(
           bestCommunity,
           currentCommunity,
@@ -216,7 +222,6 @@ function undirectedLeiden(detailed, graph, options) {
       // }
 
       if (bestDelta < 0) {
-
         // NOTE: this is to allow nodes to move back to their own singleton
         // This code however only deals with modularity (e.g. the condition
         // about bestDelta < 0, which is the delta for moving back to
@@ -231,17 +236,12 @@ function undirectedLeiden(detailed, graph, options) {
 
         // If the node was already in a singleton community, we don't consider
         // a move was made
-        if (bestCommunity === currentCommunity)
-          continue;
-      }
-      else {
-
+        if (bestCommunity === currentCommunity) continue;
+      } else {
         // If no move was made, we continue to next node
         if (bestCommunity === currentCommunity) {
           continue;
-        }
-        else {
-
+        } else {
           // Actually moving the node to a new community
           index.move(i, degree, bestCommunity);
         }
@@ -257,8 +257,7 @@ function undirectedLeiden(detailed, graph, options) {
         j = index.neighborhood[start];
         targetCommunity = index.belongings[j];
 
-        if (targetCommunity !== bestCommunity)
-          queue.enqueue(j);
+        if (targetCommunity !== bestCommunity) queue.enqueue(j);
       }
     }
 
@@ -270,7 +269,6 @@ function undirectedLeiden(detailed, graph, options) {
     }
 
     if (!addenda.onlySingletons()) {
-
       // We continue working on the induced graph
       addenda.zoomOut();
       continue;
@@ -502,15 +500,21 @@ function undirectedLeiden(detailed, graph, options) {
  */
 function leiden(assign, detailed, graph, options) {
   if (!isGraph(graph))
-    throw new Error('graphology-communities-leiden: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-communities-leiden: the given graph is not a valid graphology instance.'
+    );
 
   var type = inferType(graph);
 
   if (type === 'mixed')
-    throw new Error('graphology-communities-leiden: cannot run the algorithm on a true mixed graph.');
+    throw new Error(
+      'graphology-communities-leiden: cannot run the algorithm on a true mixed graph.'
+    );
 
   if (type === 'directed')
-    throw new Error('graphology-communities-leiden: not yet implemented for directed graphs.');
+    throw new Error(
+      'graphology-communities-leiden: not yet implemented for directed graphs.'
+    );
 
   // Attributes name
   options = defaults({}, options, DEFAULTS);
@@ -520,7 +524,7 @@ function leiden(assign, detailed, graph, options) {
 
   if (graph.size === 0) {
     if (assign) {
-      graph.forEachNode(function(node) {
+      graph.forEachNode(function (node) {
         graph.setNodeAttribute(node, options.attributes.communities, c++);
       });
 
@@ -529,12 +533,11 @@ function leiden(assign, detailed, graph, options) {
 
     var communities = {};
 
-    graph.forEachNode(function(node) {
+    graph.forEachNode(function (node) {
       communities[node] = c++;
     });
 
-    if (!detailed)
-      return communities;
+    if (!detailed) return communities;
 
     return {
       communities: communities,

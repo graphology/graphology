@@ -5,8 +5,8 @@
  * Function generating path graphs.
  */
 var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
-    mergePath = require('graphology-utils/merge-path'),
-    range = require('lodash/range');
+  mergePath = require('graphology-utils/merge-path'),
+  range = require('lodash/range');
 
 /**
  * Generates a path graph with n nodes.
@@ -17,7 +17,9 @@ var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
  */
 module.exports = function path(GraphClass, order) {
   if (!isGraphConstructor(GraphClass))
-    throw new Error('graphology-generators/classic/path: invalid Graph constructor.');
+    throw new Error(
+      'graphology-generators/classic/path: invalid Graph constructor.'
+    );
 
   var graph = new GraphClass();
 

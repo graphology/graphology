@@ -12,8 +12,7 @@
  * @param  {array} nodes - Nodes to add, first one being the center of the star.
  */
 module.exports = function mergeStar(graph, nodes) {
-  if (nodes.length === 0)
-    return;
+  if (nodes.length === 0) return;
 
   var node, i, l;
 

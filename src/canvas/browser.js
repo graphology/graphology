@@ -29,7 +29,7 @@ function abstractRenderToNewCanvas(asyncVersion, graph, settings, callback) {
     return canvas;
   }
 
-  return lib.renderAsync(graph, context, settings, function() {
+  return lib.renderAsync(graph, context, settings, function () {
     return callback(null, canvas);
   });
 }

@@ -14,7 +14,11 @@ interface IUnweightedShortestPath {
   (graph: Graph, source: unknown): ShortestPathMapping;
   (graph: Graph, source: unknown, target: unknown): ShortestPath | null;
 
-  bidirectional(graph: Graph, source: unknown, target: unknown): ShortestPath | null;
+  bidirectional(
+    graph: Graph,
+    source: unknown,
+    target: unknown
+  ): ShortestPath | null;
   singleSource(graph: Graph, source: unknown): ShortestPathMapping;
   singleSourceLength(graph: Graph, source: unknown): ShortestPathLengthMapping;
   brandes(graph: Graph, source: unknown): BrandesResult;

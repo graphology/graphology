@@ -9,27 +9,27 @@ module.exports = function worker() {
 
   var moduleShim = {};
 
-  (function() {
+  (function () {
     // <%= iterate %>
   })();
 
   var iterate = moduleShim.exports;
 
-  self.addEventListener('message', function(event) {
+  self.addEventListener('message', function (event) {
     var data = event.data;
 
     NODES = new Float32Array(data.nodes);
 
     // Running the iteration
-    var result = iterate(
-      data.settings,
-      NODES
-    );
+    var result = iterate(data.settings, NODES);
 
     // Sending result to supervisor
-    self.postMessage({
-      result: result,
-      nodes: NODES.buffer
-    }, [NODES.buffer]);
+    self.postMessage(
+      {
+        result: result,
+        nodes: NODES.buffer
+      },
+      [NODES.buffer]
+    );
   });
 };

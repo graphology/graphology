@@ -17,11 +17,13 @@ var isGraph = require('./is-graph');
  */
 module.exports = function memoizedForEach(graph, cacher, callback) {
   if (!isGraph(graph))
-    throw new Error('graphology-utils/memoized-for-each: expecting a valid graphology instance.');
+    throw new Error(
+      'graphology-utils/memoized-for-each: expecting a valid graphology instance.'
+    );
 
   var currentSource, cache;
 
-  graph.forEach(function(s, t, sa, ta, e, ea, u, g) {
+  graph.forEach(function (s, t, sa, ta, e, ea, u, g) {
     if (currentSource !== s) {
       currentSource = s;
       cache = cacher(s, sa);

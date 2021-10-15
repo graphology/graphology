@@ -24,8 +24,7 @@ for (i = 0; i < N; i++) {
 console.time('build');
 for (i = 0; i < N; i++) {
   for (j = 0; j < N; j++) {
-    if (i === j)
-      continue;
+    if (i === j) continue;
 
     g.addEdge(keys[i], keys[j]);
   }

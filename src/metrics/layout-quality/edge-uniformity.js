@@ -13,26 +13,31 @@
 var isGraph = require('graphology-utils/is-graph');
 
 function euclideanDistance(a, b) {
-  return Math.sqrt(
-    Math.pow(a.x - b.x, 2) +
-    Math.pow(a.y - b.y, 2)
-  );
+  return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 }
 
 module.exports = function edgeUniformity(graph) {
   if (!isGraph(graph))
-    throw new Error('graphology-metrics/layout-quality/edge-uniformity: given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-metrics/layout-quality/edge-uniformity: given graph is not a valid graphology instance.'
+    );
 
-  if (graph.size === 0)
-    return 0;
+  if (graph.size === 0) return 0;
 
   var sum = 0,
-      i = 0,
-      l;
+    i = 0,
+    l;
 
   var lengths = new Float64Array(graph.size);
 
-  graph.forEachEdge(function(edge, attr, source, target, sourceAttr, targetAttr) {
+  graph.forEachEdge(function (
+    edge,
+    attr,
+    source,
+    target,
+    sourceAttr,
+    targetAttr
+  ) {
     var edgeLength = euclideanDistance(sourceAttr, targetAttr);
 
     lengths[i++] = edgeLength;

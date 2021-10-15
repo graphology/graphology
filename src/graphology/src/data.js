@@ -17,7 +17,6 @@
  * @param {object} attributes - Node's attributes.
  */
 export function MixedNodeData(key, attributes) {
-
   // Attributes
   this.key = key;
   this.attributes = attributes;
@@ -43,7 +42,6 @@ export function MixedNodeData(key, attributes) {
  * @param {object} attributes - Node's attributes.
  */
 export function DirectedNodeData(key, attributes) {
-
   // Attributes
   this.key = key;
   this.attributes = attributes;
@@ -58,8 +56,7 @@ export function DirectedNodeData(key, attributes) {
   this.out = {};
 }
 
-DirectedNodeData.prototype.upgradeToMixed = function() {
-
+DirectedNodeData.prototype.upgradeToMixed = function () {
   // Degrees
   this.undirectedDegree = 0;
   this.undirectedSelfLoops = 0;
@@ -67,7 +64,6 @@ DirectedNodeData.prototype.upgradeToMixed = function() {
   // Indices
   this.undirected = {};
 };
-
 
 /**
  * UndirectedNodeData class.
@@ -77,7 +73,6 @@ DirectedNodeData.prototype.upgradeToMixed = function() {
  * @param {object} attributes - Node's attributes.
  */
 export function UndirectedNodeData(key, attributes) {
-
   // Attributes
   this.key = key;
   this.attributes = attributes;
@@ -90,8 +85,7 @@ export function UndirectedNodeData(key, attributes) {
   this.undirected = {};
 }
 
-UndirectedNodeData.prototype.upgradeToMixed = function() {
-
+UndirectedNodeData.prototype.upgradeToMixed = function () {
   // Degrees
   this.inDegree = 0;
   this.outDegree = 0;
@@ -113,8 +107,14 @@ UndirectedNodeData.prototype.upgradeToMixed = function() {
  * @param {string}  target       - Target of the edge.
  * @param {object}  attributes   - Edge's attributes.
  */
-export function EdgeData(undirected, key, generatedKey, source, target, attributes) {
-
+export function EdgeData(
+  undirected,
+  key,
+  generatedKey,
+  source,
+  target,
+  attributes
+) {
   // Attributes
   this.key = key;
   this.attributes = attributes;

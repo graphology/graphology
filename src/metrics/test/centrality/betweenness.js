@@ -3,22 +3,21 @@
  * =============================================
  */
 var assert = require('chai').assert,
-    Graph = require('graphology'),
-    generators = require('graphology-generators'),
-    mergePath = require('graphology-utils/merge-path'),
-    betweenness = require('../../centrality/betweenness');
+  Graph = require('graphology'),
+  generators = require('graphology-generators'),
+  mergePath = require('graphology-utils/merge-path'),
+  betweenness = require('../../centrality/betweenness');
 
 var UndirectedGraph = Graph.UndirectedGraph,
-    DirectedGraph = Graph.DirectedGraph;
+  DirectedGraph = Graph.DirectedGraph;
 
 var complete = generators.classic.complete.bind(null, UndirectedGraph),
-    path = generators.classic.path.bind(null, UndirectedGraph),
-    directedPath = generators.classic.path.bind(null, DirectedGraph),
-    ladder = generators.classic.ladder.bind(null, UndirectedGraph);
+  path = generators.classic.path.bind(null, UndirectedGraph),
+  directedPath = generators.classic.path.bind(null, DirectedGraph),
+  ladder = generators.classic.ladder.bind(null, UndirectedGraph);
 
 function deepApproximatelyEqual(t, o, precision) {
-  for (var k in t)
-    assert.approximately(t[k], o[k], precision);
+  for (var k in t) assert.approximately(t[k], o[k], precision);
 }
 
 function getWeightedGraph1() {
@@ -37,7 +36,7 @@ function getWeightedGraph1() {
     [4, 5, 4]
   ];
 
-  edges.forEach(function(edge) {
+  edges.forEach(function (edge) {
     graph.mergeEdge(edge[0], edge[1], {weight: edge[2]});
   });
 
@@ -60,21 +59,21 @@ function getWeightedGraph2(w) {
     ['y', 'v', 6]
   ];
 
-  edges.forEach(function(edge) {
+  edges.forEach(function (edge) {
     graph.mergeEdge(edge[0], edge[1], {[w || 'weight']: edge[2]});
   });
 
   return graph;
 }
 
-describe('betweenness centrality', function() {
-  it('should throw if passed an invalid graph.', function() {
-    assert.throws(function() {
+describe('betweenness centrality', function () {
+  it('should throw if passed an invalid graph.', function () {
+    assert.throws(function () {
       betweenness(null);
     }, /graphology/);
   });
 
-  it('Complete graph', function() {
+  it('Complete graph', function () {
     var graph = complete(5);
 
     var centralities = betweenness(graph, {normalized: false});
@@ -98,7 +97,7 @@ describe('betweenness centrality', function() {
     });
   });
 
-  it('Path', function() {
+  it('Path', function () {
     var graph = path(3);
 
     var centralities = betweenness(graph, {normalized: false});
@@ -130,7 +129,7 @@ describe('betweenness centrality', function() {
     });
   });
 
-  it('Path normalized', function() {
+  it('Path normalized', function () {
     var graph = path(3);
 
     var centralities = betweenness(graph, {normalized: true});
@@ -150,7 +149,7 @@ describe('betweenness centrality', function() {
     });
   });
 
-  it('Krackhardt kite', function() {
+  it('Krackhardt kite', function () {
     var graph = generators.small.krackhardtKite(UndirectedGraph);
 
     var centralities = betweenness(graph, {normalized: false});
@@ -175,7 +174,7 @@ describe('betweenness centrality', function() {
     deepApproximatelyEqual(centralities, test, 1e-3);
   });
 
-  it('Krackhardt kite normalized', function() {
+  it('Krackhardt kite normalized', function () {
     var graph = generators.small.krackhardtKite(UndirectedGraph);
 
     var centralities = betweenness(graph, {normalized: true});
@@ -200,27 +199,27 @@ describe('betweenness centrality', function() {
     deepApproximatelyEqual(centralities, test, 1e-3);
   });
 
-  it('Florentine families', function() {
+  it('Florentine families', function () {
     var graph = generators.social.florentineFamilies(UndirectedGraph);
 
     var centralities = betweenness(graph);
 
     var test = {
-      Acciaiuoli: .000,
-      Albizzi: .212,
-      Barbadori: .093,
-      Bischeri: .104,
-      Castellani: .055,
-      Ginori: .000,
-      Guadagni: .255,
-      Lamberteschi: .000,
-      Medici: .522,
-      Pazzi: .000,
-      Peruzzi: .022,
-      Ridolfi: .114,
-      Salviati: .143,
-      Strozzi: .103,
-      Tornabuoni: .092
+      Acciaiuoli: 0.0,
+      Albizzi: 0.212,
+      Barbadori: 0.093,
+      Bischeri: 0.104,
+      Castellani: 0.055,
+      Ginori: 0.0,
+      Guadagni: 0.255,
+      Lamberteschi: 0.0,
+      Medici: 0.522,
+      Pazzi: 0.0,
+      Peruzzi: 0.022,
+      Ridolfi: 0.114,
+      Salviati: 0.143,
+      Strozzi: 0.103,
+      Tornabuoni: 0.092
     };
 
     deepApproximatelyEqual(centralities, test, 1e-3);
@@ -230,7 +229,7 @@ describe('betweenness centrality', function() {
     deepApproximatelyEqual(centralities, test, 1e-3);
   });
 
-  it('Ladder graph', function() {
+  it('Ladder graph', function () {
     var graph = ladder(3);
 
     var centralities = betweenness(graph, {normalized: false});
@@ -251,7 +250,7 @@ describe('betweenness centrality', function() {
     deepApproximatelyEqual(centralities, test, 1e-3);
   });
 
-  it('Disconnected path', function() {
+  it('Disconnected path', function () {
     var graph = new UndirectedGraph();
     mergePath(graph, [0, 1, 2]);
     mergePath(graph, [3, 4, 5, 6]);
@@ -269,7 +268,7 @@ describe('betweenness centrality', function() {
     });
   });
 
-  it('Directed path', function() {
+  it('Directed path', function () {
     var graph = directedPath(3);
 
     var centralities = betweenness(graph, {normalized: false});
@@ -281,7 +280,7 @@ describe('betweenness centrality', function() {
     });
   });
 
-  it('Directed path normalized', function() {
+  it('Directed path normalized', function () {
     var graph = directedPath(3);
 
     var centralities = betweenness(graph, {normalized: true});
@@ -293,10 +292,13 @@ describe('betweenness centrality', function() {
     });
   });
 
-  it('Weighted graph 1', function() {
+  it('Weighted graph 1', function () {
     var graph = getWeightedGraph1();
 
-    var centralities = betweenness(graph, {normalized: false, weighted: true});
+    var centralities = betweenness(graph, {
+      normalized: false,
+      weighted: true
+    });
 
     assert.deepEqual(centralities, {
       0: 2,
@@ -308,10 +310,13 @@ describe('betweenness centrality', function() {
     });
   });
 
-  it('Weighted graph 2', function() {
+  it('Weighted graph 2', function () {
     var graph = getWeightedGraph2();
 
-    var centralities = betweenness(graph, {normalized: false, weighted: true});
+    var centralities = betweenness(graph, {
+      normalized: false,
+      weighted: true
+    });
 
     assert.deepEqual(centralities, {
       y: 5,
@@ -322,7 +327,7 @@ describe('betweenness centrality', function() {
     });
   });
 
-  it('Assining', function() {
+  it('Assining', function () {
     var graph = getWeightedGraph2('w');
 
     betweenness.assign(graph, {
@@ -342,7 +347,7 @@ describe('betweenness centrality', function() {
       v: 2
     };
 
-    graph.nodes().forEach(function(node) {
+    graph.nodes().forEach(function (node) {
       assert.strictEqual(
         graph.getNodeAttribute(node, 'centrality'),
         test[node]

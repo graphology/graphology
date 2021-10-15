@@ -16,11 +16,9 @@ function assignPolyfill() {
   const target = arguments[0];
 
   for (let i = 1, l = arguments.length; i < l; i++) {
-    if (!arguments[i])
-      continue;
+    if (!arguments[i]) continue;
 
-    for (const k in arguments[i])
-      target[k] = arguments[i][k];
+    for (const k in arguments[i]) target[k] = arguments[i][k];
   }
 
   return target;
@@ -28,8 +26,7 @@ function assignPolyfill() {
 
 let assign = assignPolyfill;
 
-if (typeof Object.assign === 'function')
-  assign = Object.assign;
+if (typeof Object.assign === 'function') assign = Object.assign;
 
 export {assign};
 
@@ -49,19 +46,15 @@ export function getMatchingEdge(graph, source, target, type) {
 
   let edge = null;
 
-  if (!sourceData)
-    return edge;
+  if (!sourceData) return edge;
 
   if (type === 'mixed') {
-    edge = (
+    edge =
       (sourceData.out && sourceData.out[target]) ||
-      (sourceData.undirected && sourceData.undirected[target])
-    );
-  }
-  else if (type === 'directed') {
+      (sourceData.undirected && sourceData.undirected[target]);
+  } else if (type === 'directed') {
     edge = sourceData.out && sourceData.out[target];
-  }
-  else {
+  } else {
     edge = sourceData.undirected && sourceData.undirected[target];
   }
 
@@ -91,9 +84,7 @@ export function isGraph(value) {
  */
 export function isPlainObject(value) {
   return (
-    typeof value === 'object' &&
-    value !== null &&
-    value.constructor === Object
+    typeof value === 'object' && value !== null && value.constructor === Object
   );
 }
 
@@ -106,8 +97,7 @@ export function isPlainObject(value) {
 export function isEmpty(o) {
   let k;
 
-  for (k in o)
-    return false;
+  for (k in o) return false;
 
   return true;
 }
@@ -128,7 +118,6 @@ export function privateProperty(target, name, value) {
   });
 }
 
-
 /**
  * Creates a read-only property for the given member name & the given getter.
  *
@@ -144,8 +133,7 @@ export function readOnlyProperty(target, name, value) {
 
   if (typeof value === 'function') {
     descriptor.get = value;
-  }
-  else {
+  } else {
     descriptor.value = value;
     descriptor.writable = false;
   }
@@ -159,11 +147,9 @@ export function readOnlyProperty(target, name, value) {
  * @param {object} hints - Target object.
  */
 export function validateHints(hints) {
-  if (!isPlainObject(hints))
-    return false;
+  if (!isPlainObject(hints)) return false;
 
-  if (hints.attributes && !Array.isArray(hints.attributes))
-    return false;
+  if (hints.attributes && !Array.isArray(hints.attributes)) return false;
 
   return true;
 }

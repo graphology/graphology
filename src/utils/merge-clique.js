@@ -12,14 +12,9 @@
  * @param  {array} nodes - Nodes representing the clique to merge.
  */
 module.exports = function mergeClique(graph, nodes) {
-  if (nodes.length === 0)
-    return;
+  if (nodes.length === 0) return;
 
-  var source,
-      target,
-      i,
-      j,
-      l;
+  var source, target, i, j, l;
 
   for (i = 0, l = nodes.length; i < l; i++) {
     source = nodes[i];

@@ -6,8 +6,8 @@
  * Browser version of the graphology GEXF parser using DOMParser to function.
  */
 var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
-    mergeEdge = require('graphology-utils/add-edge').mergeEdge,
-    helpers = require('../common/helpers.js');
+  mergeEdge = require('graphology-utils/add-edge').mergeEdge,
+  helpers = require('../common/helpers.js');
 
 var cast = helpers.cast;
 
@@ -29,13 +29,13 @@ function isReallyNaN(value) {
  */
 function toRGBString(element) {
   var a = element.getAttribute('a'),
-      r = element.getAttribute('r'),
-      g = element.getAttribute('g'),
-      b = element.getAttribute('b');
+    r = element.getAttribute('r'),
+    g = element.getAttribute('g'),
+    b = element.getAttribute('b');
 
-  return a ?
-    ('rgba(' + r + ',' + g + ',' + b + ',' + a + ')') :
-    ('rgb(' + r + ',' + g + ',' + b + ')');
+  return a
+    ? 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')'
+    : 'rgb(' + r + ',' + g + ',' + b + ')';
 }
 
 /**
@@ -49,11 +49,9 @@ function toRGBString(element) {
 function getFirstMatchingVizTag(element, name) {
   var vizElement = element.getElementsByTagName('viz:' + name)[0];
 
-  if (!vizElement)
-    vizElement = element.getElementsByTagNameNS('viz', name)[0];
+  if (!vizElement) vizElement = element.getElementsByTagNameNS('viz', name)[0];
 
-  if (!vizElement)
-    vizElement = element.getElementsByTagName(name)[0];
+  if (!vizElement) vizElement = element.getElementsByTagName(name)[0];
 
   return vizElement;
 }
@@ -66,19 +64,17 @@ function getFirstMatchingVizTag(element, name) {
  */
 function collectMeta(elements) {
   var meta = {},
-      element,
-      value;
+    element,
+    value;
 
   for (var i = 0, l = elements.length; i < l; i++) {
     element = elements[i];
 
-    if (element.nodeName === '#text')
-      continue;
+    if (element.nodeName === '#text') continue;
 
     value = element.textContent.trim();
 
-    if (value)
-      meta[element.tagName.toLowerCase()] = element.textContent;
+    if (value) meta[element.tagName.toLowerCase()] = element.textContent;
   }
 
   return meta;
@@ -92,10 +88,10 @@ function collectMeta(elements) {
  */
 function extractModel(elements) {
   var model = {},
-      defaults = {},
-      element,
-      defaultElement,
-      id;
+    defaults = {},
+    element,
+    defaultElement,
+    id;
 
   for (var i = 0, l = elements.length; i < l; i++) {
     element = elements[i];
@@ -104,9 +100,7 @@ function extractModel(elements) {
     model[id] = {
       id: id,
       type: element.getAttribute('type') || 'string',
-      title: !isReallyNaN(+id) ?
-        (element.getAttribute('title') || id) :
-        id
+      title: !isReallyNaN(+id) ? element.getAttribute('title') || id : id
     };
 
     // Default?
@@ -132,25 +126,20 @@ function extractModel(elements) {
  */
 function collectAttributes(model, defaults, element) {
   var data = {},
-      label = element.getAttribute('label'),
-      weight = element.getAttribute('weight');
+    label = element.getAttribute('label'),
+    weight = element.getAttribute('weight');
 
-  if (label)
-    data.label = label;
+  if (label) data.label = label;
 
-  if (weight)
-    data.weight = +weight;
+  if (weight) data.weight = +weight;
 
   var valueElements = element.getElementsByTagName('attvalue'),
-      valueElement,
-      id;
+    valueElement,
+    id;
 
   for (var i = 0, l = valueElements.length; i < l; i++) {
     valueElement = valueElements[i];
-    id = (
-      valueElement.getAttribute('id') ||
-      valueElement.getAttribute('for')
-    );
+    id = valueElement.getAttribute('id') || valueElement.getAttribute('for');
 
     data[model[id].title] = cast(
       model[id].type,
@@ -162,8 +151,7 @@ function collectAttributes(model, defaults, element) {
   var k;
 
   for (k in defaults) {
-    if (!(k in data))
-      data[k] = defaults[k];
+    if (!(k in data)) data[k] = defaults[k];
   }
 
   // TODO: shortcut here to avoid viz when namespace is not set
@@ -173,14 +161,12 @@ function collectAttributes(model, defaults, element) {
   //-- 1) Color
   var vizElement = getFirstMatchingVizTag(element, 'color');
 
-  if (vizElement)
-    data.color = toRGBString(vizElement);
+  if (vizElement) data.color = toRGBString(vizElement);
 
   //-- 2) Size
   vizElement = getFirstMatchingVizTag(element, 'size');
 
-  if (vizElement)
-    data.size = +vizElement.getAttribute('value');
+  if (vizElement) data.size = +vizElement.getAttribute('value');
 
   //-- 3) Position
   var x, y, z;
@@ -192,25 +178,20 @@ function collectAttributes(model, defaults, element) {
     y = vizElement.getAttribute('y');
     z = vizElement.getAttribute('z');
 
-    if (x)
-      data.x = +x;
-    if (y)
-      data.y = +y;
-    if (z)
-      data.z = +z;
+    if (x) data.x = +x;
+    if (y) data.y = +y;
+    if (z) data.z = +z;
   }
 
   //-- 4) Shape
   vizElement = getFirstMatchingVizTag(element, 'shape');
 
-  if (vizElement)
-    data.shape = vizElement.getAttribute('value');
+  if (vizElement) data.shape = vizElement.getAttribute('value');
 
   //-- 5) Thickness
   vizElement = getFirstMatchingVizTag(element, 'thickness');
 
-  if (vizElement)
-    data.thickness = +vizElement.getAttribute('value');
+  if (vizElement) data.thickness = +vizElement.getAttribute('value');
 
   return data;
 }
@@ -220,7 +201,6 @@ function collectAttributes(model, defaults, element) {
  * the parser function.
  */
 module.exports = function createParserFunction(DOMParser, Document) {
-
   /**
    * Function taking either a string or a document and returning a
    * graphology instance.
@@ -234,35 +214,29 @@ module.exports = function createParserFunction(DOMParser, Document) {
   return function parse(Graph, source) {
     var xmlDoc = source;
 
-    var element,
-        result,
-        type,
-        attributes,
-        id,
-        s,
-        t,
-        i,
-        l;
+    var element, result, type, attributes, id, s, t, i, l;
 
     if (!isGraphConstructor(Graph))
       throw new Error('graphology-gexf/parser: invalid Graph constructor.');
 
     // If source is a string, we are going to parse it
     if (typeof source === 'string')
-      xmlDoc = (new DOMParser()).parseFromString(source, 'application/xml');
+      xmlDoc = new DOMParser().parseFromString(source, 'application/xml');
 
     if (!(xmlDoc instanceof Document))
-      throw new Error('graphology-gexf/parser: source should either be a XML document or a string.');
+      throw new Error(
+        'graphology-gexf/parser: source should either be a XML document or a string.'
+      );
 
     // Finding useful elements
     var GRAPH_ELEMENT = xmlDoc.getElementsByTagName('graph')[0],
-        META_ELEMENT = xmlDoc.getElementsByTagName('meta')[0],
-        META_ELEMENTS = (META_ELEMENT && META_ELEMENT.childNodes) || [],
-        NODE_ELEMENTS = xmlDoc.getElementsByTagName('node'),
-        EDGE_ELEMENTS = xmlDoc.getElementsByTagName('edge'),
-        MODEL_ELEMENTS = xmlDoc.getElementsByTagName('attributes'),
-        NODE_MODEL_ELEMENTS = [],
-        EDGE_MODEL_ELEMENTS = [];
+      META_ELEMENT = xmlDoc.getElementsByTagName('meta')[0],
+      META_ELEMENTS = (META_ELEMENT && META_ELEMENT.childNodes) || [],
+      NODE_ELEMENTS = xmlDoc.getElementsByTagName('node'),
+      EDGE_ELEMENTS = xmlDoc.getElementsByTagName('edge'),
+      MODEL_ELEMENTS = xmlDoc.getElementsByTagName('attributes'),
+      NODE_MODEL_ELEMENTS = [],
+      EDGE_MODEL_ELEMENTS = [];
 
     for (i = 0, l = MODEL_ELEMENTS.length; i < l; i++) {
       element = MODEL_ELEMENTS[i];
@@ -274,26 +248,26 @@ module.exports = function createParserFunction(DOMParser, Document) {
     }
 
     // Information
-    var DEFAULT_EDGE_TYPE = GRAPH_ELEMENT.getAttribute('defaultedgetype') || 'undirected';
+    var DEFAULT_EDGE_TYPE =
+      GRAPH_ELEMENT.getAttribute('defaultedgetype') || 'undirected';
 
-    if (DEFAULT_EDGE_TYPE === 'mutual')
-      DEFAULT_EDGE_TYPE = 'undirected';
+    if (DEFAULT_EDGE_TYPE === 'mutual') DEFAULT_EDGE_TYPE = 'undirected';
 
     // Computing models
     result = extractModel(NODE_MODEL_ELEMENTS);
 
     var NODE_MODEL = result[0],
-        NODE_DEFAULT_ATTRIBUTES = result[1];
+      NODE_DEFAULT_ATTRIBUTES = result[1];
 
     result = extractModel(EDGE_MODEL_ELEMENTS);
 
     var EDGE_MODEL = result[0],
-        EDGE_DEFAULT_ATTRIBUTES = result[1];
+      EDGE_DEFAULT_ATTRIBUTES = result[1];
 
     // Polling the first edge to guess the type of the edges
-    var graphType = EDGE_ELEMENTS[0] ?
-      (EDGE_ELEMENTS[0].getAttribute('type') || DEFAULT_EDGE_TYPE) :
-      'mixed';
+    var graphType = EDGE_ELEMENTS[0]
+      ? EDGE_ELEMENTS[0].getAttribute('type') || DEFAULT_EDGE_TYPE
+      : 'mixed';
 
     // Instantiating our graph
     var graph = new Graph({
@@ -302,7 +276,8 @@ module.exports = function createParserFunction(DOMParser, Document) {
 
     // Collecting meta
     var meta = collectMeta(META_ELEMENTS),
-        lastModifiedDate = META_ELEMENT && META_ELEMENT.getAttribute('lastmodifieddate');
+      lastModifiedDate =
+        META_ELEMENT && META_ELEMENT.getAttribute('lastmodifieddate');
 
     graph.replaceAttributes(meta);
 
@@ -327,7 +302,11 @@ module.exports = function createParserFunction(DOMParser, Document) {
       type = element.getAttribute('type') || DEFAULT_EDGE_TYPE;
       s = element.getAttribute('source');
       t = element.getAttribute('target');
-      attributes = collectAttributes(EDGE_MODEL, EDGE_DEFAULT_ATTRIBUTES, element);
+      attributes = collectAttributes(
+        EDGE_MODEL,
+        EDGE_DEFAULT_ATTRIBUTES,
+        element
+      );
 
       // If we encountered an edge with a different type, we upgrade the graph
       if (type !== graph.type && graph.type !== 'mixed') {
@@ -337,22 +316,13 @@ module.exports = function createParserFunction(DOMParser, Document) {
       // If we encountered twice the same edge, we upgrade the graph
       if (
         !graph.multi &&
-        (
-          (type === 'directed' && graph.hasDirectedEdge(s, t)) ||
-          (graph.hasUndirectedEdge(s, t))
-        )
+        ((type === 'directed' && graph.hasDirectedEdge(s, t)) ||
+          graph.hasUndirectedEdge(s, t))
       ) {
         graph.upgradeToMulti();
       }
 
-      mergeEdge(
-        graph,
-        type !== 'directed',
-        id || null,
-        s,
-        t,
-        attributes
-      );
+      mergeEdge(graph, type !== 'directed', id || null, s, t, attributes);
     }
 
     return graph;

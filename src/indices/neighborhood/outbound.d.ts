@@ -12,8 +12,8 @@ export class OutboundNeighborhoodIndex {
   nodes: Array<string>;
 
   bounds(index: number): [number, number];
-  project(): {[key: string]: Array<string>}
-  collect<T>(results: Array<T>): {[key: string]: T}
+  project(): {[key: string]: Array<string>};
+  collect<T>(results: Array<T>): {[key: string]: T};
   assign<T>(results: Array<T>): void;
 }
 
@@ -28,7 +28,7 @@ export class WeightedOutboundNeighborhoodIndex {
   nodes: Array<string>;
 
   bounds(index: number): [number, number];
-  project(): {[key: string]: Array<string>}
-  collect<T>(results: Array<T>): {[key: string]: T}
+  project(): {[key: string]: Array<string>};
+  collect<T>(results: Array<T>): {[key: string]: T};
   assign<T>(results: Array<T>): void;
 }

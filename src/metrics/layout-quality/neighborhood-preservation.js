@@ -12,23 +12,26 @@
  * http://arxiv.org/abs/2002.08233.
  */
 var isGraph = require('graphology-utils/is-graph'),
-    KDTree = require('mnemonist/kd-tree'),
-    intersectionSize = require('mnemonist/set').intersectionSize;
+  KDTree = require('mnemonist/kd-tree'),
+  intersectionSize = require('mnemonist/set').intersectionSize;
 
 module.exports = function neighborhoodPreservation(graph) {
   if (!isGraph(graph))
-    throw new Error('graphology-metrics/layout-quality/neighborhood-preservation: given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-metrics/layout-quality/neighborhood-preservation: given graph is not a valid graphology instance.'
+    );
 
   if (graph.order === 0)
-    throw new Error('graphology-metrics/layout-quality/neighborhood-preservation: cannot compute stress for a null graph.');
+    throw new Error(
+      'graphology-metrics/layout-quality/neighborhood-preservation: cannot compute stress for a null graph.'
+    );
 
-  if (graph.size === 0)
-    return 0;
+  if (graph.size === 0) return 0;
 
   var axes = [new Float64Array(graph.order), new Float64Array(graph.order)],
-      i = 0;
+    i = 0;
 
-  graph.forEachNode(function(node, attr) {
+  graph.forEachNode(function (node, attr) {
     axes[0][i] = attr.x;
     axes[1][i++] = attr.y;
   });
@@ -37,7 +40,7 @@ module.exports = function neighborhoodPreservation(graph) {
 
   var sum = 0;
 
-  graph.forEachNode(function(node, attr) {
+  graph.forEachNode(function (node, attr) {
     var neighbors = new Set(graph.neighbors(node));
 
     // If node has no neighbors or is connected to every other node

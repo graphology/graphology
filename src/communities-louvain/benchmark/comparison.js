@@ -48,8 +48,7 @@ function ngraphLouvainHierarchyNative(g) {
 function distinctSize(o) {
   var keys = new Set();
 
-  for (var k in o)
-    keys.add(o[k]);
+  for (var k in o) keys.add(o[k]);
 
   return keys.size;
 }
@@ -85,7 +84,11 @@ var euroSisEdgeData = euroSis.edges().map(e => {
   };
 });
 
-var bigGraph = generateClusters(Graph.UndirectedGraph, {order: 50000, size: 1000000, clusters: 50});
+var bigGraph = generateClusters(Graph.UndirectedGraph, {
+  order: 50000,
+  size: 1000000,
+  clusters: 50
+});
 // var bigGraphStringKeys = new Graph.UndirectedGraph();
 // bigGraph.forEachEdge((e, a, s, t) => {
 //   bigGraphStringKeys.mergeEdge(`__${s}__`, `__${t}__`);
@@ -108,7 +111,9 @@ bigGraph.forEachEdge((e, a, s, t) => bigGraphNGraph.addLink(s, t));
 // Bench
 var communities;
 
-console.log(`Clustered Undirected graph with ${undirected1000.order} nodes and ${undirected1000.size} edges.`);
+console.log(
+  `Clustered Undirected graph with ${undirected1000.order} nodes and ${undirected1000.size} edges.`
+);
 console.log();
 
 console.time('graphology undirected1000');
@@ -144,10 +149,12 @@ console.log('Communities', distinctSize(communities));
 console.log();
 
 //---
-console.log('---')
+console.log('---');
 console.log();
 
-console.log(`EuroSIS Directed graph with ${euroSis.order} nodes and ${euroSis.size} edges.`);
+console.log(
+  `EuroSIS Directed graph with ${euroSis.order} nodes and ${euroSis.size} edges.`
+);
 console.log();
 
 console.time('graphology euroSis');
@@ -159,9 +166,7 @@ console.log('Modularity', modularity(euroSis, {communities}));
 console.log();
 
 console.time('jlouvain euroSis');
-communities = jLouvain()
-  .nodes(euroSisNodeData)
-  .edges(euroSisEdgeData)();
+communities = jLouvain().nodes(euroSisNodeData).edges(euroSisEdgeData)();
 console.timeEnd('jlouvain euroSis');
 
 console.log('Communities', distinctSize(communities));
@@ -183,10 +188,12 @@ console.log('Communities', distinctSize(communities));
 console.log();
 
 //---
-console.log('---')
+console.log('---');
 console.log();
 
-console.log(`Big Undirected graph with ${bigGraph.order} nodes and ${bigGraph.size} edges.`);
+console.log(
+  `Big Undirected graph with ${bigGraph.order} nodes and ${bigGraph.size} edges.`
+);
 console.log();
 
 console.time('graphology bigGraph');

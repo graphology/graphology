@@ -12,8 +12,7 @@ const g = new Graph();
 let i, v, j, l;
 let it, step;
 
-while (g.order < N)
-  g.mergeEdge(randomString(4, 50), randomString(4, 50));
+while (g.order < N) g.mergeEdge(randomString(4, 50), randomString(4, 50));
 
 // console.time('nodes array');
 // for (i = 0; i < I; i++) {
@@ -46,8 +45,7 @@ while (g.order < N)
 // ---
 
 console.time('forEachEdge');
-for (i = 0; i < I; i++)
-  g.forEachEdge(edge => (v = edge));
+for (i = 0; i < I; i++) g.forEachEdge(edge => (v = edge));
 console.timeEnd('forEachEdge');
 
 // console.time('for...of edge');
@@ -60,7 +58,6 @@ console.timeEnd('forEachEdge');
 console.time('step edge');
 for (i = 0; i < I; i++) {
   it = g.edgeEntries();
-  while ((step = it.next(), !step.done))
-    v = step.value[0];
+  while (((step = it.next()), !step.done)) v = step.value[0];
 }
 console.timeEnd('step edge');

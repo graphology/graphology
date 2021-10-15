@@ -6,9 +6,9 @@
  * GEXF writer working for both node.js & the browser.
  */
 var isGraph = require('graphology-utils/is-graph'),
-    inferType = require('graphology-utils/infer-type'),
-    XMLWriter = require('xml-writer'),
-    sanitizeTagName = require('./helpers.js').sanitizeTagName;
+  inferType = require('graphology-utils/infer-type'),
+  XMLWriter = require('xml-writer'),
+  sanitizeTagName = require('./helpers.js').sanitizeTagName;
 
 // TODO: handle object in color, position with object for viz
 
@@ -16,7 +16,7 @@ var isGraph = require('graphology-utils/is-graph'),
  * Constants.
  */
 var GEXF_NAMESPACE = 'http://www.gexf.net/1.2draft',
-    GEXF_VIZ_NAMESPACE = 'http:///www.gexf.net/1.1draft/viz';
+  GEXF_VIZ_NAMESPACE = 'http:///www.gexf.net/1.1draft/viz';
 
 var VIZ_RESERVED_NAMES = new Set([
   'color',
@@ -29,7 +29,8 @@ var VIZ_RESERVED_NAMES = new Set([
 ]);
 
 var RGBA_TEST = /^\s*rgba?\s*\(/i,
-    RGBA_MATCH = /^\s*rgba?\s*\(\s*([0-9]*)\s*,\s*([0-9]*)\s*,\s*([0-9]*)\s*(?:,\s*([.0-9]*))?\)\s*$/;
+  RGBA_MATCH =
+    /^\s*rgba?\s*\(\s*([0-9]*)\s*,\s*([0-9]*)\s*,\s*([0-9]*)\s*(?:,\s*([.0-9]*))?\)\s*$/;
 
 /**
  * Function used to transform a CSS color into a RGBA object.
@@ -38,25 +39,23 @@ var RGBA_TEST = /^\s*rgba?\s*\(/i,
  * @return {object}
  */
 function CSSColorToRGBA(value) {
-  if (!value || typeof value !== 'string')
-    return {};
+  if (!value || typeof value !== 'string') return {};
 
   if (value[0] === '#') {
     value = value.slice(1);
 
-    return (value.length === 3) ?
-      {
-        r: parseInt(value[0] + value[0], 16),
-        g: parseInt(value[1] + value[1], 16),
-        b: parseInt(value[2] + value[2], 16)
-      } :
-      {
-        r: parseInt(value[0] + value[1], 16),
-        g: parseInt(value[2] + value[3], 16),
-        b: parseInt(value[4] + value[5], 16)
-      };
-  }
-  else if (RGBA_TEST.test(value)) {
+    return value.length === 3
+      ? {
+          r: parseInt(value[0] + value[0], 16),
+          g: parseInt(value[1] + value[1], 16),
+          b: parseInt(value[2] + value[2], 16)
+        }
+      : {
+          r: parseInt(value[0] + value[1], 16),
+          g: parseInt(value[2] + value[3], 16),
+          b: parseInt(value[4] + value[5], 16)
+        };
+  } else if (RGBA_TEST.test(value)) {
     var result = {};
 
     value = value.match(RGBA_MATCH);
@@ -64,8 +63,7 @@ function CSSColorToRGBA(value) {
     result.g = +value[2];
     result.b = +value[3];
 
-    if (value[4])
-      result.a = +value[4];
+    if (value[4]) result.a = +value[4];
 
     return result;
   }
@@ -84,20 +82,17 @@ function CSSColorToRGBA(value) {
  */
 function DEFAULT_ELEMENT_FORMATTER(type, key, attributes) {
   var output = {},
-      name;
+    name;
 
   for (name in attributes) {
     if (name === 'label') {
       output.label = attributes.label;
-    }
-    else if (type === 'edge' && name === 'weight') {
+    } else if (type === 'edge' && name === 'weight') {
       output.weight = attributes.weight;
-    }
-    else if (VIZ_RESERVED_NAMES.has(name)) {
+    } else if (VIZ_RESERVED_NAMES.has(name)) {
       output.viz = output.viz || {};
       output.viz[name] = attributes[name];
-    }
-    else {
+    } else {
       output.attributes = output.attributes || {};
       output.attributes[name] = attributes[name];
     }
@@ -107,7 +102,7 @@ function DEFAULT_ELEMENT_FORMATTER(type, key, attributes) {
 }
 
 var DEFAULT_NODE_FORMATTER = DEFAULT_ELEMENT_FORMATTER.bind(null, 'node'),
-    DEFAULT_EDGE_FORMATTER = DEFAULT_ELEMENT_FORMATTER.bind(null, 'edge');
+  DEFAULT_EDGE_FORMATTER = DEFAULT_ELEMENT_FORMATTER.bind(null, 'edge');
 
 /**
  * Function used to check whether the given integer is 32 bits or not.
@@ -116,7 +111,7 @@ var DEFAULT_NODE_FORMATTER = DEFAULT_ELEMENT_FORMATTER.bind(null, 'node'),
  * @return {boolean}
  */
 function is32BitInteger(number) {
-  return number <= 0x7FFFFFFF && number >= -0x7FFFFFFF;
+  return number <= 0x7fffffff && number >= -0x7fffffff;
 }
 
 /**
@@ -141,25 +136,18 @@ function isEmptyValue(value) {
  * @return {string}
  */
 function detectValueType(value) {
+  if (isEmptyValue(value)) return 'empty';
 
-  if (isEmptyValue(value))
-    return 'empty';
+  if (Array.isArray(value)) return 'liststring';
 
-  if (Array.isArray(value))
-    return 'liststring';
+  if (typeof value === 'boolean') return 'boolean';
 
-  if (typeof value === 'boolean')
-    return 'boolean';
-
-  if (typeof value === 'object')
-    return 'string';
+  if (typeof value === 'object') return 'string';
 
   // Numbers
   if (typeof value === 'number') {
-
     // Integer
     if (value === (value | 0)) {
-
       // Long (JavaScript integer can go up to 53 bit)?
       return is32BitInteger(value) ? 'integer' : 'long';
     }
@@ -179,8 +167,7 @@ function detectValueType(value) {
  * @return {string}
  */
 function cast(type, value) {
-  if (type === 'liststring' && Array.isArray(value))
-    return value.join('|');
+  if (type === 'liststring' && Array.isArray(value)) return value.join('|');
   return '' + value;
 }
 
@@ -195,7 +182,7 @@ function collectNodeData(graph, format) {
   var nodes = new Array(graph.order);
   var i = 0;
 
-  graph.forEachNode(function(node, attr) {
+  graph.forEachNode(function (node, attr) {
     var data = format(node, attr);
     data.key = node;
     nodes[i++] = data;
@@ -215,7 +202,15 @@ function collectEdgeData(graph, reducer) {
   var edges = new Array(graph.size);
   var i = 0;
 
-  graph.forEachEdge(function(edge, attr, source, target, _sa, _ta, undirected) {
+  graph.forEachEdge(function (
+    edge,
+    attr,
+    source,
+    target,
+    _sa,
+    _ta,
+    undirected
+  ) {
     var data = reducer(edge, attr);
     data.key = edge;
     data.source = source;
@@ -237,30 +232,25 @@ function collectEdgeData(graph, reducer) {
 // TODO: on large graph, we could also sample or let the user indicate the types
 function inferModel(elements) {
   var model = {},
-      attributes,
-      type,
-      k;
+    attributes,
+    type,
+    k;
 
   // Testing every attributes
   for (var i = 0, l = elements.length; i < l; i++) {
     attributes = elements[i].attributes;
 
-    if (!attributes)
-      continue;
+    if (!attributes) continue;
 
     for (k in attributes) {
       type = detectValueType(attributes[k]);
 
-      if (type === 'empty')
-        continue;
+      if (type === 'empty') continue;
 
-      if (!model[k])
-        model[k] = type;
+      if (!model[k]) model[k] = type;
       else {
-        if (model[k] === 'integer' && type === 'long')
-          model[k] = type;
-        else if (model[k] !== type)
-          model[k] = 'string';
+        if (model[k] === 'integer' && type === 'long') model[k] = type;
+        else if (model[k] !== type) model[k] = 'string';
       }
     }
   }
@@ -279,8 +269,7 @@ function inferModel(elements) {
 function writeModel(writer, model, modelClass) {
   var name;
 
-  if (!Object.keys(model).length)
-    return;
+  if (!Object.keys(model).length) return;
 
   writer.startElement('attributes');
   writer.writeAttribute('class', modelClass);
@@ -298,17 +287,17 @@ function writeModel(writer, model, modelClass) {
 
 function writeElements(writer, type, model, elements) {
   var emptyModel = !Object.keys(model).length,
-      element,
-      name,
-      color,
-      value,
-      edgeType,
-      attributes,
-      weight,
-      viz,
-      k,
-      i,
-      l;
+    element,
+    name,
+    color,
+    value,
+    edgeType,
+    attributes,
+    weight,
+    viz,
+    k,
+    i,
+    l;
 
   writer.startElement(type + 's');
 
@@ -331,12 +320,14 @@ function writeElements(writer, type, model, elements) {
 
       weight = element.weight;
 
-      if ((typeof weight === 'number' && !isNaN(weight)) || typeof weight === 'string')
+      if (
+        (typeof weight === 'number' && !isNaN(weight)) ||
+        typeof weight === 'string'
+      )
         writer.writeAttribute('weight', element.weight);
     }
 
-    if (element.label)
-      writer.writeAttribute('label', element.label);
+    if (element.label) writer.writeAttribute('label', element.label);
 
     if (!emptyModel && attributes) {
       writer.startElement('attvalues');
@@ -345,8 +336,7 @@ function writeElements(writer, type, model, elements) {
         if (name in attributes) {
           value = attributes[name];
 
-          if (isEmptyValue(value))
-            continue;
+          if (isEmptyValue(value)) continue;
 
           writer.startElement('attvalue');
           writer.writeAttribute('for', name);
@@ -359,15 +349,13 @@ function writeElements(writer, type, model, elements) {
     }
 
     if (viz) {
-
       //-- 1) Color
       if (viz.color) {
         color = CSSColorToRGBA(viz.color);
 
         writer.startElementNS('viz', 'color');
 
-        for (k in color)
-          writer.writeAttribute(k, color[k]);
+        for (k in color) writer.writeAttribute(k, color[k]);
 
         writer.endElement();
       }
@@ -383,14 +371,11 @@ function writeElements(writer, type, model, elements) {
       if ('x' in viz || 'y' in viz || 'z' in viz) {
         writer.startElementNS('viz', 'position');
 
-        if ('x' in viz)
-          writer.writeAttribute('x', viz.x);
+        if ('x' in viz) writer.writeAttribute('x', viz.x);
 
-        if ('y' in viz)
-          writer.writeAttribute('y', viz.y);
+        if ('y' in viz) writer.writeAttribute('y', viz.y);
 
-        if ('z' in viz)
-          writer.writeAttribute('z', viz.z);
+        if ('z' in viz) writer.writeAttribute('z', viz.z);
 
         writer.endElement();
       }
@@ -446,7 +431,7 @@ module.exports = function write(graph, options) {
   var indent = options.pretty === false ? false : '  ';
 
   var formatNode = options.formatNode || DEFAULTS.formatNode,
-      formatEdge = options.formatEdge || DEFAULTS.formatEdge;
+    formatEdge = options.formatEdge || DEFAULTS.formatEdge;
 
   var writer = new XMLWriter(indent);
 
@@ -468,13 +453,11 @@ module.exports = function write(graph, options) {
   var metaTagName;
 
   for (var k in graphAttributes) {
-    if (k === 'lastModifiedDate')
-      continue;
+    if (k === 'lastModifiedDate') continue;
 
     metaTagName = sanitizeTagName(k);
 
-    if (!metaTagName)
-      continue;
+    if (!metaTagName) continue;
 
     writer.writeElement(metaTagName, graphAttributes[k]);
   }
@@ -484,18 +467,13 @@ module.exports = function write(graph, options) {
 
   var type = inferType(graph);
 
-  writer.defaultEdgeType = type === 'mixed' ?
-    'directed' :
-    type;
+  writer.defaultEdgeType = type === 'mixed' ? 'directed' : type;
 
-  writer.writeAttribute(
-    'defaultedgetype',
-    writer.defaultEdgeType
-  );
+  writer.writeAttribute('defaultedgetype', writer.defaultEdgeType);
 
   // Processing model
   var nodes = collectNodeData(graph, formatNode),
-      edges = collectEdgeData(graph, formatEdge);
+    edges = collectEdgeData(graph, formatEdge);
 
   var nodeModel = inferModel(nodes);
 

@@ -8,23 +8,18 @@ var isGraph = require('graphology-utils/is-graph');
 var density = require('./density');
 
 function isEmpty(obj) {
-
   // null and undefined are "empty"
-  if (!obj)
-    return true;
+  if (!obj) return true;
 
   // Assume if it has a length property with a non-zero value
   // that that property is correct.
-  if (obj.length > 0)
-    return false;
-  if (obj.length === 0)
-    return true;
+  if (obj.length > 0) return false;
+  if (obj.length === 0) return true;
 
   // If it isn't an object at this point
   // it is empty, but it can't be anything *but* empty
   // Is it empty?  Depends on your application.
-  if (typeof obj !== 'object')
-    return true;
+  if (typeof obj !== 'object') return true;
 
   // Otherwise, does it have any properties of its own?
   // Note that this doesn't handle
@@ -43,19 +38,24 @@ function createEmptyModalities() {
     density: 0,
     externalEdges: 0,
     inboundEdges: 0,
-    outboundEdges: 0,
+    outboundEdges: 0
   };
 }
 
 function modalities(graph, attributes) {
   if (!isGraph(graph))
-    throw new Error('graphology-metrics/modality: given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-metrics/modality: given graph is not a valid graphology instance.'
+    );
   if (!attributes || (attributes && attributes.length === 0)) {
     throw new Error('graphology-metrics/modality: no attributes where given.');
   }
   if (!Array.isArray(attributes)) {
-    if (typeof(attributes) !== 'string') {
-      throw new Error('graphology-metrics/modality: Attributes must be a string or an array of strings. typeof attributes = ' + typeof(attributes));
+    if (typeof attributes !== 'string') {
+      throw new Error(
+        'graphology-metrics/modality: Attributes must be a string or an array of strings. typeof attributes = ' +
+          typeof attributes
+      );
     }
     attributes = [attributes];
   }
@@ -68,7 +68,14 @@ function modalities(graph, attributes) {
   }
 
   function modalitiesCreator(type) {
-    return function(key, edgeAttributes, source, target, sourceAttributes, targetAttributes) {
+    return function (
+      key,
+      edgeAttributes,
+      source,
+      target,
+      sourceAttributes,
+      targetAttributes
+    ) {
       for (i = 0; i < attributes.length; i++) {
         var attribute = attributes[i];
         var mapForAttribute = hashmap[attribute];
@@ -76,7 +83,10 @@ function modalities(graph, attributes) {
         var targetValue = targetAttributes[attribute];
         var mapForSourceValue = mapForAttribute[sourceValue];
         // If attribute is not in source or target attributes we can exit the iteration.
-        if (!(attribute in sourceAttributes) || !(attribute in targetAttributes)) {
+        if (
+          !(attribute in sourceAttributes) ||
+          !(attribute in targetAttributes)
+        ) {
           return;
         }
         if (!mapForSourceValue) {
@@ -90,8 +100,7 @@ function modalities(graph, attributes) {
         }
         if (sourceValue === targetValue) {
           mapForSourceValue.internalEdges++;
-        }
-        else {
+        } else {
           if (type === 'directed') {
             // Directed graphs only have in/out edges
             mapForSourceValue.outboundEdges++;
@@ -101,8 +110,7 @@ function modalities(graph, attributes) {
             // So any link where source !== target.
             mapForSourceValue.externalEdges++;
             mapForTargetValue.externalEdges++;
-          }
-          else {
+          } else {
             // externalEdges are all the edges going in OR out of a category.
             // So any link where source !== target.
             mapForSourceValue.externalEdges++;
@@ -121,28 +129,18 @@ function modalities(graph, attributes) {
 
   var densityFn;
   if (graph.type === 'directed') {
-    graph.forEachEdge(
-      modalitiesCreator(graph.type)
-    );
+    graph.forEachEdge(modalitiesCreator(graph.type));
     densityFn = density.directedDensity;
-  }
-  else if (graph.type === 'undirected') {
-    graph.forEachEdge(
-      modalitiesCreator(graph.type)
-    );
+  } else if (graph.type === 'undirected') {
+    graph.forEachEdge(modalitiesCreator(graph.type));
     densityFn = density.undirectedDensity;
-  }
-  else {
-    graph.forEachDirectedEdge(
-      modalitiesCreator('directed')
-    );
-    graph.forEachUndirectedEdge(
-      modalitiesCreator(graph.type)
-    );
+  } else {
+    graph.forEachDirectedEdge(modalitiesCreator('directed'));
+    graph.forEachUndirectedEdge(modalitiesCreator(graph.type));
     densityFn = density.mixedDensity;
   }
 
-  graph.forEachNode(function(node, nodeAttributes) {
+  graph.forEachNode(function (node, nodeAttributes) {
     for (i = 0; i < attributes.length; i++) {
       hashmap[attributes[i]][nodeAttributes[attributes[i]]].nodes++;
     }
@@ -151,7 +149,11 @@ function modalities(graph, attributes) {
   // Checks if all provided attributes has been computed.
   for (var attribute in hashmap) {
     if (isEmpty(hashmap[attribute])) {
-      throw new Error('graphology-metrics/modality: Attribute ' + attribute + ' provided not found in any node attributes.');
+      throw new Error(
+        'graphology-metrics/modality: Attribute ' +
+          attribute +
+          ' provided not found in any node attributes.'
+      );
     }
     var valuesForAttribute = hashmap[attribute];
     for (var value in valuesForAttribute) {

@@ -14,8 +14,8 @@ function createContext(width, height) {
   return context;
 }
 
-describe('graphology-canvas', function() {
-  it('should throw if some node has no position.', function() {
+describe('graphology-canvas', function () {
+  it('should throw if some node has no position.', function () {
     var graph = new Graph();
 
     graph.addNode('John', {x: 35, y: 76});
@@ -23,7 +23,7 @@ describe('graphology-canvas', function() {
 
     var context = createContext();
 
-    assert.throws(function() {
+    assert.throws(function () {
       lib.render(graph, context);
     }, /position/);
   });

@@ -16,7 +16,9 @@ module.exports = function union(G, H) {
     throw new Error('graphology-operators/union: invalid graph.');
 
   if (G.multi !== H.multi)
-    throw new Error('graphology-operators/union: both graph should be simple or multi.');
+    throw new Error(
+      'graphology-operators/union: both graph should be simple or multi.'
+    );
 
   var R = G.copy();
   R.import(H, true);

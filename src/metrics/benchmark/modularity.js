@@ -29,25 +29,26 @@ var degrees = nodes.map(n => g.degree(n[0]));
 var M = g.size; // Undirected size (minus 1 mutual edge)
 var M2 = M * 2;
 
-var S = 0, Aij, didj;
+var S = 0,
+  Aij,
+  didj;
 
-var tot = {1: 0, 2: 0}, int = {1: 0, 2: 0}, ext = {1: 0, 2: 0};
+var tot = {1: 0, 2: 0},
+  int = {1: 0, 2: 0},
+  ext = {1: 0, 2: 0};
 
 var i, j, l, ok;
 
 for (i = 0, l = nodes.length; i < l; i++) {
-
   // NOTE: j = 0, not i + 1 here
   for (j = 0; j < l; j++) {
-
     // Kronecker delta
-    if (nodes[i][1] !== nodes[j][1])
-      continue;
+    if (nodes[i][1] !== nodes[j][1]) continue;
 
     ok = g.hasEdge(nodes[i][0], nodes[j][0]);
     Aij = ok ? 1 : 0;
     didj = degrees[i] * degrees[j];
-    S += Aij - (didj / M2);
+    S += Aij - didj / M2;
   }
 }
 
@@ -67,14 +68,17 @@ for (i = 0, l = nodes.length; i < l; i++) {
       continue;
     }
 
-    if (ok)
-      int[nodes[i][1]] += 2;
+    if (ok) int[nodes[i][1]] += 2;
   }
 }
 
 var Q = S / M2;
-var SPARSE_Q = ((int[1] - (tot[1] * tot[1] / M2)) + (int[2] - (tot[2] * tot[2] / M2))) / M2;
-var OTHER_SPARSE_Q = ((int[1] / M2) - Math.pow(tot[1] / M2, 2)) + ((int[2] / M2) - Math.pow(tot[2] / M2, 2));
+var SPARSE_Q =
+  (int[1] - (tot[1] * tot[1]) / M2 + (int[2] - (tot[2] * tot[2]) / M2)) / M2;
+var OTHER_SPARSE_Q =
+  int[1] / M2 -
+  Math.pow(tot[1] / M2, 2) +
+  (int[2] / M2 - Math.pow(tot[2] / M2, 2));
 
 console.log();
 console.log('Undirected case:');
@@ -107,30 +111,27 @@ M2 = M * 2;
 S = 0;
 
 for (i = 0, l = nodes.length; i < l; i++) {
-
   // NOTE: j = 0, not i + 1 here
   for (j = 0; j < l; j++) {
-
     // Kronecker delta
-    if (nodes[i][1] !== nodes[j][1])
-      continue;
+    if (nodes[i][1] !== nodes[j][1]) continue;
 
     ok = d.hasEdge(nodes[i][0], nodes[j][0]);
     Aij = ok ? 1 : 0;
     didj = inDegrees[i] * outDegrees[j];
-    S += Aij - (didj / M);
+    S += Aij - didj / M;
   }
 }
 
-var totIn = {1: 0, 2: 0}, totOut = {1: 0, 2: 0};
+var totIn = {1: 0, 2: 0},
+  totOut = {1: 0, 2: 0};
 tot = {1: 0, 2: 0};
 int = {1: 0, 2: 0};
 ext = {1: 0, 2: 0};
 
 for (i = 0, l = nodes.length; i < l; i++) {
   for (j = 0; j < l; j++) {
-    if (i === j)
-      continue;
+    if (i === j) continue;
 
     ok = d.hasEdge(nodes[i][0], nodes[j][0]);
 
@@ -148,16 +149,16 @@ for (i = 0, l = nodes.length; i < l; i++) {
       continue;
     }
 
-    if (ok)
-      int[nodes[i][1]] += 1;
+    if (ok) int[nodes[i][1]] += 1;
   }
 }
 
 Q = S / M;
 
 OTHER_SPARSE_Q =
-  ((int[1] / M) - (totIn[1] * totOut[1] / Math.pow(M, 2))) +
-  ((int[2] / M) - (totIn[2] * totOut[2] / Math.pow(M, 2)));
+  int[1] / M -
+  (totIn[1] * totOut[1]) / Math.pow(M, 2) +
+  (int[2] / M - (totIn[2] * totOut[2]) / Math.pow(M, 2));
 
 console.log();
 console.log('Directed case:');
@@ -176,4 +177,3 @@ console.log();
 
 // NOTE: connected components are correctly handled, empty graph should not be done
 // TODO: align with https://networkx.github.io/documentation/stable/_modules/networkx/algorithms/community/quality.html
-

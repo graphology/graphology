@@ -18,7 +18,7 @@ function identity(v) {
 }
 
 var CASTERS = {
-  boolean: function(v) {
+  boolean: function (v) {
     return v.toLowerCase() === 'true';
   },
   int: numericCaster,
@@ -37,11 +37,9 @@ function getGraphDataElements(graphElement) {
   for (var i = 0, l = children.length; i < l; i++) {
     element = children[i];
 
-    if (element.nodeType !== 1)
-      continue;
+    if (element.nodeType !== 1) continue;
 
-    if (element.tagName.toLowerCase() !== 'data')
-      break;
+    if (element.tagName.toLowerCase() !== 'data') break;
 
     dataElements.push(element);
   }
@@ -82,8 +80,7 @@ function collectModel(modelElements) {
       cast: CASTERS[type]
     };
 
-    if (typeof defaultValue !== 'undefined')
-      defaults[m][name] = defaultValue;
+    if (typeof defaultValue !== 'undefined') defaults[m][name] = defaultValue;
   }
 
   return {
@@ -94,7 +91,7 @@ function collectModel(modelElements) {
 
 function collectAttributes(model, defaults, element) {
   var dataElements = element.getElementsByTagName('data'),
-      dataElement;
+    dataElement;
 
   var i, l, key, spec;
 
@@ -105,15 +102,12 @@ function collectAttributes(model, defaults, element) {
     key = dataElement.getAttribute('key');
     spec = model[key];
 
-    if (typeof spec === 'undefined')
-      attr[key] = dataElement.textContent;
-    else
-      attr[spec.name] = spec.cast(dataElement.textContent);
+    if (typeof spec === 'undefined') attr[key] = dataElement.textContent;
+    else attr[spec.name] = spec.cast(dataElement.textContent);
   }
 
   for (key in defaults) {
-    if (!(key in attr))
-      attr[key] = defaults[key];
+    if (!(key in attr)) attr[key] = defaults[key];
   }
 
   return attr;
@@ -124,7 +118,6 @@ function collectAttributes(model, defaults, element) {
  * the parser function.
  */
 module.exports = function createParserFunction(DOMParser, Document) {
-
   /**
    * Function taking either a string or a document and returning a
    * graphology instance.
@@ -140,17 +133,20 @@ module.exports = function createParserFunction(DOMParser, Document) {
 
     // If source is a string, we are going to parse it
     if (typeof source === 'string')
-      xmlDoc = (new DOMParser()).parseFromString(source, 'application/xml');
+      xmlDoc = new DOMParser().parseFromString(source, 'application/xml');
 
     if (!(xmlDoc instanceof Document))
-      throw new Error('graphology-gexf/parser: source should either be a XML document or a string.');
+      throw new Error(
+        'graphology-gexf/parser: source should either be a XML document or a string.'
+      );
 
     var GRAPH_ELEMENT = xmlDoc.getElementsByTagName('graph')[0];
     var GRAPH_DATA_ELEMENTS = getGraphDataElements(GRAPH_ELEMENT);
     var MODEL_ELEMENTS = xmlDoc.getElementsByTagName('key');
     var NODE_ELEMENTS = xmlDoc.getElementsByTagName('node');
     var EDGE_ELEMENTS = xmlDoc.getElementsByTagName('edge');
-    var EDGE_DEFAULT_TYPE = GRAPH_ELEMENT.getAttribute('edgedefault') || 'undirected';
+    var EDGE_DEFAULT_TYPE =
+      GRAPH_ELEMENT.getAttribute('edgedefault') || 'undirected';
 
     var MODEL = collectModel(MODEL_ELEMENTS);
 
@@ -159,14 +155,17 @@ module.exports = function createParserFunction(DOMParser, Document) {
     // Graph-level attributes
     var graphId = GRAPH_ELEMENT.getAttribute('id');
 
-    if (graphId)
-      graph.setAttribute('id', graphId);
+    if (graphId) graph.setAttribute('id', graphId);
 
     var dummyGraphElement = xmlDoc.createElement('graph');
-    GRAPH_DATA_ELEMENTS.forEach(function(el) {
+    GRAPH_DATA_ELEMENTS.forEach(function (el) {
       dummyGraphElement.appendChild(el);
     });
-    var graphAttributes = collectAttributes(MODEL.models.graph, MODEL.defaults.graph, dummyGraphElement);
+    var graphAttributes = collectAttributes(
+      MODEL.models.graph,
+      MODEL.defaults.graph,
+      dummyGraphElement
+    );
 
     graph.mergeAttributes(graphAttributes);
 
@@ -177,7 +176,11 @@ module.exports = function createParserFunction(DOMParser, Document) {
       nodeElement = NODE_ELEMENTS[i];
       id = nodeElement.getAttribute('id');
 
-      attr = collectAttributes(MODEL.models.node, MODEL.defaults.node, nodeElement);
+      attr = collectAttributes(
+        MODEL.models.node,
+        MODEL.defaults.node,
+        nodeElement
+      );
       attr = DEFAULT_FORMATTER(attr);
 
       graph.addNode(id, attr);
@@ -191,11 +194,16 @@ module.exports = function createParserFunction(DOMParser, Document) {
       id = edgeElement.getAttribute('id');
       s = edgeElement.getAttribute('source');
       t = edgeElement.getAttribute('target');
-      type = edgeElement.getAttribute('directed') === 'true' ?
-        'directed' :
-        EDGE_DEFAULT_TYPE;
+      type =
+        edgeElement.getAttribute('directed') === 'true'
+          ? 'directed'
+          : EDGE_DEFAULT_TYPE;
 
-      attr = collectAttributes(MODEL.models.edge, MODEL.defaults.edge, edgeElement);
+      attr = collectAttributes(
+        MODEL.models.edge,
+        MODEL.defaults.edge,
+        edgeElement
+      );
       attr = DEFAULT_FORMATTER(attr);
 
       // Should we upgrade to a mixed graph?
@@ -205,24 +213,16 @@ module.exports = function createParserFunction(DOMParser, Document) {
       // Should we upgrade to a multi graph?
       if (!graph.multi) {
         if (type === 'undirected') {
-          if (graph.hasUndirectedEdge(s, t))
-            graph.upgradeToMulti();
-        }
-        else if (graph.hasDirectedEdge(s, t))
-          graph.upgradeToMulti();
+          if (graph.hasUndirectedEdge(s, t)) graph.upgradeToMulti();
+        } else if (graph.hasDirectedEdge(s, t)) graph.upgradeToMulti();
       }
 
       if (type === 'undirected') {
-        if (id)
-          graph.addUndirectedEdgeWithKey(id, s, t, attr);
-        else
-          graph.addUndirectedEdge(s, t, attr);
-      }
-      else {
-        if (id)
-          graph.addDirectedEdgeWithKey(id, s, t, attr);
-        else
-          graph.addDirectedEdge(s, t, attr);
+        if (id) graph.addUndirectedEdgeWithKey(id, s, t, attr);
+        else graph.addUndirectedEdge(s, t, attr);
+      } else {
+        if (id) graph.addDirectedEdgeWithKey(id, s, t, attr);
+        else graph.addDirectedEdge(s, t, attr);
       }
     }
 

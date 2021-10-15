@@ -46,14 +46,12 @@ export function serializeEdge(key, data) {
   };
 
   // We export the key unless if it was provided by the user
-  if (!data.generatedKey)
-    serialized.key = key;
+  if (!data.generatedKey) serialized.key = key;
 
   if (!isEmpty(data.attributes))
     serialized.attributes = assign({}, data.attributes);
 
-  if (data.undirected)
-    serialized.undirected = true;
+  if (data.undirected) serialized.undirected = true;
 
   return serialized;
 }
@@ -65,14 +63,14 @@ export function serializeEdge(key, data) {
  * @return {string|null}
  */
 export function validateSerializedNode(value) {
-  if (!isPlainObject(value))
-    return 'not-object';
+  if (!isPlainObject(value)) return 'not-object';
 
-  if (!('key' in value))
-    return 'no-key';
+  if (!('key' in value)) return 'no-key';
 
-  if ('attributes' in value &&
-      (!isPlainObject(value.attributes) || value.attributes === null))
+  if (
+    'attributes' in value &&
+    (!isPlainObject(value.attributes) || value.attributes === null)
+  )
     return 'invalid-attributes';
 
   return null;
@@ -85,21 +83,19 @@ export function validateSerializedNode(value) {
  * @return {string|null}
  */
 export function validateSerializedEdge(value) {
-  if (!isPlainObject(value))
-    return 'not-object';
+  if (!isPlainObject(value)) return 'not-object';
 
-  if (!('source' in value))
-    return 'no-source';
+  if (!('source' in value)) return 'no-source';
 
-  if (!('target' in value))
-    return 'no-target';
+  if (!('target' in value)) return 'no-target';
 
-  if ('attributes' in value &&
-      (!isPlainObject(value.attributes) || value.attributes === null))
+  if (
+    'attributes' in value &&
+    (!isPlainObject(value.attributes) || value.attributes === null)
+  )
     return 'invalid-attributes';
 
-  if ('undirected' in value &&
-      (typeof value.undirected !== 'boolean'))
+  if ('undirected' in value && typeof value.undirected !== 'boolean')
     return 'invalid-undirected';
 
   return null;

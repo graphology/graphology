@@ -1,8 +1,8 @@
 import Graph, {Attributes, GraphConstructor} from 'graphology-types';
 
 export type GirvanNewmanGeneratorOptions = {
-  zOut: number,
-  rng?: () => number
+  zOut: number;
+  rng?: () => number;
 };
 
 export default function girvanNewman<

@@ -7,7 +7,7 @@
  */
 var Graph = require('graphology');
 
-var createBasicGraph = function() {
+var createBasicGraph = function () {
   var graph = new Graph();
 
   graph.setAttribute('lastModifiedDate', '2105-12-23');
@@ -67,7 +67,7 @@ module.exports = [
     gexf: 'basic_formatted',
     graph: createBasicGraph,
     options: {
-      formatNode: function(key, attributes) {
+      formatNode: function (key, attributes) {
         return {
           label: '(Node) - ' + attributes.label,
           attributes: {
@@ -81,7 +81,7 @@ module.exports = [
           }
         };
       },
-      formatEdge: function(key, attributes) {
+      formatEdge: function (key, attributes) {
         return {
           label: attributes.label ? '(Edge) - ' + attributes.label : '',
           weight: attributes.weight / 2,

@@ -3,8 +3,8 @@
  * ============================
  */
 var assert = require('assert'),
-    Graph = require('graphology'),
-    complete = require('graphology-generators/classic/complete');
+  Graph = require('graphology'),
+  complete = require('graphology-generators/classic/complete');
 
 var lib = require('./');
 
@@ -20,7 +20,9 @@ function assertSamePaths(A, B) {
 }
 
 function getSchema(multi) {
-  var graph = multi ? new Graph.MultiDirectedGraph() : new Graph.DirectedGraph();
+  var graph = multi
+    ? new Graph.MultiDirectedGraph()
+    : new Graph.DirectedGraph();
 
   // Nodes
   graph.addNode('Project');
@@ -55,26 +57,26 @@ function getSchema(multi) {
   return graph;
 }
 
-describe('graphology-simple-path', function() {
-  describe('#.allSimplePaths', function() {
-    it('should throw if given invalid arguments.', function() {
-      assert.throws(function() {
+describe('graphology-simple-path', function () {
+  describe('#.allSimplePaths', function () {
+    it('should throw if given invalid arguments.', function () {
+      assert.throws(function () {
         lib.allSimplePaths(null);
       }, /graphology/);
 
-      assert.throws(function() {
+      assert.throws(function () {
         var graph = new Graph();
         lib.allSimplePaths(graph, 'test');
       }, /source/);
 
-      assert.throws(function() {
+      assert.throws(function () {
         var graph = new Graph();
         graph.addNode('mary');
         lib.allSimplePaths(graph, 'mary', 'test');
       }, /target/);
     });
 
-    it('should work properly.', function() {
+    it('should work properly.', function () {
       var graph = complete(Graph.UndirectedGraph, 4);
 
       var paths = lib.allSimplePaths(graph, '0', '3');
@@ -88,7 +90,7 @@ describe('graphology-simple-path', function() {
       ]);
     });
 
-    it('should work with an example.', function() {
+    it('should work with an example.', function () {
       var graph = getSchema();
 
       var paths = lib.allSimplePaths(graph, 'Project', 'Comment');
@@ -110,7 +112,7 @@ describe('graphology-simple-path', function() {
       ]);
     });
 
-    it('should work with a multigraph.', function() {
+    it('should work with a multigraph.', function () {
       var graph = new Graph.MultiDirectedGraph();
 
       graph.addNode(0);
@@ -137,42 +139,40 @@ describe('graphology-simple-path', function() {
         ['0', '2', '1']
       ]);
 
-      graph.edges('1', '2').forEach(function(edge) {
+      graph.edges('1', '2').forEach(function (edge) {
         graph.dropEdge(edge);
       });
 
       paths = lib.allSimplePaths(graph, 0, 1);
 
-      assertSamePaths(paths, [
-        ['0', '1']
-      ]);
+      assertSamePaths(paths, [['0', '1']]);
     });
   });
 
-  describe('#.allSimpleEdgePaths', function() {
-    it('should throw if given invalid arguments.', function() {
-      assert.throws(function() {
+  describe('#.allSimpleEdgePaths', function () {
+    it('should throw if given invalid arguments.', function () {
+      assert.throws(function () {
         lib.allSimpleEdgePaths(null);
       }, /graphology/);
 
-      assert.throws(function() {
+      assert.throws(function () {
         var graph = new Graph();
         lib.allSimpleEdgePaths(graph, 'test');
       }, /source/);
 
-      assert.throws(function() {
+      assert.throws(function () {
         var graph = new Graph({multi: true});
         lib.allSimpleEdgePaths(graph);
       }, /multi/);
 
-      assert.throws(function() {
+      assert.throws(function () {
         var graph = new Graph();
         graph.addNode('mary');
         lib.allSimpleEdgePaths(graph, 'mary', 'test');
       }, /target/);
     });
 
-    it('should work properly.', function() {
+    it('should work properly.', function () {
       var graph = new Graph.UndirectedGraph();
 
       var i, j;
@@ -194,16 +194,19 @@ describe('graphology-simple-path', function() {
       ]);
     });
 
-    it('should work with an example.', function() {
+    it('should work with an example.', function () {
       var graph = getSchema();
 
-      var paths = lib.allSimpleEdgePaths(graph, 'Project', 'Comment')
-        .map(function(p) {
-          return p.map(function(edge) {
+      var paths = lib
+        .allSimpleEdgePaths(graph, 'Project', 'Comment')
+        .map(function (p) {
+          return p.map(function (edge) {
             return [
-              graph.source(edge) + '|' +
-              graph.getEdgeAttribute(edge, 'label') + '|' +
-              graph.target(edge)
+              graph.source(edge) +
+                '|' +
+                graph.getEdgeAttribute(edge, 'label') +
+                '|' +
+                graph.target(edge)
             ];
           });
         });
@@ -226,13 +229,16 @@ describe('graphology-simple-path', function() {
         ]
       ]);
 
-      var cycles = lib.allSimpleEdgePaths(graph, 'Task', 'Task')
-        .map(function(p) {
-          return p.map(function(edge) {
+      var cycles = lib
+        .allSimpleEdgePaths(graph, 'Task', 'Task')
+        .map(function (p) {
+          return p.map(function (edge) {
             return [
-              graph.source(edge) + '|' +
-              graph.getEdgeAttribute(edge, 'label') + '|' +
-              graph.target(edge)
+              graph.source(edge) +
+                '|' +
+                graph.getEdgeAttribute(edge, 'label') +
+                '|' +
+                graph.target(edge)
             ];
           });
         });
@@ -257,34 +263,35 @@ describe('graphology-simple-path', function() {
     });
   });
 
-  describe('#.allSimpleEdgeGroupPaths', function() {
-    it('should throw if given invalid arguments.', function() {
-      assert.throws(function() {
+  describe('#.allSimpleEdgeGroupPaths', function () {
+    it('should throw if given invalid arguments.', function () {
+      assert.throws(function () {
         lib.allSimpleEdgeGroupPaths(null);
       }, /graphology/);
 
-      assert.throws(function() {
+      assert.throws(function () {
         var graph = new Graph({multi: true});
         lib.allSimpleEdgeGroupPaths(graph, 'test');
       }, /source/);
 
-      assert.throws(function() {
+      assert.throws(function () {
         var graph = new Graph({multi: true});
         graph.addNode('mary');
         lib.allSimpleEdgeGroupPaths(graph, 'mary', 'test');
       }, /target/);
     });
 
-    it('should work with an example.', function() {
+    it('should work with an example.', function () {
       var graph = getSchema(true);
 
-      var paths = lib.allSimpleEdgeGroupPaths(graph, 'Project', 'Comment')
-        .map(function(p) {
-          return p.map(function(edges) {
+      var paths = lib
+        .allSimpleEdgeGroupPaths(graph, 'Project', 'Comment')
+        .map(function (p) {
+          return p.map(function (edges) {
             var source = graph.source(edges[0]);
             var target = graph.target(edges[0]);
 
-            var labels = edges.map(function(edge) {
+            var labels = edges.map(function (edge) {
               return graph.getEdgeAttribute(edge, 'label');
             });
 
@@ -310,13 +317,14 @@ describe('graphology-simple-path', function() {
         ]
       ]);
 
-      var cycles = lib.allSimpleEdgeGroupPaths(graph, 'Task', 'Task')
-        .map(function(p) {
-          return p.map(function(edges) {
+      var cycles = lib
+        .allSimpleEdgeGroupPaths(graph, 'Task', 'Task')
+        .map(function (p) {
+          return p.map(function (edges) {
             var source = graph.source(edges[0]);
             var target = graph.target(edges[0]);
 
-            var labels = edges.map(function(edge) {
+            var labels = edges.map(function (edge) {
               return graph.getEdgeAttribute(edge, 'label');
             });
 
@@ -325,10 +333,7 @@ describe('graphology-simple-path', function() {
         });
 
       assertSamePaths(cycles, [
-        [
-          'Task(comments,privateComments)Comment',
-          'Comment(commentTasks)Task'
-        ],
+        ['Task(comments,privateComments)Comment', 'Comment(commentTasks)Task'],
         ['Task(subTasks)Task'],
         [
           'Task(drafts)Draft',
@@ -346,16 +351,17 @@ describe('graphology-simple-path', function() {
       ]);
     });
 
-    it('should work with a simple graph.', function() {
+    it('should work with a simple graph.', function () {
       var graph = getSchema();
 
-      var paths = lib.allSimpleEdgeGroupPaths(graph, 'Project', 'Comment')
-        .map(function(p) {
-          return p.map(function(edges) {
+      var paths = lib
+        .allSimpleEdgeGroupPaths(graph, 'Project', 'Comment')
+        .map(function (p) {
+          return p.map(function (edges) {
             var source = graph.source(edges[0]);
             var target = graph.target(edges[0]);
 
-            var labels = edges.map(function(edge) {
+            var labels = edges.map(function (edge) {
               return graph.getEdgeAttribute(edge, 'label');
             });
 

@@ -21,33 +21,32 @@ const bundle = (format, filename, options = {}) => ({
     exports: format === 'cjs' ? 'default' : undefined
   },
   external: [
-    ...(!options.resolve ? [
-      ...Object.keys(pkg.dependencies),
-      'obliterator/iterator',
-      'obliterator/take',
-      'obliterator/chain'
-    ] : []),
+    ...(!options.resolve
+      ? [
+          ...Object.keys(pkg.dependencies),
+          'obliterator/iterator',
+          'obliterator/take',
+          'obliterator/chain'
+        ]
+      : [])
   ],
   plugins: [
-    ...(options.resolve ? [
-      resolve({preferBuiltins: false}),
-      commonjs()
-    ] : []),
-    ...(options.babel ? [
-      babel({exclude: 'node_modules/**'})
-    ] : []),
-    ...(options.minimize ? [
-      terser()
-    ] : []),
-    ...(options.stats ? [
-      visualizer({filename: filename.replace('.js', '') + '.stats.html'})
-    ] : []),
-  ],
+    ...(options.resolve ? [resolve({preferBuiltins: false}), commonjs()] : []),
+    ...(options.babel ? [babel({exclude: 'node_modules/**'})] : []),
+    ...(options.minimize ? [terser()] : []),
+    ...(options.stats
+      ? [visualizer({filename: filename.replace('.js', '') + '.stats.html'})]
+      : [])
+  ]
 });
 
 export default [
   bundle('cjs', pkg.main, {babel: true}),
   bundle('es', pkg.module),
-  bundle('umd', pkg.browser.replace('.min', ''), {resolve: true, babel: true, stats: true}),
-  bundle('umd', pkg.browser, {resolve: true, babel: true, minimize: true}),
+  bundle('umd', pkg.browser.replace('.min', ''), {
+    resolve: true,
+    babel: true,
+    stats: true
+  }),
+  bundle('umd', pkg.browser, {resolve: true, babel: true, minimize: true})
 ];

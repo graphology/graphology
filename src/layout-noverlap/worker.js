@@ -6,8 +6,8 @@
  * separate thread not to block UI with heavy synchronous computations.
  */
 var workerFunction = require('./webworker.js'),
-    isGraph = require('graphology-utils/is-graph'),
-    helpers = require('./helpers.js');
+  isGraph = require('graphology-utils/is-graph'),
+  helpers = require('./helpers.js');
 
 var DEFAULT_SETTINGS = require('./defaults.js');
 
@@ -24,14 +24,18 @@ function NoverlapLayoutSupervisor(graph, params) {
 
   // Validation
   if (!isGraph(graph))
-    throw new Error('graphology-layout-noverlap/worker: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-layout-noverlap/worker: the given graph is not a valid graphology instance.'
+    );
 
   // Validating settings
   var settings = Object.assign({}, DEFAULT_SETTINGS, params.settings),
-      validationError = helpers.validateSettings(settings);
+    validationError = helpers.validateSettings(settings);
 
   if (validationError)
-    throw new Error('graphology-layout-noverlap/worker: ' + validationError.message);
+    throw new Error(
+      'graphology-layout-noverlap/worker: ' + validationError.message
+    );
 
   // Properties
   this.worker = null;
@@ -46,7 +50,8 @@ function NoverlapLayoutSupervisor(graph, params) {
   this.outputReducer = params.outputReducer;
 
   this.callbacks = {
-    onConverged: typeof params.onConverged === 'function' ? params.onConverged : null
+    onConverged:
+      typeof params.onConverged === 'function' ? params.onConverged : null
   };
 
   // Binding listeners
@@ -55,14 +60,13 @@ function NoverlapLayoutSupervisor(graph, params) {
   var alreadyRespawning = false;
   var self = this;
 
-  this.handleAddition = function() {
-    if (alreadyRespawning)
-      return;
+  this.handleAddition = function () {
+    if (alreadyRespawning) return;
 
     alreadyRespawning = true;
 
     self.spawnWorker();
-    setImmediate(function() {
+    setImmediate(function () {
       alreadyRespawning = false;
     });
   };
@@ -77,9 +81,8 @@ function NoverlapLayoutSupervisor(graph, params) {
 /**
  * Internal method used to spawn the web worker.
  */
-NoverlapLayoutSupervisor.prototype.spawnWorker = function() {
-  if (this.worker)
-    this.worker.terminate();
+NoverlapLayoutSupervisor.prototype.spawnWorker = function () {
+  if (this.worker) this.worker.terminate();
 
   this.worker = helpers.createWorker(workerFunction);
   this.worker.addEventListener('message', this.handleMessage);
@@ -95,9 +98,8 @@ NoverlapLayoutSupervisor.prototype.spawnWorker = function() {
  *
  * @param {object} event - Event to handle.
  */
-NoverlapLayoutSupervisor.prototype.handleMessage = function(event) {
-  if (!this.running)
-    return;
+NoverlapLayoutSupervisor.prototype.handleMessage = function (event) {
+  if (!this.running) return;
 
   var matrix = new Float32Array(event.data.nodes);
 
@@ -107,8 +109,7 @@ NoverlapLayoutSupervisor.prototype.handleMessage = function(event) {
   this.converged = event.data.result.converged;
 
   if (event.data.result.converged) {
-    if (this.callbacks.onConverged)
-      this.callbacks.onConverged();
+    if (this.callbacks.onConverged) this.callbacks.onConverged();
 
     this.stop();
     return;
@@ -123,7 +124,7 @@ NoverlapLayoutSupervisor.prototype.handleMessage = function(event) {
  *
  * @return {NoverlapLayoutSupervisor}
  */
-NoverlapLayoutSupervisor.prototype.askForIterations = function() {
+NoverlapLayoutSupervisor.prototype.askForIterations = function () {
   var matrices = this.matrices;
 
   var payload = {
@@ -143,12 +144,13 @@ NoverlapLayoutSupervisor.prototype.askForIterations = function() {
  *
  * @return {NoverlapLayoutSupervisor}
  */
-NoverlapLayoutSupervisor.prototype.start = function() {
+NoverlapLayoutSupervisor.prototype.start = function () {
   if (this.killed)
-    throw new Error('graphology-layout-noverlap/worker.start: layout was killed.');
+    throw new Error(
+      'graphology-layout-noverlap/worker.start: layout was killed.'
+    );
 
-  if (this.running)
-    return this;
+  if (this.running) return this;
 
   // Building matrices
   this.matrices = {
@@ -166,7 +168,7 @@ NoverlapLayoutSupervisor.prototype.start = function() {
  *
  * @return {NoverlapLayoutSupervisor}
  */
-NoverlapLayoutSupervisor.prototype.stop = function() {
+NoverlapLayoutSupervisor.prototype.stop = function () {
   this.running = false;
 
   return this;
@@ -177,9 +179,8 @@ NoverlapLayoutSupervisor.prototype.stop = function() {
  *
  * @return {NoverlapLayoutSupervisor}
  */
-NoverlapLayoutSupervisor.prototype.kill = function() {
-  if (this.killed)
-    return this;
+NoverlapLayoutSupervisor.prototype.kill = function () {
+  if (this.killed) return this;
 
   this.running = false;
   this.killed = true;

@@ -11,8 +11,8 @@ const VALID_TYPES = new Set(['set', 'merge', 'replace', 'remove']);
 
 export default function events(Graph) {
   return {
-    'nodeAdded': {
-      'it should fire when a node is added.': function() {
+    nodeAdded: {
+      'it should fire when a node is added.': function () {
         const graph = new Graph();
 
         const handler = spy(data => {
@@ -28,8 +28,8 @@ export default function events(Graph) {
       }
     },
 
-    'edgeAdded': {
-      'it should fire when an edge is added.': function() {
+    edgeAdded: {
+      'it should fire when an edge is added.': function () {
         const graph = new Graph();
 
         const handler = spy(data => {
@@ -49,8 +49,8 @@ export default function events(Graph) {
       }
     },
 
-    'nodeDropped': {
-      'it should fire when a node is dropped.': function() {
+    nodeDropped: {
+      'it should fire when a node is dropped.': function () {
         const graph = new Graph();
 
         const handler = spy(data => {
@@ -67,8 +67,8 @@ export default function events(Graph) {
       }
     },
 
-    'edgeDropped': {
-      'it should fire when an edge is added.': function() {
+    edgeDropped: {
+      'it should fire when an edge is added.': function () {
         const graph = new Graph();
 
         const handler = spy(data => {
@@ -89,8 +89,8 @@ export default function events(Graph) {
       }
     },
 
-    'cleared': {
-      'it should fire when the graph is cleared.': function() {
+    cleared: {
+      'it should fire when the graph is cleared.': function () {
         const graph = new Graph();
 
         const handler = spy();
@@ -103,8 +103,8 @@ export default function events(Graph) {
       }
     },
 
-    'attributesUpdated': {
-      'it should fire when a graph attribute is updated.': function() {
+    attributesUpdated: {
+      'it should fire when a graph attribute is updated.': function () {
         const graph = new Graph();
 
         const handler = spy(payload => {
@@ -112,11 +112,9 @@ export default function events(Graph) {
 
           if (payload.type === 'set') {
             assert.strictEqual(payload.name, 'name');
-          }
-          else if (payload.type === 'remove') {
+          } else if (payload.type === 'remove') {
             assert.strictEqual(payload.name, 'name');
-          }
-          else if (payload.type === 'merge') {
+          } else if (payload.type === 'merge') {
             assert.deepStrictEqual(payload.data, {author: 'John'});
           }
 
@@ -134,8 +132,8 @@ export default function events(Graph) {
       }
     },
 
-    'nodeAttributesUpdated': {
-      'it should fire when a node\'s attributes are updated.': function() {
+    nodeAttributesUpdated: {
+      "it should fire when a node's attributes are updated.": function () {
         const graph = new Graph();
 
         const handler = spy(payload => {
@@ -145,15 +143,16 @@ export default function events(Graph) {
 
           if (payload.type === 'set') {
             assert.strictEqual(payload.name, 'age');
-          }
-          else if (payload.type === 'remove') {
+          } else if (payload.type === 'remove') {
             assert.strictEqual(payload.name, 'eyes');
-          }
-          else if (payload.type === 'merge') {
+          } else if (payload.type === 'merge') {
             assert.deepStrictEqual(payload.data, {eyes: 'blue'});
           }
 
-          assert.strictEqual(payload.attributes, graph.getNodeAttributes(payload.key));
+          assert.strictEqual(
+            payload.attributes,
+            graph.getNodeAttributes(payload.key)
+          );
         });
 
         graph.on('nodeAttributesUpdated', handler);
@@ -167,7 +166,7 @@ export default function events(Graph) {
         assert.strictEqual(handler.times, 4);
       },
 
-      'it should fire when a node is merged.': function() {
+      'it should fire when a node is merged.': function () {
         const graph = new Graph();
 
         const handler = spy(payload => {
@@ -178,7 +177,9 @@ export default function events(Graph) {
             data: {count: 2}
           });
 
-          assert.deepStrictEqual(graph.getNodeAttributes(payload.key), {count: 2});
+          assert.deepStrictEqual(graph.getNodeAttributes(payload.key), {
+            count: 2
+          });
         });
 
         graph.on('nodeAttributesUpdated', handler);
@@ -189,7 +190,7 @@ export default function events(Graph) {
         assert.strictEqual(handler.times, 1);
       },
 
-      'it should fire when a node is updated.': function() {
+      'it should fire when a node is updated.': function () {
         const graph = new Graph();
 
         const handler = spy(payload => {
@@ -199,20 +200,25 @@ export default function events(Graph) {
             attributes: {count: 2}
           });
 
-          assert.deepStrictEqual(graph.getNodeAttributes(payload.key), {count: 2});
+          assert.deepStrictEqual(graph.getNodeAttributes(payload.key), {
+            count: 2
+          });
         });
 
         graph.on('nodeAttributesUpdated', handler);
 
         graph.mergeNode('John', {count: 1});
-        graph.updateNode('John', attr => ({...attr, count: attr.count + 1}));
+        graph.updateNode('John', attr => ({
+          ...attr,
+          count: attr.count + 1
+        }));
 
         assert.strictEqual(handler.times, 1);
       }
     },
 
-    'edgeAttributesUpdated': {
-      'it should fire when an edge\'s attributes are updated.': function() {
+    edgeAttributesUpdated: {
+      "it should fire when an edge's attributes are updated.": function () {
         const graph = new Graph();
 
         const handler = spy(payload => {
@@ -222,15 +228,16 @@ export default function events(Graph) {
 
           if (payload.type === 'set') {
             assert.strictEqual(payload.name, 'weight');
-          }
-          else if (payload.type === 'remove') {
+          } else if (payload.type === 'remove') {
             assert.strictEqual(payload.name, 'type');
-          }
-          else if (payload.type === 'merge') {
+          } else if (payload.type === 'merge') {
             assert.deepStrictEqual(payload.data, {type: 'KNOWS'});
           }
 
-          assert.strictEqual(payload.attributes, graph.getEdgeAttributes(payload.key));
+          assert.strictEqual(
+            payload.attributes,
+            graph.getEdgeAttributes(payload.key)
+          );
         });
 
         graph.on('edgeAttributesUpdated', handler);
@@ -245,7 +252,7 @@ export default function events(Graph) {
         assert.strictEqual(handler.times, 4);
       },
 
-      'it should fire when an edge is merged.': function() {
+      'it should fire when an edge is merged.': function () {
         const graph = new Graph();
 
         const handler = spy(payload => {
@@ -256,7 +263,9 @@ export default function events(Graph) {
             data: {weight: 2}
           });
 
-          assert.deepStrictEqual(graph.getEdgeAttributes(payload.key), {weight: 2});
+          assert.deepStrictEqual(graph.getEdgeAttributes(payload.key), {
+            weight: 2
+          });
         });
 
         graph.on('edgeAttributesUpdated', handler);
@@ -267,7 +276,7 @@ export default function events(Graph) {
         assert.strictEqual(handler.times, 1);
       },
 
-      'it should fire when an edge is updated.': function() {
+      'it should fire when an edge is updated.': function () {
         const graph = new Graph();
 
         const handler = spy(payload => {
@@ -277,20 +286,25 @@ export default function events(Graph) {
             attributes: {weight: 2}
           });
 
-          assert.deepStrictEqual(graph.getEdgeAttributes(payload.key), {weight: 2});
+          assert.deepStrictEqual(graph.getEdgeAttributes(payload.key), {
+            weight: 2
+          });
         });
 
         graph.on('edgeAttributesUpdated', handler);
 
         graph.mergeEdgeWithKey('j->m', 'John', 'Mary', {weight: 1});
-        graph.updateEdgeWithKey('j->m', 'John', 'Mary', attr => ({...attr, weight: attr.weight + 1}));
+        graph.updateEdgeWithKey('j->m', 'John', 'Mary', attr => ({
+          ...attr,
+          weight: attr.weight + 1
+        }));
 
         assert.strictEqual(handler.times, 1);
       }
     },
 
-    'eachNodeAttributesUpdated': {
-      'it should fire when using #.updateEachNodeAttributes.': function() {
+    eachNodeAttributesUpdated: {
+      'it should fire when using #.updateEachNodeAttributes.': function () {
         const graph = new Graph();
 
         graph.addNode('John', {age: 34});
@@ -310,7 +324,7 @@ export default function events(Graph) {
         assert.strictEqual(handler.times, 1);
       },
 
-      'it should provide hints when user gave them.': function() {
+      'it should provide hints when user gave them.': function () {
         const graph = new Graph();
 
         graph.addNode('John', {age: 34});
@@ -323,16 +337,19 @@ export default function events(Graph) {
 
         graph.on('eachNodeAttributesUpdated', handler);
 
-        graph.updateEachNodeAttributes((node, attr) => {
-          return {...attr, age: attr.age + 1};
-        }, {attributes: ['age']});
+        graph.updateEachNodeAttributes(
+          (node, attr) => {
+            return {...attr, age: attr.age + 1};
+          },
+          {attributes: ['age']}
+        );
 
         assert.strictEqual(handler.times, 1);
       }
     },
 
-    'eachEdgeAttributesUpdated': {
-      'it should fire when using #.updateEachEdgeAttributes.': function() {
+    eachEdgeAttributesUpdated: {
+      'it should fire when using #.updateEachEdgeAttributes.': function () {
         const graph = new Graph();
 
         graph.mergeEdgeWithKey(0, 'John', 'Lucy', {weight: 1});
@@ -351,7 +368,7 @@ export default function events(Graph) {
         assert.strictEqual(handler.times, 1);
       },
 
-      'it should provide hints when user gave them.': function() {
+      'it should provide hints when user gave them.': function () {
         const graph = new Graph();
 
         graph.mergeEdgeWithKey(0, 'John', 'Lucy', {weight: 1});
@@ -363,9 +380,12 @@ export default function events(Graph) {
 
         graph.on('eachEdgeAttributesUpdated', handler);
 
-        graph.updateEachEdgeAttributes((node, attr) => {
-          return {...attr, weight: attr.weight + 1};
-        }, {attributes: ['weight']});
+        graph.updateEachEdgeAttributes(
+          (node, attr) => {
+            return {...attr, weight: attr.weight + 1};
+          },
+          {attributes: ['weight']}
+        );
 
         assert.strictEqual(handler.times, 1);
       }

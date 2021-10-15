@@ -26,7 +26,10 @@ export class UndirectedLeidenAddenda {
   cumulativeIncrement: Float64Array;
   degrees: TypedArray;
 
-  constructor(index: UndirectedLeidenAddenda, options?: UndirectedLeidenAddendaOptions);
+  constructor(
+    index: UndirectedLeidenAddenda,
+    options?: UndirectedLeidenAddendaOptions
+  );
   groupByCommunities(): void;
   mergeNodesSubset(): void;
   refinePartition(): void;

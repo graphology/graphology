@@ -18,37 +18,27 @@ import {
  */
 class DirectedGraph extends Graph {
   constructor(options) {
-    super(
-      assign({type: 'directed'}, options)
-    );
+    super(assign({type: 'directed'}, options));
   }
 }
 class UndirectedGraph extends Graph {
   constructor(options) {
-    super(
-      assign({type: 'undirected'}, options)
-    );
+    super(assign({type: 'undirected'}, options));
   }
 }
 class MultiGraph extends Graph {
   constructor(options) {
-    super(
-      assign({multi: true}, options)
-    );
+    super(assign({multi: true}, options));
   }
 }
 class MultiDirectedGraph extends Graph {
   constructor(options) {
-    super(
-      assign({multi: true, type: 'directed'}, options)
-    );
+    super(assign({multi: true, type: 'directed'}, options));
   }
 }
 class MultiUndirectedGraph extends Graph {
   constructor(options) {
-    super(
-      assign({multi: true, type: 'undirected'}, options)
-    );
+    super(assign({multi: true, type: 'undirected'}, options));
   }
 }
 
@@ -56,7 +46,6 @@ class MultiUndirectedGraph extends Graph {
  * Attaching static #.from method to each of the constructors.
  */
 function attachStaticFromMethod(Class) {
-
   /**
    * Builds a graph from serialized data or another graph's data.
    *
@@ -64,7 +53,7 @@ function attachStaticFromMethod(Class) {
    * @param  {object}                [options] - Options.
    * @return {Class}
    */
-  Class.from = function(data, options) {
+  Class.from = function (data, options) {
     const instance = new Class(options);
     instance.import(data);
 

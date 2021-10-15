@@ -3,44 +3,40 @@
  * ============================
  */
 var assert = require('assert'),
-    seedrandom = require('seedrandom'),
-    Graph = require('graphology'),
-    random = require('../random.js');
+  seedrandom = require('seedrandom'),
+  Graph = require('graphology'),
+  random = require('../random.js');
 
-var rng = function() {
+var rng = function () {
   return seedrandom('test');
 };
 
-describe('random', function() {
-
-  it('should throw if provided with and invalid graph.', function() {
-    assert.throws(function() {
+describe('random', function () {
+  it('should throw if provided with and invalid graph.', function () {
+    assert.throws(function () {
       random(null);
     }, /graphology/);
   });
 
-  it('should correctly produce a layout.', function() {
+  it('should correctly produce a layout.', function () {
     var graph = new Graph();
-    [1, 2, 3, 4].forEach(function(node) {
+    [1, 2, 3, 4].forEach(function (node) {
       graph.addNode(node);
     });
 
     var positions = random(graph, {rng: rng()});
 
-    assert.deepEqual(
-      positions,
-      {
-        1: {x: 0.8722025543160253, y: 0.4023928518604753},
-        2: {x: 0.9647289658507073, y: 0.30479896375101545},
-        3: {x: 0.3521069009157321, y: 0.2734533903544762},
-        4: {x: 0.4635571187776387, y: 0.10034856760950056}
-      }
-    );
+    assert.deepEqual(positions, {
+      1: {x: 0.8722025543160253, y: 0.4023928518604753},
+      2: {x: 0.9647289658507073, y: 0.30479896375101545},
+      3: {x: 0.3521069009157321, y: 0.2734533903544762},
+      4: {x: 0.4635571187776387, y: 0.10034856760950056}
+    });
   });
 
-  it('should be possible to assign the results to the nodes.', function() {
+  it('should be possible to assign the results to the nodes.', function () {
     var graph = new Graph();
-    [1, 2, 3, 4].forEach(function(node) {
+    [1, 2, 3, 4].forEach(function (node) {
       graph.addNode(node);
     });
 
@@ -59,9 +55,9 @@ describe('random', function() {
     );
   });
 
-  it('should be possible to map to the desired attributes.', function() {
+  it('should be possible to map to the desired attributes.', function () {
     var graph = new Graph();
-    [1, 2, 3, 4].forEach(function(node) {
+    [1, 2, 3, 4].forEach(function (node) {
       graph.addNode(node);
     });
 
@@ -80,41 +76,35 @@ describe('random', function() {
     );
   });
 
-  it('should be possible to offset the center.', function() {
+  it('should be possible to offset the center.', function () {
     var graph = new Graph();
-    [1, 2, 3, 4].forEach(function(node) {
+    [1, 2, 3, 4].forEach(function (node) {
       graph.addNode(node);
     });
 
     var positions = random(graph, {rng: rng(), center: 0.7});
 
-    assert.deepEqual(
-      positions,
-      {
-        1: {x: 1.0722025543160254, y: 0.6023928518604753},
-        2: {x: 1.1647289658507072, y: 0.5047989637510154},
-        3: {x: 0.552106900915732, y: 0.47345339035447614},
-        4: {x: 0.6635571187776387, y: 0.3003485676095005}
-      }
-    );
+    assert.deepEqual(positions, {
+      1: {x: 1.0722025543160254, y: 0.6023928518604753},
+      2: {x: 1.1647289658507072, y: 0.5047989637510154},
+      3: {x: 0.552106900915732, y: 0.47345339035447614},
+      4: {x: 0.6635571187776387, y: 0.3003485676095005}
+    });
   });
 
-  it('should be possible to scale the layout.', function() {
+  it('should be possible to scale the layout.', function () {
     var graph = new Graph();
-    [1, 2, 3, 4].forEach(function(node) {
+    [1, 2, 3, 4].forEach(function (node) {
       graph.addNode(node);
     });
 
     var positions = random(graph, {rng: rng(), scale: 3});
 
-    assert.deepEqual(
-      positions,
-      {
-        1: {x: 0.8722025543160253 * 3, y: 0.4023928518604753 * 3},
-        2: {x: 0.9647289658507073 * 3, y: 0.30479896375101545 * 3},
-        3: {x: 0.3521069009157321 * 3, y: 0.2734533903544762 * 3},
-        4: {x: 0.4635571187776387 * 3, y: 0.10034856760950056 * 3}
-      }
-    );
+    assert.deepEqual(positions, {
+      1: {x: 0.8722025543160253 * 3, y: 0.4023928518604753 * 3},
+      2: {x: 0.9647289658507073 * 3, y: 0.30479896375101545 * 3},
+      3: {x: 0.3521069009157321 * 3, y: 0.2734533903544762 * 3},
+      4: {x: 0.4635571187776387 * 3, y: 0.10034856760950056 * 3}
+    });
   });
 });

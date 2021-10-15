@@ -2,9 +2,9 @@ import Graph from 'graphology-types';
 
 type WeightedDegreeOptions = {
   attributes?: {
-    weight?: string,
-    weightedDegree?: string
-  }
+    weight?: string;
+    weightedDegree?: string;
+  };
 };
 
 type WeightedDegreeMapping = {[key: string]: number};
@@ -18,9 +18,9 @@ interface IWeightedDegreeBase {
 }
 
 interface IWeightedDegree extends IWeightedDegreeBase {
-  weightedDegree: IWeightedDegreeBase,
-  weightedInDegree: IWeightedDegreeBase,
-  weightedOutDegree: IWeightedDegreeBase
+  weightedDegree: IWeightedDegreeBase;
+  weightedInDegree: IWeightedDegreeBase;
+  weightedOutDegree: IWeightedDegreeBase;
 }
 
 declare const weightedDegree: IWeightedDegree;

@@ -3,9 +3,10 @@
  * ============================
  */
 var assert = require('assert'),
-    Graph = require('graphology'),
-    createTupleComparator = require('mnemonist/utils/comparators').createTupleComparator,
-    mergeClique = require('graphology-utils/merge-clique');
+  Graph = require('graphology'),
+  createTupleComparator =
+    require('mnemonist/utils/comparators').createTupleComparator,
+  mergeClique = require('graphology-utils/merge-clique');
 
 var reverse = require('./reverse.js');
 var subgraph = require('./subgraph');
@@ -16,31 +17,30 @@ var toSimple = require('./to-simple.js');
 var toUndirected = require('./to-undirected.js');
 
 function addNodesFrom(graph, nodes) {
-  nodes.forEach(function(node) {
+  nodes.forEach(function (node) {
     graph.addNode(node);
   });
 }
 
 function sortedEdgePairs(graph) {
-  return graph.edges()
-    .map(function(edge) {
+  return graph
+    .edges()
+    .map(function (edge) {
       return graph.extremities(edge).sort();
     })
     .sort(createTupleComparator(2));
 }
 
-describe('graphology-operators', function() {
-
-  describe('unary', function() {
-    describe('reverse', function() {
-      it('should throw if graph is invalid.', function() {
-
-        assert.throws(function() {
+describe('graphology-operators', function () {
+  describe('unary', function () {
+    describe('reverse', function () {
+      it('should throw if graph is invalid.', function () {
+        assert.throws(function () {
           reverse(null);
         }, /valid/);
       });
 
-      it('should correctly reverse the given graph.', function() {
+      it('should correctly reverse the given graph.', function () {
         var graph = new Graph();
 
         addNodesFrom(graph, ['John', 'Martha', 'Ada']);
@@ -56,24 +56,24 @@ describe('graphology-operators', function() {
       });
     });
 
-    describe('subgraph', function() {
-      it('should throw if given arguments are invalid.', function() {
-        assert.throws(function() {
+    describe('subgraph', function () {
+      it('should throw if given arguments are invalid.', function () {
+        assert.throws(function () {
           subgraph(null);
         }, /valid/);
 
-        assert.throws(function() {
+        assert.throws(function () {
           subgraph(new Graph(), null);
         }, /valid/);
       });
 
-      it('should throw if given nodes are not found in the graph.', function() {
-        assert.throws(function() {
+      it('should throw if given nodes are not found in the graph.', function () {
+        assert.throws(function () {
           subgraph(new Graph(), ['test']);
         }, /node/);
       });
 
-      it('should return an null graph if no node is given.', function() {
+      it('should return an null graph if no node is given.', function () {
         var graph = new Graph();
         graph.mergeEdge(1, 2);
 
@@ -86,7 +86,7 @@ describe('graphology-operators', function() {
         assert.strictEqual(subgraph(graph, returnFalse).size, 0);
       });
 
-      it('should be possible to get a subgraph from an array of nodes.', function() {
+      it('should be possible to get a subgraph from an array of nodes.', function () {
         var graph = new Graph();
         mergeClique(graph, [0, 1, 2, 3]);
 
@@ -101,7 +101,7 @@ describe('graphology-operators', function() {
         assert.strictEqual(sub.size, 1);
       });
 
-      it('should be possible to get a subgraph from a set of nodes.', function() {
+      it('should be possible to get a subgraph from a set of nodes.', function () {
         var graph = new Graph();
         mergeClique(graph, [0, 1, 2, 3]);
 
@@ -116,15 +116,14 @@ describe('graphology-operators', function() {
         assert.strictEqual(sub.size, 1);
       });
 
-      it('should be possible to get a subgraph from a filtering function', function() {
+      it('should be possible to get a subgraph from a filtering function', function () {
         var graph = new Graph();
         mergeClique(graph, [0, 1, 2, 3]);
 
-        var sub = subgraph(graph, function(key, attr) {
+        var sub = subgraph(graph, function (key, attr) {
           assert.deepStrictEqual(graph.getNodeAttributes(key), attr);
 
-          if (key === '0' || key === '1')
-            return true;
+          if (key === '0' || key === '1') return true;
 
           return false;
         });
@@ -140,32 +139,30 @@ describe('graphology-operators', function() {
     });
   });
 
-  describe('binary', function() {
-    describe('union', function() {
-
-      it('should throw if graphs are invalid.', function() {
-
-        assert.throws(function() {
+  describe('binary', function () {
+    describe('union', function () {
+      it('should throw if graphs are invalid.', function () {
+        assert.throws(function () {
           union(null, new Graph());
         }, /valid/);
 
-        assert.throws(function() {
+        assert.throws(function () {
           union(new Graph(), null);
         }, /valid/);
       });
 
-      it('should throw if graphs are not both simple or both multi.', function() {
+      it('should throw if graphs are not both simple or both multi.', function () {
         var simpleGraph = new Graph(),
-            multiGraph = new Graph({multi: true});
+          multiGraph = new Graph({multi: true});
 
-        assert.throws(function() {
+        assert.throws(function () {
           union(simpleGraph, multiGraph);
         }, /multi/);
       });
 
-      it('should produce the correct union of the given graphs.', function() {
+      it('should produce the correct union of the given graphs.', function () {
         var G = new Graph(),
-            H = new Graph();
+          H = new Graph();
 
         addNodesFrom(G, [1, 2]);
         addNodesFrom(H, [1, 3]);
@@ -180,31 +177,29 @@ describe('graphology-operators', function() {
       });
     });
 
-    describe('disjoint-union', function() {
-
-      it('should throw if graphs are invalid.', function() {
-
-        assert.throws(function() {
+    describe('disjoint-union', function () {
+      it('should throw if graphs are invalid.', function () {
+        assert.throws(function () {
           disjointUnion(null, new Graph());
         }, /valid/);
 
-        assert.throws(function() {
+        assert.throws(function () {
           disjointUnion(new Graph(), null);
         }, /valid/);
       });
 
-      it('should throw if graphs are not both simple or both multi.', function() {
+      it('should throw if graphs are not both simple or both multi.', function () {
         var simpleGraph = new Graph(),
-            multiGraph = new Graph({multi: true});
+          multiGraph = new Graph({multi: true});
 
-        assert.throws(function() {
+        assert.throws(function () {
           disjointUnion(simpleGraph, multiGraph);
         }, /multi/);
       });
 
-      it('should produce the correct disjoint union of the given graphs.', function() {
+      it('should produce the correct disjoint union of the given graphs.', function () {
         var G = new Graph(),
-            H = new Graph();
+          H = new Graph();
 
         addNodesFrom(G, [1, 2]);
         addNodesFrom(H, [1, 3]);
@@ -218,12 +213,15 @@ describe('graphology-operators', function() {
 
         var edges = sortedEdgePairs(R);
 
-        assert.deepStrictEqual(edges, [['0', '1'], ['2', '3']]);
+        assert.deepStrictEqual(edges, [
+          ['0', '1'],
+          ['2', '3']
+        ]);
       });
 
-      it('should produce the correct disjoint union of the given graphs with keyed edges.', function() {
+      it('should produce the correct disjoint union of the given graphs with keyed edges.', function () {
         var G = new Graph(),
-            H = new Graph();
+          H = new Graph();
 
         addNodesFrom(G, [1, 2]);
         addNodesFrom(H, [1, 3]);
@@ -237,20 +235,23 @@ describe('graphology-operators', function() {
 
         var edges = sortedEdgePairs(R);
 
-        assert.deepStrictEqual(edges, [['0', '1'], ['2', '3']]);
+        assert.deepStrictEqual(edges, [
+          ['0', '1'],
+          ['2', '3']
+        ]);
       });
     });
   });
 
-  describe('cast', function() {
-    describe('toSimple', function() {
-      it('should throw when given an invalid graph.', function() {
-        assert.throws(function() {
+  describe('cast', function () {
+    describe('toSimple', function () {
+      it('should throw when given an invalid graph.', function () {
+        assert.throws(function () {
           toSimple('test');
         }, /graphology/);
       });
 
-      it('should only return a plain copy of a simple graph.', function() {
+      it('should only return a plain copy of a simple graph.', function () {
         var graph = new Graph();
 
         graph.mergeEdge(1, 2);
@@ -261,7 +262,7 @@ describe('graphology-operators', function() {
         assert.deepStrictEqual(graph.nodes(), copy.nodes());
       });
 
-      it('should return a simple graph from a multi one.', function() {
+      it('should return a simple graph from a multi one.', function () {
         var multiGraph = new Graph({multi: true});
 
         multiGraph.mergeEdge('one', 'two');
@@ -279,14 +280,14 @@ describe('graphology-operators', function() {
       });
     });
 
-    describe('toDirected', function() {
-      it('should throw when given an invalid graph.', function() {
-        assert.throws(function() {
+    describe('toDirected', function () {
+      it('should throw when given an invalid graph.', function () {
+        assert.throws(function () {
           toDirected('test');
         }, /graphology/);
       });
 
-      it('should only return a plain copy of a directed graph.', function() {
+      it('should only return a plain copy of a directed graph.', function () {
         var graph = new Graph({type: 'directed'});
 
         graph.mergeEdge(1, 2);
@@ -297,7 +298,7 @@ describe('graphology-operators', function() {
         assert.deepStrictEqual(graph.nodes(), copy.nodes());
       });
 
-      it('should properly cast graph to undirected version.', function() {
+      it('should properly cast graph to undirected version.', function () {
         var graph = new Graph({type: 'undirected'});
 
         graph.mergeEdge(1, 2);
@@ -318,13 +319,13 @@ describe('graphology-operators', function() {
         assert.deepStrictEqual(copy.getEdgeAttributes(2, 3), {weight: 30});
       });
 
-      it('should be possible to pass a `mergeEdge` function.', function() {
+      it('should be possible to pass a `mergeEdge` function.', function () {
         var graph = new Graph();
 
         graph.mergeDirectedEdge(1, 2, {weight: 2});
         graph.mergeUndirectedEdge(1, 2, {weight: 4});
 
-        var copy = toDirected(graph, function(current, next) {
+        var copy = toDirected(graph, function (current, next) {
           current.weight += next.weight;
 
           return current;
@@ -341,14 +342,14 @@ describe('graphology-operators', function() {
       });
     });
 
-    describe('toUndirected', function() {
-      it('should throw when given an invalid graph.', function() {
-        assert.throws(function() {
+    describe('toUndirected', function () {
+      it('should throw when given an invalid graph.', function () {
+        assert.throws(function () {
           toUndirected('test');
         }, /graphology/);
       });
 
-      it('should only return a plain copy of an undirected graph.', function() {
+      it('should only return a plain copy of an undirected graph.', function () {
         var graph = new Graph({type: 'undirected'});
 
         graph.mergeEdge(1, 2);
@@ -359,7 +360,7 @@ describe('graphology-operators', function() {
         assert.deepStrictEqual(graph.nodes(), copy.nodes());
       });
 
-      it('should properly cast graph to undirected version.', function() {
+      it('should properly cast graph to undirected version.', function () {
         var graph = new Graph({type: 'directed'});
 
         graph.mergeEdge(1, 2);
@@ -375,14 +376,14 @@ describe('graphology-operators', function() {
         assert.strictEqual(copy.hasEdge(2, 3), true);
       });
 
-      it('should be possible to pass a `mergeEdge` function.', function() {
+      it('should be possible to pass a `mergeEdge` function.', function () {
         var graph = new Graph({type: 'directed'});
 
         graph.mergeEdge(1, 2, {weight: 2});
         graph.mergeEdge(2, 1, {weight: 3});
         graph.mergeEdge(3, 2, {weight: 3});
 
-        var copy = toUndirected(graph, function(current, next) {
+        var copy = toUndirected(graph, function (current, next) {
           current.weight += next.weight;
 
           return current;

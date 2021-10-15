@@ -12,8 +12,7 @@
  * @param  {array} nodes - Nodes representing the path to merge.
  */
 module.exports = function mergePath(graph, nodes) {
-  if (nodes.length === 0)
-    return;
+  if (nodes.length === 0) return;
 
   var previousNode, node, i, l;
 

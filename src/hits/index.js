@@ -5,7 +5,7 @@
  * Implementation of the HITS algorithm for the graphology specs.
  */
 var defaults = require('lodash/defaultsDeep'),
-    isGraph = require('graphology-utils/is-graph');
+  isGraph = require('graphology-utils/is-graph');
 
 /**
  * Defaults.
@@ -33,8 +33,7 @@ function dict(keys, value) {
 
   var i, l;
 
-  for (i = 0, l = keys.length; i < l; i++)
-    o[keys[i]] = value;
+  for (i = 0, l = keys.length; i < l; i++) o[keys[i]] = value;
 
   return o;
 }
@@ -48,8 +47,7 @@ function dict(keys, value) {
 function sum(o) {
   var nb = 0;
 
-  for (var k in o)
-    nb += o[k];
+  for (var k in o) nb += o[k];
 
   return nb;
 }
@@ -69,40 +67,36 @@ function sum(o) {
  */
 function hits(assign, graph, options) {
   if (!isGraph(graph))
-    throw new Error('graphology-hits: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-hits: the given graph is not a valid graphology instance.'
+    );
 
   if (graph.multi)
-    throw new Error('graphology-hits: the HITS algorithm does not work with MultiGraphs.');
+    throw new Error(
+      'graphology-hits: the HITS algorithm does not work with MultiGraphs.'
+    );
 
   options = defaults(options, DEFAULTS);
 
   // Variables
   var order = graph.order,
-      size = graph.size,
-      nodes = graph.nodes(),
-      edges = graph.edges(),
-      hubs = dict(nodes, 1 / order),
-      weights = {},
-      converged = false,
-      lastHubs,
-      authorities;
+    size = graph.size,
+    nodes = graph.nodes(),
+    edges = graph.edges(),
+    hubs = dict(nodes, 1 / order),
+    weights = {},
+    converged = false,
+    lastHubs,
+    authorities;
 
   // Iteration variables
-  var node,
-      neighbor,
-      edge,
-      iteration,
-      maxAuthority,
-      maxHub,
-      error,
-      s,
-      i,
-      j, m;
+  var node, neighbor, edge, iteration, maxAuthority, maxHub, error, s, i, j, m;
 
   // Indexing weights
   for (i = 0; i < size; i++) {
     edge = edges[i];
-    weights[edge] = graph.getEdgeAttribute(edge, options.attributes.weight) || 1;
+    weights[edge] =
+      graph.getEdgeAttribute(edge, options.attributes.weight) || 1;
   }
 
   // Performing iterations
@@ -116,9 +110,7 @@ function hits(assign, graph, options) {
     // Iterating over nodes to update authorities
     for (i = 0; i < order; i++) {
       node = nodes[i];
-      edges = graph
-        .outEdges(node)
-        .concat(graph.undirectedEdges(node));
+      edges = graph.outEdges(node).concat(graph.undirectedEdges(node));
 
       // Iterating over neighbors
       for (j = 0, m = edges.length; j < m; j++) {
@@ -135,9 +127,7 @@ function hits(assign, graph, options) {
     // Iterating over nodes to update hubs
     for (i = 0; i < order; i++) {
       node = nodes[i];
-      edges = graph
-        .outEdges(node)
-        .concat(graph.undirectedEdges(node));
+      edges = graph.outEdges(node).concat(graph.undirectedEdges(node));
 
       for (j = 0, m = edges.length; j < m; j++) {
         edge = edges[j];
@@ -145,27 +135,23 @@ function hits(assign, graph, options) {
 
         hubs[node] += authorities[neighbor] * weights[edge];
 
-        if (hubs[neighbor] > maxHub)
-          maxHub = hubs[neighbor];
+        if (hubs[neighbor] > maxHub) maxHub = hubs[neighbor];
       }
     }
 
     // Normalizing
     s = 1 / maxHub;
 
-    for (node in hubs)
-      hubs[node] *= s;
+    for (node in hubs) hubs[node] *= s;
 
     s = 1 / maxAuthority;
 
-    for (node in authorities)
-      authorities[node] *= s;
+    for (node in authorities) authorities[node] *= s;
 
     // Checking convergence
     error = 0;
 
-    for (node in hubs)
-      error += Math.abs(hubs[node] - lastHubs[node]);
+    for (node in hubs) error += Math.abs(hubs[node] - lastHubs[node]);
 
     if (error < options.tolerance) {
       converged = true;
@@ -177,13 +163,11 @@ function hits(assign, graph, options) {
   if (options.normalize) {
     s = 1 / sum(authorities);
 
-    for (node in authorities)
-      authorities[node] *= s;
+    for (node in authorities) authorities[node] *= s;
 
     s = 1 / sum(hubs);
 
-    for (node in hubs)
-      hubs[node] *= s;
+    for (node in hubs) hubs[node] *= s;
   }
 
   // Should we assign the results to the graph?
@@ -195,11 +179,7 @@ function hits(assign, graph, options) {
         options.attributes.authority,
         authorities[node]
       );
-      graph.setNodeAttribute(
-        node,
-        options.attributes.hub,
-        hubs[node]
-      );
+      graph.setNodeAttribute(node, options.attributes.hub, hubs[node]);
     }
   }
 

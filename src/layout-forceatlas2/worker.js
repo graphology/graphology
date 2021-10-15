@@ -6,8 +6,8 @@
  * separate thread not to block UI with heavy synchronous computations.
  */
 var workerFunction = require('./webworker.js'),
-    isGraph = require('graphology-utils/is-graph'),
-    helpers = require('./helpers.js');
+  isGraph = require('graphology-utils/is-graph'),
+  helpers = require('./helpers.js');
 
 var DEFAULT_SETTINGS = require('./defaults.js');
 
@@ -24,14 +24,18 @@ function FA2LayoutSupervisor(graph, params) {
 
   // Validation
   if (!isGraph(graph))
-    throw new Error('graphology-layout-forceatlas2/worker: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-layout-forceatlas2/worker: the given graph is not a valid graphology instance.'
+    );
 
   // Validating settings
   var settings = helpers.assign({}, DEFAULT_SETTINGS, params.settings),
-      validationError = helpers.validateSettings(settings);
+    validationError = helpers.validateSettings(settings);
 
   if (validationError)
-    throw new Error('graphology-layout-forceatlas2/worker: ' + validationError.message);
+    throw new Error(
+      'graphology-layout-forceatlas2/worker: ' + validationError.message
+    );
 
   // Properties
   this.worker = null;
@@ -47,14 +51,12 @@ function FA2LayoutSupervisor(graph, params) {
   var respawnFrame = undefined;
   var self = this;
 
-  this.handleGraphUpdate = function() {
-    if (self.worker)
-      self.worker.terminate();
+  this.handleGraphUpdate = function () {
+    if (self.worker) self.worker.terminate();
 
-    if (respawnFrame)
-      clearTimeout(respawnFrame);
+    if (respawnFrame) clearTimeout(respawnFrame);
 
-    respawnFrame = setTimeout(function() {
+    respawnFrame = setTimeout(function () {
       respawnFrame = undefined;
       self.spawnWorker();
     }, 0);
@@ -72,9 +74,8 @@ function FA2LayoutSupervisor(graph, params) {
 /**
  * Internal method used to spawn the web worker.
  */
-FA2LayoutSupervisor.prototype.spawnWorker = function() {
-  if (this.worker)
-    this.worker.terminate();
+FA2LayoutSupervisor.prototype.spawnWorker = function () {
+  if (this.worker) this.worker.terminate();
 
   this.worker = helpers.createWorker(workerFunction);
   this.worker.addEventListener('message', this.handleMessage);
@@ -90,9 +91,8 @@ FA2LayoutSupervisor.prototype.spawnWorker = function() {
  *
  * @param {object} event - Event to handle.
  */
-FA2LayoutSupervisor.prototype.handleMessage = function(event) {
-  if (!this.running)
-    return;
+FA2LayoutSupervisor.prototype.handleMessage = function (event) {
+  if (!this.running) return;
 
   var matrix = new Float32Array(event.data.nodes);
 
@@ -109,7 +109,7 @@ FA2LayoutSupervisor.prototype.handleMessage = function(event) {
  * @param  {boolean} withEdges - Should we send edges along?
  * @return {FA2LayoutSupervisor}
  */
-FA2LayoutSupervisor.prototype.askForIterations = function(withEdges) {
+FA2LayoutSupervisor.prototype.askForIterations = function (withEdges) {
   var matrices = this.matrices;
 
   var payload = {
@@ -134,12 +134,13 @@ FA2LayoutSupervisor.prototype.askForIterations = function(withEdges) {
  *
  * @return {FA2LayoutSupervisor}
  */
-FA2LayoutSupervisor.prototype.start = function() {
+FA2LayoutSupervisor.prototype.start = function () {
   if (this.killed)
-    throw new Error('graphology-layout-forceatlas2/worker.start: layout was killed.');
+    throw new Error(
+      'graphology-layout-forceatlas2/worker.start: layout was killed.'
+    );
 
-  if (this.running)
-    return this;
+  if (this.running) return this;
 
   // Building matrices
   this.matrices = helpers.graphToByteArrays(this.graph);
@@ -155,7 +156,7 @@ FA2LayoutSupervisor.prototype.start = function() {
  *
  * @return {FA2LayoutSupervisor}
  */
-FA2LayoutSupervisor.prototype.stop = function() {
+FA2LayoutSupervisor.prototype.stop = function () {
   this.running = false;
 
   return this;
@@ -166,9 +167,8 @@ FA2LayoutSupervisor.prototype.stop = function() {
  *
  * @return {FA2LayoutSupervisor}
  */
-FA2LayoutSupervisor.prototype.kill = function() {
-  if (this.killed)
-    return this;
+FA2LayoutSupervisor.prototype.kill = function () {
+  if (this.killed) return this;
 
   this.running = false;
   this.killed = true;

@@ -8,33 +8,28 @@ var isGraph = require('graphology-utils/is-graph');
 
 module.exports = function toUndirected(graph, options) {
   if (!isGraph(graph))
-    throw new Error('graphology-operators/to-undirected: expecting a valid graphology instance.');
+    throw new Error(
+      'graphology-operators/to-undirected: expecting a valid graphology instance.'
+    );
 
-  if (typeof options === 'function')
-    options = {mergeEdge: options};
+  if (typeof options === 'function') options = {mergeEdge: options};
 
   options = options || {};
 
-  var mergeEdge = typeof options.mergeEdge === 'function' ?
-    options.mergeEdge :
-    null;
+  var mergeEdge =
+    typeof options.mergeEdge === 'function' ? options.mergeEdge : null;
 
-  if (graph.type === 'undirected')
-    return graph.copy();
+  if (graph.type === 'undirected') return graph.copy();
 
   var undirectedGraph = graph.emptyCopy({type: 'undirected'});
 
   // Adding undirected edges
-  graph.forEachUndirectedEdge(function(edge, attr, source, target) {
-    undirectedGraph.addUndirectedEdge(
-      source,
-      target,
-      Object.assign({}, attr)
-    );
+  graph.forEachUndirectedEdge(function (edge, attr, source, target) {
+    undirectedGraph.addUndirectedEdge(source, target, Object.assign({}, attr));
   });
 
   // Merging directed edges
-  graph.forEachDirectedEdge(function(edge, attr, source, target) {
+  graph.forEachDirectedEdge(function (edge, attr, source, target) {
     var existingEdge = undirectedGraph.edge(source, target);
 
     if (existingEdge) {
@@ -48,11 +43,7 @@ module.exports = function toUndirected(graph, options) {
       return;
     }
 
-    undirectedGraph.addUndirectedEdge(
-      source,
-      target,
-      Object.assign({}, attr)
-    );
+    undirectedGraph.addUndirectedEdge(source, target, Object.assign({}, attr));
   });
 
   return undirectedGraph;

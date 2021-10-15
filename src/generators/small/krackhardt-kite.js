@@ -5,7 +5,7 @@
  * Function generating the Krackhardt kite graph.
  */
 var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
-    mergeStar = require('graphology-utils/merge-star');
+  mergeStar = require('graphology-utils/merge-star');
 
 /**
  * Data.
@@ -31,14 +31,15 @@ var ADJACENCY = [
  */
 module.exports = function krackhardtKite(GraphClass) {
   if (!isGraphConstructor(GraphClass))
-    throw new Error('graphology-generators/social/krackhardt-kite: invalid Graph constructor.');
+    throw new Error(
+      'graphology-generators/social/krackhardt-kite: invalid Graph constructor.'
+    );
 
   var graph = new GraphClass(),
-      i,
-      l;
+    i,
+    l;
 
-  for (i = 0, l = ADJACENCY.length; i < l; i++)
-    mergeStar(graph, ADJACENCY[i]);
+  for (i = 0, l = ADJACENCY.length; i < l; i++) mergeStar(graph, ADJACENCY[i]);
 
   return graph;
 };

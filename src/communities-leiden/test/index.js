@@ -30,9 +30,9 @@ function getDoubleCliqueGraph() {
   return graph;
 }
 
-describe('graphology-communities-leiden', function() {
-  describe('UndirectedLeidenAddenda', function() {
-    it('should properly group by communities.', function() {
+describe('graphology-communities-leiden', function () {
+  describe('UndirectedLeidenAddenda', function () {
+    it('should properly group by communities.', function () {
       var graph = getDoubleCliqueGraph();
 
       var index = new UndirectedLouvainIndex(graph);
@@ -47,10 +47,13 @@ describe('graphology-communities-leiden', function() {
 
       assert.strictEqual(addenda.B, 2);
 
-      assert.deepStrictEqual(addenda.communities(), [[0, 1, 2], [3, 4, 5]]);
+      assert.deepStrictEqual(addenda.communities(), [
+        [0, 1, 2],
+        [3, 4, 5]
+      ]);
     });
 
-    it('should properly refine the partition.', function() {
+    it('should properly refine the partition.', function () {
       var graph = getDoubleCliqueGraph();
 
       var index = new UndirectedLouvainIndex(graph);
@@ -78,18 +81,16 @@ describe('graphology-communities-leiden', function() {
 
       var mappingBeforeSplit = {};
 
-      addenda.belongings.forEach(function(c, i) {
-        if (!(c in mappingBeforeSplit))
-          mappingBeforeSplit[c] = new Set();
+      addenda.belongings.forEach(function (c, i) {
+        if (!(c in mappingBeforeSplit)) mappingBeforeSplit[c] = new Set();
         mappingBeforeSplit[c].add(i);
       });
       mappingBeforeSplit = compile(mappingBeforeSplit);
 
       var mappingAfterSplit = {};
 
-      index.belongings.forEach(function(c, i) {
-        if (!(c in mappingAfterSplit))
-          mappingAfterSplit[c] = new Set();
+      index.belongings.forEach(function (c, i) {
+        if (!(c in mappingAfterSplit)) mappingAfterSplit[c] = new Set();
         mappingAfterSplit[c].add(i);
       });
       mappingAfterSplit = compile(mappingAfterSplit);
@@ -97,7 +98,7 @@ describe('graphology-communities-leiden', function() {
       assert.deepStrictEqual(mappingBeforeSplit, mappingAfterSplit);
     });
 
-    it('should be possible to zoom out correctly.', function() {
+    it('should be possible to zoom out correctly.', function () {
       var graph = getDoubleCliqueGraph();
 
       var index = new UndirectedLouvainIndex(graph);
@@ -119,7 +120,7 @@ describe('graphology-communities-leiden', function() {
       assert.strictEqual(index.level, 1);
     });
 
-    it('should be possible to detect if every community is a singleton.', function() {
+    it('should be possible to detect if every community is a singleton.', function () {
       var graph = getDoubleCliqueGraph();
 
       var index = new UndirectedLouvainIndex(graph);
@@ -140,8 +141,8 @@ describe('graphology-communities-leiden', function() {
     });
   });
 
-  describe('algorithm', function() {
-    it('should work for double clique.', function() {
+  describe('algorithm', function () {
+    it('should work for double clique.', function () {
       var graph = getDoubleCliqueGraph();
       var results = leiden.detailed(graph, {rng: rng()});
 
@@ -156,7 +157,7 @@ describe('graphology-communities-leiden', function() {
         }
       });
 
-      console.log(results)
+      console.log(results);
 
       assert.closeTo(naiveQ, results.modularity, 0.0001);
 
@@ -167,7 +168,7 @@ describe('graphology-communities-leiden', function() {
       assert.strictEqual(results.communities[4], results.communities[5]);
     });
 
-    it.only('should work with Fig. C1 graph.', function() {
+    it.only('should work with Fig. C1 graph.', function () {
       var graph = generateFigC1Graph(Graph);
       var results = leiden.detailed(graph, {weighted: true});
 

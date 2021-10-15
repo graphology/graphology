@@ -5,7 +5,7 @@
  * Layout arranging the nodes in a circle.
  */
 var defaults = require('lodash/defaultsDeep'),
-    isGraph = require('graphology-utils/is-graph');
+  isGraph = require('graphology-utils/is-graph');
 
 /**
  * Default options.
@@ -31,27 +31,29 @@ var DEFAULTS = {
  */
 function genericCircularLayout(assign, graph, options) {
   if (!isGraph(graph))
-    throw new Error('graphology-layout/random: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-layout/random: the given graph is not a valid graphology instance.'
+    );
 
   options = defaults(options, DEFAULTS);
 
   var positions = {},
-      nodes = graph.nodes(),
-      center = options.center,
-      scale = options.scale,
-      tau = Math.PI * 2;
+    nodes = graph.nodes(),
+    center = options.center,
+    scale = options.scale,
+    tau = Math.PI * 2;
 
   var l = nodes.length,
-      node,
-      x,
-      y,
-      i;
+    node,
+    x,
+    y,
+    i;
 
   for (i = 0; i < l; i++) {
     node = nodes[i];
 
-    x = scale * Math.cos(i * tau / l);
-    y = scale * Math.sin(i * tau / l);
+    x = scale * Math.cos((i * tau) / l);
+    y = scale * Math.sin((i * tau) / l);
 
     if (center !== 0.5) {
       x += center - 0.5 * scale;

@@ -9,7 +9,12 @@ var canvasApi = require('canvas');
 var lib = require('./');
 var refineSettings = require('./defaults.js').refineSettings;
 
-exports.renderToPNG = function renderToPNG(graph, outputPath, settings, callback) {
+exports.renderToPNG = function renderToPNG(
+  graph,
+  outputPath,
+  settings,
+  callback
+) {
   if (arguments.length === 3) {
     callback = settings;
     settings = {};
@@ -28,7 +33,7 @@ exports.renderToPNG = function renderToPNG(graph, outputPath, settings, callback
 
   pngStream.pipe(out);
 
-  out.once('finish', function() {
+  out.once('finish', function () {
     callback();
   });
 };

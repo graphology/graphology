@@ -1,11 +1,11 @@
 import Graph, {Attributes, GraphConstructor} from 'graphology-types';
 
 export type ClustersGeneratorOptions = {
-  clusterDensity?: number,
-  order: number,
-  size: number,
-  clusters: number,
-  rng?: () => number
+  clusterDensity?: number;
+  order: number;
+  size: number;
+  clusters: number;
+  rng?: () => number;
 };
 
 export default function clusters<

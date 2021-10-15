@@ -5,8 +5,8 @@
  * Library endpoint.
  */
 var isGraph = require('graphology-utils/is-graph'),
-    iterate = require('./iterate.js'),
-    helpers = require('./helpers.js');
+  iterate = require('./iterate.js'),
+  helpers = require('./helpers.js');
 
 var DEFAULT_SETTINGS = require('./defaults.js');
 var DEFAULT_MAX_ITERATIONS = 500;
@@ -23,32 +23,36 @@ var DEFAULT_MAX_ITERATIONS = 500;
  */
 function abstractSynchronousLayout(assign, graph, params) {
   if (!isGraph(graph))
-    throw new Error('graphology-layout-noverlap: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-layout-noverlap: the given graph is not a valid graphology instance.'
+    );
 
-  if (typeof params === 'number')
-    params = {maxIterations: params};
-  else
-    params = params || {};
+  if (typeof params === 'number') params = {maxIterations: params};
+  else params = params || {};
 
   var maxIterations = params.maxIterations || DEFAULT_MAX_ITERATIONS;
 
   if (typeof maxIterations !== 'number')
-    throw new Error('graphology-layout-noverlap: invalid number of maximum iterations.');
+    throw new Error(
+      'graphology-layout-noverlap: invalid number of maximum iterations.'
+    );
 
   if (maxIterations <= 0)
-    throw new Error('graphology-layout-noverlap: you should provide a positive number of maximum iterations.');
+    throw new Error(
+      'graphology-layout-noverlap: you should provide a positive number of maximum iterations.'
+    );
 
   // Validating settings
   var settings = Object.assign({}, DEFAULT_SETTINGS, params.settings),
-      validationError = helpers.validateSettings(settings);
+    validationError = helpers.validateSettings(settings);
 
   if (validationError)
     throw new Error('graphology-layout-noverlap: ' + validationError.message);
 
   // Building matrices
   var matrix = helpers.graphToByteArray(graph, params.inputReducer),
-      converged = false,
-      i;
+    converged = false,
+    i;
 
   // Iterating
   for (i = 0; i < maxIterations && !converged; i++)

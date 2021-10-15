@@ -1,23 +1,26 @@
 import Graph from 'graphology-types';
 
-type LayoutMapping = {[key: string]: {x: number, y: number}};
+type LayoutMapping = {[key: string]: {x: number; y: number}};
 
-type NoverlapNodeAttributes = {x: number, y: number, size?: number};
-export type NoverlapNodeReducer = (key: string, attr: NoverlapNodeAttributes) => NoverlapNodeAttributes;
+type NoverlapNodeAttributes = {x: number; y: number; size?: number};
+export type NoverlapNodeReducer = (
+  key: string,
+  attr: NoverlapNodeAttributes
+) => NoverlapNodeAttributes;
 
 export type NoverlapSettings = {
-  gridSize?: number,
-  margin?: number,
-  expansion?: number,
-  ratio?: number,
-  speed?: number
+  gridSize?: number;
+  margin?: number;
+  expansion?: number;
+  ratio?: number;
+  speed?: number;
 };
 
 export type NoverlapLayoutOptions = {
-  maxIterations?: number,
-  inputReducer?: NoverlapNodeReducer,
-  outputReducer?: NoverlapNodeReducer,
-  settings?: NoverlapSettings
+  maxIterations?: number;
+  inputReducer?: NoverlapNodeReducer;
+  outputReducer?: NoverlapNodeReducer;
+  settings?: NoverlapSettings;
 };
 
 interface INoverlapLayout {

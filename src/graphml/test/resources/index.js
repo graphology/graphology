@@ -3,7 +3,7 @@
  * =====================================
  */
 var fs = require('fs'),
-    path = require('path');
+  path = require('path');
 
 var FILES = [
   'attributes',
@@ -15,15 +15,14 @@ var FILES = [
 ];
 
 function loadFile(name) {
-  return fs.readFileSync(
-    path.join(__dirname, name + '.graphml'),
-    'utf-8'
-  ).trim();
+  return fs
+    .readFileSync(path.join(__dirname, name + '.graphml'), 'utf-8')
+    .trim();
 }
 
 var MAP = {};
 
-FILES.forEach(function(file) {
+FILES.forEach(function (file) {
   MAP[file] = loadFile(file);
 });
 

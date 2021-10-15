@@ -3,27 +3,25 @@
  * ==============================
  */
 var assert = require('chai').assert,
-    Graph = require('graphology'),
-    density = require('../density.js');
+  Graph = require('graphology'),
+  density = require('../density.js');
 
-describe('density', function() {
-
-  it('should throw if given wrong arguments.', function() {
-
-    assert.throws(function() {
+describe('density', function () {
+  it('should throw if given wrong arguments.', function () {
+    assert.throws(function () {
       density(null);
     }, /instance/);
 
-    assert.throws(function() {
+    assert.throws(function () {
       density('test', 1);
     }, /number/);
 
-    assert.throws(function() {
+    assert.throws(function () {
       density(45, 'test');
     }, /number/);
   });
 
-  it('should properly compute the given graph\'s density.', function() {
+  it("should properly compute the given graph's density.", function () {
     var mixedGraph = new Graph();
 
     mixedGraph.mergeEdge(1, 2);
@@ -52,9 +50,21 @@ describe('density', function() {
     assert.strictEqual(density(multiGraph), 4 / 3);
     assert.strictEqual(density.undirectedDensity(multiGraph), 2 / 3);
 
-    assert.strictEqual(density.mixedDensity(mixedGraph.order, mixedGraph.size), 2 / 9);
-    assert.strictEqual(density.directedDensity(directedGraph.order, directedGraph.size), 2 / 6);
-    assert.strictEqual(density.undirectedDensity(undirectedGraph.order, directedGraph.size), 2 / 3);
-    assert.strictEqual(density.multiUndirectedDensity(multiGraph.order, multiGraph.size), 4 / 3);
+    assert.strictEqual(
+      density.mixedDensity(mixedGraph.order, mixedGraph.size),
+      2 / 9
+    );
+    assert.strictEqual(
+      density.directedDensity(directedGraph.order, directedGraph.size),
+      2 / 6
+    );
+    assert.strictEqual(
+      density.undirectedDensity(undirectedGraph.order, directedGraph.size),
+      2 / 3
+    );
+    assert.strictEqual(
+      density.multiUndirectedDensity(multiGraph.order, multiGraph.size),
+      4 / 3
+    );
   });
 });

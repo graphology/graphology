@@ -2,10 +2,10 @@ import Graph from 'graphology-types';
 import {NoverlapSettings, NoverlapNodeReducer} from './index';
 
 export type NoverlapLayoutSupervisorParameters = {
-  inputReducer?: NoverlapNodeReducer,
-  outputReducer?: NoverlapNodeReducer,
-  onConverged?: () => void,
-  settings?: NoverlapSettings
+  inputReducer?: NoverlapNodeReducer;
+  outputReducer?: NoverlapNodeReducer;
+  onConverged?: () => void;
+  settings?: NoverlapSettings;
 };
 
 export default class NoverlapLayoutSupervisor {

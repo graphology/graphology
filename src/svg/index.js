@@ -16,7 +16,7 @@ module.exports = function render(graph, outputPath, settings, callback) {
 
   settings = defaultsDeep({}, DEFAULTS, settings);
 
-  fs.writeFile(outputPath, renderer(graph, settings), function(err) {
+  fs.writeFile(outputPath, renderer(graph, settings), function (err) {
     callback(err);
   });
 };

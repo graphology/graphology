@@ -19,24 +19,24 @@ var DEFAULT_WEIGHT_ATTRIBUTE = 'weight';
  * @return {number}
  */
 module.exports = function weightedSize(graph, weightAttribute) {
-
   // Handling errors
   if (!isGraph(graph))
-    throw new Error('graphology-metrics/weighted-size: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-metrics/weighted-size: the given graph is not a valid graphology instance.'
+    );
 
   weightAttribute = weightAttribute || DEFAULT_WEIGHT_ATTRIBUTE;
 
   var edges = graph.edges(),
-      W = 0,
-      w,
-      i,
-      l;
+    W = 0,
+    w,
+    i,
+    l;
 
   for (i = 0, l = edges.length; i < l; i++) {
     w = graph.getEdgeAttribute(edges[i], weightAttribute);
 
-    if (typeof w === 'number')
-      W += w;
+    if (typeof w === 'number') W += w;
   }
 
   return W;

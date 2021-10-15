@@ -4,6 +4,7 @@
   "scripts": {
     "lint": "lerna run lint",
     "postinstall": "lerna bootstrap && link-parent-bin -c src",
+    "prettier": "prettier --write './src/**/*.js' './src/**/*.ts'",
     "reinstall": "lerna clean --yes && rimraf node_modules && npm i",
     "test": "lerna run test"
   },
@@ -17,8 +18,8 @@
     "@babel/register": "7.15.3",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
-    "@yomguithereal/eslint-config": "^4.1.0",
-    "@yomguithereal/prettier-config": "^1.1.0",
+    "@yomguithereal/eslint-config": "^4.3.0",
+    "@yomguithereal/prettier-config": "^1.2.0",
     "chai": "^4.3.4",
     "chai-roughly": "^1.0.0",
     "eslint": "^8.0.1",
@@ -63,5 +64,6 @@
     "graphology-traversal": "file:src/traversal",
     "graphology-types": "file:src/types",
     "graphology-utils": "file:src/utils"
-  }
+  },
+  "prettier": "@yomguithereal/prettier-config"
 }

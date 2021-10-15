@@ -12,7 +12,7 @@ export default function nodesIteration(Graph, checkers) {
 
   return {
     '#.nodes': {
-      'it should return the list of nodes of the graph.': function() {
+      'it should return the list of nodes of the graph.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['one', 'two', 'three']);
 
@@ -21,71 +21,72 @@ export default function nodesIteration(Graph, checkers) {
     },
 
     '#.forEachNode': {
-      'it should throw if given callback is not a function.': function() {
+      'it should throw if given callback is not a function.': function () {
         const graph = new Graph();
 
-        assert.throws(function() {
+        assert.throws(function () {
           graph.forEachNode(null);
         }, invalid());
       },
 
-      'it should be possible to iterate over nodes and their attributes.': function() {
-        const graph = new Graph();
+      'it should be possible to iterate over nodes and their attributes.':
+        function () {
+          const graph = new Graph();
 
-        graph.addNode('John', {age: 34});
-        graph.addNode('Martha', {age: 33});
+          graph.addNode('John', {age: 34});
+          graph.addNode('Martha', {age: 33});
 
-        let count = 0;
+          let count = 0;
 
-        graph.forEachNode(function(key, attributes) {
-          assert.strictEqual(key, count ? 'Martha' : 'John');
-          assert.deepStrictEqual(attributes, count ? {age: 33} : {age: 34});
-          count++;
-        });
+          graph.forEachNode(function (key, attributes) {
+            assert.strictEqual(key, count ? 'Martha' : 'John');
+            assert.deepStrictEqual(attributes, count ? {age: 33} : {age: 34});
+            count++;
+          });
 
-        assert.strictEqual(count, 2);
-      }
+          assert.strictEqual(count, 2);
+        }
     },
 
     '#.forEachNodeUntil': {
-      'it should throw if given callback is not a function.': function() {
+      'it should throw if given callback is not a function.': function () {
         const graph = new Graph();
 
-        assert.throws(function() {
+        assert.throws(function () {
           graph.forEachNodeUntil(null);
         }, invalid());
       },
 
-      'it should be possible to iterate over nodes and their attributes until the callback returns true.': function() {
-        const graph = new Graph();
+      'it should be possible to iterate over nodes and their attributes until the callback returns true.':
+        function () {
+          const graph = new Graph();
 
-        graph.addNode('John', {age: 34});
-        graph.addNode('Martha', {age: 33});
+          graph.addNode('John', {age: 34});
+          graph.addNode('Martha', {age: 33});
 
-        let count = 0;
+          let count = 0;
 
-        let broke = graph.forEachNodeUntil(function(key, attributes) {
-          assert.strictEqual(key, 'John');
-          assert.deepStrictEqual(attributes, {age: 34});
-          count++;
+          let broke = graph.forEachNodeUntil(function (key, attributes) {
+            assert.strictEqual(key, 'John');
+            assert.deepStrictEqual(attributes, {age: 34});
+            count++;
 
-          if (key === 'John')
-            return true;
-        });
+            if (key === 'John') return true;
+          });
 
-        assert.strictEqual(broke, true);
-        assert.strictEqual(count, 1);
+          assert.strictEqual(broke, true);
+          assert.strictEqual(count, 1);
 
-        broke = graph.forEachNodeUntil(function() {
-          return false;
-        });
+          broke = graph.forEachNodeUntil(function () {
+            return false;
+          });
 
-        assert.strictEqual(broke, false);
-      }
+          assert.strictEqual(broke, false);
+        }
     },
 
     '#.nodeEntries': {
-      'it should be possible to create a nodes iterator.': function() {
+      'it should be possible to create a nodes iterator.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['one', 'two', 'three']);
 
@@ -94,7 +95,10 @@ export default function nodesIteration(Graph, checkers) {
         const iterator = graph.nodeEntries();
 
         assert.deepStrictEqual(iterator.next().value, ['one', {}]);
-        assert.deepStrictEqual(iterator.next().value, ['two', {hello: 'world'}]);
+        assert.deepStrictEqual(iterator.next().value, [
+          'two',
+          {hello: 'world'}
+        ]);
         assert.deepStrictEqual(iterator.next().value, ['three', {}]);
         assert.strictEqual(iterator.next().done, true);
       }

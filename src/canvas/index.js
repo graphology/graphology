@@ -11,7 +11,9 @@ var refineSettings = require('./defaults.js').refineSettings;
 
 exports.render = function render(graph, context, settings) {
   if (!isGraph(graph))
-    throw new Error('graphology-canvas/render: expecting a valid graphology instance.');
+    throw new Error(
+      'graphology-canvas/render: expecting a valid graphology instance.'
+    );
 
   settings = refineSettings(settings);
 

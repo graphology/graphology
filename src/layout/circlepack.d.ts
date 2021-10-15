@@ -4,16 +4,16 @@ type RNGFunction = () => number;
 
 export type CirclePackLayoutOptions = {
   attributes?: {
-    x: string,
-    y: string
-  },
-  center?: number,
-  hierarchyAttributes?: string[],
-  rng?: RNGFunction,
-  scale?: number
+    x: string;
+    y: string;
+  };
+  center?: number;
+  hierarchyAttributes?: string[];
+  rng?: RNGFunction;
+  scale?: number;
 };
 
-type LayoutMapping = {[key: string]: {x: number, y: number}};
+type LayoutMapping = {[key: string]: {x: number; y: number}};
 
 interface ICirclePackLayout {
   (graph: Graph, options?: CirclePackLayoutOptions): LayoutMapping;

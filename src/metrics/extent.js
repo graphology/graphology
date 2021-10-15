@@ -15,13 +15,13 @@ var isGraph = require('graphology-utils/is-graph');
  */
 function nodeExtent(graph, attribute) {
   if (!isGraph(graph))
-    throw new Error('graphology-metrics/extent: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-metrics/extent: the given graph is not a valid graphology instance.'
+    );
 
   var attributes = [].concat(attribute);
 
-  var value,
-      key,
-      a;
+  var value, key, a;
 
   var results = {};
 
@@ -31,16 +31,14 @@ function nodeExtent(graph, attribute) {
     results[key] = [Infinity, -Infinity];
   }
 
-  graph.forEachNode(function(node, data) {
+  graph.forEachNode(function (node, data) {
     for (a = 0; a < attributes.length; a++) {
       key = attributes[a];
       value = data[key];
 
-      if (value < results[key][0])
-        results[key][0] = value;
+      if (value < results[key][0]) results[key][0] = value;
 
-      if (value > results[key][1])
-        results[key][1] = value;
+      if (value > results[key][1]) results[key][1] = value;
     }
   });
 
@@ -56,13 +54,13 @@ function nodeExtent(graph, attribute) {
  */
 function edgeExtent(graph, attribute) {
   if (!isGraph(graph))
-    throw new Error('graphology-metrics/extent: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-metrics/extent: the given graph is not a valid graphology instance.'
+    );
 
   var attributes = [].concat(attribute);
 
-  var value,
-      key,
-      a;
+  var value, key, a;
 
   var results = {};
 
@@ -72,16 +70,14 @@ function edgeExtent(graph, attribute) {
     results[key] = [Infinity, -Infinity];
   }
 
-  graph.forEachEdge(function(edge, data) {
+  graph.forEachEdge(function (edge, data) {
     for (a = 0; a < attributes.length; a++) {
       key = attributes[a];
       value = data[key];
 
-      if (value < results[key][0])
-        results[key][0] = value;
+      if (value < results[key][0]) results[key][0] = value;
 
-      if (value > results[key][1])
-        results[key][1] = value;
+      if (value > results[key][1]) results[key][1] = value;
     }
   });
 

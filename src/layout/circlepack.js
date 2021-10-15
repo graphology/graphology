@@ -5,8 +5,8 @@
  * Circlepack layout from d3-hierarchy/gephi.
  */
 var defaults = require('lodash/defaultsDeep'),
-    isGraph = require('graphology-utils/is-graph'),
-    shuffle = require('pandemonium/shuffle-in-place');
+  isGraph = require('graphology-utils/is-graph'),
+  shuffle = require('pandemonium/shuffle-in-place');
 
 /**
  * Default options.
@@ -26,7 +26,7 @@ var DEFAULTS = {
  * Helpers.
  */
 function CircleWrap(id, x, y, r, circleWrap) {
-  this.wrappedCircle = circleWrap || null;//hacky d3 reference thing
+  this.wrappedCircle = circleWrap || null; //hacky d3 reference thing
 
   this.children = {};
   this.countChildren = 0;
@@ -36,23 +36,21 @@ function CircleWrap(id, x, y, r, circleWrap) {
 
   this.x = x || null;
   this.y = y || null;
-  if (circleWrap)
-    this.r = 1010101; // for debugging purposes - should not be used in this case
-  else
-    this.r = r || 999;
-
+  if (circleWrap) this.r = 1010101;
+  // for debugging purposes - should not be used in this case
+  else this.r = r || 999;
 }
 
-CircleWrap.prototype.hasChildren = function() {
+CircleWrap.prototype.hasChildren = function () {
   return this.countChildren > 0;
 };
 
-CircleWrap.prototype.addChild = function(id, child) {
+CircleWrap.prototype.addChild = function (id, child) {
   this.children[id] = child;
   ++this.countChildren;
 };
 
-CircleWrap.prototype.getChild = function(id) {
+CircleWrap.prototype.getChild = function (id) {
   if (!this.children.hasOwnProperty(id)) {
     var circleWrap = new CircleWrap();
     this.children[id] = circleWrap;
@@ -61,7 +59,7 @@ CircleWrap.prototype.getChild = function(id) {
   return this.children[id];
 };
 
-CircleWrap.prototype.applyPositionToChildren = function() {
+CircleWrap.prototype.applyPositionToChildren = function () {
   if (this.hasChildren()) {
     var root = this; // using 'this' in Object.keys.forEach seems a bad idea
     for (var key in root.children) {
@@ -73,13 +71,12 @@ CircleWrap.prototype.applyPositionToChildren = function() {
   }
 };
 
-function setNode(/*Graph*/ graph, /*CircleWrap*/ parentCircle, /*Map*/posMap) {
+function setNode(/*Graph*/ graph, /*CircleWrap*/ parentCircle, /*Map*/ posMap) {
   for (var key in parentCircle.children) {
     var circle = parentCircle.children[key];
     if (circle.hasChildren()) {
       setNode(graph, circle, posMap);
-    }
-    else {
+    } else {
       posMap[circle.id] = {x: circle.x, y: circle.y};
     }
   }
@@ -92,14 +89,14 @@ function enclosesNot(/*CircleWrap*/ a, /*CircleWrap*/ b) {
   return dr < 0 || dr * dr < dx * dx + dy * dy;
 }
 
-function enclosesWeak(/*CircleWrap*/a, /*CircleWrap*/ b) {
+function enclosesWeak(/*CircleWrap*/ a, /*CircleWrap*/ b) {
   var dr = a.r - b.r + 1e-6;
   var dx = b.x - a.x;
   var dy = b.y - a.y;
-  return dr > 0 && (dr * dr) > (dx * dx + dy * dy);
+  return dr > 0 && dr * dr > dx * dx + dy * dy;
 }
 
-function enclosesWeakAll(/*CircleWrap*/a, /*Array<CircleWrap>*/B) {
+function enclosesWeakAll(/*CircleWrap*/ a, /*Array<CircleWrap>*/ B) {
   for (var i = 0; i < B.length; ++i) {
     if (!enclosesWeak(a, B[i])) {
       return false;
@@ -108,24 +105,39 @@ function enclosesWeakAll(/*CircleWrap*/a, /*Array<CircleWrap>*/B) {
   return true;
 }
 
-function encloseBasis1(/*CircleWrap*/a) {
+function encloseBasis1(/*CircleWrap*/ a) {
   return new CircleWrap(null, a.x, a.y, a.r);
 }
 
 function encloseBasis2(/*CircleWrap*/ a, /*CircleWrap*/ b) {
-  var x1 = a.x, y1 = a.y, r1 = a.r,
-    x2 = b.x, y2 = b.y, r2 = b.r,
-    x21 = x2 - x1, y21 = y2 - y1, r21 = r2 - r1,
+  var x1 = a.x,
+    y1 = a.y,
+    r1 = a.r,
+    x2 = b.x,
+    y2 = b.y,
+    r2 = b.r,
+    x21 = x2 - x1,
+    y21 = y2 - y1,
+    r21 = r2 - r1,
     l = Math.sqrt(x21 * x21 + y21 * y21);
-  return new CircleWrap(null, (x1 + x2 + x21 / l * r21) / 2,
-    (y1 + y2 + y21 / l * r21) / 2,
-    (l + r1 + r2) / 2);
+  return new CircleWrap(
+    null,
+    (x1 + x2 + (x21 / l) * r21) / 2,
+    (y1 + y2 + (y21 / l) * r21) / 2,
+    (l + r1 + r2) / 2
+  );
 }
 
-function encloseBasis3(/*CircleWrap*/a, /*CircleWrap*/b, /*CircleWrap*/c) {
-  var x1 = a.x, y1 = a.y, r1 = a.r,
-    x2 = b.x, y2 = b.y, r2 = b.r,
-    x3 = c.x, y3 = c.y, r3 = c.r,
+function encloseBasis3(/*CircleWrap*/ a, /*CircleWrap*/ b, /*CircleWrap*/ c) {
+  var x1 = a.x,
+    y1 = a.y,
+    r1 = a.r,
+    x2 = b.x,
+    y2 = b.y,
+    r2 = b.r,
+    x3 = c.x,
+    y3 = c.y,
+    r3 = c.r,
     a2 = x1 - x2,
     a3 = x1 - x3,
     b2 = y1 - y2,
@@ -145,28 +157,31 @@ function encloseBasis3(/*CircleWrap*/a, /*CircleWrap*/b, /*CircleWrap*/c) {
     C = xa * xa + ya * ya - r1 * r1,
     r = -(A ? (B + Math.sqrt(B * B - 4 * A * C)) / (2 * A) : C / B);
   return new CircleWrap(null, x1 + xa + xb * r, y1 + ya + yb * r, r);
-
 }
 
-function encloseBasis(/*Array<CircleWrap>*/B) {
+function encloseBasis(/*Array<CircleWrap>*/ B) {
   switch (B.length) {
-    case 1: return encloseBasis1(B[0]);
-    case 2: return encloseBasis2(B[0], B[1]);
-    case 3: return encloseBasis3(B[0], B[1], B[2]);
+    case 1:
+      return encloseBasis1(B[0]);
+    case 2:
+      return encloseBasis2(B[0], B[1]);
+    case 3:
+      return encloseBasis3(B[0], B[1], B[2]);
     default:
-      throw new Error('graphology-layout/circlepack: Invalid basis length ' + B.length);
+      throw new Error(
+        'graphology-layout/circlepack: Invalid basis length ' + B.length
+      );
   }
 }
 
-function extendBasis(/*Array<CircleWrap>*/B, /*CircleWrap*/p) {
+function extendBasis(/*Array<CircleWrap>*/ B, /*CircleWrap*/ p) {
   var i, j;
 
   if (enclosesWeakAll(p, B)) return [p];
 
   // If we get here then B must have at least one element.
   for (i = 0; i < B.length; ++i) {
-    if (enclosesNot(p, B[i])
-      && enclosesWeakAll(encloseBasis2(B[i], p), B)) {
+    if (enclosesNot(p, B[i]) && enclosesWeakAll(encloseBasis2(B[i], p), B)) {
       return [B[i], p];
     }
   }
@@ -174,10 +189,12 @@ function extendBasis(/*Array<CircleWrap>*/B, /*CircleWrap*/p) {
   // If we get here then B must have at least two elements.
   for (i = 0; i < B.length - 1; ++i) {
     for (j = i + 1; j < B.length; ++j) {
-      if (enclosesNot(encloseBasis2(B[i], B[j]), p)
-        && enclosesNot(encloseBasis2(B[i], p), B[j])
-        && enclosesNot(encloseBasis2(B[j], p), B[i])
-        && enclosesWeakAll(encloseBasis3(B[i], B[j], p), B)) {
+      if (
+        enclosesNot(encloseBasis2(B[i], B[j]), p) &&
+        enclosesNot(encloseBasis2(B[i], p), B[j]) &&
+        enclosesNot(encloseBasis2(B[j], p), B[i]) &&
+        enclosesWeakAll(encloseBasis3(B[i], B[j], p), B)
+      ) {
         return [B[i], B[j], p];
       }
     }
@@ -209,8 +226,7 @@ function enclose(circles, shuffleFunc) {
     p = circlesLoc[i];
     if (e && enclosesWeak(e, p)) {
       ++i;
-    }
-    else {
+    } else {
       B = extendBasis(B, p);
       e = encloseBasis(B);
       i = 0;
@@ -219,41 +235,46 @@ function enclose(circles, shuffleFunc) {
   return e;
 }
 
-function place(/*CircleWrap*/b, /*CircleWrap*/a, /*CircleWrap*/c) {
-  var dx = b.x - a.x, x, a2,
-    dy = b.y - a.y, y, b2,
+function place(/*CircleWrap*/ b, /*CircleWrap*/ a, /*CircleWrap*/ c) {
+  var dx = b.x - a.x,
+    x,
+    a2,
+    dy = b.y - a.y,
+    y,
+    b2,
     d2 = dx * dx + dy * dy;
   if (d2) {
-    a2 = a.r + c.r; a2 *= a2;
-    b2 = b.r + c.r; b2 *= b2;
+    a2 = a.r + c.r;
+    a2 *= a2;
+    b2 = b.r + c.r;
+    b2 *= b2;
     if (a2 > b2) {
       x = (d2 + b2 - a2) / (2 * d2);
       y = Math.sqrt(Math.max(0, b2 / d2 - x * x));
       c.x = b.x - x * dx - y * dy;
       c.y = b.y - x * dy + y * dx;
-    }
-    else {
+    } else {
       x = (d2 + a2 - b2) / (2 * d2);
       y = Math.sqrt(Math.max(0, a2 / d2 - x * x));
       c.x = a.x + x * dx - y * dy;
       c.y = a.y + x * dy + y * dx;
     }
-  }
-  else {
+  } else {
     c.x = a.x + c.r;
     c.y = a.y;
   }
 }
 
-function intersects(/*CircleWrap*/a, /*CircleWrap*/b) {
-  var dr = a.r + b.r - 1e-6, dx = b.x - a.x, dy = b.y - a.y;
+function intersects(/*CircleWrap*/ a, /*CircleWrap*/ b) {
+  var dr = a.r + b.r - 1e-6,
+    dx = b.x - a.x,
+    dy = b.y - a.y;
   return dr > 0 && dr * dr > dx * dx + dy * dy;
 }
 
 function packEnclose(/*Array<CircleWrap>*/ circles, shuffleFunc) {
   var n = circles.length;
-  if (n === 0)
-    return 0;
+  if (n === 0) return 0;
 
   var a, b, c, aa, ca, i, j, k, sj, sk;
 
@@ -261,16 +282,14 @@ function packEnclose(/*Array<CircleWrap>*/ circles, shuffleFunc) {
   a = circles[0];
   a.x = 0;
   a.y = 0;
-  if (n <= 1)
-    return a.r;
+  if (n <= 1) return a.r;
 
   // Place the second circle.
   b = circles[1];
   a.x = -b.r;
   b.x = a.r;
   b.y = 0;
-  if (n <= 2)
-    return a.r + b.r;
+  if (n <= 2) return a.r + b.r;
 
   // Place the third circle.
   c = circles[2];
@@ -285,8 +304,7 @@ function packEnclose(/*Array<CircleWrap>*/ circles, shuffleFunc) {
   c.next = b.previous = a;
 
   // Attempt to place each remaining circle…
-  pack:
-  for (i = 3; i < n; ++i) {
+  pack: for (i = 3; i < n; ++i) {
     c = circles[i];
     place(a.wrappedCircle, b.wrappedCircle, c);
     c = new CircleWrap(null, null, null, null, c);
@@ -294,7 +312,10 @@ function packEnclose(/*Array<CircleWrap>*/ circles, shuffleFunc) {
     // Find the closest intersecting circle on the front-chain, if any.
     // “Closeness” is determined by linear distance along the front-chain.
     // “Ahead” or “behind” is likewise determined by linear distance.
-    j = b.next; k = a.previous; sj = b.wrappedCircle.r; sk = a.wrappedCircle.r;
+    j = b.next;
+    k = a.previous;
+    sj = b.wrappedCircle.r;
+    sk = a.wrappedCircle.r;
     do {
       if (sj <= sk) {
         if (intersects(j.wrappedCircle, c.wrappedCircle)) {
@@ -306,8 +327,7 @@ function packEnclose(/*Array<CircleWrap>*/ circles, shuffleFunc) {
         }
         sj += j.wrappedCircle.r;
         j = j.next;
-      }
-      else {
+      } else {
         if (intersects(k.wrappedCircle, c.wrappedCircle)) {
           a = k;
           a.next = b;
@@ -321,7 +341,9 @@ function packEnclose(/*Array<CircleWrap>*/ circles, shuffleFunc) {
     } while (j !== k.next);
 
     // Success! Insert the new circle c between a and b.
-    c.previous = a; c.next = b; a.next = b.previous = b = c;
+    c.previous = a;
+    c.next = b;
+    a.next = b.previous = b = c;
 
     // Compute the new closest circle pair to the centroid.
     aa = score(a);
@@ -393,7 +415,9 @@ function packHierarchyAndShift(/*CircleWrap*/ parentCircle, shuffleFunc) {
  */
 function genericCirclePackLayout(assign, graph, options) {
   if (!isGraph(graph))
-    throw new Error('graphology-layout/circlepack: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-layout/circlepack: the given graph is not a valid graphology instance.'
+    );
 
   options = defaults(options, DEFAULTS);
 
@@ -407,18 +431,17 @@ function genericCirclePackLayout(assign, graph, options) {
 
   var container = new CircleWrap();
 
-  graph.forEachNode(function(key, attributes) {
+  graph.forEachNode(function (key, attributes) {
     var r = attributes.size ? attributes.size : 1;
     var newCircleWrap = new CircleWrap(key, null, null, r);
     var parentContainer = container;
 
-    hierarchyAttributes.forEach(function(v) {
+    hierarchyAttributes.forEach(function (v) {
       var attr = attributes[v];
       parentContainer = parentContainer.getChild(attr);
     });
 
     parentContainer.addChild(key, newCircleWrap);
-
   });
   packHierarchyAndShift(container, shuffleFunc);
   setNode(graph, container, posMap);
@@ -431,7 +454,6 @@ function genericCirclePackLayout(assign, graph, options) {
 
     x = center + scale * posMap[node].x;
     y = center + scale * posMap[node].y;
-
 
     positions[node] = {
       x: x,

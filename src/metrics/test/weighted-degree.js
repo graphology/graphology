@@ -3,8 +3,8 @@
  * ====================================
  */
 var assert = require('assert'),
-    Graph = require('graphology'),
-    weightedDegree = require('../weighted-degree.js');
+  Graph = require('graphology'),
+  weightedDegree = require('../weighted-degree.js');
 
 var UndirectedGraph = Graph.UndirectedGraph;
 
@@ -31,31 +31,29 @@ function createGraph(weightAttribute) {
 function collect(graph, attr) {
   var o = {};
 
-  graph.nodes().forEach(function(node) {
+  graph.nodes().forEach(function (node) {
     o[node] = graph.getNodeAttribute(node, attr);
   });
 
   return o;
 }
 
-describe('weightedDegree', function() {
-
-  it('should throw if given wrong arguments.', function() {
-
-    assert.throws(function() {
+describe('weightedDegree', function () {
+  it('should throw if given wrong arguments.', function () {
+    assert.throws(function () {
       weightedDegree(null);
     }, /instance/);
 
-    assert.throws(function() {
+    assert.throws(function () {
       weightedDegree.weightedInDegree(new UndirectedGraph());
     }, /undirected/);
 
-    assert.throws(function() {
+    assert.throws(function () {
       weightedDegree.weightedOutDegree(new UndirectedGraph());
     }, /undirected/);
   });
 
-  it('should return the correct weighted degree for the given node.', function() {
+  it('should return the correct weighted degree for the given node.', function () {
     var graph = createGraph();
 
     assert.strictEqual(weightedDegree(graph, 1), 10);
@@ -63,7 +61,7 @@ describe('weightedDegree', function() {
     assert.strictEqual(weightedDegree.weightedOutDegree(graph, 1), 8);
   });
 
-  it('should be possible to assign the result for the given node.', function() {
+  it('should be possible to assign the result for the given node.', function () {
     var graph = createGraph();
 
     weightedDegree.assign(graph, 1);
@@ -79,12 +77,18 @@ describe('weightedDegree', function() {
     });
   });
 
-  it('should be possible to use options for the given node.', function() {
+  it('should be possible to use options for the given node.', function () {
     var graph = createGraph('w');
 
-    weightedDegree.assign(graph, 1, {attributes: {weight: 'w', weightedDegree: 'wd'}});
-    weightedDegree.weightedInDegree.assign(graph, 1, {attributes: {weight: 'w', weightedDegree: 'wid'}});
-    weightedDegree.weightedOutDegree.assign(graph, 1, {attributes: {weight: 'w', weightedDegree: 'wod'}});
+    weightedDegree.assign(graph, 1, {
+      attributes: {weight: 'w', weightedDegree: 'wd'}
+    });
+    weightedDegree.weightedInDegree.assign(graph, 1, {
+      attributes: {weight: 'w', weightedDegree: 'wid'}
+    });
+    weightedDegree.weightedOutDegree.assign(graph, 1, {
+      attributes: {weight: 'w', weightedDegree: 'wod'}
+    });
 
     var attributes = graph.getNodeAttributes(1);
 
@@ -95,7 +99,7 @@ describe('weightedDegree', function() {
     });
   });
 
-  it('should be possible to compute weighted degree for every node.', function() {
+  it('should be possible to compute weighted degree for every node.', function () {
     var weightedDegrees = {
       1: 10,
       2: 3,
@@ -128,7 +132,10 @@ describe('weightedDegree', function() {
 
     graph = createGraph();
 
-    assert.deepEqual(weightedDegree.weightedOutDegree(graph), weightedOutDegrees);
+    assert.deepEqual(
+      weightedDegree.weightedOutDegree(graph),
+      weightedOutDegrees
+    );
     weightedDegree.weightedOutDegree.assign(graph);
     assert.deepEqual(collect(graph, 'weightedOutDegree'), weightedOutDegrees);
   });

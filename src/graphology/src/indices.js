@@ -29,13 +29,11 @@ export function updateStructureIndex(
   let outKey = 'out';
   let inKey = 'in';
 
-  if (undirected)
-    outKey = inKey = 'undirected';
+  if (undirected) outKey = inKey = 'undirected';
 
   let adj, container;
 
   if (multi) {
-
     // Handling source
     adj = sourceData[outKey];
     container = adj[target];
@@ -48,23 +46,18 @@ export function updateStructureIndex(
     container.add(edgeData);
 
     // If selfLoop, we break here
-    if (source === target && undirected)
-      return;
+    if (source === target && undirected) return;
 
     // Handling target (we won't add the edge because it was already taken
     // care of with source above)
     adj = targetData[inKey];
-    if (typeof adj[source] === 'undefined')
-      adj[source] = container;
-  }
-  else {
-
+    if (typeof adj[source] === 'undefined') adj[source] = container;
+  } else {
     // Handling source
     sourceData[outKey][target] = edgeData;
 
     // If selfLoop, we break here
-    if (source === target && undirected)
-      return;
+    if (source === target && undirected) return;
 
     // Handling target
     targetData[inKey][source] = edgeData;
@@ -83,34 +76,29 @@ export function clearEdgeFromStructureIndex(graph, undirected, edgeData) {
   const {source: sourceData, target: targetData} = edgeData;
 
   const source = sourceData.key,
-        target = targetData.key;
+    target = targetData.key;
 
   // NOTE: since the edge set is the same for source & target, we can only
   // affect source
   const outKey = undirected ? 'undirected' : 'out',
-        sourceIndex = sourceData[outKey];
+    sourceIndex = sourceData[outKey];
 
   const inKey = undirected ? 'undirected' : 'in';
 
   if (target in sourceIndex) {
-
     if (multi) {
       const set = sourceIndex[target];
 
       if (set.size === 1) {
         delete sourceIndex[target];
         delete targetData[inKey][source];
-      }
-      else {
+      } else {
         set.delete(edgeData);
       }
-    }
-    else
-      delete sourceIndex[target];
+    } else delete sourceIndex[target];
   }
 
-  if (multi)
-    return;
+  if (multi) return;
 
   const targetIndex = targetData[inKey];
 
@@ -124,7 +112,6 @@ export function clearEdgeFromStructureIndex(graph, undirected, edgeData) {
  */
 export function clearStructureIndex(graph) {
   graph._nodes.forEach(data => {
-
     // Clearing now useless properties
     if (typeof data.in !== 'undefined') {
       data.in = {};
@@ -144,10 +131,8 @@ export function clearStructureIndex(graph) {
  */
 export function upgradeStructureIndexToMulti(graph) {
   graph._nodes.forEach((data, node) => {
-
     // Directed
     if (data.out) {
-
       for (const neighbor in data.out) {
         const edges = new Set();
         edges.add(data.out[neighbor]);
@@ -159,8 +144,7 @@ export function upgradeStructureIndexToMulti(graph) {
     // Undirected
     if (data.undirected) {
       for (const neighbor in data.undirected) {
-        if (neighbor > node)
-          continue;
+        if (neighbor > node) continue;
 
         const edges = new Set();
         edges.add(data.undirected[neighbor]);

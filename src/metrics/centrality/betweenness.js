@@ -5,11 +5,11 @@
  * Function computing betweenness centrality.
  */
 var isGraph = require('graphology-utils/is-graph'),
-    lib = require('graphology-shortest-path/indexed-brandes'),
-    defaults = require('lodash/defaults');
+  lib = require('graphology-shortest-path/indexed-brandes'),
+  defaults = require('lodash/defaults');
 
 var createUnweightedIndexedBrandes = lib.createUnweightedIndexedBrandes,
-    createDijkstraIndexedBrandes = lib.createDijkstraIndexedBrandes;
+  createDijkstraIndexedBrandes = lib.createDijkstraIndexedBrandes;
 
 /**
  * Defaults.
@@ -38,35 +38,28 @@ var DEFAULTS = {
  */
 function abstractBetweennessCentrality(assign, graph, options) {
   if (!isGraph(graph))
-    throw new Error('graphology-centrality/beetweenness-centrality: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-centrality/beetweenness-centrality: the given graph is not a valid graphology instance.'
+    );
 
   // Solving options
   options = defaults({}, options, DEFAULTS);
 
   var weightAttribute = options.attributes.weight,
-      centralityAttribute = options.attributes.centrality,
-      normalized = options.normalized,
-      weighted = options.weighted;
+    centralityAttribute = options.attributes.centrality,
+    normalized = options.normalized,
+    weighted = options.weighted;
 
-  var brandes = weighted ?
-    createDijkstraIndexedBrandes(graph, weightAttribute) :
-    createUnweightedIndexedBrandes(graph);
+  var brandes = weighted
+    ? createDijkstraIndexedBrandes(graph, weightAttribute)
+    : createUnweightedIndexedBrandes(graph);
 
   var N = graph.order;
 
-  var result,
-      S,
-      P,
-      sigma,
-      coefficient,
-      i,
-      j,
-      m,
-      v,
-      w;
+  var result, S, P, sigma, coefficient, i, j, m, v, w;
 
   var delta = new Float64Array(N),
-      centralities = new Float64Array(N);
+    centralities = new Float64Array(N);
 
   // Iterating over each node
   for (i = 0; i < N; i++) {
@@ -79,8 +72,7 @@ function abstractBetweennessCentrality(assign, graph, options) {
     // Accumulating
     j = S.size;
 
-    while (j--)
-      delta[S.items[S.size - j]] = 0;
+    while (j--) delta[S.items[S.size - j]] = 0;
 
     while (S.size !== 0) {
       w = S.pop();
@@ -91,26 +83,21 @@ function abstractBetweennessCentrality(assign, graph, options) {
         delta[v] += sigma[v] * coefficient;
       }
 
-      if (w !== i)
-        centralities[w] += delta[w];
+      if (w !== i) centralities[w] += delta[w];
     }
   }
 
   // Rescaling
   var scale = null;
 
-  if (normalized)
-    scale = N <= 2 ? null : (1 / ((N - 1) * (N - 2)));
-  else
-    scale = graph.type === 'undirected' ? 0.5 : null;
+  if (normalized) scale = N <= 2 ? null : 1 / ((N - 1) * (N - 2));
+  else scale = graph.type === 'undirected' ? 0.5 : null;
 
   if (scale !== null) {
-    for (i = 0; i < N; i++)
-      centralities[i] *= scale;
+    for (i = 0; i < N; i++) centralities[i] *= scale;
   }
 
-  if (assign)
-    return brandes.index.assign(centralityAttribute, centralities);
+  if (assign) return brandes.index.assign(centralityAttribute, centralities);
 
   return brandes.index.collect(centralities);
 }

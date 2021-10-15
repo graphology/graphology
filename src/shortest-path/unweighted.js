@@ -6,8 +6,8 @@
  * whose edges are not weighted.
  */
 var isGraph = require('graphology-utils/is-graph'),
-    Queue = require('mnemonist/queue'),
-    extend = require('@yomguithereal/helpers/extend');
+  Queue = require('mnemonist/queue'),
+  extend = require('@yomguithereal/helpers/extend');
 
 /**
  * Function attempting to find the shortest path in a graph between
@@ -23,13 +23,23 @@ function bidirectional(graph, source, target) {
     throw new Error('graphology-shortest-path: invalid graphology instance.');
 
   if (arguments.length < 3)
-    throw new Error('graphology-shortest-path: invalid number of arguments. Expecting at least 3.');
+    throw new Error(
+      'graphology-shortest-path: invalid number of arguments. Expecting at least 3.'
+    );
 
   if (!graph.hasNode(source))
-    throw new Error('graphology-shortest-path: the "' + source + '" source node does not exist in the given graph.');
+    throw new Error(
+      'graphology-shortest-path: the "' +
+        source +
+        '" source node does not exist in the given graph.'
+    );
 
   if (!graph.hasNode(target))
-    throw new Error('graphology-shortest-path: the "' + target + '" target node does not exist in the given graph.');
+    throw new Error(
+      'graphology-shortest-path: the "' +
+        target +
+        '" target node does not exist in the given graph.'
+    );
 
   source = '' + source;
   target = '' + target;
@@ -41,10 +51,10 @@ function bidirectional(graph, source, target) {
 
   // Binding functions
   var getPredecessors = graph.inboundNeighbors.bind(graph),
-      getSuccessors = graph.outboundNeighbors.bind(graph);
+    getSuccessors = graph.outboundNeighbors.bind(graph);
 
   var predecessor = {},
-      successor = {};
+    successor = {};
 
   // Predecessor & successor
   predecessor[source] = null;
@@ -52,20 +62,19 @@ function bidirectional(graph, source, target) {
 
   // Fringes
   var forwardFringe = [source],
-      reverseFringe = [target],
-      currentFringe,
-      node,
-      neighbors,
-      neighbor,
-      i,
-      j,
-      l,
-      m;
+    reverseFringe = [target],
+    currentFringe,
+    node,
+    neighbors,
+    neighbor,
+    i,
+    j,
+    l,
+    m;
 
   var found = false;
 
-  outer:
-  while (forwardFringe.length && reverseFringe.length) {
+  outer: while (forwardFringe.length && reverseFringe.length) {
     if (forwardFringe.length <= reverseFringe.length) {
       currentFringe = forwardFringe;
       forwardFringe = [];
@@ -83,15 +92,13 @@ function bidirectional(graph, source, target) {
           }
 
           if (neighbor in successor) {
-
             // Path is found!
             found = true;
             break outer;
           }
         }
       }
-    }
-    else {
+    } else {
       currentFringe = reverseFringe;
       reverseFringe = [];
 
@@ -108,7 +115,6 @@ function bidirectional(graph, source, target) {
           }
 
           if (neighbor in predecessor) {
-
             // Path is found!
             found = true;
             break outer;
@@ -118,8 +124,7 @@ function bidirectional(graph, source, target) {
     }
   }
 
-  if (!found)
-    return null;
+  if (!found) return null;
 
   var path = [];
 
@@ -153,21 +158,27 @@ function singleSource(graph, source) {
     throw new Error('graphology-shortest-path: invalid graphology instance.');
 
   if (arguments.length < 2)
-    throw new Error('graphology-shortest-path: invalid number of arguments. Expecting at least 2.');
+    throw new Error(
+      'graphology-shortest-path: invalid number of arguments. Expecting at least 2.'
+    );
 
   if (!graph.hasNode(source))
-    throw new Error('graphology-shortest-path: the "' + source + '" source node does not exist in the given graph.');
+    throw new Error(
+      'graphology-shortest-path: the "' +
+        source +
+        '" source node does not exist in the given graph.'
+    );
 
   source = '' + source;
 
   var nextLevel = {},
-      paths = {},
-      currentLevel,
-      neighbors,
-      v,
-      w,
-      i,
-      l;
+    paths = {},
+    currentLevel,
+    neighbors,
+    v,
+    w,
+    i,
+    l;
 
   nextLevel[source] = true;
   paths[source] = [source];
@@ -209,7 +220,11 @@ function asbtractSingleSourceLength(method, graph, source) {
     throw new Error('graphology-shortest-path: invalid graphology instance.');
 
   if (!graph.hasNode(source))
-    throw new Error('graphology-shortest-path: the "' + source + '" source node does not exist in the given graph.');
+    throw new Error(
+      'graphology-shortest-path: the "' +
+        source +
+        '" source node does not exist in the given graph.'
+    );
 
   source = '' + source;
 
@@ -217,7 +232,7 @@ function asbtractSingleSourceLength(method, graph, source) {
   var seen = new Set();
 
   var lengths = {},
-      level = 0;
+    level = 0;
 
   lengths[source] = 0;
 
@@ -231,8 +246,7 @@ function asbtractSingleSourceLength(method, graph, source) {
     for (i = 0, l = currentLevel.length; i < l; i++) {
       node = currentLevel[i];
 
-      if (seen.has(node))
-        continue;
+      if (seen.has(node)) continue;
 
       seen.add(node);
       extend(nextLevel, graph[method](node));
@@ -247,8 +261,14 @@ function asbtractSingleSourceLength(method, graph, source) {
   return lengths;
 }
 
-var singleSourceLength = asbtractSingleSourceLength.bind(null, 'outboundNeighbors');
-var undirectedSingleSourceLength = asbtractSingleSourceLength.bind(null, 'neighbors');
+var singleSourceLength = asbtractSingleSourceLength.bind(
+  null,
+  'outboundNeighbors'
+);
+var undirectedSingleSourceLength = asbtractSingleSourceLength.bind(
+  null,
+  'neighbors'
+);
 
 /**
  * Main polymorphic function taking either only a source or a
@@ -260,8 +280,7 @@ var undirectedSingleSourceLength = asbtractSingleSourceLength.bind(null, 'neighb
  * @return {array|object|null} - The map of found paths.
  */
 function shortestPath(graph, source, target) {
-  if (arguments.length < 3)
-    return singleSource(graph, source);
+  if (arguments.length < 3) return singleSource(graph, source);
 
   return bidirectional(graph, source, target);
 }
@@ -282,19 +301,19 @@ function brandes(graph, source) {
   source = '' + source;
 
   var S = [],
-      P = {},
-      sigma = {};
+    P = {},
+    sigma = {};
 
   var nodes = graph.nodes(),
-      Dv,
-      sigmav,
-      neighbors,
-      v,
-      w,
-      i,
-      j,
-      l,
-      m;
+    Dv,
+    sigmav,
+    neighbors,
+    v,
+    w,
+    i,
+    j,
+    l,
+    m;
 
   for (i = 0, l = nodes.length; i < l; i++) {
     v = nodes[i];

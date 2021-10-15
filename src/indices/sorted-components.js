@@ -12,25 +12,22 @@ function SortedComponentsIndex(graph) {
   var nodes = [];
   var count = 0;
 
-  if (!graph.order)
-    return;
+  if (!graph.order) return;
 
   var seen = new Set();
   var stack = [];
   var componentOrder;
 
   function neighborCallback(neighbor) {
-    if (seen.has(neighbor))
-      return;
+    if (seen.has(neighbor)) return;
 
     seen.add(neighbor);
     stack.push(neighbor);
   }
 
   // Performing DFS
-  graph.forEachNode(function(node) {
-    if (seen.has(node))
-      return;
+  graph.forEachNode(function (node) {
+    if (seen.has(node)) return;
 
     seen.add(node);
     componentOrder = 0;
@@ -53,20 +50,18 @@ function SortedComponentsIndex(graph) {
 
   offsets.push(nodes.length);
 
-  var i, idx = new Array(orders.length);
+  var i,
+    idx = new Array(orders.length);
 
-  for (i = 0; i < orders.length; i++)
-    idx[i] = i;
+  for (i = 0; i < orders.length; i++) idx[i] = i;
 
   function comparator(a, b) {
     a = orders[a];
     b = orders[b];
 
-    if (a < b)
-      return 1;
+    if (a < b) return 1;
 
-    if (a > b)
-      return -1;
+    if (a > b) return -1;
 
     return 0;
   }

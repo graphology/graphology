@@ -17,9 +17,9 @@ var assert = require('assert'),
 
 var UndirectedGraph = Graph.UndirectedGraph;
 
-describe('graphology-utils', function() {
-  describe('inferType', function() {
-    it('should correctly infer the type of the given graph.', function() {
+describe('graphology-utils', function () {
+  describe('inferType', function () {
+    it('should correctly infer the type of the given graph.', function () {
       var graph = new Graph({type: 'mixed'});
       graph.mergeDirectedEdge(1, 2);
 
@@ -50,8 +50,8 @@ describe('graphology-utils', function() {
     });
   });
 
-  describe('isGraph', function() {
-    it('should correctly return whether the given value is a graphology instance.', function() {
+  describe('isGraph', function () {
+    it('should correctly return whether the given value is a graphology instance.', function () {
       var graph = new Graph(),
         multiDirectedGraph = new Graph(null, {multi: true, type: 'directed'});
 
@@ -75,14 +75,14 @@ describe('graphology-utils', function() {
         new Date()
       ];
 
-      nonGraphs.forEach(function(value) {
+      nonGraphs.forEach(function (value) {
         assert.strictEqual(isGraph(value), false);
       });
     });
   });
 
-  describe('isGraphConstructor', function() {
-    it('should correctly return whether the given value is a graphology constructor.', function() {
+  describe('isGraphConstructor', function () {
+    it('should correctly return whether the given value is a graphology constructor.', function () {
       assert.strictEqual(isGraphConstructor(Graph), true);
       assert.strictEqual(isGraphConstructor(UndirectedGraph), true);
 
@@ -105,14 +105,14 @@ describe('graphology-utils', function() {
         new UndirectedGraph()
       ];
 
-      nonGraphsConstructors.forEach(function(value) {
+      nonGraphsConstructors.forEach(function (value) {
         assert.strictEqual(isGraphConstructor(value), false);
       });
     });
   });
 
-  describe('mergeClique', function() {
-    it('should correctly add the given clique to the graph.', function() {
+  describe('mergeClique', function () {
+    it('should correctly add the given clique to the graph.', function () {
       var graph = new Graph();
 
       mergeClique(graph, ['1', '2', '3', '4', '5']);
@@ -120,7 +120,7 @@ describe('graphology-utils', function() {
       assert.strictEqual(graph.order, 5);
       assert.strictEqual(graph.size, 10);
 
-      var adj = graph.edges().map(function(edge) {
+      var adj = graph.edges().map(function (edge) {
         return graph.extremities(edge);
       });
 
@@ -139,8 +139,8 @@ describe('graphology-utils', function() {
     });
   });
 
-  describe('mergeCycle', function() {
-    it('should correctly add the given path to the graph.', function() {
+  describe('mergeCycle', function () {
+    it('should correctly add the given path to the graph.', function () {
       var graph = new Graph();
 
       mergeCycle(graph, ['1', '2', '3', '4', '5']);
@@ -148,7 +148,7 @@ describe('graphology-utils', function() {
       assert.strictEqual(graph.order, 5);
       assert.strictEqual(graph.size, 5);
 
-      var adj = graph.edges().map(function(edge) {
+      var adj = graph.edges().map(function (edge) {
         return graph.extremities(edge);
       });
 
@@ -162,8 +162,8 @@ describe('graphology-utils', function() {
     });
   });
 
-  describe('mergePath', function() {
-    it('should correctly add the given path to the graph.', function() {
+  describe('mergePath', function () {
+    it('should correctly add the given path to the graph.', function () {
       var graph = new Graph();
 
       mergePath(graph, ['1', '2', '3', '4', '5']);
@@ -171,7 +171,7 @@ describe('graphology-utils', function() {
       assert.strictEqual(graph.order, 5);
       assert.strictEqual(graph.size, 4);
 
-      var adj = graph.edges().map(function(edge) {
+      var adj = graph.edges().map(function (edge) {
         return graph.extremities(edge);
       });
 
@@ -184,8 +184,8 @@ describe('graphology-utils', function() {
     });
   });
 
-  describe('mergeStar', function() {
-    it('should correctly add the given star to the graph.', function() {
+  describe('mergeStar', function () {
+    it('should correctly add the given star to the graph.', function () {
       var graph = new Graph();
 
       mergeStar(graph, ['1', '2', '3', '4', '5']);
@@ -193,7 +193,7 @@ describe('graphology-utils', function() {
       assert.strictEqual(graph.order, 5);
       assert.strictEqual(graph.size, 4);
 
-      var adj = graph.edges().map(function(edge) {
+      var adj = graph.edges().map(function (edge) {
         return graph.extremities(edge);
       });
 
@@ -206,8 +206,8 @@ describe('graphology-utils', function() {
     });
   });
 
-  describe('renameGraphKeys', function() {
-    it('should work with only node mapping.', function() {
+  describe('renameGraphKeys', function () {
+    it('should work with only node mapping.', function () {
       var graph = new Graph();
       graph.addNode('Martha');
       graph.addNode('Catherine');
@@ -215,7 +215,11 @@ describe('graphology-utils', function() {
       graph.addEdgeWithKey('M->C', 'Martha', 'Catherine');
       graph.addEdgeWithKey('C->J', 'Catherine', 'John');
 
-      var newGraph = renameGraphKeys(graph, {Martha: 1, Catherine: 2, John: 3});
+      var newGraph = renameGraphKeys(graph, {
+        Martha: 1,
+        Catherine: 2,
+        John: 3
+      });
 
       // Tests
       assert.strictEqual(newGraph.order, 3);
@@ -227,7 +231,7 @@ describe('graphology-utils', function() {
       assert.strictEqual(newGraph.edge(2, 3), 'C->J');
     });
 
-    it('should work with full mapping.', function() {
+    it('should work with full mapping.', function () {
       var graph = new Graph();
       graph.addNode('Martha');
       graph.addNode('Catherine');
@@ -252,8 +256,8 @@ describe('graphology-utils', function() {
     });
   });
 
-  describe('updateGraphKeys', function() {
-    it('should work with only node mapping.', function() {
+  describe('updateGraphKeys', function () {
+    it('should work with only node mapping.', function () {
       var graph = new Graph();
       graph.addNode('Martha');
       graph.addNode('Catherine');
@@ -261,7 +265,7 @@ describe('graphology-utils', function() {
       graph.addEdgeWithKey('M->C', 'Martha', 'Catherine');
       graph.addEdgeWithKey('C->J', 'Catherine', 'John');
 
-      var newGraph = updateGraphKeys(graph, function(key) {
+      var newGraph = updateGraphKeys(graph, function (key) {
         if (key === 'Martha') return 1;
         if (key === 'Catherine') return 2;
         return 3;
@@ -277,7 +281,7 @@ describe('graphology-utils', function() {
       assert.strictEqual(newGraph.edge(2, 3), 'C->J');
     });
 
-    it('should work with full mapping.', function() {
+    it('should work with full mapping.', function () {
       var graph = new Graph();
       graph.addNode('Martha');
       graph.addNode('Catherine');
@@ -287,12 +291,12 @@ describe('graphology-utils', function() {
 
       var newGraph = updateGraphKeys(
         graph,
-        function(key) {
+        function (key) {
           if (key === 'Martha') return 1;
           if (key === 'Catherine') return 2;
           return 3;
         },
-        function(key) {
+        function (key) {
           if (key === 'M->C') return 'rel1';
           return 'rel2';
         }
@@ -309,8 +313,8 @@ describe('graphology-utils', function() {
     });
   });
 
-  describe('memoizedForEach', function() {
-    it('should work properly.', function() {
+  describe('memoizedForEach', function () {
+    it('should work properly.', function () {
       var graph = new Graph();
       graph.mergeEdge('1', '2');
       graph.mergeEdge('1', '3');
@@ -331,19 +335,17 @@ describe('graphology-utils', function() {
         return validNodes.has(key);
       }
 
-      memoizedForEach(graph, cacher, function(valid, s, t) {
+      memoizedForEach(graph, cacher, function (valid, s, t) {
         if (!valid) return;
 
         validEdges.add(s + '->' + t);
       });
 
       assert.strictEqual(called, 4);
-      assert.deepStrictEqual(validEdges, new Set([
-        '1->2',
-        '1->3',
-        '1->4',
-        '3->6'
-      ]));
+      assert.deepStrictEqual(
+        validEdges,
+        new Set(['1->2', '1->3', '1->4', '3->6'])
+      );
     });
   });
 });

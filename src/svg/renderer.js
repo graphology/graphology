@@ -31,7 +31,7 @@ function renderer(graph, settings) {
 
   // Drawing edges
   var edgesStrings = [];
-  graph.forEachEdge(function(edge, attr, source, target) {
+  graph.forEachEdge(function (edge, attr, source, target) {
     // Reducing edge
     if (typeof settings.edges.reducer === 'function')
       attr = settings.edges.reducer(settings, edge, attr);
@@ -54,20 +54,38 @@ function renderer(graph, settings) {
   var nodeLabelsStrings = [];
   var k;
   for (k in nodeData) {
-    nodesStrings.push(components.nodes[nodeData[k].type](settings, nodeData[k]));
-    nodeLabelsStrings.push(components.nodeLabels[nodeData[k].labelType](settings, nodeData[k]));
+    nodesStrings.push(
+      components.nodes[nodeData[k].type](settings, nodeData[k])
+    );
+    nodeLabelsStrings.push(
+      components.nodeLabels[nodeData[k].labelType](settings, nodeData[k])
+    );
   }
 
   return (
     '<?xml version="1.0" encoding="utf-8"?>' +
-      '<svg width="' + settings.width + '" height=" ' + settings.height + '" ' +
-           'viewBox="0 0 ' + settings.width + ' ' + settings.height + '" ' +
-           'version="1.1" ' +
-           'xmlns="http://www.w3.org/2000/svg">' +
-        '<g>' + edgesStrings.join('') + '</g>' +
-        '<g>' + nodesStrings.join('') + '</g>' +
-        '<g>' + nodeLabelsStrings.join('') + '</g>' +
-      '</svg>'
+    '<svg width="' +
+    settings.width +
+    '" height=" ' +
+    settings.height +
+    '" ' +
+    'viewBox="0 0 ' +
+    settings.width +
+    ' ' +
+    settings.height +
+    '" ' +
+    'version="1.1" ' +
+    'xmlns="http://www.w3.org/2000/svg">' +
+    '<g>' +
+    edgesStrings.join('') +
+    '</g>' +
+    '<g>' +
+    nodesStrings.join('') +
+    '</g>' +
+    '<g>' +
+    nodeLabelsStrings.join('') +
+    '</g>' +
+    '</svg>'
   );
 }
 

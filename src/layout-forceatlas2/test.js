@@ -3,27 +3,24 @@
  * =================================
  */
 var assert = require('assert'),
-    Graph = require('graphology');
+  Graph = require('graphology');
 
 var helpers = require('./helpers.js'),
-    layout = require('./index.js');
+  layout = require('./index.js');
 
 var seedrandom = require('seedrandom');
 
-var rng = function() {
+var rng = function () {
   return seedrandom('test');
 };
 
 var clusters = require('graphology-generators/random/clusters');
 var empty = require('graphology-generators/classic/empty');
 
-describe('graphology-layout-forceatlas2', function() {
-
-  describe('helpers', function() {
-
-    describe('#.graphToByteArrays', function() {
-
-      it('should work as expected.', function() {
+describe('graphology-layout-forceatlas2', function () {
+  describe('helpers', function () {
+    describe('#.graphToByteArrays', function () {
+      it('should work as expected.', function () {
         var graph = new Graph();
 
         var data = {
@@ -42,8 +39,7 @@ describe('graphology-layout-forceatlas2', function() {
           }
         };
 
-        for (var node in data)
-          graph.addNode(node, data[node]);
+        for (var node in data) graph.addNode(node, data[node]);
 
         graph.addEdge('John', 'Martha');
         graph.addEdge('Martha', 'Ada', {weight: 3});
@@ -53,25 +49,17 @@ describe('graphology-layout-forceatlas2', function() {
         assert.deepEqual(
           Array.from(matrices.nodes),
           [
-            3, 4, 0, 0, 0, 0, 2, 1, 4, 0,
-            10, 5, 0, 0, 0, 0, 3, 1, 1, 0,
-            23, -2, 0, 0, 0, 0, 2, 1, 1, 0
+            3, 4, 0, 0, 0, 0, 2, 1, 4, 0, 10, 5, 0, 0, 0, 0, 3, 1, 1, 0, 23, -2,
+            0, 0, 0, 0, 2, 1, 1, 0
           ]
         );
 
-        assert.deepEqual(
-          Array.from(matrices.edges),
-          [
-            0, 10, 0,
-            10, 20, 3
-          ]
-        );
+        assert.deepEqual(Array.from(matrices.edges), [0, 10, 0, 10, 20, 3]);
       });
     });
 
-    describe('#.collectLayoutChanges', function() {
-
-      it('should work as expected.', function() {
+    describe('#.collectLayoutChanges', function () {
+      it('should work as expected.', function () {
         var graph = new Graph();
 
         var data = {
@@ -90,14 +78,15 @@ describe('graphology-layout-forceatlas2', function() {
           }
         };
 
-        for (var node in data)
-          graph.addNode(node, data[node]);
+        for (var node in data) graph.addNode(node, data[node]);
 
-        var positions = helpers.collectLayoutChanges(graph, [
-          4, 5, 0, 0, 0, 0, 2, 1, 4, 0,
-          11, 6, 0, 0, 0, 0, 3, 1, 1, 0,
-          24, -1, 0, 0, 0, 0, 2, 1, 1, 0
-        ]);
+        var positions = helpers.collectLayoutChanges(
+          graph,
+          [
+            4, 5, 0, 0, 0, 0, 2, 1, 4, 0, 11, 6, 0, 0, 0, 0, 3, 1, 1, 0, 24, -1,
+            0, 0, 0, 0, 2, 1, 1, 0
+          ]
+        );
 
         assert.deepEqual(positions, {
           John: {x: 4, y: 5},
@@ -107,9 +96,8 @@ describe('graphology-layout-forceatlas2', function() {
       });
     });
 
-    describe('#.assignLayoutChanges', function() {
-
-      it('should work as expected.', function() {
+    describe('#.assignLayoutChanges', function () {
+      it('should work as expected.', function () {
         var graph = new Graph();
 
         var data = {
@@ -127,14 +115,15 @@ describe('graphology-layout-forceatlas2', function() {
           }
         };
 
-        for (var node in data)
-          graph.addNode(node, data[node]);
+        for (var node in data) graph.addNode(node, data[node]);
 
-        helpers.assignLayoutChanges(graph, [
-          4, 5, 0, 0, 0, 0, 2, 1, 4, 0,
-          11, 6, 0, 0, 0, 0, 3, 1, 1, 0,
-          24, -1, 0, 0, 0, 0, 2, 1, 1, 0
-        ]);
+        helpers.assignLayoutChanges(
+          graph,
+          [
+            4, 5, 0, 0, 0, 0, 2, 1, 4, 0, 11, 6, 0, 0, 0, 0, 3, 1, 1, 0, 24, -1,
+            0, 0, 0, 0, 2, 1, 1, 0
+          ]
+        );
 
         var positions = {
           John: graph.getNodeAttributes('John'),
@@ -151,37 +140,34 @@ describe('graphology-layout-forceatlas2', function() {
     });
   });
 
-  describe('synchronous', function() {
-
-    it('should throw if the graph is invalid.', function() {
-      assert.throws(function() {
+  describe('synchronous', function () {
+    it('should throw if the graph is invalid.', function () {
+      assert.throws(function () {
         layout(null);
       }, /graphology/);
     });
 
-    it('should throw if iterations are not valid.', function() {
-      assert.throws(function() {
+    it('should throw if iterations are not valid.', function () {
+      assert.throws(function () {
         layout(new Graph(), {});
       }, /number/);
 
-      assert.throws(function() {
+      assert.throws(function () {
         layout(new Graph(), -34);
       }, /positive/);
     });
 
-    it('should throw if settings are invalid.', function() {
-
-      assert.throws(function() {
+    it('should throw if settings are invalid.', function () {
+      assert.throws(function () {
         layout(new Graph(), {iterations: 5, settings: {linLogMode: 45}});
       }, /linLogMode/);
     });
   });
 
-  describe('#.inferSettings', function() {
-
-    it('should correctly infer settings from given graph.', function() {
+  describe('#.inferSettings', function () {
+    it('should correctly infer settings from given graph.', function () {
       var smallGraph = empty(Graph, 250),
-          bigGraph = empty(Graph, 5000);
+        bigGraph = empty(Graph, 5000);
 
       var settings = layout.inferSettings(smallGraph);
 
@@ -192,7 +178,7 @@ describe('graphology-layout-forceatlas2', function() {
       assert.strictEqual(settings.barnesHutOptimize, true);
     });
 
-    it('should work if given the order of the graph.', function() {
+    it('should work if given the order of the graph.', function () {
       var settings = layout.inferSettings(250);
 
       assert.strictEqual(settings.barnesHutOptimize, false);
@@ -203,8 +189,8 @@ describe('graphology-layout-forceatlas2', function() {
     });
   });
 
-  describe('Barnes-Hut optimization', function() {
-    it('should converge on a large random graph with small coordinate values', function() {
+  describe('Barnes-Hut optimization', function () {
+    it('should converge on a large random graph with small coordinate values', function () {
       // Creating a random clustered graph
       var graph = clusters(Graph, {
         order: 1000,
@@ -212,11 +198,11 @@ describe('graphology-layout-forceatlas2', function() {
         clusters: 5,
         rng: rng()
       });
-      graph.nodes().forEach(function(n, i) {
+      graph.nodes().forEach(function (n, i) {
         graph.setNodeAttribute(n, 'x', i % 2 ? -1 : 1);
         graph.setNodeAttribute(n, 'y', i % 2 ? -1 : 1);
       });
-      assert.doesNotThrow(function() {
+      assert.doesNotThrow(function () {
         layout(graph, {
           settings: {
             barnesHutOptimize: true

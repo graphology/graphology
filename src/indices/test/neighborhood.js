@@ -10,7 +10,8 @@ var outbound = require('../neighborhood/outbound.js');
 var louvain = require('../neighborhood/louvain.js');
 
 var OutboundNeighborhoodIndex = outbound.OutboundNeighborhoodIndex;
-var WeightedOutboundNeighborhoodIndex = outbound.WeightedOutboundNeighborhoodIndex;
+var WeightedOutboundNeighborhoodIndex =
+  outbound.WeightedOutboundNeighborhoodIndex;
 
 var UndirectedLouvainIndex = louvain.UndirectedLouvainIndex;
 var DirectedLouvainIndex = louvain.DirectedLouvainIndex;
@@ -53,27 +54,27 @@ function fromEdges(GraphConstructor, edges) {
   // Adding nodes in order for easier testing
   var nodes = new Set();
 
-  edges.forEach(function(data) {
+  edges.forEach(function (data) {
     nodes.add(data[0]);
     nodes.add(data[1]);
   });
 
-  Array.from(nodes).sort().forEach(function(node) {
-    g.addNode(node);
-  });
+  Array.from(nodes)
+    .sort()
+    .forEach(function (node) {
+      g.addNode(node);
+    });
 
-  edges.forEach(function(data) {
-    if (data.length === 3)
-      g.mergeEdge(data[0], data[1], {weight: data[2]});
-    else
-      g.mergeEdge(data[0], data[1]);
+  edges.forEach(function (data) {
+    if (data.length === 3) g.mergeEdge(data[0], data[1], {weight: data[2]});
+    else g.mergeEdge(data[0], data[1]);
   });
 
   return g;
 }
 
 function applyMoves(index, moves) {
-  moves.forEach(function(move) {
+  moves.forEach(function (move) {
     index.move.apply(index, move);
   });
 }
@@ -82,10 +83,9 @@ function closeTo(A, B) {
   assert.closeTo(A, B, 0.0001);
 }
 
-describe('Neighborhood Indices', function() {
-  describe('OutboundNeighborhoodIndex', function() {
-
-    it('should properly index the outbound neighborhood of the given graph.', function() {
+describe('Neighborhood Indices', function () {
+  describe('OutboundNeighborhoodIndex', function () {
+    it('should properly index the outbound neighborhood of the given graph.', function () {
       var graph = new Graph();
       graph.mergeEdge(1, 2);
       graph.mergeEdge(2, 3);
@@ -99,7 +99,7 @@ describe('Neighborhood Indices', function() {
 
       var neighbors = {};
 
-      graph.forEachNode(function(node) {
+      graph.forEachNode(function (node) {
         neighbors[node] = graph.outboundNeighbors(node);
       });
 
@@ -119,12 +119,15 @@ describe('Neighborhood Indices', function() {
 
       index.assign('result', results);
 
-      graph.forEachNode(function(node) {
-        assert.strictEqual(graph.getNodeAttribute(node, 'result'), resultIndex[node]);
+      graph.forEachNode(function (node) {
+        assert.strictEqual(
+          graph.getNodeAttribute(node, 'result'),
+          resultIndex[node]
+        );
       });
     });
 
-    it('should work with nodes having no edges.', function() {
+    it('should work with nodes having no edges.', function () {
       var graph = new Graph.UndirectedGraph();
       graph.addNode(1);
       graph.mergeEdge(2, 3);
@@ -141,9 +144,8 @@ describe('Neighborhood Indices', function() {
     });
   });
 
-  describe('WeightedOutboundNeighborhoodIndex', function() {
-
-    it('should properly index the weighted outbound neighborhood of the given graph.', function() {
+  describe('WeightedOutboundNeighborhoodIndex', function () {
+    it('should properly index the weighted outbound neighborhood of the given graph.', function () {
       var graph = new Graph();
       graph.mergeEdge(1, 2, {weight: 3});
       graph.mergeEdge(2, 3);
@@ -158,7 +160,7 @@ describe('Neighborhood Indices', function() {
 
       var neighbors = {};
 
-      graph.forEachNode(function(node) {
+      graph.forEachNode(function (node) {
         neighbors[node] = graph.outboundNeighbors(node);
       });
 
@@ -178,14 +180,17 @@ describe('Neighborhood Indices', function() {
 
       index.assign('result', results);
 
-      graph.forEachNode(function(node) {
-        assert.strictEqual(graph.getNodeAttribute(node, 'result'), resultIndex[node]);
+      graph.forEachNode(function (node) {
+        assert.strictEqual(
+          graph.getNodeAttribute(node, 'result'),
+          resultIndex[node]
+        );
       });
     });
   });
 
-  describe('LouvainIndex', function() {
-    it('should properly index the given undirected graph.', function() {
+  describe('LouvainIndex', function () {
+    it('should properly index the given undirected graph.', function () {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
 
       var index = new UndirectedLouvainIndex(graph, {weighted: true});
@@ -202,17 +207,30 @@ describe('Neighborhood Indices', function() {
         6: ['3']
       });
 
-      assert.deepEqual(index.neighborhood, new Uint8Array([4, 1, 3, 2, 0, 5, 3, 1, 1, 2, 0, 2]));
-      assert.deepEqual(index.weights, new Float64Array([5, 30, 1, 15, 30, 100, 10, 15, 1, 10, 5, 100]));
+      assert.deepEqual(
+        index.neighborhood,
+        new Uint8Array([4, 1, 3, 2, 0, 5, 3, 1, 1, 2, 0, 2])
+      );
+      assert.deepEqual(
+        index.weights,
+        new Float64Array([5, 30, 1, 15, 30, 100, 10, 15, 1, 10, 5, 100])
+      );
       // assert.deepEqual(index.internalWeights, new Float64Array([0, 0, 0, 0, 0, 0]));
-      assert.deepEqual(index.totalWeights, new Float64Array(Array.from(graph.nodes().map(function(node) {
-        return graph.edges(node).reduce(function(sum, edge) {
-          return sum + (graph.getEdgeAttribute(edge, 'weight') || 1);
-        }, 0);
-      }))));
+      assert.deepEqual(
+        index.totalWeights,
+        new Float64Array(
+          Array.from(
+            graph.nodes().map(function (node) {
+              return graph.edges(node).reduce(function (sum, edge) {
+                return sum + (graph.getEdgeAttribute(edge, 'weight') || 1);
+              }, 0);
+            })
+          )
+        )
+      );
     });
 
-    it('should properly index the given directed graph.', function() {
+    it('should properly index the given directed graph.', function () {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
 
       var index = new DirectedLouvainIndex(graph, {weighted: true});
@@ -247,29 +265,49 @@ describe('Neighborhood Indices', function() {
         6: []
       });
 
-      assert.deepEqual(index.neighborhood, new Uint8Array([4, 1, 4, 2, 3, 0, 3, 5, 1, 1, 2, 0, 0, 2]));
-      assert.deepEqual(index.weights, new Float64Array([1, 30, 5, 15, 1, 30, 10, 100, 15, 1, 10, 5, 1, 100]));
+      assert.deepEqual(
+        index.neighborhood,
+        new Uint8Array([4, 1, 4, 2, 3, 0, 3, 5, 1, 1, 2, 0, 0, 2])
+      );
+      assert.deepEqual(
+        index.weights,
+        new Float64Array([1, 30, 5, 15, 1, 30, 10, 100, 15, 1, 10, 5, 1, 100])
+      );
       assert.deepEqual(index.offsets, new Uint8Array([2, 4, 7, 10, 12, 14]));
       // assert.deepEqual(index.internalWeights, new Float64Array([0, 0, 0, 0, 0, 0]));
-      assert.deepEqual(index.totalInWeights, new Float64Array(Array.from(graph.nodes().map(function(node) {
-        return graph.inEdges(node).reduce(function(sum, edge) {
-          return sum + (graph.getEdgeAttribute(edge, 'weight') || 1);
-        }, 0);
-      }))));
-      assert.deepEqual(index.totalOutWeights, new Float64Array(Array.from(graph.nodes().map(function(node) {
-        return graph.outEdges(node).reduce(function(sum, edge) {
-          return sum + (graph.getEdgeAttribute(edge, 'weight') || 1);
-        }, 0);
-      }))));
+      assert.deepEqual(
+        index.totalInWeights,
+        new Float64Array(
+          Array.from(
+            graph.nodes().map(function (node) {
+              return graph.inEdges(node).reduce(function (sum, edge) {
+                return sum + (graph.getEdgeAttribute(edge, 'weight') || 1);
+              }, 0);
+            })
+          )
+        )
+      );
+      assert.deepEqual(
+        index.totalOutWeights,
+        new Float64Array(
+          Array.from(
+            graph.nodes().map(function (node) {
+              return graph.outEdges(node).reduce(function (sum, edge) {
+                return sum + (graph.getEdgeAttribute(edge, 'weight') || 1);
+              }, 0);
+            })
+          )
+        )
+      );
     });
 
-    it('should be possible to move a node from one community to the other in the undirected case.', function() {
+    it('should be possible to move a node from one community to the other in the undirected case.', function () {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       var index = new UndirectedLouvainIndex(graph);
 
       var before = {
         belongings: index.belongings.slice(),
-        totalWeights: index.totalWeights.slice(),
+        totalWeights: index.totalWeights.slice()
         // internalWeights: index.internalWeights.slice()
       };
 
@@ -278,7 +316,7 @@ describe('Neighborhood Indices', function() {
 
       assert.deepEqual(before, {
         belongings: index.belongings,
-        totalWeights: index.totalWeights,
+        totalWeights: index.totalWeights
         // internalWeights: index.internalWeights
       });
 
@@ -294,7 +332,7 @@ describe('Neighborhood Indices', function() {
 
       assert.deepEqual(before, {
         belongings: index.belongings,
-        totalWeights: index.totalWeights,
+        totalWeights: index.totalWeights
         // internalWeights: index.internalWeights
       });
 
@@ -342,14 +380,14 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalWeights), [6, 6, 0, 0, 0, 0]);
     });
 
-    it('should be possible to move a node from one community to the other in the directed case.', function() {
+    it('should be possible to move a node from one community to the other in the directed case.', function () {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
       var index = new DirectedLouvainIndex(graph);
 
       var before = {
         belongings: index.belongings.slice(),
         totalInWeights: index.totalInWeights.slice(),
-        totalOutWeights: index.totalOutWeights.slice(),
+        totalOutWeights: index.totalOutWeights.slice()
         // internalWeights: index.internalWeights.slice()
       };
 
@@ -359,7 +397,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(before, {
         belongings: index.belongings,
         totalInWeights: index.totalInWeights,
-        totalOutWeights: index.totalOutWeights,
+        totalOutWeights: index.totalOutWeights
         // internalWeights: index.internalWeights
       });
 
@@ -377,7 +415,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(before, {
         belongings: index.belongings,
         totalInWeights: index.totalInWeights,
-        totalOutWeights: index.totalOutWeights,
+        totalOutWeights: index.totalOutWeights
         // internalWeights: index.internalWeights
       });
 
@@ -431,9 +469,12 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalOutWeights), [4, 3, 0, 0, 0, 0]);
     });
 
-    it('should be possible to zoom out in the undirected case.', function() {
+    it('should be possible to zoom out in the undirected case.', function () {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
-      var index = new UndirectedLouvainIndex(graph, {keepDendrogram: true, keepCounts: true});
+      var index = new UndirectedLouvainIndex(graph, {
+        keepDendrogram: true,
+        keepCounts: true
+      });
 
       // node '1', '5' => community '4' (0)
       // node '2', '3', '4', '6' => community '2' (1)
@@ -465,17 +506,32 @@ describe('Neighborhood Indices', function() {
       assert.strictEqual(index.U, 0);
       assert.strictEqual(index.level, 1);
       assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([1, 1]));
-      assert.deepEqual(index.neighborhood.slice(0, index.E), new Uint8Array([1, 0]));
+      assert.deepEqual(
+        index.neighborhood.slice(0, index.E),
+        new Uint8Array([1, 0])
+      );
       assert.deepEqual(index.weights.slice(0, index.E), new Uint8Array([1, 1]));
-      assert.deepEqual(index.starts.slice(0, index.C + 1), new Uint8Array([0, 1, 2]));
-      assert.deepEqual(index.belongings.slice(0, index.C), new Uint8Array([0, 1]));
-      assert.deepEqual(index.totalWeights.slice(0, index.C), new Uint8Array([3, 9]));
+      assert.deepEqual(
+        index.starts.slice(0, index.C + 1),
+        new Uint8Array([0, 1, 2])
+      );
+      assert.deepEqual(
+        index.belongings.slice(0, index.C),
+        new Uint8Array([0, 1])
+      );
+      assert.deepEqual(
+        index.totalWeights.slice(0, index.C),
+        new Uint8Array([3, 9])
+      );
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 8]));
 
       // Once more
       index.move(0, 1, 1);
 
-      assert.deepEqual(index.totalWeights.slice(0, index.C), new Uint8Array([0, 12]));
+      assert.deepEqual(
+        index.totalWeights.slice(0, index.C),
+        new Uint8Array([0, 12])
+      );
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 12]));
       assert.strictEqual(index.U, 1);
       assert.deepEqual(index.unused.slice(0, index.U), new Uint8Array([0]));
@@ -524,7 +580,7 @@ describe('Neighborhood Indices', function() {
 
       var o = {};
 
-      graph.forEachNode(function(n, attr) {
+      graph.forEachNode(function (n, attr) {
         o[n] = attr.community;
       });
 
@@ -538,9 +594,12 @@ describe('Neighborhood Indices', function() {
       });
     });
 
-    it('should be possible to zoom out in the directed case.', function() {
+    it('should be possible to zoom out in the directed case.', function () {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
-      var index = new DirectedLouvainIndex(graph, {keepDendrogram: true, keepCounts: true});
+      var index = new DirectedLouvainIndex(graph, {
+        keepDendrogram: true,
+        keepCounts: true
+      });
 
       // node '1', '5' => community '4' (0)
       // node '2', '3', '4', '6' => community '2' (1)
@@ -571,19 +630,40 @@ describe('Neighborhood Indices', function() {
       assert.strictEqual(index.U, 0);
       assert.strictEqual(index.level, 1);
       assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([1, 1]));
-      assert.deepEqual(index.neighborhood.slice(0, index.E), new Uint8Array([1, 0]));
+      assert.deepEqual(
+        index.neighborhood.slice(0, index.E),
+        new Uint8Array([1, 0])
+      );
       assert.deepEqual(index.weights.slice(0, index.E), new Uint8Array([1, 1]));
-      assert.deepEqual(index.starts.slice(0, index.C + 1), new Uint8Array([0, 1, 2]));
-      assert.deepEqual(index.belongings.slice(0, index.C), new Uint8Array([0, 1]));
-      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Uint8Array([2, 5]));
-      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Uint8Array([3, 4]));
+      assert.deepEqual(
+        index.starts.slice(0, index.C + 1),
+        new Uint8Array([0, 1, 2])
+      );
+      assert.deepEqual(
+        index.belongings.slice(0, index.C),
+        new Uint8Array([0, 1])
+      );
+      assert.deepEqual(
+        index.totalInWeights.slice(0, index.C),
+        new Uint8Array([2, 5])
+      );
+      assert.deepEqual(
+        index.totalOutWeights.slice(0, index.C),
+        new Uint8Array([3, 4])
+      );
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 4]));
 
       // Once more
       index.move(0, 0, 1, 1);
 
-      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Uint8Array([0, 7]));
-      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Uint8Array([0, 7]));
+      assert.deepEqual(
+        index.totalInWeights.slice(0, index.C),
+        new Uint8Array([0, 7])
+      );
+      assert.deepEqual(
+        index.totalOutWeights.slice(0, index.C),
+        new Uint8Array([0, 7])
+      );
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 7]));
       assert.strictEqual(index.U, 1);
       assert.deepEqual(index.unused.slice(0, index.U), new Uint8Array([0]));
@@ -632,7 +712,7 @@ describe('Neighborhood Indices', function() {
 
       var o = {};
 
-      graph.forEachNode(function(n, attr) {
+      graph.forEachNode(function (n, attr) {
         o[n] = attr.community;
       });
 
@@ -646,7 +726,7 @@ describe('Neighborhood Indices', function() {
       });
     });
 
-    it('should be possible to compute modularity delta in the undirected case.', function() {
+    it('should be possible to compute modularity delta in the undirected case.', function () {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       var index = new UndirectedLouvainIndex(graph);
       applyMoves(index, UNDIRECTED_MOVES);
@@ -662,7 +742,7 @@ describe('Neighborhood Indices', function() {
       closeTo(delta, -1 / 12);
     });
 
-    it('should be possible to compute modularity delta in the directed case.', function() {
+    it('should be possible to compute modularity delta in the directed case.', function () {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
       var index = new DirectedLouvainIndex(graph);
       applyMoves(index, DIRECTED_MOVES);
@@ -686,34 +766,43 @@ describe('Neighborhood Indices', function() {
       // node '2' to other community
       var delta = index.delta(1, 3, 1, 4);
 
-      var indexWithIsolatedNode = new UndirectedLouvainIndex(graph, {resolution: resolution});
+      var indexWithIsolatedNode = new UndirectedLouvainIndex(graph, {
+        resolution: resolution
+      });
       indexWithIsolatedNode.expensiveMove(0, 4);
       indexWithIsolatedNode.expensiveMove(5, 2);
       indexWithIsolatedNode.expensiveMove(3, 2);
 
-      var indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph, {resolution: resolution});
+      var indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph, {
+        resolution: resolution
+      });
       indexWithNodeInOtherCommunity.expensiveMove(1, 4);
       indexWithNodeInOtherCommunity.expensiveMove(0, 4);
       indexWithNodeInOtherCommunity.expensiveMove(5, 2);
       indexWithNodeInOtherCommunity.expensiveMove(3, 2);
 
       var QIsolated = indexWithIsolatedNode.modularity(),
-          QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
+        QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
 
       closeTo(QIsolated + delta, QWithNodeInOtherCommunity);
 
       index.zoomOut();
 
-      indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph, {resolution: resolution});
+      indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph, {
+        resolution: resolution
+      });
       applyMoves(indexWithNodeInOtherCommunity, UNDIRECTED_MOVES);
       indexWithNodeInOtherCommunity.zoomOut();
       indexWithNodeInOtherCommunity.expensiveMove(1, 0);
 
       closeTo(index.deltaWithOwnCommunity(1, 1, 0, 1), 0);
-      closeTo(index.modularity() + index.delta(1, 1, 1, 0), indexWithNodeInOtherCommunity.modularity());
+      closeTo(
+        index.modularity() + index.delta(1, 1, 1, 0),
+        indexWithNodeInOtherCommunity.modularity()
+      );
     }
 
-    it('modularity delta computations should remain sane in the undirected case.', function() {
+    it('modularity delta computations should remain sane in the undirected case.', function () {
       modularityDeltaSanityUndirected(1);
       modularityDeltaSanityUndirected(0.5);
       modularityDeltaSanityUndirected(2);
@@ -731,40 +820,49 @@ describe('Neighborhood Indices', function() {
       // node '2' to other community
       var delta = index.delta(1, 2, 1, 1, 4);
 
-      var indexWithIsolatedNode = new DirectedLouvainIndex(graph, {resolution: resolution});
+      var indexWithIsolatedNode = new DirectedLouvainIndex(graph, {
+        resolution: resolution
+      });
       indexWithIsolatedNode.expensiveMove(0, 4);
       indexWithIsolatedNode.expensiveMove(5, 2);
       indexWithIsolatedNode.expensiveMove(3, 2);
 
-      var indexWithNodeInOtherCommunity = new DirectedLouvainIndex(graph, {resolution: resolution});
+      var indexWithNodeInOtherCommunity = new DirectedLouvainIndex(graph, {
+        resolution: resolution
+      });
       indexWithNodeInOtherCommunity.expensiveMove(1, 4);
       indexWithNodeInOtherCommunity.expensiveMove(0, 4);
       indexWithNodeInOtherCommunity.expensiveMove(5, 2);
       indexWithNodeInOtherCommunity.expensiveMove(3, 2);
 
       var QIsolated = indexWithIsolatedNode.modularity(),
-          QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
+        QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
 
       closeTo(QIsolated + delta, QWithNodeInOtherCommunity);
 
       index.zoomOut();
 
-      indexWithNodeInOtherCommunity = new DirectedLouvainIndex(graph, {resolution: resolution});
+      indexWithNodeInOtherCommunity = new DirectedLouvainIndex(graph, {
+        resolution: resolution
+      });
       applyMoves(indexWithNodeInOtherCommunity, DIRECTED_MOVES);
       indexWithNodeInOtherCommunity.zoomOut();
       indexWithNodeInOtherCommunity.expensiveMove(1, 0);
 
       closeTo(index.deltaWithOwnCommunity(1, 1, 0, 0, 1), 0);
-      closeTo(index.modularity() + index.delta(1, 1, 0, 1, 0), indexWithNodeInOtherCommunity.modularity());
+      closeTo(
+        index.modularity() + index.delta(1, 1, 0, 1, 0),
+        indexWithNodeInOtherCommunity.modularity()
+      );
     }
 
-    it('modularity delta computations should remain sane in the directed case.', function() {
+    it('modularity delta computations should remain sane in the directed case.', function () {
       modularityDeltaSanityDirected(1);
       modularityDeltaSanityDirected(0.5);
       modularityDeltaSanityDirected(2);
     });
 
-    it('delta computations should remain sound when moving to same community, in the undirected case.', function() {
+    it('delta computations should remain sound when moving to same community, in the undirected case.', function () {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       var index = new UndirectedLouvainIndex(graph);
       applyMoves(index, UNDIRECTED_MOVES);
@@ -778,7 +876,7 @@ describe('Neighborhood Indices', function() {
       indexWithIsolatedNode.expensiveMove(3, 2);
 
       var QIsolated = indexWithIsolatedNode.modularity(),
-          Q = index.modularity();
+        Q = index.modularity();
 
       closeTo(QIsolated + delta, Q);
 
@@ -788,7 +886,7 @@ describe('Neighborhood Indices', function() {
       closeTo(delta, 0);
     });
 
-    it('delta computations should remain sound when moving to same community, in the directed case.', function() {
+    it('delta computations should remain sound when moving to same community, in the directed case.', function () {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
       var index = new DirectedLouvainIndex(graph);
       applyMoves(index, DIRECTED_MOVES);
@@ -802,7 +900,7 @@ describe('Neighborhood Indices', function() {
       indexWithIsolatedNode.expensiveMove(3, 2);
 
       var QIsolated = indexWithIsolatedNode.modularity(),
-          Q = index.modularity();
+        Q = index.modularity();
 
       closeTo(QIsolated + delta, Q);
 
@@ -812,7 +910,7 @@ describe('Neighborhood Indices', function() {
       closeTo(delta, 0);
     });
 
-    it('should not break if a community is deprived of its "owner".', function() {
+    it('should not break if a community is deprived of its "owner".', function () {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       var index = new UndirectedLouvainIndex(graph);
       applyMoves(index, UNDIRECTED_MOVES);
@@ -821,11 +919,14 @@ describe('Neighborhood Indices', function() {
 
       index.zoomOut();
 
-      assert.deepEqual(index.totalWeights.slice(0, index.C), new Uint8Array([6, 6]));
+      assert.deepEqual(
+        index.totalWeights.slice(0, index.C),
+        new Uint8Array([6, 6])
+      );
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 2]));
     });
 
-    it('should handle self-loops in the input graph the undirected case.', function() {
+    it('should handle self-loops in the input graph the undirected case.', function () {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       graph.addEdge(1, 1);
 
@@ -835,7 +936,7 @@ describe('Neighborhood Indices', function() {
       assert.strictEqual(index.loops[0], 2);
     });
 
-    it('should handle self-loops in the input graph the directed case.', function() {
+    it('should handle self-loops in the input graph the directed case.', function () {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
       graph.addEdge(1, 1);
 
@@ -845,7 +946,7 @@ describe('Neighborhood Indices', function() {
       assert.strictEqual(index.loops[0], 1);
     });
 
-    it('modularity should not be NaN on the initial singleton partition.', function() {
+    it('modularity should not be NaN on the initial singleton partition.', function () {
       var graph = new Graph.UndirectedGraph();
       graph.mergeEdge(1, 2);
       graph.addNode(3);
@@ -855,8 +956,7 @@ describe('Neighborhood Indices', function() {
       assert.strictEqual(index.modularity(), -0.5);
     });
 
-    it('should properly zoom out when there are multiple edges between communities.', function() {
-
+    it('should properly zoom out when there are multiple edges between communities.', function () {
       // Undirected
       var graph = new Graph.UndirectedGraph();
       mergeClique(graph, [0, 1, 2, 3]);
@@ -873,7 +973,10 @@ describe('Neighborhood Indices', function() {
 
       assert.strictEqual(index.E, 2);
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([4, 2]));
-      assert.deepEqual(index.totalWeights.slice(0, index.C), new Uint8Array([8, 6]));
+      assert.deepEqual(
+        index.totalWeights.slice(0, index.C),
+        new Uint8Array([8, 6])
+      );
 
       var UQ = index.modularity();
 
@@ -896,8 +999,14 @@ describe('Neighborhood Indices', function() {
 
       assert.strictEqual(index.E, 4);
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([3, 2]));
-      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Uint8Array([7, 6]));
-      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Uint8Array([7, 6]));
+      assert.deepEqual(
+        index.totalInWeights.slice(0, index.C),
+        new Uint8Array([7, 6])
+      );
+      assert.deepEqual(
+        index.totalOutWeights.slice(0, index.C),
+        new Uint8Array([7, 6])
+      );
 
       Q = index.modularity();
 
@@ -926,11 +1035,17 @@ describe('Neighborhood Indices', function() {
 
       assert.strictEqual(index.M, 5);
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 1]));
-      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Uint8Array([2, 3]));
-      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Uint8Array([4, 1]));
+      assert.deepEqual(
+        index.totalInWeights.slice(0, index.C),
+        new Uint8Array([2, 3])
+      );
+      assert.deepEqual(
+        index.totalOutWeights.slice(0, index.C),
+        new Uint8Array([4, 1])
+      );
     });
 
-    it('directed modularity should be the same as the mutual directed one.', function() {
+    it('directed modularity should be the same as the mutual directed one.', function () {
       var undirectedGraph = fromEdges(Graph.UndirectedGraph, EDGES);
       var directedGraph = toDirected(undirectedGraph);
 
@@ -949,7 +1064,7 @@ describe('Neighborhood Indices', function() {
       closeTo(undirectedIndex.modularity(), directedIndex.modularity());
     });
 
-    it('testing k-clique equivalency in the undirected case.', function() {
+    it('testing k-clique equivalency in the undirected case.', function () {
       var graph = new Graph.UndirectedGraph();
       mergeClique(graph, [0, 1, 2, 3]);
 
@@ -958,7 +1073,7 @@ describe('Neighborhood Indices', function() {
       kCliqueEquiv.addEdge(0, 0);
 
       var index = new UndirectedLouvainIndex(graph),
-          other = new UndirectedLouvainIndex(kCliqueEquiv);
+        other = new UndirectedLouvainIndex(kCliqueEquiv);
 
       index.expensiveMove(0, 1);
       index.expensiveMove(2, 3);
@@ -969,7 +1084,7 @@ describe('Neighborhood Indices', function() {
       closeTo(index.modularity(), other.modularity());
     });
 
-    it('testing k-clique equivalency in the directed case.', function() {
+    it('testing k-clique equivalency in the directed case.', function () {
       var graph = new Graph.UndirectedGraph();
       mergeClique(graph, [0, 1, 2, 3]);
       graph = toDirected(graph);
@@ -979,7 +1094,7 @@ describe('Neighborhood Indices', function() {
       kCliqueEquiv.addEdge(0, 0);
 
       var index = new DirectedLouvainIndex(graph),
-          other = new DirectedLouvainIndex(kCliqueEquiv);
+        other = new DirectedLouvainIndex(kCliqueEquiv);
 
       index.expensiveMove(0, 1);
       index.expensiveMove(2, 3);
@@ -990,7 +1105,7 @@ describe('Neighborhood Indices', function() {
       closeTo(index.modularity(), other.modularity());
     });
 
-    it('testing modularity validity wrt self loops.', function() {
+    it('testing modularity validity wrt self loops.', function () {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       graph.addEdge(1, 1);
 
@@ -1009,78 +1124,88 @@ describe('Neighborhood Indices', function() {
       closeTo(index.modularity(), 0.375);
     });
 
-    it('should be possible to tweak resolution.', function() {
+    it('should be possible to tweak resolution.', function () {
       var undirectedGraph = fromEdges(Graph.UndirectedGraph, EDGES);
-      var undirectedIndex = new UndirectedLouvainIndex(undirectedGraph, {resolution: 0.5});
+      var undirectedIndex = new UndirectedLouvainIndex(undirectedGraph, {
+        resolution: 0.5
+      });
       applyMoves(undirectedIndex, UNDIRECTED_MOVES);
 
       closeTo(undirectedIndex.modularity(), 0.5208);
 
       var directedGraph = fromEdges(Graph.DirectedGraph, EDGES);
-      var directedIndex = new DirectedLouvainIndex(directedGraph, {resolution: 0.5});
+      var directedIndex = new DirectedLouvainIndex(directedGraph, {
+        resolution: 0.5
+      });
       applyMoves(directedIndex, DIRECTED_MOVES);
 
       closeTo(directedIndex.modularity(), 0.5918);
     });
 
-    it('should be possible to isolate nodes in the undirected case.', function() {
+    it('should be possible to isolate nodes in the undirected case.', function () {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       var rawIndex = new UndirectedLouvainIndex(graph);
       var index = new UndirectedLouvainIndex(graph);
       applyMoves(index, UNDIRECTED_MOVES);
 
-      graph.nodes().forEach(function(node, i) {
+      graph.nodes().forEach(function (node, i) {
         index.isolate(i, graph.degree(node, false));
       });
 
       index.isolate(2, graph.degree(3, false));
 
-      var sort = function(a) {
+      var sort = function (a) {
         return a.slice().sort();
       };
 
-      ['counts', 'belongings', 'totalWeights'].forEach(function(prop) {
+      ['counts', 'belongings', 'totalWeights'].forEach(function (prop) {
         assert.deepEqual(sort(rawIndex[prop]), sort(index[prop]));
       });
 
       assert.strictEqual(index.U, 0);
     });
 
-    it('should be possible to isolate nodes in the directed case.', function() {
+    it('should be possible to isolate nodes in the directed case.', function () {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
       var rawIndex = new DirectedLouvainIndex(graph);
       var index = new DirectedLouvainIndex(graph);
       applyMoves(index, DIRECTED_MOVES);
 
-      graph.nodes().forEach(function(node, i) {
-        index.isolate(i, graph.inDegree(node, false), graph.outDegree(node, false));
+      graph.nodes().forEach(function (node, i) {
+        index.isolate(
+          i,
+          graph.inDegree(node, false),
+          graph.outDegree(node, false)
+        );
       });
 
       index.isolate(2, graph.inDegree(3, false), graph.outDegree(3, false));
 
-      var sort = function(a) {
+      var sort = function (a) {
         return a.slice().sort();
       };
 
-      ['counts', 'belongings', 'totalInWeights', 'totalOutWeights'].forEach(function(prop) {
-        assert.deepEqual(sort(rawIndex[prop]), sort(index[prop]));
-      });
+      ['counts', 'belongings', 'totalInWeights', 'totalOutWeights'].forEach(
+        function (prop) {
+          assert.deepEqual(sort(rawIndex[prop]), sort(index[prop]));
+        }
+      );
 
       assert.strictEqual(index.U, 0);
     });
 
-    it('isolation and deltaWithOwnCommunity should be consistent.', function() {
+    it('isolation and deltaWithOwnCommunity should be consistent.', function () {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       var index = new UndirectedLouvainIndex(graph);
       applyMoves(index, UNDIRECTED_MOVES);
 
       var delta = index.deltaWithOwnCommunity(1, 3, 2, 2),
-          fastDelta = index.fastDeltaWithOwnCommunity(1, 3, 2, 2);
+        fastDelta = index.fastDeltaWithOwnCommunity(1, 3, 2, 2);
 
       index.isolate(1, 3);
 
       var isolatedDelta = index.delta(1, 3, 2, 2),
-          fastIsolatedDelta = index.fastDelta(1, 3, 2, 2);
+        fastIsolatedDelta = index.fastDelta(1, 3, 2, 2);
 
       closeTo(delta, isolatedDelta);
       closeTo(fastDelta, fastIsolatedDelta);
@@ -1098,7 +1223,7 @@ describe('Neighborhood Indices', function() {
       closeTo(delta, isolatedDelta);
     });
 
-    it('should work with undirected multi graphs.', function() {
+    it('should work with undirected multi graphs.', function () {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       var index = new UndirectedLouvainIndex(graph);
       applyMoves(index, UNDIRECTED_MOVES);
@@ -1107,27 +1232,29 @@ describe('Neighborhood Indices', function() {
       multiGraph.upgradeToMulti();
 
       var toDuplicate = [];
-      multiGraph.forEachEdge(function(_, a, s, t) {
+      multiGraph.forEachEdge(function (_, a, s, t) {
         toDuplicate.push([s, t, a.weight || 1]);
       });
 
-      toDuplicate.forEach(function(edge) {
+      toDuplicate.forEach(function (edge) {
         multiGraph.addEdge(edge[0], edge[1], {weight: edge[2]});
       });
 
-      multiGraph.updateEachEdgeAttributes(function(edge, attr) {
+      multiGraph.updateEachEdgeAttributes(function (edge, attr) {
         attr.weight = 0.5;
         return attr;
       });
 
-      var multiIndex = new UndirectedLouvainIndex(multiGraph, {weighted: true});
+      var multiIndex = new UndirectedLouvainIndex(multiGraph, {
+        weighted: true
+      });
       applyMoves(multiIndex, UNDIRECTED_MOVES);
 
       assert.strictEqual(index.M, multiIndex.M);
       assert.strictEqual(index.modularity(), multiIndex.modularity());
     });
 
-    it('should work with directed multi graphs.', function() {
+    it('should work with directed multi graphs.', function () {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
       var index = new DirectedLouvainIndex(graph);
       applyMoves(index, DIRECTED_MOVES);
@@ -1136,15 +1263,15 @@ describe('Neighborhood Indices', function() {
       multiGraph.upgradeToMulti();
 
       var toDuplicate = [];
-      multiGraph.forEachEdge(function(_, a, s, t) {
+      multiGraph.forEachEdge(function (_, a, s, t) {
         toDuplicate.push([s, t, a.weight || 1]);
       });
 
-      toDuplicate.forEach(function(edge) {
+      toDuplicate.forEach(function (edge) {
         multiGraph.addEdge(edge[0], edge[1], {weight: edge[2]});
       });
 
-      multiGraph.updateEachEdgeAttributes(function(edge, attr) {
+      multiGraph.updateEachEdgeAttributes(function (edge, attr) {
         attr.weight = 0.5;
         return attr;
       });

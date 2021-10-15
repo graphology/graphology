@@ -9,7 +9,7 @@
  * The PageRank citation ranking: Bringing order to the Web. 1999
  */
 var isGraph = require('graphology-utils/is-graph'),
-    defaults = require('lodash/defaults');
+  defaults = require('lodash/defaults');
 
 /**
  * Defaults.
@@ -42,44 +42,48 @@ var DEFAULTS = {
  */
 function abstractPagerank(assign, graph, options) {
   if (!isGraph(graph))
-    throw new Error('graphology-pagerank: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-pagerank: the given graph is not a valid graphology instance.'
+    );
 
   if (graph.multi)
-    throw new Error('graphology-pagerank: the pagerank algorithm does not work with MultiGraphs.');
+    throw new Error(
+      'graphology-pagerank: the pagerank algorithm does not work with MultiGraphs.'
+    );
 
   options = defaults(options, DEFAULTS);
 
   var pagerankAttribute = options.attributes.pagerank,
-      weightAttribute = options.attributes.weight,
-      alpha = options.alpha,
-      maxIterations = options.maxIterations,
-      tolerance = options.tolerance,
-      weighted = options.weighted;
+    weightAttribute = options.attributes.weight,
+    alpha = options.alpha,
+    maxIterations = options.maxIterations,
+    tolerance = options.tolerance,
+    weighted = options.weighted;
 
   var N = graph.order,
-      p = 1 / N,
-      x = {};
+    p = 1 / N,
+    x = {};
 
   var danglingNodes = [];
 
   var nodes = graph.nodes(),
-      edges,
-      weights = {},
-      degrees = {},
-      weight,
-      iteration = 0,
-      dangleSum,
-      xLast,
-      neighbor,
-      error,
-      d,
-      k,
-      n,
-      e,
-      i,
-      j,
-      l,
-      m;
+    edges,
+    weights = {},
+    degrees = {},
+    weight,
+    iteration = 0,
+    dangleSum,
+    xLast,
+    neighbor,
+    error,
+    d,
+    k,
+    n,
+    e,
+    i,
+    j,
+    l,
+    m;
 
   // Initialization
   for (i = 0; i < N; i++) {
@@ -87,27 +91,22 @@ function abstractPagerank(assign, graph, options) {
     x[n] = p;
 
     if (weighted) {
-
       // Here, we need to factor in edges' weight
       d = 0;
 
-      edges = graph
-        .undirectedEdges()
-        .concat(graph.outEdges(n));
+      edges = graph.undirectedEdges().concat(graph.outEdges(n));
 
       for (j = 0, m = edges.length; j < m; j++) {
         e = edges[j];
         d += graph.getEdgeAttribute(e, weightAttribute) || 1;
       }
-    }
-    else {
+    } else {
       d = graph.undirectedDegree(n) + graph.outDegree(n);
     }
 
     degrees[n] = d;
 
-    if (d === 0)
-      danglingNodes.push(n);
+    if (d === 0) danglingNodes.push(n);
   }
 
   // Precompute normalized edge weights
@@ -118,9 +117,7 @@ function abstractPagerank(assign, graph, options) {
 
     d = degrees[n];
 
-    weight = weighted ?
-      (graph.getEdgeAttribute(e, weightAttribute) || 1) :
-      1;
+    weight = weighted ? graph.getEdgeAttribute(e, weightAttribute) || 1 : 1;
 
     weights[e] = weight / d;
   }
@@ -130,8 +127,7 @@ function abstractPagerank(assign, graph, options) {
     xLast = x;
     x = {};
 
-    for (k in xLast)
-      x[k] = 0;
+    for (k in xLast) x[k] = 0;
 
     dangleSum = 0;
 
@@ -142,9 +138,7 @@ function abstractPagerank(assign, graph, options) {
 
     for (i = 0; i < N; i++) {
       n = nodes[i];
-      edges = graph
-        .undirectedEdges(n)
-        .concat(graph.outEdges(n));
+      edges = graph.undirectedEdges(n).concat(graph.outEdges(n));
 
       for (j = 0, m = edges.length; j < m; j++) {
         e = edges[j];
@@ -158,14 +152,11 @@ function abstractPagerank(assign, graph, options) {
     // Checking convergence
     error = 0;
 
-    for (n in x)
-      error += Math.abs(x[n] - xLast[n]);
+    for (n in x) error += Math.abs(x[n] - xLast[n]);
 
     if (error < N * tolerance) {
-
       if (assign) {
-        for (n in x)
-          graph.setNodeAttribute(n, pagerankAttribute, x[n]);
+        for (n in x) graph.setNodeAttribute(n, pagerankAttribute, x[n]);
       }
 
       return x;

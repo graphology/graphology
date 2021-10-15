@@ -6,10 +6,7 @@
  */
 import assert from 'assert';
 import take from 'obliterator/take';
-import {
-  deepMerge,
-  addNodesFrom
-} from '../helpers';
+import {deepMerge, addNodesFrom} from '../helpers';
 
 const METHODS = [
   'neighbors',
@@ -22,10 +19,7 @@ const METHODS = [
 ];
 
 export default function neighborsIteration(Graph, checkers) {
-  const {
-    invalid,
-    notFound
-  } = checkers;
+  const {invalid, notFound} = checkers;
 
   const graph = new Graph({multi: true});
 
@@ -135,31 +129,30 @@ export default function neighborsIteration(Graph, checkers) {
   function commonTests(name) {
     return {
       ['#.' + name]: {
-        'it should throw if too many arguments are provided.': function() {
-          assert.throws(function() {
+        'it should throw if too many arguments are provided.': function () {
+          assert.throws(function () {
             graph[name](1, 2, 3);
           }, invalid());
         },
 
-        'it should throw if too few arguments are provided.': function() {
-          assert.throws(function() {
+        'it should throw if too few arguments are provided.': function () {
+          assert.throws(function () {
             graph[name]();
           }, invalid());
         },
 
-        'it should throw when the node is not found.': function() {
-          assert.throws(function() {
+        'it should throw when the node is not found.': function () {
+          assert.throws(function () {
             graph[name]('Test');
           }, notFound());
 
-          if (~name.indexOf('count'))
-            return;
+          if (~name.indexOf('count')) return;
 
-          assert.throws(function() {
+          assert.throws(function () {
             graph[name]('Test', 'SecondTest');
           }, notFound());
 
-          assert.throws(function() {
+          assert.throws(function () {
             graph[name]('Forever', 'Test');
           }, notFound());
         }
@@ -169,21 +162,25 @@ export default function neighborsIteration(Graph, checkers) {
 
   function specificTests(name, data) {
     const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1),
-          forEachUntilName = forEachName + 'Until',
-          iteratorName = name.slice(0, -1) + 'Entries';
+      forEachUntilName = forEachName + 'Until',
+      iteratorName = name.slice(0, -1) + 'Entries';
 
     return {
-
       // Array-creators
       ['#.' + name]: {
-        'it should correctly return whether two nodes are neighbors.': function() {
-          data.are.forEach(([node1, node2, expectation]) => {
-            assert.strictEqual(graph[name](node1, node2), expectation, `${name}: ${node1} / ${node2}`);
-            assert.strictEqual(graph[name]('Forever', 'Alone'), false);
-          });
-        },
+        'it should correctly return whether two nodes are neighbors.':
+          function () {
+            data.are.forEach(([node1, node2, expectation]) => {
+              assert.strictEqual(
+                graph[name](node1, node2),
+                expectation,
+                `${name}: ${node1} / ${node2}`
+              );
+              assert.strictEqual(graph[name]('Forever', 'Alone'), false);
+            });
+          },
 
-        'it should return the correct neighbors array.': function() {
+        'it should return the correct neighbors array.': function () {
           const neighbors = graph[name](data.node.key);
 
           assert.deepStrictEqual(neighbors, data.node.neighbors);
@@ -193,98 +190,105 @@ export default function neighborsIteration(Graph, checkers) {
 
       // ForEach
       ['#.' + forEachName]: {
-        'it should be possible to iterate over neighbors using a callback.': function() {
-          const neighbors = [];
+        'it should be possible to iterate over neighbors using a callback.':
+          function () {
+            const neighbors = [];
 
-          graph[forEachName](data.node.key, function(target, attrs) {
-            neighbors.push(target);
+            graph[forEachName](data.node.key, function (target, attrs) {
+              neighbors.push(target);
 
-            assert.deepStrictEqual(graph.getNodeAttributes(target), attrs);
-            assert.strictEqual(graph[name](data.node.key, target), true);
-          });
+              assert.deepStrictEqual(graph.getNodeAttributes(target), attrs);
+              assert.strictEqual(graph[name](data.node.key, target), true);
+            });
 
-          assert.deepStrictEqual(neighbors, data.node.neighbors);
-        }
+            assert.deepStrictEqual(neighbors, data.node.neighbors);
+          }
       },
 
       // ForEachUntil
       ['#.' + forEachUntilName]: {
-        'it should be possible to iterate over neighbors using a breakable callback.': function() {
-          const neighbors = [];
+        'it should be possible to iterate over neighbors using a breakable callback.':
+          function () {
+            const neighbors = [];
 
-          let broke = graph[forEachUntilName](data.node.key, function(target, attrs) {
-            neighbors.push(target);
+            let broke = graph[forEachUntilName](
+              data.node.key,
+              function (target, attrs) {
+                neighbors.push(target);
 
-            assert.deepStrictEqual(graph.getNodeAttributes(target), attrs);
-            assert.strictEqual(graph[name](data.node.key, target), true);
+                assert.deepStrictEqual(graph.getNodeAttributes(target), attrs);
+                assert.strictEqual(graph[name](data.node.key, target), true);
 
-            return true;
-          });
+                return true;
+              }
+            );
 
-          assert.strictEqual(broke, true);
-          assert.deepStrictEqual(neighbors, data.node.neighbors.slice(0, 1));
+            assert.strictEqual(broke, true);
+            assert.deepStrictEqual(neighbors, data.node.neighbors.slice(0, 1));
 
-          broke = graph[forEachUntilName](data.node.key, function() {
-            return false;
-          });
+            broke = graph[forEachUntilName](data.node.key, function () {
+              return false;
+            });
 
-          assert.strictEqual(broke, false);
-        }
+            assert.strictEqual(broke, false);
+          }
       },
 
       // Iterators
       ['#.' + iteratorName]: {
-        'it should be possible to create an iterator over neighbors.': function() {
-          const iterator = graph[iteratorName](data.node.key);
+        'it should be possible to create an iterator over neighbors.':
+          function () {
+            const iterator = graph[iteratorName](data.node.key);
 
-          assert.deepStrictEqual(take(iterator), data.node.neighbors.map(neighbor => {
-            return [
-              neighbor,
-              graph.getNodeAttributes(neighbor)
-            ];
-          }));
-        }
+            assert.deepStrictEqual(
+              take(iterator),
+              data.node.neighbors.map(neighbor => {
+                return [neighbor, graph.getNodeAttributes(neighbor)];
+              })
+            );
+          }
       }
     };
   }
 
   const tests = {
-    'Miscellaneous': {
-      'self loops should appear when using #.inNeighbors and should appear only once with #.neighbors.': function() {
-        const directed = new Graph({type: 'directed'});
+    Miscellaneous: {
+      'self loops should appear when using #.inNeighbors and should appear only once with #.neighbors.':
+        function () {
+          const directed = new Graph({type: 'directed'});
 
-        directed.addNode('Lucy');
-        directed.addEdgeWithKey('test', 'Lucy', 'Lucy');
+          directed.addNode('Lucy');
+          directed.addEdgeWithKey('test', 'Lucy', 'Lucy');
 
-        assert.deepStrictEqual(directed.inNeighbors('Lucy'), ['Lucy']);
-        assert.deepStrictEqual(
-          Array.from(directed.inNeighborEntries('Lucy')).map(x => x[0]),
-          ['Lucy']
-        );
+          assert.deepStrictEqual(directed.inNeighbors('Lucy'), ['Lucy']);
+          assert.deepStrictEqual(
+            Array.from(directed.inNeighborEntries('Lucy')).map(x => x[0]),
+            ['Lucy']
+          );
 
-        let neighbors = [];
+          let neighbors = [];
 
-        directed.forEachInNeighbor('Lucy', neighbor => {
-          neighbors.push(neighbor);
-        });
+          directed.forEachInNeighbor('Lucy', neighbor => {
+            neighbors.push(neighbor);
+          });
 
-        assert.deepStrictEqual(neighbors, ['Lucy']);
+          assert.deepStrictEqual(neighbors, ['Lucy']);
 
-        assert.deepStrictEqual(directed.neighbors('Lucy'), ['Lucy']);
+          assert.deepStrictEqual(directed.neighbors('Lucy'), ['Lucy']);
 
-        neighbors = [];
+          neighbors = [];
 
-        directed.forEachNeighbor('Lucy', neighbor => {
-          neighbors.push(neighbor);
-        });
+          directed.forEachNeighbor('Lucy', neighbor => {
+            neighbors.push(neighbor);
+          });
 
-        assert.deepStrictEqual(neighbors, ['Lucy']);
+          assert.deepStrictEqual(neighbors, ['Lucy']);
 
-        assert.deepStrictEqual(
-          Array.from(directed.neighborEntries('Lucy')).map(x => x[0]),
-          ['Lucy']
-        );
-      }
+          assert.deepStrictEqual(
+            Array.from(directed.neighborEntries('Lucy')).map(x => x[0]),
+            ['Lucy']
+          );
+        }
     }
   };
 

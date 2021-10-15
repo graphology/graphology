@@ -16,8 +16,7 @@ function omitRgb(o) {
   var t = {};
 
   for (var k in o) {
-    if (k === 'r' || k === 'g' || k === 'b')
-      continue;
+    if (k === 'r' || k === 'g' || k === 'b') continue;
     t[k] = o[k];
   }
 

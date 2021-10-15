@@ -36,16 +36,16 @@
  * https://arxiv.org/abs/1810.08473
  */
 var defaults = require('lodash/defaultsDeep'),
-    isGraph = require('graphology-utils/is-graph'),
-    inferType = require('graphology-utils/infer-type'),
-    SparseMap = require('mnemonist/sparse-map'),
-    SparseQueueSet = require('mnemonist/sparse-queue-set'),
-    createRandomIndex = require('pandemonium/random-index').createRandomIndex;
+  isGraph = require('graphology-utils/is-graph'),
+  inferType = require('graphology-utils/infer-type'),
+  SparseMap = require('mnemonist/sparse-map'),
+  SparseQueueSet = require('mnemonist/sparse-queue-set'),
+  createRandomIndex = require('pandemonium/random-index').createRandomIndex;
 
 var indices = require('graphology-indices/neighborhood/louvain');
 
 var UndirectedLouvainIndex = indices.UndirectedLouvainIndex,
-    DirectedLouvainIndex = indices.DirectedLouvainIndex;
+  DirectedLouvainIndex = indices.DirectedLouvainIndex;
 
 var DEFAULTS = {
   attributes: {
@@ -62,8 +62,7 @@ var DEFAULTS = {
 function addWeightToCommunity(map, community, weight) {
   var currentWeight = map.get(community);
 
-  if (typeof currentWeight === 'undefined')
-    currentWeight = 0;
+  if (typeof currentWeight === 'undefined') currentWeight = 0;
 
   currentWeight += weight;
 
@@ -72,16 +71,20 @@ function addWeightToCommunity(map, community, weight) {
 
 var EPSILON = 1e-10;
 
-function tieBreaker(bestCommunity, currentCommunity, targetCommunity, delta, bestDelta) {
+function tieBreaker(
+  bestCommunity,
+  currentCommunity,
+  targetCommunity,
+  delta,
+  bestDelta
+) {
   if (Math.abs(delta - bestDelta) < EPSILON) {
     if (bestCommunity === currentCommunity) {
       return false;
-    }
-    else {
+    } else {
       return targetCommunity > bestCommunity;
     }
-  }
-  else if (delta > bestDelta) {
+  } else if (delta > bestDelta) {
     return true;
   }
 
@@ -102,43 +105,29 @@ function undirectedLouvain(detailed, graph, options) {
 
   // State variables
   var moveWasMade = true,
-      localMoveWasMade = true;
+    localMoveWasMade = true;
 
   // Communities
   var currentCommunity, targetCommunity;
   var communities = new SparseMap(Float64Array, index.C);
 
   // Traversal
-  var queue,
-      start,
-      end,
-      weight,
-      ci,
-      ri,
-      s,
-      i,
-      j,
-      l;
+  var queue, start, end, weight, ci, ri, s, i, j, l;
 
   // Metrics
-  var degree,
-      targetCommunityDegree;
+  var degree, targetCommunityDegree;
 
   // Moves
-  var bestCommunity,
-      bestDelta,
-      deltaIsBetter,
-      delta;
+  var bestCommunity, bestDelta, deltaIsBetter, delta;
 
   // Details
   var deltaComputations = 0,
-      nodesVisited = 0,
-      moves = [],
-      localMoves,
-      currentMoves;
+    nodesVisited = 0,
+    moves = [],
+    localMoves,
+    currentMoves;
 
-  if (options.fastLocalMoves)
-    queue = new SparseQueueSet(index.C);
+  if (options.fastLocalMoves) queue = new SparseQueueSet(index.C);
 
   while (moveWasMade) {
     l = index.C;
@@ -193,8 +182,7 @@ function undirectedLouvain(detailed, graph, options) {
         for (ci = 0; ci < communities.size; ci++) {
           targetCommunity = communities.dense[ci];
 
-          if (targetCommunity === currentCommunity)
-            continue;
+          if (targetCommunity === currentCommunity) continue;
 
           targetCommunityDegree = communities.vals[ci];
 
@@ -223,7 +211,6 @@ function undirectedLouvain(detailed, graph, options) {
 
         // Should we move the node?
         if (bestDelta < 0) {
-
           // NOTE: this is to allow nodes to move back to their own singleton
           // This code however only deals with modularity (e.g. the condition
           // about bestDelta < 0, which is the delta for moving back to
@@ -238,17 +225,12 @@ function undirectedLouvain(detailed, graph, options) {
 
           // If the node was already in a singleton community, we don't consider
           // a move was made
-          if (bestCommunity === currentCommunity)
-            continue;
-        }
-        else {
-
+          if (bestCommunity === currentCommunity) continue;
+        } else {
           // If no move was made, we continue to next node
           if (bestCommunity === currentCommunity) {
             continue;
-          }
-          else {
-
+          } else {
             // Actually moving the node to a new community
             index.move(i, degree, bestCommunity);
           }
@@ -265,21 +247,17 @@ function undirectedLouvain(detailed, graph, options) {
           j = index.neighborhood[start];
           targetCommunity = index.belongings[j];
 
-          if (targetCommunity !== bestCommunity)
-            queue.enqueue(j);
+          if (targetCommunity !== bestCommunity) queue.enqueue(j);
         }
       }
 
       moves.push(currentMoves);
-    }
-    else {
-
+    } else {
       localMoves = [];
       moves.push(localMoves);
 
       // Traditional Louvain iterative traversal of the graph
       while (localMoveWasMade) {
-
         localMoveWasMade = false;
         currentMoves = 0;
 
@@ -322,8 +300,7 @@ function undirectedLouvain(detailed, graph, options) {
           for (ci = 0; ci < communities.size; ci++) {
             targetCommunity = communities.dense[ci];
 
-            if (targetCommunity === currentCommunity)
-              continue;
+            if (targetCommunity === currentCommunity) continue;
 
             targetCommunityDegree = communities.vals[ci];
 
@@ -352,7 +329,6 @@ function undirectedLouvain(detailed, graph, options) {
 
           // Should we move the node?
           if (bestDelta < 0) {
-
             // NOTE: this is to allow nodes to move back to their own singleton
             // This code however only deals with modularity (e.g. the condition
             // about bestDelta < 0, which is the delta for moving back to
@@ -367,17 +343,12 @@ function undirectedLouvain(detailed, graph, options) {
 
             // If the node was already in a singleton community, we don't consider
             // a move was made
-            if (bestCommunity === currentCommunity)
-              continue;
-          }
-          else {
-
+            if (bestCommunity === currentCommunity) continue;
+          } else {
             // If no move was made, we continue to next node
             if (bestCommunity === currentCommunity) {
               continue;
-            }
-            else {
-
+            } else {
               // Actually moving the node to a new community
               index.move(i, degree, bestCommunity);
             }
@@ -394,8 +365,7 @@ function undirectedLouvain(detailed, graph, options) {
     }
 
     // We continue working on the induced graph
-    if (moveWasMade)
-      index.zoomOut();
+    if (moveWasMade) index.zoomOut();
   }
 
   var results = {
@@ -422,46 +392,29 @@ function directedLouvain(detailed, graph, options) {
 
   // State variables
   var moveWasMade = true,
-      localMoveWasMade = true;
+    localMoveWasMade = true;
 
   // Communities
   var currentCommunity, targetCommunity;
   var communities = new SparseMap(Float64Array, index.C);
 
   // Traversal
-  var queue,
-      start,
-      end,
-      offset,
-      out,
-      weight,
-      ci,
-      ri,
-      s,
-      i,
-      j,
-      l;
+  var queue, start, end, offset, out, weight, ci, ri, s, i, j, l;
 
   // Metrics
-  var inDegree,
-      outDegree,
-      targetCommunityDegree;
+  var inDegree, outDegree, targetCommunityDegree;
 
   // Moves
-  var bestCommunity,
-      bestDelta,
-      deltaIsBetter,
-      delta;
+  var bestCommunity, bestDelta, deltaIsBetter, delta;
 
   // Details
   var deltaComputations = 0,
-      nodesVisited = 0,
-      moves = [],
-      localMoves,
-      currentMoves;
+    nodesVisited = 0,
+    moves = [],
+    localMoves,
+    currentMoves;
 
-  if (options.fastLocalMoves)
-    queue = new SparseQueueSet(index.C);
+  if (options.fastLocalMoves) queue = new SparseQueueSet(index.C);
 
   while (moveWasMade) {
     l = index.C;
@@ -503,10 +456,8 @@ function directedLouvain(detailed, graph, options) {
           targetCommunity = index.belongings[j];
 
           // Incrementing metrics
-          if (out)
-            outDegree += weight;
-          else
-            inDegree += weight;
+          if (out) outDegree += weight;
+          else inDegree += weight;
 
           addWeightToCommunity(communities, targetCommunity, weight);
         }
@@ -524,8 +475,7 @@ function directedLouvain(detailed, graph, options) {
         for (ci = 0; ci < communities.size; ci++) {
           targetCommunity = communities.dense[ci];
 
-          if (targetCommunity === currentCommunity)
-            continue;
+          if (targetCommunity === currentCommunity) continue;
 
           targetCommunityDegree = communities.vals[ci];
 
@@ -555,7 +505,6 @@ function directedLouvain(detailed, graph, options) {
 
         // Should we move the node?
         if (bestDelta < 0) {
-
           // NOTE: this is to allow nodes to move back to their own singleton
           // This code however only deals with modularity (e.g. the condition
           // about bestDelta < 0, which is the delta for moving back to
@@ -570,17 +519,12 @@ function directedLouvain(detailed, graph, options) {
 
           // If the node was already in a singleton community, we don't consider
           // a move was made
-          if (bestCommunity === currentCommunity)
-            continue;
-        }
-        else {
-
+          if (bestCommunity === currentCommunity) continue;
+        } else {
           // If no move was made, we continue to next node
           if (bestCommunity === currentCommunity) {
             continue;
-          }
-          else {
-
+          } else {
             // Actually moving the node to a new community
             index.move(i, inDegree, outDegree, bestCommunity);
           }
@@ -597,21 +541,17 @@ function directedLouvain(detailed, graph, options) {
           j = index.neighborhood[start];
           targetCommunity = index.belongings[j];
 
-          if (targetCommunity !== bestCommunity)
-            queue.enqueue(j);
+          if (targetCommunity !== bestCommunity) queue.enqueue(j);
         }
       }
 
       moves.push(currentMoves);
-    }
-    else {
-
+    } else {
       localMoves = [];
       moves.push(localMoves);
 
       // Traditional Louvain iterative traversal of the graph
       while (localMoveWasMade) {
-
         localMoveWasMade = false;
         currentMoves = 0;
 
@@ -641,10 +581,8 @@ function directedLouvain(detailed, graph, options) {
             targetCommunity = index.belongings[j];
 
             // Incrementing metrics
-            if (out)
-              outDegree += weight;
-            else
-              inDegree += weight;
+            if (out) outDegree += weight;
+            else inDegree += weight;
 
             addWeightToCommunity(communities, targetCommunity, weight);
           }
@@ -662,8 +600,7 @@ function directedLouvain(detailed, graph, options) {
           for (ci = 0; ci < communities.size; ci++) {
             targetCommunity = communities.dense[ci];
 
-            if (targetCommunity === currentCommunity)
-              continue;
+            if (targetCommunity === currentCommunity) continue;
 
             targetCommunityDegree = communities.vals[ci];
 
@@ -693,7 +630,6 @@ function directedLouvain(detailed, graph, options) {
 
           // Should we move the node?
           if (bestDelta < 0) {
-
             // NOTE: this is to allow nodes to move back to their own singleton
             // This code however only deals with modularity (e.g. the condition
             // about bestDelta < 0, which is the delta for moving back to
@@ -708,17 +644,12 @@ function directedLouvain(detailed, graph, options) {
 
             // If the node was already in a singleton community, we don't consider
             // a move was made
-            if (bestCommunity === currentCommunity)
-              continue;
-          }
-          else {
-
+            if (bestCommunity === currentCommunity) continue;
+          } else {
             // If no move was made, we continue to next node
             if (bestCommunity === currentCommunity) {
               continue;
-            }
-            else {
-
+            } else {
               // Actually moving the node to a new community
               index.move(i, inDegree, outDegree, bestCommunity);
             }
@@ -735,8 +666,7 @@ function directedLouvain(detailed, graph, options) {
     }
 
     // We continue working on the induced graph
-    if (moveWasMade)
-      index.zoomOut();
+    if (moveWasMade) index.zoomOut();
   }
 
   var results = {
@@ -769,12 +699,16 @@ function directedLouvain(detailed, graph, options) {
  */
 function louvain(assign, detailed, graph, options) {
   if (!isGraph(graph))
-    throw new Error('graphology-communities-louvain: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-communities-louvain: the given graph is not a valid graphology instance.'
+    );
 
   var type = inferType(graph);
 
   if (type === 'mixed')
-    throw new Error('graphology-communities-louvain: cannot run the algorithm on a true mixed graph.');
+    throw new Error(
+      'graphology-communities-louvain: cannot run the algorithm on a true mixed graph.'
+    );
 
   // Attributes name
   options = defaults({}, options, DEFAULTS);
@@ -784,7 +718,7 @@ function louvain(assign, detailed, graph, options) {
 
   if (graph.size === 0) {
     if (assign) {
-      graph.forEachNode(function(node) {
+      graph.forEachNode(function (node) {
         graph.setNodeAttribute(node, options.attributes.communities, c++);
       });
 
@@ -793,12 +727,11 @@ function louvain(assign, detailed, graph, options) {
 
     var communities = {};
 
-    graph.forEachNode(function(node) {
+    graph.forEachNode(function (node) {
       communities[node] = c++;
     });
 
-    if (!detailed)
-      return communities;
+    if (!detailed) return communities;
 
     return {
       communities: communities,

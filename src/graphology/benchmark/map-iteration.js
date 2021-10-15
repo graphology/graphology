@@ -10,8 +10,7 @@ let i;
 
 const map = new Map();
 
-while (map.size < N)
-  map.set(key(), Math.random());
+while (map.size < N) map.set(key(), Math.random());
 
 console.log('Finished preparations...');
 console.log(map.size);
@@ -43,7 +42,7 @@ console.time('next');
 let step, it;
 for (i = 0; i < I; i++) {
   it = map.values();
-  while ((step = it.next(), step.done !== true)) {
+  while (((step = it.next()), step.done !== true)) {
     s = step.value;
     c++;
   }

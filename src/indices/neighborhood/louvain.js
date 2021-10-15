@@ -70,30 +70,28 @@ var DEFAULTS = {
 };
 
 function UndirectedLouvainIndex(graph, options) {
-
   // Solving options
   options = options || {};
   var attributes = options.attributes || {};
 
   var keepDendrogram = options.keepDendrogram === true;
 
-  var resolution = typeof options.resolution === 'number' ?
-    options.resolution :
-    DEFAULTS.resolution;
+  var resolution =
+    typeof options.resolution === 'number'
+      ? options.resolution
+      : DEFAULTS.resolution;
 
   // Weight getters
   var weighted = options.weighted === true;
 
   var weightAttribute = attributes.weight || DEFAULTS.attributes.weight;
 
-  var getWeight = function(attr) {
-    if (!weighted)
-      return 1;
+  var getWeight = function (attr) {
+    if (!weighted) return 1;
 
     var weight = attr[weightAttribute];
 
-    if (typeof weight !== 'number' || isNaN(weight))
-      return 1;
+    if (typeof weight !== 'number' || isNaN(weight)) return 1;
 
     return weight;
   };
@@ -104,7 +102,9 @@ function UndirectedLouvainIndex(graph, options) {
   var NeighborhoodPointerArray = typed.getPointerArray(size);
   var NodesPointerArray = typed.getPointerArray(graph.order + 1);
   // NOTE: this memory optimization can yield overflow deopt when computing deltas
-  var WeightsArray = weighted ? Float64Array : typed.getPointerArray(graph.size * 2);
+  var WeightsArray = weighted
+    ? Float64Array
+    : typed.getPointerArray(graph.size * 2);
 
   // Properties
   this.C = graph.order;
@@ -138,11 +138,11 @@ function UndirectedLouvainIndex(graph, options) {
   var weight;
 
   var i = 0,
-      n = 0;
+    n = 0;
 
   var self = this;
 
-  graph.forEachNode(function(node) {
+  graph.forEachNode(function (node) {
     self.nodes[i] = node;
 
     // Node map to index
@@ -159,7 +159,7 @@ function UndirectedLouvainIndex(graph, options) {
   });
 
   // Single sweep over the edges
-  graph.forEachEdge(function(edge, attr, source, target) {
+  graph.forEachEdge(function (edge, attr, source, target) {
     weight = getWeight(attr);
 
     source = ids[source];
@@ -171,13 +171,12 @@ function UndirectedLouvainIndex(graph, options) {
     if (source === target) {
       self.totalWeights[source] += weight * 2;
       self.loops[source] = weight * 2;
-    }
-    else {
+    } else {
       self.totalWeights[source] += weight;
       self.totalWeights[target] += weight;
 
       var startSource = --self.starts[source],
-          startTarget = --self.starts[target];
+        startTarget = --self.starts[target];
 
       self.neighborhood[startSource] = target;
       self.neighborhood[startTarget] = source;
@@ -189,18 +188,15 @@ function UndirectedLouvainIndex(graph, options) {
 
   this.starts[i] = this.E;
 
-  if (this.keepDendrogram)
-    this.dendrogram.push(this.belongings.slice());
-  else
-    this.mapping = this.belongings.slice();
+  if (this.keepDendrogram) this.dendrogram.push(this.belongings.slice());
+  else this.mapping = this.belongings.slice();
 }
 
-UndirectedLouvainIndex.prototype.isolate = function(i, degree) {
+UndirectedLouvainIndex.prototype.isolate = function (i, degree) {
   var currentCommunity = this.belongings[i];
 
   // The node is already isolated
-  if (this.counts[currentCommunity] === 1)
-    return currentCommunity;
+  if (this.counts[currentCommunity] === 1) return currentCommunity;
 
   var newCommunity = this.unused[--this.U];
 
@@ -217,13 +213,9 @@ UndirectedLouvainIndex.prototype.isolate = function(i, degree) {
   return newCommunity;
 };
 
-UndirectedLouvainIndex.prototype.move = function(
-  i,
-  degree,
-  targetCommunity
-) {
+UndirectedLouvainIndex.prototype.move = function (i, degree, targetCommunity) {
   var currentCommunity = this.belongings[i],
-      loops = this.loops[i];
+    loops = this.loops[i];
 
   this.totalWeights[currentCommunity] -= degree + loops;
   this.totalWeights[targetCommunity] += degree + loops;
@@ -233,11 +225,10 @@ UndirectedLouvainIndex.prototype.move = function(
   var nowEmpty = this.counts[currentCommunity]-- === 1;
   this.counts[targetCommunity]++;
 
-  if (nowEmpty)
-    this.unused[this.U++] = currentCommunity;
+  if (nowEmpty) this.unused[this.U++] = currentCommunity;
 };
 
-UndirectedLouvainIndex.prototype.computeNodeDegree = function(i) {
+UndirectedLouvainIndex.prototype.computeNodeDegree = function (i) {
   var o, l, weight;
 
   var degree = 0;
@@ -251,24 +242,24 @@ UndirectedLouvainIndex.prototype.computeNodeDegree = function(i) {
   return degree;
 };
 
-UndirectedLouvainIndex.prototype.expensiveIsolate = function(i) {
+UndirectedLouvainIndex.prototype.expensiveIsolate = function (i) {
   var degree = this.computeNodeDegree(i);
   return this.isolate(i, degree);
 };
 
-UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci) {
+UndirectedLouvainIndex.prototype.expensiveMove = function (i, ci) {
   var degree = this.computeNodeDegree(i);
   this.move(i, degree, ci);
 };
 
-UndirectedLouvainIndex.prototype.zoomOut = function() {
+UndirectedLouvainIndex.prototype.zoomOut = function () {
   var inducedGraph = new Array(this.C - this.U),
-      newLabels = {};
+    newLabels = {};
 
   var N = this.nodes.length;
 
   var C = 0,
-      E = 0;
+    E = 0;
 
   var i, j, l, m, n, ci, cj, data, adj;
 
@@ -297,14 +288,11 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
     currentLevel = this.dendrogram[this.level];
     nextLevel = new (typed.getPointerArray(C))(N);
 
-    for (i = 0; i < N; i++)
-      nextLevel[i] = this.belongings[currentLevel[i]];
+    for (i = 0; i < N; i++) nextLevel[i] = this.belongings[currentLevel[i]];
 
     this.dendrogram.push(nextLevel);
-  }
-  else {
-    for (i = 0; i < N; i++)
-      this.mapping[i] = this.belongings[this.mapping[i]];
+  } else {
+    for (i = 0; i < N; i++) this.mapping[i] = this.belongings[this.mapping[i]];
   }
 
   // Building induced graph matrix
@@ -324,8 +312,7 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
         continue;
       }
 
-      if (!(cj in adj))
-        adj[cj] = 0;
+      if (!(cj in adj)) adj[cj] = 0;
 
       adj[cj] += this.weights[j];
     }
@@ -367,7 +354,7 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
   return newLabels;
 };
 
-UndirectedLouvainIndex.prototype.modularity = function() {
+UndirectedLouvainIndex.prototype.modularity = function () {
   var ci, cj, i, j, m;
 
   var Q = 0;
@@ -381,24 +368,27 @@ UndirectedLouvainIndex.prototype.modularity = function() {
     for (j = this.starts[i], m = this.starts[i + 1]; j < m; j++) {
       cj = this.belongings[this.neighborhood[j]];
 
-      if (ci !== cj)
-        continue;
+      if (ci !== cj) continue;
 
       internalWeights[ci] += this.weights[j];
     }
   }
 
   for (i = 0; i < this.C; i++) {
-    Q += (
+    Q +=
       internalWeights[i] / M2 -
-      Math.pow(this.totalWeights[i] / M2, 2) * this.resolution
-    );
+      Math.pow(this.totalWeights[i] / M2, 2) * this.resolution;
   }
 
   return Q;
 };
 
-UndirectedLouvainIndex.prototype.delta = function(i, degree, targetCommunityDegree, targetCommunity) {
+UndirectedLouvainIndex.prototype.delta = function (
+  i,
+  degree,
+  targetCommunityDegree,
+  targetCommunity
+) {
   var M = this.M;
 
   var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
@@ -406,15 +396,17 @@ UndirectedLouvainIndex.prototype.delta = function(i, degree, targetCommunityDegr
   degree += this.loops[i];
 
   return (
-    (targetCommunityDegree / M) - // NOTE: formula is a bit different here because targetCommunityDegree is passed without * 2
-    (
-      (targetCommunityTotalWeight * degree * this.resolution) /
-      (2 * M * M)
-    )
+    targetCommunityDegree / M - // NOTE: formula is a bit different here because targetCommunityDegree is passed without * 2
+    (targetCommunityTotalWeight * degree * this.resolution) / (2 * M * M)
   );
 };
 
-UndirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(i, degree, targetCommunityDegree, targetCommunity) {
+UndirectedLouvainIndex.prototype.deltaWithOwnCommunity = function (
+  i,
+  degree,
+  targetCommunityDegree,
+  targetCommunity
+) {
   var M = this.M;
 
   var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
@@ -422,17 +414,20 @@ UndirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(i, degree, tar
   degree += this.loops[i];
 
   return (
-    (targetCommunityDegree / M) - // NOTE: formula is a bit different here because targetCommunityDegree is passed without * 2
-    (
-      ((targetCommunityTotalWeight - degree) * degree * this.resolution) /
+    targetCommunityDegree / M - // NOTE: formula is a bit different here because targetCommunityDegree is passed without * 2
+    ((targetCommunityTotalWeight - degree) * degree * this.resolution) /
       (2 * M * M)
-    )
   );
 };
 
 // NOTE: this is just a faster but equivalent version of #.delta
 // It is just off by a constant factor and is just faster to compute
-UndirectedLouvainIndex.prototype.fastDelta = function(i, degree, targetCommunityDegree, targetCommunity) {
+UndirectedLouvainIndex.prototype.fastDelta = function (
+  i,
+  degree,
+  targetCommunityDegree,
+  targetCommunity
+) {
   var M = this.M;
 
   var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
@@ -445,7 +440,12 @@ UndirectedLouvainIndex.prototype.fastDelta = function(i, degree, targetCommunity
   );
 };
 
-UndirectedLouvainIndex.prototype.fastDeltaWithOwnCommunity = function(i, degree, targetCommunityDegree, targetCommunity) {
+UndirectedLouvainIndex.prototype.fastDeltaWithOwnCommunity = function (
+  i,
+  degree,
+  targetCommunityDegree,
+  targetCommunity
+) {
   var M = this.M;
 
   var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
@@ -458,19 +458,19 @@ UndirectedLouvainIndex.prototype.fastDeltaWithOwnCommunity = function(i, degree,
   );
 };
 
-UndirectedLouvainIndex.prototype.bounds = function(i) {
+UndirectedLouvainIndex.prototype.bounds = function (i) {
   return [this.starts[i], this.starts[i + 1]];
 };
 
-UndirectedLouvainIndex.prototype.project = function() {
+UndirectedLouvainIndex.prototype.project = function () {
   var self = this;
 
   var projection = {};
 
-  self.nodes.slice(0, this.C).forEach(function(node, i) {
+  self.nodes.slice(0, this.C).forEach(function (node, i) {
     projection[node] = Array.from(
       self.neighborhood.slice(self.starts[i], self.starts[i + 1])
-    ).map(function(j) {
+    ).map(function (j) {
       return self.nodes[j];
     });
   });
@@ -478,9 +478,8 @@ UndirectedLouvainIndex.prototype.project = function() {
   return projection;
 };
 
-UndirectedLouvainIndex.prototype.collect = function(level) {
-  if (arguments.length < 1)
-    level = this.level;
+UndirectedLouvainIndex.prototype.collect = function (level) {
+  if (arguments.length < 1) level = this.level;
 
   var o = {};
 
@@ -488,15 +487,13 @@ UndirectedLouvainIndex.prototype.collect = function(level) {
 
   var i, l;
 
-  for (i = 0, l = mapping.length; i < l; i++)
-    o[this.nodes[i]] = mapping[i];
+  for (i = 0, l = mapping.length; i < l; i++) o[this.nodes[i]] = mapping[i];
 
   return o;
 };
 
-UndirectedLouvainIndex.prototype.assign = function(prop, level) {
-  if (arguments.length < 2)
-    level = this.level;
+UndirectedLouvainIndex.prototype.assign = function (prop, level) {
+  if (arguments.length < 2) level = this.level;
 
   var mapping = this.keepDendrogram ? this.dendrogram[level] : this.mapping;
 
@@ -506,7 +503,7 @@ UndirectedLouvainIndex.prototype.assign = function(prop, level) {
     this.graph.setNodeAttribute(this.nodes[i], prop, mapping[i]);
 };
 
-UndirectedLouvainIndex.prototype[INSPECT] = function() {
+UndirectedLouvainIndex.prototype[INSPECT] = function () {
   var proxy = {};
 
   // Trick so that node displays the name of the constructor
@@ -529,49 +526,45 @@ UndirectedLouvainIndex.prototype[INSPECT] = function() {
 
   var self = this;
 
-  eTruncated.forEach(function(key) {
+  eTruncated.forEach(function (key) {
     proxy[key] = self[key].slice(0, proxy.E);
   });
 
-  cTruncated.forEach(function(key) {
+  cTruncated.forEach(function (key) {
     proxy[key] = self[key].slice(0, proxy.C);
   });
 
   proxy.unused = this.unused.slice(0, this.U);
 
-  if (this.keepDendrogram)
-    proxy.dendrogram = this.dendrogram;
-  else
-    proxy.mapping = this.mapping;
+  if (this.keepDendrogram) proxy.dendrogram = this.dendrogram;
+  else proxy.mapping = this.mapping;
 
   return proxy;
 };
 
 function DirectedLouvainIndex(graph, options) {
-
   // Solving options
   options = options || {};
   var attributes = options.attributes || {};
 
   var keepDendrogram = options.keepDendrogram === true;
 
-  var resolution = typeof options.resolution === 'number' ?
-    options.resolution :
-    DEFAULTS.resolution;
+  var resolution =
+    typeof options.resolution === 'number'
+      ? options.resolution
+      : DEFAULTS.resolution;
 
   // Weight getters
   var weighted = options.weighted === true;
 
   var weightAttribute = attributes.weight || DEFAULTS.attributes.weight;
 
-  var getWeight = function(attr) {
-    if (!weighted)
-      return 1;
+  var getWeight = function (attr) {
+    if (!weighted) return 1;
 
     var weight = attr[weightAttribute];
 
-    if (typeof weight !== 'number' || isNaN(weight))
-      return 1;
+    if (typeof weight !== 'number' || isNaN(weight)) return 1;
 
     return weight;
   };
@@ -582,7 +575,9 @@ function DirectedLouvainIndex(graph, options) {
   var NeighborhoodPointerArray = typed.getPointerArray(size);
   var NodesPointerArray = typed.getPointerArray(graph.order + 1);
   // NOTE: this memory optimization can yield overflow deopt when computing deltas
-  var WeightsArray = weighted ? Float64Array : typed.getPointerArray(graph.size * 2);
+  var WeightsArray = weighted
+    ? Float64Array
+    : typed.getPointerArray(graph.size * 2);
 
   // Properties
   this.C = graph.order;
@@ -618,11 +613,11 @@ function DirectedLouvainIndex(graph, options) {
   var weight;
 
   var i = 0,
-      n = 0;
+    n = 0;
 
   var self = this;
 
-  graph.forEachNode(function(node) {
+  graph.forEachNode(function (node) {
     self.nodes[i] = node;
 
     // Node map to index
@@ -642,7 +637,7 @@ function DirectedLouvainIndex(graph, options) {
   });
 
   // Single sweep over the edges
-  graph.forEachEdge(function(edge, attr, source, target) {
+  graph.forEachEdge(function (edge, attr, source, target) {
     weight = getWeight(attr);
 
     source = ids[source];
@@ -655,13 +650,12 @@ function DirectedLouvainIndex(graph, options) {
       self.loops[source] += weight;
       self.totalInWeights[source] += weight;
       self.totalOutWeights[source] += weight;
-    }
-    else {
+    } else {
       self.totalOutWeights[source] += weight;
       self.totalInWeights[target] += weight;
 
       var startSource = --self.starts[source],
-          startTarget = --self.offsets[target];
+        startTarget = --self.offsets[target];
 
       self.neighborhood[startSource] = target;
       self.neighborhood[startTarget] = source;
@@ -673,33 +667,32 @@ function DirectedLouvainIndex(graph, options) {
 
   this.starts[i] = this.E;
 
-  if (this.keepDendrogram)
-    this.dendrogram.push(this.belongings.slice());
-  else
-    this.mapping = this.belongings.slice();
+  if (this.keepDendrogram) this.dendrogram.push(this.belongings.slice());
+  else this.mapping = this.belongings.slice();
 }
 
 DirectedLouvainIndex.prototype.bounds = UndirectedLouvainIndex.prototype.bounds;
 
-DirectedLouvainIndex.prototype.inBounds = function(i) {
+DirectedLouvainIndex.prototype.inBounds = function (i) {
   return [this.offsets[i], this.starts[i + 1]];
 };
 
-DirectedLouvainIndex.prototype.outBounds = function(i) {
+DirectedLouvainIndex.prototype.outBounds = function (i) {
   return [this.starts[i], this.offsets[i]];
 };
 
-DirectedLouvainIndex.prototype.project = UndirectedLouvainIndex.prototype.project;
+DirectedLouvainIndex.prototype.project =
+  UndirectedLouvainIndex.prototype.project;
 
-DirectedLouvainIndex.prototype.projectIn = function() {
+DirectedLouvainIndex.prototype.projectIn = function () {
   var self = this;
 
   var projection = {};
 
-  self.nodes.slice(0, this.C).forEach(function(node, i) {
+  self.nodes.slice(0, this.C).forEach(function (node, i) {
     projection[node] = Array.from(
       self.neighborhood.slice(self.offsets[i], self.starts[i + 1])
-    ).map(function(j) {
+    ).map(function (j) {
       return self.nodes[j];
     });
   });
@@ -707,15 +700,15 @@ DirectedLouvainIndex.prototype.projectIn = function() {
   return projection;
 };
 
-DirectedLouvainIndex.prototype.projectOut = function() {
+DirectedLouvainIndex.prototype.projectOut = function () {
   var self = this;
 
   var projection = {};
 
-  self.nodes.slice(0, this.C).forEach(function(node, i) {
+  self.nodes.slice(0, this.C).forEach(function (node, i) {
     projection[node] = Array.from(
       self.neighborhood.slice(self.starts[i], self.offsets[i])
-    ).map(function(j) {
+    ).map(function (j) {
       return self.nodes[j];
     });
   });
@@ -723,12 +716,11 @@ DirectedLouvainIndex.prototype.projectOut = function() {
   return projection;
 };
 
-DirectedLouvainIndex.prototype.isolate = function(i, inDegree, outDegree) {
+DirectedLouvainIndex.prototype.isolate = function (i, inDegree, outDegree) {
   var currentCommunity = this.belongings[i];
 
   // The node is already isolated
-  if (this.counts[currentCommunity] === 1)
-    return currentCommunity;
+  if (this.counts[currentCommunity] === 1) return currentCommunity;
 
   var newCommunity = this.unused[--this.U];
 
@@ -748,14 +740,14 @@ DirectedLouvainIndex.prototype.isolate = function(i, inDegree, outDegree) {
   return newCommunity;
 };
 
-DirectedLouvainIndex.prototype.move = function(
+DirectedLouvainIndex.prototype.move = function (
   i,
   inDegree,
   outDegree,
   targetCommunity
 ) {
   var currentCommunity = this.belongings[i],
-      loops = this.loops[i];
+    loops = this.loops[i];
 
   this.totalInWeights[currentCommunity] -= inDegree + loops;
   this.totalInWeights[targetCommunity] += inDegree + loops;
@@ -768,11 +760,10 @@ DirectedLouvainIndex.prototype.move = function(
   var nowEmpty = this.counts[currentCommunity]-- === 1;
   this.counts[targetCommunity]++;
 
-  if (nowEmpty)
-    this.unused[this.U++] = currentCommunity;
+  if (nowEmpty) this.unused[this.U++] = currentCommunity;
 };
 
-DirectedLouvainIndex.prototype.computeNodeInDegree = function(i) {
+DirectedLouvainIndex.prototype.computeNodeInDegree = function (i) {
   var o, l, weight;
 
   var inDegree = 0;
@@ -786,7 +777,7 @@ DirectedLouvainIndex.prototype.computeNodeInDegree = function(i) {
   return inDegree;
 };
 
-DirectedLouvainIndex.prototype.computeNodeOutDegree = function(i) {
+DirectedLouvainIndex.prototype.computeNodeOutDegree = function (i) {
   var o, l, weight;
 
   var outDegree = 0;
@@ -800,21 +791,21 @@ DirectedLouvainIndex.prototype.computeNodeOutDegree = function(i) {
   return outDegree;
 };
 
-DirectedLouvainIndex.prototype.expensiveMove = function(i, ci) {
+DirectedLouvainIndex.prototype.expensiveMove = function (i, ci) {
   var inDegree = this.computeNodeInDegree(i),
-      outDegree = this.computeNodeOutDegree(i);
+    outDegree = this.computeNodeOutDegree(i);
 
   this.move(i, inDegree, outDegree, ci);
 };
 
-DirectedLouvainIndex.prototype.zoomOut = function() {
+DirectedLouvainIndex.prototype.zoomOut = function () {
   var inducedGraph = new Array(this.C - this.U),
-      newLabels = {};
+    newLabels = {};
 
   var N = this.nodes.length;
 
   var C = 0,
-      E = 0;
+    E = 0;
 
   var i, j, l, m, n, ci, cj, data, offset, out, adj, inAdj, outAdj;
 
@@ -845,14 +836,11 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
     currentLevel = this.dendrogram[this.level];
     nextLevel = new (typed.getPointerArray(C))(N);
 
-    for (i = 0; i < N; i++)
-      nextLevel[i] = this.belongings[currentLevel[i]];
+    for (i = 0; i < N; i++) nextLevel[i] = this.belongings[currentLevel[i]];
 
     this.dendrogram.push(nextLevel);
-  }
-  else {
-    for (i = 0; i < N; i++)
-      this.mapping[i] = this.belongings[this.mapping[i]];
+  } else {
+    for (i = 0; i < N; i++) this.mapping[i] = this.belongings[this.mapping[i]];
   }
 
   // Building induced graph matrix
@@ -873,14 +861,12 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
       adj = out ? outAdj : inAdj;
 
       if (ci === cj) {
-        if (out)
-          data.internalWeights += this.weights[j];
+        if (out) data.internalWeights += this.weights[j];
 
         continue;
       }
 
-      if (!(cj in adj))
-        adj[cj] = 0;
+      if (!(cj in adj)) adj[cj] = 0;
 
       adj[cj] += this.weights[j];
     }
@@ -934,7 +920,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
   return newLabels;
 };
 
-DirectedLouvainIndex.prototype.modularity = function() {
+DirectedLouvainIndex.prototype.modularity = function () {
   var ci, cj, i, j, m;
 
   var Q = 0;
@@ -948,24 +934,22 @@ DirectedLouvainIndex.prototype.modularity = function() {
     for (j = this.starts[i], m = this.offsets[i]; j < m; j++) {
       cj = this.belongings[this.neighborhood[j]];
 
-      if (ci !== cj)
-        continue;
+      if (ci !== cj) continue;
 
       internalWeights[ci] += this.weights[j];
     }
   }
 
   for (i = 0; i < this.C; i++)
-    Q += (
-      (internalWeights[i] / M) -
-      (this.totalInWeights[i] * this.totalOutWeights[i] / Math.pow(M, 2)) *
-      this.resolution
-    );
+    Q +=
+      internalWeights[i] / M -
+      ((this.totalInWeights[i] * this.totalOutWeights[i]) / Math.pow(M, 2)) *
+        this.resolution;
 
   return Q;
 };
 
-DirectedLouvainIndex.prototype.delta = function(
+DirectedLouvainIndex.prototype.delta = function (
   i,
   inDegree,
   outDegree,
@@ -975,7 +959,7 @@ DirectedLouvainIndex.prototype.delta = function(
   var M = this.M;
 
   var targetCommunityTotalInWeight = this.totalInWeights[targetCommunity],
-      targetCommunityTotalOutWeight = this.totalOutWeights[targetCommunity];
+    targetCommunityTotalOutWeight = this.totalOutWeights[targetCommunity];
 
   var loops = this.loops[i];
 
@@ -983,18 +967,15 @@ DirectedLouvainIndex.prototype.delta = function(
   outDegree += loops;
 
   return (
-    (targetCommunityDegree / M) -
-    (
-      (
-        (outDegree * targetCommunityTotalInWeight) +
-        (inDegree * targetCommunityTotalOutWeight)
-      ) * this.resolution /
+    targetCommunityDegree / M -
+    ((outDegree * targetCommunityTotalInWeight +
+      inDegree * targetCommunityTotalOutWeight) *
+      this.resolution) /
       (M * M)
-    )
   );
 };
 
-DirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(
+DirectedLouvainIndex.prototype.deltaWithOwnCommunity = function (
   i,
   inDegree,
   outDegree,
@@ -1004,7 +985,7 @@ DirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(
   var M = this.M;
 
   var targetCommunityTotalInWeight = this.totalInWeights[targetCommunity],
-      targetCommunityTotalOutWeight = this.totalOutWeights[targetCommunity];
+    targetCommunityTotalOutWeight = this.totalOutWeights[targetCommunity];
 
   var loops = this.loops[i];
 
@@ -1012,21 +993,19 @@ DirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(
   outDegree += loops;
 
   return (
-    (targetCommunityDegree / M) -
-    (
-      (
-        (outDegree * (targetCommunityTotalInWeight - inDegree)) +
-        (inDegree * (targetCommunityTotalOutWeight - outDegree))
-      ) * this.resolution /
+    targetCommunityDegree / M -
+    ((outDegree * (targetCommunityTotalInWeight - inDegree) +
+      inDegree * (targetCommunityTotalOutWeight - outDegree)) *
+      this.resolution) /
       (M * M)
-    )
   );
 };
 
-DirectedLouvainIndex.prototype.collect = UndirectedLouvainIndex.prototype.collect;
+DirectedLouvainIndex.prototype.collect =
+  UndirectedLouvainIndex.prototype.collect;
 DirectedLouvainIndex.prototype.assign = UndirectedLouvainIndex.prototype.assign;
 
-DirectedLouvainIndex.prototype[INSPECT] = function() {
+DirectedLouvainIndex.prototype[INSPECT] = function () {
   var proxy = {};
 
   // Trick so that node displays the name of the constructor
@@ -1045,24 +1024,29 @@ DirectedLouvainIndex.prototype[INSPECT] = function() {
   proxy.starts = this.starts.slice(0, proxy.C + 1);
 
   var eTruncated = ['neighborhood', 'weights'];
-  var cTruncated = ['counts', 'offsets', 'loops', 'belongings', 'totalInWeights', 'totalOutWeights'];
+  var cTruncated = [
+    'counts',
+    'offsets',
+    'loops',
+    'belongings',
+    'totalInWeights',
+    'totalOutWeights'
+  ];
 
   var self = this;
 
-  eTruncated.forEach(function(key) {
+  eTruncated.forEach(function (key) {
     proxy[key] = self[key].slice(0, proxy.E);
   });
 
-  cTruncated.forEach(function(key) {
+  cTruncated.forEach(function (key) {
     proxy[key] = self[key].slice(0, proxy.C);
   });
 
   proxy.unused = this.unused.slice(0, this.U);
 
-  if (this.keepDendrogram)
-    proxy.dendrogram = this.dendrogram;
-  else
-    proxy.mapping = this.mapping;
+  if (this.keepDendrogram) proxy.dendrogram = this.dendrogram;
+  else proxy.mapping = this.mapping;
 
   return proxy;
 };

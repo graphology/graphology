@@ -1,8 +1,8 @@
 import Graph, {UndirectedGraph} from './src/endpoint.esm';
 
 interface NodeAttributes {
-  label: string
-};
+  label: string;
+}
 
 const graph: Graph<NodeAttributes> = new Graph({type: 'directed'});
 
@@ -13,7 +13,13 @@ graph.forEachNode((node, attr) => {
   console.log(node, attr);
 });
 
-function listener({key, attributes}: {key: string, attributes: NodeAttributes}) {
+function listener({
+  key,
+  attributes
+}: {
+  key: string;
+  attributes: NodeAttributes;
+}) {
   console.log(key);
   console.log(attributes.label);
 }

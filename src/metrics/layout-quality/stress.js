@@ -12,25 +12,27 @@
  * http://arxiv.org/abs/2002.08233.
  */
 var isGraph = require('graphology-utils/is-graph'),
-    undirectedSingleSourceLength = require('graphology-shortest-path/unweighted').undirectedSingleSourceLength;
+  undirectedSingleSourceLength =
+    require('graphology-shortest-path/unweighted').undirectedSingleSourceLength;
 
 function euclideanDistance(a, b) {
-  return Math.sqrt(
-    Math.pow(a.x - b.x, 2) +
-    Math.pow(a.y - b.y, 2)
-  );
+  return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 }
 
 module.exports = function stress(graph) {
   if (!isGraph(graph))
-    throw new Error('graphology-metrics/layout-quality/stress: given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-metrics/layout-quality/stress: given graph is not a valid graphology instance.'
+    );
 
   if (graph.order === 0)
-    throw new Error('graphology-metrics/layout-quality/stress: cannot compute stress for a null graph.');
+    throw new Error(
+      'graphology-metrics/layout-quality/stress: cannot compute stress for a null graph.'
+    );
 
   var nodes = new Array(graph.order),
-      entries = new Array(graph.order),
-      i = 0;
+    entries = new Array(graph.order),
+    i = 0;
 
   // We choose an arbitrary large distance for when two nodes cannot be
   // connected because they belong to different connected components
@@ -38,7 +40,7 @@ module.exports = function stress(graph) {
   // This is what most papers recommend anyway
   var maxDistance = graph.order * 4;
 
-  graph.forEachNode(function(node, attr) {
+  graph.forEachNode(function (node, attr) {
     nodes[i] = node;
     entries[i++] = attr;
   });
@@ -59,8 +61,7 @@ module.exports = function stress(graph) {
       dij = shortestPaths[nodes[j]];
 
       // Target is in another castle
-      if (typeof dij === 'undefined')
-        dij = maxDistance;
+      if (typeof dij === 'undefined') dij = maxDistance;
 
       cicj = euclideanDistance(p1, p2);
       wij = 1 / (dij * dij);

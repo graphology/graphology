@@ -17,17 +17,14 @@ exports.isGraphConstructor = require('graphology-utils/is-graph-constructor');
  * @return {boolean}
  */
 exports.sameNodes = function sameNodes(G, H) {
-
-  if (G.order !== H.order)
-    return false;
+  if (G.order !== H.order) return false;
 
   var ng = G.nodes(),
-      l = G.order,
-      i;
+    l = G.order,
+    i;
 
   for (i = 0; i < l; i++) {
-    if (!H.hasNode(ng[i]))
-      return false;
+    if (!H.hasNode(ng[i])) return false;
   }
 
   return true;
@@ -57,26 +54,19 @@ exports.sameEdges = function sameEdges(G, H) {
  * @return {boolean}
  */
 exports.sameNodesDeep = function sameNodesDeep(G, H) {
-
-  if (G.order !== H.order)
-    return false;
+  if (G.order !== H.order) return false;
 
   var ng = G.nodes(),
-      l = G.order,
-      e,
-      i;
+    l = G.order,
+    e,
+    i;
 
   for (i = 0; i < l; i++) {
-    if (!H.hasNode(ng[i]))
-      return false;
+    if (!H.hasNode(ng[i])) return false;
 
-    e = isEqual(
-      G.getNodeAttributes(ng[i]),
-      H.getNodeAttributes(ng[i])
-    );
+    e = isEqual(G.getNodeAttributes(ng[i]), H.getNodeAttributes(ng[i]));
 
-    if (!e)
-      return false;
+    if (!e) return false;
   }
 
   return true;

@@ -4,11 +4,11 @@ type CommunityMapping = {[key: string]: string | number};
 
 type ModularityOptions = {
   attributes?: {
-    community?: string,
-    weight?: string
-  },
-  communities?: CommunityMapping,
-  weighted?: boolean
+    community?: string;
+    weight?: string;
+  };
+  communities?: CommunityMapping;
+  weighted?: boolean;
 };
 
 interface IModularity {

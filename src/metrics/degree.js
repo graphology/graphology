@@ -15,14 +15,28 @@ var DEFAULT_ATTRIBUTES = {
 
 function abstractDegree(graph, callee, assign, type, options) {
   if (!isGraph(graph))
-    throw new Error('graphology-metrics/' + callee + ': given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-metrics/' +
+        callee +
+        ': given graph is not a valid graphology instance.'
+    );
   if (graph.type === type) {
-    throw new Error('graphology-metrics/' + callee + ': can not be calculated for ' + type + '  graphs.');
+    throw new Error(
+      'graphology-metrics/' +
+        callee +
+        ': can not be calculated for ' +
+        type +
+        '  graphs.'
+    );
   }
   var nodes = graph.nodes();
   var i = 0;
   if (assign) {
-    var attributes = Object.assign({}, DEFAULT_ATTRIBUTES, options && options.attributes);
+    var attributes = Object.assign(
+      {},
+      DEFAULT_ATTRIBUTES,
+      options && options.attributes
+    );
     for (i = 0; i < nodes.length; i++) {
       graph.setNodeAttribute(
         nodes[i],
@@ -41,8 +55,14 @@ function abstractDegree(graph, callee, assign, type, options) {
 
 function allDegree(graph, options, assign) {
   if (!isGraph(graph))
-    throw new Error('graphology-metrics/degree: given graph is not a valid graphology instance.');
-  var attributes = Object.assign({}, DEFAULT_ATTRIBUTES, options && options.attributes);
+    throw new Error(
+      'graphology-metrics/degree: given graph is not a valid graphology instance.'
+    );
+  var attributes = Object.assign(
+    {},
+    DEFAULT_ATTRIBUTES,
+    options && options.attributes
+  );
   var nodes = graph.nodes();
   var types;
   var defaultTypes;
@@ -57,11 +77,10 @@ function allDegree(graph, options, assign) {
   }
 
   if (options && options.types && options.types.length) {
-    types = defaultTypes.filter(function(type) {
+    types = defaultTypes.filter(function (type) {
       return options.types.indexOf(type) > -1;
     });
-  }
-  else {
+  } else {
     types = defaultTypes;
   }
   var i = 0;
@@ -76,8 +95,7 @@ function allDegree(graph, options, assign) {
         );
       }
     }
-  }
-  else {
+  } else {
     var hashmap = {};
     for (i = 0; i < nodes.length; i++) {
       var response = {};

@@ -18,7 +18,6 @@ var components = {
 };
 
 exports.renderSync = function renderSync(graph, context, settings) {
-
   // Reducing nodes
   var nodeData = helpers.reduceNodes(graph, settings);
 
@@ -27,8 +26,7 @@ exports.renderSync = function renderSync(graph, context, settings) {
 
   // Drawing edges
   var sourceData, targetData;
-  graph.forEachEdge(function(edge, attr, source, target) {
-
+  graph.forEachEdge(function (edge, attr, source, target) {
     // Reducing edge
     if (typeof settings.edges.reducer === 'function')
       attr = settings.edges.reducer(settings, edge, attr);
@@ -38,7 +36,13 @@ exports.renderSync = function renderSync(graph, context, settings) {
     sourceData = nodeData[source];
     targetData = nodeData[target];
 
-    components.edges[attr.type](settings, context, attr, sourceData, targetData);
+    components.edges[attr.type](
+      settings,
+      context,
+      attr,
+      sourceData,
+      targetData
+    );
   });
 
   // Drawing nodes
@@ -50,22 +54,20 @@ exports.renderSync = function renderSync(graph, context, settings) {
   }
 };
 
-var raf = function(fn) {
+var raf = function (fn) {
   return setTimeout(fn, 16);
 };
 
-if (typeof requestAnimationFrame !== 'undefined')
-  raf = requestAnimationFrame;
+if (typeof requestAnimationFrame !== 'undefined') raf = requestAnimationFrame;
 
 function asyncWhile(condition, task, callback) {
   if (condition()) {
     task();
 
     // Early termination to avoid delay
-    if (!condition())
-      return callback();
+    if (!condition()) return callback();
 
-    return raf(function() {
+    return raf(function () {
       asyncWhile(condition, task, callback);
     });
   }
@@ -74,7 +76,6 @@ function asyncWhile(condition, task, callback) {
 }
 
 exports.renderAsync = function renderAsync(graph, context, settings, callback) {
-
   // Reducing nodes
   var nodeData = helpers.reduceNodes(graph, settings);
 
@@ -90,7 +91,11 @@ exports.renderAsync = function renderAsync(graph, context, settings, callback) {
     var l;
     var edge, attr, extremities, source, target, sourceData, targetData;
 
-    for (l = Math.min(edgesDone + settings.batchSize, edges.length); edgesDone < l; edgesDone++) {
+    for (
+      l = Math.min(edgesDone + settings.batchSize, edges.length);
+      edgesDone < l;
+      edgesDone++
+    ) {
       edge = edges[edgesDone];
       attr = graph.getEdgeAttributes(edge);
       extremities = graph.extremities(edge);
@@ -106,15 +111,20 @@ exports.renderAsync = function renderAsync(graph, context, settings, callback) {
       sourceData = nodeData[source];
       targetData = nodeData[target];
 
-      components.edges[attr.type](settings, context, attr, sourceData, targetData);
+      components.edges[attr.type](
+        settings,
+        context,
+        attr,
+        sourceData,
+        targetData
+      );
     }
   }
 
   var nodes = new Array(graph.order);
   var step = 0;
 
-  for (var k in nodeData)
-    nodes[step++] = nodeData[k];
+  for (var k in nodeData) nodes[step++] = nodeData[k];
 
   var nodesDone = 0;
 
@@ -122,7 +132,11 @@ exports.renderAsync = function renderAsync(graph, context, settings, callback) {
     var l;
     var node;
 
-    for (l = Math.min(nodesDone + settings.batchSize, nodes.length); nodesDone < l; nodesDone++) {
+    for (
+      l = Math.min(nodesDone + settings.batchSize, nodes.length);
+      nodesDone < l;
+      nodesDone++
+    ) {
       node = nodes[nodesDone];
       components.nodes[node.type](settings, context, node);
     }
@@ -137,8 +151,8 @@ exports.renderAsync = function renderAsync(graph, context, settings, callback) {
     return nodesDone < nodes.length;
   }
 
-  asyncWhile(edgesCondition, renderEdgeBatch, function() {
-    asyncWhile(nodesCondition, renderNodeBatch, function() {
+  asyncWhile(edgesCondition, renderEdgeBatch, function () {
+    asyncWhile(nodesCondition, renderNodeBatch, function () {
       return callback();
     });
   });

@@ -21,13 +21,13 @@ var ARCTIC = gexf.parse(Graph, fs.readFileSync(ARCTIC_PATH, 'utf-8'));
 
 console.log('Rendering arctic.gexf...');
 
-renderToPNG(ARCTIC, RENDER_PATH, {width: 4096}, function() {
+renderToPNG(ARCTIC, RENDER_PATH, {width: 4096}, function () {
   console.log('Done rendering arctic!');
 });
 
 console.log('Rendering with default settings...');
 
-renderToPNG(ARCTIC, path.join(OUTPUT_PATH, 'defaults.png'), function() {
+renderToPNG(ARCTIC, path.join(OUTPUT_PATH, 'defaults.png'), function () {
   console.log('Done rendering with default settings!');
 });
 
@@ -36,7 +36,7 @@ console.log('Rendering async...');
 var canvas = canvasApi.createCanvas(4096, 2048);
 var context = canvas.getContext('2d');
 
-lib.renderAsync(ARCTIC, context, {width: 4096, height: 2048}, function() {
+lib.renderAsync(ARCTIC, context, {width: 4096, height: 2048}, function () {
   console.log('Done rendering asynchronously!');
 
   var out = fs.createWriteStream(path.join(OUTPUT_PATH, 'async.png'));

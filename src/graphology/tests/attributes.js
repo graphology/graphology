@@ -27,44 +27,39 @@ const METHODS = [
 ];
 
 export default function attributes(Graph, checkers) {
-  const {
-    invalid,
-    notFound,
-    usage
-  } = checkers;
+  const {invalid, notFound, usage} = checkers;
 
   function commonTests(method) {
     return {
       ['#.' + method]: {
-        'it should throw if the given path is not found.': function() {
-          if (!~method.indexOf('Edge'))
-            return;
+        'it should throw if the given path is not found.': function () {
+          if (!~method.indexOf('Edge')) return;
 
           const graph = new Graph();
 
-          assert.throws(function() {
+          assert.throws(function () {
             graph[method]('source', 'target', 'name', 'value');
           }, notFound());
         },
 
-        'it should throw when using a path on a multi graph.': function() {
-          if (!~method.indexOf('Edge'))
-            return;
+        'it should throw when using a path on a multi graph.': function () {
+          if (!~method.indexOf('Edge')) return;
 
           const graph = new Graph({multi: true});
 
-          assert.throws(function() {
+          assert.throws(function () {
             graph[method]('source', 'target', 'name', 'value');
           }, usage());
         },
 
-        'it should throw if the element is not found in the graph.': function() {
-          const graph = new Graph();
+        'it should throw if the element is not found in the graph.':
+          function () {
+            const graph = new Graph();
 
-          assert.throws(function() {
-            graph[method]('Test');
-          }, notFound());
-        }
+            assert.throws(function () {
+              graph[method]('Test');
+            }, notFound());
+          }
       }
     };
   }
@@ -75,133 +70,153 @@ export default function attributes(Graph, checkers) {
 
   return deepMerge(tests, {
     '#.getAttribute': {
-      'it should return the correct value.': function() {
+      'it should return the correct value.': function () {
         const graph = new Graph();
         graph.setAttribute('name', 'graph');
 
         assert.strictEqual(graph.getAttribute('name'), 'graph');
       },
 
-      'it should return undefined if the attribute does not exist.': function() {
-        const graph = new Graph();
+      'it should return undefined if the attribute does not exist.':
+        function () {
+          const graph = new Graph();
 
-        assert.strictEqual(graph.getAttribute('name'), undefined);
-      }
+          assert.strictEqual(graph.getAttribute('name'), undefined);
+        }
     },
 
     '#.getNodeAttribute': {
-
-      'it should return the correct value.': function() {
+      'it should return the correct value.': function () {
         const graph = new Graph();
         graph.addNode('Martha', {age: 34});
 
         assert.strictEqual(graph.getNodeAttribute('Martha', 'age'), 34);
       },
 
-      'it should return undefined if the attribute does not exist.': function() {
-        const graph = new Graph();
-        graph.addNode('Martha');
+      'it should return undefined if the attribute does not exist.':
+        function () {
+          const graph = new Graph();
+          graph.addNode('Martha');
 
-        assert.strictEqual(graph.getNodeAttribute('Martha', 'age'), undefined);
-      }
+          assert.strictEqual(
+            graph.getNodeAttribute('Martha', 'age'),
+            undefined
+          );
+        }
     },
 
     '#.getEdgeAttribute': {
-
-      'it should return the correct value.': function() {
+      'it should return the correct value.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Thomas']);
         const edge = graph.addEdge('John', 'Thomas', {weight: 2});
 
         assert.strictEqual(graph.getEdgeAttribute(edge, 'weight'), 2);
-        assert.strictEqual(graph.getEdgeAttribute('John', 'Thomas', 'weight'), 2);
+        assert.strictEqual(
+          graph.getEdgeAttribute('John', 'Thomas', 'weight'),
+          2
+        );
       },
 
-      'it should also work with typed edges.': function() {
+      'it should also work with typed edges.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Thomas']);
         graph.addDirectedEdge('John', 'Thomas', {weight: 2});
         graph.addUndirectedEdge('John', 'Thomas', {weight: 3});
 
-        assert.strictEqual(graph.getDirectedEdgeAttribute('John', 'Thomas', 'weight'), 2);
-        assert.strictEqual(graph.getUndirectedEdgeAttribute('John', 'Thomas', 'weight'), 3);
+        assert.strictEqual(
+          graph.getDirectedEdgeAttribute('John', 'Thomas', 'weight'),
+          2
+        );
+        assert.strictEqual(
+          graph.getUndirectedEdgeAttribute('John', 'Thomas', 'weight'),
+          3
+        );
       },
 
-      'it should return undefined if the attribute does not exist.': function() {
-        const graph = new Graph();
-        addNodesFrom(graph, ['John', 'Thomas']);
-        const edge = graph.addEdge('John', 'Thomas');
+      'it should return undefined if the attribute does not exist.':
+        function () {
+          const graph = new Graph();
+          addNodesFrom(graph, ['John', 'Thomas']);
+          const edge = graph.addEdge('John', 'Thomas');
 
-        assert.strictEqual(graph.getEdgeAttribute(edge, 'weight'), undefined);
-      }
+          assert.strictEqual(graph.getEdgeAttribute(edge, 'weight'), undefined);
+        }
     },
 
     '#.getAttributes': {
-
-      'it should return the correct value.': function() {
+      'it should return the correct value.': function () {
         const graph = new Graph();
         graph.setAttribute('name', 'graph');
 
         assert.deepStrictEqual(graph.getAttributes(), {name: 'graph'});
       },
 
-      'it should return an empty object if the node does not have attributes.': function() {
-        const graph = new Graph();
+      'it should return an empty object if the node does not have attributes.':
+        function () {
+          const graph = new Graph();
 
-        assert.deepStrictEqual(graph.getAttributes(), {});
-      }
+          assert.deepStrictEqual(graph.getAttributes(), {});
+        }
     },
 
     '#.getNodeAttributes': {
-
-      'it should return the correct value.': function() {
+      'it should return the correct value.': function () {
         const graph = new Graph();
         graph.addNode('Martha', {age: 34});
 
         assert.deepStrictEqual(graph.getNodeAttributes('Martha'), {age: 34});
       },
 
-      'it should return an empty object if the node does not have attributes.': function() {
-        const graph = new Graph();
-        graph.addNode('Martha');
+      'it should return an empty object if the node does not have attributes.':
+        function () {
+          const graph = new Graph();
+          graph.addNode('Martha');
 
-        assert.deepStrictEqual(graph.getNodeAttributes('Martha'), {});
-      }
+          assert.deepStrictEqual(graph.getNodeAttributes('Martha'), {});
+        }
     },
 
     '#.getEdgeAttributes': {
-
-      'it should return the correct value.': function() {
+      'it should return the correct value.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Thomas']);
         const edge = graph.addEdge('John', 'Thomas', {weight: 2});
 
         assert.deepStrictEqual(graph.getEdgeAttributes(edge), {weight: 2});
-        assert.deepStrictEqual(graph.getEdgeAttributes('John', 'Thomas'), {weight: 2});
+        assert.deepStrictEqual(graph.getEdgeAttributes('John', 'Thomas'), {
+          weight: 2
+        });
       },
 
-      'it should also work with typed edges.': function() {
+      'it should also work with typed edges.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Thomas']);
         graph.addDirectedEdge('John', 'Thomas', {weight: 2});
         graph.addUndirectedEdge('John', 'Thomas', {weight: 3});
 
-        assert.deepStrictEqual(graph.getDirectedEdgeAttributes('John', 'Thomas', 'weight'), {weight: 2});
-        assert.deepStrictEqual(graph.getUndirectedEdgeAttributes('John', 'Thomas', 'weight'), {weight: 3});
+        assert.deepStrictEqual(
+          graph.getDirectedEdgeAttributes('John', 'Thomas', 'weight'),
+          {weight: 2}
+        );
+        assert.deepStrictEqual(
+          graph.getUndirectedEdgeAttributes('John', 'Thomas', 'weight'),
+          {weight: 3}
+        );
       },
 
-      'it should return an empty object if the edge does not have attributes.': function() {
-        const graph = new Graph();
-        addNodesFrom(graph, ['John', 'Thomas']);
-        const edge = graph.addEdge('John', 'Thomas');
+      'it should return an empty object if the edge does not have attributes.':
+        function () {
+          const graph = new Graph();
+          addNodesFrom(graph, ['John', 'Thomas']);
+          const edge = graph.addEdge('John', 'Thomas');
 
-        assert.deepStrictEqual(graph.getEdgeAttributes(edge), {});
-      }
+          assert.deepStrictEqual(graph.getEdgeAttributes(edge), {});
+        }
     },
 
     '#.hasAttribute': {
-
-      'it should correctly return whether the attribute is set.': function() {
+      'it should correctly return whether the attribute is set.': function () {
         const graph = new Graph();
         graph.setAttribute('name', 'graph');
 
@@ -209,7 +224,7 @@ export default function attributes(Graph, checkers) {
         assert.strictEqual(graph.hasAttribute('info'), false);
       },
 
-      'it does not fail with typical prototypal properties.': function() {
+      'it does not fail with typical prototypal properties.': function () {
         const graph = new Graph();
 
         assert.strictEqual(graph.hasAttribute('toString'), false);
@@ -217,8 +232,7 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.hasNodeAttribute': {
-
-      'it should correctly return whether the attribute is set.': function() {
+      'it should correctly return whether the attribute is set.': function () {
         const graph = new Graph();
         graph.addNode('John', {age: 20});
 
@@ -226,7 +240,7 @@ export default function attributes(Graph, checkers) {
         assert.strictEqual(graph.hasNodeAttribute('John', 'eyes'), false);
       },
 
-      'it does not fail with typical prototypal properties.': function() {
+      'it does not fail with typical prototypal properties.': function () {
         const graph = new Graph();
         graph.addNode('John', {age: 20});
 
@@ -235,8 +249,7 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.hasEdgeAttribute': {
-
-      'it should correctly return whether the attribute is set.': function() {
+      'it should correctly return whether the attribute is set.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Martha']);
         graph.addEdgeWithKey('J->M', 'John', 'Martha', {weight: 10});
@@ -245,18 +258,23 @@ export default function attributes(Graph, checkers) {
         assert.strictEqual(graph.hasEdgeAttribute('J->M', 'type'), false);
       },
 
-      'it should also work with typed edges.': function() {
+      'it should also work with typed edges.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Thomas']);
         graph.addDirectedEdge('John', 'Thomas', {weight: 2});
         graph.addUndirectedEdge('John', 'Thomas');
 
-        assert.strictEqual(graph.hasDirectedEdgeAttribute('John', 'Thomas', 'weight'), true);
-        assert.strictEqual(graph.hasUndirectedEdgeAttribute('John', 'Thomas', 'weight'), false);
+        assert.strictEqual(
+          graph.hasDirectedEdgeAttribute('John', 'Thomas', 'weight'),
+          true
+        );
+        assert.strictEqual(
+          graph.hasUndirectedEdgeAttribute('John', 'Thomas', 'weight'),
+          false
+        );
       },
 
-
-      'it does not fail with typical prototypal properties.': function() {
+      'it does not fail with typical prototypal properties.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Martha']);
         graph.addEdgeWithKey('J->M', 'John', 'Martha', {weight: 10});
@@ -266,8 +284,7 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.setAttribute': {
-
-      'it should correctly set the graph\'s attribute.': function() {
+      "it should correctly set the graph's attribute.": function () {
         const graph = new Graph();
         graph.setAttribute('name', 'graph');
 
@@ -276,17 +293,16 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.setNodeAttribute': {
-
-      'it should throw if not enough arguments are provided.': function() {
+      'it should throw if not enough arguments are provided.': function () {
         const graph = new Graph();
         graph.addNode('Lucy');
 
-        assert.throws(function() {
+        assert.throws(function () {
           graph.setNodeAttribute('Lucy', {hello: 'world'});
         }, invalid());
       },
 
-      'it should correctly set the node\'s attribute.': function() {
+      "it should correctly set the node's attribute.": function () {
         const graph = new Graph();
         graph.addNode('John', {age: 20});
 
@@ -296,7 +312,7 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.setEdgeAttribute': {
-      'it should correctly set the edge\'s attribute.': function() {
+      "it should correctly set the edge's attribute.": function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Martha']);
         const edge = graph.addEdge('John', 'Martha', {weight: 3});
@@ -308,7 +324,7 @@ export default function attributes(Graph, checkers) {
         assert.strictEqual(graph.getEdgeAttribute(edge, 'weight'), 60);
       },
 
-      'it should also work with typed edges.': function() {
+      'it should also work with typed edges.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Thomas']);
         graph.addDirectedEdge('John', 'Thomas', {weight: 0});
@@ -317,23 +333,28 @@ export default function attributes(Graph, checkers) {
         graph.setDirectedEdgeAttribute('John', 'Thomas', 'weight', 2);
         graph.setUndirectedEdgeAttribute('John', 'Thomas', 'weight', 3);
 
-        assert.strictEqual(graph.getDirectedEdgeAttribute('John', 'Thomas', 'weight'), 2);
-        assert.strictEqual(graph.getUndirectedEdgeAttribute('John', 'Thomas', 'weight'), 3);
+        assert.strictEqual(
+          graph.getDirectedEdgeAttribute('John', 'Thomas', 'weight'),
+          2
+        );
+        assert.strictEqual(
+          graph.getUndirectedEdgeAttribute('John', 'Thomas', 'weight'),
+          3
+        );
       }
     },
 
     '#.updateAttribute': {
-
-      'it should throw if the updater is not a function.': function() {
+      'it should throw if the updater is not a function.': function () {
         const graph = new Graph();
         graph.setAttribute('count', 0);
 
-        assert.throws(function() {
+        assert.throws(function () {
           graph.updateAttribute('count', {hello: 'world'});
         }, invalid());
       },
 
-      'it should correctly set the graph\'s attribute.': function() {
+      "it should correctly set the graph's attribute.": function () {
         const graph = new Graph();
         graph.setAttribute('name', 'graph');
 
@@ -341,7 +362,7 @@ export default function attributes(Graph, checkers) {
         assert.strictEqual(graph.getAttribute('name'), 'graph1');
       },
 
-      'the given value should be undefined if not found.': function() {
+      'the given value should be undefined if not found.': function () {
         const graph = new Graph();
 
         const updater = x => {
@@ -355,26 +376,25 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.updateNodeAttribute': {
-
-      'it should throw if given an invalid updater.': function() {
+      'it should throw if given an invalid updater.': function () {
         const graph = new Graph();
         graph.addNode('John', {age: 20});
 
-        assert.throws(function() {
+        assert.throws(function () {
           graph.updateNodeAttribute('John', 'age', {hello: 'world'});
         }, invalid());
       },
 
-      'it should throw if not enough arguments are provided.': function() {
+      'it should throw if not enough arguments are provided.': function () {
         const graph = new Graph();
         graph.addNode('Lucy');
 
-        assert.throws(function() {
+        assert.throws(function () {
           graph.updateNodeAttribute('Lucy', {hello: 'world'});
         }, invalid());
       },
 
-      'it should correctly set the node\'s attribute.': function() {
+      "it should correctly set the node's attribute.": function () {
         const graph = new Graph();
         graph.addNode('John', {age: 20});
 
@@ -382,7 +402,7 @@ export default function attributes(Graph, checkers) {
         assert.strictEqual(graph.getNodeAttribute('John', 'age'), 21);
       },
 
-      'the given value should be undefined if not found.': function() {
+      'the given value should be undefined if not found.': function () {
         const graph = new Graph();
         graph.addNode('John');
 
@@ -397,17 +417,19 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.updateEdgeAttribute': {
-      'it should throw if given an invalid updater.': function() {
+      'it should throw if given an invalid updater.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Martha']);
         graph.addEdge('John', 'Martha', {weight: 3});
 
-        assert.throws(function() {
-          graph.updateEdgeAttribute('John', 'Martha', 'weight', {hello: 'world'});
+        assert.throws(function () {
+          graph.updateEdgeAttribute('John', 'Martha', 'weight', {
+            hello: 'world'
+          });
         }, invalid());
       },
 
-      'it should correctly set the edge\'s attribute.': function() {
+      "it should correctly set the edge's attribute.": function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Martha']);
         const edge = graph.addEdge('John', 'Martha', {weight: 3});
@@ -419,20 +441,36 @@ export default function attributes(Graph, checkers) {
         assert.strictEqual(graph.getEdgeAttribute(edge, 'weight'), 6);
       },
 
-      'it should also work with typed edges.': function() {
+      'it should also work with typed edges.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Thomas']);
         graph.addDirectedEdge('John', 'Thomas', {weight: 0});
         graph.addUndirectedEdge('John', 'Thomas', {weight: 0});
 
-        graph.updateDirectedEdgeAttribute('John', 'Thomas', 'weight', x => x + 2);
-        graph.updateUndirectedEdgeAttribute('John', 'Thomas', 'weight', x => x + 3);
+        graph.updateDirectedEdgeAttribute(
+          'John',
+          'Thomas',
+          'weight',
+          x => x + 2
+        );
+        graph.updateUndirectedEdgeAttribute(
+          'John',
+          'Thomas',
+          'weight',
+          x => x + 3
+        );
 
-        assert.strictEqual(graph.getDirectedEdgeAttribute('John', 'Thomas', 'weight'), 2);
-        assert.strictEqual(graph.getUndirectedEdgeAttribute('John', 'Thomas', 'weight'), 3);
+        assert.strictEqual(
+          graph.getDirectedEdgeAttribute('John', 'Thomas', 'weight'),
+          2
+        );
+        assert.strictEqual(
+          graph.getUndirectedEdgeAttribute('John', 'Thomas', 'weight'),
+          3
+        );
       },
 
-      'the given value should be undefined if not found.': function() {
+      'the given value should be undefined if not found.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Martha']);
         const edge = graph.addEdge('John', 'Martha');
@@ -448,7 +486,7 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.removeAttribute': {
-      'it should correctly remove the attribute.': function() {
+      'it should correctly remove the attribute.': function () {
         const graph = new Graph();
         graph.setAttribute('name', 'graph');
 
@@ -460,7 +498,7 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.removeNodeAttribute': {
-      'it should correctly remove the attribute.': function() {
+      'it should correctly remove the attribute.': function () {
         const graph = new Graph();
         graph.addNode('Martha', {age: 34});
 
@@ -472,7 +510,7 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.removeEdgeAttribute': {
-      'it should correclty remove the attribute.': function() {
+      'it should correclty remove the attribute.': function () {
         const graph = new Graph();
         const edge = graph.mergeEdge('John', 'Martha', {weight: 1, size: 3});
 
@@ -485,7 +523,7 @@ export default function attributes(Graph, checkers) {
         assert.deepStrictEqual(graph.getEdgeAttributes(edge), {});
       },
 
-      'it should also work with typed edges.': function() {
+      'it should also work with typed edges.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Thomas']);
         graph.addDirectedEdge('John', 'Thomas', {weight: 2});
@@ -494,21 +532,28 @@ export default function attributes(Graph, checkers) {
         graph.removeDirectedEdgeAttribute('John', 'Thomas', 'weight');
         graph.removeUndirectedEdgeAttribute('John', 'Thomas', 'weight');
 
-        assert.strictEqual(graph.hasDirectedEdgeAttribute('John', 'Thomas', 'weight'), false);
-        assert.strictEqual(graph.hasUndirectedEdgeAttribute('John', 'Thomas', 'weight'), false);
+        assert.strictEqual(
+          graph.hasDirectedEdgeAttribute('John', 'Thomas', 'weight'),
+          false
+        );
+        assert.strictEqual(
+          graph.hasUndirectedEdgeAttribute('John', 'Thomas', 'weight'),
+          false
+        );
       }
     },
 
     '#.replaceAttribute': {
-      'it should throw if given attributes are not a plain object.': function() {
-        const graph = new Graph();
+      'it should throw if given attributes are not a plain object.':
+        function () {
+          const graph = new Graph();
 
-        assert.throws(function() {
-          graph.replaceAttributes(true);
-        }, invalid());
-      },
+          assert.throws(function () {
+            graph.replaceAttributes(true);
+          }, invalid());
+        },
 
-      'it should correctly replace attributes.': function() {
+      'it should correctly replace attributes.': function () {
         const graph = new Graph();
         graph.setAttribute('name', 'graph');
 
@@ -519,37 +564,42 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.replaceNodeAttributes': {
-      'it should throw if given attributes are not a plain object.': function() {
-        const graph = new Graph();
-        graph.addNode('John');
+      'it should throw if given attributes are not a plain object.':
+        function () {
+          const graph = new Graph();
+          graph.addNode('John');
 
-        assert.throws(function() {
-          graph.replaceNodeAttributes('John', true);
-        }, invalid());
-      },
+          assert.throws(function () {
+            graph.replaceNodeAttributes('John', true);
+          }, invalid());
+        },
 
-      'it should correctly replace attributes.': function() {
+      'it should correctly replace attributes.': function () {
         const graph = new Graph();
         graph.addNode('John', {age: 45});
 
         graph.replaceNodeAttributes('John', {age: 23, eyes: 'blue'});
 
-        assert.deepStrictEqual(graph.getNodeAttributes('John'), {age: 23, eyes: 'blue'});
+        assert.deepStrictEqual(graph.getNodeAttributes('John'), {
+          age: 23,
+          eyes: 'blue'
+        });
       }
     },
 
     '#.replaceEdgeAttributes': {
-      'it should throw if given attributes are not a plain object.': function() {
-        const graph = new Graph();
-        addNodesFrom(graph, ['John', 'Martha']);
-        const edge = graph.addEdge('John', 'Martha');
+      'it should throw if given attributes are not a plain object.':
+        function () {
+          const graph = new Graph();
+          addNodesFrom(graph, ['John', 'Martha']);
+          const edge = graph.addEdge('John', 'Martha');
 
-        assert.throws(function() {
-          graph.replaceEdgeAttributes(edge, true);
-        }, invalid());
-      },
+          assert.throws(function () {
+            graph.replaceEdgeAttributes(edge, true);
+          }, invalid());
+        },
 
-      'it should also work with typed edges.': function() {
+      'it should also work with typed edges.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Thomas']);
         graph.addDirectedEdge('John', 'Thomas', {test: 0});
@@ -558,72 +608,90 @@ export default function attributes(Graph, checkers) {
         graph.replaceDirectedEdgeAttributes('John', 'Thomas', {weight: 2});
         graph.replaceUndirectedEdgeAttributes('John', 'Thomas', {weight: 3});
 
-        assert.deepStrictEqual(graph.getDirectedEdgeAttributes('John', 'Thomas'), {weight: 2});
-        assert.deepStrictEqual(graph.getUndirectedEdgeAttributes('John', 'Thomas'), {weight: 3});
+        assert.deepStrictEqual(
+          graph.getDirectedEdgeAttributes('John', 'Thomas'),
+          {weight: 2}
+        );
+        assert.deepStrictEqual(
+          graph.getUndirectedEdgeAttributes('John', 'Thomas'),
+          {weight: 3}
+        );
       },
 
-      'it should correctly replace attributes.': function() {
+      'it should correctly replace attributes.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Martha']);
         const edge = graph.addEdge('John', 'Martha', {weight: 1});
 
         graph.replaceEdgeAttributes(edge, {weight: 4, type: 'KNOWS'});
 
-        assert.deepStrictEqual(graph.getEdgeAttributes(edge), {weight: 4, type: 'KNOWS'});
+        assert.deepStrictEqual(graph.getEdgeAttributes(edge), {
+          weight: 4,
+          type: 'KNOWS'
+        });
       }
     },
 
     '#.mergeAttributes': {
-      'it should throw if given attributes are not a plain object.': function() {
-        const graph = new Graph();
+      'it should throw if given attributes are not a plain object.':
+        function () {
+          const graph = new Graph();
 
-        assert.throws(function() {
-          graph.mergeAttributes(true);
-        }, invalid());
-      },
+          assert.throws(function () {
+            graph.mergeAttributes(true);
+          }, invalid());
+        },
 
-      'it should correctly merge attributes.': function() {
+      'it should correctly merge attributes.': function () {
         const graph = new Graph();
         graph.setAttribute('name', 'graph');
 
         graph.mergeAttributes({color: 'blue'});
 
-        assert.deepStrictEqual(graph.getAttributes(), {name: 'graph', color: 'blue'});
+        assert.deepStrictEqual(graph.getAttributes(), {
+          name: 'graph',
+          color: 'blue'
+        });
       }
     },
 
     '#.mergeNodeAttributes': {
-      'it should throw if given attributes are not a plain object.': function() {
-        const graph = new Graph();
-        graph.addNode('John');
+      'it should throw if given attributes are not a plain object.':
+        function () {
+          const graph = new Graph();
+          graph.addNode('John');
 
-        assert.throws(function() {
-          graph.mergeNodeAttributes('John', true);
-        }, invalid());
-      },
+          assert.throws(function () {
+            graph.mergeNodeAttributes('John', true);
+          }, invalid());
+        },
 
-      'it should correctly merge attributes.': function() {
+      'it should correctly merge attributes.': function () {
         const graph = new Graph();
         graph.addNode('John', {age: 45});
 
         graph.mergeNodeAttributes('John', {eyes: 'blue'});
 
-        assert.deepStrictEqual(graph.getNodeAttributes('John'), {age: 45, eyes: 'blue'});
+        assert.deepStrictEqual(graph.getNodeAttributes('John'), {
+          age: 45,
+          eyes: 'blue'
+        });
       }
     },
 
     '#.mergeEdgeAttributes': {
-      'it should throw if given attributes are not a plain object.': function() {
-        const graph = new Graph();
-        addNodesFrom(graph, ['John', 'Martha']);
-        const edge = graph.addEdge('John', 'Martha');
+      'it should throw if given attributes are not a plain object.':
+        function () {
+          const graph = new Graph();
+          addNodesFrom(graph, ['John', 'Martha']);
+          const edge = graph.addEdge('John', 'Martha');
 
-        assert.throws(function() {
-          graph.mergeEdgeAttributes(edge, true);
-        }, invalid());
-      },
+          assert.throws(function () {
+            graph.mergeEdgeAttributes(edge, true);
+          }, invalid());
+        },
 
-      'it should also work with typed edges.': function() {
+      'it should also work with typed edges.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Thomas']);
         graph.addDirectedEdge('John', 'Thomas', {test: 0});
@@ -632,40 +700,50 @@ export default function attributes(Graph, checkers) {
         graph.mergeDirectedEdgeAttributes('John', 'Thomas', {weight: 2});
         graph.mergeUndirectedEdgeAttributes('John', 'Thomas', {weight: 3});
 
-        assert.deepStrictEqual(graph.getDirectedEdgeAttributes('John', 'Thomas'), {weight: 2, test: 0});
-        assert.deepStrictEqual(graph.getUndirectedEdgeAttributes('John', 'Thomas'), {weight: 3, test: 0});
+        assert.deepStrictEqual(
+          graph.getDirectedEdgeAttributes('John', 'Thomas'),
+          {weight: 2, test: 0}
+        );
+        assert.deepStrictEqual(
+          graph.getUndirectedEdgeAttributes('John', 'Thomas'),
+          {weight: 3, test: 0}
+        );
       },
 
-      'it should correctly merge attributes.': function() {
+      'it should correctly merge attributes.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Martha']);
         const edge = graph.addEdge('John', 'Martha', {weight: 1});
 
         graph.mergeEdgeAttributes(edge, {type: 'KNOWS'});
 
-        assert.deepStrictEqual(graph.getEdgeAttributes(edge), {weight: 1, type: 'KNOWS'});
+        assert.deepStrictEqual(graph.getEdgeAttributes(edge), {
+          weight: 1,
+          type: 'KNOWS'
+        });
       }
     },
 
     '#.updateEachNodeAttributes': {
-
-      'it should throw when given invalid arguments.': function() {
+      'it should throw when given invalid arguments.': function () {
         const graph = new Graph();
 
-        assert.throws(function() {
+        assert.throws(function () {
           graph.updateEachNodeAttributes(null);
         }, invalid());
 
-        assert.throws(function() {
+        assert.throws(function () {
           graph.updateEachNodeAttributes(Function.prototype, 'test');
         }, invalid());
 
-        assert.throws(function() {
-          graph.updateEachNodeAttributes(Function.prototype, {attributes: 'yes'});
+        assert.throws(function () {
+          graph.updateEachNodeAttributes(Function.prototype, {
+            attributes: 'yes'
+          });
         }, invalid());
       },
 
-      'it should update each node\'s attributes.': function() {
+      "it should update each node's attributes.": function () {
         const graph = new Graph();
 
         graph.addNode('John', {age: 34});
@@ -676,33 +754,33 @@ export default function attributes(Graph, checkers) {
           return {...attr, age: attr.age + 1};
         });
 
-        assert.deepStrictEqual(graph.nodes().map(n => graph.getNodeAttributes(n)), [
-          {age: 35},
-          {age: 57},
-          {age: 14}
-        ]);
+        assert.deepStrictEqual(
+          graph.nodes().map(n => graph.getNodeAttributes(n)),
+          [{age: 35}, {age: 57}, {age: 14}]
+        );
       }
     },
 
     '#.updateEachEdgeAttributes': {
-
-      'it should throw when given invalid arguments.': function() {
+      'it should throw when given invalid arguments.': function () {
         const graph = new Graph();
 
-        assert.throws(function() {
+        assert.throws(function () {
           graph.updateEachEdgeAttributes(null);
         }, invalid());
 
-        assert.throws(function() {
+        assert.throws(function () {
           graph.updateEachEdgeAttributes(Function.prototype, 'test');
         }, invalid());
 
-        assert.throws(function() {
-          graph.updateEachEdgeAttributes(Function.prototype, {attributes: 'yes'});
+        assert.throws(function () {
+          graph.updateEachEdgeAttributes(Function.prototype, {
+            attributes: 'yes'
+          });
         }, invalid());
       },
 
-      'it should update each node\'s attributes.': function() {
+      "it should update each node's attributes.": function () {
         const graph = new Graph();
 
         graph.mergeEdgeWithKey(0, 'John', 'Lucy', {weight: 1});
@@ -712,10 +790,10 @@ export default function attributes(Graph, checkers) {
           return {...attr, weight: attr.weight + 1};
         });
 
-        assert.deepStrictEqual(graph.edges().map(n => graph.getEdgeAttributes(n)), [
-          {weight: 2},
-          {weight: 11}
-        ]);
+        assert.deepStrictEqual(
+          graph.edges().map(n => graph.getEdgeAttributes(n)),
+          [{weight: 2}, {weight: 11}]
+        );
       }
     }
   });

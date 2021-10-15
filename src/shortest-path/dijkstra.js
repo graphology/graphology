@@ -5,7 +5,7 @@
  * Graphology implementation of Dijkstra shortest path for weighted graphs.
  */
 var isGraph = require('graphology-utils/is-graph'),
-    Heap = require('mnemonist/heap');
+  Heap = require('mnemonist/heap');
 
 /**
  * Defaults & helpers.
@@ -15,44 +15,30 @@ var DEFAULTS = {
 };
 
 function DIJKSTRA_HEAP_COMPARATOR(a, b) {
-  if (a[0] > b[0])
-    return 1;
-  if (a[0] < b[0])
-    return -1;
+  if (a[0] > b[0]) return 1;
+  if (a[0] < b[0]) return -1;
 
-  if (a[1] > b[1])
-    return 1;
-  if (a[1] < b[1])
-    return -1;
+  if (a[1] > b[1]) return 1;
+  if (a[1] < b[1]) return -1;
 
-  if (a[2] > b[2])
-    return 1;
-  if (a[2] < b[2])
-    return -1;
+  if (a[2] > b[2]) return 1;
+  if (a[2] < b[2]) return -1;
 
   return 0;
 }
 
 function BRANDES_DIJKSTRA_HEAP_COMPARATOR(a, b) {
-  if (a[0] > b[0])
-    return 1;
-  if (a[0] < b[0])
-    return -1;
+  if (a[0] > b[0]) return 1;
+  if (a[0] < b[0]) return -1;
 
-  if (a[1] > b[1])
-    return 1;
-  if (a[1] < b[1])
-    return -1;
+  if (a[1] > b[1]) return 1;
+  if (a[1] < b[1]) return -1;
 
-  if (a[2] > b[2])
-    return 1;
-  if (a[2] < b[2])
-    return -1;
+  if (a[2] > b[2]) return 1;
+  if (a[2] < b[2]) return -1;
 
-  if (a[3] > b[3])
-    return 1;
-  if (a[3] < b[3])
-    return - 1;
+  if (a[3] > b[3]) return 1;
+  if (a[3] < b[3]) return -1;
 
   return 0;
 }
@@ -74,32 +60,43 @@ function abstractBidirectionalDijkstra(graph, source, target, weightAttribute) {
 
   // Sanity checks
   if (!isGraph(graph))
-    throw new Error('graphology-shortest-path/dijkstra: invalid graphology instance.');
+    throw new Error(
+      'graphology-shortest-path/dijkstra: invalid graphology instance.'
+    );
 
   if (source && !graph.hasNode(source))
-    throw new Error('graphology-shortest-path/dijkstra: the "' + source + '" source node does not exist in the given graph.');
+    throw new Error(
+      'graphology-shortest-path/dijkstra: the "' +
+        source +
+        '" source node does not exist in the given graph.'
+    );
 
   if (target && !graph.hasNode(target))
-    throw new Error('graphology-shortest-path/dijkstra: the "' + target + '" target node does not exist in the given graph.');
+    throw new Error(
+      'graphology-shortest-path/dijkstra: the "' +
+        target +
+        '" target node does not exist in the given graph.'
+    );
 
   weightAttribute = weightAttribute || DEFAULTS.weightAttribute;
 
-  var getWeight = function(edge) {
+  var getWeight = function (edge) {
     var weight = graph.getEdgeAttribute(edge, weightAttribute);
 
-    if (typeof weight !== 'number' || isNaN(weight))
-      return 1;
+    if (typeof weight !== 'number' || isNaN(weight)) return 1;
 
     return weight;
   };
 
-  if (source === target)
-    return [0, [source]];
+  if (source === target) return [0, [source]];
 
   var distances = [{}, {}],
-      paths = [{}, {}],
-      fringe = [new Heap(DIJKSTRA_HEAP_COMPARATOR), new Heap(DIJKSTRA_HEAP_COMPARATOR)],
-      seen = [{}, {}];
+    paths = [{}, {}],
+    fringe = [
+      new Heap(DIJKSTRA_HEAP_COMPARATOR),
+      new Heap(DIJKSTRA_HEAP_COMPARATOR)
+    ],
+    seen = [{}, {}];
 
   paths[0][source] = [source];
   paths[1][target] = [target];
@@ -108,25 +105,24 @@ function abstractBidirectionalDijkstra(graph, source, target, weightAttribute) {
   seen[1][target] = 0;
 
   var finalPath = [],
-      finalDistance = Infinity;
+    finalDistance = Infinity;
 
   var count = 0,
-      dir = 1,
-      item,
-      edges,
-      cost,
-      d,
-      v,
-      u,
-      e,
-      i,
-      l;
+    dir = 1,
+    item,
+    edges,
+    cost,
+    d,
+    v,
+    u,
+    e,
+    i,
+    l;
 
   fringe[0].push([0, count++, source]);
   fringe[1].push([0, count++, target]);
 
   while (fringe[0].size && fringe[1].size) {
-
     // Swapping direction
     dir = 1 - dir;
 
@@ -134,18 +130,14 @@ function abstractBidirectionalDijkstra(graph, source, target, weightAttribute) {
     d = item[0];
     v = item[2];
 
-    if (v in distances[dir])
-      continue;
+    if (v in distances[dir]) continue;
 
     distances[dir][v] = d;
 
     // Shortest path is found?
-    if (v in distances[1 - dir])
-      return [finalDistance, finalPath];
+    if (v in distances[1 - dir]) return [finalDistance, finalPath];
 
-    edges = dir === 1 ?
-      graph.inboundEdges(v) :
-      graph.outboundEdges(v);
+    edges = dir === 1 ? graph.inboundEdges(v) : graph.outboundEdges(v);
 
     for (i = 0, l = edges.length; i < l; i++) {
       e = edges[i];
@@ -153,9 +145,10 @@ function abstractBidirectionalDijkstra(graph, source, target, weightAttribute) {
       cost = distances[dir][v] + getWeight(e);
 
       if (u in distances[dir] && cost < distances[dir][u]) {
-        throw Error('graphology-shortest-path/dijkstra: contradictory paths found. Do some of your edges have a negative weight?');
-      }
-      else if (!(u in seen[dir]) || cost < seen[dir][u]) {
+        throw Error(
+          'graphology-shortest-path/dijkstra: contradictory paths found. Do some of your edges have a negative weight?'
+        );
+      } else if (!(u in seen[dir]) || cost < seen[dir][u]) {
         seen[dir][u] = cost;
         fringe[dir].push([cost, count++, u]);
         paths[dir][u] = paths[dir][v].concat(u);
@@ -200,49 +193,52 @@ function abstractDijkstraMultisource(
   target,
   paths
 ) {
-
   if (!isGraph(graph))
-    throw new Error('graphology-shortest-path/dijkstra: invalid graphology instance.');
+    throw new Error(
+      'graphology-shortest-path/dijkstra: invalid graphology instance.'
+    );
 
   if (target && !graph.hasNode(target))
-    throw new Error('graphology-shortest-path/dijkstra: the "' + target + '" target node does not exist in the given graph.');
+    throw new Error(
+      'graphology-shortest-path/dijkstra: the "' +
+        target +
+        '" target node does not exist in the given graph.'
+    );
 
   weightAttribute = weightAttribute || DEFAULTS.weightAttribute;
 
   // Building necessary functions
-  var getWeight = function(edge) {
+  var getWeight = function (edge) {
     var weight = graph.getEdgeAttribute(edge, weightAttribute);
 
-    if (typeof weight !== 'number' || isNaN(weight))
-      return 1;
+    if (typeof weight !== 'number' || isNaN(weight)) return 1;
 
     return weight;
   };
 
   var distances = {},
-      seen = {},
-      fringe = new Heap(DIJKSTRA_HEAP_COMPARATOR);
+    seen = {},
+    fringe = new Heap(DIJKSTRA_HEAP_COMPARATOR);
 
   var count = 0,
-      edges,
-      item,
-      cost,
-      v,
-      u,
-      e,
-      d,
-      i,
-      j,
-      l,
-      m;
+    edges,
+    item,
+    cost,
+    v,
+    u,
+    e,
+    d,
+    i,
+    j,
+    l,
+    m;
 
   for (i = 0, l = sources.length; i < l; i++) {
     v = sources[i];
     seen[v] = 0;
     fringe.push([0, count++, v]);
 
-    if (paths)
-      paths[v] = [v];
+    if (paths) paths[v] = [v];
   }
 
   while (fringe.size) {
@@ -250,13 +246,11 @@ function abstractDijkstraMultisource(
     d = item[0];
     v = item[2];
 
-    if (v in distances)
-      continue;
+    if (v in distances) continue;
 
     distances[v] = d;
 
-    if (v === target)
-      break;
+    if (v === target) break;
 
     edges = graph.outboundEdges(v);
 
@@ -265,19 +259,17 @@ function abstractDijkstraMultisource(
       u = graph.opposite(v, e);
       cost = getWeight(e) + distances[v];
 
-      if (cutoff && cost > cutoff)
-        continue;
+      if (cutoff && cost > cutoff) continue;
 
       if (u in distances && cost < distances[u]) {
-        throw Error('graphology-shortest-path/dijkstra: contradictory paths found. Do some of your edges have a negative weight?');
-      }
-
-      else if (!(u in seen) || cost < seen[u]) {
+        throw Error(
+          'graphology-shortest-path/dijkstra: contradictory paths found. Do some of your edges have a negative weight?'
+        );
+      } else if (!(u in seen) || cost < seen[u]) {
         seen[u] = cost;
         fringe.push([cost, count++, u]);
 
-        if (paths)
-          paths[u] = paths[v].concat(u);
+        if (paths) paths[u] = paths[v].concat(u);
       }
     }
   }
@@ -297,20 +289,18 @@ function abstractDijkstraMultisource(
 function singleSourceDijkstra(graph, source, weightAttribute) {
   var paths = {};
 
-  abstractDijkstraMultisource(
-    graph,
-    [source],
-    weightAttribute,
-    0,
-    null,
-    paths
-  );
+  abstractDijkstraMultisource(graph, [source], weightAttribute, 0, null, paths);
 
   return paths;
 }
 
 function bidirectionalDijkstra(graph, source, target, weightAttribute) {
-  return abstractBidirectionalDijkstra(graph, source, target, weightAttribute)[1];
+  return abstractBidirectionalDijkstra(
+    graph,
+    source,
+    target,
+    weightAttribute
+  )[1];
 }
 
 /**
@@ -331,20 +321,20 @@ function brandes(graph, source, weightAttribute) {
   weightAttribute = weightAttribute || DEFAULTS.weightAttribute;
 
   var S = [],
-      P = {},
-      sigma = {};
+    P = {},
+    sigma = {};
 
   var nodes = graph.nodes(),
-      edges,
-      item,
-      pred,
-      dist,
-      cost,
-      v,
-      w,
-      e,
-      i,
-      l;
+    edges,
+    item,
+    pred,
+    dist,
+    cost,
+    v,
+    w,
+    e,
+    i,
+    l;
 
   for (i = 0, l = nodes.length; i < l; i++) {
     v = nodes[i];
@@ -370,8 +360,7 @@ function brandes(graph, source, weightAttribute) {
     pred = item[2];
     v = item[3];
 
-    if (v in D)
-      continue;
+    if (v in D) continue;
 
     sigma[v] += sigma[pred];
     S.push(v);
@@ -389,8 +378,7 @@ function brandes(graph, source, weightAttribute) {
         Q.push([cost, count++, v, w]);
         sigma[w] = 0;
         P[w] = [v];
-      }
-      else if (cost === seen[w]) {
+      } else if (cost === seen[w]) {
         sigma[w] += sigma[v];
         P[w].push(v);
       }

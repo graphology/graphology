@@ -9,8 +9,8 @@
  * Matrices properties accessors.
  */
 var NODE_X = 0,
-    NODE_Y = 1,
-    NODE_SIZE = 2;
+  NODE_Y = 1,
+  NODE_SIZE = 2;
 
 /**
  * Constants.
@@ -36,7 +36,6 @@ function jitter() {
  * @return {object}                  - Some metadata.
  */
 module.exports = function iterate(options, NodeMatrix) {
-
   // Caching options
   var margin = options.margin;
   var ratio = options.ratio;
@@ -76,18 +75,17 @@ module.exports = function iterate(options, NodeMatrix) {
   var xCenter = (xMin + xMax) / 2;
   var yCenter = (yMin + yMax) / 2;
 
-  xMin = xCenter - expansion * width / 2;
-  xMax = xCenter + expansion * width / 2;
-  yMin = yCenter - expansion * height / 2;
-  yMax = yCenter + expansion * height / 2;
+  xMin = xCenter - (expansion * width) / 2;
+  xMax = xCenter + (expansion * width) / 2;
+  yMin = yCenter - (expansion * height) / 2;
+  yMax = yCenter + (expansion * height) / 2;
 
   // Building grid
   var grid = new Array(gridSize * gridSize),
-      gridLength = grid.length,
-      c;
+    gridLength = grid.length,
+    c;
 
-  for (c = 0; c < gridLength; c++)
-    grid[c] = [];
+  for (c = 0; c < gridLength; c++) grid[c] = [];
 
   var nxMin, nxMax, nyMin, nyMax;
   var xMinBox, xMaxBox, yMinBox, yMaxBox;
@@ -104,10 +102,10 @@ module.exports = function iterate(options, NodeMatrix) {
     nyMin = y - size;
     nyMax = y + size;
 
-    xMinBox = Math.floor(gridSize * (nxMin - xMin) / (xMax - xMin));
-    xMaxBox = Math.floor(gridSize * (nxMax - xMin) / (xMax - xMin));
-    yMinBox = Math.floor(gridSize * (nyMin - yMin) / (yMax - yMin));
-    yMaxBox = Math.floor(gridSize * (nyMax - yMin) / (yMax - yMin));
+    xMinBox = Math.floor((gridSize * (nxMin - xMin)) / (xMax - xMin));
+    xMaxBox = Math.floor((gridSize * (nxMax - xMin)) / (xMax - xMin));
+    yMinBox = Math.floor((gridSize * (nyMin - yMin)) / (yMax - yMin));
+    yMaxBox = Math.floor((gridSize * (nyMax - yMin)) / (yMax - yMin));
 
     for (col = xMinBox; col <= xMaxBox; col++) {
       for (row = yMinBox; row <= yMaxBox; row++) {
@@ -139,11 +137,9 @@ module.exports = function iterate(options, NodeMatrix) {
         n2 = cell[j];
         h = hashPair(n1, n2);
 
-        if (gridLength > 1 && collisions.has(h))
-          continue;
+        if (gridLength > 1 && collisions.has(h)) continue;
 
-        if (gridLength > 1)
-          collisions.add(h);
+        if (gridLength > 1) collisions.add(h);
 
         x2 = NodeMatrix[n2 + NODE_X];
         y2 = NodeMatrix[n2 + NODE_Y];
@@ -152,10 +148,7 @@ module.exports = function iterate(options, NodeMatrix) {
         xDist = x2 - x1;
         yDist = y2 - y1;
         dist = Math.sqrt(xDist * xDist + yDist * yDist);
-        collision = dist < (
-          (s1 * ratio + margin) +
-          (s2 * ratio + margin)
-        );
+        collision = dist < s1 * ratio + margin + (s2 * ratio + margin);
 
         if (collision) {
           converged = false;
@@ -163,10 +156,9 @@ module.exports = function iterate(options, NodeMatrix) {
           n2 = (n2 / PPN) | 0;
 
           if (dist > 0) {
-            deltaX[n2] += xDist / dist * (1 + s1);
-            deltaY[n2] += yDist / dist * (1 + s1);
-          }
-          else {
+            deltaX[n2] += (xDist / dist) * (1 + s1);
+            deltaY[n2] += (yDist / dist) * (1 + s1);
+          } else {
             // Nodes are on the exact same spot, we need to jitter a bit
             deltaX[n2] += width * jitter();
             deltaY[n2] += height * jitter();

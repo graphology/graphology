@@ -15,12 +15,13 @@ var isGraph = require('./is-graph.js');
  */
 module.exports = function inferType(graph) {
   if (!isGraph(graph))
-    throw new Error('graphology-utils/infer-type: expecting a valid graphology instance.');
+    throw new Error(
+      'graphology-utils/infer-type: expecting a valid graphology instance.'
+    );
 
   var declaredType = graph.type;
 
-  if (declaredType !== 'mixed')
-    return declaredType;
+  if (declaredType !== 'mixed') return declaredType;
 
   if (
     (graph.directedSize === 0 && graph.undirectedSize === 0) ||
@@ -28,8 +29,7 @@ module.exports = function inferType(graph) {
   )
     return 'mixed';
 
-  if (graph.directedSize > 0)
-    return 'directed';
+  if (graph.directedSize > 0) return 'directed';
 
   return 'undirected';
 };

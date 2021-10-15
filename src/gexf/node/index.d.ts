@@ -5,7 +5,10 @@ export function parse<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
->(Graph: GraphConstructor<NodeAttributes, EdgeAttributes, GraphAttributes>, source: string | Document): Graph<NodeAttributes, EdgeAttributes, GraphAttributes>;
+>(
+  Graph: GraphConstructor<NodeAttributes, EdgeAttributes, GraphAttributes>,
+  source: string | Document
+): Graph<NodeAttributes, EdgeAttributes, GraphAttributes>;
 
 export function write<
   NodeAttributes extends Attributes = Attributes,
@@ -14,5 +17,10 @@ export function write<
   FormattedEdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  options?: GexfWriterOptions<NodeAttributes, EdgeAttributes, FormattedNodeAttributes, FormattedEdgeAttributes>
+  options?: GexfWriterOptions<
+    NodeAttributes,
+    EdgeAttributes,
+    FormattedNodeAttributes,
+    FormattedEdgeAttributes
+  >
 ): string;

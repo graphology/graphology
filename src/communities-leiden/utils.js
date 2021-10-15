@@ -10,8 +10,7 @@ var createRandom = require('pandemonium/random').createRandom;
 function addWeightToCommunity(map, community, weight) {
   var currentWeight = map.get(community);
 
-  if (typeof currentWeight === 'undefined')
-    currentWeight = 0;
+  if (typeof currentWeight === 'undefined') currentWeight = 0;
 
   currentWeight += weight;
 
@@ -53,7 +52,7 @@ function UndirectedLeidenAddenda(index, options) {
   this.macroCommunities = null;
 }
 
-UndirectedLeidenAddenda.prototype.groupByCommunities = function() {
+UndirectedLeidenAddenda.prototype.groupByCommunities = function () {
   var index = this.index;
 
   var n, i, c, b, o;
@@ -85,7 +84,7 @@ UndirectedLeidenAddenda.prototype.groupByCommunities = function() {
   this.C = index.C;
 };
 
-UndirectedLeidenAddenda.prototype.communities = function() {
+UndirectedLeidenAddenda.prototype.communities = function () {
   var communities = new Array(this.B);
 
   var i, j, community, start, stop;
@@ -105,10 +104,11 @@ UndirectedLeidenAddenda.prototype.communities = function() {
   return communities;
 };
 
-UndirectedLeidenAddenda.prototype.mergeNodesSubset = function(start, stop) {
+UndirectedLeidenAddenda.prototype.mergeNodesSubset = function (start, stop) {
   var index = this.index;
   // console.log()
-  var currentMacroCommunity = index.belongings[this.nodesSortedByCommunities[start]];
+  var currentMacroCommunity =
+    index.belongings[this.nodesSortedByCommunities[start]];
   var neighboringCommunities = this.neighboringCommunities;
 
   var totalNodeWeight = 0;
@@ -139,8 +139,7 @@ UndirectedLeidenAddenda.prototype.mergeNodesSubset = function(start, stop) {
       this.degrees[i] += w;
 
       // Only considering links inside of macro community
-      if (index.belongings[et] !== currentMacroCommunity)
-        continue;
+      if (index.belongings[et] !== currentMacroCommunity) continue;
 
       totalNodeWeight += w;
       this.externalEdgeWeightPerCommunity[i] += w;
@@ -159,19 +158,15 @@ UndirectedLeidenAddenda.prototype.mergeNodesSubset = function(start, stop) {
   var order = stop - start;
 
   var degree,
-      bestCommunity,
-      qualityValueIncrement,
-      maxQualityValueIncrement,
-      totalTransformedQualityValueIncrement,
-      targetCommunity,
-      targetCommunityDegree,
-      targetCommunityWeight;
+    bestCommunity,
+    qualityValueIncrement,
+    maxQualityValueIncrement,
+    totalTransformedQualityValueIncrement,
+    targetCommunity,
+    targetCommunityDegree,
+    targetCommunityWeight;
 
-  var r,
-      lo,
-      hi,
-      mid,
-      chosenCommunity;
+  var r, lo, hi, mid, chosenCommunity;
 
   ri = this.random(start, stop - 1);
 
@@ -194,7 +189,9 @@ UndirectedLeidenAddenda.prototype.mergeNodesSubset = function(start, stop) {
     // console.log(i, this.externalEdgeWeightPerCommunity[i], (this.communityWeights[i] * (totalNodeWeight / 2 - this.communityWeights[i]) * this.resolution))
     if (
       this.externalEdgeWeightPerCommunity[i] <
-      (this.communityWeights[i] * (totalNodeWeight / 2 - this.communityWeights[i]) * this.resolution)
+      this.communityWeights[i] *
+        (totalNodeWeight / 2 - this.communityWeights[i]) *
+        this.resolution
     ) {
       // console.warn('skipping ' + i + ' because of constraint')
       continue;
@@ -218,18 +215,13 @@ UndirectedLeidenAddenda.prototype.mergeNodesSubset = function(start, stop) {
 
       // NOTE: we could index not to repeat this, but I have a feeling this
       // would not justify the spent memory
-      if (index.belongings[et] !== currentMacroCommunity)
-        continue;
+      if (index.belongings[et] !== currentMacroCommunity) continue;
 
       w = index.weights[ei];
 
       degree += w;
 
-      addWeightToCommunity(
-        neighboringCommunities,
-        this.belongings[et],
-        w
-      );
+      addWeightToCommunity(neighboringCommunities, this.belongings[et], w);
     }
 
     // console.warn('Neighboring ' + i, neighboringCommunities)
@@ -247,12 +239,16 @@ UndirectedLeidenAddenda.prototype.mergeNodesSubset = function(start, stop) {
       // Connectivity constraint
       if (
         this.externalEdgeWeightPerCommunity[targetCommunity] >=
-        (targetCommunityWeight * (totalNodeWeight / 2 - targetCommunityWeight) * this.resolution)
+        targetCommunityWeight *
+          (totalNodeWeight / 2 - targetCommunityWeight) *
+          this.resolution
       ) {
-        qualityValueIncrement = (
+        qualityValueIncrement =
           targetCommunityDegree -
-          (degree + index.loops[i]) * targetCommunityWeight * this.resolution / totalNodeWeight
-        );
+          ((degree + index.loops[i]) *
+            targetCommunityWeight *
+            this.resolution) /
+            totalNodeWeight;
 
         // console.warn('inc', qualityValueIncrement, 'for', targetCommunity, targetCommunityDegree, targetCommunityWeights);
 
@@ -262,9 +258,10 @@ UndirectedLeidenAddenda.prototype.mergeNodesSubset = function(start, stop) {
         }
 
         if (qualityValueIncrement >= 0)
-          totalTransformedQualityValueIncrement += Math.exp(qualityValueIncrement / this.randomness);
-      }
-      else {
+          totalTransformedQualityValueIncrement += Math.exp(
+            qualityValueIncrement / this.randomness
+          );
+      } else {
         // console.warn('inc skip', targetCommunity, this.externalEdgeWeightPerCommunity[targetCommunity], targetCommunityDegree, targetCommunityWeights, totalNodeWeight, targetCommunityWeights * (totalNodeWeight - targetCommunityWeights) * this.resolution);
       }
 
@@ -283,15 +280,12 @@ UndirectedLeidenAddenda.prototype.mergeNodesSubset = function(start, stop) {
       while (lo < hi - 1) {
         mid = (lo + hi) >>> 1;
 
-        if (this.cumulativeIncrement[mid] >= r)
-          hi = mid;
-        else
-          lo = mid;
+        if (this.cumulativeIncrement[mid] >= r) hi = mid;
+        else lo = mid;
       }
 
       chosenCommunity = neighboringCommunities.dense[hi];
-    }
-    else {
+    } else {
       chosenCommunity = bestCommunity;
     }
 
@@ -306,17 +300,17 @@ UndirectedLeidenAddenda.prototype.mergeNodesSubset = function(start, stop) {
       // console.log('MACRO', i, et, currentMacroCommunity)
       // NOTE: we could index not to repeat this, but I have a feeling this
       // would not justify the spent memory
-      if (index.belongings[et] !== currentMacroCommunity)
-        continue;
+      if (index.belongings[et] !== currentMacroCommunity) continue;
       // console.log('micro', targetCommunity === chosenCommunity, microDegrees[et]);
 
       targetCommunity = this.belongings[et];
 
       if (targetCommunity === chosenCommunity) {
-        this.externalEdgeWeightPerCommunity[chosenCommunity] -= microDegrees[et];
-      }
-      else {
-        this.externalEdgeWeightPerCommunity[chosenCommunity] += microDegrees[et];
+        this.externalEdgeWeightPerCommunity[chosenCommunity] -=
+          microDegrees[et];
+      } else {
+        this.externalEdgeWeightPerCommunity[chosenCommunity] +=
+          microDegrees[et];
       }
     }
     // console.log('aft', this.externalEdgeWeightPerCommunity)
@@ -338,8 +332,7 @@ UndirectedLeidenAddenda.prototype.mergeNodesSubset = function(start, stop) {
       this.belongings[i] = chosenCommunity;
       this.nonSingleton[chosenCommunity] = 1;
       this.C--;
-    }
-    else {
+    } else {
       // console.warn('keeping ' + i + ' in singleton');
     }
   }
@@ -355,7 +348,7 @@ UndirectedLeidenAddenda.prototype.mergeNodesSubset = function(start, stop) {
   return microCommunities.dense.slice(0, microCommunities.size);
 };
 
-UndirectedLeidenAddenda.prototype.refinePartition = function() {
+UndirectedLeidenAddenda.prototype.refinePartition = function () {
   this.groupByCommunities();
 
   this.macroCommunities = new Array(this.B);
@@ -375,7 +368,7 @@ UndirectedLeidenAddenda.prototype.refinePartition = function() {
   // console.log(this.macroCommunities)
 };
 
-UndirectedLeidenAddenda.prototype.split = function() {
+UndirectedLeidenAddenda.prototype.split = function () {
   var index = this.index;
   var isolates = this.neighboringCommunities;
 
@@ -387,8 +380,7 @@ UndirectedLeidenAddenda.prototype.split = function() {
   for (i = 0; i < index.C; i++) {
     community = this.belongings[i];
 
-    if (i !== community)
-      continue;
+    if (i !== community) continue;
 
     isolated = index.isolate(i, this.degrees[i]);
     isolates.set(community, isolated);
@@ -398,8 +390,7 @@ UndirectedLeidenAddenda.prototype.split = function() {
   for (i = 0; i < index.C; i++) {
     community = this.belongings[i];
 
-    if (i === community)
-      continue;
+    if (i === community) continue;
 
     isolated = isolates.get(community);
     index.move(i, this.degrees[i], isolated);
@@ -411,12 +402,11 @@ UndirectedLeidenAddenda.prototype.split = function() {
   for (i = 0; i < this.macroCommunities.length; i++) {
     macro = this.macroCommunities[i];
 
-    for (j = 0; j < macro.length; j++)
-      macro[j] = isolates.get(macro[j]);
+    for (j = 0; j < macro.length; j++) macro[j] = isolates.get(macro[j]);
   }
 };
 
-UndirectedLeidenAddenda.prototype.zoomOut = function() {
+UndirectedLeidenAddenda.prototype.zoomOut = function () {
   var index = this.index;
   this.refinePartition();
   // throw 'stop';
@@ -455,14 +445,13 @@ UndirectedLeidenAddenda.prototype.zoomOut = function() {
   // }
 };
 
-UndirectedLeidenAddenda.prototype.onlySingletons = function() {
+UndirectedLeidenAddenda.prototype.onlySingletons = function () {
   var index = this.index;
 
   var i;
 
   for (i = 0; i < index.C; i++) {
-    if (index.counts[i] > 1)
-      return false;
+    if (index.counts[i] > 1) return false;
   }
 
   return true;

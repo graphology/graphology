@@ -5,8 +5,8 @@
  * Library endpoint.
  */
 var isGraph = require('graphology-utils/is-graph'),
-    iterate = require('./iterate.js'),
-    helpers = require('./helpers.js');
+  iterate = require('./iterate.js'),
+  helpers = require('./helpers.js');
 
 var DEFAULT_SETTINGS = require('./defaults.js');
 
@@ -22,29 +22,36 @@ var DEFAULT_SETTINGS = require('./defaults.js');
  */
 function abstractSynchronousLayout(assign, graph, params) {
   if (!isGraph(graph))
-    throw new Error('graphology-layout-forceatlas2: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-layout-forceatlas2: the given graph is not a valid graphology instance.'
+    );
 
-  if (typeof params === 'number')
-    params = {iterations: params};
+  if (typeof params === 'number') params = {iterations: params};
 
   var iterations = params.iterations;
 
   if (typeof iterations !== 'number')
-    throw new Error('graphology-layout-forceatlas2: invalid number of iterations.');
+    throw new Error(
+      'graphology-layout-forceatlas2: invalid number of iterations.'
+    );
 
   if (iterations <= 0)
-    throw new Error('graphology-layout-forceatlas2: you should provide a positive number of iterations.');
+    throw new Error(
+      'graphology-layout-forceatlas2: you should provide a positive number of iterations.'
+    );
 
   // Validating settings
   var settings = helpers.assign({}, DEFAULT_SETTINGS, params.settings),
-      validationError = helpers.validateSettings(settings);
+    validationError = helpers.validateSettings(settings);
 
   if (validationError)
-    throw new Error('graphology-layout-forceatlas2: ' + validationError.message);
+    throw new Error(
+      'graphology-layout-forceatlas2: ' + validationError.message
+    );
 
   // Building matrices
   var matrices = helpers.graphToByteArrays(graph),
-      i;
+    i;
 
   // Iterating
   for (i = 0; i < iterations; i++)

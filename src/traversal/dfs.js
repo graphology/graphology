@@ -15,30 +15,31 @@ var TraversalRecord = require('./utils').TraversalRecord;
  */
 function dfs(graph, callback) {
   if (!isGraph(graph))
-    throw new Error('graphology-traversal/dfs: expecting a graphology instance.');
+    throw new Error(
+      'graphology-traversal/dfs: expecting a graphology instance.'
+    );
 
   if (typeof callback !== 'function')
-    throw new Error('graphology-traversal/dfs: given callback is not a function.');
+    throw new Error(
+      'graphology-traversal/dfs: given callback is not a function.'
+    );
 
   // Early termination
-  if (graph.order === 0)
-    return;
+  if (graph.order === 0) return;
 
   var seen = new Set();
   var stack = [];
   var depth, record;
 
   function neighborCallback(neighbor, attr) {
-    if (seen.has(neighbor))
-      return;
+    if (seen.has(neighbor)) return;
 
     seen.add(neighbor);
     stack.push(new TraversalRecord(neighbor, attr, depth + 1));
   }
 
-  graph.forEachNode(function(node, attr) {
-    if (seen.has(node))
-      return;
+  graph.forEachNode(function (node, attr) {
+    if (seen.has(node)) return;
 
     seen.add(node);
     stack.push(new TraversalRecord(node, attr, 0));
@@ -64,14 +65,17 @@ function dfs(graph, callback) {
  */
 function dfsFromNode(graph, node, callback) {
   if (!isGraph(graph))
-    throw new Error('graphology-traversal/dfs: expecting a graphology instance.');
+    throw new Error(
+      'graphology-traversal/dfs: expecting a graphology instance.'
+    );
 
   if (typeof callback !== 'function')
-    throw new Error('graphology-traversal/dfs: given callback is not a function.');
+    throw new Error(
+      'graphology-traversal/dfs: given callback is not a function.'
+    );
 
   // Early termination
-  if (graph.order === 0)
-    return;
+  if (graph.order === 0) return;
 
   node = '' + node;
 
@@ -80,8 +84,7 @@ function dfsFromNode(graph, node, callback) {
   var depth, record;
 
   function neighborCallback(neighbor, attr) {
-    if (seen.has(neighbor))
-      return;
+    if (seen.has(neighbor)) return;
 
     seen.add(neighbor);
     stack.push(new TraversalRecord(neighbor, attr, depth + 1));

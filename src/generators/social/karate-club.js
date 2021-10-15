@@ -63,10 +63,12 @@ var CLUB1 = new Set([
  */
 module.exports = function karateClub(GraphClass) {
   if (!isGraphConstructor(GraphClass))
-    throw new Error('graphology-generators/social/karate: invalid Graph constructor.');
+    throw new Error(
+      'graphology-generators/social/karate: invalid Graph constructor.'
+    );
 
   var graph = new GraphClass(),
-      club;
+    club;
 
   for (var i = 0; i < 34; i++) {
     club = CLUB1.has(i) ? 'Mr. Hi' : 'Officer';
@@ -74,12 +76,7 @@ module.exports = function karateClub(GraphClass) {
     graph.addNode(i, {club: club});
   }
 
-  var line,
-      entry,
-      row,
-      column,
-      l,
-      m;
+  var line, entry, row, column, l, m;
 
   for (row = 0, l = DATA.length; row < l; row++) {
     line = DATA[row].split('');
@@ -87,8 +84,7 @@ module.exports = function karateClub(GraphClass) {
     for (column = row + 1, m = line.length; column < m; column++) {
       entry = +line[column];
 
-      if (entry)
-        graph.addEdgeWithKey(row + '->' + column, row, column);
+      if (entry) graph.addEdgeWithKey(row + '->' + column, row, column);
     }
   }
 

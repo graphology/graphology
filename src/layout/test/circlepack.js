@@ -1,10 +1,10 @@
 var assert = require('chai').assert,
-    Graph = require('graphology'),
-    circlepack = require('../circlepack.js');
+  Graph = require('graphology'),
+  circlepack = require('../circlepack.js');
 
 var seedrandom = require('seedrandom');
 
-var rng = function() {
+var rng = function () {
   return seedrandom('test');
 };
 
@@ -21,7 +21,7 @@ function checkPositions(A, B) {
 }
 
 describe('circlepack', function () {
-  it('should correctly produce a layout.', function() {
+  it('should correctly produce a layout.', function () {
     var graph = new Graph();
     [1, 2, 3, 4].forEach(function (node) {
       graph.addNode(node);
@@ -38,9 +38,9 @@ describe('circlepack', function () {
     });
   });
 
-  it('should be possible to assign the results to the nodes.', function() {
+  it('should be possible to assign the results to the nodes.', function () {
     var graph = new Graph();
-    [1, 2, 3, 4].forEach(function(node) {
+    [1, 2, 3, 4].forEach(function (node) {
       graph.addNode(node);
     });
 
@@ -48,42 +48,46 @@ describe('circlepack', function () {
 
     circlepack.assign(graph, {rng: rng()});
 
-    checkPositions({1: get(1), 2: get(2), 3: get(3), 4: get(4)},
+    checkPositions(
+      {1: get(1), 2: get(2), 3: get(3), 4: get(4)},
       {
         1: {x: -1, y: 0},
         2: {x: 1, y: 0},
         3: {x: 0, y: 1.7320508075688772},
         4: {x: 0, y: -1.7320508075688772}
-      });
+      }
+    );
   });
 
-  it('should be possible to offset the center.', function() {
+  it('should be possible to offset the center.', function () {
     var graph = new Graph();
-    [1, 2, 3, 4].forEach(function(node) {
+    [1, 2, 3, 4].forEach(function (node) {
       graph.addNode(node);
     });
 
     var positions = circlepack(graph, {center: 0.7, rng: rng()});
 
-    checkPositions(positions,
-      {
-        1: {x: -0.3, y: 0.7},
-        2: {x: 1.7, y: 0.7},
-        3: {x: 0.7, y: 2.4320508075688772},
-        4: {x: 0.7, y: -1.0320508075688772}
-      });
+    checkPositions(positions, {
+      1: {x: -0.3, y: 0.7},
+      2: {x: 1.7, y: 0.7},
+      3: {x: 0.7, y: 2.4320508075688772},
+      4: {x: 0.7, y: -1.0320508075688772}
+    });
   });
 
   // The tests results below have been checked with Gephi.
-  it('should produce layout according to properties (1/2).', function() {
+  it('should produce layout according to properties (1/2).', function () {
     var graph = new Graph();
-    [1, 2, 3, 4].forEach(function(node) {
+    [1, 2, 3, 4].forEach(function (node) {
       graph.addNode(node);
-      graph.setNodeAttribute(node, 'degree', (node === 1) ? 3 : 1);
-      graph.setNodeAttribute(node, 'size', (node === 1) ? 30 : 10);
+      graph.setNodeAttribute(node, 'degree', node === 1 ? 3 : 1);
+      graph.setNodeAttribute(node, 'size', node === 1 ? 30 : 10);
     });
 
-    var positions = circlepack(graph, {hierarchyAttributes: ['degree'], rng: rng()});
+    var positions = circlepack(graph, {
+      hierarchyAttributes: ['degree'],
+      rng: rng()
+    });
 
     checkPositions(positions, {
       1: {x: 21.547005383792513, y: 0},
@@ -93,16 +97,19 @@ describe('circlepack', function () {
     });
   });
 
-  it('should produce layout according to properties (2/2).', function() {
+  it('should produce layout according to properties (2/2).', function () {
     var graph = new Graph();
-    [1, 2, 3, 4, 5, 6].forEach(function(node) {
+    [1, 2, 3, 4, 5, 6].forEach(function (node) {
       graph.addNode(node);
-      graph.setNodeAttribute(node, 'degree', (node === 1 || node === 4) ? 3 : 1);
-      graph.setNodeAttribute(node, 'size', (node === 1 || node === 4) ? 30 : 10);
-      graph.setNodeAttribute(node, 'community', (node < 4) ? 0 : 1);
+      graph.setNodeAttribute(node, 'degree', node === 1 || node === 4 ? 3 : 1);
+      graph.setNodeAttribute(node, 'size', node === 1 || node === 4 ? 30 : 10);
+      graph.setNodeAttribute(node, 'community', node < 4 ? 0 : 1);
     });
 
-    var positions = circlepack(graph, {hierarchyAttributes: ['community', 'degree'], rng: rng()});
+    var positions = circlepack(graph, {
+      hierarchyAttributes: ['community', 'degree'],
+      rng: rng()
+    });
 
     checkPositions(positions, {
       1: {x: -30, y: 0},
@@ -112,24 +119,25 @@ describe('circlepack', function () {
       5: {x: 10, y: 0},
       6: {x: 30, y: 0}
     });
-
   });
 
-  it('should handle an non-existing attribute.', function() {
+  it('should handle an non-existing attribute.', function () {
     var graph = new Graph();
-    [1, 2, 3, 4].forEach(function(node) {
+    [1, 2, 3, 4].forEach(function (node) {
       graph.addNode(node);
       graph.setNodeAttribute(node, 'size', 10);
     });
 
-    var positions = circlepack(graph, {hierarchyAttributes: ['degree', 'dummy'], rng: rng()});
+    var positions = circlepack(graph, {
+      hierarchyAttributes: ['degree', 'dummy'],
+      rng: rng()
+    });
 
-    checkPositions(positions,
-      {
-        1: {x: -10, y: 0},
-        2: {x: 10, y: 0},
-        3: {x: 0, y: 17.320508075688772},
-        4: {x: 0, y: -17.320508075688772}
-      });
+    checkPositions(positions, {
+      1: {x: -10, y: 0},
+      2: {x: 10, y: 0},
+      3: {x: 0, y: 17.320508075688772},
+      4: {x: 0, y: -17.320508075688772}
+    });
   });
 });

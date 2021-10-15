@@ -15,14 +15,15 @@ var isGraphConstructor = require('graphology-utils/is-graph-constructor');
  */
 module.exports = function empty(GraphClass, order) {
   if (!isGraphConstructor(GraphClass))
-    throw new Error('graphology-generators/classic/empty: invalid Graph constructor.');
+    throw new Error(
+      'graphology-generators/classic/empty: invalid Graph constructor.'
+    );
 
   var graph = new GraphClass();
 
   var i;
 
-  for (i = 0; i < order; i++)
-    graph.addNode(i);
+  for (i = 0; i < order; i++) graph.addNode(i);
 
   return graph;
 };

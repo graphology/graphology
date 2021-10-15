@@ -15,27 +15,27 @@ function StackSet() {
   this.size = 0;
 }
 
-StackSet.prototype.has = function(value) {
+StackSet.prototype.has = function (value) {
   return this.set.has(value);
 };
 
 // NOTE: we don't check earlier existence because we don't need to
-StackSet.prototype.push = function(value) {
+StackSet.prototype.push = function (value) {
   this.stack.push(value);
   this.set.add(value);
   this.size++;
 };
 
-StackSet.prototype.pop = function() {
+StackSet.prototype.pop = function () {
   this.set.delete(this.stack.pop());
   this.size--;
 };
 
-StackSet.prototype.path = function(value) {
+StackSet.prototype.path = function (value) {
   return this.stack.concat(value);
 };
 
-StackSet.of = function(value) {
+StackSet.of = function (value) {
   var set = new StackSet();
   set.push(value);
 
@@ -51,29 +51,32 @@ function RecordStackSet() {
   this.size = 0;
 }
 
-RecordStackSet.prototype.has = function(value) {
+RecordStackSet.prototype.has = function (value) {
   return this.set.has(value);
 };
 
 // NOTE: we don't check earlier existence because we don't need to
-RecordStackSet.prototype.push = function(record) {
+RecordStackSet.prototype.push = function (record) {
   this.stack.push(record);
   this.set.add(record[1]);
   this.size++;
 };
 
-RecordStackSet.prototype.pop = function() {
+RecordStackSet.prototype.pop = function () {
   this.set.delete(this.stack.pop()[1]);
   this.size--;
 };
 
-RecordStackSet.prototype.path = function(record) {
-  return this.stack.slice(1).map(function(r) {
-    return r[0];
-  }).concat([record[0]]);
+RecordStackSet.prototype.path = function (record) {
+  return this.stack
+    .slice(1)
+    .map(function (r) {
+      return r[0];
+    })
+    .concat([record[0]]);
 };
 
-RecordStackSet.of = function(value) {
+RecordStackSet.of = function (value) {
   var set = new RecordStackSet();
   set.push([null, value]);
 
@@ -90,13 +93,23 @@ RecordStackSet.of = function(value) {
  */
 function allSimplePaths(graph, source, target) {
   if (!isGraph(graph))
-    throw new Error('graphology-simple-path.allSimplePaths: expecting a graphology instance.');
+    throw new Error(
+      'graphology-simple-path.allSimplePaths: expecting a graphology instance.'
+    );
 
   if (!graph.hasNode(source))
-    throw new Error('graphology-simple-path.allSimplePaths: expecting: could not find source node "' + source + '" in the graph.');
+    throw new Error(
+      'graphology-simple-path.allSimplePaths: expecting: could not find source node "' +
+        source +
+        '" in the graph.'
+    );
 
   if (!graph.hasNode(target))
-    throw new Error('graphology-simple-path.allSimplePaths: expecting: could not find target node "' + target + '" in the graph.');
+    throw new Error(
+      'graphology-simple-path.allSimplePaths: expecting: could not find target node "' +
+        target +
+        '" in the graph.'
+    );
 
   source = '' + source;
   target = '' + target;
@@ -107,7 +120,7 @@ function allSimplePaths(graph, source, target) {
   var visited = StackSet.of(cycle ? '§SOURCE§' : source);
 
   var paths = [],
-      p;
+    p;
 
   var children, child;
 
@@ -118,27 +131,21 @@ function allSimplePaths(graph, source, target) {
     if (!child) {
       stack.pop();
       visited.pop();
-    }
-
-    else {
-      if (visited.has(child))
-        continue;
+    } else {
+      if (visited.has(child)) continue;
 
       if (child === target) {
         p = visited.path(child);
 
-        if (cycle)
-          p[0] = source;
+        if (cycle) p[0] = source;
 
         paths.push(p);
       }
 
       visited.push(child);
 
-      if (!visited.has(target))
-        stack.push(graph.outboundNeighbors(child));
-      else
-        visited.pop();
+      if (!visited.has(target)) stack.push(graph.outboundNeighbors(child));
+      else visited.pop();
     }
   }
 
@@ -151,7 +158,7 @@ function allSimplePaths(graph, source, target) {
 function collectEdges(graph, source) {
   var records = [];
 
-  graph.forEachOutboundEdge(source, function(edge, attr, ext1, ext2) {
+  graph.forEachOutboundEdge(source, function (edge, attr, ext1, ext2) {
     records.push([edge, source === ext1 ? ext2 : ext1]);
   });
 
@@ -163,19 +170,17 @@ function collectMultiEdges(graph, source) {
 
   var target;
 
-  graph.forEachOutboundEdge(source, function(edge, attr, ext1, ext2) {
+  graph.forEachOutboundEdge(source, function (edge, attr, ext1, ext2) {
     target = source === ext1 ? ext2 : ext1;
 
-    if (!(target in index))
-      index[target] = [];
+    if (!(target in index)) index[target] = [];
 
     index[target].push(edge);
   });
 
   var records = [];
 
-  for (target in index)
-    records.push([index[target], target]);
+  for (target in index) records.push([index[target], target]);
 
   return records;
 }
@@ -190,16 +195,28 @@ function collectMultiEdges(graph, source) {
  */
 function allSimpleEdgePaths(graph, source, target) {
   if (!isGraph(graph))
-    throw new Error('graphology-simple-path.allSimpleEdgePaths: expecting a graphology instance.');
+    throw new Error(
+      'graphology-simple-path.allSimpleEdgePaths: expecting a graphology instance.'
+    );
 
   if (graph.multi)
-    throw new Error('graphology-simple-path.allSimpleEdgePaths: not implemented for multi graphs.');
+    throw new Error(
+      'graphology-simple-path.allSimpleEdgePaths: not implemented for multi graphs.'
+    );
 
   if (!graph.hasNode(source))
-    throw new Error('graphology-simple-path.allSimpleEdgePaths: expecting: could not find source node "' + source + '" in the graph.');
+    throw new Error(
+      'graphology-simple-path.allSimpleEdgePaths: expecting: could not find source node "' +
+        source +
+        '" in the graph.'
+    );
 
   if (!graph.hasNode(target))
-    throw new Error('graphology-simple-path.allSimpleEdgePaths: expecting: could not find target node "' + target + '" in the graph.');
+    throw new Error(
+      'graphology-simple-path.allSimpleEdgePaths: expecting: could not find target node "' +
+        target +
+        '" in the graph.'
+    );
 
   source = '' + source;
   target = '' + target;
@@ -210,7 +227,7 @@ function allSimpleEdgePaths(graph, source, target) {
   var visited = RecordStackSet.of(cycle ? '§SOURCE§' : source);
 
   var paths = [],
-      p;
+    p;
 
   var record, children, child;
 
@@ -221,12 +238,10 @@ function allSimpleEdgePaths(graph, source, target) {
     if (!record) {
       stack.pop();
       visited.pop();
-    }
-    else {
+    } else {
       child = record[1];
 
-      if (visited.has(child))
-        continue;
+      if (visited.has(child)) continue;
 
       if (child === target) {
         p = visited.path(record);
@@ -235,10 +250,8 @@ function allSimpleEdgePaths(graph, source, target) {
 
       visited.push(record);
 
-      if (!visited.has(target))
-        stack.push(collectEdges(graph, child));
-      else
-        visited.pop();
+      if (!visited.has(target)) stack.push(collectEdges(graph, child));
+      else visited.pop();
     }
   }
 
@@ -256,13 +269,23 @@ function allSimpleEdgePaths(graph, source, target) {
  */
 function allSimpleEdgeGroupPaths(graph, source, target) {
   if (!isGraph(graph))
-    throw new Error('graphology-simple-path.allSimpleEdgeGroupPaths: expecting a graphology instance.');
+    throw new Error(
+      'graphology-simple-path.allSimpleEdgeGroupPaths: expecting a graphology instance.'
+    );
 
   if (!graph.hasNode(source))
-    throw new Error('graphology-simple-path.allSimpleEdgeGroupPaths: expecting: could not find source node "' + source + '" in the graph.');
+    throw new Error(
+      'graphology-simple-path.allSimpleEdgeGroupPaths: expecting: could not find source node "' +
+        source +
+        '" in the graph.'
+    );
 
   if (!graph.hasNode(target))
-    throw new Error('graphology-simple-path.allSimpleEdgeGroupPaths: expecting: could not find target node "' + target + '" in the graph.');
+    throw new Error(
+      'graphology-simple-path.allSimpleEdgeGroupPaths: expecting: could not find target node "' +
+        target +
+        '" in the graph.'
+    );
 
   source = '' + source;
   target = '' + target;
@@ -273,7 +296,7 @@ function allSimpleEdgeGroupPaths(graph, source, target) {
   var visited = RecordStackSet.of(cycle ? '§SOURCE§' : source);
 
   var paths = [],
-      p;
+    p;
 
   var record, children, child;
 
@@ -284,12 +307,10 @@ function allSimpleEdgeGroupPaths(graph, source, target) {
     if (!record) {
       stack.pop();
       visited.pop();
-    }
-    else {
+    } else {
       child = record[1];
 
-      if (visited.has(child))
-        continue;
+      if (visited.has(child)) continue;
 
       if (child === target) {
         p = visited.path(record);
@@ -298,10 +319,8 @@ function allSimpleEdgeGroupPaths(graph, source, target) {
 
       visited.push(record);
 
-      if (!visited.has(target))
-        stack.push(collectMultiEdges(graph, child));
-      else
-        visited.pop();
+      if (!visited.has(target)) stack.push(collectMultiEdges(graph, child));
+      else visited.pop();
     }
   }
 

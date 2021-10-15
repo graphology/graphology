@@ -2,8 +2,8 @@ import Graph from 'graphology-types';
 
 type DegreeCentralityOptions = {
   attributes?: {
-    centrality?: string
-  }
+    centrality?: string;
+  };
 };
 
 type DegreeCentralityMapping = {[key: string]: number};
@@ -14,9 +14,9 @@ interface IDegreeCentralityBase {
 }
 
 interface IDegreeCentrality extends IDegreeCentralityBase {
-  degreeCentrality: IDegreeCentralityBase,
-  inDegreeCentrality: IDegreeCentralityBase,
-  outDegreeCentrality: IDegreeCentralityBase
+  degreeCentrality: IDegreeCentralityBase;
+  inDegreeCentrality: IDegreeCentralityBase;
+  outDegreeCentrality: IDegreeCentralityBase;
 }
 
 declare const degreeCentrality: IDegreeCentrality;

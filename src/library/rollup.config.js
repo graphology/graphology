@@ -17,10 +17,8 @@ const bundle = (input, filename, options = {}) => ({
     resolve({preferBuiltins: true}),
     builtins(),
     commonjs(),
-    ...(options.minimize ? [
-      terser()
-    ] : [])
-  ],
+    ...(options.minimize ? [terser()] : [])
+  ]
 });
 
 export default [

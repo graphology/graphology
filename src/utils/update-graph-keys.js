@@ -4,7 +4,7 @@
  *
  * Helpers allowing you to update keys of nodes & edges .
  */
- var copyEdge = require('./add-edge.js').copyEdge;
+var copyEdge = require('./add-edge.js').copyEdge;
 
 module.exports = function updateGraphKeys(
   graph,
@@ -14,7 +14,7 @@ module.exports = function updateGraphKeys(
   var renamed = graph.nullCopy();
 
   // Renaming nodes
-  graph.forEachNode(function(key, attr) {
+  graph.forEachNode(function (key, attr) {
     var renamedKey = nodeKeyUpdater ? nodeKeyUpdater(key, attr) : key;
     renamed.addNode(renamedKey, attr);
   });
@@ -22,26 +22,40 @@ module.exports = function updateGraphKeys(
   // Renaming edges
   var currentSource, currentSourceRenamed;
 
-  graph.forEach(function(source, target, sourceAttr, targetAttr, key, attr, undirected, generatedKey) {
-
+  graph.forEach(function (
+    source,
+    target,
+    sourceAttr,
+    targetAttr,
+    key,
+    attr,
+    undirected,
+    generatedKey
+  ) {
     // Leveraging the ordered adjacency to save calls
     if (source !== currentSource) {
       currentSource = source;
-      currentSourceRenamed = nodeKeyUpdater ? nodeKeyUpdater(source, sourceAttr) : source;
+      currentSourceRenamed = nodeKeyUpdater
+        ? nodeKeyUpdater(source, sourceAttr)
+        : source;
     }
 
-    var targetRenamed = nodeKeyUpdater ? nodeKeyUpdater(target, targetAttr) : target;
+    var targetRenamed = nodeKeyUpdater
+      ? nodeKeyUpdater(target, targetAttr)
+      : target;
 
-    var renamedKey = edgeKeyUpdater ? edgeKeyUpdater(
-      key,
-      attr,
-      source,
-      target,
-      sourceAttr,
-      targetAttr,
-      undirected,
-      generatedKey
-    ) : key;
+    var renamedKey = edgeKeyUpdater
+      ? edgeKeyUpdater(
+          key,
+          attr,
+          source,
+          target,
+          sourceAttr,
+          targetAttr,
+          undirected,
+          generatedKey
+        )
+      : key;
 
     copyEdge(
       renamed,

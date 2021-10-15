@@ -13,10 +13,8 @@ for (i = 0; i < N; i++) {
   s = randomString(4, 50);
   t = randomString(4, 50);
 
-  if (i % 2 === 0)
-    g.mergeDirectedEdge(s, t);
-  else
-    g.mergeUndirectedEdge(s, t);
+  if (i % 2 === 0) g.mergeDirectedEdge(s, t);
+  else g.mergeUndirectedEdge(s, t);
 }
 
 function basicTraversal() {

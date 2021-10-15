@@ -34,13 +34,14 @@ exports.refineSettings = function refineSettings(settings) {
   settings = merge({}, DEFAULTS, settings, dimensions);
 
   if (!settings.width && !settings.height)
-    throw new Error('graphology-canvas: need at least a valid width or height!');
+    throw new Error(
+      'graphology-canvas: need at least a valid width or height!'
+    );
 
   return settings;
 };
 
-
-exports.DEFAULT_NODE_REDUCER = function(settings, node, attr) {
+exports.DEFAULT_NODE_REDUCER = function (settings, node, attr) {
   var reduced = {
     type: attr.type || 'circle',
     label: attr.label || node,
@@ -51,12 +52,14 @@ exports.DEFAULT_NODE_REDUCER = function(settings, node, attr) {
   };
 
   if (typeof reduced.x !== 'number' || typeof reduced.y !== 'number')
-    throw new Error('graphology-canvas: the "' + node + '" node has no valid x or y position.');
+    throw new Error(
+      'graphology-canvas: the "' + node + '" node has no valid x or y position.'
+    );
 
   return reduced;
 };
 
-exports.DEFAULT_EDGE_REDUCER = function(settings, edge, attr) {
+exports.DEFAULT_EDGE_REDUCER = function (settings, edge, attr) {
   var reduced = {
     type: attr.type || 'line',
     size: attr.size || 1,

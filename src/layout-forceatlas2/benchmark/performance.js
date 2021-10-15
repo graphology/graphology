@@ -6,11 +6,11 @@
  * Simplistic benchmark to assess some performance improvements.
  */
 var Graph = require('graphology'),
-    layout = require('../index.js'),
-    randomClusters = require('graphology-generators/random/clusters'),
-    seedrandom = require('seedrandom');
+  layout = require('../index.js'),
+  randomClusters = require('graphology-generators/random/clusters'),
+  seedrandom = require('seedrandom');
 
-var rng = function() {
+var rng = function () {
   return seedrandom('bench');
 };
 
@@ -22,7 +22,7 @@ var graph = randomClusters(Graph, {
   rng: rng()
 });
 
-graph.nodes().forEach(function(node) {
+graph.nodes().forEach(function (node) {
   graph.setNodeAttribute(node, 'x', Math.random());
   graph.setNodeAttribute(node, 'y', Math.random());
 });

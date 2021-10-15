@@ -14,7 +14,7 @@ var isGraph = require('graphology-utils/is-graph');
  * @return {number}
  */
 function undirectedDensity(order, size) {
-  return 2 * size / (order * (order - 1));
+  return (2 * size) / (order * (order - 1));
 }
 
 /**
@@ -36,12 +36,9 @@ function directedDensity(order, size) {
  * @return {number}
  */
 function mixedDensity(order, size) {
-  var d = (order * (order - 1));
+  var d = order * (order - 1);
 
-  return (
-    size /
-    (d + d / 2)
-  );
+  return size / (d + d / 2);
 }
 
 /**
@@ -52,9 +49,9 @@ function mixedDensity(order, size) {
  */
 function simpleSizeForMultiGraphs(graph) {
   var nodes = graph.nodes(),
-      size = 0,
-      i,
-      l;
+    size = 0,
+    i,
+    l;
 
   for (i = 0, l = nodes.length; i < l; i++) {
     size += graph.outNeighbors(nodes[i]).length;
@@ -81,8 +78,7 @@ function simpleSizeForMultiGraphs(graph) {
  * @return {number}
  */
 function abstractDensity(type, multi, graph) {
-  var order,
-      size;
+  var order, size;
 
   // Retrieving order & size
   if (arguments.length > 3) {
@@ -90,42 +86,39 @@ function abstractDensity(type, multi, graph) {
     size = arguments[3];
 
     if (typeof order !== 'number')
-      throw new Error('graphology-metrics/density: given order is not a number.');
+      throw new Error(
+        'graphology-metrics/density: given order is not a number.'
+      );
 
     if (typeof size !== 'number')
-      throw new Error('graphology-metrics/density: given size is not a number.');
-  }
-  else {
-
+      throw new Error(
+        'graphology-metrics/density: given size is not a number.'
+      );
+  } else {
     if (!isGraph(graph))
-      throw new Error('graphology-metrics/density: given graph is not a valid graphology instance.');
+      throw new Error(
+        'graphology-metrics/density: given graph is not a valid graphology instance.'
+      );
 
     order = graph.order;
     size = graph.size;
 
-    if (graph.multi && multi === false)
-      size = simpleSizeForMultiGraphs(graph);
+    if (graph.multi && multi === false) size = simpleSizeForMultiGraphs(graph);
   }
 
   // When the graph has only one node, its density is 0
-  if (order < 2)
-    return 0;
+  if (order < 2) return 0;
 
   // Guessing type & multi
-  if (type === null)
-    type = graph.type;
-  if (multi === null)
-    multi = graph.multi;
+  if (type === null) type = graph.type;
+  if (multi === null) multi = graph.multi;
 
   // Getting the correct function
   var fn;
 
-  if (type === 'undirected')
-    fn = undirectedDensity;
-  else if (type === 'directed')
-    fn = directedDensity;
-  else
-    fn = mixedDensity;
+  if (type === 'undirected') fn = undirectedDensity;
+  else if (type === 'directed') fn = directedDensity;
+  else fn = mixedDensity;
 
   // Applying the function
   return fn(order, size);

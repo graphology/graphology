@@ -14,15 +14,16 @@ var extend = require('@yomguithereal/helpers/extend');
  * @param  {Graph} graph - Target graph.
  * @return {array}
  */
-exports.connectedComponents = function(graph) {
+exports.connectedComponents = function (graph) {
   if (!isGraph(graph))
-    throw new Error('graphology-components: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-components: the given graph is not a valid graphology instance.'
+    );
 
-  if (!graph.order)
-    return [];
+  if (!graph.order) return [];
 
   if (!graph.size)
-    return graph.nodes().map(function(node) {
+    return graph.nodes().map(function (node) {
       return [node];
     });
 
@@ -38,8 +39,7 @@ exports.connectedComponents = function(graph) {
   for (i = 0, l = nodes.length; i < l; i++) {
     node = nodes[i];
 
-    if (seen.has(node))
-      continue;
+    if (seen.has(node)) continue;
 
     component = [];
     stack.push(node);
@@ -47,8 +47,7 @@ exports.connectedComponents = function(graph) {
     while (stack.length !== 0) {
       n1 = stack.pop();
 
-      if (seen.has(n1))
-        continue;
+      if (seen.has(n1)) continue;
 
       seen.add(n1);
       component.push(n1);
@@ -68,15 +67,15 @@ exports.connectedComponents = function(graph) {
  * @param  {Graph} graph - Target graph.
  * @return {array}
  */
-exports.largestConnectedComponent = function(graph) {
+exports.largestConnectedComponent = function (graph) {
   if (!isGraph(graph))
-    throw new Error('graphology-components: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-components: the given graph is not a valid graphology instance.'
+    );
 
-  if (!graph.order)
-    return [];
+  if (!graph.order) return [];
 
-  if (!graph.size)
-    return [graph.nodes()[0]];
+  if (!graph.size) return [graph.nodes()[0]];
 
   var order = graph.order;
   var remaining;
@@ -93,8 +92,7 @@ exports.largestConnectedComponent = function(graph) {
   for (i = 0, l = nodes.length; i < l; i++) {
     node = nodes[i];
 
-    if (seen.has(node))
-      continue;
+    if (seen.has(node)) continue;
 
     component = [];
     stack.push(node);
@@ -102,8 +100,7 @@ exports.largestConnectedComponent = function(graph) {
     while (stack.length !== 0) {
       n1 = stack.pop();
 
-      if (seen.has(n1))
-        continue;
+      if (seen.has(n1)) continue;
 
       seen.add(n1);
       component.push(n1);
@@ -117,8 +114,7 @@ exports.largestConnectedComponent = function(graph) {
     // Early exit condition
     // NOTE: could be done each time we traverse a node but would complexify
     remaining = order - seen.size;
-    if (largestComponent.length > remaining)
-      return largestComponent;
+    if (largestComponent.length > remaining) return largestComponent;
   }
 
   return largestComponent;
@@ -130,39 +126,42 @@ exports.largestConnectedComponent = function(graph) {
  * @param  {Graph} graph - Target directed graph.
  * @return {array}
  */
-exports.stronglyConnectedComponents = function(graph) {
+exports.stronglyConnectedComponents = function (graph) {
   if (!isGraph(graph))
-    throw new Error('graphology-components: the given graph is not a valid graphology instance.');
+    throw new Error(
+      'graphology-components: the given graph is not a valid graphology instance.'
+    );
 
-  if (!graph.order)
-    return [];
+  if (!graph.order) return [];
 
   if (graph.type === 'undirected')
     throw new Error('graphology-components: the given graph is undirected');
 
   var nodes = graph.nodes(),
-      components = [],
-      i, l;
+    components = [],
+    i,
+    l;
 
   if (!graph.size) {
-    for (i = 0, l = nodes.length; i < l; i++)
-      components.push([nodes[i]]);
+    for (i = 0, l = nodes.length; i < l; i++) components.push([nodes[i]]);
     return components;
   }
 
   var count = 1,
-      P = [],
-      S = [],
-      preorder = new Map(),
-      assigned = new Set(),
-      component,
-      pop,
-      vertex;
+    P = [],
+    S = [],
+    preorder = new Map(),
+    assigned = new Set(),
+    component,
+    pop,
+    vertex;
 
-  var DFS = function(node) {
+  var DFS = function (node) {
     var neighbor,
-        neighbors = graph.outNeighbors(node).concat(graph.undirectedNeighbors(node)),
-        neighborOrder;
+      neighbors = graph
+        .outNeighbors(node)
+        .concat(graph.undirectedNeighbors(node)),
+      neighborOrder;
 
     preorder.set(node, count++);
     P.push(node);
@@ -174,11 +173,10 @@ exports.stronglyConnectedComponents = function(graph) {
       if (preorder.has(neighbor)) {
         neighborOrder = preorder.get(neighbor);
         if (!assigned.has(neighbor))
-          while (preorder.get(P[P.length - 1]) > neighborOrder)
-            P.pop();
-      }
-      else
+          while (preorder.get(P[P.length - 1]) > neighborOrder) P.pop();
+      } else {
         DFS(neighbor);
+      }
     }
 
     if (preorder.get(P[P.length - 1]) === preorder.get(node)) {
@@ -195,8 +193,7 @@ exports.stronglyConnectedComponents = function(graph) {
 
   for (i = 0, l = nodes.length; i < l; i++) {
     vertex = nodes[i];
-    if (!assigned.has(vertex))
-      DFS(vertex);
+    if (!assigned.has(vertex)) DFS(vertex);
   }
 
   return components;

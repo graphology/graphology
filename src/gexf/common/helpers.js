@@ -12,10 +12,10 @@
  * @param  {string} type - String value.
  * @return {any}         - Parsed type.
  */
-exports.cast = function(type, value) {
+exports.cast = function (type, value) {
   switch (type) {
     case 'boolean':
-      value = (value === 'true');
+      value = value === 'true';
       break;
 
     case 'integer':

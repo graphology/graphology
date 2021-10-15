@@ -14,7 +14,7 @@ var DEFAULTS = {
 
 exports.DEFAULTS = DEFAULTS;
 
-exports.DEFAULT_NODE_REDUCER = function(settings, node, attr) {
+exports.DEFAULT_NODE_REDUCER = function (settings, node, attr) {
   var reduced = {
     type: attr.type || 'circle',
     labelType: attr.labelType || 'default',
@@ -27,13 +27,15 @@ exports.DEFAULT_NODE_REDUCER = function(settings, node, attr) {
 
   if (typeof reduced.x !== 'number' || typeof reduced.y !== 'number')
     throw new Error(
-      'graphology-svg: the "' + node + '" node has no valid x or y position. Expecting a number.'
+      'graphology-svg: the "' +
+        node +
+        '" node has no valid x or y position. Expecting a number.'
     );
 
   return reduced;
 };
 
-exports.DEFAULT_EDGE_REDUCER = function(settings, edge, attr) {
+exports.DEFAULT_EDGE_REDUCER = function (settings, edge, attr) {
   var reduced = {
     type: attr.type || 'line',
     size: attr.size || 1,

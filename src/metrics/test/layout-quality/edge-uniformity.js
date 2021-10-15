@@ -3,23 +3,23 @@
  * ======================================
  */
 var assert = require('chai').assert,
-    Graph = require('graphology'),
-    edgeUniformity = require('../../layout-quality/edge-uniformity'),
-    karateClub = require('graphology-generators/social/karate-club'),
-    circularLayout = require('graphology-layout/circular'),
-    rioData = require('../datasets/rio.json');
+  Graph = require('graphology'),
+  edgeUniformity = require('../../layout-quality/edge-uniformity'),
+  karateClub = require('graphology-generators/social/karate-club'),
+  circularLayout = require('graphology-layout/circular'),
+  rioData = require('../datasets/rio.json');
 
 var KARATE = karateClub(Graph);
 var RIO = Graph.from(rioData, {type: 'directed'});
 
-describe('edge uniformity', function() {
-  it('should throw when given invalid arguments.', function() {
-    assert.throws(function() {
+describe('edge uniformity', function () {
+  it('should throw when given invalid arguments.', function () {
+    assert.throws(function () {
       edgeUniformity(null);
     }, /graphology/);
   });
 
-  it('should return the correct metric.', function() {
+  it('should return the correct metric.', function () {
     assert.strictEqual(edgeUniformity(new Graph()), 0);
 
     var karate = KARATE.copy();

@@ -3,40 +3,37 @@
  * ============================
  */
 var assert = require('assert'),
-    Graph = require('graphology'),
-    seedrandom = require('seedrandom'),
-    connectedComponents = require('graphology-components').connectedComponents;
+  Graph = require('graphology'),
+  seedrandom = require('seedrandom'),
+  connectedComponents = require('graphology-components').connectedComponents;
 
 var UndirectedGraph = Graph.UndirectedGraph,
-    DirectedGraph = Graph.DirectedGraph;
+  DirectedGraph = Graph.DirectedGraph;
 
-var rng = function() {
+var rng = function () {
   return seedrandom('test');
 };
 
 var classic = require('./classic'),
-    community = require('./community'),
-    random = require('./random'),
-    small = require('./small'),
-    social = require('./social');
+  community = require('./community'),
+  random = require('./random'),
+  small = require('./small'),
+  social = require('./social');
 
-describe('graphology-generators', function() {
-
-  describe('classic', function() {
-
-    describe('#.complete', function() {
-
-      it('should throw if the provided constructor is invalid.', function() {
-        assert.throws(function() {
+describe('graphology-generators', function () {
+  describe('classic', function () {
+    describe('#.complete', function () {
+      it('should throw if the provided constructor is invalid.', function () {
+        assert.throws(function () {
           classic.complete(Array);
         }, /constructor/);
       });
 
-      it('should return a complete graph.', function() {
+      it('should return a complete graph.', function () {
         var undirectedGraph = classic.complete(UndirectedGraph, 5);
 
         assert.strictEqual(undirectedGraph.order, 5);
-        assert.strictEqual(undirectedGraph.size, 5 * (5 - 1) / 2);
+        assert.strictEqual(undirectedGraph.size, (5 * (5 - 1)) / 2);
 
         var directedGraph = classic.complete(DirectedGraph, 5);
 
@@ -46,19 +43,18 @@ describe('graphology-generators', function() {
         var graph = classic.complete(Graph, 5);
 
         assert.strictEqual(graph.order, 5);
-        assert.strictEqual(graph.size, (5 * (5 - 1) / 2) + (5 * (5 - 1)));
+        assert.strictEqual(graph.size, (5 * (5 - 1)) / 2 + 5 * (5 - 1));
       });
     });
 
-    describe('#.empty', function() {
-
-      it('should throw if the provided constructor is invalid.', function() {
-        assert.throws(function() {
+    describe('#.empty', function () {
+      it('should throw if the provided constructor is invalid.', function () {
+        assert.throws(function () {
           classic.empty(Array);
         }, /constructor/);
       });
 
-      it('should return an empty graph.', function() {
+      it('should return an empty graph.', function () {
         var emptyGraph = classic.empty(Graph, 6);
 
         assert.strictEqual(emptyGraph.order, 6);
@@ -66,15 +62,14 @@ describe('graphology-generators', function() {
       });
     });
 
-    describe('#.ladder', function() {
-
-      it('should throw if the provided constructor is invalid.', function() {
-        assert.throws(function() {
+    describe('#.ladder', function () {
+      it('should throw if the provided constructor is invalid.', function () {
+        assert.throws(function () {
           classic.ladder(Array);
         }, /constructor/);
       });
 
-      it('should return a valid ladder graph.', function() {
+      it('should return a valid ladder graph.', function () {
         var length = 50;
 
         var ladder = classic.ladder(UndirectedGraph, length);
@@ -84,38 +79,42 @@ describe('graphology-generators', function() {
       });
     });
 
-    describe('#.path', function() {
-      it('should throw if the provided constructor is invalid.', function() {
-        assert.throws(function() {
+    describe('#.path', function () {
+      it('should throw if the provided constructor is invalid.', function () {
+        assert.throws(function () {
           classic.path(Array);
         }, /constructor/);
       });
 
-      it('should return a complete graph.', function() {
+      it('should return a complete graph.', function () {
         var graph = classic.path(Graph, 5);
 
         assert.strictEqual(graph.order, 5);
         assert.strictEqual(graph.size, 4);
 
-        var adj = graph.edges().map(function(e) {
+        var adj = graph.edges().map(function (e) {
           return graph.extremities(e);
         });
 
-        assert.deepEqual(adj, [[0, 1], [1, 2], [2, 3], [3, 4]]);
+        assert.deepEqual(adj, [
+          [0, 1],
+          [1, 2],
+          [2, 3],
+          [3, 4]
+        ]);
       });
     });
   });
 
-  describe('community', function() {
-
-    describe('#.caveman', function() {
-      it('should throw if the provided constructor is invalid.', function() {
-        assert.throws(function() {
+  describe('community', function () {
+    describe('#.caveman', function () {
+      it('should throw if the provided constructor is invalid.', function () {
+        assert.throws(function () {
           community.caveman(Array);
         }, /constructor/);
       });
 
-      it('should return a caveman graph.', function() {
+      it('should return a caveman graph.', function () {
         var graph = community.caveman(UndirectedGraph, 6, 8);
 
         assert.strictEqual(graph.order, 6 * 8);
@@ -127,14 +126,14 @@ describe('graphology-generators', function() {
       });
     });
 
-    describe('#.connectedCaveman', function() {
-      it('should throw if the provided constructor is invalid.', function() {
-        assert.throws(function() {
+    describe('#.connectedCaveman', function () {
+      it('should throw if the provided constructor is invalid.', function () {
+        assert.throws(function () {
           community.connectedCaveman(Array);
         }, /constructor/);
       });
 
-      it('should return a connected caveman graph.', function() {
+      it('should return a connected caveman graph.', function () {
         var graph = community.connectedCaveman(UndirectedGraph, 6, 8);
 
         assert.strictEqual(graph.order, 6 * 8);
@@ -147,58 +146,70 @@ describe('graphology-generators', function() {
     });
   });
 
-  describe('random', function() {
-
-    describe('#.clusters', function() {
-      it('should throw if the provided constructor is invalid.', function() {
-        assert.throws(function() {
+  describe('random', function () {
+    describe('#.clusters', function () {
+      it('should throw if the provided constructor is invalid.', function () {
+        assert.throws(function () {
           random.clusters(Array);
         }, /constructor/);
       });
 
-      it('should throw if the options are invalid.', function() {
-        assert.throws(function() {
+      it('should throw if the options are invalid.', function () {
+        assert.throws(function () {
           random.clusters(UndirectedGraph);
         }, /order/);
 
-        assert.throws(function() {
+        assert.throws(function () {
           random.clusters(UndirectedGraph, {clusterDensity: null});
         }, /clusterDensity/);
 
-        assert.throws(function() {
+        assert.throws(function () {
           random.clusters(UndirectedGraph, {rng: true});
         }, /rng/);
 
-        assert.throws(function() {
+        assert.throws(function () {
           random.clusters(UndirectedGraph, {clusterDensity: 0.5});
         }, /order/);
 
-        assert.throws(function() {
+        assert.throws(function () {
           random.clusters(UndirectedGraph, {clusterDensity: -10});
         }, /clusterDensity/);
 
-        assert.throws(function() {
+        assert.throws(function () {
           random.clusters(UndirectedGraph, {clusterDensity: 0.5, order: 30});
         }, /size/);
 
-        assert.throws(function() {
+        assert.throws(function () {
           random.clusters(UndirectedGraph, {clusterDensity: 0.5, order: -30});
         }, /order/);
 
-        assert.throws(function() {
-          random.clusters(UndirectedGraph, {clusterDensity: 0.5, order: 30, size: 100});
+        assert.throws(function () {
+          random.clusters(UndirectedGraph, {
+            clusterDensity: 0.5,
+            order: 30,
+            size: 100
+          });
         }, /clusters/);
 
-        assert.throws(function() {
-          random.clusters(UndirectedGraph, {clusterDensity: 0.5, order: 30, size: -500});
+        assert.throws(function () {
+          random.clusters(UndirectedGraph, {
+            clusterDensity: 0.5,
+            order: 30,
+            size: -500
+          });
         }, /size/);
 
-        assert.throws(function() {
-          random.clusters(UndirectedGraph, {clusterDensity: 0.5, order: 30, size: 100, clusters: -4});
+        assert.throws(function () {
+          random.clusters(UndirectedGraph, {
+            clusterDensity: 0.5,
+            order: 30,
+            size: 100,
+            clusters: -4
+          });
         }, /clusters/);
       });
 
-      it('should generate a correct graph.', function() {
+      it('should generate a correct graph.', function () {
         var graph = random.clusters(DirectedGraph, {
           order: 5,
           size: 20,
@@ -211,21 +222,24 @@ describe('graphology-generators', function() {
       });
     });
 
-    describe('#.erdosRenyi', function() {
+    describe('#.erdosRenyi', function () {
       var sparse = random.erdosRenyi.sparse;
 
-      it('should throw if the provided constructor is invalid.', function() {
-        assert.throws(function() {
+      it('should throw if the provided constructor is invalid.', function () {
+        assert.throws(function () {
           random.erdosRenyi(Array);
         }, /constructor/);
 
-        assert.throws(function() {
+        assert.throws(function () {
           sparse(Array);
         }, /constructor/);
       });
 
-      it('should return a graph without edges if probability is 0.', function() {
-        var graph = random.erdosRenyi(UndirectedGraph, {order: 5, probability: 0});
+      it('should return a graph without edges if probability is 0.', function () {
+        var graph = random.erdosRenyi(UndirectedGraph, {
+          order: 5,
+          probability: 0
+        });
 
         assert.strictEqual(graph.order, 5);
         assert.strictEqual(graph.size, 0);
@@ -238,32 +252,51 @@ describe('graphology-generators', function() {
         assert.deepEqual(graph.nodes(), [0, 1, 2, 3, 4]);
       });
 
-      it('should return a binomial graph.', function() {
-
+      it('should return a binomial graph.', function () {
         // Undirected
-        var undirectedGraph = random.erdosRenyi(UndirectedGraph, {order: 5, probability: 0.5, rng: rng()});
+        var undirectedGraph = random.erdosRenyi(UndirectedGraph, {
+          order: 5,
+          probability: 0.5,
+          rng: rng()
+        });
 
         assert.strictEqual(undirectedGraph.size, 7);
         assert.strictEqual(undirectedGraph.order, 5);
 
-        undirectedGraph = sparse(UndirectedGraph, {order: 5, probability: 0.5, rng: rng()});
+        undirectedGraph = sparse(UndirectedGraph, {
+          order: 5,
+          probability: 0.5,
+          rng: rng()
+        });
 
         assert.strictEqual(undirectedGraph.size, 4);
         assert.strictEqual(undirectedGraph.order, 5);
 
         // Directed
-        var directedGraph = random.erdosRenyi(DirectedGraph, {order: 5, probability: 0.5, rng: rng()});
+        var directedGraph = random.erdosRenyi(DirectedGraph, {
+          order: 5,
+          probability: 0.5,
+          rng: rng()
+        });
 
         assert.strictEqual(directedGraph.size, 11);
         assert.strictEqual(directedGraph.order, 5);
 
-        directedGraph = sparse(DirectedGraph, {order: 5, probability: 0.5, rng: rng()});
+        directedGraph = sparse(DirectedGraph, {
+          order: 5,
+          probability: 0.5,
+          rng: rng()
+        });
 
         assert.strictEqual(directedGraph.size, 11);
         assert.strictEqual(directedGraph.order, 5);
 
         // Mixed
-        var graph = random.erdosRenyi(Graph, {order: 5, probability: 0.5, rng: rng()});
+        var graph = random.erdosRenyi(Graph, {
+          order: 5,
+          probability: 0.5,
+          rng: rng()
+        });
 
         assert.strictEqual(graph.size, 15);
         assert.strictEqual(graph.order, 5);
@@ -275,7 +308,11 @@ describe('graphology-generators', function() {
         assert.strictEqual(graph.order, 5);
 
         // Approximate size
-        graph = random.erdosRenyi(Graph, {order: 5, approximateSize: 10, rng: rng()});
+        graph = random.erdosRenyi(Graph, {
+          order: 5,
+          approximateSize: 10,
+          rng: rng()
+        });
 
         assert.strictEqual(graph.size, 8);
         assert.strictEqual(graph.order, 5);
@@ -287,15 +324,14 @@ describe('graphology-generators', function() {
       });
     });
 
-    describe('#.girvanNewman', function() {
-
-      it('should throw if the provided constructor is invalid.', function() {
-        assert.throws(function() {
+    describe('#.girvanNewman', function () {
+      it('should throw if the provided constructor is invalid.', function () {
+        assert.throws(function () {
           random.girvanNewman(Array);
         }, /constructor/);
       });
 
-      it('should return the expected graph.', function() {
+      it('should return the expected graph.', function () {
         var graph = random.girvanNewman(Graph, {zOut: 4, rng: rng()});
 
         assert.strictEqual(graph.order, 128);
@@ -304,16 +340,15 @@ describe('graphology-generators', function() {
     });
   });
 
-  describe('small', function() {
-
-    describe('#.krackhardtKite', function() {
-      it('should throw if the provided constructor is invalid.', function() {
-        assert.throws(function() {
+  describe('small', function () {
+    describe('#.krackhardtKite', function () {
+      it('should throw if the provided constructor is invalid.', function () {
+        assert.throws(function () {
           small.krackhardtKite(Array);
         }, /constructor/);
       });
 
-      it('should return Krackhard\'s kite graph.', function() {
+      it("should return Krackhard's kite graph.", function () {
         var graph = small.krackhardtKite(UndirectedGraph);
 
         assert.strictEqual(graph.order, 10);
@@ -322,16 +357,15 @@ describe('graphology-generators', function() {
     });
   });
 
-  describe('social', function() {
-
-    describe('#.karate', function() {
-      it('should throw if the provided constructor is invalid.', function() {
-        assert.throws(function() {
+  describe('social', function () {
+    describe('#.karate', function () {
+      it('should throw if the provided constructor is invalid.', function () {
+        assert.throws(function () {
           social.karateClub(Array);
         }, /constructor/);
       });
 
-      it('should return Zachary\'s karate club graph.', function() {
+      it("should return Zachary's karate club graph.", function () {
         var graph = social.karateClub(Graph);
 
         assert.strictEqual(graph.order, 34);
@@ -339,14 +373,14 @@ describe('graphology-generators', function() {
       });
     });
 
-    describe('#.florentineFamilies', function() {
-      it('should throw if the provided constructor is invalid.', function() {
-        assert.throws(function() {
+    describe('#.florentineFamilies', function () {
+      it('should throw if the provided constructor is invalid.', function () {
+        assert.throws(function () {
           social.florentineFamilies(Array);
         }, /constructor/);
       });
 
-      it('should return Florentine families graph.', function() {
+      it('should return Florentine families graph.', function () {
         var graph = social.florentineFamilies(Graph);
 
         assert.strictEqual(graph.order, 15);
