@@ -7,6 +7,7 @@ interface NodeAttributes {
 const graph: Graph<NodeAttributes> = new Graph({type: 'directed'});
 
 graph.addNode('one', {label: 'Hello'});
+graph.getNodeAttribute('one', 'label');
 
 graph.forEachNode((node, attr) => {
   console.log(node, attr);
@@ -21,5 +22,7 @@ graph.on('nodeAdded', listener);
 graph.off('nodeAdded', listener);
 
 const undirectedGraph: UndirectedGraph = new UndirectedGraph();
+undirectedGraph.addNode('node', {hello: 'world'});
+undirectedGraph.getNodeAttribute('node', 'hello');
 
 undirectedGraph.clear();

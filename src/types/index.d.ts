@@ -501,26 +501,51 @@ declare abstract class AbstractGraph<
   clearEdges(): void;
 
   // Graph attribute methods
-  getAttribute(name: string): any;
+  getAttribute<AttributeName extends keyof GraphAttributes>(
+    name: AttributeName
+  ): GraphAttributes[AttributeName];
   getAttributes(): GraphAttributes;
-  hasAttribute(name: string): boolean;
-  setAttribute(name: string, value: any): this;
-  updateAttribute(name: string, updater: (value: any) => any): this;
-  removeAttribute(name: string): this;
+  hasAttribute<AttributeName extends keyof GraphAttributes>(
+    name: AttributeName
+  ): boolean;
+  setAttribute<AttributeName extends keyof GraphAttributes>(
+    name: AttributeName,
+    value: GraphAttributes[AttributeName]
+  ): this;
+  updateAttribute<AttributeName extends keyof GraphAttributes>(
+    name: AttributeName,
+    updater: (value: any) => any
+  ): this;
+  removeAttribute<AttributeName extends keyof GraphAttributes>(
+    name: AttributeName
+  ): this;
   replaceAttributes(attributes: GraphAttributes): this;
   mergeAttributes(attributes: Partial<GraphAttributes>): this;
 
   // Node attribute methods
-  getNodeAttribute(node: unknown, name: string): any;
-  getNodeAttributes(node: unknown): NodeAttributes;
-  hasNodeAttribute(node: unknown, name: string): boolean;
-  setNodeAttribute(node: unknown, name: string, value: any): this;
-  updateNodeAttribute(
+  getNodeAttribute<AttributeName extends keyof NodeAttributes>(
     node: unknown,
-    name: string,
+    name: AttributeName
+  ): NodeAttributes[AttributeName];
+  getNodeAttributes(node: unknown): NodeAttributes;
+  hasNodeAttribute<AttributeName extends keyof NodeAttributes>(
+    node: unknown,
+    name: AttributeName
+  ): boolean;
+  setNodeAttribute<AttributeName extends keyof NodeAttributes>(
+    node: unknown,
+    name: AttributeName,
+    value: NodeAttributes[AttributeName]
+  ): this;
+  updateNodeAttribute<AttributeName extends keyof NodeAttributes>(
+    node: unknown,
+    name: AttributeName,
     updater: (value: any) => any
   ): this;
-  removeNodeAttribute(node: unknown, name: string): this;
+  removeNodeAttribute<AttributeName extends keyof NodeAttributes>(
+    node: unknown,
+    name: AttributeName
+  ): this;
   replaceNodeAttributes(node: unknown, attributes: NodeAttributes): this;
   mergeNodeAttributes(node: unknown, attributes: Partial<NodeAttributes>): this;
   updateEachNodeAttributes(
@@ -529,49 +554,35 @@ declare abstract class AbstractGraph<
   ): void;
 
   // Edge attribute methods
-  getEdgeAttribute(edge: unknown, name: string): any;
-  getEdgeAttributes(edge: unknown): EdgeAttributes;
-  hasEdgeAttribute(edge: unknown, name: string): boolean;
-  setEdgeAttribute(edge: unknown, name: string, value: any): this;
-  updateEdgeAttribute(
+  getEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
     edge: unknown,
-    name: string,
+    name: AttributeName
+  ): EdgeAttributes[AttributeName];
+  getEdgeAttributes(edge: unknown): EdgeAttributes;
+  hasEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): boolean;
+  setEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName,
+    value: EdgeAttributes[AttributeName]
+  ): this;
+  updateEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName,
     updater: (value: any) => any
   ): this;
-  removeEdgeAttribute(edge: unknown, name: string): this;
+  removeEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): this;
   replaceEdgeAttributes(edge: unknown, attributes: EdgeAttributes): this;
   mergeEdgeAttributes(edge: unknown, attributes: Partial<EdgeAttributes>): this;
   updateEachEdgeAttributes(
     updater: EdgeUpdateIterationCallback<EdgeAttributes>,
     hints?: UpdateHints
   ): void;
-
-  getEdgeAttribute(source: unknown, target: unknown, name: string): any;
-  getEdgeAttributes(source: unknown, target: unknown): EdgeAttributes;
-  hasEdgeAttribute(source: unknown, target: unknown, name: string): boolean;
-  setEdgeAttribute(
-    source: unknown,
-    target: unknown,
-    name: string,
-    value: any
-  ): this;
-  updateEdgeAttribute(
-    source: unknown,
-    target: unknown,
-    name: string,
-    updater: (value: any) => any
-  ): this;
-  removeEdgeAttribute(source: unknown, target: unknown, name: string): this;
-  replaceEdgeAttributes(
-    source: unknown,
-    target: unknown,
-    attributes: EdgeAttributes
-  ): this;
-  mergeEdgeAttributes(
-    source: unknown,
-    target: unknown,
-    attributes: Partial<EdgeAttributes>
-  ): this;
 
   // Iteration methods
   [Symbol.iterator](): IterableIterator<
