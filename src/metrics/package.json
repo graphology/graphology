@@ -1,6 +1,6 @@
 {
   "name": "graphology-metrics",
-  "version": "1.14.2",
+  "version": "1.14.3",
   "description": "Miscellaneous graph metrics for graphology.",
   "main": "index.js",
   "files": [
@@ -50,7 +50,7 @@
   },
   "homepage": "https://github.com/graphology/graphology-metrics#readme",
   "peerDependencies": {
-    "graphology-types": ">=0.19.0"
+    "graphology-types": ">=0.20.0"
   },
   "eslintConfig": {
     "extends": "@yomguithereal/eslint-config"
