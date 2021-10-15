@@ -2432,8 +2432,22 @@ export default class Graph extends EventEmitter {
    * @return {Graph} - The copy.
    */
   copy() {
-    const graph = new Graph(this._options);
-    graph.import(this);
+    const graph = this.emptyCopy();
+
+    this.forEachEdge(
+      (edge, attr, source, target, _sa, _ta, undirected, generatedKey) => {
+        addEdge(
+          graph,
+          'copy',
+          generatedKey,
+          undirected,
+          edge,
+          source,
+          target,
+          attr
+        );
+      }
+    );
 
     return graph;
   }
