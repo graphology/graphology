@@ -1,6 +1,6 @@
 {
   "name": "graphology-canvas",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Canvas rendering routines for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -54,7 +54,7 @@
   },
   "peerDependencies": {
     "canvas": "^2.6.1",
-    "graphology-types": ">=0.19.0"
+    "graphology-types": ">=0.20.0"
   },
   "peerDependenciesMeta": {
     "canvas": {
