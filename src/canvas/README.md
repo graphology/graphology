@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-canvas.svg)](https://travis-ci.org/graphology/graphology-canvas)
-
 # Graphology Canvas
 
 Canvas rendering routines for [`graphology`](https://graphology.github.io).
@@ -37,7 +35,7 @@ render(graph, context, settings);
 ```js
 import {renderAsync} from 'graphology-canvas';
 
-renderAsync(graph, context, settings, function() {
+renderAsync(graph, context, settings, function () {
   console.log('Done!');
 });
 ```
@@ -53,16 +51,16 @@ renderToPNG(graph, './graph.png', settings, () => console.log('Done!'));
 
 ### Settings
 
-* **width** *?number* [`2048`]: width of the canvas. Will be the same as `height` if not provided.
-* **height** *?number* [`2048`]: height of the canvas. Will be the same as `width` if not provided.
-* **margin** *?number* [`20`]: margin to keep around the drawing.
-* **nodes** *?object*: node-related settings:
-  * **defaultColor** *?string* [`#999`]: default color for nodes.
-  * **reducer** *?function*: reducer fonction for nodes taking the rendering settings, the node key and its attributes and tasked to return rendering info such as `color`, `size` etc.
-* **edges** *?object*: node-related settings:
-  * **defaultColor** *?string* [`#ccc`]: default color for edges.
-  * **reducer** *?function*: reducer fonction for edges taking the rendering settings, the node key and its attributes and tasked to return rendering info such as `color`, `size` etc.
+- **width** _?number_ [`2048`]: width of the canvas. Will be the same as `height` if not provided.
+- **height** _?number_ [`2048`]: height of the canvas. Will be the same as `width` if not provided.
+- **margin** _?number_ [`20`]: margin to keep around the drawing.
+- **nodes** _?object_: node-related settings:
+  - **defaultColor** _?string_ [`#999`]: default color for nodes.
+  - **reducer** _?function_: reducer fonction for nodes taking the rendering settings, the node key and its attributes and tasked to return rendering info such as `color`, `size` etc.
+- **edges** _?object_: node-related settings:
+  - **defaultColor** _?string_ [`#ccc`]: default color for edges.
+  - **reducer** _?function_: reducer fonction for edges taking the rendering settings, the node key and its attributes and tasked to return rendering info such as `color`, `size` etc.
 
 ### Async Settings
 
-* **batchSize** *?number* [`500`]: number of items to render on canvas on each animation frame, increase or decrease to tweak performance vs. UI availability.
+- **batchSize** _?number_ [`500`]: number of items to render on canvas on each animation frame, increase or decrease to tweak performance vs. UI availability.

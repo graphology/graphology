@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-communities-louvain.svg)](https://travis-ci.org/graphology/graphology-communities-louvain)
-
 # Graphology Communities Louvain
 
 Implementation of the [Louvain algorihtm](https://en.wikipedia.org/wiki/Louvain_modularity) for community detection to be used with [`graphology`](https://graphology.github.io).
@@ -55,28 +53,28 @@ louvain.assign(graph, {
 var details = louvain.detailed(graph);
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **options** *?object*: options:
-  * **attributes** *?object*: attributes' names:
-    * **weight** *?string* [`weight`]: name of the edges' weight attribute.
-    * **community** *?string* [`community`]: name of the community attribute.
-  * **fastLocalMoves** *?boolean* [`true`]: whether to use a well-known optimization relying on a queue set to traverse the graph more efficiently.
-  * **randomWalk** *?boolean* [`true`]: whether to traverse the graph randomly.
-  * **resolution** *?number* [`1`]: resolution parameter. An increased resolution should produce more communities.
-  * **rng** *?function* [`Math.random`]: RNG function to use for `randomWalk`. Useful if you need to seed your rng using, for instance, [seedrandom](https://www.npmjs.com/package/seedrandom).
-  * **weighted** *?boolean* [`false`]: whether to take edge weights into account.
+- **graph** _Graph_: target graph.
+- **options** _?object_: options:
+  - **attributes** _?object_: attributes' names:
+    - **weight** _?string_ [`weight`]: name of the edges' weight attribute.
+    - **community** _?string_ [`community`]: name of the community attribute.
+  - **fastLocalMoves** _?boolean_ [`true`]: whether to use a well-known optimization relying on a queue set to traverse the graph more efficiently.
+  - **randomWalk** _?boolean_ [`true`]: whether to traverse the graph randomly.
+  - **resolution** _?number_ [`1`]: resolution parameter. An increased resolution should produce more communities.
+  - **rng** _?function_ [`Math.random`]: RNG function to use for `randomWalk`. Useful if you need to seed your rng using, for instance, [seedrandom](https://www.npmjs.com/package/seedrandom).
+  - **weighted** _?boolean_ [`false`]: whether to take edge weights into account.
 
-*Detailed Output*
+_Detailed Output_
 
-* **communities** [`object`]: partition of the graph.
-* **count** [`number`]: number of communities in the partition.
-* **deltaComputations** [`number`]: number of delta computations that were run to produce the partition.
-* **dendrogram** [`array`]: array of partitions.
-* **modularity** [`number`]: final modularity of the graph given the found partition.
-* **moves** [`array`]: array of array of number of moves if `fastLocalMoves` was false or array of number of moves if `fastLocalMoves` was true.
-* **nodesVisited** [`number`]: number of times nodes were visited.
+- **communities** [`object`]: partition of the graph.
+- **count** [`number`]: number of communities in the partition.
+- **deltaComputations** [`number`]: number of delta computations that were run to produce the partition.
+- **dendrogram** [`array`]: array of partitions.
+- **modularity** [`number`]: final modularity of the graph given the found partition.
+- **moves** [`array`]: array of array of number of moves if `fastLocalMoves` was false or array of number of moves if `fastLocalMoves` was true.
+- **nodesVisited** [`number`]: number of times nodes were visited.
 
 ## Benchmark
 

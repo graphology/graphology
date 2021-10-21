@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-graphml.svg)](https://travis-ci.org/graphology/graphology-graphml)
-
 # Graphology GRAPHML Utilities
 
 GRAPHML parser & writer for [`graphology`](https://graphology.github.io).
@@ -14,7 +12,7 @@ npm install graphology-graphml
 
 ## Usage
 
-* [Parser](#parser)
+- [Parser](#parser)
 
 ### Parser
 
@@ -35,7 +33,7 @@ var graph = graphml.parse(Graph, string);
 var graph = graphml.parse(Graph, xmlDocument);
 ```
 
-*Arguments*
+_Arguments_
 
-* **constructor** *GraphClass*: graphology constructor to use.
-* **source** *string|Document*: source data to parse.
+- **constructor** _GraphClass_: graphology constructor to use.
+- **source** _string|Document_: source data to parse.

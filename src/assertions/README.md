@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-assertions.svg)](https://travis-ci.org/graphology/graphology-assertions)
-
 # Graphology Assertions
 
 Assertions to be used with [`graphology`](https://graphology.github.io).
@@ -12,10 +10,10 @@ npm install graphology-assertions
 
 ## Usage
 
-* [#.isGraph](#isgraph)
-* [#.isGraphConstructor](#isgraphconstructor)
-* [#.sameNodes](#samenodes)
-* [#.sameNodesDeep](#samenodesdeep)
+- [#.isGraph](#isgraph)
+- [#.isGraphConstructor](#isgraphconstructor)
+- [#.sameNodes](#samenodes)
+- [#.sameNodesDeep](#samenodesdeep)
 
 ### #.isGraph
 
@@ -36,9 +34,9 @@ isGraph({hello: 'world'});
 >>> false
 ```
 
-*Arguments*
+_Arguments_
 
-* **value** *any*: value to test.
+- **value** _any_: value to test.
 
 ### #.isGraphConstructor
 
@@ -57,9 +55,9 @@ isGraphConstructor(new Graph());
 >>> false
 ```
 
-*Arguments*
+_Arguments_
 
-* **value** *any*: value to test.
+- **value** _any_: value to test.
 
 ### #.sameNodes
 

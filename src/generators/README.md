@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-generators.svg)](https://travis-ci.org/graphology/graphology-generators)
-
 # Graphology Generators
 
 Various graph generators to be used with [`graphology`](https://graphology.github.io).
@@ -12,21 +10,21 @@ npm install graphology-generators
 
 ## Usage
 
-* [Classic graphs](#classic-graphs)
+- [Classic graphs](#classic-graphs)
   - [Complete](#complete)
   - [Empty](#empty)
   - [Ladder](#ladder)
   - [Path](#path)
-* [Community graphs](#community-graphs)
+- [Community graphs](#community-graphs)
   - [Caveman](#caveman)
   - [Connected Caveman](#connected-caveman)
-* [Random graphs](#random-graphs)
+- [Random graphs](#random-graphs)
   - [Clusters](#clusters)
   - [Erdos-Renyi](#erdos-renyi)
   - [Girvan-Newman](#girvan-newman)
-* [Small graphs](#small-graphs)
+- [Small graphs](#small-graphs)
   - [Krackhardt Kite](#krackhardt-kite)
-* [Social graphs](#social-graphs)
+- [Social graphs](#social-graphs)
   - [Florentine Families](#florentine-families)
   - [Karate Club](#karate-club)
 
@@ -34,7 +32,7 @@ npm install graphology-generators
 
 #### Complete
 
-Creates a [complete](https://en.wikipedia.org/wiki/Complete_graph) graph. 
+Creates a [complete](https://en.wikipedia.org/wiki/Complete_graph) graph.
 
 ```js
 import Graph, {UndirectedGraph} from 'graphology';
@@ -51,8 +49,8 @@ const graph = complete(UndirectedGraph, 10);
 
 **Arguments**
 
-* **constructor** *Class*: a `graphology` constructor.
-* **order** *number*: number of nodes in the generated graph.
+- **constructor** _Class_: a `graphology` constructor.
+- **order** _number_: number of nodes in the generated graph.
 
 #### Empty
 
@@ -73,8 +71,8 @@ const graph = empty(UndirectedGraph, 10);
 
 **Arguments**
 
-* **constructor** *Class*: a `graphology` constructor.
-* **order** *number*: number of nodes in the generated graph.
+- **constructor** _Class_: a `graphology` constructor.
+- **order** _number_: number of nodes in the generated graph.
 
 #### Ladder
 
@@ -95,12 +93,12 @@ const graph = ladder(UndirectedGraph, 10);
 
 **Arguments**
 
-* **constructor** *Class*: a `graphology` constructor.
-* **length** *number*: length of the ladder.
+- **constructor** _Class_: a `graphology` constructor.
+- **length** _number_: length of the ladder.
 
 #### Path
 
-Creates a path graph. 
+Creates a path graph.
 
 ```js
 import Graph, {UndirectedGraph} from 'graphology';
@@ -117,8 +115,8 @@ const graph = path(UndirectedGraph, 10);
 
 **Arguments**
 
-* **constructor** *Class*: a `graphology` constructor.
-* **order** *number*: number of nodes in the generated graph.
+- **constructor** _Class_: a `graphology` constructor.
+- **order** _number_: number of nodes in the generated graph.
 
 ### Community graphs
 
@@ -138,9 +136,9 @@ const graph = caveman(Graph, 6, 8);
 
 **Arguments**
 
-* **constructor** *Class*: a `graphology` constructor.
-* **l** *number*: number of components in the graph.
-* **k** *number*: number of nodes of the components.
+- **constructor** _Class_: a `graphology` constructor.
+- **l** _number_: number of components in the graph.
+- **k** _number_: number of nodes of the components.
 
 #### Connected Caveman
 
@@ -158,9 +156,9 @@ const graph = connectedCaveman(Graph, 6, 8);
 
 **Arguments**
 
-* **constructor** *Class*: a `graphology` constructor.
-* **l** *number*: number of components in the graph.
-* **k** *number*: number of nodes of the components.
+- **constructor** _Class_: a `graphology` constructor.
+- **l** _number_: number of components in the graph.
+- **k** _number_: number of nodes of the components.
 
 ### Random graphs
 
@@ -184,13 +182,13 @@ const graph = clusters(Graph, {
 
 **Arguments**
 
-* **constructor** *Class*: a `graphology` constructor.
-* **options** *object*: options:
-  - **order** *number*: number of nodes of the generated graph.
-  - **size** *number*: number of edges of the generated graph.
-  - **clusters** *number*: number of clusters of the generated graph.
-  - **clusterDensity** *?number* [`0.5`]: Probability that an edge will link two nodes of the same cluster.
-  - **rng** *?function*: custom RNG function.
+- **constructor** _Class_: a `graphology` constructor.
+- **options** _object_: options:
+  - **order** _number_: number of nodes of the generated graph.
+  - **size** _number_: number of edges of the generated graph.
+  - **clusters** _number_: number of clusters of the generated graph.
+  - **clusterDensity** _?number_ [`0.5`]: Probability that an edge will link two nodes of the same cluster.
+  - **rng** _?function_: custom RNG function.
 
 #### Erdos-Renyi
 
@@ -212,18 +210,18 @@ const graph = erdosRenyi.sparse(Graph, {order: 1000, probability: 0.1});
 
 **Arguments**
 
-* **constructor** *Class*: a `graphology` constructor.
-* **options** *object*: options:
-  - **order** *number*: number of nodes of the generated graph.
-  - **probability** *number*: probability for edge creation. (i.e. density you try to approximate in the generated graph).
+- **constructor** _Class_: a `graphology` constructor.
+- **options** _object_: options:
+  - **order** _number_: number of nodes of the generated graph.
+  - **probability** _number_: probability for edge creation. (i.e. density you try to approximate in the generated graph).
   - **approximateSize**: alternatively, you can pass an approximate number of edges you are trying to get in the generated graph.
-  - **rng** *?function*: custom RNG function.
+  - **rng** _?function_: custom RNG function.
 
 #### Girvan-Newman
 
 Creates a [Girvan-Newman](http://www.pnas.org/content/99/12/7821.full.pdf) random graph as described in:
 
-> Community Structure in  social and biological networks. Girvan Newman, 2002. PNAS June, vol 99 n 12
+> Community Structure in social and biological networks. Girvan Newman, 2002. PNAS June, vol 99 n 12
 
 ```js
 import Graph from 'graphology';
@@ -237,10 +235,10 @@ const graph = girvanNewman(Graph, {zOut: 4});
 
 **Arguments**
 
-* **constructor** *Class*: a `graphology` constructor.
-* **options** *object*: options:
-  - **zOut** *number*: *zout* parameter.
-  - **rng** *?function*: custom RNG function.
+- **constructor** _Class_: a `graphology` constructor.
+- **options** _object_: options:
+  - **zOut** _number_: _zout_ parameter.
+  - **rng** _?function_: custom RNG function.
 
 ### Small graphs
 
@@ -260,7 +258,7 @@ const graph = krackhardtKite(Graph);
 
 **Arguments**
 
-* **constructor** *Class*: a `graphology` constructor.
+- **constructor** _Class_: a `graphology` constructor.
 
 ### Social graphs
 
@@ -280,7 +278,7 @@ const graph = florentineFamilies(Graph);
 
 **Arguments**
 
-* **constructor** *Class*: a `graphology` constructor.
+- **constructor** _Class_: a `graphology` constructor.
 
 #### Karate Club
 
@@ -298,4 +296,4 @@ const graph = karateClub(Graph);
 
 **Arguments**
 
-* **constructor** *Class*: a `graphology` constructor.
+- **constructor** _Class_: a `graphology` constructor.

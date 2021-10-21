@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-communities-leiden.svg)](https://travis-ci.org/graphology/graphology-communities-leiden)
-
 # Graphology Communities Leiden
 
 Implementation of the [Leiden algorihtm](https://www.nature.com/articles/s41598-019-41695-z) for community detection to be used with [`graphology`](https://graphology.github.io).

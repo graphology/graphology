@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-metrics.svg)](https://travis-ci.org/graphology/graphology-metrics)
-
 # Graphology metrics
 
 Miscellaneous metrics to be used with [`graphology`](https://graphology.github.io).
@@ -12,32 +10,32 @@ npm install graphology-metrics
 
 ## Usage
 
-*Graph metrics*
+_Graph metrics_
 
-* [Density](#density)
-* [Diameter](#diameter)
-* [Extent](#extent)
-* [Modularity](#modularity)
-* [Weighted size](#weighted-size)
+- [Density](#density)
+- [Diameter](#diameter)
+- [Extent](#extent)
+- [Modularity](#modularity)
+- [Weighted size](#weighted-size)
 
-*Node metrics*
+_Node metrics_
 
-* [Centrality](#centrality)
+- [Centrality](#centrality)
   - [Betweenness centrality](#betweenness-centrality)
   - [Degree centrality](#degree-centrality)
-* [Degree](#degree)
-* [Eccentricity](#eccentricity)
-* [Weighted degree](#weighted-degree)
+- [Degree](#degree)
+- [Eccentricity](#eccentricity)
+- [Weighted degree](#weighted-degree)
 
-*Attributes metrics*
+_Attributes metrics_
 
-* [Modalities](#modalities)
+- [Modalities](#modalities)
 
-*Layout quality metrics*
+_Layout quality metrics_
 
-* [Edge Uniformity](#edge-uniformity)
-* [Neighborhood Preservation](#neighborhood-preservation)
-* [Stress](#stress)
+- [Edge Uniformity](#edge-uniformity)
+- [Neighborhood Preservation](#neighborhood-preservation)
+- [Stress](#stress)
 
 ### Density
 
@@ -66,16 +64,16 @@ import {
 const d = undirectedDensity(mixedGraph);
 ```
 
-*Arguments*
+_Arguments_
 
 Either:
 
-* **graph** *Graph*: target graph.
+- **graph** _Graph_: target graph.
 
 Or:
 
-* **order** *number*: number of nodes in the graph.
-* **size** *number*: number of edges in the graph.
+- **order** _number_: number of nodes in the graph.
+- **size** _number_: number of edges in the graph.
 
 ### Diameter
 
@@ -97,9 +95,10 @@ diameter(graph);
 >>> 2
 
 ```
-*Arguments*
 
-* **graph** *Graph*: target graph.
+_Arguments_
+
+- **graph** _Graph_: target graph.
 
 ### Extent
 
@@ -121,10 +120,10 @@ extent.edgeExtent(graph, 'weight');
 >>> [0, 5.7]
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **attributes** *string|array*: single attribute names or array of attribute names.
+- **graph** _Graph_: target graph.
+- **attributes** _string|array_: single attribute names or array of attribute names.
 
 ### Modularity
 
@@ -140,20 +139,20 @@ const Q = modularity(graph);
 
 // If the partition is not given by node attributes
 const Q = modularity(graph, {
-  communities: {'1': 0, '2': 0, '3': 1, '4': 1, '5': 1}
+  communities: {1: 0, 2: 0, 3: 1, 4: 1, 5: 1}
 });
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **options** *?object*: options:
-  * **attributes** *?object*: attributes' names:
-    * **community** *?string* [`community`]: name of the nodes' community attribute in case we need to read them from the graph itself.
-    * **weight** *?string* [`weight`]: name of the edges' weight attribute.
-  * **communities** *?object*: object mapping nodes to their respective communities.
-  * **resolution** *?number*: resolution parameter (`γ`).
-  * **weighted** *?boolean* [`true`]: whether to compute weighted modularity or not.
+- **graph** _Graph_: target graph.
+- **options** _?object_: options:
+  - **attributes** _?object_: attributes' names:
+    - **community** _?string_ [`community`]: name of the nodes' community attribute in case we need to read them from the graph itself.
+    - **weight** _?string_ [`weight`]: name of the edges' weight attribute.
+  - **communities** _?object_: object mapping nodes to their respective communities.
+  - **resolution** _?number_: resolution parameter (`γ`).
+  - **weighted** _?boolean_ [`true`]: whether to compute weighted modularity or not.
 
 ### Weighted size
 
@@ -177,10 +176,10 @@ weightedSize(graph, 'myWeightAttribute');
 >>> 4
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **weightAttribute** *?string* [`weight`]: name of the weight attribute.
+- **graph** _Graph_: target graph.
+- **weightAttribute** _?string_ [`weight`]: name of the weight attribute.
 
 ### Centrality
 
@@ -204,15 +203,15 @@ betweennessCentrality.assign(graph);
 betweennessCentrality.assign(graph, {attributes: {centrality: 'myCentrality'}});
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **options** *?object*: options:
-  * **attributes** *?object*: Custom attribute names:
-    - **centrality** *?string* [`betweennessCentrality`]: Name of the centrality attribute to assign.
-    - **weight** *?string*: Name of the weight attribute.
-  * **normalized** *?boolean* [`true`]: should the result be normalized?
-  * **weighted** *?boolean* [`false`]: should we compute the weighted betweenness centrality?
+- **graph** _Graph_: target graph.
+- **options** _?object_: options:
+  - **attributes** _?object_: Custom attribute names:
+    - **centrality** _?string_ [`betweennessCentrality`]: Name of the centrality attribute to assign.
+    - **weight** _?string_: Name of the weight attribute.
+  - **normalized** _?boolean_ [`true`]: should the result be normalized?
+  - **weighted** _?boolean_ [`false`]: should we compute the weighted betweenness centrality?
 
 #### Degree centrality
 
@@ -237,12 +236,12 @@ degreeCentrality.assign(graph);
 degreeCentrality.assign(graph, {attributes: {centrality: 'myCentrality'}});
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **options** *?object*: options:
-  * **attributes** *?object*: custom attribute names:
-    * **centrality** *?string* [`degreeCentrality`]: name of the centrality attribute to assign.
+- **graph** _Graph_: target graph.
+- **options** _?object_: options:
+  - **attributes** _?object_: custom attribute names:
+    - **centrality** _?string_ [`degreeCentrality`]: name of the centrality attribute to assign.
 
 ### Weighted degree
 
@@ -271,24 +270,24 @@ weightedDegree(graph, 'A', {normalized: true});
 weightedDegree.assign(graph);
 ```
 
-*Arguments*
+_Arguments_
 
 To compute the weighted degree of a single node:
 
-* **graph** *Graph*: target graph.
-* **node** *any*: desired node.
-* **options** *?object*: options. See below.
+- **graph** _Graph_: target graph.
+- **node** _any_: desired node.
+- **options** _?object_: options. See below.
 
 To compute the weighted degree of every node:
 
-* **graph** *Graph*: target graph.
-* **options** *?object*: options. See below.
+- **graph** _Graph_: target graph.
+- **options** _?object_: options. See below.
 
-*Options*
+_Options_
 
-* **attributes** *?object*: custom attribute names:
-  - **weight** *?string* [`weight`]: name of the weight attribute.
-  - **weightedDegree** *?string* [`weightedDegree`]: name of the attribute to assign.
+- **attributes** _?object_: custom attribute names:
+  - **weight** _?string_ [`weight`]: name of the weight attribute.
+  - **weightedDegree** _?string_ [`weightedDegree`]: name of the attribute to assign.
 
 ### Degree
 
@@ -347,17 +346,17 @@ allDegree(
 }
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **options** *?object*: options:
-  - **attributes** *?object*: Custom attribute names:
-    + **degree** *?string*: Name of the mixed degree attribute.
-    + **inDegree** *?string*: Name of the mixed inDegree attribute.
-    + **outDegree** *?string*: Name of the mixed outDegree attribute.
-    + **undirectedDegree** *?string*: Name of the mixed undirectedDegree attribute.
-    + **directedDegree** *?string*: Name of the mixed directedDegree attribute.
-  - **types** *?array*: List of degree types to extract.
+- **graph** _Graph_: target graph.
+- **options** _?object_: options:
+  - **attributes** _?object_: Custom attribute names:
+    - **degree** _?string_: Name of the mixed degree attribute.
+    - **inDegree** _?string_: Name of the mixed inDegree attribute.
+    - **outDegree** _?string_: Name of the mixed outDegree attribute.
+    - **undirectedDegree** _?string_: Name of the mixed undirectedDegree attribute.
+    - **directedDegree** _?string_: Name of the mixed directedDegree attribute.
+  - **types** _?array_: List of degree types to extract.
 
 ### Eccentricity
 
@@ -377,15 +376,13 @@ graph.addUndirectedEdge(2, 3);
 graph.addUndirectedEdge(3, 1);
 graph.addUndirectedEdge(3, 4);
 
-eccentricity(graph, 3)
->> 1
-
-
+eccentricity(graph, 3) >> 1;
 ```
-*Arguments*
 
-* **graph** *Graph*: target graph.
-* **node** *any*: desired node.
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **node** _any_: desired node.
 
 ### Modalities
 
@@ -419,10 +416,10 @@ const info = modalities(graph, ['type', 'lang']);
 }
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **attribute** *string|array*: target categorical attribute or array of categorical attributes.
+- **graph** _Graph_: target graph.
+- **attribute** _string|array_: target categorical attribute or array of categorical attributes.
 
 ### Edge Uniformity
 
@@ -439,7 +436,7 @@ edgeUniformity(graph);
 
 ### Neighborhood preservation
 
-Computes the "neighborhood preservation" layout quality metric from the given graph having `x` and `y` positions attached to its nodes. Neighborhood preservation is the average proportion of node neighborhood being the same both in the graph's topology and its 2d layout space. The metric is therefore comprised between `0` and `1`,  `1` being the best, meaning that every node keeps its neighborhood perfectly intact within the layout space.
+Computes the "neighborhood preservation" layout quality metric from the given graph having `x` and `y` positions attached to its nodes. Neighborhood preservation is the average proportion of node neighborhood being the same both in the graph's topology and its 2d layout space. The metric is therefore comprised between `0` and `1`, `1` being the best, meaning that every node keeps its neighborhood perfectly intact within the layout space.
 
 Runs in approximately `O(N * log(N))`.
 
@@ -449,7 +446,6 @@ import neighborhoodPreservation from 'graphology-metrics/layout-quality/neighbor
 neighborhoodPreservation(graph);
 // >>> 0.456
 ```
-
 
 ### Stress
 

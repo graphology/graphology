@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-simple-path.svg)](https://travis-ci.org/graphology/graphology-simple-path)
-
 # Graphology Simple Path
 
 Simple path related functions to be used with [`graphology`](https://graphology.github.io). A "simple path" is a path where a node is not repeated.
@@ -12,9 +10,9 @@ npm install graphology-simple-path
 
 ## Usage
 
-* [allSimplePaths](#allsimplepaths)
-* [allSimpleEdgePaths](#allsimpleedgepaths)
-* [allSimpleEdgeGroupPaths](#allsimpleedgegrouppaths)
+- [allSimplePaths](#allsimplepaths)
+- [allSimpleEdgePaths](#allsimpleedgepaths)
+- [allSimpleEdgeGroupPaths](#allsimpleedgegrouppaths)
 
 ### allSimplePaths
 
@@ -40,11 +38,11 @@ const paths = allSimplePaths(graph, '1', '3');
 const cycles = allSimplePaths(graph, '1', '1');
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **source** *string*: source node.
-* **target** *string*: target node.
+- **graph** _Graph_: target graph.
+- **source** _string_: source node.
+- **target** _string_: target node.
 
 ### allSimpleEdgePaths
 
@@ -70,11 +68,11 @@ const paths = allSimpleEdgePaths(graph, '1', '3');
 const cycles = allSimpleEdgePaths(graph, '1', '1');
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **source** *string*: source node.
-* **target** *string*: target node.
+- **graph** _Graph_: target graph.
+- **source** _string_: source node.
+- **target** _string_: target node.
 
 ### allSimpleEdgeGroupPaths
 
@@ -101,8 +99,8 @@ const paths = allSimpleEdgeGroupPaths(graph, '1', '3');
 const cycles = allSimpleEdgeGroupPaths(graph, '1', '1');
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **source** *string*: source node.
-* **target** *string*: target node.
+- **graph** _Graph_: target graph.
+- **source** _string_: source node.
+- **target** _string_: target node.

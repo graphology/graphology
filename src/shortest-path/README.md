@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-shortest-path.svg)](https://travis-ci.org/graphology/graphology-shortest-path)
-
 # Graphology Shortest Path
 
 Shortest path functions for [`graphology`](https://graphology.github.io).
@@ -12,14 +10,14 @@ npm install graphology-shortest-path
 
 ## Usage
 
-* [Unweighted](#unweighted)
+- [Unweighted](#unweighted)
   - [shortestPath](#shortestpath)
   - [bidirectional](#bidirectional)
   - [singleSource](#singlesource)
   - [singleSourceLength](#singlesourcelength)
   - [undirectedSingleSourceLength](#undirectedsinglesourcelength)
   - [brandes](#brandes)
-* [Dijkstra](#dijkstra)
+- [Dijkstra](#dijkstra)
   - [bidirectional](#dijkstra-bidirectional)
   - [singleSource](#dijkstra-singlesource)
   - [brandes](#dijkstra-brandes)
@@ -44,11 +42,11 @@ const path = shortestPath(graph, source, target);
 const paths = shortestPath(graph, source);
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: a `graphology` instance.
-* **source** *any*: source node.
-* **target** *?any*: optionally, target node.
+- **graph** _Graph_: a `graphology` instance.
+- **source** _any_: source node.
+- **target** _?any_: optionally, target node.
 
 ### bidirectional
 
@@ -63,11 +61,11 @@ import {bidirectional} from 'graphology-shortest-path/unweighted';
 const path = bidirectional(graph, source, target);
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: a `graphology` instance.
-* **source** *any*: source node.
-* **target** *any*: target node.
+- **graph** _Graph_: a `graphology` instance.
+- **source** _any_: source node.
+- **target** _any_: target node.
 
 ### singleSource
 
@@ -82,10 +80,10 @@ import {singleSource} from 'graphology-shortest-path/unweighted';
 const paths = singleSource(graph, source);
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: a `graphology` instance.
-* **source** *any*: source node.
+- **graph** _Graph_: a `graphology` instance.
+- **source** _any_: source node.
 
 ### singleSourceLength
 
@@ -100,10 +98,10 @@ import {singleSourceLength} from 'graphology-shortest-path/unweighted';
 const paths = singleSourceLength(graph, source);
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: a `graphology` instance.
-* **source** *any*: source node.
+- **graph** _Graph_: a `graphology` instance.
+- **source** _any_: source node.
 
 ### undirectedSingleSourceLength
 
@@ -118,10 +116,10 @@ import {undirectedSingleSourceLength} from 'graphology-shortest-path/unweighted'
 const paths = undirectedSingleSourceLength(graph, source);
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: a `graphology` instance.
-* **source** *any*: source node.
+- **graph** _Graph_: a `graphology` instance.
+- **source** _any_: source node.
 
 ### brandes
 
@@ -136,10 +134,10 @@ import {brandes} from 'graphology-shortest-path/unweighted';
 const [S, P, sigma] = brandes(graph, source);
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: a `graphology` instance.
-* **source** *any*: source node.
+- **graph** _Graph_: a `graphology` instance.
+- **source** _any_: source node.
 
 ## Dijkstra
 
@@ -159,12 +157,12 @@ const path = dijkstra.bidirectional(graph, source, target);
 const paths = dijkstra.bidirectional(graph, source, target, 'customWeight');
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: a `graphology` instance.
-* **source** *any*: source node.
-* **target** *any*: target node.
-* **weightAttribute** *?string* [`weight`]: name of the weight attribute.
+- **graph** _Graph_: a `graphology` instance.
+- **source** _any_: source node.
+- **target** _any_: target node.
+- **weightAttribute** _?string_ [`weight`]: name of the weight attribute.
 
 <h3 id="dijkstra-singlesource">singleSource</h3>
 
@@ -182,11 +180,11 @@ const paths = dijkstra.singleSource(graph, source);
 const paths = dijkstra.singleSource(graph, source, 'customWeight');
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: a `graphology` instance.
-* **source** *any*: source node.
-* **weightAttribute** *?string* [`weight`]: name of the weight attribute.
+- **graph** _Graph_: a `graphology` instance.
+- **source** _any_: source node.
+- **weightAttribute** _?string_ [`weight`]: name of the weight attribute.
 
 <h3 id="dijkstra-brandes">brandes</h3>
 
@@ -204,8 +202,8 @@ const [S, P, sigma] = dijkstra.brandes(graph, source);
 const [S, P, sigma] = dijkstra.brandes(graph, source, 'customWeight');
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: a `graphology` instance.
-* **source** *any*: source node.
-* **weightAttribute** *?string* [`weight`]: name of the weight attribute.
+- **graph** _Graph_: a `graphology` instance.
+- **source** _any_: source node.
+- **weightAttribute** _?string_ [`weight`]: name of the weight attribute.

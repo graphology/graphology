@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-operators.svg)](https://travis-ci.org/graphology/graphology-operators)
-
 # Graphology Operators
 
 Miscellaneous operators to be used with [`graphology`](https://graphology.github.io).
@@ -12,21 +10,21 @@ npm install graphology-operators
 
 ## Usage
 
-*Unary*
+_Unary_
 
-* [subgraph](#subgraph)
-* [reverse](#reverse)
+- [subgraph](#subgraph)
+- [reverse](#reverse)
 
-*Binary*
+_Binary_
 
-* [disjointUnion](#disjointunion)
-* [union](#union)
+- [disjointUnion](#disjointunion)
+- [union](#union)
 
-*Cast*
+_Cast_
 
-* [toDirected](#todirected)
-* [toSimple](#tosimple)
-* [toUndirected](#toundirected)
+- [toDirected](#todirected)
+- [toSimple](#tosimple)
+- [toUndirected](#toundirected)
 
 ### subgraph
 
@@ -44,15 +42,15 @@ const sub = subgraph(graph, ['John', 'Mary', 'Sue']);
 const sub = subgraph(graph, new Set(['John', 'Mary', 'Sue']));
 
 // From a filtering function
-const sub = subgraph(graph, function(key, attr) {
+const sub = subgraph(graph, function (key, attr) {
   return key.startsWith('J') || attr.color === 'red';
 });
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **nodes** *array|Set|function*: either an array of nodes to keep, or a set of nodes to keep or a function taking a node's key and its attributes and tasked to filter the nodes to keep.
+- **graph** _Graph_: target graph.
+- **nodes** _array|Set|function_: either an array of nodes to keep, or a set of nodes to keep or a function taking a node's key and its attributes and tasked to filter the nodes to keep.
 
 ### reverse
 
@@ -66,9 +64,9 @@ import reverse from 'graphology-operators/reverse';
 const reversedGraph = reverse(graph);
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
+- **graph** _Graph_: target graph.
 
 ### disjointUnion
 
@@ -83,10 +81,10 @@ import disjointUnion from 'graphology-operators/disjoint-union';
 const R = disjointUnion(G, H);
 ```
 
-*Arguments*
+_Arguments_
 
-* **G** *Graph*: first graph.
-* **H** *Graph*: second graph.
+- **G** _Graph_: first graph.
+- **H** _Graph_: second graph.
 
 ### union
 
@@ -100,10 +98,10 @@ import union from 'graphology-operators/union';
 const R = union(G, H);
 ```
 
-*Arguments*
+_Arguments_
 
-* **G** *Graph*: first graph.
-* **H** *Graph*: second graph.
+- **G** _Graph_: first graph.
+- **H** _Graph_: second graph.
 
 ### toDirected
 
@@ -129,11 +127,11 @@ const directedGraph = toDirected(graph, (currentAttr, nextAttr) => {
 });
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **mergeOrOptions** *?function|object*: either a merging function or an options object:
-  * **mergeEdge** *?function*: merging function to use.
+- **graph** _Graph_: target graph.
+- **mergeOrOptions** _?function|object_: either a merging function or an options object:
+  - **mergeEdge** _?function_: merging function to use.
 
 ### toSimple
 
@@ -173,8 +171,8 @@ const undirectedGraph = toUndirected(graph, (currentAttr, nextAttr) => {
 });
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **mergeOrOptions** *?function|object*: either a merging function or an options object:
-  * **mergeEdge** *?function*: merging function to use.
+- **graph** _Graph_: target graph.
+- **mergeOrOptions** _?function|object_: either a merging function or an options object:
+  - **mergeEdge** _?function_: merging function to use.

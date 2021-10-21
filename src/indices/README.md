@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-indices.svg)](https://travis-ci.org/graphology/graphology-indices)
-
 # Graphology Indices
 
 Miscellaneous indices to be used with [`graphology`](https://graphology.github.io).
@@ -16,6 +14,6 @@ This library contains multiple low-level indexation structures used to optimize 
 
 For now, here are the exposed indices:
 
-* An unweighted and weighted neighborhood index used to speed up computations requiring many successive BSTs in a graph.
-* A directed and undirected index used to track an evolving community structure when running the Louvain community detection algorithm.
-* An indexed view of a graph's connected components sorted by order.
+- An unweighted and weighted neighborhood index used to speed up computations requiring many successive BSTs in a graph.
+- A directed and undirected index used to track an evolving community structure when running the Louvain community detection algorithm.
+- An indexed view of a graph's connected components sorted by order.

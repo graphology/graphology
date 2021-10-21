@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-layout-forceatlas2.svg)](https://travis-ci.org/graphology/graphology-layout-forceatlas2)
-
 # Graphology ForceAtlas2
 
 JavaScript implementation of the [ForceAtlas2](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0098679) algorithm for [graphology](https://graphology.github.io).
@@ -16,11 +14,11 @@ npm install graphology-layout-forceatlas2
 
 ## Usage
 
-* [Pre-requisite](#pre-requisite)
-* [Settings](#settings)
-* [Synchronous layout](#synchronous-layout)
-* [Webworker](#webworker)
-* [#.inferSettings](#infersettings)
+- [Pre-requisite](#pre-requisite)
+- [Settings](#settings)
+- [Synchronous layout](#synchronous-layout)
+- [Webworker](#webworker)
+- [#.inferSettings](#infersettings)
 
 ### Pre-requisites
 
@@ -30,16 +28,16 @@ Note also that the algorithm has an edge-case where the layout cannot be compute
 
 ### Settings
 
-* **adjustSizes** *?boolean* [`false`]: should the node's sizes be taken into account?
-* **barnesHutOptimize** *?boolean* [`false`]: whether to use the Barnes-Hut approximation to compute repulsion in `O(n*log(n))` rather than default `O(n^2)`, `n` being the number of nodes.
-* **barnesHutTheta** *?number* [`0.5`]: Barnes-Hut approximation theta parameter.
-* **edgeWeightInfluence** *?number* [`0`]: influence of the edge's weights on the layout.
-* **gravity** *?number* [`1`]: strength of the layout's gravity.
-* **linLogMode** *?boolean* [`false`]: whether to use Noack's LinLog model.
-* **outboundAttractionDistribution** *?boolean* [`false`]
-* **scalingRatio** *?number* [`1`]
-* **slowDown** *?number* [`1`]
-* **strongGravityMode** *?boolean* [`false`]
+- **adjustSizes** _?boolean_ [`false`]: should the node's sizes be taken into account?
+- **barnesHutOptimize** _?boolean_ [`false`]: whether to use the Barnes-Hut approximation to compute repulsion in `O(n*log(n))` rather than default `O(n^2)`, `n` being the number of nodes.
+- **barnesHutTheta** _?number_ [`0.5`]: Barnes-Hut approximation theta parameter.
+- **edgeWeightInfluence** _?number_ [`0`]: influence of the edge's weights on the layout.
+- **gravity** _?number_ [`1`]: strength of the layout's gravity.
+- **linLogMode** _?boolean_ [`false`]: whether to use Noack's LinLog model.
+- **outboundAttractionDistribution** _?boolean_ [`false`]
+- **scalingRatio** _?number_ [`1`]
+- **slowDown** _?number_ [`1`]
+- **strongGravityMode** _?boolean_ [`false`]
 
 ### Synchronous layout
 
@@ -60,18 +58,18 @@ const positions = forceAtlas2(graph, {
 forceAtlas2.assign(graph);
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **options** *object*: options:
-  - **iterations** *number*: number of iterations to perform.
-  - **settings** *?object*: the layout's settings (see [#settings](#settings)).
+- **graph** _Graph_: target graph.
+- **options** _object_: options:
+  - **iterations** _number_: number of iterations to perform.
+  - **settings** _?object_: the layout's settings (see [#settings](#settings)).
 
 ### Webworker
 
 If you need to run the layout's computation in a web worker, the library comes with a utility to do so:
 
-*Example*
+_Example_
 
 ```js
 import FA2Layout from 'graphology-layout-forceatlas2/worker';
@@ -98,7 +96,10 @@ If you don't know how to tune the layout's settings and want to infer them from 
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 
 const sensibleSettings = forceAtlas2.inferSettings(graph);
-const positions = forceAtlas2(graph, {iterations: 50, settings: sensibleSettings});
+const positions = forceAtlas2(graph, {
+  iterations: 50,
+  settings: sensibleSettings
+});
 
 // Alternatively using the graph's order instead of a graph instance
 const sensibleSettings = forceAtlas2.inferSettings(500);

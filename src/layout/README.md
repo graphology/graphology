@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-layout.svg)](https://travis-ci.org/graphology/graphology-layout)
-
 # Graphology Layout
 
 Collection of basic layout algorithms to be used with [`graphology`](https://graphology.github.io).
@@ -12,15 +10,15 @@ npm install graphology-layout
 
 ## Usage
 
-* [circlePack](#circlePack)
-* [circular](#circular)
-* [random](#random)
+- [circlePack](#circlePack)
+- [circular](#circular)
+- [random](#random)
 
 ### #.circlePack
 
 Arranges the nodes as a bubble chart, according to specified attributes.
 
-*Example*
+_Example_
 
 ```js
 import {circlepack} from 'graphology-layout';
@@ -30,30 +28,32 @@ import circlepack from 'graphology-layout/circlepack';
 const positions = circlepack(Graph);
 
 // With options
-const positions = circlepack(Graph, {hierarchyAttributes: ['degree', 'community'], rng: customRngFunction});
+const positions = circlepack(Graph, {
+  hierarchyAttributes: ['degree', 'community'],
+  rng: customRngFunction
+});
 
 // To directly assign the positions to the nodes:
 circlepack.assign(Graph);
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **options** *?object*: options:
-  - **attributes** *?object*: attributes to map:
-    + **x** *?string* [`x`]: name of the x position.
-    + **y** *?string* [`y`]: name of the y position.
-  - **center** *?number* [`0`]: center of the layout.
-  - **hierarchyAttributes** *?list* [`[]`]: attributes used to group nodes.
-  - **rng** *?function* [`Math.random`]: custom RNG function to use.
-  - **scale** *?number* [`1`]: scale of the layout.
-
+- **graph** _Graph_: target graph.
+- **options** _?object_: options:
+  - **attributes** _?object_: attributes to map:
+    - **x** _?string_ [`x`]: name of the x position.
+    - **y** _?string_ [`y`]: name of the y position.
+  - **center** _?number_ [`0`]: center of the layout.
+  - **hierarchyAttributes** _?list_ [`[]`]: attributes used to group nodes.
+  - **rng** _?function_ [`Math.random`]: custom RNG function to use.
+  - **scale** _?number_ [`1`]: scale of the layout.
 
 ### #.circular
 
 Arranges the node in a circle.
 
-*Example*
+_Example_
 
 ```js
 import {circular} from 'graphology-layout';
@@ -69,21 +69,21 @@ const positions = circular(Graph, {scale: 100});
 circular.assign(Graph);
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **options** *?object*: options:
-  - **attributes** *?object*: attributes to map:
-    + **x** *?string* [`x`]: name of the x position.
-    + **y** *?string* [`y`]: name of the y position.
-  - **center** *?number* [`0.5`]: center of the layout.
-  - **scale** *?number* [`1`]: scale of the layout.
+- **graph** _Graph_: target graph.
+- **options** _?object_: options:
+  - **attributes** _?object_: attributes to map:
+    - **x** _?string_ [`x`]: name of the x position.
+    - **y** _?string_ [`y`]: name of the y position.
+  - **center** _?number_ [`0.5`]: center of the layout.
+  - **scale** _?number_ [`1`]: scale of the layout.
 
 ### #.random
 
 Random layout positioning every node by choosing each coordinates uniformly at random on the interval `[0, 1)`.
 
-*Example*
+_Example_
 
 ```js
 import {random} from 'graphology-layout';
@@ -99,14 +99,13 @@ const positions = random(Graph, {rng: customRngFunction});
 random.assign(Graph);
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **options** *?object*: options:
-  - **attributes** *?object*: attributes to map:
-    + **x** *?string* [`x`]: name of the x position.
-    + **y** *?string* [`y`]: name of the y position.
-  - **center** *?number* [`0.5`]: center of the layout.
-  - **rng** *?function* [`Math.random`]: custom RNG function to use.
-  - **scale** *?number* [`1`]: scale of the layout.
-
+- **graph** _Graph_: target graph.
+- **options** _?object_: options:
+  - **attributes** _?object_: attributes to map:
+    - **x** _?string_ [`x`]: name of the x position.
+    - **y** _?string_ [`y`]: name of the y position.
+  - **center** _?number_ [`0.5`]: center of the layout.
+  - **rng** _?function_ [`Math.random`]: custom RNG function to use.
+  - **scale** _?number_ [`1`]: scale of the layout.

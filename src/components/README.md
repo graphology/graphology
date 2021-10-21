@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/graphology/graphology-components.svg)](https://travis-ci.org/graphology/graphology-components)
-
 # Graphology Components
 
 Connected components for [`graphology`](https://graphology.github.io).
@@ -12,9 +10,9 @@ npm install graphology-components
 
 ## Usage
 
-* [connectedComponents](#connectedcomponents)
-* [largestConnectedComponent](#largestconnectedcomponent)
-* [stronglyConnectedComponents](#stronglyconnectedcomponents)
+- [connectedComponents](#connectedcomponents)
+- [largestConnectedComponent](#largestconnectedcomponent)
+- [stronglyConnectedComponents](#stronglyconnectedcomponents)
 
 ### connectedComponents
 
