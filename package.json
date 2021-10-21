@@ -2,6 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "build": "lerna run clean && lerna run build --scope graphology && lerna run template --scope graphology-layout-forceatlas2 --scope graphology-layout-noverlap && lerna run build --scope graphology-library",
     "docs:build": "cd docs && bundle exec jekyll build",
     "docs:clean": "rimraf docs/.git docs/_site docs/.jekyll-cache docs/.jekyll-metadata docs/.sass-cache",
     "docs:install": "cd docs && bundle install",
