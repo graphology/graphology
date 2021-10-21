@@ -51,6 +51,7 @@
     "graphology-components": "file:src/components",
     "graphology-generators": "file:src/generators",
     "graphology-gexf": "file:src/gexf",
+    "graphology-graphml": "file:src/graphml",
     "graphology-hits": "file:src/hits",
     "graphology-indices": "file:src/indices",
     "graphology-layout": "file:src/layout",
@@ -68,10 +69,6 @@
     "graphology-types": "file:src/types",
     "graphology-utils": "file:src/utils"
   },
-  "hiddenPackages": [
-    "graphology-communities-leiden",
-    "graphology-library"
-  ],
   "prettier": "@yomguithereal/prettier-config",
   "eslintConfig": {
     "extends": [

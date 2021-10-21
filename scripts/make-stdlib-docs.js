@@ -1,35 +1,77 @@
-const pkg = require('../package.json');
+const libs = require('../docs/_libs.json');
 const path = require('path');
 const fs = require('fs');
 const rimraf = require('rimraf');
 
-const HIDDEN = new Set(pkg.hiddenPackages);
 const ARGUMENT_TYPE = /_(\?[^_]+)_/g;
 const DEFAULT_TYPE = /\[`([^`]+)`\](?!\()/g;
 
 const docsDirectory = path.join(__dirname, '../docs/standard-library');
 
-const stdlib = Object.keys(pkg.dependencies)
-  .filter(key => key !== 'graphology' && !HIDDEN.has(key))
-  .map(key => key.replace(/^graphology-/, ''))
-  .sort();
+const stdlib = Object.entries(libs).map(([name, description]) => {
+  return {name, description};
+});
 
 rimraf.sync(path.join(docsDirectory, '*.md'));
+
+const toc = stdlib
+  .map(({name, description}) => {
+    return `* [${name}](./${name}): *${description}*`;
+  })
+  .join('\n');
 
 const indexHeader = `---
 layout: default
 title: Standard library
 nav_order: 1
 has_children: true
+has_toc: false
 ---
 
 # Standard library
+
+${toc}
+
+## Installation
+
+Any of the above packages can be installed through npm likewise (just change the name to
+the desired package):
+
+\`\`\`
+npm install graphology-metrics
+\`\`\`
+
+For convenience, an aggregated package called \`graphology-library\` also exists
+and depends on all the listed packages at once for convenience (albeit maybe
+a little bit more complicated to optimize through tree-shaking).
+
+You can install it thusly:
+
+\`\`\`
+npm install graphology-library
+\`\`\`
+
+If you do so, here is how to access the required packages:
+
+\`\`\`js
+// Importing a sub package
+import * as metrics from 'graphology-library/metrics';
+
+metrics.density(graph);
+
+// Importing select parts of the library
+import {metrics, layout} from 'graphology-library';
+
+// Importing the whole library
+import * as lib from 'graphology-library';
+\`\`\`
 `;
 
 fs.writeFileSync(path.join(docsDirectory, 'index.md'), indexHeader);
 
-stdlib.forEach((lib, i) => {
-  const libPath = path.join(__dirname, '../src', lib);
+stdlib.forEach(({name}, i) => {
+  const libPath = path.join(__dirname, '../src', name);
+
   let readme = fs.readFileSync(path.join(libPath, 'README.md'), 'utf-8');
 
   readme = readme.replace(/https:\/\/graphology\.github\.io/, '..');
@@ -42,7 +84,7 @@ stdlib.forEach((lib, i) => {
 
   const content = `---
 layout: default
-title: ${lib}
+title: ${name}
 nav_order: ${i}
 parent: Standard library
 ---
@@ -50,10 +92,5 @@ parent: Standard library
 ${readme}
 `;
 
-  fs.writeFileSync(path.join(docsDirectory, `${lib}.md`), content);
+  fs.writeFileSync(path.join(docsDirectory, `${name}.md`), content);
 });
-
-// todo: links to other libs, link to repo
-// todo: switch to metadata & drop hiddenPackages
-// todo: upgrade deploy script
-// todo: hide -library and document it in the index rather

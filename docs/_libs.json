@@ -1,0 +1,22 @@
+{
+  "assertions": "Miscellaneous assertions (same nodes, same edges etc.).",
+  "canvas": "Canvas rendering routines for graphs.",
+  "communities-louvain": "Louvain method for community detection.",
+  "components": "Connected components (strong, weak etc.).",
+  "generators": "Graph generators (random graphs, complete graphs etc.).",
+  "gexf": "Parsers & writers for the GEXF file format.",
+  "graphml": "Parsers & writers for the GRAPHML file format.",
+  "hits": "HITS algorithm.",
+  "indices": "Various specialized graph indices (neighborhood, louvain etc.)",
+  "layout": "Basic graph layouts (random, circle etc.).",
+  "layout-forceatlas2": "ForceAtlas2 layout algorithm.",
+  "layout-noverlap": "Noverlap anti-collision layout algorithm.",
+  "metrics": "Modularity, density, centrality etc.",
+  "operators": "Graph unary, binary & cast operators (reverse, union, intersection, conversion etc.)",
+  "pagerank": "Pagerank algorithm.",
+  "shortest-path": "Shortest path functions (Dijkstra, A&ast; etc.)",
+  "simple-path": "Simple path related functions (e.g. all paths between source & target)",
+  "svg": "SVG export for graphs.",
+  "traversal": "Traversal functions (DFS, BFS, etc.)",
+  "utils": "Miscellaneous utils used by most of the other modules."
+}
