@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Instantiation
-nav_order: 1
+nav_order: 3
 menu_toc:
   - Options
   - Typed constructors

@@ -13,3 +13,7 @@ span.default {
 .nav-list.anchored {
   display: block !important;
 }
+
+:target {
+  padding-top: 20px;
+}

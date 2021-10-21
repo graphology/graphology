@@ -4,6 +4,8 @@ title: Home
 nav_order: 0
 ---
 
+# Graphology
+
 `graphology` is a specification and reference implementation for a robust & multipurpose JavaScript/TypeScript `Graph` object.
 
 It aims at supporting various kinds of graphs with the same unified interface.
@@ -84,3 +86,7 @@ Graphs are complex structures and, while we designed the reference implementatio
 It is therefore possible to test your custom implementation against the specifications' unit tests.
 
 Directions about this can be found [here](unittests.md).
+
+## Acknowledgments
+
+This documentation has been built with [Jekyll](https://jekyllrb.com/) using the [Just the Docs](https://pmarsceill.github.io/just-the-docs/) theme.
