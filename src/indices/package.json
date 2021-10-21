@@ -28,9 +28,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/graphology/graphology-indices/issues"
+    "url": "https://github.com/graphology/graphology/issues"
   },
-  "homepage": "https://github.com/graphology/graphology-indices#readme",
+  "homepage": "https://github.com/graphology/graphology#readme",
   "peerDependencies": {
     "graphology-types": ">=0.20.0"
   },

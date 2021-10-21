@@ -27,8 +27,8 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/graphology/graphology-types/issues"
+    "url": "https://github.com/graphology/graphology/issues"
   },
-  "homepage": "https://github.com/graphology/graphology-types#readme",
+  "homepage": "https://github.com/graphology/graphology#readme",
   "prettier": "@yomguithereal/prettier-config"
 }

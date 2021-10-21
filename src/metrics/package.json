@@ -45,9 +45,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/graphology/graphology-metrics/issues"
+    "url": "https://github.com/graphology/graphology/issues"
   },
-  "homepage": "https://github.com/graphology/graphology-metrics#readme",
+  "homepage": "https://github.com/graphology/graphology#readme",
   "peerDependencies": {
     "graphology-types": ">=0.20.0"
   },

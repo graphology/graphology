@@ -31,9 +31,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/graphology/graphology-minivan/issues"
+    "url": "https://github.com/graphology/graphology/issues"
   },
-  "homepage": "https://github.com/graphology/graphology-minivan#readme",
+  "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
     "graphology-utils": "^1.5.0",
     "iwanthue": "^1.3.0"

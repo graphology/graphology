@@ -25,9 +25,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/graphology/graphology-pagerank/issues"
+    "url": "https://github.com/graphology/graphology/issues"
   },
-  "homepage": "https://github.com/graphology/graphology-pagerank#readme",
+  "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
     "graphology-utils": "^1.3.0",
     "lodash": "^4.17.5"

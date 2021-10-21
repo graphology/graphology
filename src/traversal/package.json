@@ -34,9 +34,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/graphology/graphology-traversal/issues"
+    "url": "https://github.com/graphology/graphology/issues"
   },
-  "homepage": "https://github.com/graphology/graphology-traversal#readme",
+  "homepage": "https://github.com/graphology/graphology#readme",
   "peerDependencies": {
     "graphology-types": ">=0.20.0"
   },

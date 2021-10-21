@@ -29,9 +29,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/graphology/graphology-graphml/issues"
+    "url": "https://github.com/graphology/graphology/issues"
   },
-  "homepage": "https://github.com/graphology/graphology-graphml#readme",
+  "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
     "graphology-utils": "^2.1.0",
     "xml-writer": "^1.7.0",

@@ -37,9 +37,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/graphology/graphology-canvas/issues"
+    "url": "https://github.com/graphology/graphology/issues"
   },
-  "homepage": "https://github.com/graphology/graphology-canvas#readme",
+  "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
     "graphology-utils": "^2.0.0",
     "lodash": "^4.17.20"
