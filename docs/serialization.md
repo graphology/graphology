@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Serialization
-nav_order: 9999
+nav_order: 12
 menu_toc:
   - "Format"
   - "#.import"
