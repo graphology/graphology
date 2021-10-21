@@ -64,6 +64,10 @@ import {metrics, layout} from 'graphology-library';
 
 // Importing the whole library
 import * as lib from 'graphology-library';
+
+// Importing the browser-specific library
+// (this is important for xml parsers and some layout's webworkers)
+import * as lib from 'graphology-library/browser';
 \`\`\`
 `;
 

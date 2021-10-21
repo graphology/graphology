@@ -11,7 +11,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && rollup -c",
+    "clean": "rm -rf ./dist",
+    "build": "npm run clean && rollup -c",
     "prepublishOnly": "npm run test:types && npm run build",
     "test": "npm run test:types",
     "test:types": "ts-node test.ts"
