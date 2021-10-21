@@ -1,6 +1,13 @@
+---
+layout: default
+title: library
+nav_order: 11
+parent: Standard library
+---
+
 # Graphology Aggregated Standard Library
 
-A npm package gathering every library from the [graphology](https://graphology.github.io) ecosystem.
+A npm package gathering every library from the [graphology](..) ecosystem.
 
 ## Installation
 
@@ -26,3 +33,4 @@ import {metrics, layout} from 'graphology-library';
 // Importing the whole library
 import * as lib from 'graphology-library';
 ```
+

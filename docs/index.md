@@ -58,6 +58,10 @@ graph.forEachNode(node => {
 });
 ```
 
+## Changelog
+
+A complete changelog can be found [here](https://github.com/graphology/graphology/blob/master/CHANGELOG.md).
+
 ## Acknowledgments
 
 This documentation has been built with [Jekyll](https://jekyllrb.com/) using the [Just the Docs](https://pmarsceill.github.io/just-the-docs/) theme.
