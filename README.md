@@ -2,33 +2,34 @@
 
 # Graphology
 
-`graphology` is a specification for a robust & multipurpose JavaScript `Graph` object and aiming at supporting various kinds of graphs under a same unified interface.
+`graphology` is a robust & multipurpose `Graph` object for JavaScript and TypeScript.
 
-You will also find here the source for the reference implementation of this specification.
+It aims at supporting various kinds of graphs with the same unified interface.
+
+A `graphology` graph can therefore be directed, undirected or mixed, allow self-loops or not, and can be simple or support parallel edges.
+
+Along with those specifications, one will also find a comprehensive [standard library](standard-library) full of graph theory algorithms and common utilities such as graph generators, layouts, traversals etc.
+
+Finally, `graphology` graphs are able to emit a wide variety of [events](events), which makes them ideal to build interactive renderers for the browser. It is for instance used by [sigma.js](https://www.sigmajs.org/) as its data backend.
 
 ## Installation
+
+To install `graphology` using npm, run the following command:
 
 ```
 npm install graphology
 ```
 
-## Documentation
+The source repository can be found on [this](https://github.com/graphology/graphology) github repository, where you will be able to find standalone builds in the [releases](https://github.com/graphology/graphology/releases) for older JavaScript configurations.
 
-Full documentation for the library/specs is available [here](https://graphology.github.io).
+Note that `graphology` also exports type declaration that are installed along using peer dependencies so it can be used with [TypeScript](https://www.typescriptlang.org/) out of the box.
 
-## Contribution
-
-Contributions are obviously welcome. Just be sure to lint & add/run relevant unit tests.
+If your version of npm is a bit old, you may need to install `graphology-types` yourself if the peer dependency resolution is not made for you already:
 
 ```
-# Installing locally
-git clone git@github.com:graphology/graphology.git
-cd graphology
-npm install
-
-# Linting
-npm run lint
-
-# Running the unit tests
-npm test
+npm install graphology-types
 ```
+
+## Changelog
+
+A complete changelog can be found [here](https://github.com/graphology/graphology/blob/master/CHANGELOG.md).
