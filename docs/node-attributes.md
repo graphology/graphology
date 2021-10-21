@@ -196,5 +196,5 @@ graph.updateEachNodeAttributes((node, attr) => {
 *Arguments*
 
 * **updater** <span class="code">function</span>: the udpater function.
-* **hints** <span class="code">[object]</span>: optional hints to emit as part of the [eachNodeAttributesUpdated](events.md#eachnodeattributesupdated) event:
+* **hints** <span class="code">[object]</span>: optional hints to emit as part of the [eachNodeAttributesUpdated](events#eachnodeattributesupdated) event:
   * **attributes** <span class="code">[array]</span>: an array of attribute names that will be updated by your action.

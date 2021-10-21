@@ -118,7 +118,7 @@ graph.dropEdge('T->R');
 
 ## cleared
 
-Emitted whenever the graph is cleared when using the [`#.clear`](mutations.md#clear) method. Note that when using this method, the `nodeDropped` & the `edgeDropped` events won't be emitted.
+Emitted whenever the graph is cleared when using the [`#.clear`](mutations#clear) method. Note that when using this method, the `nodeDropped` & the `edgeDropped` events won't be emitted.
 
 *Example*
 
@@ -134,7 +134,7 @@ graph.clear();
 
 ## edgesCleared
 
-Emitted whenever the graph is cleared of its edges when using the [`#.clearEdges`](mutations.md#clearedges) method. Note that when using this method the `edgeDropped` events won't be emitted.
+Emitted whenever the graph is cleared of its edges when using the [`#.clearEdges`](mutations#clearedges) method. Note that when using this method the `edgeDropped` events won't be emitted.
 
 *Example*
 
@@ -221,7 +221,7 @@ graph.setEdgeAttribute('T->R', 'type', 'KNOWS');
 
 ## eachNodeAttributesUpdated
 
-Emitted whenever the [#.updateEachNodeAttributes](attributes.md#updateeachnodeattributes) is called.
+Emitted whenever the [#.updateEachNodeAttributes](attributes#updateeachnodeattributes) is called.
 
 *Payload*
 
@@ -230,7 +230,7 @@ Emitted whenever the [#.updateEachNodeAttributes](attributes.md#updateeachnodeat
 
 ## eachEdgeAttributesUpdated
 
-Emitted whenever the [#.updateEachEdgeAttributes](attributes.md#updateeachedgeattributes) is called.
+Emitted whenever the [#.updateEachEdgeAttributes](attributes#updateeachedgeattributes) is called.
 
 *Payload*
 

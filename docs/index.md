@@ -6,86 +6,57 @@ nav_order: 0
 
 # Graphology
 
-`graphology` is a specification and reference implementation for a robust & multipurpose JavaScript/TypeScript `Graph` object.
+`graphology` is a robust & multipurpose `Graph` object for JavaScript and TypeScript.
 
 It aims at supporting various kinds of graphs with the same unified interface.
 
-A `graphology` graph can therefore be directed, undirected or mixed and can be simple or support parallel edges.
+A `graphology` graph can therefore be directed, undirected or mixed, allow self-loops or not, and can be simple or support parallel edges.
 
-Along with those specifications, one will also find a [standard library](#standard-library) full of graph theory algorithms and common utilities such as graph generators, layouts etc.
+Along with those specifications, one will also find a comprehensive [standard library](standard-library) full of graph theory algorithms and common utilities such as graph generators, layouts, traversals etc.
+
+Finally, `graphology` graphs are able to emit a wide variety of [events](events), which makes them ideal to build interactive renderers for the browser. It is for instance used by [sigma.js](https://www.sigmajs.org/) as its data backend.
 
 ## Installation
 
-To install the reference implementation:
+To install `graphology` using npm, run the following command:
 
-```bash
+```
 npm install graphology
 ```
 
-The source of the reference implementation can be found on [this](https://github.com/graphology/graphology) github repository.
+The source repository can be found on [this](https://github.com/graphology/graphology) github repository, where you will be able to find standalone builds in the [releases](https://github.com/graphology/graphology/releases) for older JavaScript configurations.
 
-Note that `graphology` also exposes type declaration so it can be comfortably used with [TypeScript](https://www.typescriptlang.org/).
+Note that `graphology` also exports type declaration that are installed along using peer dependencies so it can be used with [TypeScript](https://www.typescriptlang.org/) out of the box.
 
-You may need to install `graphology-types` along `graphology`, depending on your npm version (it is declared as a peer dependency to avoid common issues), so it works smoothly:
+If your version of npm is a bit old, you may need to install `graphology-types` yourself if the peer dependency resolution is not made for you already:
 
-```bash
+```
 npm install graphology-types
 ```
 
 ## Quick Start
 
 ```js
-const Graph = require('graphology');
+import Graph from 'graphology';
 
 const graph = new Graph();
+
+// Adding some nodes
 graph.addNode('John');
 graph.addNode('Martha');
+
+// Adding an edge
 graph.addEdge('John', 'Martha');
 
+// Displaying useful information about your graph
 console.log('Number of nodes', graph.order);
 console.log('Number of edges', graph.size);
 
+// Iterating over nodes
 graph.forEachNode(node => {
-  graph.forEachNeighbor(node, neighbor => console.log(node, neighbor));
+  console.log(node);
 });
 ```
-
-## Standard library
-
-- [graphology-assertions](https://github.com/graphology/graphology-assertions#readme)<br>_Miscellaneous assertions (same nodes, same edges etc.)._
-- [graphology-canvas](https://github.com/graphology/graphology-canvas#readme)<br>_Canvas rendering routines for graphs._
-- [graphology-communities-louvain](https://github.com/graphology/graphology-communities-louvain#readme)<br>_Louvain method for community detection._
-- [graphology-components](https://github.com/graphology/graphology-components#readme)<br>_Connected components (strong, weak etc.)._
-- [graphology-generators](https://github.com/graphology/graphology-generators#readme)<br>_Graph generators (random graphs, complete graphs etc.)._
-- [graphology-gexf](https://github.com/graphology/graphology-gexf#readme)<br>_Parsers & writers for the GEXF file format._
-- [graphology-graphml](https://github.com/graphology/graphology-graphml#readme)<br>_Parsers & writers for the GRAPHML file format._
-- [graphology-hits](https://github.com/graphology/graphology-hits#readme)<br>_HITS algorithm._
-- [graphology-layout](https://github.com/graphology/graphology-layout#readme)<br>_Basic graph layouts (random, circle etc.)._
-- [graphology-layout-forceatlas2](https://github.com/graphology/graphology-layout-forceatlas2#readme)<br>_ForceAtlas2 layout algorithm._
-- [graphology-layout-noverlap](https://github.com/graphology/graphology-layout-noverlap#readme)<br>_Noverlap anti-collision layout algorithm._
-- [graphology-metrics](https://github.com/graphology/graphology-metrics#readme)<br>_Modularity, density, centrality etc._
-- [graphology-operators](https://github.com/graphology/graphology-operators#readme)<br>_Graph unary, binary & cast operators (reverse, union, intersection, conversion etc.)_
-- [graphology-pagerank](https://github.com/graphology/graphology-pagerank#readme)<br>_Pagerank algorithm._
-- [graphology-simple-path](https://github.com/graphology/graphology-simple-path#readme)<br>_Simple path related functions (e.g. all paths between source & target)_
-- [graphology-shortest-path](https://github.com/graphology/graphology-shortest-path#readme)<br>_Shortest path functions (Dijkstra, A\* etc.)_
-- [graphology-svg](https://github.com/graphology/graphology-svg#readme)<br>_SVG export for graphs._
-- [graphology-types](https://github.com/graphology/graphology-types#readme)<br>_TypeScript declaration files._
-- [graphology-traversal](https://github.com/graphology/graphology-traversal#readme)<br>_Traversal functions (DFS, BFS, etc.)_
-- [graphology-utils](https://github.com/graphology/graphology-utils#readme)<br>_Miscellaneous utils used by most of the other modules._
-
-## Changelog
-
-A complete record describing changes from version to version can be found [here](https://github.com/graphology/graphology/blob/master/CHANGELOG.md) if required.
-
-## Implementing graphology
-
-`graphology` is only is a specification so that anyone can implement it however they like if necessary, while keeping the advantages of being able to use the [standard library](#standard-library).
-
-Graphs are complex structures and, while we designed the reference implementation to handle most common cases with good performance, one will always be able to implement the present specifications in a more performant fashion for specific use cases.
-
-It is therefore possible to test your custom implementation against the specifications' unit tests.
-
-Directions about this can be found [here](unittests.md).
 
 ## Acknowledgments
 
