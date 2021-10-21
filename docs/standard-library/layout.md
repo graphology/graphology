@@ -47,14 +47,14 @@ circlepack.assign(Graph);
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **options** _?object_: options:
-  - **attributes** _?object_: attributes to map:
-    - **x** _?string_ [`x`]: name of the x position.
-    - **y** _?string_ [`y`]: name of the y position.
-  - **center** _?number_ [`0`]: center of the layout.
-  - **hierarchyAttributes** _?list_ [`[]`]: attributes used to group nodes.
-  - **rng** _?function_ [`Math.random`]: custom RNG function to use.
-  - **scale** _?number_ [`1`]: scale of the layout.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: attributes to map:
+    - **x** <span class="code">?string</span> <span class="default">x</span>: name of the x position.
+    - **y** <span class="code">?string</span> <span class="default">y</span>: name of the y position.
+  - **center** <span class="code">?number</span> <span class="default">0</span>: center of the layout.
+  - **hierarchyAttributes** <span class="code">?list</span> <span class="default">[]</span>: attributes used to group nodes.
+  - **rng** <span class="code">?function</span> <span class="default">Math.random</span>: custom RNG function to use.
+  - **scale** <span class="code">?number</span> <span class="default">1</span>: scale of the layout.
 
 ### #.circular
 
@@ -79,12 +79,12 @@ circular.assign(Graph);
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **options** _?object_: options:
-  - **attributes** _?object_: attributes to map:
-    - **x** _?string_ [`x`]: name of the x position.
-    - **y** _?string_ [`y`]: name of the y position.
-  - **center** _?number_ [`0.5`]: center of the layout.
-  - **scale** _?number_ [`1`]: scale of the layout.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: attributes to map:
+    - **x** <span class="code">?string</span> <span class="default">x</span>: name of the x position.
+    - **y** <span class="code">?string</span> <span class="default">y</span>: name of the y position.
+  - **center** <span class="code">?number</span> <span class="default">0.5</span>: center of the layout.
+  - **scale** <span class="code">?number</span> <span class="default">1</span>: scale of the layout.
 
 ### #.random
 
@@ -109,11 +109,11 @@ random.assign(Graph);
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **options** _?object_: options:
-  - **attributes** _?object_: attributes to map:
-    - **x** _?string_ [`x`]: name of the x position.
-    - **y** _?string_ [`y`]: name of the y position.
-  - **center** _?number_ [`0.5`]: center of the layout.
-  - **rng** _?function_ [`Math.random`]: custom RNG function to use.
-  - **scale** _?number_ [`1`]: scale of the layout.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: attributes to map:
+    - **x** <span class="code">?string</span> <span class="default">x</span>: name of the x position.
+    - **y** <span class="code">?string</span> <span class="default">y</span>: name of the y position.
+  - **center** <span class="code">?number</span> <span class="default">0.5</span>: center of the layout.
+  - **rng** <span class="code">?function</span> <span class="default">Math.random</span>: custom RNG function to use.
+  - **scale** <span class="code">?number</span> <span class="default">1</span>: scale of the layout.
 

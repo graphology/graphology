@@ -1,7 +1,7 @@
 ---
 layout: default
 title: svg
-nav_order: 18
+nav_order: 17
 parent: Standard library
 ---
 

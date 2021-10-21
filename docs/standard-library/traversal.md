@@ -1,7 +1,7 @@
 ---
 layout: default
 title: traversal
-nav_order: 19
+nav_order: 18
 parent: Standard library
 ---
 
@@ -58,7 +58,7 @@ bfsFromNode(graph, 'node1', function (node, attr, depth) {
 _Arguments_
 
 - **graph** _Graph_: a graphology instance.
-- **node** _string|number_: starting node.
+- **node** _string\|number_: starting node.
 - **callback** _function_: iteration callback taking the traversed node, its attributes and the traversal's depth.
 
 ### dfs
@@ -97,6 +97,6 @@ dfsFromNode(graph, 'node1', function (node, attr, depth) {
 _Arguments_
 
 - **graph** _Graph_: a graphology instance.
-- **node** _string|number_: starting node.
+- **node** _string\|number_: starting node.
 - **callback** _function_: iteration callback taking the traversed node, its attributes and the traversal's depth.
 

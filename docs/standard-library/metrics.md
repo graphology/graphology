@@ -1,7 +1,7 @@
 ---
 layout: default
 title: metrics
-nav_order: 12
+nav_order: 11
 parent: Standard library
 ---
 
@@ -153,13 +153,13 @@ const Q = modularity(graph, {
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **options** _?object_: options:
-  - **attributes** _?object_: attributes' names:
-    - **community** _?string_ [`community`]: name of the nodes' community attribute in case we need to read them from the graph itself.
-    - **weight** _?string_ [`weight`]: name of the edges' weight attribute.
-  - **communities** _?object_: object mapping nodes to their respective communities.
-  - **resolution** _?number_: resolution parameter (`γ`).
-  - **weighted** _?boolean_ [`true`]: whether to compute weighted modularity or not.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: attributes' names:
+    - **community** <span class="code">?string</span> <span class="default">community</span>: name of the nodes' community attribute in case we need to read them from the graph itself.
+    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
+  - **communities** <span class="code">?object</span>: object mapping nodes to their respective communities.
+  - **resolution** <span class="code">?number</span>: resolution parameter (`γ`).
+  - **weighted** <span class="code">?boolean</span> <span class="default">true</span>: whether to compute weighted modularity or not.
 
 ### Weighted size
 
@@ -186,7 +186,7 @@ weightedSize(graph, 'myWeightAttribute');
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **weightAttribute** _?string_ [`weight`]: name of the weight attribute.
+- **weightAttribute** <span class="code">?string</span> <span class="default">weight</span>: name of the weight attribute.
 
 ### Centrality
 
@@ -213,12 +213,12 @@ betweennessCentrality.assign(graph, {attributes: {centrality: 'myCentrality'}});
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **options** _?object_: options:
-  - **attributes** _?object_: Custom attribute names:
-    - **centrality** _?string_ [`betweennessCentrality`]: Name of the centrality attribute to assign.
-    - **weight** _?string_: Name of the weight attribute.
-  - **normalized** _?boolean_ [`true`]: should the result be normalized?
-  - **weighted** _?boolean_ [`false`]: should we compute the weighted betweenness centrality?
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: Custom attribute names:
+    - **centrality** <span class="code">?string</span> <span class="default">betweennessCentrality</span>: Name of the centrality attribute to assign.
+    - **weight** <span class="code">?string</span>: Name of the weight attribute.
+  - **normalized** <span class="code">?boolean</span> <span class="default">true</span>: should the result be normalized?
+  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: should we compute the weighted betweenness centrality?
 
 #### Degree centrality
 
@@ -246,9 +246,9 @@ degreeCentrality.assign(graph, {attributes: {centrality: 'myCentrality'}});
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **options** _?object_: options:
-  - **attributes** _?object_: custom attribute names:
-    - **centrality** _?string_ [`degreeCentrality`]: name of the centrality attribute to assign.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: custom attribute names:
+    - **centrality** <span class="code">?string</span> <span class="default">degreeCentrality</span>: name of the centrality attribute to assign.
 
 ### Weighted degree
 
@@ -283,18 +283,18 @@ To compute the weighted degree of a single node:
 
 - **graph** _Graph_: target graph.
 - **node** _any_: desired node.
-- **options** _?object_: options. See below.
+- **options** <span class="code">?object</span>: options. See below.
 
 To compute the weighted degree of every node:
 
 - **graph** _Graph_: target graph.
-- **options** _?object_: options. See below.
+- **options** <span class="code">?object</span>: options. See below.
 
 _Options_
 
-- **attributes** _?object_: custom attribute names:
-  - **weight** _?string_ [`weight`]: name of the weight attribute.
-  - **weightedDegree** _?string_ [`weightedDegree`]: name of the attribute to assign.
+- **attributes** <span class="code">?object</span>: custom attribute names:
+  - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the weight attribute.
+  - **weightedDegree** <span class="code">?string</span> <span class="default">weightedDegree</span>: name of the attribute to assign.
 
 ### Degree
 
@@ -356,14 +356,14 @@ allDegree(
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **options** _?object_: options:
-  - **attributes** _?object_: Custom attribute names:
-    - **degree** _?string_: Name of the mixed degree attribute.
-    - **inDegree** _?string_: Name of the mixed inDegree attribute.
-    - **outDegree** _?string_: Name of the mixed outDegree attribute.
-    - **undirectedDegree** _?string_: Name of the mixed undirectedDegree attribute.
-    - **directedDegree** _?string_: Name of the mixed directedDegree attribute.
-  - **types** _?array_: List of degree types to extract.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: Custom attribute names:
+    - **degree** <span class="code">?string</span>: Name of the mixed degree attribute.
+    - **inDegree** <span class="code">?string</span>: Name of the mixed inDegree attribute.
+    - **outDegree** <span class="code">?string</span>: Name of the mixed outDegree attribute.
+    - **undirectedDegree** <span class="code">?string</span>: Name of the mixed undirectedDegree attribute.
+    - **directedDegree** <span class="code">?string</span>: Name of the mixed directedDegree attribute.
+  - **types** <span class="code">?array</span>: List of degree types to extract.
 
 ### Eccentricity
 

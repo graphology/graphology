@@ -4,6 +4,8 @@ const fs = require('fs');
 const rimraf = require('rimraf');
 
 const HIDDEN = new Set(pkg.hiddenPackages);
+const ARGUMENT_TYPE = /_(\?[^_]+)_/g;
+const DEFAULT_TYPE = /\[`([^`]+)`\](?!\()/g;
 
 const docsDirectory = path.join(__dirname, '../docs/standard-library');
 
@@ -30,7 +32,13 @@ stdlib.forEach((lib, i) => {
   const libPath = path.join(__dirname, '../src', lib);
   let readme = fs.readFileSync(path.join(libPath, 'README.md'), 'utf-8');
 
-  readme = readme.replace(/https:\/\/graphology.github.io/, '..');
+  readme = readme.replace(/https:\/\/graphology\.github\.io/, '..');
+  readme = readme.replace(
+    /https:\/\/github\.com\/graphology\/graphology-([A-Za-z\-]+)/g,
+    '/standard-library/$1'
+  );
+  readme = readme.replace(ARGUMENT_TYPE, '<span class="code">$1</span>');
+  readme = readme.replace(DEFAULT_TYPE, '<span class="default">$1</span>');
 
   const content = `---
 layout: default
@@ -46,3 +54,6 @@ ${readme}
 });
 
 // todo: links to other libs, link to repo
+// todo: switch to metadata & drop hiddenPackages
+// todo: upgrade deploy script
+// todo: hide -library and document it in the index rather

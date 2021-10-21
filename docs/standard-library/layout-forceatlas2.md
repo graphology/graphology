@@ -29,22 +29,22 @@ npm install graphology-layout-forceatlas2
 
 ### Pre-requisites
 
-Each node's starting position must be set before running ForceAtlas 2 layout. Two attributes called `x` and `y` must therefore be defined for all the graph nodes. [graphology-layout](https://github.com/graphology/graphology-layout) can be used to initialize these attributes to a [random](https://github.com/graphology/graphology-layout#random) or [circular](https://github.com/graphology/graphology-layout#circular) layout, if needed.
+Each node's starting position must be set before running ForceAtlas 2 layout. Two attributes called `x` and `y` must therefore be defined for all the graph nodes. [graphology-layout](/standard-library/layout) can be used to initialize these attributes to a [random](/standard-library/layout#random) or [circular](/standard-library/layout#circular) layout, if needed.
 
 Note also that the algorithm has an edge-case where the layout cannot be computed if all of your nodes starts with `x=0` and `y=0`.
 
 ### Settings
 
-- **adjustSizes** _?boolean_ [`false`]: should the node's sizes be taken into account?
-- **barnesHutOptimize** _?boolean_ [`false`]: whether to use the Barnes-Hut approximation to compute repulsion in `O(n*log(n))` rather than default `O(n^2)`, `n` being the number of nodes.
-- **barnesHutTheta** _?number_ [`0.5`]: Barnes-Hut approximation theta parameter.
-- **edgeWeightInfluence** _?number_ [`0`]: influence of the edge's weights on the layout.
-- **gravity** _?number_ [`1`]: strength of the layout's gravity.
-- **linLogMode** _?boolean_ [`false`]: whether to use Noack's LinLog model.
-- **outboundAttractionDistribution** _?boolean_ [`false`]
-- **scalingRatio** _?number_ [`1`]
-- **slowDown** _?number_ [`1`]
-- **strongGravityMode** _?boolean_ [`false`]
+- **adjustSizes** <span class="code">?boolean</span> <span class="default">false</span>: should the node's sizes be taken into account?
+- **barnesHutOptimize** <span class="code">?boolean</span> <span class="default">false</span>: whether to use the Barnes-Hut approximation to compute repulsion in `O(n*log(n))` rather than default `O(n^2)`, `n` being the number of nodes.
+- **barnesHutTheta** <span class="code">?number</span> <span class="default">0.5</span>: Barnes-Hut approximation theta parameter.
+- **edgeWeightInfluence** <span class="code">?number</span> <span class="default">0</span>: influence of the edge's weights on the layout.
+- **gravity** <span class="code">?number</span> <span class="default">1</span>: strength of the layout's gravity.
+- **linLogMode** <span class="code">?boolean</span> <span class="default">false</span>: whether to use Noack's LinLog model.
+- **outboundAttractionDistribution** <span class="code">?boolean</span> <span class="default">false</span>
+- **scalingRatio** <span class="code">?number</span> <span class="default">1</span>
+- **slowDown** <span class="code">?number</span> <span class="default">1</span>
+- **strongGravityMode** <span class="code">?boolean</span> <span class="default">false</span>
 
 ### Synchronous layout
 
@@ -70,7 +70,7 @@ _Arguments_
 - **graph** _Graph_: target graph.
 - **options** _object_: options:
   - **iterations** _number_: number of iterations to perform.
-  - **settings** _?object_: the layout's settings (see [#settings](#settings)).
+  - **settings** <span class="code">?object</span>: the layout's settings (see [#settings](#settings)).
 
 ### Webworker
 

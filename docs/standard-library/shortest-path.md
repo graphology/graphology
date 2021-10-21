@@ -1,7 +1,7 @@
 ---
 layout: default
 title: shortest-path
-nav_order: 16
+nav_order: 15
 parent: Standard library
 ---
 
@@ -53,7 +53,7 @@ _Arguments_
 
 - **graph** _Graph_: a `graphology` instance.
 - **source** _any_: source node.
-- **target** _?any_: optionally, target node.
+- **target** <span class="code">?any</span>: optionally, target node.
 
 ### bidirectional
 
@@ -169,7 +169,7 @@ _Arguments_
 - **graph** _Graph_: a `graphology` instance.
 - **source** _any_: source node.
 - **target** _any_: target node.
-- **weightAttribute** _?string_ [`weight`]: name of the weight attribute.
+- **weightAttribute** <span class="code">?string</span> <span class="default">weight</span>: name of the weight attribute.
 
 <h3 id="dijkstra-singlesource">singleSource</h3>
 
@@ -191,7 +191,7 @@ _Arguments_
 
 - **graph** _Graph_: a `graphology` instance.
 - **source** _any_: source node.
-- **weightAttribute** _?string_ [`weight`]: name of the weight attribute.
+- **weightAttribute** <span class="code">?string</span> <span class="default">weight</span>: name of the weight attribute.
 
 <h3 id="dijkstra-brandes">brandes</h3>
 
@@ -213,5 +213,5 @@ _Arguments_
 
 - **graph** _Graph_: a `graphology` instance.
 - **source** _any_: source node.
-- **weightAttribute** _?string_ [`weight`]: name of the weight attribute.
+- **weightAttribute** <span class="code">?string</span> <span class="default">weight</span>: name of the weight attribute.
 

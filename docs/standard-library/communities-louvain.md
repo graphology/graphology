@@ -33,9 +33,9 @@ npm install graphology-communities-louvain
 
 Runs the Louvain algorithm to detect communities in the given graph. It works both for undirected & directed graph by using the relevant modularity computations.
 
-This function also works on multi graphs but won't work with mixed graph as it is not trivial to adapt modularity to this case. As such, if you need to process a true mixed graph (this function will correctly handle mixed graphs containing only directed or undirected edges), cast your graph as either directed or undirected using [graphology-operators](https://github.com/graphology/graphology-operators) dedicated functions.
+This function also works on multi graphs but won't work with mixed graph as it is not trivial to adapt modularity to this case. As such, if you need to process a true mixed graph (this function will correctly handle mixed graphs containing only directed or undirected edges), cast your graph as either directed or undirected using [graphology-operators](/standard-library/operators) dedicated functions.
 
-Note also that this algorithm's run time is bounded by the number of edges in your graph. As such, it might be preferable, in some cases, to cast your multi graph as a simple one using [graphology-operators](https://github.com/graphology/graphology-operators) functions for better performance.
+Note also that this algorithm's run time is bounded by the number of edges in your graph. As such, it might be preferable, in some cases, to cast your multi graph as a simple one using [graphology-operators](/standard-library/operators) functions for better performance.
 
 Note that the community labels are returned as an integer range from 0 to n.
 
@@ -63,25 +63,25 @@ var details = louvain.detailed(graph);
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **options** _?object_: options:
-  - **attributes** _?object_: attributes' names:
-    - **weight** _?string_ [`weight`]: name of the edges' weight attribute.
-    - **community** _?string_ [`community`]: name of the community attribute.
-  - **fastLocalMoves** _?boolean_ [`true`]: whether to use a well-known optimization relying on a queue set to traverse the graph more efficiently.
-  - **randomWalk** _?boolean_ [`true`]: whether to traverse the graph randomly.
-  - **resolution** _?number_ [`1`]: resolution parameter. An increased resolution should produce more communities.
-  - **rng** _?function_ [`Math.random`]: RNG function to use for `randomWalk`. Useful if you need to seed your rng using, for instance, [seedrandom](https://www.npmjs.com/package/seedrandom).
-  - **weighted** _?boolean_ [`false`]: whether to take edge weights into account.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: attributes' names:
+    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
+    - **community** <span class="code">?string</span> <span class="default">community</span>: name of the community attribute.
+  - **fastLocalMoves** <span class="code">?boolean</span> <span class="default">true</span>: whether to use a well-known optimization relying on a queue set to traverse the graph more efficiently.
+  - **randomWalk** <span class="code">?boolean</span> <span class="default">true</span>: whether to traverse the graph randomly.
+  - **resolution** <span class="code">?number</span> <span class="default">1</span>: resolution parameter. An increased resolution should produce more communities.
+  - **rng** <span class="code">?function</span> <span class="default">Math.random</span>: RNG function to use for `randomWalk`. Useful if you need to seed your rng using, for instance, [seedrandom](https://www.npmjs.com/package/seedrandom).
+  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to take edge weights into account.
 
 _Detailed Output_
 
-- **communities** [`object`]: partition of the graph.
-- **count** [`number`]: number of communities in the partition.
-- **deltaComputations** [`number`]: number of delta computations that were run to produce the partition.
-- **dendrogram** [`array`]: array of partitions.
-- **modularity** [`number`]: final modularity of the graph given the found partition.
-- **moves** [`array`]: array of array of number of moves if `fastLocalMoves` was false or array of number of moves if `fastLocalMoves` was true.
-- **nodesVisited** [`number`]: number of times nodes were visited.
+- **communities** <span class="default">object</span>: partition of the graph.
+- **count** <span class="default">number</span>: number of communities in the partition.
+- **deltaComputations** <span class="default">number</span>: number of delta computations that were run to produce the partition.
+- **dendrogram** <span class="default">array</span>: array of partitions.
+- **modularity** <span class="default">number</span>: final modularity of the graph given the found partition.
+- **moves** <span class="default">array</span>: array of array of number of moves if `fastLocalMoves` was false or array of number of moves if `fastLocalMoves` was true.
+- **nodesVisited** <span class="default">number</span>: number of times nodes were visited.
 
 ## Benchmark
 

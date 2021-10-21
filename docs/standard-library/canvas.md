@@ -27,7 +27,7 @@ If you experience any issue when installing the libray check that you have the r
 
 ### Pre-requisites
 
-Each node's position must be set before rendering a graph. Two attributes called `x` and `y` must therefore be defined for all the graph nodes. [graphology-layout](https://github.com/graphology/graphology-layout) or [graphology-layout-forceatlas2](https://github.com/graphology/graphology-layout-forceatlas2), for instance, can be used to give positions to nodes if they don't have one already.
+Each node's position must be set before rendering a graph. Two attributes called `x` and `y` must therefore be defined for all the graph nodes. [graphology-layout](/standard-library/layout) or [graphology-layout-forceatlas2](/standard-library/layout-forceatlas2), for instance, can be used to give positions to nodes if they don't have one already.
 
 ### Rendering a graph in an arbitrary canvas context
 
@@ -58,17 +58,17 @@ renderToPNG(graph, './graph.png', settings, () => console.log('Done!'));
 
 ### Settings
 
-- **width** _?number_ [`2048`]: width of the canvas. Will be the same as `height` if not provided.
-- **height** _?number_ [`2048`]: height of the canvas. Will be the same as `width` if not provided.
-- **margin** _?number_ [`20`]: margin to keep around the drawing.
-- **nodes** _?object_: node-related settings:
-  - **defaultColor** _?string_ [`#999`]: default color for nodes.
-  - **reducer** _?function_: reducer fonction for nodes taking the rendering settings, the node key and its attributes and tasked to return rendering info such as `color`, `size` etc.
-- **edges** _?object_: node-related settings:
-  - **defaultColor** _?string_ [`#ccc`]: default color for edges.
-  - **reducer** _?function_: reducer fonction for edges taking the rendering settings, the node key and its attributes and tasked to return rendering info such as `color`, `size` etc.
+- **width** <span class="code">?number</span> <span class="default">2048</span>: width of the canvas. Will be the same as `height` if not provided.
+- **height** <span class="code">?number</span> <span class="default">2048</span>: height of the canvas. Will be the same as `width` if not provided.
+- **margin** <span class="code">?number</span> <span class="default">20</span>: margin to keep around the drawing.
+- **nodes** <span class="code">?object</span>: node-related settings:
+  - **defaultColor** <span class="code">?string</span> <span class="default">#999</span>: default color for nodes.
+  - **reducer** <span class="code">?function</span>: reducer fonction for nodes taking the rendering settings, the node key and its attributes and tasked to return rendering info such as `color`, `size` etc.
+- **edges** <span class="code">?object</span>: node-related settings:
+  - **defaultColor** <span class="code">?string</span> <span class="default">#ccc</span>: default color for edges.
+  - **reducer** <span class="code">?function</span>: reducer fonction for edges taking the rendering settings, the node key and its attributes and tasked to return rendering info such as `color`, `size` etc.
 
 ### Async Settings
 
-- **batchSize** _?number_ [`500`]: number of items to render on canvas on each animation frame, increase or decrease to tweak performance vs. UI availability.
+- **batchSize** <span class="code">?number</span> <span class="default">500</span>: number of items to render on canvas on each animation frame, increase or decrease to tweak performance vs. UI availability.
 

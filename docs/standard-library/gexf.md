@@ -5,7 +5,7 @@ nav_order: 5
 parent: Standard library
 ---
 
-[![Build Status](https://github.com/graphology/graphology-gexf/workflows/Tests/badge.svg)](https://github.com/graphology/graphology-gexf/actions)
+[![Build Status](/standard-library/gexf/workflows/Tests/badge.svg)](/standard-library/gexf/actions)
 
 
 # Graphology GEXF Utilities
@@ -103,8 +103,8 @@ var gexfString = gexf.write(graph, {
 
 * **graph** *Graph*: graphology instance to write.
 * **options** *?object*: Options:
-  - **encoding** *?string* [`UTF-8`]: encoding declaration.
+  - **encoding** *?string* <span class="default">UTF-8</span>: encoding declaration.
   - **formatNode** *?function*: function returning the node's data to write.
   - **formatEdge** *?function*: function returning the edge's data to write.
-  - **pretty** *?boolean* [`true`]: pretty-print output?
+  - **pretty** *?boolean* <span class="default">true</span>: pretty-print output?
 

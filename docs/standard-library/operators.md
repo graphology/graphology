@@ -1,7 +1,7 @@
 ---
 layout: default
 title: operators
-nav_order: 14
+nav_order: 13
 parent: Standard library
 ---
 
@@ -137,8 +137,8 @@ const directedGraph = toDirected(graph, (currentAttr, nextAttr) => {
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **mergeOrOptions** _?function|object_: either a merging function or an options object:
-  - **mergeEdge** _?function_: merging function to use.
+- **mergeOrOptions** <span class="code">?function|object</span>: either a merging function or an options object:
+  - **mergeEdge** <span class="code">?function</span>: merging function to use.
 
 ### toSimple
 
@@ -181,6 +181,6 @@ const undirectedGraph = toUndirected(graph, (currentAttr, nextAttr) => {
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **mergeOrOptions** _?function|object_: either a merging function or an options object:
-  - **mergeEdge** _?function_: merging function to use.
+- **mergeOrOptions** <span class="code">?function|object</span>: either a merging function or an options object:
+  - **mergeEdge** <span class="code">?function</span>: merging function to use.
 

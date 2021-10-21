@@ -1,7 +1,7 @@
 ---
 layout: default
 title: pagerank
-nav_order: 15
+nav_order: 14
 parent: Standard library
 ---
 
@@ -33,12 +33,12 @@ const p = pagerank(graph, {alpha: 0.9, weighted: false});
 ## Arguments
 
 - **graph** _Graph_: target graph.
-- **options** _?object_: options:
-  - **attributes** _?object_: attributes' names:
-    - **pagerank** _?string_ [`pagerank`]: name of the node attribute that will be assigned the pagerank score.
-    - **weight** _?string_ [`weight`]: name of the edges' weight attribute.
-  - **alpha** _?number_ [`0.85`]: damping parameter of the algorithm.
-  - **maxIterations** _?number_ [`100`]: maximum number of iterations to perform.
-  - **tolerance** _?number_ [`1.e-6`]: convergence error tolerance.
-  - **weighted** _?boolean_ [`false`]: whether to use available weights or not.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: attributes' names:
+    - **pagerank** <span class="code">?string</span> <span class="default">pagerank</span>: name of the node attribute that will be assigned the pagerank score.
+    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
+  - **alpha** <span class="code">?number</span> <span class="default">0.85</span>: damping parameter of the algorithm.
+  - **maxIterations** <span class="code">?number</span> <span class="default">100</span>: maximum number of iterations to perform.
+  - **tolerance** <span class="code">?number</span> <span class="default">1.e-6</span>: convergence error tolerance.
+  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to use available weights or not.
 

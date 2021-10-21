@@ -69,7 +69,8 @@
     "graphology-utils": "file:src/utils"
   },
   "hiddenPackages": [
-    "graphology-communities-leiden"
+    "graphology-communities-leiden",
+    "graphology-library"
   ],
   "prettier": "@yomguithereal/prettier-config",
   "eslintConfig": {

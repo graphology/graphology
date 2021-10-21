@@ -31,7 +31,7 @@ import {connectedComponents} from 'graphology-components';
 const components = connectedComponents(graph);
 ```
 
-If `graph` is a mixed or directed, the result will be the list of **weakly connected components.**
+If your graph is mixed or directed, the result will be what are usually called **weakly connected components**.
 
 ### largestConnectedComponent
 

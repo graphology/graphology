@@ -194,8 +194,8 @@ const graph = clusters(Graph, {
   - **order** _number_: number of nodes of the generated graph.
   - **size** _number_: number of edges of the generated graph.
   - **clusters** _number_: number of clusters of the generated graph.
-  - **clusterDensity** _?number_ [`0.5`]: Probability that an edge will link two nodes of the same cluster.
-  - **rng** _?function_: custom RNG function.
+  - **clusterDensity** <span class="code">?number</span> <span class="default">0.5</span>: Probability that an edge will link two nodes of the same cluster.
+  - **rng** <span class="code">?function</span>: custom RNG function.
 
 #### Erdos-Renyi
 
@@ -222,7 +222,7 @@ const graph = erdosRenyi.sparse(Graph, {order: 1000, probability: 0.1});
   - **order** _number_: number of nodes of the generated graph.
   - **probability** _number_: probability for edge creation. (i.e. density you try to approximate in the generated graph).
   - **approximateSize**: alternatively, you can pass an approximate number of edges you are trying to get in the generated graph.
-  - **rng** _?function_: custom RNG function.
+  - **rng** <span class="code">?function</span>: custom RNG function.
 
 #### Girvan-Newman
 
@@ -245,7 +245,7 @@ const graph = girvanNewman(Graph, {zOut: 4});
 - **constructor** _Class_: a `graphology` constructor.
 - **options** _object_: options:
   - **zOut** _number_: _zout_ parameter.
-  - **rng** _?function_: custom RNG function.
+  - **rng** <span class="code">?function</span>: custom RNG function.
 
 ### Small graphs
 

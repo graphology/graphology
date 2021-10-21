@@ -1,7 +1,7 @@
 ---
 layout: default
 title: types
-nav_order: 20
+nav_order: 19
 parent: Standard library
 ---
 

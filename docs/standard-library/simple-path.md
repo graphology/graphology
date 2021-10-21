@@ -1,7 +1,7 @@
 ---
 layout: default
 title: simple-path
-nav_order: 17
+nav_order: 16
 parent: Standard library
 ---
 
