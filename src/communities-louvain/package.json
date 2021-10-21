@@ -21,7 +21,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/graphology/graphology-communities-louvain.git"
+    "url": "git+https://github.com/graphology/graphology.git"
   },
   "contributors": [
     {

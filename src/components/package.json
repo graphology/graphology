@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/graphology/graphology-components.git"
+    "url": "git+https://github.com/graphology/graphology.git"
   },
   "keywords": [
     "graph",

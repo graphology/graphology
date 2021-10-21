@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/graphology/graphology-indices.git"
+    "url": "git+https://github.com/graphology/graphology.git"
   },
   "keywords": [
     "graph",

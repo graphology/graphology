@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/graphology/graphology-library.git"
+    "url": "git+https://github.com/graphology/graphology.git"
   },
   "keywords": [
     "graph",

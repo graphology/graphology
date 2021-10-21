@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/graphology/graphology-svg.git"
+    "url": "git+https://github.com/graphology/graphology.git"
   },
   "keywords": [
     "graph",

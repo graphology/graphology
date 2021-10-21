@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/graphology/graphology-layout.git"
+    "url": "git+https://github.com/graphology/graphology.git"
   },
   "keywords": [
     "circlepack",
