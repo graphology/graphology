@@ -1,0 +1,60 @@
+name: Build
+
+on:
+  push:
+    tags: "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Build sources
+        run: |
+          npm i
+          npm run build
+
+      - name: Uploading graphology
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./src/graphology/dist/graphology.umd.js
+          asset_name: graphology.js
+          tag: ${{ github.ref }}
+          overwrite: true
+
+      - name: Uploading graphology minified
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./src/graphology/dist/graphology.umd.min.js
+          asset_name: graphology.min.js
+          tag: ${{ github.ref }}
+          overwrite: true
+
+      - name: Uploading graphology-library
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./src/library/dist/graphology-library.js
+          asset_name: graphology-library.js
+          tag: ${{ github.ref }}
+          overwrite: true
+
+      - name: Uploading graphology-library minified
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./src/library/dist/graphology-library.min.js
+          asset_name: graphology-library.min.js
+          tag: ${{ github.ref }}
+          overwrite: true
+
+
