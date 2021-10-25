@@ -84,8 +84,7 @@ function forEachSimple(object, callback, avoid) {
       edgeData.target.key,
       edgeData.source.attributes,
       edgeData.target.attributes,
-      edgeData.undirected,
-      edgeData.generatedKey
+      edgeData.undirected
     );
   }
 }
@@ -102,8 +101,7 @@ function forEachMulti(object, callback, avoid) {
         edgeData.target.key,
         edgeData.source.attributes,
         edgeData.target.attributes,
-        edgeData.undirected,
-        edgeData.generatedKey
+        edgeData.undirected
       )
     );
   }
@@ -131,8 +129,7 @@ function forEachSimpleUntil(object, callback, avoid) {
       edgeData.target.key,
       edgeData.source.attributes,
       edgeData.target.attributes,
-      edgeData.undirected,
-      edgeData.generatedKey
+      edgeData.undirected
     );
 
     if (shouldBreak) return true;
@@ -163,8 +160,7 @@ function forEachMultiUntil(object, callback, avoid) {
         target.key,
         source.attributes,
         target.attributes,
-        edgeData.undirected,
-        edgeData.generatedKey
+        edgeData.undirected
       );
 
       if (shouldBreak) return true;
@@ -281,8 +277,7 @@ function forEachForKeySimple(object, k, callback) {
     targetData.key,
     sourceData.attributes,
     targetData.attributes,
-    edgeData.undirected,
-    edgeData.generatedKey
+    edgeData.undirected
   );
 }
 
@@ -299,8 +294,7 @@ function forEachForKeyMulti(object, k, callback) {
       edgeData.target.key,
       edgeData.source.attributes,
       edgeData.target.attributes,
-      edgeData.undirected,
-      edgeData.generatedKey
+      edgeData.undirected
     )
   );
 }
@@ -328,8 +322,7 @@ function forEachForKeySimpleUntil(object, k, callback) {
     targetData.key,
     sourceData.attributes,
     targetData.attributes,
-    edgeData.undirected,
-    edgeData.generatedKey
+    edgeData.undirected
   );
 }
 
@@ -353,8 +346,7 @@ function forEachForKeyMultiUntil(object, k, callback) {
       edgeData.target.key,
       edgeData.source.attributes,
       edgeData.target.attributes,
-      edgeData.undirected,
-      edgeData.generatedKey
+      edgeData.undirected
     );
 
     if (shouldBreak) return true;
@@ -474,8 +466,7 @@ function forEachEdge(graph, type, callback) {
       target.key,
       source.attributes,
       target.attributes,
-      data.undirected,
-      data.generatedKey
+      data.undirected
     );
   }
 }
@@ -512,8 +503,7 @@ function forEachEdgeUntil(graph, type, callback) {
       target.key,
       source.attributes,
       target.attributes,
-      data.undirected,
-      data.generatedKey
+      data.undirected
     );
 
     if (shouldBreak) return true;

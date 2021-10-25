@@ -38,8 +38,7 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
           targetData.attributes,
           edgeData.key,
           edgeData.attributes,
-          edgeData.undirected,
-          edgeData.generatedKey
+          edgeData.undirected
         );
 
         if (breakable && shouldBreak) return true;
@@ -62,8 +61,7 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
           targetData.attributes,
           edgeData.key,
           edgeData.attributes,
-          edgeData.undirected,
-          edgeData.generatedKey
+          edgeData.undirected
         );
 
         if (breakable && shouldBreak) return true;
@@ -118,8 +116,7 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
             targetData.attributes,
             edgeData.key,
             edgeData.attributes,
-            edgeData.undirected,
-            edgeData.generatedKey
+            edgeData.undirected
           );
 
           if (breakable && shouldBreak) return true;
@@ -148,8 +145,7 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
             targetData.attributes,
             edgeData.key,
             edgeData.attributes,
-            edgeData.undirected,
-            edgeData.generatedKey
+            edgeData.undirected
           );
 
           if (breakable && shouldBreak) return true;

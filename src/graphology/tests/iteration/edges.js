@@ -217,8 +217,7 @@ export default function edgesIteration(Graph, checkers) {
             target,
             sA,
             tA,
-            u,
-            g
+            u
           ) {
             edges.push(key);
 
@@ -233,7 +232,6 @@ export default function edgesIteration(Graph, checkers) {
             assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
 
             assert.strictEqual(graph.isUndirected(key), u);
-            assert.strictEqual(graph.hasGeneratedKey(key), g);
           });
 
           edges.sort();
@@ -247,7 +245,7 @@ export default function edgesIteration(Graph, checkers) {
 
             graph[forEachName](
               data.node.key,
-              function (key, attributes, source, target, sA, tA, u, g) {
+              function (key, attributes, source, target, sA, tA, u) {
                 edges.push(key);
 
                 assert.deepStrictEqual(
@@ -261,7 +259,6 @@ export default function edgesIteration(Graph, checkers) {
                 assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
 
                 assert.strictEqual(graph.isUndirected(key), u);
-                assert.strictEqual(graph.hasGeneratedKey(key), g);
               }
             );
 
@@ -277,7 +274,7 @@ export default function edgesIteration(Graph, checkers) {
             graph[forEachName](
               data.path.source,
               data.path.target,
-              function (key, attributes, source, target, sA, tA, u, g) {
+              function (key, attributes, source, target, sA, tA, u) {
                 edges.push(key);
 
                 assert.deepStrictEqual(
@@ -291,7 +288,6 @@ export default function edgesIteration(Graph, checkers) {
                 assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
 
                 assert.strictEqual(graph.isUndirected(key), u);
-                assert.strictEqual(graph.hasGeneratedKey(key), g);
               }
             );
 
@@ -311,8 +307,7 @@ export default function edgesIteration(Graph, checkers) {
             target,
             sA,
             tA,
-            u,
-            g
+            u
           ) {
             edges.push(key);
 
@@ -327,7 +322,6 @@ export default function edgesIteration(Graph, checkers) {
             assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
 
             assert.strictEqual(graph.isUndirected(key), u);
-            assert.strictEqual(graph.hasGeneratedKey(key), g);
 
             return true;
           });
@@ -348,7 +342,7 @@ export default function edgesIteration(Graph, checkers) {
 
             let broke = graph[forEachUntilName](
               data.node.key,
-              function (key, attributes, source, target, sA, tA, u, g) {
+              function (key, attributes, source, target, sA, tA, u) {
                 edges.push(key);
 
                 assert.deepStrictEqual(
@@ -362,7 +356,6 @@ export default function edgesIteration(Graph, checkers) {
                 assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
 
                 assert.strictEqual(graph.isUndirected(key), u);
-                assert.strictEqual(graph.hasGeneratedKey(key), g);
 
                 return true;
               }
@@ -385,7 +378,7 @@ export default function edgesIteration(Graph, checkers) {
             let broke = graph[forEachUntilName](
               data.path.source,
               data.path.target,
-              function (key, attributes, source, target, sA, tA, u, g) {
+              function (key, attributes, source, target, sA, tA, u) {
                 edges.push(key);
 
                 assert.deepStrictEqual(
@@ -399,7 +392,6 @@ export default function edgesIteration(Graph, checkers) {
                 assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
 
                 assert.strictEqual(graph.isUndirected(key), u);
-                assert.strictEqual(graph.hasGeneratedKey(key), g);
 
                 return true;
               }

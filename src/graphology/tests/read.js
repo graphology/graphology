@@ -484,30 +484,6 @@ export default function read(Graph, checkers) {
         }
     },
 
-    '#.hasGeneratedKey': {
-      'it should throw if the edge is not in the graph.': function () {
-        const graph = new Graph();
-
-        assert.throws(function () {
-          graph.hasGeneratedKey('test');
-        }, notFound());
-      },
-
-      'it should correctly return whether the edge has a generated key or not.':
-        function () {
-          const graph = new Graph();
-          graph.addNode('John');
-          graph.addNode('Rachel');
-          graph.addNode('Larmina');
-
-          const autoKey = graph.addEdge('John', 'Rachel');
-          const withKey = graph.addEdgeWithKey('jl', 'John', 'Larmina');
-
-          assert.strictEqual(graph.hasGeneratedKey(autoKey), true);
-          assert.strictEqual(graph.hasGeneratedKey(withKey), false);
-        }
-    },
-
     Degree: {
       '#.inDegree': {
         'it should throw if the second argument is not boolean.': function () {

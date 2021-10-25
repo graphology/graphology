@@ -76,25 +76,6 @@ export default function serialization(Graph, checkers) {
           attributes: {weight: 2},
           undirected: true
         });
-      },
-
-      'it should not include generated keys.': function () {
-        const graph = new Graph();
-        addNodesFrom(graph, [1, 2, 3]);
-
-        const edge1 = graph.addEdge(1, 2);
-        const edge2 = graph.addEdgeWithKey('edge2', 2, 3);
-
-        assert.deepStrictEqual(graph.exportEdge(edge1), {
-          source: '1',
-          target: '2'
-        });
-
-        assert.deepStrictEqual(graph.exportEdge(edge2), {
-          source: '2',
-          target: '3',
-          key: 'edge2'
-        });
       }
     },
 

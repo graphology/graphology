@@ -30,13 +30,12 @@ export default function iteration(Graph, checkers) {
 
           const adjacency = [];
 
-          graph.forEach(function (s, t, sa, ta, e, ea, u, g) {
+          graph.forEach(function (s, t, sa, ta, e, ea, u) {
             adjacency.push([u, s, t]);
             assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
             assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
             assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
             assert.strictEqual(graph.isUndirected(e), u);
-            assert.strictEqual(graph.hasGeneratedKey(e), g);
           });
 
           assert.deepStrictEqual(adjacency, [
@@ -66,15 +65,12 @@ export default function iteration(Graph, checkers) {
 
           const adjacency = [];
 
-          graph.forEach(function (s, t, sa, ta, e, ea, u, g) {
+          graph.forEach(function (s, t, sa, ta, e, ea, u) {
             adjacency.push([u, s, t]);
             assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
             assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
             assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
             assert.strictEqual(graph.isUndirected(e), u);
-            assert.strictEqual(graph.hasGeneratedKey(e), g);
-
-            if (!g) assert.strictEqual(e, 'test');
           });
 
           assert.deepStrictEqual(adjacency, [
@@ -104,13 +100,12 @@ export default function iteration(Graph, checkers) {
 
           const adjacency = [];
 
-          let broke = graph.forEachUntil(function (s, t, sa, ta, e, ea, u, g) {
+          let broke = graph.forEachUntil(function (s, t, sa, ta, e, ea, u) {
             adjacency.push([u, s, t]);
             assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
             assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
             assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
             assert.strictEqual(graph.isUndirected(e), u);
-            assert.strictEqual(graph.hasGeneratedKey(e), g);
 
             if (sa.hello === 'world') return true;
           });

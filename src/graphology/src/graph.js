@@ -58,6 +58,11 @@ import {
 } from './utils';
 
 /**
+ * Constants.
+ */
+const INSTANCE_ID = incrementalId();
+
+/**
  * Enums.
  */
 const TYPES = new Set(['directed', 'undirected', 'mixed']);
@@ -241,16 +246,27 @@ function addEdge(
     attributes
   };
 
-  if (mustGenerateKey) edge = graph._edgeKeyGenerator(eventData, graph);
+  let defaultGeneratedKey = false;
 
-  // Coercion of edge key
-  edge = '' + edge;
+  if (mustGenerateKey) {
+    if (graph._edgeKeyGenerator) {
+      edge = graph._edgeKeyGenerator(eventData, graph);
+    } else {
+      defaultGeneratedKey = true;
+      edge = graph._defaultEdgeKeyGenerator();
+    }
+  }
 
-  // Here, we have a key collision
-  if (graph._edges.has(edge))
-    throw new UsageGraphError(
-      `Graph.${name}: the "${edge}" edge already exists in the graph.`
-    );
+  if (!defaultGeneratedKey) {
+    // Coercion of edge key
+    edge = '' + edge;
+
+    // Here, we have a key collision
+    if (graph._edges.has(edge))
+      throw new UsageGraphError(
+        `Graph.${name}: the "${edge}" edge already exists in the graph.`
+      );
+  }
 
   // Here, we might have a source / target collision
   if (
@@ -268,7 +284,6 @@ function addEdge(
   const edgeData = new EdgeData(
     undirected,
     edge,
-    mustGenerateKey,
     sourceData,
     targetData,
     attributes
@@ -469,16 +484,27 @@ function mergeEdge(
     attributes
   };
 
-  if (mustGenerateKey) edge = graph._edgeKeyGenerator(eventData, graph);
+  let defaultGeneratedKey = false;
 
-  // Coercion of edge key
-  edge = '' + edge;
+  if (mustGenerateKey) {
+    if (graph._edgeKeyGenerator) {
+      edge = graph._edgeKeyGenerator(eventData, graph);
+    } else {
+      defaultGeneratedKey = true;
+      edge = graph._defaultEdgeKeyGenerator();
+    }
+  }
 
-  // Here, we have a key collision
-  if (graph._edges.has(edge))
-    throw new UsageGraphError(
-      `Graph.${name}: the "${edge}" edge already exists in the graph.`
-    );
+  if (!defaultGeneratedKey) {
+    // Coercion of edge key
+    edge = '' + edge;
+
+    // Here, we have a key collision
+    if (graph._edges.has(edge))
+      throw new UsageGraphError(
+        `Graph.${name}: the "${edge}" edge already exists in the graph.`
+      );
+  }
 
   if (!sourceData) {
     sourceData = unsafeAddNode(graph, source, {});
@@ -490,14 +516,7 @@ function mergeEdge(
   }
 
   // Storing some data
-  edgeData = new EdgeData(
-    undirected,
-    edge,
-    mustGenerateKey,
-    sourceData,
-    targetData,
-    attributes
-  );
+  edgeData = new EdgeData(undirected, edge, sourceData, targetData, attributes);
 
   // Adding the edge to the internal register
   graph._edges.set(edge, edgeData);
@@ -599,6 +618,23 @@ export default class Graph extends EventEmitter {
     privateProperty(this, 'NodeDataClass', NodeDataClass);
 
     // Indexes
+    let defaultEdgeKeyGenerator = null;
+
+    if (!options.edgeKeyGenerator) {
+      const instanceId = INSTANCE_ID();
+      let edgeId = 0;
+
+      defaultEdgeKeyGenerator = () => {
+        let availableEdgeKey;
+
+        do {
+          availableEdgeKey = `geid_${instanceId}_${edgeId++}`;
+        } while (this._edges.has(availableEdgeKey));
+
+        return availableEdgeKey;
+      };
+    }
+
     privateProperty(this, '_attributes', {});
     privateProperty(this, '_nodes', new Map());
     privateProperty(this, '_edges', new Map());
@@ -606,11 +642,8 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_undirectedSize', 0);
     privateProperty(this, '_directedSelfLoopCount', 0);
     privateProperty(this, '_undirectedSelfLoopCount', 0);
-    privateProperty(
-      this,
-      '_edgeKeyGenerator',
-      options.edgeKeyGenerator || incrementalId()
-    );
+    privateProperty(this, '_defaultEdgeKeyGenerator', defaultEdgeKeyGenerator);
+    privateProperty(this, '_edgeKeyGenerator', options.edgeKeyGenerator);
 
     // Options
     privateProperty(this, '_options', options);
@@ -1269,27 +1302,6 @@ export default class Graph extends EventEmitter {
       );
 
     return data.source === data.target;
-  }
-
-  /**
-   * Method returning whether the given edge has a generated key.
-   *
-   * @param  {any}     edge - The edge's key.
-   * @return {boolean}
-   *
-   * @throws {Error} - Will throw if the edge isn't in the graph.
-   */
-  hasGeneratedKey(edge) {
-    edge = '' + edge;
-
-    const data = this._edges.get(edge);
-
-    if (!data)
-      throw new NotFoundGraphError(
-        `Graph.hasGeneratedKey: could not find the "${edge}" edge in the graph.`
-      );
-
-    return data.generatedKey;
   }
 
   /**---------------------------------------------------------------------------
@@ -2434,20 +2446,9 @@ export default class Graph extends EventEmitter {
   copy() {
     const graph = this.emptyCopy();
 
-    this.forEachEdge(
-      (edge, attr, source, target, _sa, _ta, undirected, generatedKey) => {
-        addEdge(
-          graph,
-          'copy',
-          generatedKey,
-          undirected,
-          edge,
-          source,
-          target,
-          attr
-        );
-      }
-    );
+    this.forEachEdge((edge, attr, source, target, _sa, _ta, undirected) => {
+      addEdge(graph, 'copy', false, undirected, edge, source, target, attr);
+    });
 
     return graph;
   }
@@ -2550,7 +2551,7 @@ export default class Graph extends EventEmitter {
 
       const desc = `(${data.source.key})${direction}(${data.target.key})`;
 
-      if (!data.generatedKey) {
+      if (!key.startsWith('geid_')) {
         label += `[${key}]: `;
       } else if (this.multi) {
         if (typeof multiIndex[desc] === 'undefined') {
@@ -2608,8 +2609,8 @@ if (typeof Symbol !== 'undefined')
  */
 EDGE_ADD_METHODS.forEach(method => {
   ['add', 'merge', 'update'].forEach(verb => {
-    const name = method.name(verb),
-      fn = verb === 'add' ? addEdge : mergeEdge;
+    const name = method.name(verb);
+    const fn = verb === 'add' ? addEdge : mergeEdge;
 
     if (method.generateKey) {
       Graph.prototype[name] = function (source, target, attributes) {
