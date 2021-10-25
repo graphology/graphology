@@ -241,7 +241,7 @@ function addEdge(
     attributes
   };
 
-  if (mustGenerateKey) edge = graph._edgeKeyGenerator(eventData);
+  if (mustGenerateKey) edge = graph._edgeKeyGenerator(eventData, graph);
 
   // Coercion of edge key
   edge = '' + edge;
@@ -469,7 +469,7 @@ function mergeEdge(
     attributes
   };
 
-  if (mustGenerateKey) edge = graph._edgeKeyGenerator(eventData);
+  if (mustGenerateKey) edge = graph._edgeKeyGenerator(eventData, graph);
 
   // Coercion of edge key
   edge = '' + edge;

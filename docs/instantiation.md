@@ -97,12 +97,14 @@ Note that `graphology` will throw an error if you try to instantiate a [typed co
 
 ## Edge key generator function
 
-The provided function takes a single object describing the created edge & having the following properties:
+The provided function takes an object describing the created edge & the graph instance itself.
 
-- **undirected** <span class="code">boolean</span>: whether the edge is undirected.
-- **source** <span class="code">any</span>: the source of the edge.
-- **target** <span class="code">any</span>: the target of the edge.
-- **attributes** <span class="code">object</span>: optional attributes.
+- **edgeData** <span class="code">object</span>:
+  - **undirected** <span class="code">boolean</span>: whether the edge is undirected.
+  - **source** <span class="code">any</span>: the source of the edge.
+  - **target** <span class="code">any</span>: the target of the edge.
+  - **attributes** <span class="code">object</span>: optional attributes.
+- **graph** <span class="code">Graph</span>: the graph instance.
 
 _Example - Incremental key_
 

@@ -143,7 +143,33 @@ export default function instantiation(Graph, implementation, checkers) {
             'John->Martha',
             'Martha->Clark'
           ]);
-        }
+        },
+
+        'it should be possible to access the graph in the edge key generator.':
+          function () {
+            // NOTE: this is of course a bad idea, I just need a test...
+            const edgeKeyGenerator = function (_, graph) {
+              let i = 0;
+
+              while (graph.hasEdge(i)) {
+                i++;
+              }
+
+              return i;
+            };
+
+            const graph = new Graph({edgeKeyGenerator});
+            graph.addNode('John');
+            graph.addNode('Mary');
+            graph.addEdge('John', 'Mary');
+            graph.mergeEdge('Clarice', 'Clarendon');
+            graph.addUndirectedEdge('Mary', 'Clarendon');
+
+            assert.deepStrictEqual(
+              new Set(graph.edges()),
+              new Set(['0', '1', '2'])
+            );
+          }
       },
 
       /**

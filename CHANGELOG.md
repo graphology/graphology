@@ -2,6 +2,7 @@
 
 ## 0.21.2 (provisional)
 
+- Passing graph instance as second argument to `edgeKeyGenerator`.
 - Improving `#.copy` peformance.
 
 ## 0.21.1
