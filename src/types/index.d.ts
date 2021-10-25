@@ -14,17 +14,31 @@ type GraphType = 'mixed' | 'directed' | 'undirected';
 
 type UpdateHints = {attributes?: Array<string>};
 
-type EdgeKeyGeneratorFunction<EdgeAttributes extends Attributes = Attributes> =
-  (data: {
+type EdgeKeyGeneratorFunction<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes,
+  GraphAttributes extends Attributes = Attributes
+> = (
+  data: {
     undirected: boolean;
     source: string;
     target: string;
     attributes: EdgeAttributes;
-  }) => unknown;
+  },
+  graph: AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>
+) => unknown;
 
-type GraphOptions<EdgeAttributes extends Attributes = Attributes> = {
+type GraphOptions<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes,
+  GraphAttributes extends Attributes = Attributes
+> = {
   allowSelfLoops?: boolean;
-  edgeKeyGenerator?: EdgeKeyGeneratorFunction<EdgeAttributes>;
+  edgeKeyGenerator?: EdgeKeyGeneratorFunction<
+    NodeAttributes,
+    EdgeAttributes,
+    GraphAttributes
+  >;
   multi?: boolean;
   type?: GraphType;
 };
@@ -343,7 +357,9 @@ declare abstract class AbstractGraph<
   implements Iterable<AdjacencyEntry<NodeAttributes, EdgeAttributes>>
 {
   // Constructor
-  constructor(options?: GraphOptions<EdgeAttributes>);
+  constructor(
+    options?: GraphOptions<NodeAttributes, EdgeAttributes, GraphAttributes>
+  );
 
   // Members
   order: number;
