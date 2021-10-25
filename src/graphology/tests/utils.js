@@ -134,7 +134,35 @@ export default function utils(Graph) {
           assert.doesNotThrow(function () {
             copy.addEdge('n0', 'n12');
           });
-        }
+        },
+
+      'it should not break on adversarial inputs.': function () {
+        let i = 0;
+
+        const edgeKeyGenerator = () => {
+          return i++;
+        };
+
+        const graph = new Graph({edgeKeyGenerator});
+
+        graph.mergeEdge(0, 1);
+        graph.mergeEdge(1, 2);
+        graph.mergeEdge(2, 0);
+
+        const copy = graph.copy();
+
+        copy.mergeEdge(3, 4);
+
+        assert.strictEqual(copy.edge(3, 4), '3');
+
+        const serializedCopy = Graph.from(graph.export());
+
+        assert.doesNotThrow(function () {
+          serializedCopy.mergeEdge(3, 4);
+        });
+
+        assert.strictEqual(serializedCopy.size, 4);
+      }
     },
 
     '#.upgradeToMixed': {
