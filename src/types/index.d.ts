@@ -67,8 +67,7 @@ type AdjacencyIterationCallback<
   targetAttributes: NodeAttributes,
   edge: string,
   edgeAttributes: EdgeAttributes,
-  undirected: boolean,
-  generatedKey: boolean
+  undirected: boolean
 ) => void;
 
 type AdjacencyUntilIterationCallback<
@@ -81,8 +80,7 @@ type AdjacencyUntilIterationCallback<
   targetAttributes: NodeAttributes,
   edge: string,
   edgeAttributes: EdgeAttributes,
-  undirected: boolean,
-  generatedKey: boolean
+  undirected: boolean
 ) => boolean | undefined;
 
 type NodeIterationCallback<NodeAttributes extends Attributes = Attributes> = (
@@ -108,8 +106,7 @@ type EdgeIterationCallback<
   target: string,
   sourceAttributes: NodeAttributes,
   targetAttributes: NodeAttributes,
-  undirected: boolean,
-  generatedKey: boolean
+  undirected: boolean
 ) => void;
 
 type EdgeUntilIterationCallback<
@@ -122,8 +119,7 @@ type EdgeUntilIterationCallback<
   target: string,
   sourceAttributes: NodeAttributes,
   targetAttributes: NodeAttributes,
-  undirected: boolean,
-  generatedKey: boolean
+  undirected: boolean
 ) => boolean | undefined;
 
 type EdgeUpdateIterationCallback<
@@ -398,7 +394,6 @@ declare abstract class AbstractGraph<
   isDirected(edge: unknown): boolean;
   isSelfLoop(edge: unknown): boolean;
   hasExtremity(edge: unknown, node: unknown): boolean;
-  hasGeneratedKey(edge: unknown): boolean;
   neighbors(source: unknown, target: unknown): boolean;
   undirectedNeighbors(source: unknown, target: unknown): boolean;
   directedNeighbors(source: unknown, target: unknown): boolean;
