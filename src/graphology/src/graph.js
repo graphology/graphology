@@ -2447,7 +2447,16 @@ export default class Graph extends EventEmitter {
     const graph = this.emptyCopy();
 
     this.forEachEdge((edge, attr, source, target, _sa, _ta, undirected) => {
-      addEdge(graph, 'copy', false, undirected, edge, source, target, attr);
+      addEdge(
+        graph,
+        'copy',
+        false,
+        undirected,
+        edge,
+        source,
+        target,
+        assign({}, attr)
+      );
     });
 
     return graph;
