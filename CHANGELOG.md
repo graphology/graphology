@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.21.2 (provisional)
+## 0.22.0 (provisional)
 
 - Rolling back to robust generated ids for edges.
 - Dropping `#.hasGeneratedKey`.
