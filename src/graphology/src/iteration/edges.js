@@ -224,7 +224,8 @@ function createIterator(object, avoid) {
         edgeData.source.key,
         edgeData.target.key,
         edgeData.source.attributes,
-        edgeData.target.attributes
+        edgeData.target.attributes,
+        edgeData.undirected
       ]
     };
   });
@@ -383,7 +384,8 @@ function createIteratorForKey(object, k) {
           edgeData.source.key,
           edgeData.target.key,
           edgeData.source.attributes,
-          edgeData.target.attributes
+          edgeData.target.attributes,
+          edgeData.undirected
         ]
       };
     });
@@ -549,7 +551,8 @@ function createEdgeIterator(graph, type) {
       data.source.key,
       data.target.key,
       data.source.attributes,
-      data.target.attributes
+      data.target.attributes,
+      data.undirected
     ];
 
     return {value, done: false};

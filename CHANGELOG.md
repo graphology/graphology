@@ -9,6 +9,7 @@
 - `#.exportEdge` will now always return a key.
 - Fixing mutability bug with `#.copy`.
 - Fixing adjacency iterator items missing `undirected`.
+- Fixing edge iterator items missing `undirected`.
 - Improving `#.copy` peformance.
 
 ## 0.21.1

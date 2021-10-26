@@ -32,7 +32,15 @@ type NodeEntry<NodeAttributes extends Attributes = Attributes> = [
 type EdgeEntry<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
-> = [string, EdgeAttributes, string, string, NodeAttributes, NodeAttributes];
+> = [
+  string,
+  EdgeAttributes,
+  string,
+  string,
+  NodeAttributes,
+  NodeAttributes,
+  boolean
+];
 
 type AdjacencyIterationCallback<
   NodeAttributes extends Attributes = Attributes,

@@ -437,7 +437,8 @@ export default function edgesIteration(Graph, checkers) {
                   source,
                   target,
                   graph.getNodeAttributes(source),
-                  graph.getNodeAttributes(target)
+                  graph.getNodeAttributes(target),
+                  graph.isUndirected(edge)
                 ];
               })
             );
@@ -458,7 +459,8 @@ export default function edgesIteration(Graph, checkers) {
                   source,
                   target,
                   graph.getNodeAttributes(source),
-                  graph.getNodeAttributes(target)
+                  graph.getNodeAttributes(target),
+                  graph.isUndirected(edge)
                 ];
               })
             );
@@ -482,7 +484,8 @@ export default function edgesIteration(Graph, checkers) {
                   source,
                   target,
                   graph.getNodeAttributes(source),
-                  graph.getNodeAttributes(target)
+                  graph.getNodeAttributes(target),
+                  graph.isUndirected(edge)
                 ];
               })
             );
