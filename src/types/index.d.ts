@@ -24,30 +24,31 @@ type AdjacencyEntry<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > = [
-  string,
-  string,
-  NodeAttributes,
-  NodeAttributes,
-  string,
-  EdgeAttributes,
-  boolean
+  source: string,
+  target: string,
+  sourceAttributes: NodeAttributes,
+  targetAttributes: NodeAttributes,
+  edge: string,
+  edgeAttributes: EdgeAttributes,
+  undirected: boolean
 ];
 
 type NodeEntry<NodeAttributes extends Attributes = Attributes> = [
-  string,
-  NodeAttributes
+  node: string,
+  attributes: NodeAttributes
 ];
+
 type EdgeEntry<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > = [
-  string,
-  EdgeAttributes,
-  string,
-  string,
-  NodeAttributes,
-  NodeAttributes,
-  boolean
+  edge: string,
+  attributes: EdgeAttributes,
+  source: string,
+  target: string,
+  sourceAttributes: NodeAttributes,
+  targetAttributes: NodeAttributes,
+  undirected: boolean
 ];
 
 type AdjacencyIterationCallback<
