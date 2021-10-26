@@ -53,14 +53,14 @@ import {
   isPlainObject,
   privateProperty,
   readOnlyProperty,
-  incrementalId,
+  incrementalIdStartingFromRandomByte,
   validateHints
 } from './utils';
 
 /**
  * Constants.
  */
-const INSTANCE_ID = incrementalId();
+const INSTANCE_ID = incrementalIdStartingFromRandomByte();
 
 /**
  * Enums.
@@ -249,9 +249,7 @@ function addEdge(
     // NOTE: in this case we can guarantee that the key does not already
     // exist and is already correctly casted as a string
     edge = graph._edgeKeyGenerator();
-  }
-
-  else  {
+  } else {
     // Coercion of edge key
     edge = '' + edge;
 
@@ -482,9 +480,7 @@ function mergeEdge(
     // NOTE: in this case we can guarantee that the key does not already
     // exist and is already correctly casted as a string
     edge = graph._edgeKeyGenerator();
-  }
-
-  else  {
+  } else {
     // Coercion of edge key
     edge = '' + edge;
 
@@ -599,17 +595,27 @@ export default class Graph extends EventEmitter {
     privateProperty(this, 'NodeDataClass', NodeDataClass);
 
     // Internal edge key generator
+
+    // NOTE: this internal generator produce keys that are strings
+    // composed of a weird prefix, an incremental instance id starting from
+    // a random byte and finally an internal instance incremental id.
+    // All this to avoid intra-frame and cross-frame adversarial inputs
+    // that can force a single #.addEdge call to degenerate into a O(n)
+    // available key search loop.
+
+    // It also ensures that automatically generated edge keys are unlikely
+    // to produce collisions with arbitrary keys given by users.
     const instanceId = INSTANCE_ID();
     let edgeId = 0;
 
     const edgeKeyGenerator = () => {
       let availableEdgeKey;
 
-        do {
-          availableEdgeKey = `geid_${instanceId}_${edgeId++}`;
-        } while (this._edges.has(availableEdgeKey));
+      do {
+        availableEdgeKey = `geid_${instanceId}_${edgeId++}`;
+      } while (this._edges.has(availableEdgeKey));
 
-        return availableEdgeKey;
+      return availableEdgeKey;
     };
 
     // Indexes

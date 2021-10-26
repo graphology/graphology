@@ -159,8 +159,8 @@ export function validateHints(hints) {
  *
  * @return {function}
  */
-export function incrementalId() {
-  let i = 0;
+export function incrementalIdStartingFromRandomByte() {
+  let i = Math.floor(Math.random() * 256) & 0xff;
 
   return () => {
     return i++;
