@@ -120,59 +120,6 @@ export default function instantiation(Graph, implementation, checkers) {
       },
 
       /**
-       * edgeKeyGenerator
-       */
-      edgeKeyGenerator: {
-        'providing something other than a function should throw.': function () {
-          assert.throws(function () {
-            const graph = new Graph({edgeKeyGenerator: 'test'});
-          }, invalid());
-        },
-
-        'it should correctly give the edge an id.': function () {
-          const edgeKeyGenerator = function ({source, target}) {
-            return `${source}->${target}`;
-          };
-
-          const graph = new Graph({edgeKeyGenerator});
-          addNodesFrom(graph, ['John', 'Martha', 'Clark']);
-          graph.addEdge('John', 'Martha');
-          graph.addEdge('Martha', 'Clark');
-
-          assert.deepStrictEqual(graph.edges(), [
-            'John->Martha',
-            'Martha->Clark'
-          ]);
-        },
-
-        'it should be possible to access the graph in the edge key generator.':
-          function () {
-            // NOTE: this is of course a bad idea, I just need a test...
-            const edgeKeyGenerator = function (_, graph) {
-              let i = 0;
-
-              while (graph.hasEdge(i)) {
-                i++;
-              }
-
-              return i;
-            };
-
-            const graph = new Graph({edgeKeyGenerator});
-            graph.addNode('John');
-            graph.addNode('Mary');
-            graph.addEdge('John', 'Mary');
-            graph.mergeEdge('Clarice', 'Clarendon');
-            graph.addUndirectedEdge('Mary', 'Clarendon');
-
-            assert.deepStrictEqual(
-              new Set(graph.edges()),
-              new Set(['0', '1', '2'])
-            );
-          }
-      },
-
-      /**
        * multi
        */
       multi: {

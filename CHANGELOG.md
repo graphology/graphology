@@ -5,9 +5,10 @@
 - Rolling back to robust generated ids for edges.
 - Dropping `#.hasGeneratedKey`.
 - Dropping the `generated` last argument to edge & adjacency iterations.
+- Dropping the `edgeKeyGenerator` instanciation option.
 - `#.exportEdge` will now always return a key.
 - Fixing mutability bug with `#.copy`.
-- Passing graph instance as second argument to `edgeKeyGenerator`.
+- Fixing adjacency iterator items missing `undirected`.
 - Improving `#.copy` peformance.
 
 ## 0.21.1

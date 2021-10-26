@@ -137,13 +137,7 @@ export default function utils(Graph) {
         },
 
       'it should not break on adversarial inputs.': function () {
-        let i = 0;
-
-        const edgeKeyGenerator = () => {
-          return i++;
-        };
-
-        const graph = new Graph({edgeKeyGenerator});
+        const graph = new Graph();
 
         graph.mergeEdge(0, 1);
         graph.mergeEdge(1, 2);
@@ -152,8 +146,6 @@ export default function utils(Graph) {
         const copy = graph.copy();
 
         copy.mergeEdge(3, 4);
-
-        assert.strictEqual(copy.edge(3, 4), '3');
 
         const serializedCopy = Graph.from(graph.export());
 

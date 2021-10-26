@@ -107,7 +107,6 @@ const EDGE_ADD_METHODS = [
  */
 const DEFAULTS = {
   allowSelfLoops: true,
-  edgeKeyGenerator: null,
   multi: false,
   type: 'mixed'
 };
@@ -246,18 +245,13 @@ function addEdge(
     attributes
   };
 
-  let defaultGeneratedKey = false;
-
   if (mustGenerateKey) {
-    if (graph._edgeKeyGenerator) {
-      edge = graph._edgeKeyGenerator(eventData, graph);
-    } else {
-      defaultGeneratedKey = true;
-      edge = graph._defaultEdgeKeyGenerator();
-    }
+    // NOTE: in this case we can guarantee that the key does not already
+    // exist and is already correctly casted as a string
+    edge = graph._edgeKeyGenerator();
   }
 
-  if (!defaultGeneratedKey) {
+  else  {
     // Coercion of edge key
     edge = '' + edge;
 
@@ -484,18 +478,13 @@ function mergeEdge(
     attributes
   };
 
-  let defaultGeneratedKey = false;
-
   if (mustGenerateKey) {
-    if (graph._edgeKeyGenerator) {
-      edge = graph._edgeKeyGenerator(eventData, graph);
-    } else {
-      defaultGeneratedKey = true;
-      edge = graph._defaultEdgeKeyGenerator();
-    }
+    // NOTE: in this case we can guarantee that the key does not already
+    // exist and is already correctly casted as a string
+    edge = graph._edgeKeyGenerator();
   }
 
-  if (!defaultGeneratedKey) {
+  else  {
     // Coercion of edge key
     edge = '' + edge;
 
@@ -582,14 +571,6 @@ export default class Graph extends EventEmitter {
     options = assign({}, DEFAULTS, options);
 
     // Enforcing options validity
-    if (
-      options.edgeKeyGenerator &&
-      typeof options.edgeKeyGenerator !== 'function'
-    )
-      throw new InvalidArgumentsGraphError(
-        `Graph.constructor: invalid 'edgeKeyGenerator' option. Expecting a function but got "${options.edgeKeyGenerator}".`
-      );
-
     if (typeof options.multi !== 'boolean')
       throw new InvalidArgumentsGraphError(
         `Graph.constructor: invalid 'multi' option. Expecting a boolean but got "${options.multi}".`
@@ -617,24 +598,21 @@ export default class Graph extends EventEmitter {
 
     privateProperty(this, 'NodeDataClass', NodeDataClass);
 
-    // Indexes
-    let defaultEdgeKeyGenerator = null;
+    // Internal edge key generator
+    const instanceId = INSTANCE_ID();
+    let edgeId = 0;
 
-    if (!options.edgeKeyGenerator) {
-      const instanceId = INSTANCE_ID();
-      let edgeId = 0;
-
-      defaultEdgeKeyGenerator = () => {
-        let availableEdgeKey;
+    const edgeKeyGenerator = () => {
+      let availableEdgeKey;
 
         do {
           availableEdgeKey = `geid_${instanceId}_${edgeId++}`;
         } while (this._edges.has(availableEdgeKey));
 
         return availableEdgeKey;
-      };
-    }
+    };
 
+    // Indexes
     privateProperty(this, '_attributes', {});
     privateProperty(this, '_nodes', new Map());
     privateProperty(this, '_edges', new Map());
@@ -642,8 +620,7 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_undirectedSize', 0);
     privateProperty(this, '_directedSelfLoopCount', 0);
     privateProperty(this, '_undirectedSelfLoopCount', 0);
-    privateProperty(this, '_defaultEdgeKeyGenerator', defaultEdgeKeyGenerator);
-    privateProperty(this, '_edgeKeyGenerator', options.edgeKeyGenerator);
+    privateProperty(this, '_edgeKeyGenerator', edgeKeyGenerator);
 
     // Options
     privateProperty(this, '_options', options);

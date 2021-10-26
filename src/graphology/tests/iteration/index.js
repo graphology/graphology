@@ -127,11 +127,7 @@ export default function iteration(Graph, checkers) {
 
       "it should be possible to create an iterator over the graph's adjacency.":
         function () {
-          const edgeKeyGenerator = ({undirected, source, target}) => {
-            return `${source}${undirected ? '--' : '->'}${target}`;
-          };
-
-          const graph = new Graph({edgeKeyGenerator});
+          const graph = new Graph();
 
           graph.addNode(1);
           graph.addNode(2);
@@ -144,14 +140,14 @@ export default function iteration(Graph, checkers) {
 
           graph.replaceNodeAttributes(2, {hello: 'world'});
 
-          const adj = take(graph.adjacency()).map(p => [p[0], p[1], p[4]]);
+          const adj = take(graph.adjacency()).map(p => [p[0], p[1], p[6]]);
 
           assert.deepStrictEqual(adj, [
-            ['1', '2', '1->2'],
-            ['1', '2', '1--2'],
-            ['2', '3', '2->3'],
-            ['2', '1', '1--2'],
-            ['3', '1', '3->1']
+            ['1', '2', false],
+            ['1', '2', true],
+            ['2', '3', false],
+            ['2', '1', true],
+            ['3', '1', false]
           ]);
         },
 
@@ -203,14 +199,14 @@ export default function iteration(Graph, checkers) {
 
         graph.replaceNodeAttributes(2, {hello: 'world'});
 
-        const adj = take(graph[Symbol.iterator]()).map(p => [p[0], p[1], p[4]]);
+        const adj = take(graph[Symbol.iterator]()).map(p => [p[0], p[1], p[6]]);
 
         assert.deepStrictEqual(adj, [
-          ['1', '2', '1->2'],
-          ['1', '2', '1--2'],
-          ['2', '3', '2->3'],
-          ['2', '1', '1--2'],
-          ['3', '1', '3->1']
+          ['1', '2', false],
+          ['1', '2', true],
+          ['2', '3', false],
+          ['2', '1', true],
+          ['3', '1', false]
         ]);
       }
     },

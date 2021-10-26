@@ -231,7 +231,8 @@ export function createAdjacencyIteratorSimple(graph) {
         sourceData.attributes,
         targetData.attributes,
         edgeData.key,
-        edgeData.attributes
+        edgeData.attributes,
+        edgeData.undirected
       ]
     };
   });
@@ -324,7 +325,8 @@ export function createAdjacencyIteratorMulti(graph) {
         sourceData.attributes,
         targetData.attributes,
         edgeData.key,
-        edgeData.attributes
+        edgeData.attributes,
+        edgeData.undirected
       ]
     };
   });
