@@ -14,31 +14,8 @@ type GraphType = 'mixed' | 'directed' | 'undirected';
 
 type UpdateHints = {attributes?: Array<string>};
 
-type EdgeKeyGeneratorFunction<
-  NodeAttributes extends Attributes = Attributes,
-  EdgeAttributes extends Attributes = Attributes,
-  GraphAttributes extends Attributes = Attributes
-> = (
-  data: {
-    undirected: boolean;
-    source: string;
-    target: string;
-    attributes: EdgeAttributes;
-  },
-  graph: AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>
-) => unknown;
-
-type GraphOptions<
-  NodeAttributes extends Attributes = Attributes,
-  EdgeAttributes extends Attributes = Attributes,
-  GraphAttributes extends Attributes = Attributes
-> = {
+type GraphOptions = {
   allowSelfLoops?: boolean;
-  edgeKeyGenerator?: EdgeKeyGeneratorFunction<
-    NodeAttributes,
-    EdgeAttributes,
-    GraphAttributes
-  >;
   multi?: boolean;
   type?: GraphType;
 };
@@ -139,19 +116,13 @@ type SerializedEdge<EdgeAttributes extends Attributes = Attributes> = {
   undirected?: boolean;
 };
 
-type SerializedGraphOptions = {
-  allowSelfLoops?: boolean;
-  multi?: boolean;
-  type?: GraphType;
-};
-
 type SerializedGraph<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
 > = {
   attributes?: GraphAttributes;
-  options?: SerializedGraphOptions;
+  options?: GraphOptions;
   nodes: Array<SerializedNode<NodeAttributes>>;
   edges: Array<SerializedEdge<EdgeAttributes>>;
 };
@@ -353,9 +324,7 @@ declare abstract class AbstractGraph<
   implements Iterable<AdjacencyEntry<NodeAttributes, EdgeAttributes>>
 {
   // Constructor
-  constructor(
-    options?: GraphOptions<NodeAttributes, EdgeAttributes, GraphAttributes>
-  );
+  constructor(options?: GraphOptions);
 
   // Members
   order: number;
@@ -1197,7 +1166,7 @@ interface IGraphConstructor<
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
 > {
-  new (options?: GraphOptions<GraphAttributes>): AbstractGraph<
+  new (options?: GraphOptions): AbstractGraph<
     NodeAttributes,
     EdgeAttributes,
     GraphAttributes
@@ -1214,7 +1183,6 @@ export {
   AbstractGraph,
   Attributes,
   GraphType,
-  EdgeKeyGeneratorFunction,
   GraphOptions,
   AdjacencyEntry,
   NodeEntry,

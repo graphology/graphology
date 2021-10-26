@@ -11,7 +11,7 @@ var FILES = [
   'miserables',
   'miserables_broken',
   'multigraph',
-  'mixed_multigraph',
+  'mixed_multigraph'
   // 'unordered'
 ];
 
