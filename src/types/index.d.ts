@@ -23,7 +23,15 @@ type GraphOptions = {
 type AdjacencyEntry<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
-> = [string, string, NodeAttributes, NodeAttributes, string, EdgeAttributes];
+> = [
+  string,
+  string,
+  NodeAttributes,
+  NodeAttributes,
+  string,
+  EdgeAttributes,
+  boolean
+];
 
 type NodeEntry<NodeAttributes extends Attributes = Attributes> = [
   string,
