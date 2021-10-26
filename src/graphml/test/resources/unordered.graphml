@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+	  http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+
+   <key id="d0" for="node" attr.name="SubmissionDate" attr.type="string"/>
+   <key id="d1" for="edge" attr.name="timestamp" attr.type="string"/>
+   <key id="d_n" for="node" attr.name="modification" attr.type="string">
+     <default>add</default>
+   </key>
+   <key id="d_e" for="edge" attr.name="modification" attr.type="string">
+     <default>add</default>
+   </key>
+
+  <graph id="1000" edgedefault="directed">
+	<node id="9504277">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<edge source="9504277" target="9306289">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504277" target="9403383">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504277" target="9404270">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504277" target="9405326">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<node id="9504278">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<edge source="9504278" target="9204228">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504278" target="9307268">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<node id="9504279">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<edge source="9504279" target="9207227">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504279" target="9305282">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504279" target="9307322">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504279" target="9308309">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504279" target="9408217">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504279" target="9502206">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<node id="9504280">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<node id="9504281">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<edge source="9504281" target="9306259">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<node id="9504282">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<edge source="9504282" target="9403293">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<node id="9504283">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<edge source="9504283" target="9306325">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504283" target="9407351">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504283" target="9408391">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<node id="9504284">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<edge source="9504284" target="9310261">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504284" target="9312268">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504284" target="9403256">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504284" target="9408245">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<node id="9504285">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<edge source="9504285" target="9406315">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504285" target="9411431">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<node id="9504286">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<edge source="9504286" target="9305322">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504286" target="9305323">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504286" target="9309234">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504286" target="9310306">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504286" target="9404270">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504286" target="9408292">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504286" target="9503419">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<node id="9504287">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<edge source="9504287" target="9211320">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504287" target="9411341">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<node id="9504288">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<edge source="9504288" target="9205210">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504288" target="9307285">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<node id="9504289">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<edge source="9504289" target="9303257">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504289" target="9401310">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<edge source="9504289" target="9408223">
+		<data key="d1">1995-04-11</data>
+	</edge>
+	<node id="119504003">
+		<data key="d0">1995-04-11</data>
+	</node>
+	<node id="119504007">
+		<data key="d0">1995-04-11</data>
+	</node>
+  </graph>
+</graphml>
