@@ -77,7 +77,7 @@ adj
 
 // Using the breakable callback method
 graph.forEachUntil(
-  (source, target, sourceAttributes, targetAttributes, edge, edgeAttributes) => {
+  (source, target, sourceAttributes, targetAttributes, edge, edgeAttributes, undirected) => {
   console.log(source, target);
 
   if (sourceAttributes.count > 2)
@@ -110,7 +110,6 @@ Iterates over the graph's adjacency using a callback.
 * **edge** <span class="code">string</span>: edge's key.
 * **edgeAttributes** <span class="code">object</span>: edge's attributes.
 * **undirected** <span class="code">boolean</span>: whether the edge is undirected.
-* **generatedKey** <span class="code">boolean</span>: whether the edge has a generated key.
 
 ### #.forEachUntil
 
@@ -129,7 +128,6 @@ Iterates over the graph's adjacency using a callback until it returns `true` to 
 * **edge** <span class="code">string</span>: edge's key.
 * **edgeAttributes** <span class="code">object</span>: edge's attributes.
 * **undirected** <span class="code">boolean</span>: whether the edge is undirected.
-* **generatedKey** <span class="code">boolean</span>: whether the edge has a generated key.
 
 <h3 id="adjacency-iterator">#.adjacency</h3>
 
@@ -143,6 +141,7 @@ Returns an iterator over the graph's adjacency.
 * **targetAttributes** <span class="code">object</span>: target node's attributes.
 * **edge** <span class="code">string</span>: edge's key.
 * **edgeAttributes** <span class="code">object</span>: edge's attributes.
+* **undirected** <span class="code">boolean</span>: whether the edge is undirected.
 
 ## Nodes
 
@@ -331,7 +330,6 @@ Iterates over relevant edges using a callback.
 * **sourceAttributes** <span class="code">object</span>: attributes of the edge's source.
 * **targetAttributes** <span class="code">object</span>= attributes of the edge's target.
 * **undirected** <span class="code">boolean</span>: whether the edge is undirected.
-* **generatedKey** <span class="code">boolean</span>: whether the edge has a generated key.
 
 ### #.forEachEdgeUntil
 
@@ -369,7 +367,6 @@ Iterates over relevant edges using a callback until it returns `true` to break i
 * **sourceAttributes** <span class="code">object</span>: attributes of the edge's source.
 * **targetAttributes** <span class="code">object</span>= attributes of the edge's target.
 * **undirected** <span class="code">boolean</span>: whether the edge is undirected.
-* **generatedKey** <span class="code">boolean</span>: whether the edge has a generated key.
 
 ### #.edgeEntries
 

@@ -12,7 +12,6 @@ menu_toc:
   - "#.opposite"
   - "#.extremities"
   - "#.hasExtremity"
-  - "#.hasGeneratedKey"
   - "#.isDirected"
   - "#.isSelfLoop"
 ---
@@ -232,21 +231,6 @@ graph.hasExtremity(edge, 'Timothy');
 >>> true
 
 graph.hasExtremity(edge, 'Lucy');
->>> false
-```
-
-## #.hasGeneratedKey
-
-Returns whether the given edge has a generated key, i.e. was created without using `#.addEdgeWithKey` method.
-
-```js
-const edge = graph.mergeEdge('John', 'Clarissa');
-const edgeWithKey = graph.mergeEdgeWithKey('edge1', 'Thomas', 'Eleanor');
-
-graph.hasGeneratedKey(edge);
->>> true
-
-graph.hasGeneratedKey(edgeWithKey);
 >>> false
 ```
 
