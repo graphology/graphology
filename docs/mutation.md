@@ -108,7 +108,7 @@ graph.getNodeAttribute('John', 'count');
 
 ## #.addEdge
 
-Adds a single directed edge if the graph is `directed` or `mixed`, or an undirected edge if the graph is `undirected` and returns the edge.
+Adds a single directed edge if the graph is `directed` or `mixed`, or an undirected edge if the graph is `undirected` and returns the automatically generated edge's key.
 
 *Example*
 
@@ -136,6 +136,8 @@ const edge = graph.addEdge('John', 'Jack', {
 
 This method is a convenience built on top of the [`#.addEdgeWithKey`](#addedgewithkey) method so that the user may add an edge in the graph without having to create a specific key for it.
 
+For more information, check out this [section](design-choices#addedge-as-sugar) of the design choices.
+
 *Variants*
 
 * `#.addDirectedEdge`
@@ -143,7 +145,7 @@ This method is a convenience built on top of the [`#.addEdgeWithKey`](#addedgewi
 
 ## #.addEdgeWithKey
 
-Adds a single directed edge if the graph is `directed` or `mixed`, or an undirected edge if the graph is `undirected`, using the provided key, and returns the edge.
+Adds a single directed edge if the graph is `directed` or `mixed`, or an undirected edge if the graph is `undirected`, using the provided key, and returns the edge's key.
 
 This is quite useful when dealing with a `MultiGraph` if you need to retrieve precise edges since polling the graph using both the source & the target node might return several edges rather than only one.
 
