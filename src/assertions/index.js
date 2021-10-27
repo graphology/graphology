@@ -16,7 +16,7 @@ exports.isGraphConstructor = require('graphology-utils/is-graph-constructor');
  * @param  {Graph}   H - Second graph.
  * @return {boolean}
  */
-exports.sameNodes = function sameNodes(G, H) {
+exports.hasSameNodes = function sameNodes(G, H) {
   if (G.order !== H.order) return false;
 
   var ng = G.nodes(),
@@ -37,7 +37,7 @@ exports.sameNodes = function sameNodes(G, H) {
  * @param  {Graph}   H - Second graph.
  * @return {boolean}
  */
-exports.sameEdges = function sameEdges(G, H) {
+exports.hasSameEdges = function sameEdges(G, H) {
   if (
     G.directedSize !== H.directedSize ||
     G.undirectedSize !== H.undirectedSize
@@ -53,7 +53,7 @@ exports.sameEdges = function sameEdges(G, H) {
  * @param  {Graph}   H - Second graph.
  * @return {boolean}
  */
-exports.sameNodesDeep = function sameNodesDeep(G, H) {
+exports.hasSameNodesDeep = function sameNodesDeep(G, H) {
   if (G.order !== H.order) return false;
 
   var ng = G.nodes(),

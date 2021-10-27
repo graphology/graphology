@@ -6,8 +6,8 @@ var assert = require('assert'),
   Graph = require('graphology'),
   lib = require('./index.js');
 
-var sameNodes = lib.sameNodes,
-  sameNodesDeep = lib.sameNodesDeep;
+var hasSameNodes = lib.hasSameNodes;
+var hasSameNodesDeep = lib.hasSameNodesDeep;
 
 function addNodesFrom(g, nodes) {
   nodes.forEach(function (node) {
@@ -16,7 +16,7 @@ function addNodesFrom(g, nodes) {
 }
 
 describe('graphology-utils', function () {
-  describe('#.sameNodes', function () {
+  describe('#.hasSameNodes', function () {
     it("should return `true` if both graphs' nodes are the same.", function () {
       var G = new Graph(),
         H = new Graph();
@@ -24,19 +24,19 @@ describe('graphology-utils', function () {
       addNodesFrom(G, ['John', 'Martha', 'Elvis']);
       addNodesFrom(H, ['Martha', 'Elvis']);
 
-      assert.strictEqual(sameNodes(G, H), false);
+      assert.strictEqual(hasSameNodes(G, H), false);
 
       H.addNode('John');
 
-      assert.strictEqual(sameNodes(G, H), true);
+      assert.strictEqual(hasSameNodes(G, H), true);
 
       H.addNode('Estelle');
 
-      assert.strictEqual(sameNodes(G, H), false);
+      assert.strictEqual(hasSameNodes(G, H), false);
     });
   });
 
-  describe('#.sameNodesDeep', function () {
+  describe('#.hasSameNodesDeep', function () {
     it("should return `true` if both graphs' nodes & their attributes are the same.", function () {
       var G = new Graph(),
         H = new Graph();
@@ -44,19 +44,19 @@ describe('graphology-utils', function () {
       addNodesFrom(G, ['John', 'Martha', 'Elvis']);
       addNodesFrom(H, ['Martha', 'Elvis']);
 
-      assert.strictEqual(sameNodesDeep(G, H), false);
+      assert.strictEqual(hasSameNodesDeep(G, H), false);
 
       H.addNode('John');
 
-      assert.strictEqual(sameNodesDeep(G, H), true);
+      assert.strictEqual(hasSameNodesDeep(G, H), true);
 
       H.setNodeAttribute('Martha', 'age', 45);
 
-      assert.strictEqual(sameNodesDeep(G, H), false);
+      assert.strictEqual(hasSameNodesDeep(G, H), false);
 
       G.setNodeAttribute('Martha', 'age', 45);
 
-      assert.strictEqual(sameNodesDeep(G, H), true);
+      assert.strictEqual(hasSameNodesDeep(G, H), true);
     });
   });
 });
