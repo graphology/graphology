@@ -173,7 +173,10 @@ describe('graphology-components', function () {
     it('should handle empty graphs.', function () {
       var graph = new Graph();
 
-      assert.deepStrictEqual(largestConnectedComponentSubgraph(graph), graph);
+      var largestComponentSubgraph = largestConnectedComponentSubgraph(graph);
+
+      assert.strictEqual(largestComponentSubgraph.size, 0);
+      assert.strictEqual(largestComponentSubgraph.order, 0);
     });
 
     it('should handle graphs without edges.', function () {
@@ -183,10 +186,10 @@ describe('graphology-components', function () {
       var resultSubgraph = new Graph();
       addNodesFrom(resultSubgraph, [1]);
 
-      assert.deepStrictEqual(
-        largestConnectedComponentSubgraph(graph),
-        resultSubgraph
-      );
+      var largestComponentSubgraph = largestConnectedComponentSubgraph(graph);
+
+      assert.strictEqual(largestComponentSubgraph.size, resultSubgraph.size);
+      assert.strictEqual(largestComponentSubgraph.order, resultSubgraph.order);
     });
 
     it('should return a subgraph with the correct components.', function () {
@@ -207,6 +210,7 @@ describe('graphology-components', function () {
       resultGraph.addEdge(2, 4);
 
       var resultSubgraph = largestConnectedComponentSubgraph(graph);
+
       assert.deepStrictEqual(resultSubgraph, resultGraph);
     });
 
