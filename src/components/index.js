@@ -6,6 +6,7 @@
  */
 var isGraph = require('graphology-utils/is-graph');
 var extend = require('@yomguithereal/helpers/extend');
+var subgraph = require('graphology-operators/subgraph');
 
 /**
  * Function returning a list of a graph's connected components as arrays
@@ -118,6 +119,18 @@ exports.largestConnectedComponent = function (graph) {
   }
 
   return largestComponent;
+};
+
+/**
+ * Function returning a subgraph composed of the largest component of the given graph.
+ *
+ * @param  {Graph} graph - Target graph.
+ * @return {Graph}
+ */
+exports.largestConnectedComponentSubgraph = function (graph) {
+  var largestConnectedComponent = exports.largestConnectedComponent(graph);
+
+  return subgraph(graph, largestConnectedComponent);
 };
 
 /**

@@ -11,11 +11,14 @@ var assert = require('assert'),
   sortBy = require('lodash/sortBy'),
   takeWhile = require('lodash/takeWhile'),
   isEqual = require('lodash/isEqual'),
-  lib = require('./');
+  lib = require('./'),
+  subgraph = require('graphology-operators/subgraph'),
+  isGraph = require('graphology-utils/is-graph');
 
 var connectedComponents = lib.connectedComponents,
   largestConnectedComponent = lib.largestConnectedComponent,
-  stronglyConnectedComponents = lib.stronglyConnectedComponents;
+  stronglyConnectedComponents = lib.stronglyConnectedComponents,
+  largestConnectedComponentSubgraph = lib.largestConnectedComponentSubgraph;
 
 var sortComponents = function (components) {
   components.forEach(function (c) {
@@ -157,6 +160,164 @@ describe('graphology-components', function () {
           return isEqual(c, largestComponent);
         })
       );
+    });
+  });
+
+  describe('#.largestConnectedComponentSubgraph', function () {
+    it('should throw if given an invalid graph.', function () {
+      assert.throws(function () {
+        largestConnectedComponentSubgraph(null);
+      }, /graphology/);
+    });
+
+    it('should handle empty graphs.', function () {
+      var graph = new Graph();
+
+      assert.deepStrictEqual(largestConnectedComponentSubgraph(graph), graph);
+    });
+
+    it('should handle graphs without edges.', function () {
+      var graph = new Graph();
+      addNodesFrom(graph, [1, 2, 3]);
+
+      var resultSubgraph = new Graph();
+      addNodesFrom(resultSubgraph, [1]);
+
+      assert.deepStrictEqual(
+        largestConnectedComponentSubgraph(graph),
+        resultSubgraph
+      );
+    });
+
+    it('should return a subgraph with the correct components.', function () {
+      var graph = new Graph();
+      addNodesFrom(graph, [1, 2, 3, 4, 5, 6, 7]);
+      graph.addEdge(1, 2);
+      graph.addEdge(2, 3);
+      graph.addEdge(3, 4);
+      graph.addEdge(2, 4);
+
+      graph.addEdge(5, 6);
+
+      var resultGraph = new Graph();
+      addNodesFrom(resultGraph, [1, 2, 3, 4]);
+      resultGraph.addEdge(1, 2);
+      resultGraph.addEdge(2, 3);
+      resultGraph.addEdge(3, 4);
+      resultGraph.addEdge(2, 4);
+
+      var resultSubgraph = largestConnectedComponentSubgraph(graph);
+      assert.deepStrictEqual(resultSubgraph, resultGraph);
+    });
+
+    it('should also work with self loops.', function () {
+      var graph = new Graph();
+      addNodesFrom(graph, [1, 2, 3]);
+      graph.addEdge(1, 2);
+      graph.addEdge(1, 1);
+
+      var resultGraph = new Graph();
+      addNodesFrom(resultGraph, [1, 2]);
+      resultGraph.addEdge(1, 2);
+      resultGraph.addEdge(1, 1);
+
+      var resultSubgraph = largestConnectedComponentSubgraph(graph);
+
+      assert.deepStrictEqual(resultSubgraph, resultGraph);
+    });
+
+    it('should return a Graph instance.', function () {
+      var graph = new Graph();
+      addNodesFrom(graph, [1, 2, 3]);
+      graph.addEdge(1, 2);
+      graph.addEdge(1, 1);
+
+      assert.strictEqual(
+        isGraph(largestConnectedComponentSubgraph(graph)),
+        true
+      );
+    });
+
+    it('should contain a graph containing the same nodes as the largest component of the given graph.', function () {
+      var graph = range(8)
+        .map(function () {
+          return erdosRenyi.sparse(Graph.UndirectedGraph, {
+            order: random(10, 100),
+            probability: 0.05
+          });
+        })
+        .reduce(function (a, b) {
+          return disjointUnion(a, b);
+        });
+
+      var largestComponent = largestConnectedComponent(graph);
+
+      var largestComponentSubgraph = largestConnectedComponentSubgraph(graph);
+
+      var nodesSubgraph = [];
+
+      largestComponentSubgraph.forEachNode(function (node) {
+        nodesSubgraph.push(node);
+      });
+
+      assert.deepStrictEqual(largestComponent, nodesSubgraph);
+    });
+
+    it('should return a graph containing the same number of edges as the largest component of the given graph.', function () {
+      var graph = range(8)
+        .map(function () {
+          return erdosRenyi.sparse(Graph.UndirectedGraph, {
+            order: random(10, 100),
+            probability: 0.05
+          });
+        })
+        .reduce(function (a, b) {
+          return disjointUnion(a, b);
+        });
+
+      var largestComponent = new Set(largestConnectedComponent(graph));
+
+      var edgesGraph = [];
+
+      graph.forEachEdge(function (edge, attr, source, target) {
+        if (largestComponent.has(source)) {
+          edgesGraph.push([attr, source, target]);
+        }
+      });
+
+      var largestComponentSubgraph = largestConnectedComponentSubgraph(graph);
+      var edgesSubgraph = [];
+
+      largestComponentSubgraph.forEachEdge(function (
+        edge,
+        attr,
+        source,
+        target
+      ) {
+        edgesSubgraph.push([attr, source, target]);
+      });
+
+      assert.strictEqual(edgesGraph.length, edgesSubgraph.length);
+    });
+
+    it('should return correct results.', function () {
+      var graph = range(8)
+        .map(function () {
+          return erdosRenyi.sparse(Graph.UndirectedGraph, {
+            order: random(10, 100),
+            probability: 0.05
+          });
+        })
+        .reduce(function (a, b) {
+          return disjointUnion(a, b);
+        });
+
+      var largestComponent = largestConnectedComponent(graph);
+
+      var resultSubgraph = subgraph(graph, largestComponent);
+      var largestComponentSubgraph = largestConnectedComponentSubgraph(graph);
+
+      assert.deepStrictEqual(largestComponentSubgraph, resultSubgraph);
     });
   });
 

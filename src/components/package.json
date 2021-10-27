@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@yomguithereal/helpers": "^1.1.1",
-    "graphology-utils": "^1.8.0"
+    "graphology-utils": "^1.8.0",
+    "graphology-operators": "^1.4.1"
   }
 }
