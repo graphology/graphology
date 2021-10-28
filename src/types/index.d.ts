@@ -138,8 +138,8 @@ type SerializedGraph<
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
 > = {
-  attributes?: GraphAttributes;
-  options?: GraphOptions;
+  attributes: GraphAttributes;
+  options: GraphOptions;
   nodes: Array<SerializedNode<NodeAttributes>>;
   edges: Array<SerializedEdge<EdgeAttributes>>;
 };
@@ -1142,7 +1142,9 @@ declare abstract class AbstractGraph<
   importNode(data: SerializedNode<NodeAttributes>, merge?: boolean): this;
   importEdge(data: SerializedEdge<EdgeAttributes>, merge?: boolean): this;
   import(
-    data: SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>,
+    data: Partial<
+      SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>
+    >,
     merge?: boolean
   ): this;
   import(

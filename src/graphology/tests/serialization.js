@@ -299,7 +299,18 @@ export default function serialization(Graph, checkers) {
         });
 
         assert.deepStrictEqual(graph.getAttributes(), {name: 'graph'});
-      }
+      },
+
+      'it should throw if nodes are absent, edges are present and we merge.':
+        function () {
+          const graph = new Graph();
+
+          assert.throws(function () {
+            graph.import({
+              edges: [{source: '1', target: '2'}]
+            });
+          }, notFound());
+        }
     }
   };
 }
