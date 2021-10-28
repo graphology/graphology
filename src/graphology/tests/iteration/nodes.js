@@ -84,6 +84,69 @@ export default function nodesIteration(Graph, checkers) {
       }
     },
 
+    '#.mapNodes': {
+      'it should be possible to map nodes.': function () {
+        const graph = new Graph();
+        graph.addNode('one', {weight: 2});
+        graph.addNode('two', {weight: 3});
+
+        const result = graph.mapNodes((node, attr) => {
+          return attr.weight * 2;
+        });
+
+        assert.deepStrictEqual(result, [4, 6]);
+      }
+    },
+
+    '#.someNodes': {
+      'it should be possible to find if some node matches a predicate.':
+        function () {
+          const graph = new Graph();
+          graph.addNode('one', {weight: 2});
+          graph.addNode('two', {weight: 3});
+
+          assert.strictEqual(
+            graph.someNode((node, attr) => attr.weight > 6),
+            false
+          );
+          assert.strictEqual(
+            graph.someNode((node, attr) => attr.weight > 2),
+            true
+          );
+        }
+    },
+
+    '#.everyNode': {
+      'it should be possible to find if all node matches a predicate.':
+        function () {
+          const graph = new Graph();
+          graph.addNode('one', {weight: 2});
+          graph.addNode('two', {weight: 3});
+
+          assert.strictEqual(
+            graph.everyNode((node, attr) => attr.weight > 2),
+            false
+          );
+          assert.strictEqual(
+            graph.everyNode((node, attr) => attr.weight > 1),
+            true
+          );
+        }
+    },
+
+    '#.filterNodes': {
+      'it should be possible to filter nodes.': function () {
+        const graph = new Graph();
+        graph.addNode('one', {weight: 2});
+        graph.addNode('two', {weight: 3});
+        graph.addNode('three', {weight: 4});
+
+        const result = graph.filterNodes((node, {weight}) => weight >= 3);
+
+        assert.deepStrictEqual(result, ['two', 'three']);
+      }
+    },
+
     '#.nodeEntries': {
       'it should be possible to create a nodes iterator.': function () {
         const graph = new Graph();

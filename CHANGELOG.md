@@ -3,6 +3,8 @@
 ## 0.22.0 (provisional)
 
 - Rolling back to robust generated ids for edges.
+- Adding `#.mapNodes`, `#.filterNodes`, `#.reduceNodes`, `#.someNode`, `#.everyNode`.
+- Changing `#.forEach*Until` methods to `#.find*` methods.
 - Dropping `#.hasGeneratedKey`.
 - Dropping the `generated` last argument to edge & adjacency iterations.
 - Dropping the `edgeKeyGenerator` instanciation option.

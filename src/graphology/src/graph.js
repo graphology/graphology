@@ -2318,6 +2318,95 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method mapping nodes.
+   *
+   * @param  {function}  callback - Callback (key, attributes).
+   */
+  mapNodes(callback) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.mapNode: expecting a callback.'
+      );
+
+    const result = new Array(this.order);
+    let i = 0;
+
+    this._nodes.forEach((data, key) => {
+      result[i++] = callback(key, data.attributes);
+    });
+
+    return result;
+  }
+
+  /**
+   * Method returning whether some node verify the given predicate.
+   *
+   * @param  {function}  callback - Callback (key, attributes).
+   */
+  someNode(callback) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.someNode: expecting a callback.'
+      );
+
+    const iterator = this._nodes.values();
+
+    let step, nodeData;
+
+    while (((step = iterator.next()), step.done !== true)) {
+      nodeData = step.value;
+
+      if (callback(nodeData.key, nodeData.attributes)) return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Method returning whether all node verify the given predicate.
+   *
+   * @param  {function}  callback - Callback (key, attributes).
+   */
+  everyNode(callback) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.everyNode: expecting a callback.'
+      );
+
+    const iterator = this._nodes.values();
+
+    let step, nodeData;
+
+    while (((step = iterator.next()), step.done !== true)) {
+      nodeData = step.value;
+
+      if (!callback(nodeData.key, nodeData.attributes)) return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Method filtering nodes.
+   *
+   * @param  {function}  callback - Callback (key, attributes).
+   */
+  filterNodes(callback) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.filterNodes: expecting a callback.'
+      );
+
+    const result = [];
+
+    this._nodes.forEach((data, key) => {
+      if (callback(key, data.attributes)) result.push(key);
+    });
+
+    return result;
+  }
+
+  /**
    * Method returning an iterator over the graph's node entries.
    *
    * @return {Iterator}
