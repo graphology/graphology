@@ -162,7 +162,7 @@ export default function neighborsIteration(Graph, checkers) {
 
   function specificTests(name, data) {
     const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1),
-      forEachUntilName = forEachName + 'Until',
+      findName = 'find' + name[0].toUpperCase() + name.slice(1, -1),
       iteratorName = name.slice(0, -1) + 'Entries';
 
     return {
@@ -205,33 +205,29 @@ export default function neighborsIteration(Graph, checkers) {
           }
       },
 
-      // ForEachUntil
-      ['#.' + forEachUntilName]: {
-        'it should be possible to iterate over neighbors using a breakable callback.':
-          function () {
-            const neighbors = [];
+      // Find
+      ['#.' + findName]: {
+        'it should be possible to find neighbors.': function () {
+          const neighbors = [];
 
-            let broke = graph[forEachUntilName](
-              data.node.key,
-              function (target, attrs) {
-                neighbors.push(target);
+          let found = graph[findName](data.node.key, function (target, attrs) {
+            neighbors.push(target);
 
-                assert.deepStrictEqual(graph.getNodeAttributes(target), attrs);
-                assert.strictEqual(graph[name](data.node.key, target), true);
+            assert.deepStrictEqual(graph.getNodeAttributes(target), attrs);
+            assert.strictEqual(graph[name](data.node.key, target), true);
 
-                return true;
-              }
-            );
+            return true;
+          });
 
-            assert.strictEqual(broke, true);
-            assert.deepStrictEqual(neighbors, data.node.neighbors.slice(0, 1));
+          assert.strictEqual(found, neighbors[0]);
+          assert.deepStrictEqual(neighbors, data.node.neighbors.slice(0, 1));
 
-            broke = graph[forEachUntilName](data.node.key, function () {
-              return false;
-            });
+          found = graph[findName](data.node.key, function () {
+            return false;
+          });
 
-            assert.strictEqual(broke, false);
-          }
+          assert.strictEqual(found, undefined);
+        }
       },
 
       // Iterators
