@@ -371,15 +371,15 @@ function nodeHasNeighbor(graph, type, direction, node, neighbor) {
 
   if (type !== 'undirected') {
     if (direction !== 'out' && typeof nodeData.in !== 'undefined') {
-      for (const k in nodeData.in) if (k === neighbor) return true;
+      if (neighbor in nodeData.in) return true;
     }
     if (direction !== 'in' && typeof nodeData.out !== 'undefined') {
-      for (const k in nodeData.out) if (k === neighbor) return true;
+      if (neighbor in nodeData.out) return true;
     }
   }
 
   if (type !== 'directed' && typeof nodeData.undirected !== 'undefined') {
-    for (const k in nodeData.undirected) if (k === neighbor) return true;
+    if (neighbor in nodeData.undirected) return true;
   }
 
   return false;

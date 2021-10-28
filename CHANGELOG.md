@@ -11,6 +11,7 @@
 - Fixing adjacency iterator items missing `undirected`.
 - Fixing edge iterator items missing `undirected`.
 - Improving `#.copy` peformance.
+- Improving `#.areNeighbors` performance.
 - Upgrading `obliterator` and improving iterator-based methods.
 
 ## 0.21.1
