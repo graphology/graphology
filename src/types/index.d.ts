@@ -8,7 +8,7 @@
 /**
  * Miscellaneous types.
  */
-type Attributes = {[key: string]: any};
+type Attributes = {[name: string]: any};
 
 type GraphType = 'mixed' | 'directed' | 'undirected';
 
