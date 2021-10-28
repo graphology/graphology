@@ -64,7 +64,7 @@ type AdjacencyIterationCallback<
   undirected: boolean
 ) => void;
 
-type AdjacencyUntilIterationCallback<
+type AdjacencyPredicate<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > = (
@@ -75,16 +75,17 @@ type AdjacencyUntilIterationCallback<
   edge: string,
   edgeAttributes: EdgeAttributes,
   undirected: boolean
-) => boolean | undefined;
+) => boolean | void;
 
 type NodeIterationCallback<NodeAttributes extends Attributes = Attributes> = (
   node: string,
   attributes: NodeAttributes
 ) => void;
 
-type NodeUntilIterationCallback<
-  NodeAttributes extends Attributes = Attributes
-> = (node: string, attributes: NodeAttributes) => boolean | undefined;
+type NodePredicate<NodeAttributes extends Attributes = Attributes> = (
+  node: string,
+  attributes: NodeAttributes
+) => boolean | void;
 
 type NodeUpdateIterationCallback<
   NodeAttributes extends Attributes = Attributes
@@ -103,7 +104,7 @@ type EdgeIterationCallback<
   undirected: boolean
 ) => void;
 
-type EdgeUntilIterationCallback<
+type EdgePredicate<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > = (
@@ -114,7 +115,7 @@ type EdgeUntilIterationCallback<
   sourceAttributes: NodeAttributes,
   targetAttributes: NodeAttributes,
   undirected: boolean
-) => boolean | undefined;
+) => boolean | void;
 
 type EdgeUpdateIterationCallback<
   EdgeAttributes extends Attributes = Attributes
@@ -788,16 +789,14 @@ declare abstract class AbstractGraph<
   forEach(
     callback: AdjacencyIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
-  forEachUntil(
-    callback: AdjacencyUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
+  find(
+    callback: AdjacencyPredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
   adjacency(): IterableIterator<AdjacencyEntry<NodeAttributes, EdgeAttributes>>;
 
   nodes(): Array<string>;
   forEachNode(callback: NodeIterationCallback<NodeAttributes>): void;
-  forEachNodeUntil(
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
+  findNode(callback: NodePredicate<NodeAttributes>): string | undefined;
   nodeEntries(): IterableIterator<NodeEntry<NodeAttributes>>;
 
   edges(): Array<string>;
@@ -905,90 +904,90 @@ declare abstract class AbstractGraph<
     target: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
-  forEachEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachEdgeUntil(
+  findEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findEdge(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachEdgeUntil(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findEdge(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachUndirectedEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachUndirectedEdgeUntil(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findUndirectedEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findUndirectedEdge(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachUndirectedEdgeUntil(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findUndirectedEdge(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachDirectedEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachDirectedEdgeUntil(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findDirectedEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findDirectedEdge(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachDirectedEdgeUntil(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findDirectedEdge(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachInEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachInEdgeUntil(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findInEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findInEdge(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachInEdgeUntil(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findInEdge(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachOutEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachOutEdgeUntil(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findOutEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findOutEdge(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachOutEdgeUntil(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findOutEdge(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachInboundEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachInboundEdgeUntil(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findInboundEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findInboundEdge(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachInboundEdgeUntil(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findInboundEdge(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachOutboundEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachOutboundEdgeUntil(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findOutboundEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findOutboundEdge(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachOutboundEdgeUntil(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findOutboundEdge(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
   edgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   edgeEntries(
     node: unknown
@@ -1089,34 +1088,34 @@ declare abstract class AbstractGraph<
     node: unknown,
     callback: NodeIterationCallback<NodeAttributes>
   ): void;
-  forEachNeighborUntil(
+  findNeighbor(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
-  forEachUndirectedNeighborUntil(
+    callback: NodePredicate<NodeAttributes>
+  ): string | undefined;
+  findUndirectedNeighbor(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
-  forEachDirectedNeighborUntil(
+    callback: NodePredicate<NodeAttributes>
+  ): string | undefined;
+  findDirectedNeighbor(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
-  forEachInNeighborUntil(
+    callback: NodePredicate<NodeAttributes>
+  ): string | undefined;
+  findInNeighbor(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
-  forEachOutNeighborUntil(
+    callback: NodePredicate<NodeAttributes>
+  ): string | undefined;
+  findOutNeighbor(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
-  forEachInboundNeighborUntil(
+    callback: NodePredicate<NodeAttributes>
+  ): string | undefined;
+  findInboundNeighbor(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
-  forEachOutboundNeighborUntil(
+    callback: NodePredicate<NodeAttributes>
+  ): string | undefined;
+  findOutboundNeighbor(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
+    callback: NodePredicate<NodeAttributes>
+  ): string | undefined;
   neighborEntries(node: unknown): IterableIterator<NodeEntry<NodeAttributes>>;
   undirectedNeighborEntries(
     node: unknown
@@ -1207,12 +1206,12 @@ export {
   NodeEntry,
   EdgeEntry,
   AdjacencyIterationCallback,
-  AdjacencyUntilIterationCallback,
+  AdjacencyPredicate,
   NodeIterationCallback,
-  NodeUntilIterationCallback,
+  NodePredicate,
   NodeUpdateIterationCallback,
   EdgeIterationCallback,
-  EdgeUntilIterationCallback,
+  EdgePredicate,
   EdgeUpdateIterationCallback,
   SerializedNode,
   SerializedEdge,
