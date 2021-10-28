@@ -2,7 +2,7 @@
  * Graphology Browser GRAPHL Unit Tests Endpoint
  * ==============================================
  */
-var xmldom = require('xmldom');
+var xmldom = require('@xmldom/xmldom');
 
 global.DOMParser = xmldom.DOMParser;
 

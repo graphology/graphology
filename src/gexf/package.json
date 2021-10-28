@@ -40,6 +40,6 @@
   "dependencies": {
     "graphology-utils": "^2.1.0",
     "xml-writer": "^1.7.0",
-    "xmldom": "^0.6.0"
+    "@xmldom/xmldom": "^0.7.5"
   }
 }
