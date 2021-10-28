@@ -2102,30 +2102,28 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method iterating over the graph's nodes using the given callback until
-   * it returns a truthy value to stop iteration.
+   * Method iterating attempting to find a node matching the given predicate
+   * function.
    *
-   * @param  {function}  callback - Callback (key, attributes, index).
+   * @param  {function}  callback - Callback (key, attributes).
    */
-  forEachNodeUntil(callback) {
+  findNode(callback) {
     if (typeof callback !== 'function')
       throw new InvalidArgumentsGraphError(
-        'Graph.forEachNode: expecting a callback.'
+        'Graph.findNode: expecting a callback.'
       );
 
     const iterator = this._nodes.values();
 
-    let step, nodeData, shouldBreak;
+    let step, nodeData;
 
     while (((step = iterator.next()), step.done !== true)) {
       nodeData = step.value;
 
-      shouldBreak = callback(nodeData.key, nodeData.attributes);
-
-      if (shouldBreak) return true;
+      if (callback(nodeData.key, nodeData.attributes)) return nodeData.key;
     }
 
-    return false;
+    return;
   }
 
   /**

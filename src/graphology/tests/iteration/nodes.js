@@ -48,41 +48,40 @@ export default function nodesIteration(Graph, checkers) {
         }
     },
 
-    '#.forEachNodeUntil': {
+    '#.findNode': {
       'it should throw if given callback is not a function.': function () {
         const graph = new Graph();
 
         assert.throws(function () {
-          graph.forEachNodeUntil(null);
+          graph.findNode(null);
         }, invalid());
       },
 
-      'it should be possible to iterate over nodes and their attributes until the callback returns true.':
-        function () {
-          const graph = new Graph();
+      'it should be possible to find a node in the graph.': function () {
+        const graph = new Graph();
 
-          graph.addNode('John', {age: 34});
-          graph.addNode('Martha', {age: 33});
+        graph.addNode('John', {age: 34});
+        graph.addNode('Martha', {age: 33});
 
-          let count = 0;
+        let count = 0;
 
-          let broke = graph.forEachNodeUntil(function (key, attributes) {
-            assert.strictEqual(key, 'John');
-            assert.deepStrictEqual(attributes, {age: 34});
-            count++;
+        let found = graph.findNode(function (key, attributes) {
+          assert.strictEqual(key, 'John');
+          assert.deepStrictEqual(attributes, {age: 34});
+          count++;
 
-            if (key === 'John') return true;
-          });
+          if (key === 'John') return true;
+        });
 
-          assert.strictEqual(broke, true);
-          assert.strictEqual(count, 1);
+        assert.strictEqual(found, 'John');
+        assert.strictEqual(count, 1);
 
-          broke = graph.forEachNodeUntil(function () {
-            return false;
-          });
+        found = graph.findNode(function () {
+          return false;
+        });
 
-          assert.strictEqual(broke, false);
-        }
+        assert.strictEqual(found, undefined);
+      }
     },
 
     '#.nodeEntries': {
