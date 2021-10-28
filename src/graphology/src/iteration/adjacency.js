@@ -41,7 +41,7 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
           edgeData.undirected
         );
 
-        if (breakable && shouldBreak) return true;
+        if (breakable && shouldBreak) return edgeData.key;
       }
     }
 
@@ -64,12 +64,12 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
           edgeData.undirected
         );
 
-        if (breakable && shouldBreak) return true;
+        if (breakable && shouldBreak) return edgeData.key;
       }
     }
   }
 
-  return false;
+  return;
 }
 
 /**
@@ -119,7 +119,7 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
             edgeData.undirected
           );
 
-          if (breakable && shouldBreak) return true;
+          if (breakable && shouldBreak) return edgeData.key;
         }
       }
     }
@@ -148,13 +148,13 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
             edgeData.undirected
           );
 
-          if (breakable && shouldBreak) return true;
+          if (breakable && shouldBreak) return edgeData.key;
         }
       }
     }
   }
 
-  return false;
+  return;
 }
 
 export function createAdjacencyIteratorSimple(graph) {

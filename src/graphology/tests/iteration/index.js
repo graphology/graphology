@@ -83,47 +83,46 @@ export default function iteration(Graph, checkers) {
           ]);
         },
 
-      "it should be possible to iterate over the graph's adjacency using callbacks until returning true.":
-        function () {
-          const graph = new Graph();
+      'it should be possible to find an edge in the adjacency.': function () {
+        const graph = new Graph();
 
-          graph.addNode(1);
-          graph.addNode(2);
-          graph.addNode(3);
+        graph.addNode(1);
+        graph.addNode(2);
+        graph.addNode(3);
 
-          graph.addEdge(1, 2);
-          graph.addEdge(2, 3);
-          graph.addEdge(3, 1);
-          graph.addUndirectedEdge(1, 2);
+        graph.addEdge(1, 2);
+        graph.addEdge(2, 3);
+        graph.addEdge(3, 1);
+        graph.addUndirectedEdge(1, 2);
 
-          graph.replaceNodeAttributes(2, {hello: 'world'});
+        graph.replaceNodeAttributes(2, {hello: 'world'});
 
-          const adjacency = [];
+        const adjacency = [];
 
-          let broke = graph.forEachUntil(function (s, t, sa, ta, e, ea, u) {
-            adjacency.push([u, s, t]);
-            assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
-            assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
-            assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
-            assert.strictEqual(graph.isUndirected(e), u);
+        let found = graph.find(function (s, t, sa, ta, e, ea, u) {
+          adjacency.push([u, s, t]);
+          assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
+          assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
+          assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
+          assert.strictEqual(graph.isUndirected(e), u);
 
-            if (sa.hello === 'world') return true;
-          });
+          if (sa.hello === 'world') return true;
+        });
 
-          assert.strictEqual(broke, true);
+        assert.strictEqual(found, graph.edge(2, 3));
 
-          assert.deepStrictEqual(adjacency, [
-            [false, '1', '2'],
-            [true, '1', '2'],
-            [false, '2', '3']
-          ]);
+        assert.deepStrictEqual(adjacency, [
+          [false, '1', '2'],
+          [true, '1', '2'],
+          [false, '2', '3']
+        ]);
 
-          broke = graph.forEachUntil(function () {
-            return false;
-          });
+        found = graph.find(function () {
+          return false;
+        });
 
-          assert.strictEqual(broke, false);
-        },
+        assert.strictEqual(found, undefined);
+      },
 
       "it should be possible to create an iterator over the graph's adjacency.":
         function () {

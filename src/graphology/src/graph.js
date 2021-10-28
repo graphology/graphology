@@ -2047,16 +2047,14 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method iterating over the graph's adjacency using the given callback until
-   * it returns a truthy value to stop iteration.
+   * Method returning whether a matching edge can be found using given
+   * predicate function.
    *
    * @param  {function}  callback - Callback to use.
    */
-  forEachUntil(callback) {
+  find(callback) {
     if (typeof callback !== 'function')
-      throw new InvalidArgumentsGraphError(
-        'Graph.forEach: expecting a callback.'
-      );
+      throw new InvalidArgumentsGraphError('Graph.find: expecting a callback.');
 
     if (this.multi) return forEachAdjacencyMulti(true, this, callback);
 
