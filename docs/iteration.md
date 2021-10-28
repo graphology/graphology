@@ -72,11 +72,11 @@ adj
 ]
 
 // Using the iterator
-for (const [source, target, ...] of graph.adjacency())
+for (const {source, target, ...} of graph.adjacency())
   console.log(source, target);
 
 // Iterating over the graph itself is actually the same
-for (const [source, target, ...] of graph)
+for (const {source, target, ...} of graph)
   console.log(source, target);
 ```
 
@@ -134,7 +134,7 @@ graph.forEachNode((node, attributes) => {
 });
 
 // Using the iterator
-for (const [node, attributes] of graph.nodeEntries()) {
+for (const {node, attributes} of graph.nodeEntries()) {
   console.log(node, attributes);
 }
 ```
@@ -153,7 +153,7 @@ Iterates over each node using a callback.
 
 **Callback arguments**
 
-* **key** <span class="code">string</span>: the node's key.
+* **node** <span class="code">string</span>: the node's key.
 * **attributes** <span class="code">object</span>: the node's attributes.
 
 ### #.nodeEntries
@@ -162,7 +162,7 @@ Returns an iterator over the graph's nodes.
 
 **Entries**
 
-* **key** <span class="code">string</span>: the node's key.
+* **node** <span class="code">string</span>: the node's key.
 * **attributes** <span class="code">object</span>: the node's attributes.
 
 ## Edges
@@ -203,7 +203,7 @@ graph.forEachEdge('Thomas', callback);
 graph.forEachEdge('John', 'Daniel', callback);
 
 // Using the iterators
-for (const [edge, attributes, ...] of graph.edgeEntries()) {
+for (const {edge, attributes, ...} of graph.edgeEntries()) {
   console.log(edge, attributes);
 }
 ```
@@ -261,7 +261,7 @@ Iterates over relevant edges using a callback.
 
 **Callback arguments**
 
-* **key** <span class="code">string</span>: the edge's key.
+* **edge** <span class="code">string</span>: the edge's key.
 * **attributes** <span class="code">object</span>: the edge's attributes.
 * **source** <span class="code">string</span>: key of the edge's source.
 * **target** <span class="code">string</span>: key of the edge's target.
@@ -295,7 +295,7 @@ Returns an iterator over relevant edges.
 
 **Entries**
 
-* **key** <span class="code">string</span>: the edge's key.
+* **edge** <span class="code">string</span>: the edge's key.
 * **attributes** <span class="code">object</span>: the edge's attributes.
 * **source** <span class="code">string</span>: key of the edge's source.
 * **target** <span class="code">string</span>: key of the edge's target.
@@ -329,7 +329,7 @@ graph.forEachNeighbor('Thomas', function(neighbor, attributes) {
 });
 
 // Using the iterators
-for (const [neighbor, attributes] of graph.neighborEntries()) {
+for (const {neighbor, attributes} of graph.neighborEntries()) {
   console.log(neighbor, attributes);
 }
 ```
@@ -375,7 +375,7 @@ Iterates over the relevant neighbors using a callback.
 
 **Callback arguments**
 
-* **key** <span class="code">string</span>: the neighbor's key.
+* **neighbor** <span class="code">string</span>: the neighbor's key.
 * **attributes** <span class="code">object</span>: the neighbor's attributes.
 
 ### #.neighborEntries
@@ -403,5 +403,5 @@ Returns an iterator over the relevant neighbors.
 
 **Entries**
 
-* **key** <span class="code">string</span>: the neighbor's key.
+* **neighbor** <span class="code">string</span>: the neighbor's key.
 * **attributes** <span class="code">object</span>: the neighbor's attributes.

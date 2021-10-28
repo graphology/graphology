@@ -23,33 +23,38 @@ type GraphOptions = {
 type AdjacencyEntry<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
-> = [
-  source: string,
-  target: string,
-  sourceAttributes: NodeAttributes,
-  targetAttributes: NodeAttributes,
-  edge: string,
-  edgeAttributes: EdgeAttributes,
-  undirected: boolean
-];
+> = {
+  source: string;
+  target: string;
+  sourceAttributes: NodeAttributes;
+  targetAttributes: NodeAttributes;
+  edge: string;
+  edgeAttributes: EdgeAttributes;
+  undirected: boolean;
+};
 
-type NodeEntry<NodeAttributes extends Attributes = Attributes> = [
-  node: string,
-  attributes: NodeAttributes
-];
+type NodeEntry<NodeAttributes extends Attributes = Attributes> = {
+  node: string;
+  attributes: NodeAttributes;
+};
+
+type NeighborEntry<NodeAttributes extends Attributes = Attributes> = {
+  neighbor: string;
+  attributes: NodeAttributes;
+};
 
 type EdgeEntry<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
-> = [
-  edge: string,
-  attributes: EdgeAttributes,
-  source: string,
-  target: string,
-  sourceAttributes: NodeAttributes,
-  targetAttributes: NodeAttributes,
-  undirected: boolean
-];
+> = {
+  edge: string;
+  attributes: EdgeAttributes;
+  source: string;
+  target: string;
+  sourceAttributes: NodeAttributes;
+  targetAttributes: NodeAttributes;
+  undirected: boolean;
+};
 
 type AdjacencyIterationCallback<
   NodeAttributes extends Attributes = Attributes,
@@ -1116,23 +1121,27 @@ declare abstract class AbstractGraph<
     node: unknown,
     callback: NodePredicate<NodeAttributes>
   ): string | undefined;
-  neighborEntries(node: unknown): IterableIterator<NodeEntry<NodeAttributes>>;
+  neighborEntries(
+    node: unknown
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
   undirectedNeighborEntries(
     node: unknown
-  ): IterableIterator<NodeEntry<NodeAttributes>>;
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
   directedNeighborEntries(
     node: unknown
-  ): IterableIterator<NodeEntry<NodeAttributes>>;
-  inNeighborEntries(node: unknown): IterableIterator<NodeEntry<NodeAttributes>>;
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
+  inNeighborEntries(
+    node: unknown
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
   outNeighborEntries(
     node: unknown
-  ): IterableIterator<NodeEntry<NodeAttributes>>;
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
   inboundNeighborEntries(
     node: unknown
-  ): IterableIterator<NodeEntry<NodeAttributes>>;
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
   outboundNeighborEntries(
     node: unknown
-  ): IterableIterator<NodeEntry<NodeAttributes>>;
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
 
   // Serialization methods
   exportNode(node: unknown): SerializedNode<NodeAttributes>;
@@ -1204,6 +1213,7 @@ export {
   GraphOptions,
   AdjacencyEntry,
   NodeEntry,
+  NeighborEntry,
   EdgeEntry,
   AdjacencyIterationCallback,
   AdjacencyPredicate,

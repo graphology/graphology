@@ -425,15 +425,15 @@ export default function edgesIteration(Graph, checkers) {
               data.all.map(edge => {
                 const [source, target] = graph.extremities(edge);
 
-                return [
+                return {
                   edge,
-                  graph.getEdgeAttributes(edge),
+                  attributes: graph.getEdgeAttributes(edge),
                   source,
                   target,
-                  graph.getNodeAttributes(source),
-                  graph.getNodeAttributes(target),
-                  graph.isUndirected(edge)
-                ];
+                  sourceAttributes: graph.getNodeAttributes(source),
+                  targetAttributes: graph.getNodeAttributes(target),
+                  undirected: graph.isUndirected(edge)
+                };
               })
             );
           },
@@ -447,15 +447,15 @@ export default function edgesIteration(Graph, checkers) {
               data.node.edges.map(edge => {
                 const [source, target] = graph.extremities(edge);
 
-                return [
+                return {
                   edge,
-                  graph.getEdgeAttributes(edge),
+                  attributes: graph.getEdgeAttributes(edge),
                   source,
                   target,
-                  graph.getNodeAttributes(source),
-                  graph.getNodeAttributes(target),
-                  graph.isUndirected(edge)
-                ];
+                  sourceAttributes: graph.getNodeAttributes(source),
+                  targetAttributes: graph.getNodeAttributes(target),
+                  undirected: graph.isUndirected(edge)
+                };
               })
             );
           },
@@ -472,15 +472,15 @@ export default function edgesIteration(Graph, checkers) {
               data.path.edges.map(edge => {
                 const [source, target] = graph.extremities(edge);
 
-                return [
+                return {
                   edge,
-                  graph.getEdgeAttributes(edge),
+                  attributes: graph.getEdgeAttributes(edge),
                   source,
                   target,
-                  graph.getNodeAttributes(source),
-                  graph.getNodeAttributes(target),
-                  graph.isUndirected(edge)
-                ];
+                  sourceAttributes: graph.getNodeAttributes(source),
+                  targetAttributes: graph.getNodeAttributes(target),
+                  undirected: graph.isUndirected(edge)
+                };
               })
             );
           }
@@ -520,7 +520,7 @@ export default function edgesIteration(Graph, checkers) {
 
           assert.deepStrictEqual(directed.inEdges('Lucy'), ['Lucy']);
           assert.deepStrictEqual(
-            Array.from(directed.inEdgeEntries('Lucy')).map(x => x[0]),
+            Array.from(directed.inEdgeEntries('Lucy')).map(x => x.edge),
             ['Lucy']
           );
 
@@ -543,7 +543,7 @@ export default function edgesIteration(Graph, checkers) {
           assert.deepStrictEqual(edges, ['Lucy']);
 
           assert.deepStrictEqual(
-            Array.from(directed.edgeEntries('Lucy')).map(x => x[0]),
+            Array.from(directed.edgeEntries('Lucy')).map(x => x.edge),
             ['Lucy']
           );
         },

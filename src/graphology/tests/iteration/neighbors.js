@@ -176,7 +176,10 @@ export default function neighborsIteration(Graph, checkers) {
             assert.deepStrictEqual(
               take(iterator),
               data.node.neighbors.map(neighbor => {
-                return [neighbor, graph.getNodeAttributes(neighbor)];
+                return {
+                  neighbor,
+                  attributes: graph.getNodeAttributes(neighbor)
+                };
               })
             );
           }
@@ -195,7 +198,7 @@ export default function neighborsIteration(Graph, checkers) {
 
           assert.deepStrictEqual(directed.inNeighbors('Lucy'), ['Lucy']);
           assert.deepStrictEqual(
-            Array.from(directed.inNeighborEntries('Lucy')).map(x => x[0]),
+            Array.from(directed.inNeighborEntries('Lucy')).map(x => x.neighbor),
             ['Lucy']
           );
 
@@ -218,7 +221,7 @@ export default function neighborsIteration(Graph, checkers) {
           assert.deepStrictEqual(neighbors, ['Lucy']);
 
           assert.deepStrictEqual(
-            Array.from(directed.neighborEntries('Lucy')).map(x => x[0]),
+            Array.from(directed.neighborEntries('Lucy')).map(x => x.neighbor),
             ['Lucy']
           );
         }

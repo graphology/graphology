@@ -282,7 +282,7 @@ function createObjectIterator(nodeData, object) {
 
     return {
       done: false,
-      value: [neighborData.key, neighborData.attributes]
+      value: {neighbor: neighborData.key, attributes: neighborData.attributes}
     };
   });
 }
@@ -311,7 +311,7 @@ function createDedupedObjectIterator(visited, nodeData, object) {
 
     return {
       done: false,
-      value: [neighborData.key, neighborData.attributes]
+      value: {neighbor: neighborData.key, attributes: neighborData.attributes}
     };
   });
 }

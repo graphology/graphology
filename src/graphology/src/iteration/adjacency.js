@@ -225,15 +225,15 @@ export function createAdjacencyIteratorSimple(graph) {
 
     return {
       done: false,
-      value: [
-        sourceData.key,
-        targetData.key,
-        sourceData.attributes,
-        targetData.attributes,
-        edgeData.key,
-        edgeData.attributes,
-        edgeData.undirected
-      ]
+      value: {
+        source: sourceData.key,
+        target: targetData.key,
+        sourceAttributes: sourceData.attributes,
+        targetAttributes: targetData.attributes,
+        edgeKey: edgeData.key,
+        edgeAttributes: edgeData.attributes,
+        undirected: edgeData.undirected
+      }
     };
   });
 }
@@ -319,15 +319,15 @@ export function createAdjacencyIteratorMulti(graph) {
 
     return {
       done: false,
-      value: [
-        sourceData.key,
-        targetData.key,
-        sourceData.attributes,
-        targetData.attributes,
-        edgeData.key,
-        edgeData.attributes,
-        edgeData.undirected
-      ]
+      value: {
+        source: sourceData.key,
+        target: targetData.key,
+        sourceAttributes: sourceData.attributes,
+        targetAttributes: targetData.attributes,
+        edge: edgeData.key,
+        edgeAttributes: edgeData.attributes,
+        undirected: edgeData.undirected
+      }
     };
   });
 }

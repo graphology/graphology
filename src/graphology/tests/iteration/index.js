@@ -139,7 +139,9 @@ export default function iteration(Graph, checkers) {
 
           graph.replaceNodeAttributes(2, {hello: 'world'});
 
-          const adj = take(graph.adjacency()).map(p => [p[0], p[1], p[6]]);
+          const adj = take(graph.adjacency()).map(
+            ({source, target, undirected}) => [source, target, undirected]
+          );
 
           assert.deepStrictEqual(adj, [
             ['1', '2', false],
@@ -166,7 +168,11 @@ export default function iteration(Graph, checkers) {
 
           graph.replaceNodeAttributes(2, {hello: 'world'});
 
-          const adj = take(graph.adjacency()).map(p => [p[0], p[1], p[4]]);
+          const adj = take(graph.adjacency()).map(({source, target, edge}) => [
+            source,
+            target,
+            edge
+          ]);
 
           assert.deepStrictEqual(adj, [
             ['1', '2', '0'],
@@ -198,7 +204,9 @@ export default function iteration(Graph, checkers) {
 
         graph.replaceNodeAttributes(2, {hello: 'world'});
 
-        const adj = take(graph[Symbol.iterator]()).map(p => [p[0], p[1], p[6]]);
+        const adj = take(graph[Symbol.iterator]()).map(
+          ({source, target, undirected}) => [source, target, undirected]
+        );
 
         assert.deepStrictEqual(adj, [
           ['1', '2', false],

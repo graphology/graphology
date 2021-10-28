@@ -93,12 +93,18 @@ export default function nodesIteration(Graph, checkers) {
 
         const iterator = graph.nodeEntries();
 
-        assert.deepStrictEqual(iterator.next().value, ['one', {}]);
-        assert.deepStrictEqual(iterator.next().value, [
-          'two',
-          {hello: 'world'}
-        ]);
-        assert.deepStrictEqual(iterator.next().value, ['three', {}]);
+        assert.deepStrictEqual(iterator.next().value, {
+          node: 'one',
+          attributes: {}
+        });
+        assert.deepStrictEqual(iterator.next().value, {
+          node: 'two',
+          attributes: {hello: 'world'}
+        });
+        assert.deepStrictEqual(iterator.next().value, {
+          node: 'three',
+          attributes: {}
+        });
         assert.strictEqual(iterator.next().done, true);
       }
     }

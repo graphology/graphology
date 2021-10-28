@@ -217,15 +217,15 @@ function createIterator(object, avoid) {
 
     return {
       done: false,
-      value: [
-        edgeData.key,
-        edgeData.attributes,
-        edgeData.source.key,
-        edgeData.target.key,
-        edgeData.source.attributes,
-        edgeData.target.attributes,
-        edgeData.undirected
-      ]
+      value: {
+        edge: edgeData.key,
+        attributes: edgeData.attributes,
+        source: edgeData.source.key,
+        target: edgeData.target.key,
+        sourceAttributes: edgeData.source.attributes,
+        targetAttributes: edgeData.target.attributes,
+        undirected: edgeData.undirected
+      }
     };
   });
 }
@@ -380,15 +380,15 @@ function createIteratorForKey(object, k) {
 
       return {
         done: false,
-        value: [
-          edgeData.key,
-          edgeData.attributes,
-          edgeData.source.key,
-          edgeData.target.key,
-          edgeData.source.attributes,
-          edgeData.target.attributes,
-          edgeData.undirected
-        ]
+        value: {
+          edge: edgeData.key,
+          attributes: edgeData.attributes,
+          source: edgeData.source.key,
+          target: edgeData.target.key,
+          sourceAttributes: edgeData.source.attributes,
+          targetAttributes: edgeData.target.attributes,
+          undirected: edgeData.undirected
+        }
       };
     });
   }
@@ -547,15 +547,15 @@ function createEdgeIterator(graph, type) {
       break;
     }
 
-    const value = [
-      data.key,
-      data.attributes,
-      data.source.key,
-      data.target.key,
-      data.source.attributes,
-      data.target.attributes,
-      data.undirected
-    ];
+    const value = {
+      edge: data.key,
+      attributes: data.attributes,
+      source: data.source.key,
+      target: data.target.key,
+      sourceAttributes: data.source.attributes,
+      targetAttributes: data.target.attributes,
+      undirected: data.undirected
+    };
 
     return {value, done: false};
   });

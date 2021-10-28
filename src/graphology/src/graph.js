@@ -2332,7 +2332,10 @@ export default class Graph extends EventEmitter {
 
       const data = step.value;
 
-      return {value: [data.key, data.attributes], done: false};
+      return {
+        value: {node: data.key, attributes: data.attributes},
+        done: false
+      };
     });
   }
 
