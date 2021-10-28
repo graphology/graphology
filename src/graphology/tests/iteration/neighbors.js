@@ -19,7 +19,7 @@ const METHODS = [
 ];
 
 export default function neighborsIteration(Graph, checkers) {
-  const {invalid, notFound} = checkers;
+  const {notFound} = checkers;
 
   const graph = new Graph({multi: true});
 
@@ -47,78 +47,42 @@ export default function neighborsIteration(Graph, checkers) {
 
   const TEST_DATA = {
     neighbors: {
-      are: [
-        ['John', 'Martha', true],
-        ['Martha', 'Catherine', false]
-      ],
       node: {
         key: 'John',
         neighbors: ['Catherine', 'Thomas', 'Martha', 'Roger']
       }
     },
     inNeighbors: {
-      are: [
-        ['John', 'Martha', false],
-        ['John', 'Roger', false],
-        ['Martha', 'Catherine', false],
-        ['Thomas', 'John', true]
-      ],
       node: {
         key: 'John',
         neighbors: ['Catherine']
       }
     },
     outNeighbors: {
-      are: [
-        ['John', 'Martha', true],
-        ['John', 'Roger', false],
-        ['Martha', 'Catherine', false]
-      ],
       node: {
         key: 'John',
         neighbors: ['Thomas', 'Martha']
       }
     },
     inboundNeighbors: {
-      are: [
-        ['John', 'Thomas', false],
-        ['John', 'Roger', true],
-        ['Martha', 'John', true]
-      ],
       node: {
         key: 'John',
         neighbors: ['Catherine', 'Martha', 'Roger']
       }
     },
     outboundNeighbors: {
-      are: [
-        ['John', 'Thomas', true],
-        ['John', 'Roger', true],
-        ['Martha', 'John', true],
-        ['John', 'Catherine', false]
-      ],
       node: {
         key: 'John',
         neighbors: ['Thomas', 'Martha', 'Roger']
       }
     },
     directedNeighbors: {
-      are: [
-        ['John', 'Martha', true],
-        ['John', 'Roger', false],
-        ['Martha', 'Catherine', false]
-      ],
       node: {
         key: 'John',
         neighbors: ['Catherine', 'Thomas', 'Martha']
       }
     },
     undirectedNeighbors: {
-      are: [
-        ['John', 'Martha', true],
-        ['John', 'Roger', true],
-        ['Martha', 'Catherine', false]
-      ],
       node: {
         key: 'John',
         neighbors: ['Martha', 'Roger']
@@ -129,18 +93,6 @@ export default function neighborsIteration(Graph, checkers) {
   function commonTests(name) {
     return {
       ['#.' + name]: {
-        'it should throw if too many arguments are provided.': function () {
-          assert.throws(function () {
-            graph[name](1, 2, 3);
-          }, invalid());
-        },
-
-        'it should throw if too few arguments are provided.': function () {
-          assert.throws(function () {
-            graph[name]();
-          }, invalid());
-        },
-
         'it should throw when the node is not found.': function () {
           assert.throws(function () {
             graph[name]('Test');
@@ -151,35 +103,20 @@ export default function neighborsIteration(Graph, checkers) {
           assert.throws(function () {
             graph[name]('Test', 'SecondTest');
           }, notFound());
-
-          assert.throws(function () {
-            graph[name]('Forever', 'Test');
-          }, notFound());
         }
       }
     };
   }
 
   function specificTests(name, data) {
-    const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1),
-      findName = 'find' + name[0].toUpperCase() + name.slice(1, -1),
-      iteratorName = name.slice(0, -1) + 'Entries';
+    const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1);
+    const findName = 'find' + name[0].toUpperCase() + name.slice(1, -1);
+    const iteratorName = name.slice(0, -1) + 'Entries';
+    const areName = 'are' + name[0].toUpperCase() + name.slice(1);
 
     return {
       // Array-creators
       ['#.' + name]: {
-        'it should correctly return whether two nodes are neighbors.':
-          function () {
-            data.are.forEach(([node1, node2, expectation]) => {
-              assert.strictEqual(
-                graph[name](node1, node2),
-                expectation,
-                `${name}: ${node1} / ${node2}`
-              );
-              assert.strictEqual(graph[name]('Forever', 'Alone'), false);
-            });
-          },
-
         'it should return the correct neighbors array.': function () {
           const neighbors = graph[name](data.node.key);
 
@@ -198,7 +135,7 @@ export default function neighborsIteration(Graph, checkers) {
               neighbors.push(target);
 
               assert.deepStrictEqual(graph.getNodeAttributes(target), attrs);
-              assert.strictEqual(graph[name](data.node.key, target), true);
+              assert.strictEqual(graph[areName](data.node.key, target), true);
             });
 
             assert.deepStrictEqual(neighbors, data.node.neighbors);
@@ -214,7 +151,7 @@ export default function neighborsIteration(Graph, checkers) {
             neighbors.push(target);
 
             assert.deepStrictEqual(graph.getNodeAttributes(target), attrs);
-            assert.strictEqual(graph[name](data.node.key, target), true);
+            assert.strictEqual(graph[areName](data.node.key, target), true);
 
             return true;
           });

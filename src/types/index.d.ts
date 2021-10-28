@@ -381,13 +381,13 @@ declare abstract class AbstractGraph<
   isDirected(edge: unknown): boolean;
   isSelfLoop(edge: unknown): boolean;
   hasExtremity(edge: unknown, node: unknown): boolean;
-  neighbors(source: unknown, target: unknown): boolean;
-  undirectedNeighbors(source: unknown, target: unknown): boolean;
-  directedNeighbors(source: unknown, target: unknown): boolean;
-  inNeighbors(source: unknown, target: unknown): boolean;
-  outNeighbors(source: unknown, target: unknown): boolean;
-  inboundNeighbors(source: unknown, target: unknown): boolean;
-  outboundNeighbors(source: unknown, target: unknown): boolean;
+  areNeighbors(source: unknown, target: unknown): boolean;
+  areUndirectedNeighbors(source: unknown, target: unknown): boolean;
+  areDirectedNeighbors(source: unknown, target: unknown): boolean;
+  areInNeighbors(source: unknown, target: unknown): boolean;
+  areOutNeighbors(source: unknown, target: unknown): boolean;
+  areInboundNeighbors(source: unknown, target: unknown): boolean;
+  areOutboundNeighbors(source: unknown, target: unknown): boolean;
 
   // Mutation methods
   addNode(node: unknown, attributes?: NodeAttributes): string;

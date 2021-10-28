@@ -14,6 +14,7 @@ menu_toc:
   - "#.hasExtremity"
   - "#.isDirected"
   - "#.isSelfLoop"
+  - "#.areNeighbors"
 ---
 
 # Read
@@ -277,3 +278,36 @@ graph.isSelfLoop(edge);
 *Arguments*
 
 * **edge** <span class="code">any</span>: target edge.
+
+## #.areNeighbors
+
+Returns whether both nodes are neighbors.
+
+*Examples*
+
+```js
+graph.addNode('Timothy');
+graph.addNode('Clarice');
+graph.addNode('Zendar');
+graph.addEdge('Clarice', 'Timothy');
+
+graph.areNeighbors('Clarice', 'Timothy');
+>>> true
+
+graph.areNeighbors('Zendar', 'Clarice');
+>>> false
+```
+
+*Arguments*
+
+* **node** <span class="code">any</span>: target node.
+* **neighbord** <span class="code">any</span>: potential neighbor.
+
+*Variants*
+
+* `#.areDirectedNeighbors`
+* `#.areUndirectedNeighbors`
+* `#.areInNeighbors`
+* `#.areOutNeighbors`
+* `#.areInboundNeighbors` (in + undirected)
+* `#.areOutboundNeighbors` (out + undirected)

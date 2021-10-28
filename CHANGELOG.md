@@ -6,6 +6,7 @@
 - Dropping `#.hasGeneratedKey`.
 - Dropping the `generated` last argument to edge & adjacency iterations.
 - Dropping the `edgeKeyGenerator` instanciation option.
+- Changing `#.neighbors(source, target)` to `#.areNeighbors`.
 - `#.exportEdge` will now always return a key.
 - Fixing mutability bug with `#.copy`.
 - Fixing adjacency iterator items missing `undirected`.

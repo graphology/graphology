@@ -9,7 +9,7 @@ import Iterator from 'obliterator/iterator';
 import chain from 'obliterator/chain';
 import take from 'obliterator/take';
 
-import {InvalidArgumentsGraphError, NotFoundGraphError} from '../errors';
+import {NotFoundGraphError} from '../errors';
 
 /**
  * Definitions.
@@ -357,35 +357,6 @@ function createNeighborIterator(type, direction, nodeData) {
 }
 
 /**
- * Function returning whether the given node has target neighbor.
- *
- * @param  {Graph}        graph     - Target graph.
- * @param  {string}       type      - Type of neighbor.
- * @param  {string}       direction - Direction.
- * @param  {any}          node      - Target node.
- * @param  {any}          neighbor  - Target neighbor.
- * @return {boolean}
- */
-function nodeHasNeighbor(graph, type, direction, node, neighbor) {
-  const nodeData = graph._nodes.get(node);
-
-  if (type !== 'undirected') {
-    if (direction !== 'out' && typeof nodeData.in !== 'undefined') {
-      if (neighbor in nodeData.in) return true;
-    }
-    if (direction !== 'in' && typeof nodeData.out !== 'undefined') {
-      if (neighbor in nodeData.out) return true;
-    }
-  }
-
-  if (type !== 'directed' && typeof nodeData.undirected !== 'undefined') {
-    if (neighbor in nodeData.undirected) return true;
-  }
-
-  return false;
-}
-
-/**
  * Function attaching a neighbors array creator method to the Graph prototype.
  *
  * @param {function} Class       - Target class.
@@ -395,62 +366,32 @@ function attachNeighborArrayCreator(Class, description) {
   const {name, type, direction} = description;
 
   /**
-   * Function returning an array or the count of certain neighbors.
+   * Function returning an array of certain neighbors.
    *
-   * Arity 1: Return all of a node's relevant neighbors.
    * @param  {any}   node   - Target node.
+   * @return {array} - The neighbors of neighbors.
    *
-   * Arity 2: Return whether the two nodes are indeed neighbors.
-   * @param  {any}   source - Source node.
-   * @param  {any}   target - Target node.
-   *
-   * @return {array|number} - The neighbors or the number of neighbors.
-   *
-   * @throws {Error} - Will throw if there are too many arguments.
+   * @throws {Error} - Will throw if node is not found in the graph.
    */
   Class.prototype[name] = function (node) {
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
       return [];
 
-    if (arguments.length === 2) {
-      const node1 = '' + arguments[0],
-        node2 = '' + arguments[1];
+    node = '' + node;
 
-      if (!this._nodes.has(node1))
-        throw new NotFoundGraphError(
-          `Graph.${name}: could not find the "${node1}" node in the graph.`
-        );
+    const nodeData = this._nodes.get(node);
 
-      if (!this._nodes.has(node2))
-        throw new NotFoundGraphError(
-          `Graph.${name}: could not find the "${node2}" node in the graph.`
-        );
-
-      // Here, we want to assess whether the two given nodes are neighbors
-      return nodeHasNeighbor(this, type, direction, node1, node2);
-    } else if (arguments.length === 1) {
-      node = '' + node;
-
-      const nodeData = this._nodes.get(node);
-
-      if (typeof nodeData === 'undefined')
-        throw new NotFoundGraphError(
-          `Graph.${name}: could not find the "${node}" node in the graph.`
-        );
-
-      // Here, we want to iterate over a node's relevant neighbors
-      const neighbors = createNeighborArrayForNode(
-        type === 'mixed' ? this.type : type,
-        direction,
-        nodeData
+    if (typeof nodeData === 'undefined')
+      throw new NotFoundGraphError(
+        `Graph.${name}: could not find the "${node}" node in the graph.`
       );
 
-      return neighbors;
-    }
-
-    throw new InvalidArgumentsGraphError(
-      `Graph.${name}: invalid number of arguments (expecting 1 or 2 and got ${arguments.length}).`
+    // Here, we want to iterate over a node's relevant neighbors
+    return createNeighborArrayForNode(
+      type === 'mixed' ? this.type : type,
+      direction,
+      nodeData
     );
   };
 }

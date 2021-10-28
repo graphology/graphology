@@ -933,6 +933,199 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method returning whether two nodes are directed neighbors.
+   *
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  areDirectedNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areDirectedNeighbors: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type === 'undirected') return false;
+
+    return neighbor in nodeData.in || neighbor in nodeData.out;
+  }
+
+  /**
+   * Method returning whether two nodes are out neighbors.
+   *
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  areOutNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areOutNeighbors: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type === 'undirected') return false;
+
+    return neighbor in nodeData.out;
+  }
+
+  /**
+   * Method returning whether two nodes are in neighbors.
+   *
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  areInNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areInNeighbors: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type === 'undirected') return false;
+
+    return neighbor in nodeData.in;
+  }
+
+  /**
+   * Method returning whether two nodes are undirected neighbors.
+   *
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  areUndirectedNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areUndirectedNeighbors: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type === 'directed') return false;
+
+    return neighbor in nodeData.undirected;
+  }
+
+  /**
+   * Method returning whether two nodes are neighbors.
+   *
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  areNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areNeighbors: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type !== 'undirected') {
+      if (neighbor in nodeData.in || neighbor in nodeData.out) return true;
+    }
+
+    if (this.type !== 'directed') {
+      if (neighbor in nodeData.undirected) return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Method returning whether two nodes are inbound neighbors.
+   *
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  areInboundNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areInboundNeighbors: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type !== 'undirected') {
+      if (neighbor in nodeData.in) return true;
+    }
+
+    if (this.type !== 'directed') {
+      if (neighbor in nodeData.undirected) return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Method returning whether two nodes are outbound neighbors.
+   *
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  areOutboundNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areOutboundNeighbors: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type !== 'undirected') {
+      if (neighbor in nodeData.out) return true;
+    }
+
+    if (this.type !== 'directed') {
+      if (neighbor in nodeData.undirected) return true;
+    }
+
+    return false;
+  }
+
+  /**
    * Method returning the given node's in degree.
    *
    * @param  {any}     node      - The node's key.
