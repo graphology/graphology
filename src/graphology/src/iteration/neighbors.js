@@ -14,7 +14,7 @@ import {InvalidArgumentsGraphError, NotFoundGraphError} from '../errors';
 /**
  * Definitions.
  */
-const NEIGHBORS_ITERATION = [
+export const NEIGHBORS_ITERATION = [
   {
     name: 'neighbors',
     type: 'mixed'

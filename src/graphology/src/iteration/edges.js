@@ -14,7 +14,7 @@ import {InvalidArgumentsGraphError, NotFoundGraphError} from '../errors';
 /**
  * Definitions.
  */
-const EDGES_ITERATION = [
+export const EDGES_ITERATION = [
   {
     name: 'edges',
     type: 'mixed'
@@ -108,13 +108,12 @@ function forEachMulti(object, callback, avoid) {
 }
 
 /**
- * Function iterating over edges from the given object using a callback until
- * the return value of the callback is truthy.
+ * Function iterating over edges from the given object to match one of them.
  *
  * @param {object}   object   - Target object.
  * @param {function} callback - Function to call.
  */
-function forEachSimpleUntil(object, callback, avoid) {
+function findSimple(object, callback, avoid) {
   let shouldBreak = false;
 
   for (const k in object) {
@@ -132,13 +131,13 @@ function forEachSimpleUntil(object, callback, avoid) {
       edgeData.undirected
     );
 
-    if (shouldBreak) return true;
+    if (shouldBreak) return edgeData.key;
   }
 
-  return false;
+  return;
 }
 
-function forEachMultiUntil(object, callback, avoid) {
+function findMulti(object, callback, avoid) {
   let iterator, step, edgeData, source, target;
 
   let shouldBreak = false;
@@ -163,11 +162,11 @@ function forEachMultiUntil(object, callback, avoid) {
         edgeData.undirected
       );
 
-      if (shouldBreak) return true;
+      if (shouldBreak) return edgeData.key;
     }
   }
 
-  return false;
+  return;
 }
 
 /**
@@ -301,36 +300,39 @@ function forEachForKeyMulti(object, k, callback) {
 }
 
 /**
- * Function iterating over the egdes from the object at given key using
- * a callback until it returns a truthy value to stop iteration.
+ * Function iterating over the egdes from the object at given key to match
+ * one of them.
  *
  * @param {object}   object   - Target object.
  * @param {mixed}    k        - Neighbor key.
  * @param {function} callback - Callback to use.
  */
-function forEachForKeySimpleUntil(object, k, callback) {
+function findForKeySimple(object, k, callback) {
   const edgeData = object[k];
 
-  if (!edgeData) return false;
+  if (!edgeData) return;
 
   const sourceData = edgeData.source;
   const targetData = edgeData.target;
 
-  return callback(
-    edgeData.key,
-    edgeData.attributes,
-    sourceData.key,
-    targetData.key,
-    sourceData.attributes,
-    targetData.attributes,
-    edgeData.undirected
-  );
+  if (
+    callback(
+      edgeData.key,
+      edgeData.attributes,
+      sourceData.key,
+      targetData.key,
+      sourceData.attributes,
+      targetData.attributes,
+      edgeData.undirected
+    )
+  )
+    return edgeData.key;
 }
 
-function forEachForKeyMultiUntil(object, k, callback) {
+function findForKeyMulti(object, k, callback) {
   const edgesData = object[k];
 
-  if (!edgesData) return false;
+  if (!edgesData) return;
 
   let shouldBreak = false;
 
@@ -350,10 +352,10 @@ function forEachForKeyMultiUntil(object, k, callback) {
       edgeData.undirected
     );
 
-    if (shouldBreak) return true;
+    if (shouldBreak) return edgeData.key;
   }
 
-  return false;
+  return;
 }
 
 /**
@@ -474,15 +476,15 @@ function forEachEdge(graph, type, callback) {
 }
 
 /**
- * Function iterating over a graph's edges using a callback until it returns
- * a truthy value to stop iteration.
+ * Function iterating over a graph's edges using a callback to match one of
+ * them.
  *
  * @param  {Graph}    graph    - Target Graph instance.
  * @param  {string}   type     - Type of edges to retrieve.
  * @param  {function} callback - Function to call.
  */
-function forEachEdgeUntil(graph, type, callback) {
-  if (graph.size === 0) return false;
+function findEdge(graph, type, callback) {
+  if (graph.size === 0) return;
 
   const shouldFilter = type !== 'mixed' && type !== graph.type;
   const mask = type === 'undirected';
@@ -508,10 +510,10 @@ function forEachEdgeUntil(graph, type, callback) {
       data.undirected
     );
 
-    if (shouldBreak) return true;
+    if (shouldBreak) return key;
   }
 
-  return false;
+  return;
 }
 
 /**
@@ -613,8 +615,7 @@ function forEachEdgeForNode(multi, type, direction, nodeData, callback) {
 }
 
 /**
- * Function iterating over a node's edges using a callback until it returns
- * a truthy value to stop iteration.
+ * Function iterating over a node's edges using a callback to match one of them.
  *
  * @param  {boolean}  multi     - Whether the graph is multi or not.
  * @param  {string}   type      - Type of edges to retrieve.
@@ -622,35 +623,31 @@ function forEachEdgeForNode(multi, type, direction, nodeData, callback) {
  * @param  {any}      nodeData  - Target node's data.
  * @param  {function} callback  - Function to call.
  */
-function forEachEdgeForNodeUntil(multi, type, direction, nodeData, callback) {
-  const fn = multi ? forEachMultiUntil : forEachSimpleUntil;
+function findEdgeForNode(multi, type, direction, nodeData, callback) {
+  const fn = multi ? findMulti : findSimple;
 
-  let shouldBreak = false;
+  let found;
 
   if (type !== 'undirected') {
     if (direction !== 'out') {
-      shouldBreak = fn(nodeData.in, callback);
+      found = fn(nodeData.in, callback);
 
-      if (shouldBreak) return true;
+      if (found) return found;
     }
     if (direction !== 'in') {
-      shouldBreak = fn(
-        nodeData.out,
-        callback,
-        !direction ? nodeData.key : null
-      );
+      found = fn(nodeData.out, callback, !direction ? nodeData.key : null);
 
-      if (shouldBreak) return true;
+      if (found) return found;
     }
   }
 
   if (type !== 'directed') {
-    shouldBreak = fn(nodeData.undirected, callback);
+    found = fn(nodeData.undirected, callback);
 
-    if (shouldBreak) return true;
+    if (found) return found;
   }
 
-  return false;
+  return;
 }
 
 /**
@@ -752,8 +749,8 @@ function forEachEdgeForPath(
 }
 
 /**
- * Function iterating over edges for the given path using a callback until
- * it returns a truthy value to stop iteration.
+ * Function iterating over edges for the given path using a callback to match
+ * one of them.
  *
  * @param  {string}   type       - Type of edges to retrieve.
  * @param  {boolean}  multi      - Whether the graph is multi.
@@ -762,47 +759,40 @@ function forEachEdgeForPath(
  * @param  {string}   target     - Target node.
  * @param  {function} callback   - Function to call.
  */
-function forEachEdgeForPathUntil(
-  type,
-  multi,
-  direction,
-  sourceData,
-  target,
-  callback
-) {
-  const fn = multi ? forEachForKeyMultiUntil : forEachForKeySimpleUntil;
+function findEdgeForPath(type, multi, direction, sourceData, target, callback) {
+  const fn = multi ? findForKeyMulti : findForKeySimple;
 
-  let shouldBreak = false;
+  let found;
 
   if (type !== 'undirected') {
     if (typeof sourceData.in !== 'undefined' && direction !== 'out') {
-      shouldBreak = fn(sourceData.in, target, callback);
+      found = fn(sourceData.in, target, callback);
 
-      if (shouldBreak) return true;
+      if (found) return found;
     }
 
     if (sourceData.key !== target)
       if (typeof sourceData.out !== 'undefined' && direction !== 'in') {
-        shouldBreak = fn(
+        found = fn(
           sourceData.out,
           target,
           callback,
           !direction ? sourceData.key : null
         );
 
-        if (shouldBreak) return true;
+        if (found) return found;
       }
   }
 
   if (type !== 'directed') {
     if (typeof sourceData.undirected !== 'undefined') {
-      shouldBreak = fn(sourceData.undirected, target, callback);
+      found = fn(sourceData.undirected, target, callback);
 
-      if (shouldBreak) return true;
+      if (found) return found;
     }
   }
 
-  return false;
+  return;
 }
 
 /**
@@ -1032,11 +1022,10 @@ function attachForEachEdge(Class, description) {
  * @param {function} Class       - Target class.
  * @param {object}   description - Method description.
  */
-function attachForEachEdgeUntil(Class, description) {
+function attachFindEdge(Class, description) {
   const {name, type, direction} = description;
 
-  const forEachUntilName =
-    'forEach' + name[0].toUpperCase() + name.slice(1, -1) + 'Until';
+  const findEdgeName = 'find' + name[0].toUpperCase() + name.slice(1, -1);
 
   /**
    * Function iterating over the graph's relevant edges by applying the given
@@ -1058,14 +1047,14 @@ function attachForEachEdgeUntil(Class, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[forEachUntilName] = function (source, target, callback) {
+  Class.prototype[findEdgeName] = function (source, target, callback) {
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
       return false;
 
     if (arguments.length === 1) {
       callback = source;
-      return forEachEdgeUntil(this, type, callback);
+      return findEdge(this, type, callback);
     }
 
     if (arguments.length === 2) {
@@ -1076,12 +1065,12 @@ function attachForEachEdgeUntil(Class, description) {
 
       if (typeof nodeData === 'undefined')
         throw new NotFoundGraphError(
-          `Graph.${forEachUntilName}: could not find the "${source}" node in the graph.`
+          `Graph.${findEdgeName}: could not find the "${source}" node in the graph.`
         );
 
       // Iterating over a node's edges
       // TODO: maybe attach the sub method to the instance dynamically?
-      return forEachEdgeForNodeUntil(
+      return findEdgeForNode(
         this.multi,
         type === 'mixed' ? this.type : type,
         direction,
@@ -1098,16 +1087,16 @@ function attachForEachEdgeUntil(Class, description) {
 
       if (!sourceData)
         throw new NotFoundGraphError(
-          `Graph.${forEachUntilName}:  could not find the "${source}" source node in the graph.`
+          `Graph.${findEdgeName}:  could not find the "${source}" source node in the graph.`
         );
 
       if (!this._nodes.has(target))
         throw new NotFoundGraphError(
-          `Graph.${forEachUntilName}:  could not find the "${target}" target node in the graph.`
+          `Graph.${findEdgeName}:  could not find the "${target}" target node in the graph.`
         );
 
       // Iterating over the edges between source & target
-      return forEachEdgeForPathUntil(
+      return findEdgeForPath(
         type,
         this.multi,
         direction,
@@ -1118,7 +1107,7 @@ function attachForEachEdgeUntil(Class, description) {
     }
 
     throw new InvalidArgumentsGraphError(
-      `Graph.${forEachUntilName}: too many arguments (expecting 1, 2 or 3 and got ${arguments.length}).`
+      `Graph.${findEdgeName}: too many arguments (expecting 1, 2 or 3 and got ${arguments.length}).`
     );
   };
 }
@@ -1206,7 +1195,7 @@ export function attachEdgeIterationMethods(Graph) {
   EDGES_ITERATION.forEach(description => {
     attachEdgeArrayCreator(Graph, description);
     attachForEachEdge(Graph, description);
-    attachForEachEdgeUntil(Graph, description);
+    attachFindEdge(Graph, description);
     attachEdgeIteratorCreator(Graph, description);
   });
 }

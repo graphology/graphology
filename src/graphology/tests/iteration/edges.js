@@ -178,7 +178,7 @@ export default function edgesIteration(Graph, checkers) {
   function specificTests(name, data) {
     const iteratorName = name.slice(0, -1) + 'Entries',
       forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1),
-      forEachUntilName = forEachName + 'Until';
+      findName = 'find' + name[0].toUpperCase() + name.slice(1, -1);
 
     return {
       // Array-creators
@@ -295,12 +295,12 @@ export default function edgesIteration(Graph, checkers) {
           }
       },
 
-      // ForEachUntil
-      ['#.' + forEachUntilName]: {
-        'it should possible to use breakable callback iterators.': function () {
+      // Find
+      ['#.' + findName]: {
+        'it should possible to find an edge.': function () {
           const edges = [];
 
-          let broke = graph[forEachUntilName](function (
+          let found = graph[findName](function (
             key,
             attributes,
             source,
@@ -326,56 +326,55 @@ export default function edgesIteration(Graph, checkers) {
             return true;
           });
 
-          assert.strictEqual(broke, true);
+          assert.strictEqual(found, edges[0]);
           assert.strictEqual(edges.length, 1);
 
-          broke = graph[forEachUntilName](function () {
+          found = graph[findName](function () {
             return false;
           });
 
-          assert.strictEqual(broke, false);
+          assert.strictEqual(found, undefined);
         },
 
-        "it should be possible to use breakable callback iterators over a node's relevant edges.":
+        "it should be possible to find a node's edge.": function () {
+          const edges = [];
+
+          let found = graph[findName](
+            data.node.key,
+            function (key, attributes, source, target, sA, tA, u) {
+              edges.push(key);
+
+              assert.deepStrictEqual(
+                attributes,
+                key === 'J->T' ? {weight: 14} : {}
+              );
+              assert.strictEqual(source, graph.source(key));
+              assert.strictEqual(target, graph.target(key));
+
+              assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
+              assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+              assert.strictEqual(graph.isUndirected(key), u);
+
+              return true;
+            }
+          );
+
+          assert.strictEqual(found, edges[0]);
+          assert.strictEqual(edges.length, 1);
+
+          found = graph[findName](data.node.key, function () {
+            return false;
+          });
+
+          assert.strictEqual(found, undefined);
+        },
+
+        'it should be possible to find an edge between source & target.':
           function () {
             const edges = [];
 
-            let broke = graph[forEachUntilName](
-              data.node.key,
-              function (key, attributes, source, target, sA, tA, u) {
-                edges.push(key);
-
-                assert.deepStrictEqual(
-                  attributes,
-                  key === 'J->T' ? {weight: 14} : {}
-                );
-                assert.strictEqual(source, graph.source(key));
-                assert.strictEqual(target, graph.target(key));
-
-                assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
-                assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
-
-                assert.strictEqual(graph.isUndirected(key), u);
-
-                return true;
-              }
-            );
-
-            assert.strictEqual(broke, true);
-            assert.strictEqual(edges.length, 1);
-
-            broke = graph[forEachUntilName](data.node.key, function () {
-              return false;
-            });
-
-            assert.strictEqual(broke, false);
-          },
-
-        'it should be possible to use breakable callback iterators over all the relevant edges between source & target.':
-          function () {
-            const edges = [];
-
-            let broke = graph[forEachUntilName](
+            let found = graph[findName](
               data.path.source,
               data.path.target,
               function (key, attributes, source, target, sA, tA, u) {
@@ -397,18 +396,13 @@ export default function edgesIteration(Graph, checkers) {
               }
             );
 
-            assert.strictEqual(
-              broke,
-              graph[name](data.path.source, data.path.target).length
-                ? true
-                : false
-            );
+            assert.strictEqual(found, edges[0]);
             assert.strictEqual(
               edges.length,
               graph[name](data.path.source, data.path.target).length ? 1 : 0
             );
 
-            broke = graph[forEachUntilName](
+            found = graph[findName](
               data.path.source,
               data.path.target,
               function () {
@@ -416,7 +410,7 @@ export default function edgesIteration(Graph, checkers) {
               }
             );
 
-            assert.strictEqual(broke, false);
+            assert.strictEqual(found, undefined);
           }
       },
 
