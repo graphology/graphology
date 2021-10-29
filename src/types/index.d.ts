@@ -1233,7 +1233,7 @@ declare abstract class AbstractGraph<
   ): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
 }
 
-interface IGraphConstructor<
+interface GraphConstructor<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
@@ -1244,12 +1244,6 @@ interface IGraphConstructor<
     GraphAttributes
   >;
 }
-
-type GraphConstructor<
-  NodeAttributes extends Attributes = Attributes,
-  EdgeAttributes extends Attributes = Attributes,
-  GraphAttributes extends Attributes = Attributes
-> = IGraphConstructor<NodeAttributes, EdgeAttributes, GraphAttributes>;
 
 export {
   AbstractGraph,
