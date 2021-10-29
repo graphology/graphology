@@ -870,6 +870,7 @@ declare abstract class AbstractGraph<
   outboundEdges(): Array<string>;
   outboundEdges(node: unknown): Array<string>;
   outboundEdges(source: unknown, target: unknown): Array<string>;
+
   forEachEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
@@ -954,6 +955,92 @@ declare abstract class AbstractGraph<
     target: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
+
+  mapEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapEdges<T>(
+    node: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapUndirectedEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapUndirectedEdges<T>(
+    node: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapUndirectedEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapDirectedEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapDirectedEdges<T>(
+    node: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapDirectedEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapInEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapInEdges<T>(
+    node: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapInEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapOutEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapOutEdges<T>(
+    node: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapOutEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapInboundEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapInboundEdges<T>(
+    node: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapInboundEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapOutboundEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapOutboundEdges<T>(
+    node: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapOutboundEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+
   findEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
@@ -1038,6 +1125,7 @@ declare abstract class AbstractGraph<
     target: unknown,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
+
   edgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   edgeEntries(
     node: unknown
@@ -1110,6 +1198,7 @@ declare abstract class AbstractGraph<
   outNeighbors(node: unknown): Array<string>;
   inboundNeighbors(node: unknown): Array<string>;
   outboundNeighbors(node: unknown): Array<string>;
+
   forEachNeighbor(
     node: unknown,
     callback: NodeIterationCallback<NodeAttributes>
@@ -1166,6 +1255,7 @@ declare abstract class AbstractGraph<
     node: unknown,
     callback: NodePredicate<NodeAttributes>
   ): string | undefined;
+
   neighborEntries(
     node: unknown
   ): IterableIterator<NeighborEntry<NodeAttributes>>;
