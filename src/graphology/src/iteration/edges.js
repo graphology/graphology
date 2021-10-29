@@ -1034,7 +1034,7 @@ function attachForEachEdge(Class, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  const mapName = 'map' + name[0].toUpperCase() + name.slice(1, -1) + 's';
+  const mapName = 'map' + name[0].toUpperCase() + name.slice(1);
 
   Class.prototype[mapName] = function () {
     const args = Array.prototype.slice.call(arguments);
@@ -1093,7 +1093,7 @@ function attachForEachEdge(Class, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  const filterName = 'filter' + name[0].toUpperCase() + name.slice(1, -1) + 's';
+  const filterName = 'filter' + name[0].toUpperCase() + name.slice(1);
 
   Class.prototype[filterName] = function () {
     const args = Array.prototype.slice.call(arguments);
@@ -1133,7 +1133,7 @@ function attachForEachEdge(Class, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  const reduceName = 'reduce' + name[0].toUpperCase() + name.slice(1, -1) + 's';
+  const reduceName = 'reduce' + name[0].toUpperCase() + name.slice(1);
 
   Class.prototype[reduceName] = function () {
     let args = Array.prototype.slice.call(arguments);
