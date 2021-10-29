@@ -183,6 +183,7 @@ export default function edgesIteration(Graph, checkers) {
     const findName = 'find' + capitalized;
     const mapName = 'map' + capitalized + 's';
     const filterName = 'filter' + capitalized + 's';
+    const reduceName = 'reduce' + capitalized + 's';
 
     return {
       // Array-creators
@@ -373,6 +374,58 @@ export default function edgesIteration(Graph, checkers) {
             result.sort();
 
             assert(sameMembers(result, data.path.edges));
+          }
+      },
+
+      // Reduce
+      ['#.' + reduceName]: {
+        'it should throw when given bad arguments.': function () {
+          assert.throws(function () {
+            graph[reduceName]('test');
+          }, invalid());
+
+          assert.throws(function () {
+            graph[reduceName](1, 2, 3, 4, 5);
+          }, invalid());
+
+          assert.throws(function () {
+            graph[reduceName]('notafunction', 0);
+          }, TypeError);
+        },
+
+        'it should possible to reduce edges.': function () {
+          const result = graph[reduceName](function (x) {
+            return x + 1;
+          }, 0);
+
+          assert.strictEqual(result, data.all.length);
+        },
+
+        "it should be possible to reduce a node's relevant edges.":
+          function () {
+            const result = graph[reduceName](
+              data.node.key,
+              function (x) {
+                return x + 1;
+              },
+              0
+            );
+
+            assert.strictEqual(result, data.node.edges.length);
+          },
+
+        'it should be possible to reduce the relevant edges between source & target.':
+          function () {
+            const result = graph[reduceName](
+              data.path.source,
+              data.path.target,
+              function (x) {
+                return x + 1;
+              },
+              0
+            );
+
+            assert.strictEqual(result, data.path.edges.length);
           }
       },
 

@@ -1109,6 +1109,68 @@ function attachForEachEdge(Class, description) {
 
     return result;
   };
+
+  /**
+   * Function reducing the graph's relevant edges using the provided accumulator
+   * function.
+   *
+   * Arity 1: Reduce all the relevant edges.
+   * @param  {function} accumulator  - Accumulator to use.
+   * @param  {any}      initialValue - Initial value.
+   *
+   * Arity 2: Reduce all of a node's relevant edges.
+   * @param  {any}      node         - Target node.
+   * @param  {function} accumulator  - Accumulator to use.
+   * @param  {any}      initialValue - Initial value.
+   *
+   * Arity 3: Reduce the relevant edges across the given path.
+   * @param  {any}      source       - Source node.
+   * @param  {any}      target       - Target node.
+   * @param  {function} accumulator  - Accumulator to use.
+   * @param  {any}      initialValue - Initial value.
+   *
+   * @return {undefined}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const reduceName = 'reduce' + name[0].toUpperCase() + name.slice(1, -1) + 's';
+
+  Class.prototype[reduceName] = function () {
+    let args = Array.prototype.slice.call(arguments);
+
+    if (args.length < 2 || args.length > 4) {
+      throw new InvalidArgumentsGraphError(
+        `Graph.${reduceName}: invalid number of arguments (expecting 2, 3 or 4 and got ${args.length}).`
+      );
+    }
+
+    let callback;
+    let initialValue;
+
+    if (args.length === 2) {
+      callback = args[0];
+      initialValue = args[1];
+      args = [];
+    } else if (args.length === 3) {
+      callback = args[1];
+      initialValue = args[2];
+      args = [args[0]];
+    } else if (args.length === 4) {
+      callback = args[2];
+      initialValue = args[3];
+      args = [args[0], args[1]];
+    }
+
+    let accumulator = initialValue;
+
+    args.push((e, ea, s, t, sa, ta, u) => {
+      accumulator = callback(accumulator, e, ea, s, t, sa, ta, u);
+    });
+
+    this[forEachName].apply(this, args);
+
+    return accumulator;
+  };
 }
 
 /**
