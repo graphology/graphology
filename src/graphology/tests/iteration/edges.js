@@ -182,6 +182,7 @@ export default function edgesIteration(Graph, checkers) {
     const forEachName = 'forEach' + capitalized;
     const findName = 'find' + capitalized;
     const mapName = 'map' + capitalized + 's';
+    const filterName = 'filter' + capitalized + 's';
 
     return {
       // Array-creators
@@ -327,6 +328,45 @@ export default function edgesIteration(Graph, checkers) {
               data.path.target,
               function (key) {
                 return key;
+              }
+            );
+
+            result.sort();
+
+            assert(sameMembers(result, data.path.edges));
+          }
+      },
+
+      // Filter
+      ['#.' + filterName]: {
+        'it should possible to filter edges.': function () {
+          const result = graph[filterName](function (key) {
+            return data.all.includes(key);
+          });
+
+          result.sort();
+
+          assert.deepStrictEqual(result, data.all.slice().sort());
+        },
+
+        "it should be possible to filter a node's relevant edges.":
+          function () {
+            const result = graph[filterName](data.node.key, function (key) {
+              return data.all.includes(key);
+            });
+
+            result.sort();
+
+            assert.deepStrictEqual(result, data.node.edges.slice().sort());
+          },
+
+        'it should be possible to filter the relevant edges between source & target.':
+          function () {
+            const result = graph[filterName](
+              data.path.source,
+              data.path.target,
+              function (key) {
+                return data.all.includes(key);
               }
             );
 

@@ -10,7 +10,6 @@ import chain from 'obliterator/chain';
 import take from 'obliterator/take';
 
 import {InvalidArgumentsGraphError, NotFoundGraphError} from '../errors';
-import Graph from '../graph';
 
 /**
  * Definitions.
@@ -1037,7 +1036,7 @@ function attachForEachEdge(Class, description) {
    */
   const mapName = 'map' + name[0].toUpperCase() + name.slice(1, -1) + 's';
 
-  Graph.prototype[mapName] = function () {
+  Class.prototype[mapName] = function () {
     const args = Array.prototype.slice.call(arguments);
     const callback = args.pop();
 
@@ -1068,6 +1067,43 @@ function attachForEachEdge(Class, description) {
         result.push(callback(e, ea, s, t, sa, ta, u));
       });
     }
+
+    this[forEachName].apply(this, args);
+
+    return result;
+  };
+
+  /**
+   * Function filtering the graph's relevant edges using the provided predicate
+   * function.
+   *
+   * Arity 1: Filter all the relevant edges.
+   * @param  {function} predicate - Predicate to use.
+   *
+   * Arity 2: Filter all of a node's relevant edges.
+   * @param  {any}      node      - Target node.
+   * @param  {function} predicate - Predicate to use.
+   *
+   * Arity 3: Filter the relevant edges across the given path.
+   * @param  {any}      source    - Source node.
+   * @param  {any}      target    - Target node.
+   * @param  {function} predicate - Predicate to use.
+   *
+   * @return {undefined}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const filterName = 'filter' + name[0].toUpperCase() + name.slice(1, -1) + 's';
+
+  Class.prototype[filterName] = function () {
+    const args = Array.prototype.slice.call(arguments);
+    const callback = args.pop();
+
+    const result = [];
+
+    args.push((e, ea, s, t, sa, ta, u) => {
+      if (callback(e, ea, s, t, sa, ta, u)) result.push(e);
+    });
 
     this[forEachName].apply(this, args);
 
