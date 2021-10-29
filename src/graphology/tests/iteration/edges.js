@@ -185,6 +185,7 @@ export default function edgesIteration(Graph, checkers) {
     const filterName = 'filter' + capitalized + 's';
     const reduceName = 'reduce' + capitalized + 's';
     const someName = 'some' + capitalized;
+    const everyName = 'every' + capitalized;
 
     return {
       // Array-creators
@@ -670,7 +671,143 @@ export default function edgesIteration(Graph, checkers) {
             );
 
             assert.strictEqual(found, false);
-          }
+          },
+
+        'it should always return false on empty sets.': function () {
+          const empty = new Graph();
+
+          assert.strictEqual(
+            empty[someName](() => true),
+            false
+          );
+        }
+      },
+
+      // Every
+      ['#.' + everyName]: {
+        'it should possible to assert whether all edges matches a predicate.':
+          function () {
+            const edges = [];
+
+            let found = graph[everyName](function (
+              key,
+              attributes,
+              source,
+              target,
+              sA,
+              tA,
+              u
+            ) {
+              edges.push(key);
+
+              assert.deepStrictEqual(
+                attributes,
+                key === 'J->T' ? {weight: 14} : {}
+              );
+              assert.strictEqual(source, graph.source(key));
+              assert.strictEqual(target, graph.target(key));
+
+              assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
+              assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+              assert.strictEqual(graph.isUndirected(key), u);
+
+              return true;
+            });
+
+            assert.strictEqual(found, true);
+
+            found = graph[everyName](function () {
+              return false;
+            });
+
+            assert.strictEqual(found, false);
+          },
+
+        "it should possible to assert whether all of a node's edges matches a predicate.":
+          function () {
+            const edges = [];
+
+            let found = graph[everyName](
+              data.node.key,
+              function (key, attributes, source, target, sA, tA, u) {
+                edges.push(key);
+
+                assert.deepStrictEqual(
+                  attributes,
+                  key === 'J->T' ? {weight: 14} : {}
+                );
+                assert.strictEqual(source, graph.source(key));
+                assert.strictEqual(target, graph.target(key));
+
+                assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
+                assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+                assert.strictEqual(graph.isUndirected(key), u);
+
+                return true;
+              }
+            );
+
+            assert.strictEqual(found, true);
+
+            found = graph[everyName](data.node.key, function () {
+              return false;
+            });
+
+            assert.strictEqual(found, false);
+          },
+
+        'it should possible to assert whether all edges between source & target matches a predicate.':
+          function () {
+            const edges = [];
+
+            let found = graph[everyName](
+              data.path.source,
+              data.path.target,
+              function (key, attributes, source, target, sA, tA, u) {
+                edges.push(key);
+
+                assert.deepStrictEqual(
+                  attributes,
+                  key === 'J->T' ? {weight: 14} : {}
+                );
+                assert.strictEqual(source, graph.source(key));
+                assert.strictEqual(target, graph.target(key));
+
+                assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
+                assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+                assert.strictEqual(graph.isUndirected(key), u);
+
+                return true;
+              }
+            );
+
+            const isEmpty =
+              graph[name](data.path.source, data.path.target).length === 0;
+
+            assert.strictEqual(found, true);
+
+            found = graph[everyName](
+              data.path.source,
+              data.path.target,
+              function () {
+                return false;
+              }
+            );
+
+            assert.strictEqual(found, isEmpty ? true : false);
+          },
+
+        'it should always return true on empty sets.': function () {
+          const empty = new Graph();
+
+          assert.strictEqual(
+            empty[everyName](() => true),
+            true
+          );
+        }
       },
 
       // Iterators

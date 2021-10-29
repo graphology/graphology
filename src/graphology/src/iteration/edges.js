@@ -1305,6 +1305,43 @@ function attachFindEdge(Class, description) {
 
     return false;
   };
+
+  /**
+   * Function iterating over the graph's relevant edges in order to assert
+   * whether all of them matche the provided predicate function.
+   *
+   * Arity 1: Iterate over all the relevant edges.
+   * @param  {function} callback - Callback to use.
+   *
+   * Arity 2: Iterate over all of a node's relevant edges.
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * Arity 3: Iterate over the relevant edges across the given path.
+   * @param  {any}      source   - Source node.
+   * @param  {any}      target   - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * @return {undefined}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const everyName = 'every' + name[0].toUpperCase() + name.slice(1, -1);
+
+  Class.prototype[everyName] = function () {
+    const args = Array.prototype.slice.call(arguments);
+    const callback = args.pop();
+
+    args.push((e, ea, s, t, sa, ta, u) => {
+      return !callback(e, ea, s, t, sa, ta, u);
+    });
+
+    const found = this[findEdgeName].apply(this, args);
+
+    if (found) return false;
+
+    return true;
+  };
 }
 
 /**

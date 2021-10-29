@@ -98,7 +98,16 @@ export default function nodesIteration(Graph, checkers) {
       }
     },
 
-    '#.someNodes': {
+    '#.someNode': {
+      'it should always return false on empty sets.': function () {
+        const graph = new Graph();
+
+        assert.strictEqual(
+          graph.someNode(() => true),
+          false
+        );
+      },
+
       'it should be possible to find if some node matches a predicate.':
         function () {
           const graph = new Graph();
@@ -117,6 +126,15 @@ export default function nodesIteration(Graph, checkers) {
     },
 
     '#.everyNode': {
+      'it should always return true on empty sets.': function () {
+        const graph = new Graph();
+
+        assert.strictEqual(
+          graph.everyNode(() => true),
+          true
+        );
+      },
+
       'it should be possible to find if all node matches a predicate.':
         function () {
           const graph = new Graph();
