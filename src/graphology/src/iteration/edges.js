@@ -14,7 +14,7 @@ import {InvalidArgumentsGraphError, NotFoundGraphError} from '../errors';
 /**
  * Definitions.
  */
-export const EDGES_ITERATION = [
+const EDGES_ITERATION = [
   {
     name: 'edges',
     type: 'mixed'
@@ -1118,7 +1118,7 @@ function attachFindEdge(Class, description) {
  * @param {function} Class       - Target class.
  * @param {object}   description - Method description.
  */
-export function attachEdgeIteratorCreator(Class, description) {
+function attachEdgeIteratorCreator(Class, description) {
   const {name: originalName, type, direction} = description;
 
   const name = originalName.slice(0, -1) + 'Entries';
