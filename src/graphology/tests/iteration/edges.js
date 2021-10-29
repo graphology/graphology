@@ -393,6 +393,10 @@ export default function edgesIteration(Graph, checkers) {
           assert.throws(function () {
             graph[reduceName]('notafunction', 0);
           }, TypeError);
+
+          assert.throws(function () {
+            graph[reduceName]('test', () => true);
+          }, invalid());
         },
 
         'it should possible to reduce edges.': function () {

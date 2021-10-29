@@ -19,7 +19,7 @@ const METHODS = [
 ];
 
 export default function neighborsIteration(Graph, checkers) {
-  const {notFound} = checkers;
+  const {notFound, invalid} = checkers;
 
   const graph = new Graph({multi: true});
 
@@ -109,10 +109,15 @@ export default function neighborsIteration(Graph, checkers) {
   }
 
   function specificTests(name, data) {
-    const forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1);
-    const findName = 'find' + name[0].toUpperCase() + name.slice(1, -1);
+    const capitalized = name[0].toUpperCase() + name.slice(1, -1);
+
+    const forEachName = 'forEach' + capitalized;
+    const findName = 'find' + capitalized;
     const iteratorName = name.slice(0, -1) + 'Entries';
-    const areName = 'are' + name[0].toUpperCase() + name.slice(1);
+    const areName = 'are' + capitalized + 's';
+    const mapName = 'map' + capitalized + 's';
+    const filterName = 'filter' + capitalized + 's';
+    const reduceName = 'reduce' + capitalized + 's';
 
     return {
       // Array-creators
@@ -139,6 +144,56 @@ export default function neighborsIteration(Graph, checkers) {
             });
 
             assert.deepStrictEqual(neighbors, data.node.neighbors);
+          }
+      },
+
+      // Map
+      ['#.' + mapName]: {
+        'it should be possible to map neighbors using a callback.':
+          function () {
+            const result = graph[mapName](data.node.key, function (target) {
+              return target;
+            });
+
+            assert.deepStrictEqual(result, data.node.neighbors);
+          }
+      },
+
+      // Filter
+      ['#.' + filterName]: {
+        'it should be possible to filter neighbors using a callback.':
+          function () {
+            let result = graph[filterName](data.node.key, function () {
+              return true;
+            });
+
+            assert.deepStrictEqual(result, data.node.neighbors);
+
+            result = graph[filterName](data.node.key, () => false);
+
+            assert.deepStrictEqual(result, []);
+          }
+      },
+
+      // Reduce
+      ['#.' + reduceName]: {
+        'it sould throw if not given an initial value.': function () {
+          assert.throws(function () {
+            graph[reduceName]('node', () => true);
+          }, invalid());
+        },
+
+        'it should be possible to reduce neighbors using a callback.':
+          function () {
+            const result = graph[reduceName](
+              data.node.key,
+              function (acc, key) {
+                return acc.concat(key);
+              },
+              []
+            );
+
+            assert.deepStrictEqual(result, data.node.neighbors);
           }
       },
 

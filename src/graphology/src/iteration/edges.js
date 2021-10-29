@@ -1144,6 +1144,15 @@ function attachForEachEdge(Class, description) {
       );
     }
 
+    if (
+      typeof args[args.length - 1] === 'function' &&
+      typeof args[args.length - 2] !== 'function'
+    ) {
+      throw new InvalidArgumentsGraphError(
+        `Graph.${reduceName}: missing initial value. You must provide it because the callback takes more than one argument and we cannot infer the initial value from the first iteration, as you could with a simple array.`
+      );
+    }
+
     let callback;
     let initialValue;
 

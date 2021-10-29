@@ -9,7 +9,7 @@ import Iterator from 'obliterator/iterator';
 import chain from 'obliterator/chain';
 import take from 'obliterator/take';
 
-import {NotFoundGraphError} from '../errors';
+import {NotFoundGraphError, InvalidArgumentsGraphError} from '../errors';
 
 /**
  * Definitions.
@@ -436,6 +436,72 @@ function attachForEachNeighbor(Class, description) {
       nodeData,
       callback
     );
+  };
+
+  /**
+   * Function mapping the relevant neighbors using a callback.
+   *
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const mapName = 'map' + name[0].toUpperCase() + name.slice(1);
+
+  Class.prototype[mapName] = function (node, callback) {
+    // TODO: optimize when size is known beforehand
+    const result = [];
+
+    this[forEachName](node, (n, a) => {
+      result.push(callback(n, a));
+    });
+
+    return result;
+  };
+
+  /**
+   * Function filtering the relevant neighbors using a callback.
+   *
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const filterName = 'filter' + name[0].toUpperCase() + name.slice(1);
+
+  Class.prototype[filterName] = function (node, callback) {
+    const result = [];
+
+    this[forEachName](node, (n, a) => {
+      if (callback(n, a)) result.push(n);
+    });
+
+    return result;
+  };
+
+  /**
+   * Function reducing the relevant neighbors using a callback.
+   *
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const reduceName = 'reduce' + name[0].toUpperCase() + name.slice(1);
+
+  Class.prototype[reduceName] = function (node, callback, initialValue) {
+    if (arguments.length < 3)
+      throw new InvalidArgumentsGraphError(
+        `Graph.${reduceName}: missing initial value. You must provide it because the callback takes more than one argument and we cannot infer the initial value from the first iteration, as you could with a simple array.`
+      );
+
+    let accumulator = initialValue;
+
+    this[forEachName](node, (n, a) => {
+      accumulator = callback(accumulator, n, a);
+    });
+
+    return accumulator;
   };
 }
 
