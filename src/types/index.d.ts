@@ -133,6 +133,35 @@ type EdgePredicate<
   undirected: boolean
 ) => boolean | void;
 
+type EdgeMapper<
+  T,
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> = (
+  edge: string,
+  attributes: EdgeAttributes,
+  source: string,
+  target: string,
+  sourceAttributes: NodeAttributes,
+  targetAttributes: NodeAttributes,
+  undirected: boolean
+) => T;
+
+type EdgeReducer<
+  T,
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> = (
+  accumulator: T,
+  edge: string,
+  attributes: EdgeAttributes,
+  source: string,
+  target: string,
+  sourceAttributes: NodeAttributes,
+  targetAttributes: NodeAttributes,
+  undirected: boolean
+) => T;
+
 type EdgeUpdateIterationCallback<
   EdgeAttributes extends Attributes = Attributes
 > = (edge: string, attributes: EdgeAttributes) => EdgeAttributes;
@@ -1240,6 +1269,8 @@ export {
   NodeUpdateIterationCallback,
   EdgeIterationCallback,
   EdgePredicate,
+  EdgeMapper,
+  EdgeReducer,
   EdgeUpdateIterationCallback,
   SerializedNode,
   SerializedEdge,
