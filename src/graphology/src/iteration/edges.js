@@ -1186,8 +1186,8 @@ function attachFindEdge(Class, description) {
   const findEdgeName = 'find' + name[0].toUpperCase() + name.slice(1, -1);
 
   /**
-   * Function iterating over the graph's relevant edges by applying the given
-   * callback and breaking as soon as the callback return a truthy value.
+   * Function iterating over the graph's relevant edges in order to match
+   * one of them using the provided predicate function.
    *
    * Arity 1: Iterate over all the relevant edges.
    * @param  {function} callback - Callback to use.
@@ -1267,6 +1267,43 @@ function attachFindEdge(Class, description) {
     throw new InvalidArgumentsGraphError(
       `Graph.${findEdgeName}: too many arguments (expecting 1, 2 or 3 and got ${arguments.length}).`
     );
+  };
+
+  /**
+   * Function iterating over the graph's relevant edges in order to assert
+   * whether any one of them matches the provided predicate function.
+   *
+   * Arity 1: Iterate over all the relevant edges.
+   * @param  {function} callback - Callback to use.
+   *
+   * Arity 2: Iterate over all of a node's relevant edges.
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * Arity 3: Iterate over the relevant edges across the given path.
+   * @param  {any}      source   - Source node.
+   * @param  {any}      target   - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * @return {undefined}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const someName = 'some' + name[0].toUpperCase() + name.slice(1, -1);
+
+  Class.prototype[someName] = function () {
+    const args = Array.prototype.slice.call(arguments);
+    const callback = args.pop();
+
+    args.push((e, ea, s, t, sa, ta, u) => {
+      return callback(e, ea, s, t, sa, ta, u);
+    });
+
+    const found = this[findEdgeName].apply(this, args);
+
+    if (found) return true;
+
+    return false;
   };
 }
 

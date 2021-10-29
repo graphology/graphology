@@ -184,6 +184,7 @@ export default function edgesIteration(Graph, checkers) {
     const mapName = 'map' + capitalized + 's';
     const filterName = 'filter' + capitalized + 's';
     const reduceName = 'reduce' + capitalized + 's';
+    const someName = 'some' + capitalized;
 
     return {
       // Array-creators
@@ -545,6 +546,130 @@ export default function edgesIteration(Graph, checkers) {
             );
 
             assert.strictEqual(found, undefined);
+          }
+      },
+
+      // Some
+      ['#.' + someName]: {
+        'it should possible to assert whether any edge matches a predicate.':
+          function () {
+            const edges = [];
+
+            let found = graph[someName](function (
+              key,
+              attributes,
+              source,
+              target,
+              sA,
+              tA,
+              u
+            ) {
+              edges.push(key);
+
+              assert.deepStrictEqual(
+                attributes,
+                key === 'J->T' ? {weight: 14} : {}
+              );
+              assert.strictEqual(source, graph.source(key));
+              assert.strictEqual(target, graph.target(key));
+
+              assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
+              assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+              assert.strictEqual(graph.isUndirected(key), u);
+
+              return true;
+            });
+
+            assert.strictEqual(found, true);
+            assert.strictEqual(edges.length, 1);
+
+            found = graph[someName](function () {
+              return false;
+            });
+
+            assert.strictEqual(found, false);
+          },
+
+        "it should possible to assert whether any node's edge matches a predicate.":
+          function () {
+            const edges = [];
+
+            let found = graph[someName](
+              data.node.key,
+              function (key, attributes, source, target, sA, tA, u) {
+                edges.push(key);
+
+                assert.deepStrictEqual(
+                  attributes,
+                  key === 'J->T' ? {weight: 14} : {}
+                );
+                assert.strictEqual(source, graph.source(key));
+                assert.strictEqual(target, graph.target(key));
+
+                assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
+                assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+                assert.strictEqual(graph.isUndirected(key), u);
+
+                return true;
+              }
+            );
+
+            assert.strictEqual(found, true);
+            assert.strictEqual(edges.length, 1);
+
+            found = graph[someName](data.node.key, function () {
+              return false;
+            });
+
+            assert.strictEqual(found, false);
+          },
+
+        'it should possible to assert whether any edge between source & target matches a predicate.':
+          function () {
+            const edges = [];
+
+            let found = graph[someName](
+              data.path.source,
+              data.path.target,
+              function (key, attributes, source, target, sA, tA, u) {
+                edges.push(key);
+
+                assert.deepStrictEqual(
+                  attributes,
+                  key === 'J->T' ? {weight: 14} : {}
+                );
+                assert.strictEqual(source, graph.source(key));
+                assert.strictEqual(target, graph.target(key));
+
+                assert.deepStrictEqual(graph.getNodeAttributes(source), sA);
+                assert.deepStrictEqual(graph.getNodeAttributes(target), tA);
+
+                assert.strictEqual(graph.isUndirected(key), u);
+
+                return true;
+              }
+            );
+
+            assert.strictEqual(
+              found,
+              graph[name](data.path.source, data.path.target).length !== 0
+            );
+            assert.strictEqual(
+              edges.length,
+              graph[name](data.path.source, data.path.target).length ? 1 : 0
+            );
+
+            found = graph[someName](
+              data.path.source,
+              data.path.target,
+              function () {
+                return false;
+              }
+            );
+
+            assert.strictEqual(found, false);
           }
       },
 
