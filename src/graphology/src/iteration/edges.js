@@ -10,6 +10,7 @@ import chain from 'obliterator/chain';
 import take from 'obliterator/take';
 
 import {InvalidArgumentsGraphError, NotFoundGraphError} from '../errors';
+import Graph from '../graph';
 
 /**
  * Definitions.
@@ -1012,6 +1013,43 @@ function attachForEachEdge(Class, description) {
     throw new InvalidArgumentsGraphError(
       `Graph.${forEachName}: too many arguments (expecting 1, 2 or 3 and got ${arguments.length}).`
     );
+  };
+
+  /**
+   * Function mapping the graph's relevant edges by applying the given
+   * callback.
+   *
+   * Arity 1: Map all the relevant edges.
+   * @param  {function} callback - Callback to use.
+   *
+   * Arity 2: Map all of a node's relevant edges.
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * Arity 3: Map the relevant edges across the given path.
+   * @param  {any}      source   - Source node.
+   * @param  {any}      target   - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * @return {undefined}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const mapName = 'map' + name[0].toUpperCase() + name.slice(1, -1) + 's';
+
+  Graph.prototype[mapName] = function () {
+    const args = Array.prototype.slice.call(arguments);
+    const callback = args.pop();
+
+    const result = []; // TODO: can be optimized when we know target size beforehand
+
+    args.push((e, ea, s, t, sa, ta, u) => {
+      result.push(callback(e, ea, s, t, sa, ta, u));
+    });
+
+    this[forEachName].apply(this, args);
+
+    return result;
   };
 }
 

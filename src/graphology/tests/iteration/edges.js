@@ -176,9 +176,12 @@ export default function edgesIteration(Graph, checkers) {
   }
 
   function specificTests(name, data) {
-    const iteratorName = name.slice(0, -1) + 'Entries',
-      forEachName = 'forEach' + name[0].toUpperCase() + name.slice(1, -1),
-      findName = 'find' + name[0].toUpperCase() + name.slice(1, -1);
+    const capitalized = name[0].toUpperCase() + name.slice(1, -1);
+
+    const iteratorName = name.slice(0, -1) + 'Entries';
+    const forEachName = 'forEach' + capitalized;
+    const findName = 'find' + capitalized;
+    const mapName = 'map' + capitalized + 's';
 
     return {
       // Array-creators
@@ -292,6 +295,44 @@ export default function edgesIteration(Graph, checkers) {
             );
 
             assert(sameMembers(edges, data.path.edges));
+          }
+      },
+
+      // Map
+      ['#.' + mapName]: {
+        'it should possible to map edges.': function () {
+          const result = graph[mapName](function (key) {
+            return key;
+          });
+
+          result.sort();
+
+          assert.deepStrictEqual(result, data.all.slice().sort());
+        },
+
+        "it should be possible to map a node's relevant edges.": function () {
+          const result = graph[mapName](data.node.key, function (key) {
+            return key;
+          });
+
+          result.sort();
+
+          assert.deepStrictEqual(result, data.node.edges.slice().sort());
+        },
+
+        'it should be possible to map the relevant edges between source & target.':
+          function () {
+            const result = graph[mapName](
+              data.path.source,
+              data.path.target,
+              function (key) {
+                return key;
+              }
+            );
+
+            result.sort();
+
+            assert(sameMembers(result, data.path.edges));
           }
       },
 
