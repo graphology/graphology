@@ -1041,11 +1041,33 @@ function attachForEachEdge(Class, description) {
     const args = Array.prototype.slice.call(arguments);
     const callback = args.pop();
 
-    const result = []; // TODO: can be optimized when we know target size beforehand
+    let result;
 
-    args.push((e, ea, s, t, sa, ta, u) => {
-      result.push(callback(e, ea, s, t, sa, ta, u));
-    });
+    // We know the result length beforehand
+    if (args.length === 0) {
+      let length = 0;
+
+      if (type !== 'directed') length += this.undirectedSize;
+      if (type !== 'undirected') length += this.directedSize;
+
+      result = new Array(length);
+
+      let i = 0;
+
+      args.push((e, ea, s, t, sa, ta, u) => {
+        result[i++] = callback(e, ea, s, t, sa, ta, u);
+      });
+    }
+
+    // We don't know the result length beforehand
+    // TODO: we can in some instances of simple graphs, knowing degree
+    else {
+      result = [];
+
+      args.push((e, ea, s, t, sa, ta, u) => {
+        result.push(callback(e, ea, s, t, sa, ta, u));
+      });
+    }
 
     this[forEachName].apply(this, args);
 
