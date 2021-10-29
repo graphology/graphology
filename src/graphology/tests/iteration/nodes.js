@@ -147,6 +147,27 @@ export default function nodesIteration(Graph, checkers) {
       }
     },
 
+    '#.reduceNodes': {
+      'it should throw if initial value is not given.': function () {
+        const graph = new Graph();
+
+        assert.throws(function () {
+          graph.reduceNodes((x, _, attr) => x + attr.weight);
+        }, invalid());
+      },
+
+      'it should be possible to reduce nodes.': function () {
+        const graph = new Graph();
+        graph.addNode('one', {weight: 2});
+        graph.addNode('two', {weight: 3});
+        graph.addNode('three', {weight: 4});
+
+        const result = graph.reduceNodes((x, _, attr) => x + attr.weight, 0);
+
+        assert.strictEqual(result, 9);
+      }
+    },
+
     '#.nodeEntries': {
       'it should be possible to create a nodes iterator.': function () {
         const graph = new Graph();

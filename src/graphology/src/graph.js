@@ -2407,6 +2407,31 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method reducing nodes.
+   *
+   * @param  {function}  callback - Callback (accumulator, key, attributes).
+   */
+  reduceNodes(callback, initialValue) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.reduceNodes: expecting a callback.'
+      );
+
+    if (arguments.length < 2)
+      throw new InvalidArgumentsGraphError(
+        'Graph.reduceNodes: missing initial value. You must provide it because the callback takes more than one argument and we cannot infer the initial value from the first iteration, as you could with a simple array.'
+      );
+
+    let accumulator = initialValue;
+
+    this._nodes.forEach((data, key) => {
+      accumulator = callback(accumulator, key, data.attributes);
+    });
+
+    return accumulator;
+  }
+
+  /**
    * Method returning an iterator over the graph's node entries.
    *
    * @return {Iterator}
