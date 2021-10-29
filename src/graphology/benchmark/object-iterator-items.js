@@ -37,6 +37,32 @@ const objectItemsIterator = new Iterator(() => {
   };
 });
 
+const forEachWithArgs = (n, callback) => {
+  for (let j = 0; j < n; j++)
+    callback(
+      string(),
+      {name: string()},
+      string(),
+      string(),
+      {sourceData: string()},
+      {targetData: string()},
+      false
+    );
+};
+
+const forEachWithObjects = (n, callback) => {
+  for (let j = 0; j < n; j++)
+    callback({
+      key: string(),
+      attributes: {name: string()},
+      source: string(),
+      target: string(),
+      sourceAttributes: {sourceData: string()},
+      targetAttributes: {targetData: string()},
+      undirected: false
+    });
+};
+
 console.time('consume array');
 consume(arrayItemsIterator, N);
 console.timeEnd('consume array');
@@ -62,3 +88,11 @@ for (const {key: _key, attributes: _attr} of objectItemsIterator) {
   if (i === N) break;
 }
 console.timeEnd('for of object');
+
+console.time('forEachWithArgs');
+forEachWithArgs(N, ({key: _key, attributes: _attr}) => {});
+console.timeEnd('forEachWithArgs');
+
+console.time('forEachWithObjects');
+forEachWithObjects(N, ({key: _key, attributes: _attr}) => {});
+console.timeEnd('forEachWithObjects');
