@@ -92,6 +92,17 @@ type NodePredicate<NodeAttributes extends Attributes = Attributes> = (
   attributes: NodeAttributes
 ) => boolean | void;
 
+type NodeMapper<T, NodeAttributes extends Attributes = Attributes> = (
+  node: string,
+  attributes: NodeAttributes
+) => T;
+
+type NodeReducer<T, NodeAttributes extends Attributes = Attributes> = (
+  accumulator: T,
+  node: string,
+  attributes: NodeAttributes
+) => T;
+
 type NodeUpdateIterationCallback<
   NodeAttributes extends Attributes = Attributes
 > = (node: string, attributes: NodeAttributes) => NodeAttributes;
@@ -801,7 +812,12 @@ declare abstract class AbstractGraph<
 
   nodes(): Array<string>;
   forEachNode(callback: NodeIterationCallback<NodeAttributes>): void;
+  mapNodes<T>(callback: NodeMapper<T, NodeAttributes>): Array<T>;
+  filterNodes(callback: NodePredicate<NodeAttributes>): Array<string>;
+  reduceNodes<T>(callback: NodeReducer<T, NodeAttributes>, initialValue: T): T;
   findNode(callback: NodePredicate<NodeAttributes>): string | undefined;
+  someNode(callback: NodePredicate<NodeAttributes>): boolean;
+  everyNode(callback: NodePredicate<NodeAttributes>): boolean;
   nodeEntries(): IterableIterator<NodeEntry<NodeAttributes>>;
 
   edges(): Array<string>;
@@ -1219,6 +1235,8 @@ export {
   AdjacencyPredicate,
   NodeIterationCallback,
   NodePredicate,
+  NodeMapper,
+  NodeReducer,
   NodeUpdateIterationCallback,
   EdgeIterationCallback,
   EdgePredicate,

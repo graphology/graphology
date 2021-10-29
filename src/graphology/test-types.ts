@@ -32,3 +32,8 @@ undirectedGraph.addNode('node', {hello: 'world'});
 undirectedGraph.getNodeAttribute('node', 'hello');
 
 undirectedGraph.clear();
+
+const weighted = new Graph<{weight: number}>();
+
+weighted.addNode('test', {weight: 34});
+weighted.reduceNodes((x, node, attr) => x + attr.weight, 0);
