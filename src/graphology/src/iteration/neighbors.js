@@ -515,7 +515,9 @@ function attachForEachNeighbor(Class, description) {
 function attachFindNeighbor(Class, description) {
   const {name, type, direction} = description;
 
-  const findName = 'find' + name[0].toUpperCase() + name.slice(1, -1);
+  const capitalizedSingular = name[0].toUpperCase() + name.slice(1, -1);
+
+  const findName = 'find' + capitalizedSingular;
 
   /**
    * Function iterating over all the relevant neighbors using a callback.
@@ -546,6 +548,48 @@ function attachFindNeighbor(Class, description) {
       nodeData,
       callback
     );
+  };
+
+  /**
+   * Function iterating over all the relevant neighbors to find if any of them
+   * matches the given predicate.
+   *
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const someName = 'some' + capitalizedSingular;
+
+  Class.prototype[someName] = function (node, callback) {
+    const found = this[findName](node, callback);
+
+    if (found) return true;
+
+    return false;
+  };
+
+  /**
+   * Function iterating over all the relevant neighbors to find if all of them
+   * matche the given predicate.
+   *
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const everyName = 'every' + capitalizedSingular;
+
+  Class.prototype[everyName] = function (node, callback) {
+    const found = this[findName](node, (n, a) => {
+      return !callback(n, a);
+    });
+
+    if (found) return false;
+
+    return true;
   };
 }
 

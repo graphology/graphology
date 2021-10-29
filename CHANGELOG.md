@@ -5,6 +5,7 @@
 - Rolling back to robust generated ids for edges.
 - Adding `#.mapNodes`, `#.filterNodes`, `#.reduceNodes`, `#.findNode` `#.someNode`, `#.everyNode`.
 - Adding `#.mapEdges`, `#.filterEdges`, `#.reduceEdges`, `#.findEdge` `#.someEdge`, `#.everyEdge`.
+- Adding `#.mapNeighbors`, `#.filterNeighbors`, `#.reduceNeighbors`, `#.findNeighbor` `#.someNeighbor`, `#.everyNeighbor`.
 - Changing `#.forEach*Until` methods to `#.find*` methods.
 - Dropping `#.hasGeneratedKey`.
 - Dropping the `generated` last argument to edge & adjacency iterations.

@@ -118,6 +118,8 @@ export default function neighborsIteration(Graph, checkers) {
     const mapName = 'map' + capitalized + 's';
     const filterName = 'filter' + capitalized + 's';
     const reduceName = 'reduce' + capitalized + 's';
+    const someName = 'some' + capitalized;
+    const everyName = 'every' + capitalized;
 
     return {
       // Array-creators
@@ -220,6 +222,48 @@ export default function neighborsIteration(Graph, checkers) {
 
           assert.strictEqual(found, undefined);
         }
+      },
+
+      // Some
+      ['#.' + someName]: {
+        'it should always return false on empty set.': function () {
+          const loneGraph = new Graph();
+          loneGraph.addNode('alone');
+
+          assert.strictEqual(
+            loneGraph[someName]('alone', () => true),
+            false
+          );
+        },
+
+        'it should be possible to assert whether any neighbor matches a predicate.':
+          function () {
+            assert.strictEqual(
+              graph[someName](data.node.key, () => true),
+              data.node.neighbors.length > 0
+            );
+          }
+      },
+
+      // Every
+      ['#.' + everyName]: {
+        'it should always return true on empty set.': function () {
+          const loneGraph = new Graph();
+          loneGraph.addNode('alone');
+
+          assert.strictEqual(
+            loneGraph[everyName]('alone', () => true),
+            true
+          );
+        },
+
+        'it should be possible to assert whether any neighbor matches a predicate.':
+          function () {
+            assert.strictEqual(
+              graph[everyName](data.node.key, () => true),
+              data.node.neighbors.length > 0
+            );
+          }
       },
 
       // Iterators
