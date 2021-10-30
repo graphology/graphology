@@ -727,15 +727,6 @@ export default function read(Graph, checkers) {
 
     Degree: {
       '#.inDegree': {
-        'it should throw if the second argument is not boolean.': function () {
-          const graph = new Graph();
-          graph.addNode('Rahn');
-
-          assert.throws(function () {
-            graph.inDegree('Rahn', 'test');
-          }, invalid());
-        },
-
         'it should throw if the node is not found in the graph.': function () {
           const graph = new Graph();
 
@@ -755,7 +746,7 @@ export default function read(Graph, checkers) {
           graph.addDirectedEdge('Sue', 'Sue');
 
           assert.strictEqual(graph.inDegree('Sue'), 3);
-          assert.strictEqual(graph.inDegree('Sue', false), 2);
+          assert.strictEqual(graph.inDegreeWithoutSelfLoops('Sue'), 2);
         },
 
         'it should always return 0 in an undirected graph.': function () {
@@ -768,15 +759,6 @@ export default function read(Graph, checkers) {
       },
 
       '#.outDegree': {
-        'it should throw if the second argument is not boolean.': function () {
-          const graph = new Graph();
-          graph.addNode('Rahn');
-
-          assert.throws(function () {
-            graph.outDegree('Rahn', 'test');
-          }, invalid());
-        },
-
         'it should throw if the node is not found in the graph.': function () {
           const graph = new Graph();
 
@@ -796,7 +778,7 @@ export default function read(Graph, checkers) {
           graph.addDirectedEdge('Helen', 'Helen');
 
           assert.strictEqual(graph.outDegree('Helen'), 3);
-          assert.strictEqual(graph.outDegree('Helen', false), 2);
+          assert.strictEqual(graph.outDegreeWithoutSelfLoops('Helen'), 2);
         },
 
         'it should always return 0 in an undirected graph.': function () {
@@ -809,15 +791,6 @@ export default function read(Graph, checkers) {
       },
 
       '#.directedDegree': {
-        'it should throw if the second argument is not boolean.': function () {
-          const graph = new Graph();
-          graph.addNode('Rahn');
-
-          assert.throws(function () {
-            graph.directedDegree('Rahn', 'test');
-          }, invalid());
-        },
-
         'it should throw if the node is not found in the graph.': function () {
           const graph = new Graph();
 
@@ -843,7 +816,7 @@ export default function read(Graph, checkers) {
           graph.addDirectedEdge('Helen', 'Helen');
 
           assert.strictEqual(graph.directedDegree('Helen'), 5);
-          assert.strictEqual(graph.directedDegree('Helen', false), 3);
+          assert.strictEqual(graph.directedDegreeWithoutSelfLoops('Helen'), 3);
         },
 
         'it should always return 0 in an undirected graph.': function () {
@@ -856,15 +829,6 @@ export default function read(Graph, checkers) {
       },
 
       '#.undirectedDegree': {
-        'it should throw if the second argument is not boolean.': function () {
-          const graph = new Graph();
-          graph.addNode('Rahn');
-
-          assert.throws(function () {
-            graph.undirectedDegree('Rahn', 'test');
-          }, invalid());
-        },
-
         'it should throw if the node is not found in the graph.': function () {
           const graph = new Graph();
 
@@ -885,7 +849,10 @@ export default function read(Graph, checkers) {
           graph.addUndirectedEdge('Helen', 'Helen');
 
           assert.strictEqual(graph.undirectedDegree('Helen'), 3);
-          assert.strictEqual(graph.undirectedDegree('Helen', false), 1);
+          assert.strictEqual(
+            graph.undirectedDegreeWithoutSelfLoops('Helen'),
+            1
+          );
         },
 
         'it should always return 0 in a directed graph.': function () {
@@ -898,15 +865,6 @@ export default function read(Graph, checkers) {
       },
 
       '#.degree': {
-        'it should throw if the second argument is not boolean.': function () {
-          const graph = new Graph();
-          graph.addNode('Rahn');
-
-          assert.throws(function () {
-            graph.degree('Rahn', 'test');
-          }, invalid());
-        },
-
         'it should throw if the node is not found in the graph.': function () {
           const graph = new Graph();
 
@@ -932,7 +890,7 @@ export default function read(Graph, checkers) {
           graph.addUndirectedEdge('Helen', 'Helen');
 
           assert.strictEqual(graph.degree('Helen'), 6);
-          assert.strictEqual(graph.degree('Helen', false), 4);
+          assert.strictEqual(graph.degreeWithoutSelfLoops('Helen'), 4);
         }
       },
 

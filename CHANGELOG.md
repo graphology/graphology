@@ -6,10 +6,12 @@
 - Adding `#.mapNodes`, `#.filterNodes`, `#.reduceNodes`, `#.findNode` `#.someNode`, `#.everyNode`.
 - Adding `#.mapEdges`, `#.filterEdges`, `#.reduceEdges`, `#.findEdge` `#.someEdge`, `#.everyEdge`.
 - Adding `#.mapNeighbors`, `#.filterNeighbors`, `#.reduceNeighbors`, `#.findNeighbor` `#.someNeighbor`, `#.everyNeighbor`.
+- Adding `#.degreeWithoutSelfLoops`.
 - Changing `#.forEach*Until` methods to `#.find*` methods.
 - Dropping `#.hasGeneratedKey`.
 - Dropping the `generated` last argument to edge & adjacency iterations.
 - Dropping the `edgeKeyGenerator` instanciation option.
+- Dropping second argument of `#.degree`.
 - Changing `#.neighbors(source, target)` to `#.areNeighbors`.
 - Changing iterator entries to objects rather than arrays.
 - `#.exportEdge` will now always return a key.
