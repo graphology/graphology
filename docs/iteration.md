@@ -2,18 +2,31 @@
 layout: default
 title: Iteration
 nav_order: 10
-menu_toc:
-  - "#.forEach"
-  - "#.adjacency"
-  - "#.nodes"
-  - "#.forEachNode"
-  - "#.nodeEntries"
-  - "#.edges"
-  - "#.forEachEdge"
-  - "#.edgeEntries"
-  - "#.neighbors"
-  - "#.forEachNeighbor"
-  - "#.neighborEntries"
+detailed_menu_toc:
+  - label: Adjacency
+    id: adj
+    subtitle: yes
+  - label: "#.forEach"
+  - label: "#.adjacency"
+    id: adjacency-iterator
+  - label: Nodes
+    subtitle: yes
+  - label: "#.nodes"
+    id: nodes-array
+  - label: "#.forEachNode"
+  - label: "#.nodeEntries"
+  - label: Edges
+    subtitle: yes
+  - label: "#.edges"
+    id: edges-array
+  - label: "#.forEachEdge"
+  - label: "#.edgeEntries"
+  - label: Neighbors
+    subtitle: yes
+  - label: "#.neighbors"
+    id: neighbors-array
+  - label: "#.forEachNeighbor"
+  - label: "#.neighborEntries"
 ---
 
 # Iteration
