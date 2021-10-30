@@ -107,6 +107,25 @@ type NodeUpdateIterationCallback<
   NodeAttributes extends Attributes = Attributes
 > = (node: string, attributes: NodeAttributes) => NodeAttributes;
 
+type NeighborIterationCallback<NodeAttributes extends Attributes = Attributes> =
+  (neighbor: string, attributes: NodeAttributes) => void;
+
+type NeighborPredicate<NodeAttributes extends Attributes = Attributes> = (
+  neighbor: string,
+  attributes: NodeAttributes
+) => boolean | void;
+
+type NeighborMapper<T, NodeAttributes extends Attributes = Attributes> = (
+  neighbor: string,
+  attributes: NodeAttributes
+) => T;
+
+type NeighborReducer<T, NodeAttributes extends Attributes = Attributes> = (
+  accumulator: T,
+  neighbor: string,
+  attributes: NodeAttributes
+) => T;
+
 type EdgeIterationCallback<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
@@ -1552,60 +1571,213 @@ declare abstract class AbstractGraph<
 
   forEachNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachUndirectedNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachDirectedNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachInNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachOutNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachInboundNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachOutboundNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
+
+  mapNeighbors<T>(
+    node: unknown,
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+  mapUndirectedNeighbors<T>(
+    node: unknown,
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+  mapDirectedNeighbors<T>(
+    node: unknown,
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+  mapInNeighbors<T>(
+    node: unknown,
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+  mapOutNeighbors<T>(
+    node: unknown,
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+  mapInboundNeighbors<T>(
+    node: unknown,
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+  mapOutboundNeighbors<T>(
+    node: unknown,
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+
+  filterNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+  filterUndirectedNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+  filterDirectedNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+  filterInNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+  filterOutNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+  filterInboundNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+  filterOutboundNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+
+  reduceNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+  reduceUndirectedNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+  reduceDirectedNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInboundNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutboundNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+
   findNeighbor(
     node: unknown,
-    callback: NodePredicate<NodeAttributes>
+    callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
   findUndirectedNeighbor(
     node: unknown,
-    callback: NodePredicate<NodeAttributes>
+    callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
   findDirectedNeighbor(
     node: unknown,
-    callback: NodePredicate<NodeAttributes>
+    callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
   findInNeighbor(
     node: unknown,
-    callback: NodePredicate<NodeAttributes>
+    callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
   findOutNeighbor(
     node: unknown,
-    callback: NodePredicate<NodeAttributes>
+    callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
   findInboundNeighbor(
     node: unknown,
-    callback: NodePredicate<NodeAttributes>
+    callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
   findOutboundNeighbor(
     node: unknown,
-    callback: NodePredicate<NodeAttributes>
+    callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
+
+  someNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  someUndirectedNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  someDirectedNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  someInNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  someOutNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  someInboundNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  someOutboundNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+
+  everyNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  everyUndirectedNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  everyDirectedNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  everyInNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  everyOutNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  everyInboundNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  everyOutboundNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
 
   neighborEntries(
     node: unknown
@@ -1702,6 +1874,10 @@ export {
   NodeMapper,
   NodeReducer,
   NodeUpdateIterationCallback,
+  NeighborIterationCallback,
+  NeighborPredicate,
+  NeighborMapper,
+  NeighborReducer,
   EdgeIterationCallback,
   EdgePredicate,
   EdgeMapper,
