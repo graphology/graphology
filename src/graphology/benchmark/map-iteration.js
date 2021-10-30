@@ -27,6 +27,16 @@ console.timeEnd('forEach');
 assert.strictEqual(c, N * I);
 
 c = 0;
+console.time('forEachSameFunction');
+const fn = value => {
+  s = value;
+  c++;
+};
+for (i = 0; i < I; i++) map.forEach(fn);
+console.timeEnd('forEachSameFunction');
+assert.strictEqual(c, N * I);
+
+c = 0;
 console.time('for of');
 for (i = 0; i < I; i++) {
   for (const value of map) {
