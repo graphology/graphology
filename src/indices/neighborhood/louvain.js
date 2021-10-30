@@ -149,7 +149,7 @@ function UndirectedLouvainIndex(graph, options) {
     ids[node] = i;
 
     // Initializing starts
-    n += graph.undirectedDegree(node, false);
+    n += graph.undirectedDegreeWithoutSelfLoops(node);
     self.starts[i] = n;
 
     // Belongings
@@ -624,10 +624,10 @@ function DirectedLouvainIndex(graph, options) {
     ids[node] = i;
 
     // Initializing starts & offsets
-    n += graph.outDegree(node, false);
+    n += graph.outDegreeWithoutSelfLoops(node);
     self.starts[i] = n;
 
-    n += graph.inDegree(node, false);
+    n += graph.inDegreeWithoutSelfLoops(node);
     self.offsets[i] = n;
 
     // Belongings
