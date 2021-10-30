@@ -20,6 +20,7 @@
 - Fixing edge iterator items missing `undirected`.
 - Improving `#.copy` peformance.
 - Improving `#.areNeighbors` performance.
+- Improving `#.forEachNode` performance.
 - Upgrading `obliterator` and improving iterator-based methods.
 
 ## 0.21.1

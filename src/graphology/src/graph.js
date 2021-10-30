@@ -2367,9 +2367,14 @@ export default class Graph extends EventEmitter {
         'Graph.forEachNode: expecting a callback.'
       );
 
-    this._nodes.forEach((data, key) => {
-      callback(key, data.attributes);
-    });
+    const iterator = this._nodes.values();
+
+    let step, nodeData;
+
+    while (((step = iterator.next()), step.done !== true)) {
+      nodeData = step.value;
+      callback(nodeData.key, nodeData.attributes);
+    }
   }
 
   /**
@@ -2408,12 +2413,17 @@ export default class Graph extends EventEmitter {
         'Graph.mapNode: expecting a callback.'
       );
 
+    const iterator = this._nodes.values();
+
+    let step, nodeData;
+
     const result = new Array(this.order);
     let i = 0;
 
-    this._nodes.forEach((data, key) => {
-      result[i++] = callback(key, data.attributes);
-    });
+    while (((step = iterator.next()), step.done !== true)) {
+      nodeData = step.value;
+      result[i++] = callback(nodeData.key, nodeData.attributes);
+    }
 
     return result;
   }
@@ -2477,11 +2487,18 @@ export default class Graph extends EventEmitter {
         'Graph.filterNodes: expecting a callback.'
       );
 
+    const iterator = this._nodes.values();
+
+    let step, nodeData;
+
     const result = [];
 
-    this._nodes.forEach((data, key) => {
-      if (callback(key, data.attributes)) result.push(key);
-    });
+    while (((step = iterator.next()), step.done !== true)) {
+      nodeData = step.value;
+
+      if (callback(nodeData.key, nodeData.attributes))
+        result.push(nodeData.key);
+    }
 
     return result;
   }
@@ -2504,9 +2521,14 @@ export default class Graph extends EventEmitter {
 
     let accumulator = initialValue;
 
-    this._nodes.forEach((data, key) => {
-      accumulator = callback(accumulator, key, data.attributes);
-    });
+    const iterator = this._nodes.values();
+
+    let step, nodeData;
+
+    while (((step = iterator.next()), step.done !== true)) {
+      nodeData = step.value;
+      accumulator = callback(accumulator, nodeData.key, nodeData.attributes);
+    }
 
     return accumulator;
   }
