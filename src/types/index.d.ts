@@ -1041,6 +1041,197 @@ declare abstract class AbstractGraph<
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
 
+  filterEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterUndirectedEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterUndirectedEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterUndirectedEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterDirectedEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterDirectedEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterDirectedEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterInEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterInEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterInEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterOutEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterOutEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterOutEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterInboundEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterInboundEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterInboundEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterOutboundEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterOutboundEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterOutboundEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+
+  reduceEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceUndirectedEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceUndirectedEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceUndirectedEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceDirectedEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceDirectedEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceDirectedEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInboundEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInboundEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInboundEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutboundEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutboundEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutboundEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+
   findEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
@@ -1125,6 +1316,166 @@ declare abstract class AbstractGraph<
     target: unknown,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
+
+  someEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
+  someEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someUndirectedEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someUndirectedEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someUndirectedEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someDirectedEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someDirectedEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someDirectedEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someInEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
+  someInEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someInEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someOutEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
+  someOutEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someOutEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someInboundEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someInboundEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someInboundEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someOutboundEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someOutboundEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someOutboundEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+
+  everyEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
+  everyEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyUndirectedEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyUndirectedEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyUndirectedEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyDirectedEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyDirectedEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyDirectedEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyInEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
+  everyInEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyInEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyOutEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyOutEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyOutEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyInboundEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyInboundEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyInboundEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyOutboundEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyOutboundEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyOutboundEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
 
   edgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   edgeEntries(
