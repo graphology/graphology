@@ -215,7 +215,7 @@ type SerializedGraph<
  */
 type Listener = (...args: any[]) => void;
 
-type AttributeUpdateTypes = 'set' | 'remove' | 'replace' | 'merge';
+type AttributeUpdateType = 'set' | 'remove' | 'replace' | 'merge';
 
 interface GraphEvents<
   NodeAttributes extends Attributes = Attributes,
@@ -241,20 +241,20 @@ interface GraphEvents<
   cleared(): void;
   edgesCleared(): void;
   attributesUpdated(payload: {
-    type: AttributeUpdateTypes;
+    type: AttributeUpdateType;
     attributes: GraphAttributes;
     name: string;
     data: GraphAttributes;
   }): void;
   nodeAttributesUpdated(payload: {
-    type: AttributeUpdateTypes;
+    type: AttributeUpdateType;
     key: string;
     attributes: NodeAttributes;
     name: string;
     data: NodeAttributes;
   }): void;
   edgeAttributesUpdated(payload: {
-    type: AttributeUpdateTypes;
+    type: AttributeUpdateType;
     key: string;
     attributes: EdgeAttributes;
     name: string;
@@ -1860,6 +1860,7 @@ interface GraphConstructor<
 
 export {
   AbstractGraph,
+  GraphConstructor,
   Attributes,
   GraphType,
   GraphOptions,
@@ -1886,7 +1887,7 @@ export {
   SerializedNode,
   SerializedEdge,
   SerializedGraph,
-  GraphConstructor
+  AttributeUpdateType
 };
 
 export default AbstractGraph;
