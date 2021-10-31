@@ -7,17 +7,16 @@
  * messages to check whether the correct error was found).
  */
 export class GraphError extends Error {
-  constructor(message, data) {
+  constructor(message) {
     super();
     this.name = 'GraphError';
-    this.message = message || '';
-    this.data = data || {};
+    this.message = message;
   }
 }
 
 export class InvalidArgumentsGraphError extends GraphError {
-  constructor(message, data) {
-    super(message, data);
+  constructor(message) {
+    super(message);
     this.name = 'InvalidArgumentsGraphError';
 
     // This is V8 specific to enhance stack readability
@@ -30,8 +29,8 @@ export class InvalidArgumentsGraphError extends GraphError {
 }
 
 export class NotFoundGraphError extends GraphError {
-  constructor(message, data) {
-    super(message, data);
+  constructor(message) {
+    super(message);
     this.name = 'NotFoundGraphError';
 
     // This is V8 specific to enhance stack readability
@@ -41,8 +40,8 @@ export class NotFoundGraphError extends GraphError {
 }
 
 export class UsageGraphError extends GraphError {
-  constructor(message, data) {
-    super(message, data);
+  constructor(message) {
+    super(message);
     this.name = 'UsageGraphError';
 
     // This is V8 specific to enhance stack readability
