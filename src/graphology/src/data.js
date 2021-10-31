@@ -21,6 +21,10 @@ export function MixedNodeData(key, attributes) {
   this.key = key;
   this.attributes = attributes;
 
+  this.clear();
+}
+
+MixedNodeData.prototype.clear = function () {
   // Degrees
   this.inDegree = 0;
   this.outDegree = 0;
@@ -32,7 +36,7 @@ export function MixedNodeData(key, attributes) {
   this.in = {};
   this.out = {};
   this.undirected = {};
-}
+};
 
 /**
  * DirectedNodeData class.
@@ -46,6 +50,10 @@ export function DirectedNodeData(key, attributes) {
   this.key = key;
   this.attributes = attributes;
 
+  this.clear();
+}
+
+DirectedNodeData.prototype.clear = function () {
   // Degrees
   this.inDegree = 0;
   this.outDegree = 0;
@@ -54,7 +62,7 @@ export function DirectedNodeData(key, attributes) {
   // Indices
   this.in = {};
   this.out = {};
-}
+};
 
 DirectedNodeData.prototype.upgradeToMixed = function () {
   // Degrees
@@ -77,13 +85,17 @@ export function UndirectedNodeData(key, attributes) {
   this.key = key;
   this.attributes = attributes;
 
+  this.clear();
+}
+
+UndirectedNodeData.prototype.clear = function () {
   // Degrees
   this.undirectedDegree = 0;
   this.undirectedSelfLoops = 0;
 
   // Indices
   this.undirected = {};
-}
+};
 
 UndirectedNodeData.prototype.upgradeToMixed = function () {
   // Degrees

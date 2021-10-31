@@ -18,6 +18,7 @@
 - Fixing mutability bug with `#.copy`.
 - Fixing adjacency iterator items missing `undirected`.
 - Fixing edge iterator items missing `undirected`.
+- Fixing bug related to instance counters and `#.clear`, `#.clearEdges`.
 - Improving `#.copy` peformance.
 - Improving `#.areNeighbors` performance.
 - Improving `#.forEachNode` performance.

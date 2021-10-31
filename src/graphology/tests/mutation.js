@@ -651,7 +651,19 @@ export default function mutation(Graph, checkers) {
         graph.clear();
 
         assert.strictEqual(graph.directedSize, 0);
-      }
+      },
+
+      'it should properly clear node indices, regarding self loops notably.':
+        function () {
+          const graph = new Graph();
+          graph.mergeEdge(1, 1);
+
+          assert.strictEqual(graph.degree(1), 2);
+
+          graph.clearEdges();
+
+          assert.strictEqual(graph.degree(1), 0);
+        }
     }
   };
 }
