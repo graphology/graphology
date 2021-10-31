@@ -19,8 +19,8 @@ npm install graphology-assertions
 
 - [#.isGraph](#isgraph)
 - [#.isGraphConstructor](#isgraphconstructor)
-- [#.hasSameNodes](#hassamenodes)
-- [#.hasSameNodesDeep](#hassamenodesdeep)
+- [#.haveSameNodes](#hassamenodes)
+- [#.haveSameNodesDeep](#hassamenodesdeep)
 
 ### #.isGraph
 
@@ -66,23 +66,23 @@ _Arguments_
 
 - **value** _any_: value to test.
 
-### #.hasSameNodes
+### #.haveSameNodes
 
 Returns whether two graphs have the same nodes.
 
 ```js
-import {hasSameNodes} from 'graphology-assertions';
+import {haveSameNodes} from 'graphology-assertions';
 
-hasSameNodes(G, H);
+haveSameNodes(G, H);
 ```
 
-### #.hasSameNodesDeep
+### #.haveSameNodesDeep
 
 Returns whether two graphs have the same nodes & whether those nodes have the same attributes.
 
 ```js
-import {hasSameNodesDeep} from 'graphology-assertions';
+import {haveSameNodesDeep} from 'graphology-assertions';
 
-hasSameNodesDeep(G, H);
+haveSameNodesDeep(G, H);
 ```
 

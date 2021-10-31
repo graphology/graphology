@@ -2,12 +2,14 @@
  * Graphology Utils Unit Tests
  * ============================
  */
-var assert = require('assert'),
-  Graph = require('graphology'),
-  lib = require('./index.js');
+var assert = require('assert');
+var Graph = require('graphology');
+var lib = require('./index.js');
 
-var hasSameNodes = lib.hasSameNodes;
-var hasSameNodesDeep = lib.hasSameNodesDeep;
+var haveSameNodes = lib.haveSameNodes;
+var haveSameNodesDeep = lib.haveSameNodesDeep;
+var areSameGraphs = lib.areSameGraphs;
+var areSameGraphsDeep = lib.areSameGraphsDeep;
 
 function addNodesFrom(g, nodes) {
   nodes.forEach(function (node) {
@@ -16,7 +18,7 @@ function addNodesFrom(g, nodes) {
 }
 
 describe('graphology-utils', function () {
-  describe('#.hasSameNodes', function () {
+  describe('#.haveSameNodes', function () {
     it("should return `true` if both graphs' nodes are the same.", function () {
       var G = new Graph(),
         H = new Graph();
@@ -24,19 +26,19 @@ describe('graphology-utils', function () {
       addNodesFrom(G, ['John', 'Martha', 'Elvis']);
       addNodesFrom(H, ['Martha', 'Elvis']);
 
-      assert.strictEqual(hasSameNodes(G, H), false);
+      assert.strictEqual(haveSameNodes(G, H), false);
 
       H.addNode('John');
 
-      assert.strictEqual(hasSameNodes(G, H), true);
+      assert.strictEqual(haveSameNodes(G, H), true);
 
       H.addNode('Estelle');
 
-      assert.strictEqual(hasSameNodes(G, H), false);
+      assert.strictEqual(haveSameNodes(G, H), false);
     });
   });
 
-  describe('#.hasSameNodesDeep', function () {
+  describe('#.haveSameNodesDeep', function () {
     it("should return `true` if both graphs' nodes & their attributes are the same.", function () {
       var G = new Graph(),
         H = new Graph();
@@ -44,19 +46,63 @@ describe('graphology-utils', function () {
       addNodesFrom(G, ['John', 'Martha', 'Elvis']);
       addNodesFrom(H, ['Martha', 'Elvis']);
 
-      assert.strictEqual(hasSameNodesDeep(G, H), false);
+      assert.strictEqual(haveSameNodesDeep(G, H), false);
 
       H.addNode('John');
 
-      assert.strictEqual(hasSameNodesDeep(G, H), true);
+      assert.strictEqual(haveSameNodesDeep(G, H), true);
 
       H.setNodeAttribute('Martha', 'age', 45);
 
-      assert.strictEqual(hasSameNodesDeep(G, H), false);
+      assert.strictEqual(haveSameNodesDeep(G, H), false);
 
       G.setNodeAttribute('Martha', 'age', 45);
 
-      assert.strictEqual(hasSameNodesDeep(G, H), true);
+      assert.strictEqual(haveSameNodesDeep(G, H), true);
+    });
+  });
+
+  describe('#.areSameGraphs', function () {
+    it('should return `true` if both graph are the same.', function () {
+      var G = new Graph();
+      var H = new Graph();
+
+      G.mergeEdge('Martha', 'Robert');
+      H.mergeEdge('Martha', 'Robert');
+
+      assert.strictEqual(areSameGraphs(G, H), true);
+
+      H.mergeEdge('Martha', 'Evrard');
+
+      assert.strictEqual(areSameGraphs(G, H), false);
+
+      G.addNode('Evrard');
+
+      assert.strictEqual(areSameGraphs(G, H), false);
+    });
+  });
+
+  describe('#.areSameGraphsDeep', function () {
+    it('should return `true` if both graph as well as their node & edge attributes are the same.', function () {
+      var G = new Graph();
+      var H = new Graph();
+
+      G.mergeEdge('Martha', 'Robert', {weight: 34});
+      H.mergeEdge('Martha', 'Robert', {weight: 45});
+
+      assert.strictEqual(areSameGraphsDeep(G, H), false);
+
+      H.setEdgeAttribute('Martha', 'Robert', 'weight', 34);
+
+      assert.strictEqual(areSameGraphsDeep(G, H), true);
+
+      H.mergeEdge('Martha', 'Evrard');
+
+      assert.strictEqual(areSameGraphsDeep(G, H), false);
+
+      G.addNode('Evrard');
+
+      assert.strictEqual(areSameGraphsDeep(G, H), false);
     });
   });
 });
