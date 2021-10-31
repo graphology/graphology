@@ -28,6 +28,15 @@
 - Improving `#.forEachNode` performance.
 - Upgrading `obliterator` and improving iterator-based methods.
 
+*Migration guide*
+
+This release should only affect you in the following use-cases:
+
+1. You were using `#.forEach*Until` methods, in which case you should replace them by the relevant `#.find*` or `#.some*` method.
+2. You were using the boolean second argument to the `#.degree` methods. Replace those calls by `#.degreeWithoutSelfLoops`.
+3. You were using the (well-hidden) two-arguments polymorphism of `#.neighbors`. Replace those calls by `#.areNeighbors`.
+4. You were doing despicable things with automatically generated keys.
+
 ## 0.21.1
 
 - Fixing `#.removeNodeAttribute` error message.
