@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.22.2 (provisional)
+
+- Fixing `#.mergeEdge` & `#.updateEdge` error messages.
+
 ## 0.22.1
 
 - Fixing `prepublishOnly` script and shipped package.
