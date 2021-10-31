@@ -16,18 +16,12 @@ exports.isGraphConstructor = require('graphology-utils/is-graph-constructor');
  * @param  {Graph}   H - Second graph.
  * @return {boolean}
  */
-exports.hasSameNodes = function sameNodes(G, H) {
+exports.hasSameNodes = function hasSameNodes(G, H) {
   if (G.order !== H.order) return false;
 
-  var ng = G.nodes(),
-    l = G.order,
-    i;
-
-  for (i = 0; i < l; i++) {
-    if (!H.hasNode(ng[i])) return false;
-  }
-
-  return true;
+  return G.everyNode(function (node) {
+    return H.hasNode(node);
+  });
 };
 
 /**
@@ -37,12 +31,14 @@ exports.hasSameNodes = function sameNodes(G, H) {
  * @param  {Graph}   H - Second graph.
  * @return {boolean}
  */
-exports.hasSameEdges = function sameEdges(G, H) {
+exports.hasSameEdges = function hasSameEdges(G, H) {
   if (
     G.directedSize !== H.directedSize ||
     G.undirectedSize !== H.undirectedSize
   )
     return false;
+
+  // TODO: multi case
 };
 
 /**
@@ -53,21 +49,12 @@ exports.hasSameEdges = function sameEdges(G, H) {
  * @param  {Graph}   H - Second graph.
  * @return {boolean}
  */
-exports.hasSameNodesDeep = function sameNodesDeep(G, H) {
+exports.hasSameNodesDeep = function hasSameNodesDeep(G, H) {
   if (G.order !== H.order) return false;
 
-  var ng = G.nodes(),
-    l = G.order,
-    e,
-    i;
+  return G.everyNode(function (node, attr) {
+    if (!H.hasNode(node)) return false;
 
-  for (i = 0; i < l; i++) {
-    if (!H.hasNode(ng[i])) return false;
-
-    e = isEqual(G.getNodeAttributes(ng[i]), H.getNodeAttributes(ng[i]));
-
-    if (!e) return false;
-  }
-
-  return true;
+    return isEqual(attr, H.getNodeAttributes(node));
+  });
 };
