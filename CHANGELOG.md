@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.22.1
+
+- Fixing `prepublishOnly` script and shipped package.
+
 ## 0.22.0
 
 - Rolling back to robust generated ids for edges.
