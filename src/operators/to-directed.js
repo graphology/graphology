@@ -44,6 +44,9 @@ module.exports = function toDirected(graph, options) {
       directedGraph.addDirectedEdge(source, target, Object.assign({}, attr));
     }
 
+    // Don't add self-loops twice
+    if (source === target) return;
+
     if (existingInEdge) {
       directedGraph.replaceEdgeAttributes(
         existingInEdge,

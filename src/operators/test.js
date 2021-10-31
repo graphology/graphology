@@ -340,6 +340,17 @@ describe('graphology-operators', function () {
         assert.strictEqual(copy.getEdgeAttribute(1, 2, 'weight'), 6);
         assert.strictEqual(copy.getEdgeAttribute(2, 1, 'weight'), 4);
       });
+
+      it('should be possible to cast a graph containing self-loops.', function () {
+        var graph = new Graph({type: 'undirected'});
+        graph.mergeEdge(1, 1);
+        graph.mergeEdge(2, 3);
+
+        var directed = toDirected(graph);
+
+        assert.strictEqual(directed.size, 3);
+        assert.strictEqual(directed.selfLoopCount, 1);
+      });
     });
 
     describe('toUndirected', function () {
