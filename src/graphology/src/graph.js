@@ -612,7 +612,7 @@ export default class Graph extends EventEmitter {
       let availableEdgeKey;
 
       do {
-        availableEdgeKey = `geid_${instanceId}_${edgeId++}`;
+        availableEdgeKey = 'geid_' + instanceId + '_' + edgeId++;
       } while (this._edges.has(availableEdgeKey));
 
       return availableEdgeKey;
