@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.22.0 (provisional)
+## 0.22.0
 
 - Rolling back to robust generated ids for edges.
 - Adding `#.mapNodes`, `#.filterNodes`, `#.reduceNodes`, `#.findNode` `#.someNode`, `#.everyNode`.
