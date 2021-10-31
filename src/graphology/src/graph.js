@@ -660,6 +660,13 @@ export default class Graph extends EventEmitter {
     readOnlyProperty(this, 'implementation', () => 'graphology');
   }
 
+  _resetInstanceCounters() {
+    this._directedSize = 0;
+    this._undirectedSize = 0;
+    this._directedSelfLoopCount = 0;
+    this._undirectedSelfLoopCount = 0;
+  }
+
   /**---------------------------------------------------------------------------
    * Read
    **---------------------------------------------------------------------------
@@ -1807,6 +1814,9 @@ export default class Graph extends EventEmitter {
     // Clearing nodes
     this._nodes.clear();
 
+    // Reset counters
+    this._resetInstanceCounters();
+
     // Emitting
     this.emit('cleared');
   }
@@ -1821,6 +1831,9 @@ export default class Graph extends EventEmitter {
 
     // Clearing edges
     this._edges.clear();
+
+    // Reset counters
+    this._resetInstanceCounters();
 
     // Emitting
     this.emit('edgesCleared');
