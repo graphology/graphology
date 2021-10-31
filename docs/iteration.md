@@ -3,12 +3,6 @@ layout: default
 title: Iteration
 nav_order: 10
 detailed_menu_toc:
-  - label: Adjacency
-    id: adj
-    subtitle: yes
-  - label: "#.forEach"
-  - label: "#.adjacency"
-    id: adjacency-iterator
   - label: Nodes
     subtitle: yes
   - label: "#.nodes"
@@ -49,9 +43,8 @@ detailed_menu_toc:
 
 # Iteration
 
-It is possible to iterate over the four following things:
+It is possible to iterate over the following things:
 
-* [Adjacency](#adj)
 * [Nodes](#nodes)
 * [Edges](#edges)
 * [Neighbors](#neighbors)
@@ -63,85 +56,6 @@ The library basically proposes three ways to iterate:
 * Methods returning arrays of keys.
 * Methods using callbacks.
 * Methods creating JavaScript iterable [iterators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators) for lazy consumption.
-
-Note that if performance is a concern, callback methods such as `#.forEach*` are usually the fastest of them all.
-
-<h2 id="adj">Adjacency</h2>
-
-Those methods iterate over the graph's adjacency, i.e. on each node's outbound adjacency (out + undirected) successively.
-
-Note that this mean you will thusly traverse each undirected edge twice. You can skip them once if you test that `source < target` for instance.
-
-**Examples**
-
-```js
-const graph = new Graph();
-
-graph.addNode('1');
-graph.addNode('2');
-graph.addNode('3');
-
-graph.addEdge('1', '2');
-graph.addEdge('2', '3');
-graph.addEdge('3', '1');
-graph.addUndirectedEdge('1', '2');
-
-// Using the callback method
-const adj = [];
-graph.forEach(
-  (source, target, sourceAttributes, targetAttributes, edge, edgeAttributes, undirected) => {
-  adj.push([undirected, source, target])
-});
-
-adj
->>> [
-  [false, '1', '2'],
-  [true, '1', '2'],
-  [false, '2', '3'],
-  [true, '2', '1'],
-  [false, '3', '1']
-]
-
-// Using the iterator
-for (const {source, target, ...} of graph.adjacency())
-  console.log(source, target);
-
-// Iterating over the graph itself is actually the same
-for (const {source, target, ...} of graph)
-  console.log(source, target);
-```
-
-### #.forEach
-
-Iterates over the graph's adjacency using a callback.
-
-**Arguments**
-
-* **callback** <span class="code">function</span>: callback to use.
-
-**Callback arguments**
-
-* **source** <span class="code">string</span>: source node's key.
-* **target** <span class="code">string</span>: target node's key.
-* **sourceAttributes** <span class="code">object</span>: source node's attributes.
-* **targetAttributes** <span class="code">object</span>: target node's attributes.
-* **edge** <span class="code">string</span>: edge's key.
-* **edgeAttributes** <span class="code">object</span>: edge's attributes.
-* **undirected** <span class="code">boolean</span>: whether the edge is undirected.
-
-<h3 id="adjacency-iterator">#.adjacency</h3>
-
-Returns an iterator over the graph's adjacency.
-
-**Entries**
-
-* **source** <span class="code">string</span>: source node's key.
-* **target** <span class="code">string</span>: target node's key.
-* **sourceAttributes** <span class="code">object</span>: source node's attributes.
-* **targetAttributes** <span class="code">object</span>: target node's attributes.
-* **edge** <span class="code">string</span>: edge's key.
-* **edgeAttributes** <span class="code">object</span>: edge's attributes.
-* **undirected** <span class="code">boolean</span>: whether the edge is undirected.
 
 ## Nodes
 

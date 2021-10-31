@@ -106,7 +106,7 @@ graph.addNode('Second Node');
 
 // Won't necessarily print 'First Node' then 'Second Node'
 // Might be the other way around.
-graph.nodes().forEach(node => {
+graph.forEachNode(node => {
   console.log(node);
 });
 ```

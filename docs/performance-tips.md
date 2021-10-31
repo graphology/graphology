@@ -61,7 +61,7 @@ graph.forEachNode(node => {
   });
 });
 
-// BETTER BUT A BIT FIERY
+// EVEN BETTER BUT CURSED
 let currentNode;
 
 function neighborCallback(neighbor) {
@@ -71,11 +71,6 @@ function neighborCallback(neighbor) {
 graph.forEachNode(node => {
   currentNode = node;
   graph.forEachNeighbor(node, neighborCallback);
-});
-
-// EVEN BETTER FOR THIS USE CASE ONLY
-graph.forEach((node, neighbor) => {
-  console.log(node, neighbor);
 });
 ```
 
