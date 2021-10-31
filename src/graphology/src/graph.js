@@ -1817,11 +1817,10 @@ export default class Graph extends EventEmitter {
    * @return {Graph}
    */
   clearEdges() {
+    clearStructureIndex(this);
+
     // Clearing edges
     this._edges.clear();
-
-    // Clearing indices
-    this.clearIndex();
 
     // Emitting
     this.emit('edgesCleared');
@@ -2891,21 +2890,6 @@ export default class Graph extends EventEmitter {
     // Upgrading indices
     upgradeStructureIndexToMulti(this);
 
-    return this;
-  }
-
-  /**---------------------------------------------------------------------------
-   * Indexes-related methods
-   **---------------------------------------------------------------------------
-   */
-
-  /**
-   * Method used to clear the desired index to clear memory.
-   *
-   * @return {Graph}       - Returns itself for chaining.
-   */
-  clearIndex() {
-    clearStructureIndex(this);
     return this;
   }
 
