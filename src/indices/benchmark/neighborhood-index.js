@@ -1,7 +1,7 @@
-import Graph from 'graphology';
-import {erdosRenyi} from 'graphology-generators/random';
-import {OutboundNeighborhoodIndex} from '../neighborhood';
-import seedrandom from 'seedrandom';
+const Graph = require('graphology');
+const {erdosRenyi} = require('graphology-generators/random');
+const {OutboundNeighborhoodIndex} = require('../neighborhood');
+const seedrandom = require('seedrandom');
 
 const rng = seedrandom('test');
 
