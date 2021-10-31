@@ -9,7 +9,6 @@
   "scripts": {
     "clean": "rimraf dist specs",
     "build": "npm run clean && rollup -c && babel tests --out-dir specs && cp src/endpoint.esm.d.ts dist/graphology.d.ts",
-    "postpublish": "npm run clean",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run test:types && npm run build",
     "test": "mocha -u exports --require @babel/register ./test.js",
