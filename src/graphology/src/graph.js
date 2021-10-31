@@ -358,12 +358,12 @@ function mergeEdge(
   // Checking validity of operation
   if (!undirected && graph.type === 'undirected')
     throw new UsageGraphError(
-      `Graph.${name}: you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.`
+      `Graph.${name}: you cannot merge/update a directed edge to an undirected graph. Use the #.mergeEdge/#.updateEdge or #.addUndirectedEdge instead.`
     );
 
   if (undirected && graph.type === 'directed')
     throw new UsageGraphError(
-      `Graph.${name}: you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.`
+      `Graph.${name}: you cannot merge/update an undirected edge to a directed graph. Use the #.mergeEdge/#.updateEdge or #.addDirectedEdge instead.`
     );
 
   if (attributes) {
