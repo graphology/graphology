@@ -25,6 +25,7 @@
     "@babel/register": "7.15.3",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.0.6",
+    "@types/seedrandom": "^3.0.1",
     "@yomguithereal/eslint-config": "^4.4.0",
     "@yomguithereal/prettier-config": "^1.2.0",
     "chai": "^4.3.4",
