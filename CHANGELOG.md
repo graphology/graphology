@@ -3,6 +3,7 @@
 ## 0.22.2 (provisional)
 
 - Fixing `#.mergeEdge` & `#.updateEdge` error messages.
+- Improving performance of `#.addEdge` etc. (less deopt).
 
 ## 0.22.1
 
