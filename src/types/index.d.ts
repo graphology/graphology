@@ -463,7 +463,7 @@ declare abstract class AbstractGraph<
   mergeNode(node: unknown, attributes?: Partial<NodeAttributes>): string;
   updateNode(
     node: unknown,
-    updater?: (attributes: NodeAttributes) => NodeAttributes
+    updater?: (attributes: NodeAttributes | {}) => NodeAttributes
   ): string;
   addEdge(
     source: unknown,
@@ -478,7 +478,7 @@ declare abstract class AbstractGraph<
   updateEdge(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
   ): string;
   addDirectedEdge(
     source: unknown,
@@ -493,7 +493,7 @@ declare abstract class AbstractGraph<
   updateDirectedEdge(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
   ): string;
   addUndirectedEdge(
     source: unknown,
@@ -508,7 +508,7 @@ declare abstract class AbstractGraph<
   updateUndirectedEdge(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
   ): string;
   addEdgeWithKey(
     edge: unknown,
@@ -525,7 +525,7 @@ declare abstract class AbstractGraph<
   updateEdgeWithKey(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
   ): string;
   addDirectedEdgeWithKey(
     edge: unknown,
@@ -542,7 +542,7 @@ declare abstract class AbstractGraph<
   updateDirectedEdgeWithKey(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
   ): string;
   addUndirectedEdgeWithKey(
     edge: unknown,
@@ -559,7 +559,7 @@ declare abstract class AbstractGraph<
   updateUndirectedEdgeWithKey(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
   ): string;
   dropNode(node: unknown): void;
   dropEdge(edge: unknown): void;
