@@ -1,7 +1,7 @@
 ---
 layout: default
 title: layout-forceatlas2
-nav_order: 10
+nav_order: 9
 parent: Standard library
 ---
 

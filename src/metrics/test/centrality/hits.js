@@ -2,9 +2,9 @@
  * Graphology HITS Unit Tests
  * ===========================
  */
-var assert = require('chai').assert,
-  Graph = require('graphology'),
-  hits = require('./index.js');
+var assert = require('chai').assert;
+var Graph = require('graphology');
+var hits = require('../../centrality/hits');
 
 var EDGES = [
   [1, 3],
@@ -42,7 +42,7 @@ var HUBS = {
   6: 0.211325
 };
 
-describe('graphology-hits', function () {
+describe('hits', function () {
   it('should throw if provided with something which is not a graph.', function () {
     assert.throws(function () {
       hits({hello: 'world'});

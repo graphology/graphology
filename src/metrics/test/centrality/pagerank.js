@@ -2,9 +2,9 @@
  * Graphology Utils Unit Tests
  * ============================
  */
-var assert = require('chai').assert,
-  Graph = require('graphology'),
-  pagerank = require('./');
+var assert = require('chai').assert;
+var Graph = require('graphology');
+var pagerank = require('../../centrality/pagerank');
 
 var DirectedGraph = Graph.DirectedGraph;
 
@@ -12,7 +12,7 @@ function deepApproximatelyEqual(t, o, precision) {
   for (var k in t) assert.approximately(t[k], o[k], precision);
 }
 
-describe('graphology-pagerank', function () {
+describe('pagerank', function () {
   function getDirectedGraph() {
     var graph = new DirectedGraph();
 

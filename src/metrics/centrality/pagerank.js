@@ -8,8 +8,8 @@
  * Page, Lawrence; Brin, Sergey; Motwani, Rajeev and Winograd, Terry,
  * The PageRank citation ranking: Bringing order to the Web. 1999
  */
-var isGraph = require('graphology-utils/is-graph'),
-  defaults = require('lodash/defaults');
+var isGraph = require('graphology-utils/is-graph');
+var defaults = require('lodash/defaults');
 
 /**
  * Defaults.
