@@ -12,6 +12,7 @@ npm install graphology-components
 
 - [connectedComponents](#connectedcomponents)
 - [largestConnectedComponent](#largestconnectedcomponent)
+- [largestConnectedComponentSubgraph](#largestconnectedcomponentsubgraph)
 - [stronglyConnectedComponents](#stronglyconnectedcomponents)
 
 ### connectedComponents
@@ -38,7 +39,7 @@ const largest = largestConnectedComponent(graph);
 
 ### largestConnectedComponentSubgraph
 
-Returns a graph containing the largest connected component of the given graph.
+Returns a subgraph of the largest connected component of the given graph.
 
 ```js
 import {largestConnectedComponentSubgraph} from 'graphology-components';
