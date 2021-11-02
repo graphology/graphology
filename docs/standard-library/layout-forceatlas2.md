@@ -38,7 +38,7 @@ Note also that the algorithm has an edge-case where the layout cannot be compute
 - **adjustSizes** <span class="code">?boolean</span> <span class="default">false</span>: should the node's sizes be taken into account?
 - **barnesHutOptimize** <span class="code">?boolean</span> <span class="default">false</span>: whether to use the Barnes-Hut approximation to compute repulsion in `O(n*log(n))` rather than default `O(n^2)`, `n` being the number of nodes.
 - **barnesHutTheta** <span class="code">?number</span> <span class="default">0.5</span>: Barnes-Hut approximation theta parameter.
-- **edgeWeightInfluence** <span class="code">?number</span> <span class="default">0</span>: influence of the edge's weights on the layout. The `weight` attributes of edges is used as the weight of each edge.
+- **edgeWeightInfluence** <span class="code">?number</span> <span class="default">1</span>: influence of the edge's weights on the layout. To consider edge weight, don't forget to pass `weighted` as `true` when applying the [synchronous layout](#synchronous-layout) or when instantiating the [worker](#webworker).
 - **gravity** <span class="code">?number</span> <span class="default">1</span>: strength of the layout's gravity.
 - **linLogMode** <span class="code">?boolean</span> <span class="default">false</span>: whether to use Noack's LinLog model.
 - **outboundAttractionDistribution** <span class="code">?boolean</span> <span class="default">false</span>
@@ -70,6 +70,9 @@ _Arguments_
 - **graph** _Graph_: target graph.
 - **options** _object_: options:
   - **iterations** _number_: number of iterations to perform.
+  - **attributes** <span class="code">?object</span>: an object containing custom attribute name mapping:
+    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edge weight attribute.
+  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to consider edge weight.
   - **settings** <span class="code">?object</span>: the layout's settings (see [#settings](#settings)).
 
 ### Webworker
@@ -81,7 +84,8 @@ _Example_
 ```js
 import FA2Layout from 'graphology-layout-forceatlas2/worker';
 
-const layout = new FA2Layout(graph, {settings: {gravity: 1}});
+// The parameters are the same as for the synchronous version, minus `iterations` of course
+const layout = new FA2Layout(graph, {settings: {gravity: 1}, weighted: true});
 
 // To start the layout
 layout.start();
