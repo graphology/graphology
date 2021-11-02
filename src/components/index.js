@@ -139,13 +139,6 @@ exports.largestConnectedComponentSubgraph = function (graph) {
   var S = graph.nullCopy();
 
   largestConnectedComponent.forEach(function (key) {
-    if (!graph.hasNode(key))
-      throw new Error(
-        'graphology-components/index: the "' +
-          key +
-          '" node was not found in the graph.'
-      );
-
     copyNode(S, key, graph.getNodeAttributes(key));
   });
 
