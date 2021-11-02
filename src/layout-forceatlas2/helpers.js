@@ -59,17 +59,15 @@ exports.validateSettings = function (settings) {
 
   if (
     'edgeWeightInfluence' in settings &&
-    typeof settings.edgeWeightInfluence !== 'number' &&
-    settings.edgeWeightInfluence < 1
+    typeof settings.edgeWeightInfluence !== 'number'
   )
     return {
-      message: 'the `edgeWeightInfluence` setting should be a number > 0.'
+      message: 'the `edgeWeightInfluence` setting should be a number.'
     };
 
   if (
     'scalingRatio' in settings &&
-    typeof settings.scalingRatio !== 'number' &&
-    settings.scalingRatio < 0
+    !(typeof settings.scalingRatio === 'number' && settings.scalingRatio >= 0)
   )
     return {message: 'the `scalingRatio` setting should be a number >= 0.'};
 
@@ -81,15 +79,13 @@ exports.validateSettings = function (settings) {
 
   if (
     'gravity' in settings &&
-    typeof settings.gravity !== 'number' &&
-    settings.gravity < 0
+    !(typeof settings.gravity === 'number' && settings.gravity >= 0)
   )
     return {message: 'the `gravity` setting should be a number >= 0.'};
 
   if (
     'slowDown' in settings &&
-    typeof settings.slowDown !== 'number' &&
-    settings.slowDown < 0
+    !(typeof settings.slowDown === 'number' || settings.slowDown >= 0)
   )
     return {message: 'the `slowDown` setting should be a number >= 0.'};
 
@@ -101,8 +97,7 @@ exports.validateSettings = function (settings) {
 
   if (
     'barnesHutTheta' in settings &&
-    typeof settings.barnesHutTheta !== 'number' &&
-    settings.barnesHutTheta < 0
+    !(typeof settings.barnesHutTheta === 'number' && settings.barnesHutTheta >= 0)
   )
     return {message: 'the `barnesHutTheta` setting should be a number >= 0.'};
 
