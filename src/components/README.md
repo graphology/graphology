@@ -36,6 +36,16 @@ import {largestConnectedComponent} from 'graphology-components';
 const largest = largestConnectedComponent(graph);
 ```
 
+### largestConnectedComponentSubgraph
+
+Returns a graph containing the largest connected component of the given graph.
+
+```js
+import {largestConnectedComponentSubgraph} from 'graphology-components';
+
+const subgraph = largestConnectedComponentSubgraph(graph);
+```
+
 ### stronglyConnectedComponents
 
 Returns the list of strongly connected components of the given graph. (mixed or directed)
