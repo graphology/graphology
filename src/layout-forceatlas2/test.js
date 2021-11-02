@@ -165,6 +165,13 @@ describe('graphology-layout-forceatlas2', function () {
       assert.throws(function () {
         layout(new Graph(), {iterations: 5, settings: {linLogMode: 45}});
       }, /linLogMode/);
+
+      assert.throws(function () {
+        layout(new Graph(), {
+          iterations: 5,
+          settings: {edgeWeightInfluence: 'test'}
+        });
+      }, /edgeWeightInfluence/);
     });
 
     it('should return correct results.', function () {

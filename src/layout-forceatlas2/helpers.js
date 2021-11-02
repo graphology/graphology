@@ -97,7 +97,10 @@ exports.validateSettings = function (settings) {
 
   if (
     'barnesHutTheta' in settings &&
-    !(typeof settings.barnesHutTheta === 'number' && settings.barnesHutTheta >= 0)
+    !(
+      typeof settings.barnesHutTheta === 'number' &&
+      settings.barnesHutTheta >= 0
+    )
   )
     return {message: 'the `barnesHutTheta` setting should be a number >= 0.'};
 
