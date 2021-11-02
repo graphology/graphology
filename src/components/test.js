@@ -13,7 +13,9 @@ var assert = require('assert'),
   isEqual = require('lodash/isEqual'),
   lib = require('./'),
   subgraph = require('graphology-operators/subgraph'),
-  isGraph = require('graphology-utils/is-graph');
+  isGraph = require('graphology-utils/is-graph'),
+  areSameGraphs = require('graphology-assertions/index').areSameGraphs,
+  areSameGraphsDeep = require('graphology-assertions/index').areSameGraphsDeep;
 
 var connectedComponents = lib.connectedComponents,
   largestConnectedComponent = lib.largestConnectedComponent,
@@ -211,7 +213,9 @@ describe('graphology-components', function () {
 
       var resultSubgraph = largestConnectedComponentSubgraph(graph);
 
-      assert.deepStrictEqual(resultSubgraph, resultGraph);
+      var result = areSameGraphs(resultSubgraph, resultGraph);
+
+      assert.strictEqual(result, true);
     });
 
     it('should also work with self loops.', function () {
@@ -227,7 +231,9 @@ describe('graphology-components', function () {
 
       var resultSubgraph = largestConnectedComponentSubgraph(graph);
 
-      assert.deepStrictEqual(resultSubgraph, resultGraph);
+      var result = areSameGraphs(resultSubgraph, resultGraph);
+
+      assert.strictEqual(result, true);
     });
 
     it('should return a Graph instance.', function () {
@@ -242,7 +248,7 @@ describe('graphology-components', function () {
       );
     });
 
-    it('should contain a graph containing the same nodes as the largest component of the given graph.', function () {
+    it('should return a graph containing the same nodes as the largest component of the given graph.', function () {
       var graph = range(8)
         .map(function () {
           return erdosRenyi.sparse(Graph.UndirectedGraph, {
@@ -321,7 +327,9 @@ describe('graphology-components', function () {
       var resultSubgraph = subgraph(graph, largestComponent);
       var largestComponentSubgraph = largestConnectedComponentSubgraph(graph);
 
-      assert.deepStrictEqual(largestComponentSubgraph, resultSubgraph);
+      var result = areSameGraphsDeep(largestComponentSubgraph, resultSubgraph);
+
+      assert.strictEqual(result, true);
     });
   });
 

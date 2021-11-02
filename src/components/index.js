@@ -5,8 +5,10 @@
  * Basic connected components-related functions.
  */
 var isGraph = require('graphology-utils/is-graph');
+var copyNode = require('graphology-utils/add-node').copyNode;
+var copyEdge = require('graphology-utils/add-edge').copyEdge;
 var extend = require('@yomguithereal/helpers/extend');
-var subgraph = require('graphology-operators/subgraph');
+// var subgraph = require('graphology-operators/subgraph');
 
 /**
  * Function returning a list of a graph's connected components as arrays
@@ -135,7 +137,35 @@ exports.largestConnectedComponent = function (graph) {
 exports.largestConnectedComponentSubgraph = function (graph) {
   var largestConnectedComponent = exports.largestConnectedComponent(graph);
 
-  return subgraph(graph, largestConnectedComponent);
+  var S = graph.nullCopy();
+
+  largestConnectedComponent.forEach(function (key) {
+    if (!graph.hasNode(key))
+      throw new Error(
+        'graphology-components/index: the "' +
+          key +
+          '" node was not found in the graph.'
+      );
+
+    copyNode(S, key, graph.getNodeAttributes(key));
+  });
+
+  graph.forEachEdge(function (
+    key,
+    attr,
+    source,
+    target,
+    sourceAttr,
+    targetAttr,
+    undirected,
+    generatedKey
+  ) {
+    if (S.hasNode(source, sourceAttr) && S.hasNode(target, targetAttr)) {
+      copyEdge(S, undirected, generatedKey ? null : key, source, target, attr);
+    }
+  });
+
+  return S;
 };
 
 /**
