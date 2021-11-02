@@ -149,11 +149,10 @@ exports.largestConnectedComponentSubgraph = function (graph) {
     target,
     sourceAttr,
     targetAttr,
-    undirected,
-    generatedKey
+    undirected
   ) {
-    if (S.hasNode(source, sourceAttr) && S.hasNode(target, targetAttr)) {
-      copyEdge(S, undirected, generatedKey ? null : key, source, target, attr);
+    if (S.hasNode(source)) {
+      copyEdge(S, undirected, key, source, target, attr);
     }
   });
 

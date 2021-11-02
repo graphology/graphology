@@ -14,8 +14,10 @@ var assert = require('assert'),
   lib = require('./'),
   subgraph = require('graphology-operators/subgraph'),
   isGraph = require('graphology-utils/is-graph'),
-  areSameGraphs = require('graphology-assertions/index').areSameGraphs,
-  areSameGraphsDeep = require('graphology-assertions/index').areSameGraphsDeep;
+  assertions = require('graphology-assertions');
+
+var areSameGraphs = assertions.areSameGraphs,
+  areSameGraphsDeep = assertions.areSameGraphsDeep;
 
 var connectedComponents = lib.connectedComponents,
   largestConnectedComponent = lib.largestConnectedComponent,
@@ -325,9 +327,9 @@ describe('graphology-components', function () {
       var largestComponent = largestConnectedComponent(graph);
 
       var resultSubgraph = subgraph(graph, largestComponent);
-      var largestComponentSubgraph = largestConnectedComponentSubgraph(graph);
+      var componentSubgraph = largestConnectedComponentSubgraph(graph);
 
-      var result = areSameGraphsDeep(largestComponentSubgraph, resultSubgraph);
+      var result = areSameGraphsDeep(componentSubgraph, resultSubgraph);
 
       assert.strictEqual(result, true);
     });
