@@ -9,39 +9,39 @@
 /**
  * Matrices properties accessors.
  */
-var NODE_X = 0,
-  NODE_Y = 1,
-  NODE_DX = 2,
-  NODE_DY = 3,
-  NODE_OLD_DX = 4,
-  NODE_OLD_DY = 5,
-  NODE_MASS = 6,
-  NODE_CONVERGENCE = 7,
-  NODE_SIZE = 8,
-  NODE_FIXED = 9;
+var NODE_X = 0;
+var NODE_Y = 1;
+var NODE_DX = 2;
+var NODE_DY = 3;
+var NODE_OLD_DX = 4;
+var NODE_OLD_DY = 5;
+var NODE_MASS = 6;
+var NODE_CONVERGENCE = 7;
+var NODE_SIZE = 8;
+var NODE_FIXED = 9;
 
-var EDGE_SOURCE = 0,
-  EDGE_TARGET = 1,
-  EDGE_WEIGHT = 2;
+var EDGE_SOURCE = 0;
+var EDGE_TARGET = 1;
+var EDGE_WEIGHT = 2;
 
-var REGION_NODE = 0,
-  REGION_CENTER_X = 1,
-  REGION_CENTER_Y = 2,
-  REGION_SIZE = 3,
-  REGION_NEXT_SIBLING = 4,
-  REGION_FIRST_CHILD = 5,
-  REGION_MASS = 6,
-  REGION_MASS_CENTER_X = 7,
-  REGION_MASS_CENTER_Y = 8;
+var REGION_NODE = 0;
+var REGION_CENTER_X = 1;
+var REGION_CENTER_Y = 2;
+var REGION_SIZE = 3;
+var REGION_NEXT_SIBLING = 4;
+var REGION_FIRST_CHILD = 5;
+var REGION_MASS = 6;
+var REGION_MASS_CENTER_X = 7;
+var REGION_MASS_CENTER_Y = 8;
 
 var SUBDIVISION_ATTEMPTS = 3;
 
 /**
  * Constants.
  */
-var PPN = 10,
-  PPE = 3,
-  PPR = 9;
+var PPN = 10;
+var PPE = 3;
+var PPR = 9;
 
 var MAX_FORCE = 10;
 
