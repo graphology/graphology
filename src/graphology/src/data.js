@@ -21,6 +21,10 @@ export function MixedNodeData(key, attributes) {
   this.key = key;
   this.attributes = attributes;
 
+  this.clear();
+}
+
+MixedNodeData.prototype.clear = function () {
   // Degrees
   this.inDegree = 0;
   this.outDegree = 0;
@@ -32,7 +36,7 @@ export function MixedNodeData(key, attributes) {
   this.in = {};
   this.out = {};
   this.undirected = {};
-}
+};
 
 /**
  * DirectedNodeData class.
@@ -46,6 +50,10 @@ export function DirectedNodeData(key, attributes) {
   this.key = key;
   this.attributes = attributes;
 
+  this.clear();
+}
+
+DirectedNodeData.prototype.clear = function () {
   // Degrees
   this.inDegree = 0;
   this.outDegree = 0;
@@ -54,7 +62,7 @@ export function DirectedNodeData(key, attributes) {
   // Indices
   this.in = {};
   this.out = {};
-}
+};
 
 DirectedNodeData.prototype.upgradeToMixed = function () {
   // Degrees
@@ -77,13 +85,17 @@ export function UndirectedNodeData(key, attributes) {
   this.key = key;
   this.attributes = attributes;
 
+  this.clear();
+}
+
+UndirectedNodeData.prototype.clear = function () {
   // Degrees
   this.undirectedDegree = 0;
   this.undirectedSelfLoops = 0;
 
   // Indices
   this.undirected = {};
-}
+};
 
 UndirectedNodeData.prototype.upgradeToMixed = function () {
   // Degrees
@@ -102,19 +114,11 @@ UndirectedNodeData.prototype.upgradeToMixed = function () {
  * @constructor
  * @param {boolean} undirected   - Whether the edge is undirected.
  * @param {string}  string       - The edge's key.
- * @param {boolean} generatedKey - Was its key generated?
  * @param {string}  source       - Source of the edge.
  * @param {string}  target       - Target of the edge.
  * @param {object}  attributes   - Edge's attributes.
  */
-export function EdgeData(
-  undirected,
-  key,
-  generatedKey,
-  source,
-  target,
-  attributes
-) {
+export function EdgeData(undirected, key, source, target, attributes) {
   // Attributes
   this.key = key;
   this.attributes = attributes;
@@ -123,7 +127,4 @@ export function EdgeData(
   // Extremities
   this.source = source;
   this.target = target;
-
-  // Was its key generated?
-  this.generatedKey = generatedKey;
 }

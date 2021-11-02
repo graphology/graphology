@@ -48,41 +48,142 @@ export default function nodesIteration(Graph, checkers) {
         }
     },
 
-    '#.forEachNodeUntil': {
+    '#.findNode': {
       'it should throw if given callback is not a function.': function () {
         const graph = new Graph();
 
         assert.throws(function () {
-          graph.forEachNodeUntil(null);
+          graph.findNode(null);
         }, invalid());
       },
 
-      'it should be possible to iterate over nodes and their attributes until the callback returns true.':
+      'it should be possible to find a node in the graph.': function () {
+        const graph = new Graph();
+
+        graph.addNode('John', {age: 34});
+        graph.addNode('Martha', {age: 33});
+
+        let count = 0;
+
+        let found = graph.findNode(function (key, attributes) {
+          assert.strictEqual(key, 'John');
+          assert.deepStrictEqual(attributes, {age: 34});
+          count++;
+
+          if (key === 'John') return true;
+        });
+
+        assert.strictEqual(found, 'John');
+        assert.strictEqual(count, 1);
+
+        found = graph.findNode(function () {
+          return false;
+        });
+
+        assert.strictEqual(found, undefined);
+      }
+    },
+
+    '#.mapNodes': {
+      'it should be possible to map nodes.': function () {
+        const graph = new Graph();
+        graph.addNode('one', {weight: 2});
+        graph.addNode('two', {weight: 3});
+
+        const result = graph.mapNodes((node, attr) => {
+          return attr.weight * 2;
+        });
+
+        assert.deepStrictEqual(result, [4, 6]);
+      }
+    },
+
+    '#.someNode': {
+      'it should always return false on empty sets.': function () {
+        const graph = new Graph();
+
+        assert.strictEqual(
+          graph.someNode(() => true),
+          false
+        );
+      },
+
+      'it should be possible to find if some node matches a predicate.':
         function () {
           const graph = new Graph();
+          graph.addNode('one', {weight: 2});
+          graph.addNode('two', {weight: 3});
 
-          graph.addNode('John', {age: 34});
-          graph.addNode('Martha', {age: 33});
-
-          let count = 0;
-
-          let broke = graph.forEachNodeUntil(function (key, attributes) {
-            assert.strictEqual(key, 'John');
-            assert.deepStrictEqual(attributes, {age: 34});
-            count++;
-
-            if (key === 'John') return true;
-          });
-
-          assert.strictEqual(broke, true);
-          assert.strictEqual(count, 1);
-
-          broke = graph.forEachNodeUntil(function () {
-            return false;
-          });
-
-          assert.strictEqual(broke, false);
+          assert.strictEqual(
+            graph.someNode((node, attr) => attr.weight > 6),
+            false
+          );
+          assert.strictEqual(
+            graph.someNode((node, attr) => attr.weight > 2),
+            true
+          );
         }
+    },
+
+    '#.everyNode': {
+      'it should always return true on empty sets.': function () {
+        const graph = new Graph();
+
+        assert.strictEqual(
+          graph.everyNode(() => true),
+          true
+        );
+      },
+
+      'it should be possible to find if all node matches a predicate.':
+        function () {
+          const graph = new Graph();
+          graph.addNode('one', {weight: 2});
+          graph.addNode('two', {weight: 3});
+
+          assert.strictEqual(
+            graph.everyNode((node, attr) => attr.weight > 2),
+            false
+          );
+          assert.strictEqual(
+            graph.everyNode((node, attr) => attr.weight > 1),
+            true
+          );
+        }
+    },
+
+    '#.filterNodes': {
+      'it should be possible to filter nodes.': function () {
+        const graph = new Graph();
+        graph.addNode('one', {weight: 2});
+        graph.addNode('two', {weight: 3});
+        graph.addNode('three', {weight: 4});
+
+        const result = graph.filterNodes((node, {weight}) => weight >= 3);
+
+        assert.deepStrictEqual(result, ['two', 'three']);
+      }
+    },
+
+    '#.reduceNodes': {
+      'it should throw if initial value is not given.': function () {
+        const graph = new Graph();
+
+        assert.throws(function () {
+          graph.reduceNodes((x, _, attr) => x + attr.weight);
+        }, invalid());
+      },
+
+      'it should be possible to reduce nodes.': function () {
+        const graph = new Graph();
+        graph.addNode('one', {weight: 2});
+        graph.addNode('two', {weight: 3});
+        graph.addNode('three', {weight: 4});
+
+        const result = graph.reduceNodes((x, _, attr) => x + attr.weight, 0);
+
+        assert.strictEqual(result, 9);
+      }
     },
 
     '#.nodeEntries': {
@@ -94,12 +195,18 @@ export default function nodesIteration(Graph, checkers) {
 
         const iterator = graph.nodeEntries();
 
-        assert.deepStrictEqual(iterator.next().value, ['one', {}]);
-        assert.deepStrictEqual(iterator.next().value, [
-          'two',
-          {hello: 'world'}
-        ]);
-        assert.deepStrictEqual(iterator.next().value, ['three', {}]);
+        assert.deepStrictEqual(iterator.next().value, {
+          node: 'one',
+          attributes: {}
+        });
+        assert.deepStrictEqual(iterator.next().value, {
+          node: 'two',
+          attributes: {hello: 'world'}
+        });
+        assert.deepStrictEqual(iterator.next().value, {
+          node: 'three',
+          attributes: {}
+        });
         assert.strictEqual(iterator.next().done, true);
       }
     }

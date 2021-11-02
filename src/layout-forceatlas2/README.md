@@ -31,7 +31,7 @@ Note also that the algorithm has an edge-case where the layout cannot be compute
 - **adjustSizes** _?boolean_ [`false`]: should the node's sizes be taken into account?
 - **barnesHutOptimize** _?boolean_ [`false`]: whether to use the Barnes-Hut approximation to compute repulsion in `O(n*log(n))` rather than default `O(n^2)`, `n` being the number of nodes.
 - **barnesHutTheta** _?number_ [`0.5`]: Barnes-Hut approximation theta parameter.
-- **edgeWeightInfluence** _?number_ [`0`]: influence of the edge's weights on the layout.
+- **edgeWeightInfluence** _?number_ [`0`]: influence of the edge's weights on the layout. The `weight` attributes of edges is used as the weight of each edge.
 - **gravity** _?number_ [`1`]: strength of the layout's gravity.
 - **linLogMode** _?boolean_ [`false`]: whether to use Noack's LinLog model.
 - **outboundAttractionDistribution** _?boolean_ [`false`]
@@ -74,10 +74,10 @@ _Example_
 ```js
 import FA2Layout from 'graphology-layout-forceatlas2/worker';
 
-const layout = new FA2Layout(graph);
+const layout = new FA2Layout(graph, {settings: {gravity: 1}});
 
 // To start the layout
-layout.start({settings: {gravity: 1}});
+layout.start();
 
 // To stop the layout
 layout.stop();

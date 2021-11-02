@@ -9,7 +9,7 @@ import Iterator from 'obliterator/iterator';
 import chain from 'obliterator/chain';
 import take from 'obliterator/take';
 
-import {InvalidArgumentsGraphError, NotFoundGraphError} from '../errors';
+import {NotFoundGraphError, InvalidArgumentsGraphError} from '../errors';
 
 /**
  * Definitions.
@@ -140,41 +140,41 @@ function forEachInObjectOnce(visited, nodeData, object, callback) {
 }
 
 /**
- * Function iterating over the given node's relevant neighbors using a
- * callback until it returns a truthy value to stop iteration.
+ * Function iterating over the given node's relevant neighbors to match
+ * one of them using a predicated function.
  *
  * @param  {string}   type      - Type of neighbors.
  * @param  {string}   direction - Direction.
  * @param  {any}      nodeData  - Target node's data.
  * @param  {function} callback  - Callback to use.
  */
-function forEachInObjectUntil(nodeData, object, callback) {
+function findInObject(nodeData, object, callback) {
   for (const k in object) {
     let edgeData = object[k];
 
     if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
 
-    const sourceData = edgeData.source,
-      targetData = edgeData.target;
+    const sourceData = edgeData.source;
+    const targetData = edgeData.target;
 
     const neighborData = sourceData === nodeData ? targetData : sourceData;
 
     const shouldBreak = callback(neighborData.key, neighborData.attributes);
 
-    if (shouldBreak) return true;
+    if (shouldBreak) return neighborData.key;
   }
 
-  return false;
+  return;
 }
 
-function forEachInObjectOnceUntil(visited, nodeData, object, callback) {
+function findInObjectOnce(visited, nodeData, object, callback) {
   for (const k in object) {
     let edgeData = object[k];
 
     if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
 
-    const sourceData = edgeData.source,
-      targetData = edgeData.target;
+    const sourceData = edgeData.source;
+    const targetData = edgeData.target;
 
     const neighborData = sourceData === nodeData ? targetData : sourceData;
 
@@ -184,10 +184,10 @@ function forEachInObjectOnceUntil(visited, nodeData, object, callback) {
 
     const shouldBreak = callback(neighborData.key, neighborData.attributes);
 
-    if (shouldBreak) return true;
+    if (shouldBreak) return neighborData.key;
   }
 
-  return false;
+  return;
 }
 
 function forEachNeighborForNode(type, direction, nodeData, callback) {
@@ -217,56 +217,41 @@ function forEachNeighborForNode(type, direction, nodeData, callback) {
   }
 }
 
-function forEachNeighborForNodeUntil(type, direction, nodeData, callback) {
+function findNeighbor(type, direction, nodeData, callback) {
   // If we want only undirected or in or out, we can roll some optimizations
   if (type !== 'mixed') {
     if (type === 'undirected')
-      return forEachInObjectUntil(nodeData, nodeData.undirected, callback);
+      return findInObject(nodeData, nodeData.undirected, callback);
 
     if (typeof direction === 'string')
-      return forEachInObjectUntil(nodeData, nodeData[direction], callback);
+      return findInObject(nodeData, nodeData[direction], callback);
   }
 
   // Else we need to keep a set of neighbors not to return duplicates
   const visited = new Set();
 
-  let shouldBreak = false;
+  let found;
 
   if (type !== 'undirected') {
     if (direction !== 'out') {
-      shouldBreak = forEachInObjectOnceUntil(
-        visited,
-        nodeData,
-        nodeData.in,
-        callback
-      );
+      found = findInObjectOnce(visited, nodeData, nodeData.in, callback);
 
-      if (shouldBreak) return true;
+      if (found) return found;
     }
     if (direction !== 'in') {
-      shouldBreak = forEachInObjectOnceUntil(
-        visited,
-        nodeData,
-        nodeData.out,
-        callback
-      );
+      found = findInObjectOnce(visited, nodeData, nodeData.out, callback);
 
-      if (shouldBreak) return true;
+      if (found) return found;
     }
   }
 
   if (type !== 'directed') {
-    shouldBreak = forEachInObjectOnceUntil(
-      visited,
-      nodeData,
-      nodeData.undirected,
-      callback
-    );
+    found = findInObjectOnce(visited, nodeData, nodeData.undirected, callback);
 
-    if (shouldBreak) return true;
+    if (found) return found;
   }
 
-  return false;
+  return;
 }
 
 /**
@@ -297,7 +282,7 @@ function createObjectIterator(nodeData, object) {
 
     return {
       done: false,
-      value: [neighborData.key, neighborData.attributes]
+      value: {neighbor: neighborData.key, attributes: neighborData.attributes}
     };
   });
 }
@@ -326,7 +311,7 @@ function createDedupedObjectIterator(visited, nodeData, object) {
 
     return {
       done: false,
-      value: [neighborData.key, neighborData.attributes]
+      value: {neighbor: neighborData.key, attributes: neighborData.attributes}
     };
   });
 }
@@ -372,35 +357,6 @@ function createNeighborIterator(type, direction, nodeData) {
 }
 
 /**
- * Function returning whether the given node has target neighbor.
- *
- * @param  {Graph}        graph     - Target graph.
- * @param  {string}       type      - Type of neighbor.
- * @param  {string}       direction - Direction.
- * @param  {any}          node      - Target node.
- * @param  {any}          neighbor  - Target neighbor.
- * @return {boolean}
- */
-function nodeHasNeighbor(graph, type, direction, node, neighbor) {
-  const nodeData = graph._nodes.get(node);
-
-  if (type !== 'undirected') {
-    if (direction !== 'out' && typeof nodeData.in !== 'undefined') {
-      for (const k in nodeData.in) if (k === neighbor) return true;
-    }
-    if (direction !== 'in' && typeof nodeData.out !== 'undefined') {
-      for (const k in nodeData.out) if (k === neighbor) return true;
-    }
-  }
-
-  if (type !== 'directed' && typeof nodeData.undirected !== 'undefined') {
-    for (const k in nodeData.undirected) if (k === neighbor) return true;
-  }
-
-  return false;
-}
-
-/**
  * Function attaching a neighbors array creator method to the Graph prototype.
  *
  * @param {function} Class       - Target class.
@@ -410,62 +366,32 @@ function attachNeighborArrayCreator(Class, description) {
   const {name, type, direction} = description;
 
   /**
-   * Function returning an array or the count of certain neighbors.
+   * Function returning an array of certain neighbors.
    *
-   * Arity 1: Return all of a node's relevant neighbors.
    * @param  {any}   node   - Target node.
+   * @return {array} - The neighbors of neighbors.
    *
-   * Arity 2: Return whether the two nodes are indeed neighbors.
-   * @param  {any}   source - Source node.
-   * @param  {any}   target - Target node.
-   *
-   * @return {array|number} - The neighbors or the number of neighbors.
-   *
-   * @throws {Error} - Will throw if there are too many arguments.
+   * @throws {Error} - Will throw if node is not found in the graph.
    */
   Class.prototype[name] = function (node) {
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
       return [];
 
-    if (arguments.length === 2) {
-      const node1 = '' + arguments[0],
-        node2 = '' + arguments[1];
+    node = '' + node;
 
-      if (!this._nodes.has(node1))
-        throw new NotFoundGraphError(
-          `Graph.${name}: could not find the "${node1}" node in the graph.`
-        );
+    const nodeData = this._nodes.get(node);
 
-      if (!this._nodes.has(node2))
-        throw new NotFoundGraphError(
-          `Graph.${name}: could not find the "${node2}" node in the graph.`
-        );
-
-      // Here, we want to assess whether the two given nodes are neighbors
-      return nodeHasNeighbor(this, type, direction, node1, node2);
-    } else if (arguments.length === 1) {
-      node = '' + node;
-
-      const nodeData = this._nodes.get(node);
-
-      if (typeof nodeData === 'undefined')
-        throw new NotFoundGraphError(
-          `Graph.${name}: could not find the "${node}" node in the graph.`
-        );
-
-      // Here, we want to iterate over a node's relevant neighbors
-      const neighbors = createNeighborArrayForNode(
-        type === 'mixed' ? this.type : type,
-        direction,
-        nodeData
+    if (typeof nodeData === 'undefined')
+      throw new NotFoundGraphError(
+        `Graph.${name}: could not find the "${node}" node in the graph.`
       );
 
-      return neighbors;
-    }
-
-    throw new InvalidArgumentsGraphError(
-      `Graph.${name}: invalid number of arguments (expecting 1 or 2 and got ${arguments.length}).`
+    // Here, we want to iterate over a node's relevant neighbors
+    return createNeighborArrayForNode(
+      type === 'mixed' ? this.type : type,
+      direction,
+      nodeData
     );
   };
 }
@@ -511,6 +437,72 @@ function attachForEachNeighbor(Class, description) {
       callback
     );
   };
+
+  /**
+   * Function mapping the relevant neighbors using a callback.
+   *
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const mapName = 'map' + name[0].toUpperCase() + name.slice(1);
+
+  Class.prototype[mapName] = function (node, callback) {
+    // TODO: optimize when size is known beforehand
+    const result = [];
+
+    this[forEachName](node, (n, a) => {
+      result.push(callback(n, a));
+    });
+
+    return result;
+  };
+
+  /**
+   * Function filtering the relevant neighbors using a callback.
+   *
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const filterName = 'filter' + name[0].toUpperCase() + name.slice(1);
+
+  Class.prototype[filterName] = function (node, callback) {
+    const result = [];
+
+    this[forEachName](node, (n, a) => {
+      if (callback(n, a)) result.push(n);
+    });
+
+    return result;
+  };
+
+  /**
+   * Function reducing the relevant neighbors using a callback.
+   *
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const reduceName = 'reduce' + name[0].toUpperCase() + name.slice(1);
+
+  Class.prototype[reduceName] = function (node, callback, initialValue) {
+    if (arguments.length < 3)
+      throw new InvalidArgumentsGraphError(
+        `Graph.${reduceName}: missing initial value. You must provide it because the callback takes more than one argument and we cannot infer the initial value from the first iteration, as you could with a simple array.`
+      );
+
+    let accumulator = initialValue;
+
+    this[forEachName](node, (n, a) => {
+      accumulator = callback(accumulator, n, a);
+    });
+
+    return accumulator;
+  };
 }
 
 /**
@@ -520,11 +512,12 @@ function attachForEachNeighbor(Class, description) {
  * @param {function} Class       - Target class.
  * @param {object}   description - Method description.
  */
-function attachForEachNeighborUntil(Class, description) {
+function attachFindNeighbor(Class, description) {
   const {name, type, direction} = description;
 
-  const forEachUntilName =
-    'forEach' + name[0].toUpperCase() + name.slice(1, -1) + 'Until';
+  const capitalizedSingular = name[0].toUpperCase() + name.slice(1, -1);
+
+  const findName = 'find' + capitalizedSingular;
 
   /**
    * Function iterating over all the relevant neighbors using a callback.
@@ -535,7 +528,7 @@ function attachForEachNeighborUntil(Class, description) {
    *
    * @throws {Error} - Will throw if there are too many arguments.
    */
-  Class.prototype[forEachUntilName] = function (node, callback) {
+  Class.prototype[findName] = function (node, callback) {
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type) return;
 
@@ -545,16 +538,58 @@ function attachForEachNeighborUntil(Class, description) {
 
     if (typeof nodeData === 'undefined')
       throw new NotFoundGraphError(
-        `Graph.${forEachUntilName}: could not find the "${node}" node in the graph.`
+        `Graph.${findName}: could not find the "${node}" node in the graph.`
       );
 
     // Here, we want to iterate over a node's relevant neighbors
-    return forEachNeighborForNodeUntil(
+    return findNeighbor(
       type === 'mixed' ? this.type : type,
       direction,
       nodeData,
       callback
     );
+  };
+
+  /**
+   * Function iterating over all the relevant neighbors to find if any of them
+   * matches the given predicate.
+   *
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const someName = 'some' + capitalizedSingular;
+
+  Class.prototype[someName] = function (node, callback) {
+    const found = this[findName](node, callback);
+
+    if (found) return true;
+
+    return false;
+  };
+
+  /**
+   * Function iterating over all the relevant neighbors to find if all of them
+   * matche the given predicate.
+   *
+   * @param  {any}      node     - Target node.
+   * @param  {function} callback - Callback to use.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if there are too many arguments.
+   */
+  const everyName = 'every' + capitalizedSingular;
+
+  Class.prototype[everyName] = function (node, callback) {
+    const found = this[findName](node, (n, a) => {
+      return !callback(n, a);
+    });
+
+    if (found) return false;
+
+    return true;
   };
 }
 
@@ -609,7 +644,7 @@ export function attachNeighborIterationMethods(Graph) {
   NEIGHBORS_ITERATION.forEach(description => {
     attachNeighborArrayCreator(Graph, description);
     attachForEachNeighbor(Graph, description);
-    attachForEachNeighborUntil(Graph, description);
+    attachFindNeighbor(Graph, description);
     attachNeighborIteratorCreator(Graph, description);
   });
 }

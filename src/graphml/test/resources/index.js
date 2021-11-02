@@ -12,6 +12,7 @@ var FILES = [
   'miserables_broken',
   'multigraph',
   'mixed_multigraph'
+  // 'unordered'
 ];
 
 function loadFile(name) {

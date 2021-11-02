@@ -1149,10 +1149,10 @@ describe('Neighborhood Indices', function () {
       applyMoves(index, UNDIRECTED_MOVES);
 
       graph.nodes().forEach(function (node, i) {
-        index.isolate(i, graph.degree(node, false));
+        index.isolate(i, graph.degreeWithoutSelfLoops(node));
       });
 
-      index.isolate(2, graph.degree(3, false));
+      index.isolate(2, graph.degreeWithoutSelfLoops(3));
 
       var sort = function (a) {
         return a.slice().sort();
@@ -1174,12 +1174,16 @@ describe('Neighborhood Indices', function () {
       graph.nodes().forEach(function (node, i) {
         index.isolate(
           i,
-          graph.inDegree(node, false),
-          graph.outDegree(node, false)
+          graph.inDegreeWithoutSelfLoops(node),
+          graph.outDegreeWithoutSelfLoops(node)
         );
       });
 
-      index.isolate(2, graph.inDegree(3, false), graph.outDegree(3, false));
+      index.isolate(
+        2,
+        graph.inDegreeWithoutSelfLoops(3),
+        graph.outDegreeWithoutSelfLoops(3)
+      );
 
       var sort = function (a) {
         return a.slice().sort();

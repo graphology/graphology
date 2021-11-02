@@ -111,17 +111,13 @@ export function clearEdgeFromStructureIndex(graph, undirected, edgeData) {
  * @param {Graph} graph - Target Graph instance.
  */
 export function clearStructureIndex(graph) {
-  graph._nodes.forEach(data => {
-    // Clearing now useless properties
-    if (typeof data.in !== 'undefined') {
-      data.in = {};
-      data.out = {};
-    }
+  const iterator = graph._nodes.values();
 
-    if (typeof data.undirected !== 'undefined') {
-      data.undirected = {};
-    }
-  });
+  let step;
+
+  while (((step = iterator.next()), step.done !== true)) {
+    step.value.clear();
+  }
 }
 
 /**

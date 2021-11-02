@@ -1,6 +1,6 @@
 {
   "name": "graphology-components",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Connected components for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -36,7 +36,6 @@
   },
   "dependencies": {
     "@yomguithereal/helpers": "^1.1.1",
-    "graphology-utils": "^1.8.0",
-    "graphology-operators": "^1.4.1"
+    "graphology-utils": "^2.1.2"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "graphology-indices",
-  "version": "0.13.4",
+  "version": "0.14.0",
   "description": "Miscellaneous indices for graphology.",
   "main": "index.js",
   "files": [
@@ -35,7 +35,7 @@
     "graphology-types": ">=0.20.0"
   },
   "dependencies": {
-    "graphology-utils": "^1.7.0",
+    "graphology-utils": "^2.1.2",
     "mnemonist": "^0.38.0"
   }
 }

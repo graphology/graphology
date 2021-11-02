@@ -1,7 +1,7 @@
 ---
 layout: default
 title: traversal
-nav_order: 18
+nav_order: 16
 parent: Standard library
 ---
 

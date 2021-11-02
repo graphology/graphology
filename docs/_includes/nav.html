@@ -148,7 +148,26 @@
       </li>
       {%- endfor -%}
     </ul>
+    {%- endif -%} {%- if node.detailed_menu_toc -%}
+    <ul class="nav-list anchored">
+      {%- for child in node.detailed_menu_toc -%} {%- assign anchored_url =
+      child.label | slugify | prepend: "#" | prepend: node.url | absolute_url
+      -%} {%- if child.id -%}{%- assign anchored_url = child.id | prepend: "#" |
+      prepend: node.url | absolute_url -%} {%- endif -%}
+      <li class="{%- unless child.subtitle -%}nav-list-item{%- endunless -%}">
+        <a href="{{ anchored_url }}" class="nav-list-link">{{ child.label }}</a>
+      </li>
+      {%- endfor -%}
+    </ul>
     {%- endif -%}
   </li>
   {%- endunless -%} {%- endif -%} {%- endfor -%}
 </ul>
+<script>
+  var nav = document.getElementById('site-nav');
+  var activeItem = document.querySelector('.nav-list > .nav-list-item.active');
+
+  if (activeItem) {
+    nav.scrollTo(0, activeItem.offsetTop - 60);
+  }
+</script>

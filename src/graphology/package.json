@@ -1,6 +1,6 @@
 {
   "name": "graphology",
-  "version": "0.21.1",
+  "version": "0.22.1",
   "description": "A robust and multipurpose Graph object for JavaScript.",
   "main": "dist/graphology.cjs.js",
   "module": "dist/graphology.esm.js",
@@ -9,9 +9,8 @@
   "scripts": {
     "clean": "rimraf dist specs",
     "build": "npm run clean && rollup -c && babel tests --out-dir specs && cp src/endpoint.esm.d.ts dist/graphology.d.ts",
-    "postpublish": "npm run clean",
     "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run test:types",
+    "prepublishOnly": "npm test && npm run test:types && npm run build",
     "test": "mocha -u exports --require @babel/register ./test.js",
     "test:types": "tsc --lib es2015,dom --noEmit --noImplicitAny --noImplicitReturns ./test-types.ts"
   },
@@ -51,10 +50,10 @@
   "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
     "events": "^3.3.0",
-    "obliterator": "^1.6.1"
+    "obliterator": "^2.0.0"
   },
   "peerDependencies": {
-    "graphology-types": ">=0.20.0"
+    "graphology-types": ">=0.21.0"
   },
   "babel": {
     "presets": [

@@ -53,9 +53,14 @@ import {
   isPlainObject,
   privateProperty,
   readOnlyProperty,
-  incrementalId,
+  incrementalIdStartingFromRandomByte,
   validateHints
 } from './utils';
+
+/**
+ * Constants.
+ */
+const INSTANCE_ID = incrementalIdStartingFromRandomByte();
 
 /**
  * Enums.
@@ -102,7 +107,6 @@ const EDGE_ADD_METHODS = [
  */
 const DEFAULTS = {
   allowSelfLoops: true,
-  edgeKeyGenerator: null,
   multi: false,
   type: 'mixed'
 };
@@ -241,16 +245,20 @@ function addEdge(
     attributes
   };
 
-  if (mustGenerateKey) edge = graph._edgeKeyGenerator(eventData);
+  if (mustGenerateKey) {
+    // NOTE: in this case we can guarantee that the key does not already
+    // exist and is already correctly casted as a string
+    edge = graph._edgeKeyGenerator();
+  } else {
+    // Coercion of edge key
+    edge = '' + edge;
 
-  // Coercion of edge key
-  edge = '' + edge;
-
-  // Here, we have a key collision
-  if (graph._edges.has(edge))
-    throw new UsageGraphError(
-      `Graph.${name}: the "${edge}" edge already exists in the graph.`
-    );
+    // Here, we have a key collision
+    if (graph._edges.has(edge))
+      throw new UsageGraphError(
+        `Graph.${name}: the "${edge}" edge already exists in the graph.`
+      );
+  }
 
   // Here, we might have a source / target collision
   if (
@@ -268,7 +276,6 @@ function addEdge(
   const edgeData = new EdgeData(
     undirected,
     edge,
-    mustGenerateKey,
     sourceData,
     targetData,
     attributes
@@ -351,12 +358,12 @@ function mergeEdge(
   // Checking validity of operation
   if (!undirected && graph.type === 'undirected')
     throw new UsageGraphError(
-      `Graph.${name}: you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead.`
+      `Graph.${name}: you cannot merge/update a directed edge to an undirected graph. Use the #.mergeEdge/#.updateEdge or #.addUndirectedEdge instead.`
     );
 
   if (undirected && graph.type === 'directed')
     throw new UsageGraphError(
-      `Graph.${name}: you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead.`
+      `Graph.${name}: you cannot merge/update an undirected edge to a directed graph. Use the #.mergeEdge/#.updateEdge or #.addDirectedEdge instead.`
     );
 
   if (attributes) {
@@ -469,16 +476,20 @@ function mergeEdge(
     attributes
   };
 
-  if (mustGenerateKey) edge = graph._edgeKeyGenerator(eventData);
+  if (mustGenerateKey) {
+    // NOTE: in this case we can guarantee that the key does not already
+    // exist and is already correctly casted as a string
+    edge = graph._edgeKeyGenerator();
+  } else {
+    // Coercion of edge key
+    edge = '' + edge;
 
-  // Coercion of edge key
-  edge = '' + edge;
-
-  // Here, we have a key collision
-  if (graph._edges.has(edge))
-    throw new UsageGraphError(
-      `Graph.${name}: the "${edge}" edge already exists in the graph.`
-    );
+    // Here, we have a key collision
+    if (graph._edges.has(edge))
+      throw new UsageGraphError(
+        `Graph.${name}: the "${edge}" edge already exists in the graph.`
+      );
+  }
 
   if (!sourceData) {
     sourceData = unsafeAddNode(graph, source, {});
@@ -490,14 +501,7 @@ function mergeEdge(
   }
 
   // Storing some data
-  edgeData = new EdgeData(
-    undirected,
-    edge,
-    mustGenerateKey,
-    sourceData,
-    targetData,
-    attributes
-  );
+  edgeData = new EdgeData(undirected, edge, sourceData, targetData, attributes);
 
   // Adding the edge to the internal register
   graph._edges.set(edge, edgeData);
@@ -563,14 +567,6 @@ export default class Graph extends EventEmitter {
     options = assign({}, DEFAULTS, options);
 
     // Enforcing options validity
-    if (
-      options.edgeKeyGenerator &&
-      typeof options.edgeKeyGenerator !== 'function'
-    )
-      throw new InvalidArgumentsGraphError(
-        `Graph.constructor: invalid 'edgeKeyGenerator' option. Expecting a function but got "${options.edgeKeyGenerator}".`
-      );
-
     if (typeof options.multi !== 'boolean')
       throw new InvalidArgumentsGraphError(
         `Graph.constructor: invalid 'multi' option. Expecting a boolean but got "${options.multi}".`
@@ -598,6 +594,30 @@ export default class Graph extends EventEmitter {
 
     privateProperty(this, 'NodeDataClass', NodeDataClass);
 
+    // Internal edge key generator
+
+    // NOTE: this internal generator produce keys that are strings
+    // composed of a weird prefix, an incremental instance id starting from
+    // a random byte and finally an internal instance incremental id.
+    // All this to avoid intra-frame and cross-frame adversarial inputs
+    // that can force a single #.addEdge call to degenerate into a O(n)
+    // available key search loop.
+
+    // It also ensures that automatically generated edge keys are unlikely
+    // to produce collisions with arbitrary keys given by users.
+    const instanceId = INSTANCE_ID();
+    let edgeId = 0;
+
+    const edgeKeyGenerator = () => {
+      let availableEdgeKey;
+
+      do {
+        availableEdgeKey = 'geid_' + instanceId + '_' + edgeId++;
+      } while (this._edges.has(availableEdgeKey));
+
+      return availableEdgeKey;
+    };
+
     // Indexes
     privateProperty(this, '_attributes', {});
     privateProperty(this, '_nodes', new Map());
@@ -606,11 +626,7 @@ export default class Graph extends EventEmitter {
     privateProperty(this, '_undirectedSize', 0);
     privateProperty(this, '_directedSelfLoopCount', 0);
     privateProperty(this, '_undirectedSelfLoopCount', 0);
-    privateProperty(
-      this,
-      '_edgeKeyGenerator',
-      options.edgeKeyGenerator || incrementalId()
-    );
+    privateProperty(this, '_edgeKeyGenerator', edgeKeyGenerator);
 
     // Options
     privateProperty(this, '_options', options);
@@ -642,6 +658,13 @@ export default class Graph extends EventEmitter {
     readOnlyProperty(this, 'type', this._options.type);
     readOnlyProperty(this, 'allowSelfLoops', this._options.allowSelfLoops);
     readOnlyProperty(this, 'implementation', () => 'graphology');
+  }
+
+  _resetInstanceCounters() {
+    this._directedSize = 0;
+    this._undirectedSize = 0;
+    this._directedSelfLoopCount = 0;
+    this._undirectedSelfLoopCount = 0;
   }
 
   /**---------------------------------------------------------------------------
@@ -917,21 +940,207 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method returning the given node's in degree.
+   * Method returning whether two nodes are directed neighbors.
    *
-   * @param  {any}     node      - The node's key.
-   * @param  {boolean} allowSelfLoops - Count self-loops?
-   * @return {number}            - The node's in degree.
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
    *
-   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
    * @throws {Error} - Will throw if the node isn't in the graph.
    */
-  inDegree(node, selfLoops = true) {
-    if (typeof selfLoops !== 'boolean')
-      throw new InvalidArgumentsGraphError(
-        `Graph.inDegree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`
+  areDirectedNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areDirectedNeighbors: could not find the "${node}" node in the graph.`
       );
 
+    if (this.type === 'undirected') return false;
+
+    return neighbor in nodeData.in || neighbor in nodeData.out;
+  }
+
+  /**
+   * Method returning whether two nodes are out neighbors.
+   *
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  areOutNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areOutNeighbors: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type === 'undirected') return false;
+
+    return neighbor in nodeData.out;
+  }
+
+  /**
+   * Method returning whether two nodes are in neighbors.
+   *
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  areInNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areInNeighbors: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type === 'undirected') return false;
+
+    return neighbor in nodeData.in;
+  }
+
+  /**
+   * Method returning whether two nodes are undirected neighbors.
+   *
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  areUndirectedNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areUndirectedNeighbors: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type === 'directed') return false;
+
+    return neighbor in nodeData.undirected;
+  }
+
+  /**
+   * Method returning whether two nodes are neighbors.
+   *
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  areNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areNeighbors: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type !== 'undirected') {
+      if (neighbor in nodeData.in || neighbor in nodeData.out) return true;
+    }
+
+    if (this.type !== 'directed') {
+      if (neighbor in nodeData.undirected) return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Method returning whether two nodes are inbound neighbors.
+   *
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  areInboundNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areInboundNeighbors: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type !== 'undirected') {
+      if (neighbor in nodeData.in) return true;
+    }
+
+    if (this.type !== 'directed') {
+      if (neighbor in nodeData.undirected) return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Method returning whether two nodes are outbound neighbors.
+   *
+   * @param  {any}     node     - The node's key.
+   * @param  {any}     neighbor - The neighbor's key.
+   * @return {boolean}
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  areOutboundNeighbors(node, neighbor) {
+    node = '' + node;
+    neighbor = '' + neighbor;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.areOutboundNeighbors: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type !== 'undirected') {
+      if (neighbor in nodeData.out) return true;
+    }
+
+    if (this.type !== 'directed') {
+      if (neighbor in nodeData.undirected) return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Method returning the given node's in degree.
+   *
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's in degree.
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  inDegree(node) {
     node = '' + node;
 
     const nodeData = this._nodes.get(node);
@@ -943,27 +1152,18 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'undirected') return 0;
 
-    const loops = selfLoops ? nodeData.directedSelfLoops : 0;
-
-    return nodeData.inDegree + loops;
+    return nodeData.inDegree + nodeData.directedSelfLoops;
   }
 
   /**
    * Method returning the given node's out degree.
    *
-   * @param  {any}     node      - The node's key.
-   * @param  {boolean} selfLoops - Count self-loops?
-   * @return {number}            - The node's out degree.
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's in degree.
    *
-   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
    * @throws {Error} - Will throw if the node isn't in the graph.
    */
-  outDegree(node, selfLoops = true) {
-    if (typeof selfLoops !== 'boolean')
-      throw new InvalidArgumentsGraphError(
-        `Graph.outDegree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`
-      );
-
+  outDegree(node) {
     node = '' + node;
 
     const nodeData = this._nodes.get(node);
@@ -975,27 +1175,18 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'undirected') return 0;
 
-    const loops = selfLoops ? nodeData.directedSelfLoops : 0;
-
-    return nodeData.outDegree + loops;
+    return nodeData.outDegree + nodeData.directedSelfLoops;
   }
 
   /**
    * Method returning the given node's directed degree.
    *
-   * @param  {any}     node      - The node's key.
-   * @param  {boolean} selfLoops - Count self-loops?
-   * @return {number}            - The node's directed degree.
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's in degree.
    *
-   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
    * @throws {Error} - Will throw if the node isn't in the graph.
    */
-  directedDegree(node, selfLoops = true) {
-    if (typeof selfLoops !== 'boolean')
-      throw new InvalidArgumentsGraphError(
-        `Graph.directedDegree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`
-      );
-
+  directedDegree(node) {
     node = '' + node;
 
     const nodeData = this._nodes.get(node);
@@ -1007,7 +1198,7 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'undirected') return 0;
 
-    const loops = selfLoops ? nodeData.directedSelfLoops : 0;
+    const loops = nodeData.directedSelfLoops;
 
     const inDegree = nodeData.inDegree + loops;
     const outDegree = nodeData.outDegree + loops;
@@ -1018,19 +1209,12 @@ export default class Graph extends EventEmitter {
   /**
    * Method returning the given node's undirected degree.
    *
-   * @param  {any}     node      - The node's key.
-   * @param  {boolean} selfLoops - Count self-loops?
-   * @return {number}            - The node's undirected degree.
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's in degree.
    *
-   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
    * @throws {Error} - Will throw if the node isn't in the graph.
    */
-  undirectedDegree(node, selfLoops = true) {
-    if (typeof selfLoops !== 'boolean')
-      throw new InvalidArgumentsGraphError(
-        `Graph.undirectedDegree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`
-      );
-
+  undirectedDegree(node) {
     node = '' + node;
 
     const nodeData = this._nodes.get(node);
@@ -1042,27 +1226,20 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'directed') return 0;
 
-    const loops = selfLoops ? nodeData.undirectedSelfLoops : 0;
+    const loops = nodeData.undirectedSelfLoops;
 
     return nodeData.undirectedDegree + loops * 2;
   }
 
   /**
-   * Method returning the given node's degree.
+   * Method returning the given node's directed degree.
    *
-   * @param  {any}     node      - The node's key.
-   * @param  {boolean} selfLoops - Count self-loops?
-   * @return {number}            - The node's degree.
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's in degree.
    *
-   * @throws {Error} - Will throw if the selfLoops arg is not boolean.
    * @throws {Error} - Will throw if the node isn't in the graph.
    */
-  degree(node, selfLoops = true) {
-    if (typeof selfLoops !== 'boolean')
-      throw new InvalidArgumentsGraphError(
-        `Graph.degree: Expecting a boolean but got "${selfLoops}" for the second parameter (allowing self-loops to be counted).`
-      );
-
+  degree(node) {
     node = '' + node;
 
     const nodeData = this._nodes.get(node);
@@ -1073,18 +1250,137 @@ export default class Graph extends EventEmitter {
       );
 
     let degree = 0;
-    let loops = 0;
 
     if (this.type !== 'directed') {
-      if (selfLoops) loops = nodeData.undirectedSelfLoops;
-
-      degree += nodeData.undirectedDegree + loops * 2;
+      degree += nodeData.undirectedDegree + nodeData.undirectedSelfLoops * 2;
     }
 
     if (this.type !== 'undirected') {
-      if (selfLoops) loops = nodeData.directedSelfLoops;
+      degree +=
+        nodeData.inDegree + nodeData.outDegree + nodeData.directedSelfLoops * 2;
+    }
 
-      degree += nodeData.inDegree + nodeData.outDegree + loops * 2;
+    return degree;
+  }
+
+  /**
+   * Method returning the given node's in degree without considering self loops.
+   *
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's in degree.
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  inDegreeWithoutSelfLoops(node) {
+    node = '' + node;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.inDegreeWithoutSelfLoops: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type === 'undirected') return 0;
+
+    return nodeData.inDegree;
+  }
+
+  /**
+   * Method returning the given node's out degree without considering self loops.
+   *
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's in degree.
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  outDegreeWithoutSelfLoops(node) {
+    node = '' + node;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.outDegreeWithoutSelfLoops: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type === 'undirected') return 0;
+
+    return nodeData.outDegree;
+  }
+
+  /**
+   * Method returning the given node's directed degree without considering self loops.
+   *
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's in degree.
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  directedDegreeWithoutSelfLoops(node) {
+    node = '' + node;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.directedDegreeWithoutSelfLoops: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type === 'undirected') return 0;
+
+    return nodeData.inDegree + nodeData.outDegree;
+  }
+
+  /**
+   * Method returning the given node's undirected degree without considering self loops.
+   *
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's in degree.
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  undirectedDegreeWithoutSelfLoops(node) {
+    node = '' + node;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.undirectedDegreeWithoutSelfLoops: could not find the "${node}" node in the graph.`
+      );
+
+    if (this.type === 'directed') return 0;
+
+    return nodeData.undirectedDegree;
+  }
+
+  /**
+   * Method returning the given node's directed degree without considering self loops.
+   *
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's in degree.
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  degreeWithoutSelfLoops(node) {
+    node = '' + node;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.degreeWithoutSelfLoops: could not find the "${node}" node in the graph.`
+      );
+
+    let degree = 0;
+
+    if (this.type !== 'directed') {
+      degree += nodeData.undirectedDegree;
+    }
+
+    if (this.type !== 'undirected') {
+      degree += nodeData.inDegree + nodeData.outDegree;
     }
 
     return degree;
@@ -1269,27 +1565,6 @@ export default class Graph extends EventEmitter {
       );
 
     return data.source === data.target;
-  }
-
-  /**
-   * Method returning whether the given edge has a generated key.
-   *
-   * @param  {any}     edge - The edge's key.
-   * @return {boolean}
-   *
-   * @throws {Error} - Will throw if the edge isn't in the graph.
-   */
-  hasGeneratedKey(edge) {
-    edge = '' + edge;
-
-    const data = this._edges.get(edge);
-
-    if (!data)
-      throw new NotFoundGraphError(
-        `Graph.hasGeneratedKey: could not find the "${edge}" edge in the graph.`
-      );
-
-    return data.generatedKey;
   }
 
   /**---------------------------------------------------------------------------
@@ -1539,6 +1814,9 @@ export default class Graph extends EventEmitter {
     // Clearing nodes
     this._nodes.clear();
 
+    // Reset counters
+    this._resetInstanceCounters();
+
     // Emitting
     this.emit('cleared');
   }
@@ -1549,11 +1827,13 @@ export default class Graph extends EventEmitter {
    * @return {Graph}
    */
   clearEdges() {
+    clearStructureIndex(this);
+
     // Clearing edges
     this._edges.clear();
 
-    // Clearing indices
-    this.clearIndex();
+    // Reset counters
+    this._resetInstanceCounters();
 
     // Emitting
     this.emit('edgesCleared');
@@ -2052,16 +2332,14 @@ export default class Graph extends EventEmitter {
   }
 
   /**
-   * Method iterating over the graph's adjacency using the given callback until
-   * it returns a truthy value to stop iteration.
+   * Method returning whether a matching edge can be found using given
+   * predicate function.
    *
    * @param  {function}  callback - Callback to use.
    */
-  forEachUntil(callback) {
+  find(callback) {
     if (typeof callback !== 'function')
-      throw new InvalidArgumentsGraphError(
-        'Graph.forEach: expecting a callback.'
-      );
+      throw new InvalidArgumentsGraphError('Graph.find: expecting a callback.');
 
     if (this.multi) return forEachAdjacencyMulti(true, this, callback);
 
@@ -2101,36 +2379,170 @@ export default class Graph extends EventEmitter {
         'Graph.forEachNode: expecting a callback.'
       );
 
-    this._nodes.forEach((data, key) => {
-      callback(key, data.attributes);
-    });
+    const iterator = this._nodes.values();
+
+    let step, nodeData;
+
+    while (((step = iterator.next()), step.done !== true)) {
+      nodeData = step.value;
+      callback(nodeData.key, nodeData.attributes);
+    }
   }
 
   /**
-   * Method iterating over the graph's nodes using the given callback until
-   * it returns a truthy value to stop iteration.
+   * Method iterating attempting to find a node matching the given predicate
+   * function.
    *
-   * @param  {function}  callback - Callback (key, attributes, index).
+   * @param  {function}  callback - Callback (key, attributes).
    */
-  forEachNodeUntil(callback) {
+  findNode(callback) {
     if (typeof callback !== 'function')
       throw new InvalidArgumentsGraphError(
-        'Graph.forEachNode: expecting a callback.'
+        'Graph.findNode: expecting a callback.'
       );
 
     const iterator = this._nodes.values();
 
-    let step, nodeData, shouldBreak;
+    let step, nodeData;
 
     while (((step = iterator.next()), step.done !== true)) {
       nodeData = step.value;
 
-      shouldBreak = callback(nodeData.key, nodeData.attributes);
+      if (callback(nodeData.key, nodeData.attributes)) return nodeData.key;
+    }
 
-      if (shouldBreak) return true;
+    return;
+  }
+
+  /**
+   * Method mapping nodes.
+   *
+   * @param  {function}  callback - Callback (key, attributes).
+   */
+  mapNodes(callback) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.mapNode: expecting a callback.'
+      );
+
+    const iterator = this._nodes.values();
+
+    let step, nodeData;
+
+    const result = new Array(this.order);
+    let i = 0;
+
+    while (((step = iterator.next()), step.done !== true)) {
+      nodeData = step.value;
+      result[i++] = callback(nodeData.key, nodeData.attributes);
+    }
+
+    return result;
+  }
+
+  /**
+   * Method returning whether some node verify the given predicate.
+   *
+   * @param  {function}  callback - Callback (key, attributes).
+   */
+  someNode(callback) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.someNode: expecting a callback.'
+      );
+
+    const iterator = this._nodes.values();
+
+    let step, nodeData;
+
+    while (((step = iterator.next()), step.done !== true)) {
+      nodeData = step.value;
+
+      if (callback(nodeData.key, nodeData.attributes)) return true;
     }
 
     return false;
+  }
+
+  /**
+   * Method returning whether all node verify the given predicate.
+   *
+   * @param  {function}  callback - Callback (key, attributes).
+   */
+  everyNode(callback) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.everyNode: expecting a callback.'
+      );
+
+    const iterator = this._nodes.values();
+
+    let step, nodeData;
+
+    while (((step = iterator.next()), step.done !== true)) {
+      nodeData = step.value;
+
+      if (!callback(nodeData.key, nodeData.attributes)) return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Method filtering nodes.
+   *
+   * @param  {function}  callback - Callback (key, attributes).
+   */
+  filterNodes(callback) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.filterNodes: expecting a callback.'
+      );
+
+    const iterator = this._nodes.values();
+
+    let step, nodeData;
+
+    const result = [];
+
+    while (((step = iterator.next()), step.done !== true)) {
+      nodeData = step.value;
+
+      if (callback(nodeData.key, nodeData.attributes))
+        result.push(nodeData.key);
+    }
+
+    return result;
+  }
+
+  /**
+   * Method reducing nodes.
+   *
+   * @param  {function}  callback - Callback (accumulator, key, attributes).
+   */
+  reduceNodes(callback, initialValue) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.reduceNodes: expecting a callback.'
+      );
+
+    if (arguments.length < 2)
+      throw new InvalidArgumentsGraphError(
+        'Graph.reduceNodes: missing initial value. You must provide it because the callback takes more than one argument and we cannot infer the initial value from the first iteration, as you could with a simple array.'
+      );
+
+    let accumulator = initialValue;
+
+    const iterator = this._nodes.values();
+
+    let step, nodeData;
+
+    while (((step = iterator.next()), step.done !== true)) {
+      nodeData = step.value;
+      accumulator = callback(accumulator, nodeData.key, nodeData.attributes);
+    }
+
+    return accumulator;
   }
 
   /**
@@ -2148,7 +2560,10 @@ export default class Graph extends EventEmitter {
 
       const data = step.value;
 
-      return {value: [data.key, data.attributes], done: false};
+      return {
+        value: {node: data.key, attributes: data.attributes},
+        done: false
+      };
     });
   }
 
@@ -2434,20 +2849,18 @@ export default class Graph extends EventEmitter {
   copy() {
     const graph = this.emptyCopy();
 
-    this.forEachEdge(
-      (edge, attr, source, target, _sa, _ta, undirected, generatedKey) => {
-        addEdge(
-          graph,
-          'copy',
-          generatedKey,
-          undirected,
-          edge,
-          source,
-          target,
-          attr
-        );
-      }
-    );
+    this.forEachEdge((edge, attr, source, target, _sa, _ta, undirected) => {
+      addEdge(
+        graph,
+        'copy',
+        false,
+        undirected,
+        edge,
+        source,
+        target,
+        assign({}, attr)
+      );
+    });
 
     return graph;
   }
@@ -2494,21 +2907,6 @@ export default class Graph extends EventEmitter {
   }
 
   /**---------------------------------------------------------------------------
-   * Indexes-related methods
-   **---------------------------------------------------------------------------
-   */
-
-  /**
-   * Method used to clear the desired index to clear memory.
-   *
-   * @return {Graph}       - Returns itself for chaining.
-   */
-  clearIndex() {
-    clearStructureIndex(this);
-    return this;
-  }
-
-  /**---------------------------------------------------------------------------
    * Known methods
    **---------------------------------------------------------------------------
    */
@@ -2550,7 +2948,7 @@ export default class Graph extends EventEmitter {
 
       const desc = `(${data.source.key})${direction}(${data.target.key})`;
 
-      if (!data.generatedKey) {
+      if (!key.startsWith('geid_')) {
         label += `[${key}]: `;
       } else if (this.multi) {
         if (typeof multiIndex[desc] === 'undefined') {
@@ -2608,8 +3006,8 @@ if (typeof Symbol !== 'undefined')
  */
 EDGE_ADD_METHODS.forEach(method => {
   ['add', 'merge', 'update'].forEach(verb => {
-    const name = method.name(verb),
-      fn = verb === 'add' ? addEdge : mergeEdge;
+    const name = method.name(verb);
+    const fn = verb === 'add' ? addEdge : mergeEdge;
 
     if (method.generateKey) {
       Graph.prototype[name] = function (source, target, attributes) {

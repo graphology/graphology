@@ -1,8 +1,47 @@
 # Changelog
 
-## 0.21.2 (provisional)
+## 0.22.2 (provisional)
 
+- Fixing `#.mergeEdge` & `#.updateEdge` error messages.
+- Improving performance of `#.addEdge` etc. (less deopt).
+
+## 0.22.1
+
+- Fixing `prepublishOnly` script and shipped package.
+
+## 0.22.0
+
+- Rolling back to robust generated ids for edges.
+- Adding `#.mapNodes`, `#.filterNodes`, `#.reduceNodes`, `#.findNode` `#.someNode`, `#.everyNode`.
+- Adding `#.mapEdges`, `#.filterEdges`, `#.reduceEdges`, `#.findEdge` `#.someEdge`, `#.everyEdge`.
+- Adding `#.mapNeighbors`, `#.filterNeighbors`, `#.reduceNeighbors`, `#.findNeighbor` `#.someNeighbor`, `#.everyNeighbor`.
+- Adding `#.degreeWithoutSelfLoops`.
+- Changing `#.forEach*Until` methods to `#.find*` methods.
+- Dropping `#.hasGeneratedKey`.
+- Dropping the `generated` last argument to edge & adjacency iterations.
+- Dropping the `edgeKeyGenerator` instanciation option.
+- Dropping second argument of `#.degree`.
+- Changing `#.neighbors(source, target)` to `#.areNeighbors`.
+- Changing iterator entries to objects rather than arrays.
+- `#.exportEdge` will now always return a key.
+- Fixing mutability bug with `#.copy`.
+- Fixing adjacency iterator items missing `undirected`.
+- Fixing edge iterator items missing `undirected`.
+- Fixing bug related to instance counters and `#.clear`, `#.clearEdges`.
 - Improving `#.copy` peformance.
+- Improving `#.areNeighbors` performance.
+- Improving `#.forEachNode` performance.
+- Upgrading `obliterator` and improving iterator-based methods.
+
+*Migration guide*
+
+This release should only affect you in the following use-cases:
+
+1. You were using `#.forEach*Until` methods, in which case you should replace them by the relevant `#.find*` or `#.some*` method.
+2. You were using the boolean second argument to the `#.degree` methods. Replace those calls by `#.degreeWithoutSelfLoops`.
+3. You were using the (well-hidden) two-arguments polymorphism of `#.neighbors`. Replace those calls by `#.areNeighbors`.
+4. You were using iterators in which case the yielded entries are now objects rather than arrays and should be easier to destructure to access the parts you need.
+5. You were doing despicable things with automatically generated keys.
 
 ## 0.21.1
 

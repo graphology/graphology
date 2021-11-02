@@ -38,11 +38,10 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
           targetData.attributes,
           edgeData.key,
           edgeData.attributes,
-          edgeData.undirected,
-          edgeData.generatedKey
+          edgeData.undirected
         );
 
-        if (breakable && shouldBreak) return true;
+        if (breakable && shouldBreak) return edgeData.key;
       }
     }
 
@@ -62,16 +61,15 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
           targetData.attributes,
           edgeData.key,
           edgeData.attributes,
-          edgeData.undirected,
-          edgeData.generatedKey
+          edgeData.undirected
         );
 
-        if (breakable && shouldBreak) return true;
+        if (breakable && shouldBreak) return edgeData.key;
       }
     }
   }
 
-  return false;
+  return;
 }
 
 /**
@@ -118,11 +116,10 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
             targetData.attributes,
             edgeData.key,
             edgeData.attributes,
-            edgeData.undirected,
-            edgeData.generatedKey
+            edgeData.undirected
           );
 
-          if (breakable && shouldBreak) return true;
+          if (breakable && shouldBreak) return edgeData.key;
         }
       }
     }
@@ -148,17 +145,16 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
             targetData.attributes,
             edgeData.key,
             edgeData.attributes,
-            edgeData.undirected,
-            edgeData.generatedKey
+            edgeData.undirected
           );
 
-          if (breakable && shouldBreak) return true;
+          if (breakable && shouldBreak) return edgeData.key;
         }
       }
     }
   }
 
-  return false;
+  return;
 }
 
 export function createAdjacencyIteratorSimple(graph) {
@@ -229,14 +225,15 @@ export function createAdjacencyIteratorSimple(graph) {
 
     return {
       done: false,
-      value: [
-        sourceData.key,
-        targetData.key,
-        sourceData.attributes,
-        targetData.attributes,
-        edgeData.key,
-        edgeData.attributes
-      ]
+      value: {
+        source: sourceData.key,
+        target: targetData.key,
+        sourceAttributes: sourceData.attributes,
+        targetAttributes: targetData.attributes,
+        edgeKey: edgeData.key,
+        edgeAttributes: edgeData.attributes,
+        undirected: edgeData.undirected
+      }
     };
   });
 }
@@ -322,14 +319,15 @@ export function createAdjacencyIteratorMulti(graph) {
 
     return {
       done: false,
-      value: [
-        sourceData.key,
-        targetData.key,
-        sourceData.attributes,
-        targetData.attributes,
-        edgeData.key,
-        edgeData.attributes
-      ]
+      value: {
+        source: sourceData.key,
+        target: targetData.key,
+        sourceAttributes: sourceData.attributes,
+        targetAttributes: targetData.attributes,
+        edge: edgeData.key,
+        edgeAttributes: edgeData.attributes,
+        undirected: edgeData.undirected
+      }
     };
   });
 }

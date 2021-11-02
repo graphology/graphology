@@ -8,23 +8,14 @@
 /**
  * Miscellaneous types.
  */
-type Attributes = {[key: string]: any};
+type Attributes = {[name: string]: any};
 
 type GraphType = 'mixed' | 'directed' | 'undirected';
 
 type UpdateHints = {attributes?: Array<string>};
 
-type EdgeKeyGeneratorFunction<EdgeAttributes extends Attributes = Attributes> =
-  (data: {
-    undirected: boolean;
-    source: string;
-    target: string;
-    attributes: EdgeAttributes;
-  }) => unknown;
-
-type GraphOptions<EdgeAttributes extends Attributes = Attributes> = {
+type GraphOptions = {
   allowSelfLoops?: boolean;
-  edgeKeyGenerator?: EdgeKeyGeneratorFunction<EdgeAttributes>;
   multi?: boolean;
   type?: GraphType;
 };
@@ -32,16 +23,38 @@ type GraphOptions<EdgeAttributes extends Attributes = Attributes> = {
 type AdjacencyEntry<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
-> = [string, string, NodeAttributes, NodeAttributes, string, EdgeAttributes];
+> = {
+  source: string;
+  target: string;
+  sourceAttributes: NodeAttributes;
+  targetAttributes: NodeAttributes;
+  edge: string;
+  edgeAttributes: EdgeAttributes;
+  undirected: boolean;
+};
 
-type NodeEntry<NodeAttributes extends Attributes = Attributes> = [
-  string,
-  NodeAttributes
-];
+type NodeEntry<NodeAttributes extends Attributes = Attributes> = {
+  node: string;
+  attributes: NodeAttributes;
+};
+
+type NeighborEntry<NodeAttributes extends Attributes = Attributes> = {
+  neighbor: string;
+  attributes: NodeAttributes;
+};
+
 type EdgeEntry<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
-> = [string, EdgeAttributes, string, string, NodeAttributes, NodeAttributes];
+> = {
+  edge: string;
+  attributes: EdgeAttributes;
+  source: string;
+  target: string;
+  sourceAttributes: NodeAttributes;
+  targetAttributes: NodeAttributes;
+  undirected: boolean;
+};
 
 type AdjacencyIterationCallback<
   NodeAttributes extends Attributes = Attributes,
@@ -53,11 +66,10 @@ type AdjacencyIterationCallback<
   targetAttributes: NodeAttributes,
   edge: string,
   edgeAttributes: EdgeAttributes,
-  undirected: boolean,
-  generatedKey: boolean
+  undirected: boolean
 ) => void;
 
-type AdjacencyUntilIterationCallback<
+type AdjacencyPredicate<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > = (
@@ -67,22 +79,52 @@ type AdjacencyUntilIterationCallback<
   targetAttributes: NodeAttributes,
   edge: string,
   edgeAttributes: EdgeAttributes,
-  undirected: boolean,
-  generatedKey: boolean
-) => boolean | undefined;
+  undirected: boolean
+) => boolean | void;
 
 type NodeIterationCallback<NodeAttributes extends Attributes = Attributes> = (
   node: string,
   attributes: NodeAttributes
 ) => void;
 
-type NodeUntilIterationCallback<
-  NodeAttributes extends Attributes = Attributes
-> = (node: string, attributes: NodeAttributes) => boolean | undefined;
+type NodePredicate<NodeAttributes extends Attributes = Attributes> = (
+  node: string,
+  attributes: NodeAttributes
+) => boolean | void;
+
+type NodeMapper<T, NodeAttributes extends Attributes = Attributes> = (
+  node: string,
+  attributes: NodeAttributes
+) => T;
+
+type NodeReducer<T, NodeAttributes extends Attributes = Attributes> = (
+  accumulator: T,
+  node: string,
+  attributes: NodeAttributes
+) => T;
 
 type NodeUpdateIterationCallback<
   NodeAttributes extends Attributes = Attributes
 > = (node: string, attributes: NodeAttributes) => NodeAttributes;
+
+type NeighborIterationCallback<NodeAttributes extends Attributes = Attributes> =
+  (neighbor: string, attributes: NodeAttributes) => void;
+
+type NeighborPredicate<NodeAttributes extends Attributes = Attributes> = (
+  neighbor: string,
+  attributes: NodeAttributes
+) => boolean | void;
+
+type NeighborMapper<T, NodeAttributes extends Attributes = Attributes> = (
+  neighbor: string,
+  attributes: NodeAttributes
+) => T;
+
+type NeighborReducer<T, NodeAttributes extends Attributes = Attributes> = (
+  accumulator: T,
+  neighbor: string,
+  attributes: NodeAttributes
+) => T;
 
 type EdgeIterationCallback<
   NodeAttributes extends Attributes = Attributes,
@@ -94,11 +136,10 @@ type EdgeIterationCallback<
   target: string,
   sourceAttributes: NodeAttributes,
   targetAttributes: NodeAttributes,
-  undirected: boolean,
-  generatedKey: boolean
+  undirected: boolean
 ) => void;
 
-type EdgeUntilIterationCallback<
+type EdgePredicate<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > = (
@@ -108,9 +149,37 @@ type EdgeUntilIterationCallback<
   target: string,
   sourceAttributes: NodeAttributes,
   targetAttributes: NodeAttributes,
-  undirected: boolean,
-  generatedKey: boolean
-) => boolean | undefined;
+  undirected: boolean
+) => boolean | void;
+
+type EdgeMapper<
+  T,
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> = (
+  edge: string,
+  attributes: EdgeAttributes,
+  source: string,
+  target: string,
+  sourceAttributes: NodeAttributes,
+  targetAttributes: NodeAttributes,
+  undirected: boolean
+) => T;
+
+type EdgeReducer<
+  T,
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> = (
+  accumulator: T,
+  edge: string,
+  attributes: EdgeAttributes,
+  source: string,
+  target: string,
+  sourceAttributes: NodeAttributes,
+  targetAttributes: NodeAttributes,
+  undirected: boolean
+) => T;
 
 type EdgeUpdateIterationCallback<
   EdgeAttributes extends Attributes = Attributes
@@ -129,19 +198,13 @@ type SerializedEdge<EdgeAttributes extends Attributes = Attributes> = {
   undirected?: boolean;
 };
 
-type SerializedGraphOptions = {
-  allowSelfLoops?: boolean;
-  multi?: boolean;
-  type?: GraphType;
-};
-
 type SerializedGraph<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
 > = {
-  attributes?: GraphAttributes;
-  options?: SerializedGraphOptions;
+  attributes: GraphAttributes;
+  options: GraphOptions;
   nodes: Array<SerializedNode<NodeAttributes>>;
   edges: Array<SerializedEdge<EdgeAttributes>>;
 };
@@ -152,7 +215,7 @@ type SerializedGraph<
  */
 type Listener = (...args: any[]) => void;
 
-type AttributeUpdateTypes = 'set' | 'remove' | 'replace' | 'merge';
+type AttributeUpdateType = 'set' | 'remove' | 'replace' | 'merge';
 
 interface GraphEvents<
   NodeAttributes extends Attributes = Attributes,
@@ -178,20 +241,20 @@ interface GraphEvents<
   cleared(): void;
   edgesCleared(): void;
   attributesUpdated(payload: {
-    type: AttributeUpdateTypes;
+    type: AttributeUpdateType;
     attributes: GraphAttributes;
     name: string;
     data: GraphAttributes;
   }): void;
   nodeAttributesUpdated(payload: {
-    type: AttributeUpdateTypes;
+    type: AttributeUpdateType;
     key: string;
     attributes: NodeAttributes;
     name: string;
     data: NodeAttributes;
   }): void;
   edgeAttributesUpdated(payload: {
-    type: AttributeUpdateTypes;
+    type: AttributeUpdateType;
     key: string;
     attributes: EdgeAttributes;
     name: string;
@@ -343,7 +406,7 @@ declare abstract class AbstractGraph<
   implements Iterable<AdjacencyEntry<NodeAttributes, EdgeAttributes>>
 {
   // Constructor
-  constructor(options?: GraphOptions<EdgeAttributes>);
+  constructor(options?: GraphOptions);
 
   // Members
   order: number;
@@ -369,11 +432,16 @@ declare abstract class AbstractGraph<
   directedEdge(source: unknown, target: unknown): string | undefined;
   undirectedEdge(source: unknown, target: unknown): string | undefined;
   edge(source: unknown, target: unknown): string | undefined;
-  inDegree(node: unknown, selfLoops?: boolean): number;
-  outDegree(node: unknown, selfLoops?: boolean): number;
-  directedDegree(node: unknown, selfLoops?: boolean): number;
-  undirectedDegree(node: unknown, selfLoops?: boolean): number;
-  degree(node: unknown, selfLoops?: boolean): number;
+  inDegree(node: unknown): number;
+  outDegree(node: unknown): number;
+  directedDegree(node: unknown): number;
+  undirectedDegree(node: unknown): number;
+  degree(node: unknown): number;
+  inDegreeWithoutSelfLoops(node: unknown): number;
+  outDegreeWithoutSelfLoops(node: unknown): number;
+  directedDegreeWithoutSelfLoops(node: unknown): number;
+  undirectedDegreeWithoutSelfLoops(node: unknown): number;
+  degreeWithoutSelfLoops(node: unknown): number;
   source(edge: unknown): string;
   target(edge: unknown): string;
   extremities(edge: unknown): [string, string];
@@ -382,21 +450,20 @@ declare abstract class AbstractGraph<
   isDirected(edge: unknown): boolean;
   isSelfLoop(edge: unknown): boolean;
   hasExtremity(edge: unknown, node: unknown): boolean;
-  hasGeneratedKey(edge: unknown): boolean;
-  neighbors(source: unknown, target: unknown): boolean;
-  undirectedNeighbors(source: unknown, target: unknown): boolean;
-  directedNeighbors(source: unknown, target: unknown): boolean;
-  inNeighbors(source: unknown, target: unknown): boolean;
-  outNeighbors(source: unknown, target: unknown): boolean;
-  inboundNeighbors(source: unknown, target: unknown): boolean;
-  outboundNeighbors(source: unknown, target: unknown): boolean;
+  areNeighbors(source: unknown, target: unknown): boolean;
+  areUndirectedNeighbors(source: unknown, target: unknown): boolean;
+  areDirectedNeighbors(source: unknown, target: unknown): boolean;
+  areInNeighbors(source: unknown, target: unknown): boolean;
+  areOutNeighbors(source: unknown, target: unknown): boolean;
+  areInboundNeighbors(source: unknown, target: unknown): boolean;
+  areOutboundNeighbors(source: unknown, target: unknown): boolean;
 
   // Mutation methods
   addNode(node: unknown, attributes?: NodeAttributes): string;
   mergeNode(node: unknown, attributes?: Partial<NodeAttributes>): string;
   updateNode(
     node: unknown,
-    updater?: (attributes: NodeAttributes) => NodeAttributes
+    updater?: (attributes: NodeAttributes | {}) => NodeAttributes
   ): string;
   addEdge(
     source: unknown,
@@ -411,7 +478,7 @@ declare abstract class AbstractGraph<
   updateEdge(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
   ): string;
   addDirectedEdge(
     source: unknown,
@@ -426,7 +493,7 @@ declare abstract class AbstractGraph<
   updateDirectedEdge(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
   ): string;
   addUndirectedEdge(
     source: unknown,
@@ -441,7 +508,7 @@ declare abstract class AbstractGraph<
   updateUndirectedEdge(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
   ): string;
   addEdgeWithKey(
     edge: unknown,
@@ -458,7 +525,7 @@ declare abstract class AbstractGraph<
   updateEdgeWithKey(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
   ): string;
   addDirectedEdgeWithKey(
     edge: unknown,
@@ -475,7 +542,7 @@ declare abstract class AbstractGraph<
   updateDirectedEdgeWithKey(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
   ): string;
   addUndirectedEdgeWithKey(
     edge: unknown,
@@ -492,7 +559,7 @@ declare abstract class AbstractGraph<
   updateUndirectedEdgeWithKey(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
   ): string;
   dropNode(node: unknown): void;
   dropEdge(edge: unknown): void;
@@ -791,16 +858,19 @@ declare abstract class AbstractGraph<
   forEach(
     callback: AdjacencyIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
-  forEachUntil(
-    callback: AdjacencyUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
+  find(
+    callback: AdjacencyPredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
   adjacency(): IterableIterator<AdjacencyEntry<NodeAttributes, EdgeAttributes>>;
 
   nodes(): Array<string>;
   forEachNode(callback: NodeIterationCallback<NodeAttributes>): void;
-  forEachNodeUntil(
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
+  mapNodes<T>(callback: NodeMapper<T, NodeAttributes>): Array<T>;
+  filterNodes(callback: NodePredicate<NodeAttributes>): Array<string>;
+  reduceNodes<T>(callback: NodeReducer<T, NodeAttributes>, initialValue: T): T;
+  findNode(callback: NodePredicate<NodeAttributes>): string | undefined;
+  someNode(callback: NodePredicate<NodeAttributes>): boolean;
+  everyNode(callback: NodePredicate<NodeAttributes>): boolean;
   nodeEntries(): IterableIterator<NodeEntry<NodeAttributes>>;
 
   edges(): Array<string>;
@@ -824,6 +894,7 @@ declare abstract class AbstractGraph<
   outboundEdges(): Array<string>;
   outboundEdges(node: unknown): Array<string>;
   outboundEdges(source: unknown, target: unknown): Array<string>;
+
   forEachEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
@@ -908,90 +979,528 @@ declare abstract class AbstractGraph<
     target: unknown,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
-  forEachEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachEdgeUntil(
+
+  mapEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapEdges<T>(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachEdgeUntil(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapEdges<T>(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachUndirectedEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachUndirectedEdgeUntil(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapUndirectedEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapUndirectedEdges<T>(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachUndirectedEdgeUntil(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapUndirectedEdges<T>(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachDirectedEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachDirectedEdgeUntil(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapDirectedEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapDirectedEdges<T>(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachDirectedEdgeUntil(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapDirectedEdges<T>(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachInEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachInEdgeUntil(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapInEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapInEdges<T>(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachInEdgeUntil(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapInEdges<T>(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachOutEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachOutEdgeUntil(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapOutEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapOutEdges<T>(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachOutEdgeUntil(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapOutEdges<T>(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachInboundEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachInboundEdgeUntil(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapInboundEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapInboundEdges<T>(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachInboundEdgeUntil(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapInboundEdges<T>(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachOutboundEdgeUntil(
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachOutboundEdgeUntil(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapOutboundEdges<T>(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapOutboundEdges<T>(
     node: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
-  ): boolean;
-  forEachOutboundEdgeUntil(
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+  mapOutboundEdges<T>(
     source: unknown,
     target: unknown,
-    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+    callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
+  ): Array<T>;
+
+  filterEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterUndirectedEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterUndirectedEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterUndirectedEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterDirectedEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterDirectedEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterDirectedEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterInEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterInEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterInEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterOutEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterOutEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterOutEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterInboundEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterInboundEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterInboundEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterOutboundEdges(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterOutboundEdges(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+  filterOutboundEdges(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): Array<string>;
+
+  reduceEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceUndirectedEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceUndirectedEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceUndirectedEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceDirectedEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceDirectedEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceDirectedEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInboundEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInboundEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInboundEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutboundEdges<T>(
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutboundEdges<T>(
+    node: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutboundEdges<T>(
+    source: unknown,
+    target: unknown,
+    callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
+    initialValue: T
+  ): T;
+
+  findEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findUndirectedEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findUndirectedEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findUndirectedEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findDirectedEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findDirectedEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findDirectedEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findInEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findInEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findInEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findOutEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findOutEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findOutEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findInboundEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findInboundEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findInboundEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findOutboundEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findOutboundEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+  findOutboundEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): string | undefined;
+
+  someEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
+  someEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
+  someEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someUndirectedEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someUndirectedEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someUndirectedEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someDirectedEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someDirectedEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someDirectedEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someInEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
+  someInEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someInEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someOutEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
+  someOutEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someOutEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someInboundEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someInboundEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someInboundEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someOutboundEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someOutboundEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  someOutboundEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+
+  everyEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
+  everyEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyUndirectedEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyUndirectedEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyUndirectedEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyDirectedEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyDirectedEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyDirectedEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyInEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
+  everyInEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyInEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyOutEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyOutEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyOutEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyInboundEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyInboundEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyInboundEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyOutboundEdge(
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyOutboundEdge(
+    node: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+  everyOutboundEdge(
+    source: unknown,
+    target: unknown,
+    callback: EdgePredicate<NodeAttributes, EdgeAttributes>
+  ): boolean;
+
   edgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   edgeEntries(
     node: unknown
@@ -1064,79 +1573,238 @@ declare abstract class AbstractGraph<
   outNeighbors(node: unknown): Array<string>;
   inboundNeighbors(node: unknown): Array<string>;
   outboundNeighbors(node: unknown): Array<string>;
+
   forEachNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachUndirectedNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachDirectedNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachInNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachOutNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachInboundNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachOutboundNeighbor(
     node: unknown,
-    callback: NodeIterationCallback<NodeAttributes>
+    callback: NeighborIterationCallback<NodeAttributes>
   ): void;
-  forEachNeighborUntil(
+
+  mapNeighbors<T>(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
-  forEachUndirectedNeighborUntil(
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+  mapUndirectedNeighbors<T>(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
-  forEachDirectedNeighborUntil(
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+  mapDirectedNeighbors<T>(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
-  forEachInNeighborUntil(
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+  mapInNeighbors<T>(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
-  forEachOutNeighborUntil(
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+  mapOutNeighbors<T>(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
-  forEachInboundNeighborUntil(
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+  mapInboundNeighbors<T>(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
-  ): boolean;
-  forEachOutboundNeighborUntil(
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+  mapOutboundNeighbors<T>(
     node: unknown,
-    callback: NodeUntilIterationCallback<NodeAttributes>
+    callback: NeighborMapper<T, NodeAttributes>
+  ): Array<T>;
+
+  filterNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+  filterUndirectedNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+  filterDirectedNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+  filterInNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+  filterOutNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+  filterInboundNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+  filterOutboundNeighbors(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): Array<string>;
+
+  reduceNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+  reduceUndirectedNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+  reduceDirectedNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+  reduceInboundNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+  reduceOutboundNeighbors<T>(
+    node: unknown,
+    callback: NeighborReducer<T, NodeAttributes>,
+    initialValue: T
+  ): T;
+
+  findNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): string | undefined;
+  findUndirectedNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): string | undefined;
+  findDirectedNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): string | undefined;
+  findInNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): string | undefined;
+  findOutNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): string | undefined;
+  findInboundNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): string | undefined;
+  findOutboundNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): string | undefined;
+
+  someNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
   ): boolean;
-  neighborEntries(node: unknown): IterableIterator<NodeEntry<NodeAttributes>>;
+  someUndirectedNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  someDirectedNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  someInNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  someOutNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  someInboundNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  someOutboundNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+
+  everyNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  everyUndirectedNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  everyDirectedNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  everyInNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  everyOutNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  everyInboundNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+  everyOutboundNeighbor(
+    node: unknown,
+    callback: NeighborPredicate<NodeAttributes>
+  ): boolean;
+
+  neighborEntries(
+    node: unknown
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
   undirectedNeighborEntries(
     node: unknown
-  ): IterableIterator<NodeEntry<NodeAttributes>>;
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
   directedNeighborEntries(
     node: unknown
-  ): IterableIterator<NodeEntry<NodeAttributes>>;
-  inNeighborEntries(node: unknown): IterableIterator<NodeEntry<NodeAttributes>>;
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
+  inNeighborEntries(
+    node: unknown
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
   outNeighborEntries(
     node: unknown
-  ): IterableIterator<NodeEntry<NodeAttributes>>;
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
   inboundNeighborEntries(
     node: unknown
-  ): IterableIterator<NodeEntry<NodeAttributes>>;
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
   outboundNeighborEntries(
     node: unknown
-  ): IterableIterator<NodeEntry<NodeAttributes>>;
+  ): IterableIterator<NeighborEntry<NodeAttributes>>;
 
   // Serialization methods
   exportNode(node: unknown): SerializedNode<NodeAttributes>;
@@ -1145,7 +1813,9 @@ declare abstract class AbstractGraph<
   importNode(data: SerializedNode<NodeAttributes>, merge?: boolean): this;
   importEdge(data: SerializedEdge<EdgeAttributes>, merge?: boolean): this;
   import(
-    data: SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>,
+    data: Partial<
+      SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>
+    >,
     merge?: boolean
   ): this;
   import(
@@ -1181,45 +1851,48 @@ declare abstract class AbstractGraph<
   ): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
 }
 
-interface IGraphConstructor<
+interface GraphConstructor<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
 > {
-  new (options?: GraphOptions<GraphAttributes>): AbstractGraph<
+  new (options?: GraphOptions): AbstractGraph<
     NodeAttributes,
     EdgeAttributes,
     GraphAttributes
   >;
 }
 
-type GraphConstructor<
-  NodeAttributes extends Attributes = Attributes,
-  EdgeAttributes extends Attributes = Attributes,
-  GraphAttributes extends Attributes = Attributes
-> = IGraphConstructor<NodeAttributes, EdgeAttributes, GraphAttributes>;
-
 export {
   AbstractGraph,
+  GraphConstructor,
   Attributes,
   GraphType,
-  EdgeKeyGeneratorFunction,
   GraphOptions,
   AdjacencyEntry,
   NodeEntry,
+  NeighborEntry,
   EdgeEntry,
   AdjacencyIterationCallback,
-  AdjacencyUntilIterationCallback,
+  AdjacencyPredicate,
   NodeIterationCallback,
-  NodeUntilIterationCallback,
+  NodePredicate,
+  NodeMapper,
+  NodeReducer,
   NodeUpdateIterationCallback,
+  NeighborIterationCallback,
+  NeighborPredicate,
+  NeighborMapper,
+  NeighborReducer,
   EdgeIterationCallback,
-  EdgeUntilIterationCallback,
+  EdgePredicate,
+  EdgeMapper,
+  EdgeReducer,
   EdgeUpdateIterationCallback,
   SerializedNode,
   SerializedEdge,
   SerializedGraph,
-  GraphConstructor
+  AttributeUpdateType
 };
 
 export default AbstractGraph;

@@ -296,6 +296,247 @@ export default function read(Graph, checkers) {
       }
     },
 
+    '#.areDirectedNeighbors': {
+      'it should throw if node is not in the graph.': function () {
+        const graph = new Graph();
+
+        assert.throws(function () {
+          graph.areDirectedNeighbors('source', 'target');
+        }, notFound());
+      },
+
+      'it should correctly return whether two nodes are neighbors.':
+        function () {
+          const graph = new Graph();
+
+          graph.mergeDirectedEdge('Mary', 'Joseph');
+          graph.mergeUndirectedEdge('Martha', 'Mary');
+
+          assert.strictEqual(
+            graph.areDirectedNeighbors('Mary', 'Joseph'),
+            true
+          );
+          assert.strictEqual(
+            graph.areDirectedNeighbors('Joseph', 'Mary'),
+            true
+          );
+          assert.strictEqual(
+            graph.areDirectedNeighbors('Martha', 'Mary'),
+            false
+          );
+
+          const undirectedGraph = new Graph({type: 'undirected'});
+          undirectedGraph.mergeEdge('Mary', 'Martha');
+
+          assert.strictEqual(
+            undirectedGraph.areDirectedNeighbors('Mary', 'Martha'),
+            false
+          );
+        }
+    },
+
+    '#.areInNeighbors': {
+      'it should throw if node is not in the graph.': function () {
+        const graph = new Graph();
+
+        assert.throws(function () {
+          graph.areInNeighbors('source', 'target');
+        }, notFound());
+      },
+
+      'it should correctly return whether two nodes are neighbors.':
+        function () {
+          const graph = new Graph();
+
+          graph.mergeDirectedEdge('Mary', 'Joseph');
+          graph.mergeUndirectedEdge('Martha', 'Mary');
+
+          assert.strictEqual(graph.areInNeighbors('Mary', 'Joseph'), false);
+          assert.strictEqual(graph.areInNeighbors('Joseph', 'Mary'), true);
+          assert.strictEqual(graph.areInNeighbors('Martha', 'Mary'), false);
+
+          const undirectedGraph = new Graph({type: 'undirected'});
+          undirectedGraph.mergeEdge('Mary', 'Martha');
+
+          assert.strictEqual(
+            undirectedGraph.areInNeighbors('Mary', 'Martha'),
+            false
+          );
+        }
+    },
+
+    '#.areOutNeighbors': {
+      'it should throw if node is not in the graph.': function () {
+        const graph = new Graph();
+
+        assert.throws(function () {
+          graph.areOutNeighbors('source', 'target');
+        }, notFound());
+      },
+
+      'it should correctly return whether two nodes are neighbors.':
+        function () {
+          const graph = new Graph();
+
+          graph.mergeDirectedEdge('Mary', 'Joseph');
+          graph.mergeUndirectedEdge('Martha', 'Mary');
+
+          assert.strictEqual(graph.areOutNeighbors('Mary', 'Joseph'), true);
+          assert.strictEqual(graph.areOutNeighbors('Joseph', 'Mary'), false);
+          assert.strictEqual(graph.areOutNeighbors('Martha', 'Mary'), false);
+
+          const undirectedGraph = new Graph({type: 'undirected'});
+          undirectedGraph.mergeEdge('Mary', 'Martha');
+
+          assert.strictEqual(
+            undirectedGraph.areOutNeighbors('Mary', 'Martha'),
+            false
+          );
+        }
+    },
+
+    '#.areOutboundNeighbors': {
+      'it should throw if node is not in the graph.': function () {
+        const graph = new Graph();
+
+        assert.throws(function () {
+          graph.areOutboundNeighbors('source', 'target');
+        }, notFound());
+      },
+
+      'it should correctly return whether two nodes are neighbors.':
+        function () {
+          const graph = new Graph();
+
+          graph.mergeDirectedEdge('Mary', 'Joseph');
+          graph.mergeUndirectedEdge('Martha', 'Mary');
+
+          assert.strictEqual(
+            graph.areOutboundNeighbors('Mary', 'Joseph'),
+            true
+          );
+          assert.strictEqual(
+            graph.areOutboundNeighbors('Joseph', 'Mary'),
+            false
+          );
+          assert.strictEqual(
+            graph.areOutboundNeighbors('Martha', 'Mary'),
+            true
+          );
+
+          const undirectedGraph = new Graph({type: 'undirected'});
+          undirectedGraph.mergeEdge('Mary', 'Martha');
+
+          assert.strictEqual(
+            undirectedGraph.areOutboundNeighbors('Mary', 'Martha'),
+            true
+          );
+        }
+    },
+
+    '#.areInboundNeighbors': {
+      'it should throw if node is not in the graph.': function () {
+        const graph = new Graph();
+
+        assert.throws(function () {
+          graph.areInboundNeighbors('source', 'target');
+        }, notFound());
+      },
+
+      'it should correctly return whether two nodes are neighbors.':
+        function () {
+          const graph = new Graph();
+
+          graph.mergeDirectedEdge('Mary', 'Joseph');
+          graph.mergeUndirectedEdge('Martha', 'Mary');
+
+          assert.strictEqual(
+            graph.areInboundNeighbors('Mary', 'Joseph'),
+            false
+          );
+          assert.strictEqual(graph.areInboundNeighbors('Joseph', 'Mary'), true);
+          assert.strictEqual(graph.areInboundNeighbors('Martha', 'Mary'), true);
+
+          const undirectedGraph = new Graph({type: 'undirected'});
+          undirectedGraph.mergeEdge('Mary', 'Martha');
+
+          assert.strictEqual(
+            undirectedGraph.areInboundNeighbors('Mary', 'Martha'),
+            true
+          );
+        }
+    },
+
+    '#.areUndirectedNeighbors': {
+      'it should throw if node is not in the graph.': function () {
+        const graph = new Graph();
+
+        assert.throws(function () {
+          graph.areUndirectedNeighbors('source', 'target');
+        }, notFound());
+      },
+
+      'it should correctly return whether two nodes are neighbors.':
+        function () {
+          const graph = new Graph();
+
+          graph.mergeDirectedEdge('Mary', 'Joseph');
+          graph.mergeUndirectedEdge('Martha', 'Mary');
+
+          assert.strictEqual(
+            graph.areUndirectedNeighbors('Mary', 'Joseph'),
+            false
+          );
+          assert.strictEqual(
+            graph.areUndirectedNeighbors('Joseph', 'Mary'),
+            false
+          );
+          assert.strictEqual(
+            graph.areUndirectedNeighbors('Martha', 'Mary'),
+            true
+          );
+
+          const directedGraph = new Graph({type: 'directed'});
+          directedGraph.mergeEdge('Mary', 'Martha');
+
+          assert.strictEqual(
+            directedGraph.areUndirectedNeighbors('Mary', 'Martha'),
+            false
+          );
+        }
+    },
+
+    '#.areNeighbors': {
+      'it should throw if node is not in the graph.': function () {
+        const graph = new Graph();
+
+        assert.throws(function () {
+          graph.areNeighbors('source', 'target');
+        }, notFound());
+      },
+
+      'it should correctly return whether two nodes are neighbors.':
+        function () {
+          const graph = new Graph();
+
+          graph.mergeDirectedEdge('Mary', 'Joseph');
+          graph.mergeUndirectedEdge('Martha', 'Mary');
+
+          assert.strictEqual(graph.areNeighbors('Mary', 'Joseph'), true);
+          assert.strictEqual(graph.areNeighbors('Joseph', 'Mary'), true);
+          assert.strictEqual(graph.areNeighbors('Martha', 'Mary'), true);
+          assert.strictEqual(graph.areNeighbors('Joseph', 'Martha'), false);
+
+          const undirectedGraph = new Graph({type: 'undirected'});
+          undirectedGraph.mergeEdge('Mary', 'Martha');
+
+          assert.strictEqual(
+            undirectedGraph.areNeighbors('Mary', 'Martha'),
+            true
+          );
+        }
+    },
+
     '#.source': {
       'it should throw if the edge is not in the graph.': function () {
         const graph = new Graph();
@@ -484,41 +725,8 @@ export default function read(Graph, checkers) {
         }
     },
 
-    '#.hasGeneratedKey': {
-      'it should throw if the edge is not in the graph.': function () {
-        const graph = new Graph();
-
-        assert.throws(function () {
-          graph.hasGeneratedKey('test');
-        }, notFound());
-      },
-
-      'it should correctly return whether the edge has a generated key or not.':
-        function () {
-          const graph = new Graph();
-          graph.addNode('John');
-          graph.addNode('Rachel');
-          graph.addNode('Larmina');
-
-          const autoKey = graph.addEdge('John', 'Rachel');
-          const withKey = graph.addEdgeWithKey('jl', 'John', 'Larmina');
-
-          assert.strictEqual(graph.hasGeneratedKey(autoKey), true);
-          assert.strictEqual(graph.hasGeneratedKey(withKey), false);
-        }
-    },
-
     Degree: {
       '#.inDegree': {
-        'it should throw if the second argument is not boolean.': function () {
-          const graph = new Graph();
-          graph.addNode('Rahn');
-
-          assert.throws(function () {
-            graph.inDegree('Rahn', 'test');
-          }, invalid());
-        },
-
         'it should throw if the node is not found in the graph.': function () {
           const graph = new Graph();
 
@@ -538,7 +746,7 @@ export default function read(Graph, checkers) {
           graph.addDirectedEdge('Sue', 'Sue');
 
           assert.strictEqual(graph.inDegree('Sue'), 3);
-          assert.strictEqual(graph.inDegree('Sue', false), 2);
+          assert.strictEqual(graph.inDegreeWithoutSelfLoops('Sue'), 2);
         },
 
         'it should always return 0 in an undirected graph.': function () {
@@ -551,15 +759,6 @@ export default function read(Graph, checkers) {
       },
 
       '#.outDegree': {
-        'it should throw if the second argument is not boolean.': function () {
-          const graph = new Graph();
-          graph.addNode('Rahn');
-
-          assert.throws(function () {
-            graph.outDegree('Rahn', 'test');
-          }, invalid());
-        },
-
         'it should throw if the node is not found in the graph.': function () {
           const graph = new Graph();
 
@@ -579,7 +778,7 @@ export default function read(Graph, checkers) {
           graph.addDirectedEdge('Helen', 'Helen');
 
           assert.strictEqual(graph.outDegree('Helen'), 3);
-          assert.strictEqual(graph.outDegree('Helen', false), 2);
+          assert.strictEqual(graph.outDegreeWithoutSelfLoops('Helen'), 2);
         },
 
         'it should always return 0 in an undirected graph.': function () {
@@ -592,15 +791,6 @@ export default function read(Graph, checkers) {
       },
 
       '#.directedDegree': {
-        'it should throw if the second argument is not boolean.': function () {
-          const graph = new Graph();
-          graph.addNode('Rahn');
-
-          assert.throws(function () {
-            graph.directedDegree('Rahn', 'test');
-          }, invalid());
-        },
-
         'it should throw if the node is not found in the graph.': function () {
           const graph = new Graph();
 
@@ -626,7 +816,7 @@ export default function read(Graph, checkers) {
           graph.addDirectedEdge('Helen', 'Helen');
 
           assert.strictEqual(graph.directedDegree('Helen'), 5);
-          assert.strictEqual(graph.directedDegree('Helen', false), 3);
+          assert.strictEqual(graph.directedDegreeWithoutSelfLoops('Helen'), 3);
         },
 
         'it should always return 0 in an undirected graph.': function () {
@@ -639,15 +829,6 @@ export default function read(Graph, checkers) {
       },
 
       '#.undirectedDegree': {
-        'it should throw if the second argument is not boolean.': function () {
-          const graph = new Graph();
-          graph.addNode('Rahn');
-
-          assert.throws(function () {
-            graph.undirectedDegree('Rahn', 'test');
-          }, invalid());
-        },
-
         'it should throw if the node is not found in the graph.': function () {
           const graph = new Graph();
 
@@ -668,7 +849,10 @@ export default function read(Graph, checkers) {
           graph.addUndirectedEdge('Helen', 'Helen');
 
           assert.strictEqual(graph.undirectedDegree('Helen'), 3);
-          assert.strictEqual(graph.undirectedDegree('Helen', false), 1);
+          assert.strictEqual(
+            graph.undirectedDegreeWithoutSelfLoops('Helen'),
+            1
+          );
         },
 
         'it should always return 0 in a directed graph.': function () {
@@ -681,15 +865,6 @@ export default function read(Graph, checkers) {
       },
 
       '#.degree': {
-        'it should throw if the second argument is not boolean.': function () {
-          const graph = new Graph();
-          graph.addNode('Rahn');
-
-          assert.throws(function () {
-            graph.degree('Rahn', 'test');
-          }, invalid());
-        },
-
         'it should throw if the node is not found in the graph.': function () {
           const graph = new Graph();
 
@@ -715,7 +890,7 @@ export default function read(Graph, checkers) {
           graph.addUndirectedEdge('Helen', 'Helen');
 
           assert.strictEqual(graph.degree('Helen'), 6);
-          assert.strictEqual(graph.degree('Helen', false), 4);
+          assert.strictEqual(graph.degreeWithoutSelfLoops('Helen'), 4);
         }
       },
 

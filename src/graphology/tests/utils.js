@@ -95,6 +95,65 @@ export default function utils(Graph) {
         PROPERTIES.forEach(property => {
           assert.strictEqual(graph[property], graph[property]);
         });
+      },
+
+      'it should not break when copying a graph with wrangled edge ids (issue #213).':
+        function () {
+          const graph = new Graph();
+          graph.addNode('n0');
+          graph.addNode('n1');
+          graph.addNode('n2');
+          graph.addNode('n3');
+          graph.addEdge('n0', 'n1');
+          graph.addEdge('n1', 'n2');
+          graph.addEdge('n2', 'n3');
+          graph.addEdge('n3', 'n0');
+
+          assert.doesNotThrow(function () {
+            graph.copy();
+          });
+
+          // Do surgery on second edge
+          const edgeToSplit = graph.edge('n1', 'n2');
+          const newNode = 'n12';
+          graph.addNode(newNode);
+          graph.dropEdge('n1', 'n2');
+          graph.addEdge('n1', newNode);
+          graph.addEdgeWithKey(edgeToSplit, newNode, 'n2');
+
+          const copy = graph.copy();
+
+          assert.deepStrictEqual(new Set(graph.nodes()), new Set(copy.nodes()));
+          assert.deepStrictEqual(new Set(graph.edges()), new Set(copy.edges()));
+
+          assert.notStrictEqual(
+            graph.getNodeAttributes('n1'),
+            copy.getNodeAttributes('n1')
+          );
+
+          assert.doesNotThrow(function () {
+            copy.addEdge('n0', 'n12');
+          });
+        },
+
+      'it should not break on adversarial inputs.': function () {
+        const graph = new Graph();
+
+        graph.mergeEdge(0, 1);
+        graph.mergeEdge(1, 2);
+        graph.mergeEdge(2, 0);
+
+        const copy = graph.copy();
+
+        copy.mergeEdge(3, 4);
+
+        const serializedCopy = Graph.from(graph.export());
+
+        assert.doesNotThrow(function () {
+          serializedCopy.mergeEdge(3, 4);
+        });
+
+        assert.strictEqual(serializedCopy.size, 4);
       }
     },
 

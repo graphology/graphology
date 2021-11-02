@@ -634,7 +634,36 @@ export default function mutation(Graph, checkers) {
         assert.strictEqual(graph.hasNode('Lindsay'), true);
         assert.strictEqual(graph.hasNode('Martha'), true);
         assert.strictEqual(graph.hasEdge(edge), false);
-      }
+      },
+
+      'it should properly reset instance counters.': function () {
+        const graph = new Graph();
+        graph.mergeEdge(0, 1);
+
+        assert.strictEqual(graph.directedSize, 1);
+
+        graph.clearEdges();
+
+        assert.strictEqual(graph.directedSize, 0);
+
+        graph.mergeEdge(0, 1);
+
+        graph.clear();
+
+        assert.strictEqual(graph.directedSize, 0);
+      },
+
+      'it should properly clear node indices, regarding self loops notably.':
+        function () {
+          const graph = new Graph();
+          graph.mergeEdge(1, 1);
+
+          assert.strictEqual(graph.degree(1), 2);
+
+          graph.clearEdges();
+
+          assert.strictEqual(graph.degree(1), 0);
+        }
     }
   };
 }

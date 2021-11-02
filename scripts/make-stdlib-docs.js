@@ -32,6 +32,12 @@ has_toc: false
 
 ${toc}
 
+## Interactive rendering
+
+If what you need is interactive rendering of your graphs, in web applications for instance,
+be sure to check out [sigma.js](https://www.sigmajs.org/), a webgl renderer
+designed to work with \`graphology\` and which has been created for such endeavors.
+
 ## Installation
 
 Any of the above packages can be installed through npm likewise (just change the name to

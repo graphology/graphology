@@ -7,14 +7,15 @@ menu_toc:
   - "#.hasEdge"
   - "#.edge"
   - "#.degree"
+  - "#.degreeWithoutSelfLoops"
   - "#.source"
   - "#.target"
   - "#.opposite"
   - "#.extremities"
   - "#.hasExtremity"
-  - "#.hasGeneratedKey"
   - "#.isDirected"
   - "#.isSelfLoop"
+  - "#.areNeighbors"
 ---
 
 # Read
@@ -106,6 +107,41 @@ graph.edge('Clarice', 'Olivia');
 * `#.directedEdge`
 * `#.undirectedEdge`
 
+## #.degreeWithoutSelfLoops
+
+Returns the degree of the given node, without taking self loops into account.
+
+Will throw if the node is not found in the graph.
+
+*Example*
+
+```js
+graph.addNodeFrom(['Timothy', 'Jack', 'Clarice', 'Martha']);
+graph.addEdge('Timothy', 'Timothy');
+graph.addEdge('Timothy', 'Jack');
+graph.addEdge('Timothy', 'Clarice');
+graph.addEdge('Martha', 'Timothy');
+
+graph.degreeWithoutSelfLoops('Timothy');
+>>> 3
+graph.inWithoutSelfLoops('Timothy');
+>>> 1
+graph.outWithoutSelfLoops('Timothy');
+>>> 2
+```
+
+*Arguments*
+
+* **node** <span class="code">any</span>: target node.
+
+*Variants*
+
+* `#.inDegreeWithoutSelfLoops`
+* `#.outDegreeWithoutSelfLoops`
+* `#.directedDegreeWithoutSelfLoops` (`#.inDegreeWithoutSelfLoops` + `#.outDegreeWithoutSelfLoops`)
+* `#.undirectedDegreeWithoutSelfLoops`
+* `#.degreeWithoutSelfLoops` (`#.directedDegreeWithoutSelfLoops` + `#.undirectedDegreeWithoutSelfLoops`)
+
 ## #.degree
 
 Returns the degree of the given node.
@@ -131,7 +167,6 @@ graph.outDegree('Timothy');
 *Arguments*
 
 * **node** <span class="code">any</span>: target node.
-* **selfLoops** <span class="code">[boolean]</span> <span class="default">true</span>: whether to keep the self loops when computing the degree.
 
 *Variants*
 
@@ -235,21 +270,6 @@ graph.hasExtremity(edge, 'Lucy');
 >>> false
 ```
 
-## #.hasGeneratedKey
-
-Returns whether the given edge has a generated key, i.e. was created without using `#.addEdgeWithKey` method.
-
-```js
-const edge = graph.mergeEdge('John', 'Clarissa');
-const edgeWithKey = graph.mergeEdgeWithKey('edge1', 'Thomas', 'Eleanor');
-
-graph.hasGeneratedKey(edge);
->>> true
-
-graph.hasGeneratedKey(edgeWithKey);
->>> false
-```
-
 ## #.isDirected
 
 Returns whether the given edge is directed.
@@ -293,3 +313,36 @@ graph.isSelfLoop(edge);
 *Arguments*
 
 * **edge** <span class="code">any</span>: target edge.
+
+## #.areNeighbors
+
+Returns whether both nodes are neighbors.
+
+*Examples*
+
+```js
+graph.addNode('Timothy');
+graph.addNode('Clarice');
+graph.addNode('Zendar');
+graph.addEdge('Clarice', 'Timothy');
+
+graph.areNeighbors('Clarice', 'Timothy');
+>>> true
+
+graph.areNeighbors('Zendar', 'Clarice');
+>>> false
+```
+
+*Arguments*
+
+* **node** <span class="code">any</span>: target node.
+* **neighbord** <span class="code">any</span>: potential neighbor.
+
+*Variants*
+
+* `#.areDirectedNeighbors`
+* `#.areUndirectedNeighbors`
+* `#.areInNeighbors`
+* `#.areOutNeighbors`
+* `#.areInboundNeighbors` (in + undirected)
+* `#.areOutboundNeighbors` (out + undirected)

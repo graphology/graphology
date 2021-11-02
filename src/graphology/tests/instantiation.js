@@ -120,33 +120,6 @@ export default function instantiation(Graph, implementation, checkers) {
       },
 
       /**
-       * edgeKeyGenerator
-       */
-      edgeKeyGenerator: {
-        'providing something other than a function should throw.': function () {
-          assert.throws(function () {
-            const graph = new Graph({edgeKeyGenerator: 'test'});
-          }, invalid());
-        },
-
-        'it should correctly give the edge an id.': function () {
-          const edgeKeyGenerator = function ({source, target}) {
-            return `${source}->${target}`;
-          };
-
-          const graph = new Graph({edgeKeyGenerator});
-          addNodesFrom(graph, ['John', 'Martha', 'Clark']);
-          graph.addEdge('John', 'Martha');
-          graph.addEdge('Martha', 'Clark');
-
-          assert.deepStrictEqual(graph.edges(), [
-            'John->Martha',
-            'Martha->Clark'
-          ]);
-        }
-      },
-
-      /**
        * multi
        */
       multi: {

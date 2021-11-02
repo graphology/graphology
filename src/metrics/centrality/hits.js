@@ -4,8 +4,8 @@
  *
  * Implementation of the HITS algorithm for the graphology specs.
  */
-var defaults = require('lodash/defaultsDeep'),
-  isGraph = require('graphology-utils/is-graph');
+var defaults = require('lodash/defaultsDeep');
+var isGraph = require('graphology-utils/is-graph');
 
 /**
  * Defaults.

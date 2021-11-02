@@ -24,7 +24,7 @@ exports.connectedComponents = function (graph) {
   if (!graph.order) return [];
 
   if (!graph.size)
-    return graph.nodes().map(function (node) {
+    return graph.mapNodes(function (node) {
       return [node];
     });
 
@@ -53,7 +53,7 @@ exports.connectedComponents = function (graph) {
       seen.add(n1);
       component.push(n1);
 
-      extend(stack, graph.neighbors(n1));
+      extend(stack, graph.outboundNeighbors(n1));
     }
 
     components.push(component);
@@ -76,7 +76,12 @@ exports.largestConnectedComponent = function (graph) {
 
   if (!graph.order) return [];
 
-  if (!graph.size) return [graph.nodes()[0]];
+  if (!graph.size)
+    return [
+      graph.findNode(function () {
+        return true;
+      })
+    ];
 
   var order = graph.order;
   var remaining;
@@ -106,7 +111,7 @@ exports.largestConnectedComponent = function (graph) {
       seen.add(n1);
       component.push(n1);
 
-      extend(stack, graph.neighbors(n1));
+      extend(stack, graph.outboundNeighbors(n1));
     }
 
     if (component.length > largestComponent.length)

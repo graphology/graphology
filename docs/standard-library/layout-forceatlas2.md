@@ -1,7 +1,7 @@
 ---
 layout: default
 title: layout-forceatlas2
-nav_order: 10
+nav_order: 9
 parent: Standard library
 ---
 
@@ -38,7 +38,7 @@ Note also that the algorithm has an edge-case where the layout cannot be compute
 - **adjustSizes** <span class="code">?boolean</span> <span class="default">false</span>: should the node's sizes be taken into account?
 - **barnesHutOptimize** <span class="code">?boolean</span> <span class="default">false</span>: whether to use the Barnes-Hut approximation to compute repulsion in `O(n*log(n))` rather than default `O(n^2)`, `n` being the number of nodes.
 - **barnesHutTheta** <span class="code">?number</span> <span class="default">0.5</span>: Barnes-Hut approximation theta parameter.
-- **edgeWeightInfluence** <span class="code">?number</span> <span class="default">0</span>: influence of the edge's weights on the layout.
+- **edgeWeightInfluence** <span class="code">?number</span> <span class="default">0</span>: influence of the edge's weights on the layout. The `weight` attributes of edges is used as the weight of each edge.
 - **gravity** <span class="code">?number</span> <span class="default">1</span>: strength of the layout's gravity.
 - **linLogMode** <span class="code">?boolean</span> <span class="default">false</span>: whether to use Noack's LinLog model.
 - **outboundAttractionDistribution** <span class="code">?boolean</span> <span class="default">false</span>
@@ -81,10 +81,10 @@ _Example_
 ```js
 import FA2Layout from 'graphology-layout-forceatlas2/worker';
 
-const layout = new FA2Layout(graph);
+const layout = new FA2Layout(graph, {settings: {gravity: 1}});
 
 // To start the layout
-layout.start({settings: {gravity: 1}});
+layout.start();
 
 // To stop the layout
 layout.stop();

@@ -30,13 +30,12 @@ export default function iteration(Graph, checkers) {
 
           const adjacency = [];
 
-          graph.forEach(function (s, t, sa, ta, e, ea, u, g) {
+          graph.forEach(function (s, t, sa, ta, e, ea, u) {
             adjacency.push([u, s, t]);
             assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
             assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
             assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
             assert.strictEqual(graph.isUndirected(e), u);
-            assert.strictEqual(graph.hasGeneratedKey(e), g);
           });
 
           assert.deepStrictEqual(adjacency, [
@@ -66,15 +65,12 @@ export default function iteration(Graph, checkers) {
 
           const adjacency = [];
 
-          graph.forEach(function (s, t, sa, ta, e, ea, u, g) {
+          graph.forEach(function (s, t, sa, ta, e, ea, u) {
             adjacency.push([u, s, t]);
             assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
             assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
             assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
             assert.strictEqual(graph.isUndirected(e), u);
-            assert.strictEqual(graph.hasGeneratedKey(e), g);
-
-            if (!g) assert.strictEqual(e, 'test');
           });
 
           assert.deepStrictEqual(adjacency, [
@@ -87,7 +83,48 @@ export default function iteration(Graph, checkers) {
           ]);
         },
 
-      "it should be possible to iterate over the graph's adjacency using callbacks until returning true.":
+      'it should be possible to find an edge in the adjacency.': function () {
+        const graph = new Graph();
+
+        graph.addNode(1);
+        graph.addNode(2);
+        graph.addNode(3);
+
+        graph.addEdge(1, 2);
+        graph.addEdge(2, 3);
+        graph.addEdge(3, 1);
+        graph.addUndirectedEdge(1, 2);
+
+        graph.replaceNodeAttributes(2, {hello: 'world'});
+
+        const adjacency = [];
+
+        let found = graph.find(function (s, t, sa, ta, e, ea, u) {
+          adjacency.push([u, s, t]);
+          assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
+          assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
+          assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
+          assert.strictEqual(graph.isUndirected(e), u);
+
+          if (sa.hello === 'world') return true;
+        });
+
+        assert.strictEqual(found, graph.edge(2, 3));
+
+        assert.deepStrictEqual(adjacency, [
+          [false, '1', '2'],
+          [true, '1', '2'],
+          [false, '2', '3']
+        ]);
+
+        found = graph.find(function () {
+          return false;
+        });
+
+        assert.strictEqual(found, undefined);
+      },
+
+      "it should be possible to create an iterator over the graph's adjacency.":
         function () {
           const graph = new Graph();
 
@@ -102,61 +139,16 @@ export default function iteration(Graph, checkers) {
 
           graph.replaceNodeAttributes(2, {hello: 'world'});
 
-          const adjacency = [];
-
-          let broke = graph.forEachUntil(function (s, t, sa, ta, e, ea, u, g) {
-            adjacency.push([u, s, t]);
-            assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
-            assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
-            assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
-            assert.strictEqual(graph.isUndirected(e), u);
-            assert.strictEqual(graph.hasGeneratedKey(e), g);
-
-            if (sa.hello === 'world') return true;
-          });
-
-          assert.strictEqual(broke, true);
-
-          assert.deepStrictEqual(adjacency, [
-            [false, '1', '2'],
-            [true, '1', '2'],
-            [false, '2', '3']
-          ]);
-
-          broke = graph.forEachUntil(function () {
-            return false;
-          });
-
-          assert.strictEqual(broke, false);
-        },
-
-      "it should be possible to create an iterator over the graph's adjacency.":
-        function () {
-          const edgeKeyGenerator = ({undirected, source, target}) => {
-            return `${source}${undirected ? '--' : '->'}${target}`;
-          };
-
-          const graph = new Graph({edgeKeyGenerator});
-
-          graph.addNode(1);
-          graph.addNode(2);
-          graph.addNode(3);
-
-          graph.addEdge(1, 2);
-          graph.addEdge(2, 3);
-          graph.addEdge(3, 1);
-          graph.addUndirectedEdge(1, 2);
-
-          graph.replaceNodeAttributes(2, {hello: 'world'});
-
-          const adj = take(graph.adjacency()).map(p => [p[0], p[1], p[4]]);
+          const adj = take(graph.adjacency()).map(
+            ({source, target, undirected}) => [source, target, undirected]
+          );
 
           assert.deepStrictEqual(adj, [
-            ['1', '2', '1->2'],
-            ['1', '2', '1--2'],
-            ['2', '3', '2->3'],
-            ['2', '1', '1--2'],
-            ['3', '1', '3->1']
+            ['1', '2', false],
+            ['1', '2', true],
+            ['2', '3', false],
+            ['2', '1', true],
+            ['3', '1', false]
           ]);
         },
 
@@ -176,7 +168,11 @@ export default function iteration(Graph, checkers) {
 
           graph.replaceNodeAttributes(2, {hello: 'world'});
 
-          const adj = take(graph.adjacency()).map(p => [p[0], p[1], p[4]]);
+          const adj = take(graph.adjacency()).map(({source, target, edge}) => [
+            source,
+            target,
+            edge
+          ]);
 
           assert.deepStrictEqual(adj, [
             ['1', '2', '0'],
@@ -208,14 +204,16 @@ export default function iteration(Graph, checkers) {
 
         graph.replaceNodeAttributes(2, {hello: 'world'});
 
-        const adj = take(graph[Symbol.iterator]()).map(p => [p[0], p[1], p[4]]);
+        const adj = take(graph[Symbol.iterator]()).map(
+          ({source, target, undirected}) => [source, target, undirected]
+        );
 
         assert.deepStrictEqual(adj, [
-          ['1', '2', '1->2'],
-          ['1', '2', '1--2'],
-          ['2', '3', '2->3'],
-          ['2', '1', '1--2'],
-          ['3', '1', '3->1']
+          ['1', '2', false],
+          ['1', '2', true],
+          ['2', '3', false],
+          ['2', '1', true],
+          ['3', '1', false]
         ]);
       }
     },
