@@ -28,9 +28,12 @@ function FA2LayoutSupervisor(graph, params) {
       'graphology-layout-forceatlas2/worker: the given graph is not a valid graphology instance.'
     );
 
+  var attributes = params.attributes || {};
+  var weightAttribute = params.weighted ? attributes.weight || 'weight' : null;
+
   // Validating settings
-  var settings = helpers.assign({}, DEFAULT_SETTINGS, params.settings),
-    validationError = helpers.validateSettings(settings);
+  var settings = helpers.assign({}, DEFAULT_SETTINGS, params.settings);
+  var validationError = helpers.validateSettings(settings);
 
   if (validationError)
     throw new Error(
@@ -41,6 +44,7 @@ function FA2LayoutSupervisor(graph, params) {
   this.worker = null;
   this.graph = graph;
   this.settings = settings;
+  this.weightAttribute = weightAttribute;
   this.matrices = null;
   this.running = false;
   this.killed = false;
@@ -143,7 +147,7 @@ FA2LayoutSupervisor.prototype.start = function () {
   if (this.running) return this;
 
   // Building matrices
-  this.matrices = helpers.graphToByteArrays(this.graph);
+  this.matrices = helpers.graphToByteArrays(this.graph, this.weightAttribute);
 
   this.running = true;
   this.askForIterations(true);

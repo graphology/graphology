@@ -8,8 +8,8 @@
 /**
  * Constants.
  */
-var PPN = 10,
-  PPE = 3;
+var PPN = 10;
+var PPE = 3;
 
 /**
  * Very simple Object.assign-like function.
@@ -60,10 +60,10 @@ exports.validateSettings = function (settings) {
   if (
     'edgeWeightInfluence' in settings &&
     typeof settings.edgeWeightInfluence !== 'number' &&
-    settings.edgeWeightInfluence < 0
+    settings.edgeWeightInfluence < 1
   )
     return {
-      message: 'the `edgeWeightInfluence` setting should be a number >= 0.'
+      message: 'the `edgeWeightInfluence` setting should be a number > 0.'
     };
 
   if (
@@ -112,17 +112,18 @@ exports.validateSettings = function (settings) {
 /**
  * Function generating a flat matrix for both nodes & edges of the given graph.
  *
- * @param  {Graph}  graph - Target graph.
- * @return {object}       - Both matrices.
+ * @param  {Graph}       graph           - Target graph.
+ * @param  {string|null} weightAttribute - Name of the edge weight attribute.
+ * @return {object}                      - Both matrices.
  */
-exports.graphToByteArrays = function (graph) {
-  var order = graph.order,
-    size = graph.size,
-    index = {},
-    j;
+exports.graphToByteArrays = function (graph, weightAttribute) {
+  var order = graph.order;
+  var size = graph.size;
+  var index = {};
+  var j;
 
-  var NodeMatrix = new Float32Array(order * PPN),
-    EdgeMatrix = new Float32Array(size * PPE);
+  var NodeMatrix = new Float32Array(order * PPN);
+  var EdgeMatrix = new Float32Array(size * PPE);
 
   // Iterate through nodes
   j = 0;
@@ -145,12 +146,22 @@ exports.graphToByteArrays = function (graph) {
   });
 
   // Iterate through edges
+  var weightGetter = function (attr) {
+    if (!weightAttribute) return 1;
+
+    var w = attr[weightAttribute];
+
+    if (typeof w !== 'number' || isNaN(w)) w = 1;
+
+    return w;
+  };
+
   j = 0;
-  graph.forEachEdge(function (edge, attr, source, target) {
+  graph.forEachEdge(function (_, attr, source, target) {
     // Populating byte array
     EdgeMatrix[j] = index[source];
     EdgeMatrix[j + 1] = index[target];
-    EdgeMatrix[j + 2] = attr.weight || 0;
+    EdgeMatrix[j + 2] = weightGetter(attr);
     j += PPE;
   });
 

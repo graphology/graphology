@@ -16,6 +16,9 @@ var DEFAULT_SETTINGS = require('./defaults.js');
  * @param  {boolean}       assign       - Whether to assign positions.
  * @param  {Graph}         graph        - Target graph.
  * @param  {object|number} params       - If number, params.iterations, else:
+ * @param  {object}          attributes - Attribute names:
+ * @param  {string}            weight   - Name of the edge weight attribute.
+ * @param  {boolean}         weighted   - Whether to take edge weights into account.
  * @param  {number}          iterations - Number of iterations.
  * @param  {object}          [settings] - Settings.
  * @return {object|undefined}
@@ -40,9 +43,12 @@ function abstractSynchronousLayout(assign, graph, params) {
       'graphology-layout-forceatlas2: you should provide a positive number of iterations.'
     );
 
+  var attributes = params.attributes || {};
+  var weightAttribute = params.weighted ? attributes.weight || 'weight' : null;
+
   // Validating settings
-  var settings = helpers.assign({}, DEFAULT_SETTINGS, params.settings),
-    validationError = helpers.validateSettings(settings);
+  var settings = helpers.assign({}, DEFAULT_SETTINGS, params.settings);
+  var validationError = helpers.validateSettings(settings);
 
   if (validationError)
     throw new Error(
@@ -50,8 +56,9 @@ function abstractSynchronousLayout(assign, graph, params) {
     );
 
   // Building matrices
-  var matrices = helpers.graphToByteArrays(graph),
-    i;
+  var matrices = helpers.graphToByteArrays(graph, weightAttribute);
+
+  var i;
 
   // Iterating
   for (i = 0; i < iterations; i++)

@@ -6,7 +6,7 @@ module.exports = {
   linLogMode: false,
   outboundAttractionDistribution: false,
   adjustSizes: false,
-  edgeWeightInfluence: 0,
+  edgeWeightInfluence: 1,
   scalingRatio: 1,
   strongGravityMode: false,
   gravity: 1,

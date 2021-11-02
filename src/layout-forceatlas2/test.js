@@ -2,11 +2,11 @@
  * Graphology FA2 Layout Unit Tests
  * =================================
  */
-var assert = require('assert'),
-  Graph = require('graphology');
+var assert = require('assert');
+var Graph = require('graphology');
 
-var helpers = require('./helpers.js'),
-  layout = require('./index.js');
+var helpers = require('./helpers.js');
+var layout = require('./index.js');
 
 var seedrandom = require('seedrandom');
 
@@ -44,7 +44,7 @@ describe('graphology-layout-forceatlas2', function () {
         graph.addEdge('John', 'Martha');
         graph.addEdge('Martha', 'Ada', {weight: 3});
 
-        var matrices = helpers.graphToByteArrays(graph);
+        var matrices = helpers.graphToByteArrays(graph, 'weight');
 
         assert.deepEqual(
           Array.from(matrices.nodes),
@@ -54,7 +54,11 @@ describe('graphology-layout-forceatlas2', function () {
           ]
         );
 
-        assert.deepEqual(Array.from(matrices.edges), [0, 10, 0, 10, 20, 3]);
+        assert.deepEqual(Array.from(matrices.edges), [0, 10, 1, 10, 20, 3]);
+
+        matrices = helpers.graphToByteArrays(graph, null);
+
+        assert.deepEqual(Array.from(matrices.edges), [0, 10, 1, 10, 20, 1]);
       });
     });
 
@@ -161,6 +165,59 @@ describe('graphology-layout-forceatlas2', function () {
       assert.throws(function () {
         layout(new Graph(), {iterations: 5, settings: {linLogMode: 45}});
       }, /linLogMode/);
+    });
+
+    it('should return correct results.', function () {
+      var graph = new Graph();
+
+      graph.addNode(1, {x: -12, y: 1});
+      graph.addNode(2, {x: 100, y: 26});
+      graph.addNode(3, {x: 34, y: -45});
+      graph.addNode(4, {x: 300, y: -329});
+
+      graph.addEdge(1, 2, {custom: 34});
+      graph.addEdge(2, 3, {weight: 2});
+      graph.addEdge(3, 1, {weight: 3});
+      graph.addEdge(1, 4);
+
+      var result1 = layout(graph, {iterations: 5});
+
+      assert.deepStrictEqual(result1, {
+        1: {x: 85.54732513427734, y: -69.85941314697266},
+        2: {x: 75.4516830444336, y: -57.49724578857422},
+        3: {x: 73.4800796508789, y: -54.5100212097168},
+        4: {x: 105.44530487060547, y: -97.62918090820312}
+      });
+
+      var result2 = layout(graph, {iterations: 5, weighted: true});
+
+      assert.deepStrictEqual(result2, {
+        1: {x: 77.65608215332031, y: -59.46234130859375},
+        2: {x: 68.56433868408203, y: -47.37741470336914},
+        3: {x: 72.25889587402344, y: -52.28172302246094},
+        4: {x: 101.06941986083984, y: -91.40707397460938}
+      });
+
+      var result3 = layout(graph, {
+        iterations: 5,
+        weighted: false,
+        attributes: {weight: 'custom'}
+      });
+
+      assert.deepStrictEqual(result3, result1);
+
+      var result4 = layout(graph, {
+        iterations: 5,
+        weighted: true,
+        attributes: {weight: 'custom'}
+      });
+
+      assert.deepStrictEqual(result4, {
+        1: {x: 159.5399169921875, y: 4.618535041809082},
+        2: {x: -64.91708374023438, y: -33.298091888427734},
+        3: {x: 51.02663803100586, y: -9.252131462097168},
+        4: {x: 120.32330322265625, y: -118.17190551757812}
+      });
     });
   });
 
