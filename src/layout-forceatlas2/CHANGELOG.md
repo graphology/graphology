@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.7.1 (provisional)
+## 0.7.1
 
 - Fixing settings validation.
 
