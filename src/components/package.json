@@ -1,6 +1,6 @@
 {
   "name": "graphology-components",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Connected components for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
