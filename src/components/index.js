@@ -16,7 +16,7 @@ var extend = require('@yomguithereal/helpers/extend');
  * @param  {Graph} graph - Target graph.
  * @return {array}
  */
-exports.connectedComponents = function (graph) {
+function connectedComponents(graph) {
   if (!isGraph(graph))
     throw new Error(
       'graphology-components: the given graph is not a valid graphology instance.'
@@ -54,14 +54,14 @@ exports.connectedComponents = function (graph) {
       seen.add(n1);
       component.push(n1);
 
-      extend(stack, graph.outboundNeighbors(n1));
+      extend(stack, graph.neighbors(n1));
     }
 
     components.push(component);
   }
 
   return components;
-};
+}
 
 /**
  * Function returning the largest component of the given graph.
@@ -69,7 +69,7 @@ exports.connectedComponents = function (graph) {
  * @param  {Graph} graph - Target graph.
  * @return {array}
  */
-exports.largestConnectedComponent = function (graph) {
+function largestConnectedComponent(graph) {
   if (!isGraph(graph))
     throw new Error(
       'graphology-components: the given graph is not a valid graphology instance.'
@@ -112,7 +112,7 @@ exports.largestConnectedComponent = function (graph) {
       seen.add(n1);
       component.push(n1);
 
-      extend(stack, graph.outboundNeighbors(n1));
+      extend(stack, graph.neighbors(n1));
     }
 
     if (component.length > largestComponent.length)
@@ -125,7 +125,7 @@ exports.largestConnectedComponent = function (graph) {
   }
 
   return largestComponent;
-};
+}
 
 /**
  * Function returning a subgraph composed of the largest component of the given graph.
@@ -133,12 +133,12 @@ exports.largestConnectedComponent = function (graph) {
  * @param  {Graph} graph - Target graph.
  * @return {Graph}
  */
-exports.largestConnectedComponentSubgraph = function (graph) {
-  var largestConnectedComponent = exports.largestConnectedComponent(graph);
+function largestConnectedComponentSubgraph(graph) {
+  var component = largestConnectedComponent(graph);
 
   var S = graph.nullCopy();
 
-  largestConnectedComponent.forEach(function (key) {
+  component.forEach(function (key) {
     copyNode(S, key, graph.getNodeAttributes(key));
   });
 
@@ -157,7 +157,7 @@ exports.largestConnectedComponentSubgraph = function (graph) {
   });
 
   return S;
-};
+}
 
 /**
  * Function returning a list of strongly connected components.
@@ -165,7 +165,7 @@ exports.largestConnectedComponentSubgraph = function (graph) {
  * @param  {Graph} graph - Target directed graph.
  * @return {array}
  */
-exports.stronglyConnectedComponents = function (graph) {
+function stronglyConnectedComponents(graph) {
   if (!isGraph(graph))
     throw new Error(
       'graphology-components: the given graph is not a valid graphology instance.'
@@ -196,11 +196,9 @@ exports.stronglyConnectedComponents = function (graph) {
     vertex;
 
   var DFS = function (node) {
-    var neighbor,
-      neighbors = graph
-        .outNeighbors(node)
-        .concat(graph.undirectedNeighbors(node)),
-      neighborOrder;
+    var neighbor;
+    var neighbors = graph.outboundNeighbors(node);
+    var neighborOrder;
 
     preorder.set(node, count++);
     P.push(node);
@@ -236,4 +234,12 @@ exports.stronglyConnectedComponents = function (graph) {
   }
 
   return components;
-};
+}
+
+/**
+ * Exporting.
+ */
+exports.connectedComponents = connectedComponents;
+exports.largestConnectedComponent = largestConnectedComponent;
+exports.largestConnectedComponentSubgraph = largestConnectedComponentSubgraph;
+exports.stronglyConnectedComponents = stronglyConnectedComponents;

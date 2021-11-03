@@ -90,6 +90,25 @@ describe('graphology-components', function () {
 
       assert.deepStrictEqual(components, [['1', '2'], ['3']]);
     });
+
+    it('should work in the directed case.', function () {
+      var graph = new Graph({type: 'directed'});
+      graph.addNode(1);
+      graph.mergeEdge(1, 4);
+      graph.mergeEdge(1, 5);
+      graph.mergeEdge(4, 5);
+      graph.mergeEdge(2, 1);
+      graph.mergeEdge(2, 3);
+
+      var components = connectedComponents(graph);
+
+      assert.strictEqual(components.length, 1);
+
+      var component = components[0];
+      component.sort();
+
+      assert.deepStrictEqual(component, ['1', '2', '3', '4', '5']);
+    });
   });
 
   describe('#.largestConnectedComponent', function () {
