@@ -14,7 +14,6 @@ export default function memoizedForEach<
     targetAttributes: NodeAttributes,
     edge: string,
     edgeAttributes: EdgeAttributes,
-    undirected: boolean,
-    generatedKey: boolean
+    undirected: boolean
   ) => void
 ): void;

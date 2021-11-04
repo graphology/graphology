@@ -29,8 +29,7 @@ module.exports = function updateGraphKeys(
     targetAttr,
     key,
     attr,
-    undirected,
-    generatedKey
+    undirected
   ) {
     // Leveraging the ordered adjacency to save calls
     if (source !== currentSource) {
@@ -52,8 +51,7 @@ module.exports = function updateGraphKeys(
           target,
           sourceAttr,
           targetAttr,
-          undirected,
-          generatedKey
+          undirected
         )
       : key;
 

@@ -13,7 +13,6 @@ export default function updateGraphKeys<
     target: string,
     sourceAttributes: NodeAttributes,
     targetAttributes: NodeAttributes,
-    undirected: boolean,
-    generatedKey: boolean
+    undirected: boolean
   ) => unknown
 ): Graph;

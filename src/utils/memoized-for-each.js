@@ -23,12 +23,12 @@ module.exports = function memoizedForEach(graph, cacher, callback) {
 
   var currentSource, cache;
 
-  graph.forEach(function (s, t, sa, ta, e, ea, u, g) {
+  graph.forEach(function (s, t, sa, ta, e, ea, u) {
     if (currentSource !== s) {
       currentSource = s;
       cache = cacher(s, sa);
     }
 
-    callback(cache, s, t, sa, ta, e, ea, u, g);
+    callback(cache, s, t, sa, ta, e, ea, u);
   });
 };
