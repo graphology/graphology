@@ -141,12 +141,12 @@ module.exports = function iterate(graph, nodeStates, options) {
       );
 
       if (distance > maxMove) {
+        converged = false;
         nodeState.dx *= maxMove / distance;
         nodeState.dy *= maxMove / distance;
       }
 
       if (isNodeFixed(n, attr)) {
-        converged = false;
         attr[xName] = nodeState.x + nodeState.dx;
         attr[yName] = nodeState.y + nodeState.dy;
       }
