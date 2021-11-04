@@ -22,7 +22,7 @@ function ForceSupervisor(graph, options) {
 
   this.callbacks = {};
 
-  if (options.onConverged) this.callbacks.converged = options.onConverged;
+  if (options.onConverged) this.callbacks.onConverged = options.onConverged;
 
   options = resolveDefaults(options, DEFAULTS);
 
