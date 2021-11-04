@@ -6,7 +6,11 @@
   "types": "index.d.ts",
   "files": [
     "*.d.ts",
-    "index.js"
+    "defaults.js",
+    "helpers.js",
+    "index.js",
+    "iterate.js",
+    "worker.js"
   ],
   "scripts": {
     "prepublishOnly": "npm test",
@@ -42,6 +46,6 @@
     "graphology-types": ">=0.19.0"
   },
   "dependencies": {
-    "graphology-utils": "^1.8.0"
+    "graphology-utils": "^2.3.0"
   }
 }
