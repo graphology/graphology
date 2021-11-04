@@ -13,7 +13,7 @@ const iterate = require('./iterate.js');
 const helpers = require('./helpers.js');
 const DEFAULTS = require('./defaults.js');
 
-function ForceSupervisor(graph, options) {
+function ForceSupervisor(graph, params) {
   // Validation
   if (!isGraph(graph))
     throw new Error(
@@ -22,13 +22,13 @@ function ForceSupervisor(graph, options) {
 
   this.callbacks = {};
 
-  if (options.onConverged) this.callbacks.onConverged = options.onConverged;
+  if (params.onConverged) this.callbacks.onConverged = params.onConverged;
 
-  options = resolveDefaults(options, DEFAULTS);
+  params = resolveDefaults(params, DEFAULTS);
 
   this.graph = graph;
-  this.options = options;
-  this.nodeStates = {};
+  this.params = params;
+  this.nodeStates = helpers.initializeNodeStates(graph, params.attributes);
   this.frameID = null;
   this.running = false;
   this.killed = false;
@@ -41,12 +41,12 @@ ForceSupervisor.prototype.isRunning = function () {
 };
 
 ForceSupervisor.prototype.runFrame = function () {
-  const result = iterate(this.graph, this.nodeStates, this.options);
+  const result = iterate(this.graph, this.nodeStates, this.params);
 
   helpers.assignLayoutChanges(
     this.graph,
     this.nodeStates,
-    this.options.attributes
+    this.params.attributes
   );
 
   if (result.converged) {

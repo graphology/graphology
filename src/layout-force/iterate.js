@@ -12,7 +12,7 @@ function hashPair(s, t) {
 
 module.exports = function iterate(graph, nodeStates, options) {
   const {shouldSkipNode, shouldSkipEdge, attributes} = options;
-  const {x: xName, y: yName, fixed: fixedName} = attributes;
+  const {fixed: fixedName} = attributes;
   const {attraction, repulsion, gravity, inertia, maxMove} = options.settings;
 
   const isNodeFixed =
@@ -27,22 +27,10 @@ module.exports = function iterate(graph, nodeStates, options) {
   // Check nodeStatess and inertia
   for (let i = 0; i < adjustedOrder; i++) {
     const n = nodes[i];
-    const attr = graph.getNodeAttributes(n);
+    const state = nodeStates[n];
 
-    if (!nodeStates[n])
-      nodeStates[n] = {
-        dx: 0,
-        dy: 0,
-        x: attr[xName] || 0,
-        y: attr[yName] || 0
-      };
-    else
-      nodeStates[n] = {
-        dx: nodeStates[n].dx * inertia,
-        dy: nodeStates[n].dy * inertia,
-        x: attr[xName] || 0,
-        y: attr[yName] || 0
-      };
+    state.dx *= inertia;
+    state.dy *= inertia;
   }
 
   const distancesCache = {};

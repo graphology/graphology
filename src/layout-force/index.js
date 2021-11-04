@@ -41,7 +41,7 @@ function abstractSynchronousLayout(assign, graph, params) {
     );
 
   // Iteration state
-  const nodeStates = {};
+  const nodeStates = helpers.initializeNodeStates(graph, params.attributes);
   let converged = false;
   let i;
 
