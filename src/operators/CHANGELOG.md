@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4.2 (provisional)
+## 1.4.2
 
 - Fixing `toDirected` wrt self-loops.
 - Improving most type declarations wrt generics.
