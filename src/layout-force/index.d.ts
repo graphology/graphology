@@ -14,7 +14,7 @@ export type ForceLayoutSettings = {
   maxMove?: number;
 };
 
-export type ForceLayoutOptions<
+export type ForceLayoutParameters<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > = {
@@ -39,7 +39,7 @@ interface IForceLayout<
   ): LayoutMapping;
   (
     graph: Graph,
-    options: ForceLayoutOptions<NodeAttributes, EdgeAttributes>
+    params: ForceLayoutParameters<NodeAttributes, EdgeAttributes>
   ): LayoutMapping;
 
   assign(
@@ -48,7 +48,7 @@ interface IForceLayout<
   ): void;
   assign(
     graph: Graph<NodeAttributes, EdgeAttributes>,
-    options: ForceLayoutOptions<NodeAttributes, EdgeAttributes>
+    params: ForceLayoutParameters<NodeAttributes, EdgeAttributes>
   ): void;
 }
 

@@ -17,7 +17,7 @@ export type NoverlapSettings = {
   speed?: number;
 };
 
-export type NoverlapLayoutOptions = {
+export type NoverlapLayoutParameters = {
   maxIterations?: number;
   inputReducer?: NoverlapNodeReducer;
   outputReducer?: NoverlapNodeReducer;
@@ -26,10 +26,10 @@ export type NoverlapLayoutOptions = {
 
 interface INoverlapLayout {
   (graph: Graph, maxIterations?: number): LayoutMapping;
-  (graph: Graph, options: NoverlapLayoutOptions): LayoutMapping;
+  (graph: Graph, params: NoverlapLayoutParameters): LayoutMapping;
 
   assign(graph: Graph, maxIterations?: number): void;
-  assign(graph: Graph, options: NoverlapLayoutOptions): void;
+  assign(graph: Graph, params: NoverlapLayoutParameters): void;
 }
 
 declare const noverlap: INoverlapLayout;

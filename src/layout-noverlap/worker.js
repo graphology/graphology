@@ -42,7 +42,6 @@ function NoverlapLayoutSupervisor(graph, params) {
   this.graph = graph;
   this.settings = settings;
   this.matrices = null;
-  this.converged = false;
   this.running = false;
   this.killed = false;
 
@@ -109,8 +108,6 @@ NoverlapLayoutSupervisor.prototype.handleMessage = function (event) {
 
   helpers.assignLayoutChanges(this.graph, matrix, this.outputReducer);
   this.matrices.nodes = matrix;
-
-  this.converged = event.data.result.converged;
 
   if (event.data.result.converged) {
     if (this.callbacks.onConverged) this.callbacks.onConverged();
