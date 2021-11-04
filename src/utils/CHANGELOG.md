@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.3.0 (provisional)
+## 2.3.0
 
 - Adding private `resolveDefaults`.
 
