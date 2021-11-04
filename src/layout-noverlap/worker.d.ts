@@ -13,6 +13,7 @@ export default class NoverlapLayoutSupervisor {
 
   constructor(graph: Graph, params?: NoverlapLayoutSupervisorParameters);
 
+  isRunning(): boolean;
   start(): void;
   stop(): void;
   kill(): void;

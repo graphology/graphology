@@ -12,6 +12,7 @@ export type FA2LayoutSupervisorParameters = {
 export default class FA2LayoutSupervisor {
   constructor(graph: Graph, params?: FA2LayoutSupervisorParameters);
 
+  isRunning(): boolean;
   start(): void;
   stop(): void;
   kill(): void;

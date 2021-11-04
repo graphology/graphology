@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.0
+
+- Adding `#.isRunning` to worker.
+
 ## 0.7.1
 
 - Fixing settings validation.

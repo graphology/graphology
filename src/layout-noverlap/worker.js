@@ -78,6 +78,10 @@ function NoverlapLayoutSupervisor(graph, params) {
   this.spawnWorker();
 }
 
+NoverlapLayoutSupervisor.prototype.isRunning = function () {
+  return this.running;
+};
+
 /**
  * Internal method used to spawn the web worker.
  */

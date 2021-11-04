@@ -75,6 +75,10 @@ function FA2LayoutSupervisor(graph, params) {
   this.spawnWorker();
 }
 
+FA2LayoutSupervisor.prototype.isRunning = function () {
+  return this.running;
+};
+
 /**
  * Internal method used to spawn the web worker.
  */

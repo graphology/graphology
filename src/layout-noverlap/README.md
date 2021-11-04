@@ -86,4 +86,7 @@ layout.stop();
 
 // To kill the layout and release attached memory
 layout.kill();
+
+// Assess whether the layout is currently running
+layout.isRunning();
 ```
