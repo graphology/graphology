@@ -22,3 +22,4 @@ exports.mergeStar = require('./merge-star.js');
 exports.renameGraphKeys = require('./rename-graph-keys.js');
 exports.updateGraphKeys = require('./update-graph-keys.js');
 exports.memoizedForEach = require('./memoized-for-each.js');
+exports.createWeightedGetter = require('./weight-getter.js').createWeightGetter;

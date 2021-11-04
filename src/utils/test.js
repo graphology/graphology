@@ -2,18 +2,19 @@
  * Graphology Utils Unit Tests
  * ============================
  */
-var assert = require('assert'),
-  Graph = require('graphology'),
-  inferType = require('./infer-type.js'),
-  isGraph = require('./is-graph.js'),
-  isGraphConstructor = require('./is-graph-constructor.js'),
-  mergeClique = require('./merge-clique.js'),
-  mergeCycle = require('./merge-cycle.js'),
-  mergePath = require('./merge-path.js'),
-  mergeStar = require('./merge-star.js'),
-  renameGraphKeys = require('./rename-graph-keys'),
-  updateGraphKeys = require('./update-graph-keys'),
-  memoizedForEach = require('./memoized-for-each');
+var assert = require('assert');
+var Graph = require('graphology');
+var inferType = require('./infer-type.js');
+var isGraph = require('./is-graph.js');
+var isGraphConstructor = require('./is-graph-constructor.js');
+var mergeClique = require('./merge-clique.js');
+var mergeCycle = require('./merge-cycle.js');
+var mergePath = require('./merge-path.js');
+var mergeStar = require('./merge-star.js');
+var renameGraphKeys = require('./rename-graph-keys.js');
+var updateGraphKeys = require('./update-graph-keys.js');
+var memoizedForEach = require('./memoized-for-each.js');
+var createWeightedGetter = require('./weight-getter.js').createWeightGetter;
 
 var UndirectedGraph = Graph.UndirectedGraph;
 
@@ -346,6 +347,29 @@ describe('graphology-utils', function () {
         validEdges,
         new Set(['1->2', '1->3', '1->4', '3->6'])
       );
+    });
+  });
+
+  describe('createWeightedGetter', function () {
+    it('should return valid weights from attributes.', function () {
+      var graph = new Graph();
+      graph.mergeEdge(1, 2, {weight: 3});
+      graph.mergeEdge(3, 4, {custom: 2});
+      graph.mergeEdge(4, 5);
+      graph.mergeEdge(6, 7, {weight: NaN});
+      graph.mergeEdge(8, 9, {weight: 'test'});
+
+      var defaultGetter = createWeightedGetter(null);
+      var weightGetter = createWeightedGetter('weight');
+      var customGetter = createWeightedGetter('custom');
+
+      assert.strictEqual(defaultGetter(graph.getEdgeAttributes(1, 2)), 1);
+      assert.strictEqual(weightGetter(graph.getEdgeAttributes(1, 2)), 3);
+      assert.strictEqual(weightGetter(graph.getEdgeAttributes(3, 4)), 1);
+      assert.strictEqual(customGetter(graph.getEdgeAttributes(3, 4)), 2);
+      assert.strictEqual(weightGetter(graph.getEdgeAttributes(4, 5)), 1);
+      assert.strictEqual(weightGetter(graph.getEdgeAttributes(6, 7)), 1);
+      assert.strictEqual(weightGetter(graph.getEdgeAttributes(8, 9)), 1);
     });
   });
 });

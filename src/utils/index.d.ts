@@ -10,3 +10,4 @@ export {default as mergeStar} from './merge-star';
 export {default as renameGraphKeys} from './rename-graph-keys';
 export {default as updateGraphKeys} from './update-graph-keys';
 export {default as memoizedForEach} from './memoized-for-each';
+export {createWeightGetter} from './weight-getter';

@@ -17,7 +17,8 @@
     "merge-path.js",
     "merge-star.js",
     "rename-graph-keys.js",
-    "update-graph-keys.js"
+    "update-graph-keys.js",
+    "weight-getter.js"
   ],
   "types": "./index.d.ts",
   "scripts": {
