@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.1
+
+- Fixing options types.
+
 ## 0.8.0
 
 - Adding `#.isRunning` to worker.

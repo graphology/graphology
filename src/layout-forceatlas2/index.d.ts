@@ -21,7 +21,7 @@ export type ForceAtlas2LayoutOptions = {
   };
   iterations: number;
   settings?: ForceAtlas2Settings;
-  weighted: boolean;
+  weighted?: boolean;
 };
 
 interface IForceAtlas2Layout {
