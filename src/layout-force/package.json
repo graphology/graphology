@@ -1,0 +1,39 @@
+{
+  "name": "graphology-layout-force",
+  "version": "0.1.0",
+  "description": "Simple force-directed layout algorithm for graphology.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "*.d.ts",
+    "index.js"
+  ],
+  "scripts": {
+    "test": "echo 'TODO'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology.git"
+  },
+  "keywords": [
+    "graph",
+    "graphology",
+    "layout",
+    "force directed"
+  ],
+  "author": {
+    "name": "Alexis Jacomy",
+    "url": "http://github.com/jacomyal"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology/tree/master/src/layout-force#readme",
+  "eslintConfig": {
+    "extends": "@yomguithereal/eslint-config"
+  },
+  "peerDependencies": {
+    "graphology-types": ">=0.19.0"
+  }
+}
