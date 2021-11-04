@@ -8,6 +8,7 @@
   "graphml": "Parsers & writers for the GRAPHML file format.",
   "indices": "Various specialized graph indices (neighborhood, louvain etc.)",
   "layout": "Basic graph layouts (random, circle etc.).",
+  "layout-force": "Basic force layout algorithm.",
   "layout-forceatlas2": "ForceAtlas2 layout algorithm.",
   "layout-noverlap": "Noverlap anti-collision layout algorithm.",
   "metrics": "Modularity, density, centrality etc.",

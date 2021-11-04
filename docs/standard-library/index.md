@@ -17,6 +17,7 @@ has_toc: false
 * [graphml](./graphml): *Parsers & writers for the GRAPHML file format.*
 * [indices](./indices): *Various specialized graph indices (neighborhood, louvain etc.)*
 * [layout](./layout): *Basic graph layouts (random, circle etc.).*
+* [layout-force](./layout-force): *Basic force layout algorithm.*
 * [layout-forceatlas2](./layout-forceatlas2): *ForceAtlas2 layout algorithm.*
 * [layout-noverlap](./layout-noverlap): *Noverlap anti-collision layout algorithm.*
 * [metrics](./metrics): *Modularity, density, centrality etc.*

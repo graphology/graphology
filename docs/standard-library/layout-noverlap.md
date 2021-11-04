@@ -1,7 +1,7 @@
 ---
 layout: default
 title: layout-noverlap
-nav_order: 10
+nav_order: 11
 parent: Standard library
 ---
 
@@ -83,15 +83,18 @@ _Example_
 ```js
 import NoverlapLayout from 'graphology-layout-noverlap/worker';
 
-const layout = new NoverlapLayout(graph);
+const layout = new NoverlapLayout(graph, params);
 
 // To start the layout. It will automatically stop when converged
-layout.start({settings: {margin: 1}});
+layout.start();
 
 // To stop the layout
 layout.stop();
 
 // To kill the layout and release attached memory
 layout.kill();
+
+// Assess whether the layout is currently running
+layout.isRunning();
 ```
 

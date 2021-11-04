@@ -76,10 +76,10 @@ _Example_
 ```js
 import NoverlapLayout from 'graphology-layout-noverlap/worker';
 
-const layout = new NoverlapLayout(graph);
+const layout = new NoverlapLayout(graph, params);
 
 // To start the layout. It will automatically stop when converged
-layout.start({settings: {margin: 1}});
+layout.start();
 
 // To stop the layout
 layout.stop();

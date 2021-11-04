@@ -1,7 +1,7 @@
 ---
 layout: default
 title: layout-forceatlas2
-nav_order: 9
+nav_order: 10
 parent: Standard library
 ---
 
@@ -95,6 +95,9 @@ layout.stop();
 
 // To kill the layout and release attached memory
 layout.kill();
+
+// Assess whether the layout is currently running
+layout.isRunning();
 ```
 
 **WARNING!**: if you are using [`webpack`](https://webpack.js.org/) to bundle your code, avoid the `cheap-eval`-like options for the [`devtool`](https://webpack.js.org/configuration/devtool/) setting. Some users noticed that it interacts in mysterious ways with the library's code and cause performance to drop dramatically when using the worker. Note that this should have been fixed from v0.5.0.
