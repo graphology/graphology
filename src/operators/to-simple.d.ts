@@ -1,3 +1,3 @@
 import Graph from 'graphology-types';
 
-export default function toSimple(graph: Graph): Graph;
+export default function toSimple<G extends Graph>(graph: G): G;

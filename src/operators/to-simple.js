@@ -5,6 +5,7 @@
  * Function used to cast a multi graph to a simple one.
  */
 var isGraph = require('graphology-utils/is-graph');
+var copyEdge = require('graphology-utils/add-edge').copyEdge;
 
 module.exports = function toSimple(multiGraph) {
   if (!isGraph(multiGraph))
@@ -22,13 +23,13 @@ module.exports = function toSimple(multiGraph) {
   multiGraph.forEachDirectedEdge(function (edge, attr, source, target) {
     if (graph.hasDirectedEdge(source, target)) return;
 
-    graph.importEdge(multiGraph.exportEdge(edge));
+    copyEdge(graph, false, edge, source, target, attr);
   });
 
   multiGraph.forEachUndirectedEdge(function (edge, attr, source, target) {
     if (graph.hasUndirectedEdge(source, target)) return;
 
-    graph.importEdge(multiGraph.exportEdge(edge));
+    copyEdge(graph, true, edge, source, target, attr);
   });
 
   return graph;

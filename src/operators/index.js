@@ -4,6 +4,7 @@
  *
  * Library endpoint.
  */
+exports.disjointUnion = require('./disjoint-union.js');
 exports.reverse = require('./reverse.js');
 exports.subgraph = require('./subgraph.js');
 exports.toDirected = require('./to-directed.js');

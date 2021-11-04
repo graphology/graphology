@@ -5,6 +5,7 @@
  * Function used to cast any graph to a directed one.
  */
 var isGraph = require('graphology-utils/is-graph');
+var copyEdge = require('graphology-utils/add-edge').copyEdge;
 
 module.exports = function toDirected(graph, options) {
   if (!isGraph(graph))
@@ -25,15 +26,15 @@ module.exports = function toDirected(graph, options) {
 
   // Adding directed edges
   graph.forEachDirectedEdge(function (edge, attr, source, target) {
-    directedGraph.addDirectedEdge(source, target, Object.assign({}, attr));
+    copyEdge(directedGraph, false, edge, source, target, attr);
   });
 
   // Merging undirected edges
-  graph.forEachUndirectedEdge(function (edge, attr, source, target) {
+  graph.forEachUndirectedEdge(function (_, attr, source, target) {
     var existingOutEdge =
-        graph.type === 'mixed' && directedGraph.edge(source, target),
-      existingInEdge =
-        graph.type === 'mixed' && directedGraph.edge(target, source);
+      graph.type === 'mixed' && directedGraph.edge(source, target);
+    var existingInEdge =
+      graph.type === 'mixed' && directedGraph.edge(target, source);
 
     if (existingOutEdge) {
       directedGraph.replaceEdgeAttributes(
@@ -41,7 +42,7 @@ module.exports = function toDirected(graph, options) {
         mergeEdge(directedGraph.getEdgeAttributes(existingOutEdge), attr)
       );
     } else {
-      directedGraph.addDirectedEdge(source, target, Object.assign({}, attr));
+      copyEdge(directedGraph, false, null, source, target, attr);
     }
 
     // Don't add self-loops twice
@@ -53,7 +54,7 @@ module.exports = function toDirected(graph, options) {
         mergeEdge(directedGraph.getEdgeAttributes(existingInEdge), attr)
       );
     } else {
-      directedGraph.addDirectedEdge(target, source, Object.assign({}, attr));
+      copyEdge(directedGraph, false, null, target, source, attr);
     }
   });
 

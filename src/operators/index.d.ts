@@ -1,3 +1,4 @@
+export {default as disjointUnion} from './disjoint-union';
 export {default as reverse} from './reverse';
 export {default as subgraph} from './subgraph';
 export {default as toDirected} from './to-directed';

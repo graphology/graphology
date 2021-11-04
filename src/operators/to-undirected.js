@@ -5,6 +5,7 @@
  * Function used to cast any graph to an undirected one.
  */
 var isGraph = require('graphology-utils/is-graph');
+var copyEdge = require('graphology-utils/add-edge').copyEdge;
 
 module.exports = function toUndirected(graph, options) {
   if (!isGraph(graph))
@@ -25,7 +26,7 @@ module.exports = function toUndirected(graph, options) {
 
   // Adding undirected edges
   graph.forEachUndirectedEdge(function (edge, attr, source, target) {
-    undirectedGraph.addUndirectedEdge(source, target, Object.assign({}, attr));
+    copyEdge(undirectedGraph, true, edge, source, target, attr);
   });
 
   // Merging directed edges
@@ -43,7 +44,7 @@ module.exports = function toUndirected(graph, options) {
       return;
     }
 
-    undirectedGraph.addUndirectedEdge(source, target, Object.assign({}, attr));
+    copyEdge(undirectedGraph, true, null, source, target, attr);
   });
 
   return undirectedGraph;

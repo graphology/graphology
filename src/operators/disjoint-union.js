@@ -25,6 +25,9 @@ module.exports = function disjointUnion(G, H) {
 
   var R = G.nullCopy();
 
+  // TODO: in the spirit of this operator we should probably prefix something
+  R.mergeAttributes(G.getAttributes());
+
   var labelsG = {};
   var labelsH = {};
 
@@ -50,20 +53,11 @@ module.exports = function disjointUnion(G, H) {
   // Adding edges
   i = 0;
 
-  G.forEachEdge(function (
-    key,
-    attr,
-    source,
-    target,
-    _s,
-    _t,
-    undirected,
-    generatedKey
-  ) {
+  G.forEachEdge(function (key, attr, source, target, _s, _t, undirected) {
     copyEdge(
       R,
       undirected,
-      generatedKey ? null : i++,
+      i++,
       labelsG[source],
       labelsG[target],
       target,
@@ -71,20 +65,11 @@ module.exports = function disjointUnion(G, H) {
     );
   });
 
-  H.forEachEdge(function (
-    key,
-    attr,
-    source,
-    target,
-    _s,
-    _t,
-    undirected,
-    generatedKey
-  ) {
+  H.forEachEdge(function (key, attr, source, target, _s, _t, undirected) {
     copyEdge(
       R,
       undirected,
-      generatedKey ? null : i++,
+      i++,
       labelsH[source],
       labelsH[target],
       target,

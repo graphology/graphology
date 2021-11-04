@@ -72,14 +72,13 @@ module.exports = function subgraph(graph, nodes) {
     target,
     sourceAttr,
     targetAttr,
-    undirected,
-    generatedKey
+    undirected
   ) {
     if (!filterNode(source, sourceAttr)) return;
 
     if (target !== source && !filterNode(target, targetAttr)) return;
 
-    copyEdge(S, undirected, generatedKey ? null : key, source, target, attr);
+    copyEdge(S, undirected, key, source, target, attr);
   });
 
   return S;
