@@ -121,29 +121,29 @@ module.exports = function iterate(graph, nodeStates, options) {
   // Apply forces
   let converged = true;
 
-  graph.forEachNode(
-    (n, attr) => {
-      const nodeState = nodeStates[n];
+  graph.forEachNode((n, attr) => {
+    const nodeState = nodeStates[n];
 
-      const distance = Math.sqrt(
-        nodeState.dx * nodeState.dx + nodeState.dy * nodeState.dy
-      );
+    const distance = Math.sqrt(
+      nodeState.dx * nodeState.dx + nodeState.dy * nodeState.dy
+    );
 
-      if (distance > maxMove) {
-        converged = false;
-        nodeState.dx *= maxMove / distance;
-        nodeState.dy *= maxMove / distance;
-      }
+    if (distance > maxMove) {
+      nodeState.dx *= maxMove / distance;
+      nodeState.dy *= maxMove / distance;
+    }
 
-      if (isNodeFixed(n, attr)) {
-        nodeState.x = nodeState.x + nodeState.dx;
-        nodeState.y = nodeState.y + nodeState.dy;
-      }
+    if (nodeStates.dx > 0 || nodeStates.dy > 0) {
+      converged = false;
+    }
 
-      return attr;
-    },
-    {attributes: ['x', 'y']}
-  );
+    if (isNodeFixed(n, attr)) {
+      nodeState.x += nodeState.dx;
+      nodeState.y += nodeState.dy;
+    }
+
+    // NOTE: possibility to assign here to save one loop in the future
+  });
 
   return {converged};
 };
