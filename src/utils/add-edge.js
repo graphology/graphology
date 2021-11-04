@@ -5,7 +5,6 @@
  * Generic edge addition functions that can be used to avoid nasty repetitive
  * conditions.
  */
-
 exports.addEdge = function addEdge(
   graph,
   undirected,
@@ -71,15 +70,15 @@ exports.updateEdge = function updateEdge(
   key,
   source,
   target,
-  attributes
+  updater
 ) {
   if (undirected) {
     if (key === null || key === undefined)
-      graph.updateUndirectedEdge(source, target, attributes);
-    else graph.updateUndirectedEdgeWithKey(key, source, target, attributes);
+      graph.updateUndirectedEdge(source, target, updater);
+    else graph.updateUndirectedEdgeWithKey(key, source, target, updater);
   } else {
     if (key === null || key === undefined)
-      graph.updateDirectedEdge(source, target, attributes);
-    else graph.updateDirectedEdgeWithKey(key, source, target, attributes);
+      graph.updateDirectedEdge(source, target, updater);
+    else graph.updateDirectedEdgeWithKey(key, source, target, updater);
   }
 };

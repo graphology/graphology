@@ -33,5 +33,5 @@ export function updateEdge<EdgeAttributes extends Attributes = Attributes>(
   key: unknown,
   source: unknown,
   target: unknown,
-  attributes?: EdgeAttributes
+  updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
 ): void;
