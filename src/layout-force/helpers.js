@@ -39,7 +39,7 @@ exports.assignLayoutChanges = function (graph, nodeStates, attributes) {
   );
 };
 
-exports.collectLayoutChanges = function (graph, nodeStates) {
+exports.collectLayoutChanges = function (nodeStates) {
   const mapping = {};
 
   for (const n in nodeStates) {

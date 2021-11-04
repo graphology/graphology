@@ -42,12 +42,15 @@ function abstractSynchronousLayout(assign, graph, params) {
 
   // Iteration state
   const nodeStates = helpers.initializeNodeStates(graph, params.attributes);
-  let converged = false;
+  let result = null;
   let i;
 
   // Iterating
-  for (i = 0; i < maxIterations && !converged; i++)
-    converged = iterate(graph, nodeStates, params).converged;
+  for (i = 0; i < maxIterations; i++) {
+    result = iterate(graph, nodeStates, params);
+
+    if (result.converged) break;
+  }
 
   // Applying
   if (assign) {
@@ -55,7 +58,7 @@ function abstractSynchronousLayout(assign, graph, params) {
     return;
   }
 
-  return helpers.collectLayoutChanges(graph, nodeStates);
+  return helpers.collectLayoutChanges(nodeStates);
 }
 
 /**

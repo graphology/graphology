@@ -41,7 +41,7 @@ ForceSupervisor.prototype.isRunning = function () {
 };
 
 ForceSupervisor.prototype.runFrame = function () {
-  const result = iterate(this.graph, this.nodeStates, this.params);
+  iterate(this.graph, this.nodeStates, this.params);
 
   helpers.assignLayoutChanges(
     this.graph,
@@ -49,12 +49,15 @@ ForceSupervisor.prototype.runFrame = function () {
     this.params.attributes
   );
 
-  if (result.converged) {
-    if (this.callbacks.onConverged) this.callbacks.onConverged();
-    this.stop();
-  } else {
-    this.frameID = window.requestAnimationFrame(() => this.runFrame());
-  }
+  // TODO: convergence is not easy
+  // if (result.converged) {
+  //   if (this.callbacks.onConverged) this.callbacks.onConverged();
+  //   this.stop();
+  // } else {
+  //   this.frameID = window.requestAnimationFrame(() => this.runFrame());
+  // }
+
+  this.frameID = window.requestAnimationFrame(() => this.runFrame());
 };
 
 ForceSupervisor.prototype.stop = function () {

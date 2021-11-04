@@ -27,10 +27,10 @@ module.exports = function iterate(graph, nodeStates, options) {
   // Check nodeStatess and inertia
   for (let i = 0; i < adjustedOrder; i++) {
     const n = nodes[i];
-    const state = nodeStates[n];
+    const nodeState = nodeStates[n];
 
-    state.dx *= inertia;
-    state.dy *= inertia;
+    nodeState.dx *= inertia;
+    nodeState.dy *= inertia;
   }
 
   const distancesCache = {};
@@ -121,7 +121,8 @@ module.exports = function iterate(graph, nodeStates, options) {
   // Apply forces
   let converged = true;
 
-  graph.forEachNode((n, attr) => {
+  for (let i = 0; i < adjustedOrder; i++) {
+    const n = nodes[i];
     const nodeState = nodeStates[n];
 
     const distance = Math.sqrt(
@@ -137,13 +138,13 @@ module.exports = function iterate(graph, nodeStates, options) {
       converged = false;
     }
 
-    if (isNodeFixed(n, attr)) {
+    if (!isNodeFixed(n, graph.getNodeAttributes(n))) {
       nodeState.x += nodeState.dx;
       nodeState.y += nodeState.dy;
     }
 
     // NOTE: possibility to assign here to save one loop in the future
-  });
+  }
 
   return {converged};
 };
