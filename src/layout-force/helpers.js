@@ -4,23 +4,6 @@
  *
  * Miscellaneous helper functions related to the force layout.
  */
-exports.initializeNodeStates = function (graph, attributes) {
-  const {x, y} = attributes;
-
-  const nodeStates = {};
-
-  graph.forEachNode((n, attr) => {
-    nodeStates[n] = {
-      dx: 0,
-      dy: 0,
-      x: attr[x] || 0,
-      y: attr[y] || 0
-    };
-  });
-
-  return nodeStates;
-};
-
 exports.assignLayoutChanges = function (graph, nodeStates, attributes) {
   const {x, y} = attributes;
 
@@ -28,7 +11,7 @@ exports.assignLayoutChanges = function (graph, nodeStates, attributes) {
     (n, attr) => {
       const state = nodeStates[n];
 
-      if (!state) return attr;
+      if (!state || state.fixed) return attr;
 
       attr[x] = state.x;
       attr[y] = state.y;

@@ -28,7 +28,7 @@ function ForceSupervisor(graph, params) {
 
   this.graph = graph;
   this.params = params;
-  this.nodeStates = helpers.initializeNodeStates(graph, params.attributes);
+  this.nodeStates = {};
   this.frameID = null;
   this.running = false;
   this.killed = false;

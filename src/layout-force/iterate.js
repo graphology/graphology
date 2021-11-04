@@ -15,6 +15,8 @@ module.exports = function iterate(graph, nodeStates, options) {
   const {fixed: fixedName} = attributes;
   const {attraction, repulsion, gravity, inertia, maxMove} = options.settings;
 
+  const {x: xKey, y: yKey} = attributes;
+
   const isNodeFixed =
     typeof fixedName === 'function' ? fixedName : (_, attr) => attr[fixedName];
 
@@ -27,10 +29,23 @@ module.exports = function iterate(graph, nodeStates, options) {
   // Check nodeStatess and inertia
   for (let i = 0; i < adjustedOrder; i++) {
     const n = nodes[i];
+    const attr = graph.getNodeAttributes(n);
     const nodeState = nodeStates[n];
 
-    nodeState.dx *= inertia;
-    nodeState.dy *= inertia;
+    if (!nodeState)
+      nodeStates[n] = {
+        dx: 0,
+        dy: 0,
+        x: attr[xKey] || 0,
+        y: attr[yKey] || 0
+      };
+    else
+      nodeStates[n] = {
+        dx: nodeState.dx * inertia,
+        dy: nodeState.dy * inertia,
+        x: attr[xKey] || 0,
+        y: attr[yKey] || 0
+      };
   }
 
   const distancesCache = {};
@@ -141,6 +156,9 @@ module.exports = function iterate(graph, nodeStates, options) {
     if (!isNodeFixed(n, graph.getNodeAttributes(n))) {
       nodeState.x += nodeState.dx;
       nodeState.y += nodeState.dy;
+      nodeState.fixed = false;
+    } else {
+      nodeState.fixed = true;
     }
 
     // NOTE: possibility to assign here to save one loop in the future
