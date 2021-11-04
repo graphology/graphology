@@ -1,5 +1,4 @@
-import Graph from "graphology";
-import { NodeKey } from "graphology-types";
+import Graph from 'graphology';
 
 interface Settings {
   xKey: string;
@@ -13,26 +12,29 @@ interface Settings {
   maxMove: number;
 
   // Custom behaviors settings:
-  shouldSkipEdge?: (n: NodeKey) => boolean;
-  shouldSkipNode?: (n: NodeKey) => boolean;
-  isNodeFixed?: (n: NodeKey) => boolean;
+  shouldSkipEdge?: (n: string) => boolean;
+  shouldSkipNode?: (n: string) => boolean;
+  isNodeFixed?: (n: string) => boolean;
 }
 
 const DEFAULT_SETTINGS: Settings = {
-  xKey: "x",
-  yKey: "y",
+  xKey: 'x',
+  yKey: 'y',
 
   attraction: 0.0005,
   repulsion: 0.1,
   gravity: 0.0001,
   inertia: 0.6,
-  maxMove: 200,
+  maxMove: 200
 };
 
 export default class ForceSupervisor {
   private graph: Graph;
   private settings: Settings;
-  private nodeStates: Record<NodeKey, { dx: number; dy: number; x: number; y: number }> = {};
+  private nodeStates: Record<
+    string,
+    {dx: number; dy: number; x: number; y: number}
+  > = {};
   private frameID?: number;
   private running = false;
 
@@ -40,14 +42,14 @@ export default class ForceSupervisor {
     this.graph = graph;
     this.settings = {
       ...DEFAULT_SETTINGS,
-      ...settings,
+      ...settings
     };
 
     this.init();
   }
 
   private iterate(): void {
-    const { graph, settings, nodeStates } = this;
+    const {graph, settings, nodeStates} = this;
     const {
       attraction,
       repulsion,
@@ -58,17 +60,20 @@ export default class ForceSupervisor {
       shouldSkipEdge,
       isNodeFixed,
       xKey,
-      yKey,
+      yKey
     } = settings;
 
     let nodes = graph.nodes();
-    if (shouldSkipNode) nodes = nodes.filter((n) => !shouldSkipNode(n));
+    if (shouldSkipNode) nodes = nodes.filter(n => !shouldSkipNode(n));
     const order = nodes.length;
 
     let edges = graph.edges();
     if (shouldSkipNode)
-      edges = edges.filter((e) => !shouldSkipNode(graph.source(e)) && !shouldSkipNode(graph.target(e)));
-    if (shouldSkipEdge) edges = edges.filter((e) => !shouldSkipEdge(e));
+      edges = edges.filter(
+        e =>
+          !shouldSkipNode(graph.source(e)) && !shouldSkipNode(graph.target(e))
+      );
+    if (shouldSkipEdge) edges = edges.filter(e => !shouldSkipEdge(e));
     const size = edges.length;
 
     const distancesCache: Record<string, Record<string, number>> = {};
@@ -81,14 +86,14 @@ export default class ForceSupervisor {
           dx: 0,
           dy: 0,
           x: graph.getNodeAttribute(n, xKey) || 0,
-          y: graph.getNodeAttribute(n, yKey) || 0,
+          y: graph.getNodeAttribute(n, yKey) || 0
         };
       else
         nodeStates[n] = {
           dx: nodeStates[n].dx * inertia,
           dy: nodeStates[n].dy * inertia,
           x: graph.getNodeAttribute(n, xKey) || 0,
-          y: graph.getNodeAttribute(n, yKey) || 0,
+          y: graph.getNodeAttribute(n, yKey) || 0
         };
     }
 
@@ -138,7 +143,8 @@ export default class ForceSupervisor {
         // Compute distance:
         const dx = n2State.x - n1State.x;
         const dy = n2State.y - n1State.y;
-        const distance: number = n2 > n1 ? distancesCache[n1][n2] : distancesCache[n2][n1];
+        const distance: number =
+          n2 > n1 ? distancesCache[n1][n2] : distancesCache[n2][n1];
 
         // Attract nodes relatively to their distance:
         const attractionX = attraction * distance * dx;
@@ -156,7 +162,7 @@ export default class ForceSupervisor {
         const nodeState = nodeStates[n];
 
         // Attract nodes to [0, 0] relatively to the distance:
-        const { x, y } = nodeState;
+        const {x, y} = nodeState;
         const distance = Math.sqrt(x * x + y * y) || 1;
         nodeStates[n].dx -= x * gravity * distance;
         nodeStates[n].dy -= y * gravity * distance;
@@ -167,7 +173,9 @@ export default class ForceSupervisor {
       const n = nodes[i];
       const nodeState = nodeStates[n];
 
-      const distance = Math.sqrt(nodeState.dx * nodeState.dx + nodeState.dy * nodeState.dy);
+      const distance = Math.sqrt(
+        nodeState.dx * nodeState.dx + nodeState.dy * nodeState.dy
+      );
       if (distance > maxMove) {
         nodeState.dx *= maxMove / distance;
         nodeState.dy *= maxMove / distance;
@@ -204,7 +212,7 @@ export default class ForceSupervisor {
   stop(): void {
     if (!this.running) return;
 
-    if (typeof this.frameID === "number") {
+    if (typeof this.frameID === 'number') {
       window.cancelAnimationFrame(this.frameID);
       this.frameID = undefined;
     }

@@ -9,7 +9,8 @@
     "index.js"
   ],
   "scripts": {
-    "test": "echo 'TODO'"
+    "prepublishOnly": "npm test",
+    "test": "mocha test.js"
   },
   "repository": {
     "type": "git",
@@ -19,21 +20,28 @@
     "graph",
     "graphology",
     "layout",
-    "force directed"
+    "force",
+    "force vector"
   ],
-  "author": {
-    "name": "Alexis Jacomy",
-    "url": "http://github.com/jacomyal"
-  },
+  "contributors": [
+    {
+      "name": "Alexis Jacomy",
+      "url": "http://github.com/jacomyal"
+    },
+    {
+      "name": "Guillaume Plique",
+      "url": "http://github.com/Yomguithereal"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/graphology/graphology/issues"
   },
-  "homepage": "https://github.com/graphology/graphology/tree/master/src/layout-force#readme",
-  "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
-  },
+  "homepage": "https://github.com/graphology/graphology#readme",
   "peerDependencies": {
     "graphology-types": ">=0.19.0"
+  },
+  "dependencies": {
+    "graphology-utils": "^1.8.0"
   }
 }
