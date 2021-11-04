@@ -4,11 +4,16 @@
  *
  * Function describing a single iteration of the force layout.
  */
+// const EPSILON = -Infinity;
 
 function hashPair(s, t) {
   if (s < t) return s + '§' + t;
   return t + '§' + s;
 }
+
+// function isVeryCloseToZero(x) {
+//   return Math.abs(x) < EPSILON;
+// }
 
 module.exports = function iterate(graph, nodeStates, options) {
   const {shouldSkipNode, shouldSkipEdge, attributes} = options;
@@ -134,7 +139,7 @@ module.exports = function iterate(graph, nodeStates, options) {
     }
 
   // Apply forces
-  let converged = true;
+  const converged = false;
 
   for (let i = 0; i < adjustedOrder; i++) {
     const n = nodes[i];
@@ -149,9 +154,9 @@ module.exports = function iterate(graph, nodeStates, options) {
       nodeState.dy *= maxMove / distance;
     }
 
-    if (nodeStates.dx > 0 || nodeStates.dy > 0) {
-      converged = false;
-    }
+    // if (!isVeryCloseToZero(nodeState.dx) || !isVeryCloseToZero(nodeState.dy)) {
+    //   converged = false;
+    // }
 
     if (!isNodeFixed(n, graph.getNodeAttributes(n))) {
       nodeState.x += nodeState.dx;
