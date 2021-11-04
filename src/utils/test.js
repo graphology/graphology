@@ -15,6 +15,7 @@ var renameGraphKeys = require('./rename-graph-keys.js');
 var updateGraphKeys = require('./update-graph-keys.js');
 var memoizedForEach = require('./memoized-for-each.js');
 var createWeightedGetter = require('./weight-getter.js').createWeightGetter;
+var resolveDefaults = require('./defaults.js');
 
 var UndirectedGraph = Graph.UndirectedGraph;
 
@@ -370,6 +371,51 @@ describe('graphology-utils', function () {
       assert.strictEqual(weightGetter(graph.getEdgeAttributes(4, 5)), 1);
       assert.strictEqual(weightGetter(graph.getEdgeAttributes(6, 7)), 1);
       assert.strictEqual(weightGetter(graph.getEdgeAttributes(8, 9)), 1);
+    });
+  });
+
+  describe('resolveDefaults', function () {
+    it('should correctly resolve defaults.', function () {
+      var defaults = {
+        attributes: {
+          weight: 'weight'
+        },
+        weighted: false
+      };
+
+      assert.deepStrictEqual(resolveDefaults({}, defaults), defaults);
+      assert.deepStrictEqual(
+        resolveDefaults({unkown: false, otherUnknown: 'test'}, defaults),
+        defaults
+      );
+      assert.deepStrictEqual(resolveDefaults({weighted: true}, defaults), {
+        attributes: {
+          weight: 'weight'
+        },
+        weighted: true
+      });
+      assert.deepStrictEqual(
+        resolveDefaults(
+          {attributes: {unkown: 'test', weight: 'custom'}},
+          defaults
+        ),
+        {
+          attributes: {
+            weight: 'custom'
+          },
+          weighted: false
+        }
+      );
+
+      assert.deepStrictEqual(
+        resolveDefaults({index: new Set([0, 1])}, {index: null}),
+        {index: new Set([0, 1])}
+      );
+
+      assert.deepStrictEqual(
+        resolveDefaults({index: null}, {index: new Set([0, 1])}),
+        {index: new Set([0, 1])}
+      );
     });
   });
 });

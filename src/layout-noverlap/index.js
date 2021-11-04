@@ -4,9 +4,9 @@
  *
  * Library endpoint.
  */
-var isGraph = require('graphology-utils/is-graph'),
-  iterate = require('./iterate.js'),
-  helpers = require('./helpers.js');
+var isGraph = require('graphology-utils/is-graph');
+var iterate = require('./iterate.js');
+var helpers = require('./helpers.js');
 
 var DEFAULT_SETTINGS = require('./defaults.js');
 var DEFAULT_MAX_ITERATIONS = 500;
@@ -32,14 +32,9 @@ function abstractSynchronousLayout(assign, graph, params) {
 
   var maxIterations = params.maxIterations || DEFAULT_MAX_ITERATIONS;
 
-  if (typeof maxIterations !== 'number')
+  if (typeof maxIterations !== 'number' || maxIterations <= 0)
     throw new Error(
-      'graphology-layout-noverlap: invalid number of maximum iterations.'
-    );
-
-  if (maxIterations <= 0)
-    throw new Error(
-      'graphology-layout-noverlap: you should provide a positive number of maximum iterations.'
+      'graphology-layout-force: you should provide a positive number of maximum iterations.'
     );
 
   // Validating settings
