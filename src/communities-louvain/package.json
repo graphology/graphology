@@ -1,6 +1,6 @@
 {
   "name": "graphology-communities-louvain",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Louvain community detection for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -43,8 +43,7 @@
   },
   "dependencies": {
     "graphology-indices": "^0.14.0",
-    "graphology-utils": "^2.1.2",
-    "lodash": "^4.17.20",
+    "graphology-utils": "^2.3.0",
     "mnemonist": "^0.38.1",
     "pandemonium": "^2.0.0"
   }

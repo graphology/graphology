@@ -4,7 +4,7 @@
  *
  * Various assertions concerning graphs.
  */
-var isEqual = require('lodash/isEqual');
+var deepEqual = require('fast-deep-equal/es6');
 
 /**
  * Function returning whether the given graphs have the same nodes.
@@ -35,7 +35,7 @@ function haveSameNodesDeep(G, H) {
   return G.everyNode(function (node, attr) {
     if (!H.hasNode(node)) return false;
 
-    return isEqual(attr, H.getNodeAttributes(node));
+    return deepEqual(attr, H.getNodeAttributes(node));
   });
 }
 
@@ -123,7 +123,7 @@ function areSameGraphsDeep(G, H) {
   sameDirectedEdges = G.everyDirectedEdge(function (_e, _ea, source, target) {
     if (!H.hasDirectedEdge(source, target)) return false;
 
-    return isEqual(
+    return deepEqual(
       G.getDirectedEdgeAttributes(source, target),
       H.getDirectedEdgeAttributes(source, target)
     );
@@ -139,7 +139,7 @@ function areSameGraphsDeep(G, H) {
   ) {
     if (!H.hasUndirectedEdge(source, target)) return false;
 
-    return isEqual(
+    return deepEqual(
       G.getUndirectedEdgeAttributes(source, target),
       H.getUndirectedEdgeAttributes(source, target)
     );

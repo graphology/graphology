@@ -1,6 +1,6 @@
 {
   "name": "graphology-generators",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Various graph generators for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -43,8 +43,7 @@
     "graphology-types": ">=0.19.0"
   },
   "dependencies": {
-    "graphology-metrics": "^1.14.0",
-    "graphology-utils": "^1.8.0",
-    "lodash": "^4.17.20"
+    "graphology-metrics": "^1.16.1",
+    "graphology-utils": "^2.3.0"
   }
 }

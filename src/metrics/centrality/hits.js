@@ -4,7 +4,7 @@
  *
  * Implementation of the HITS algorithm for the graphology specs.
  */
-var defaults = require('lodash/defaultsDeep');
+var resolveDefaults = require('graphology-utils/defaults');
 var isGraph = require('graphology-utils/is-graph');
 
 /**
@@ -76,7 +76,7 @@ function hits(assign, graph, options) {
       'graphology-hits: the HITS algorithm does not work with MultiGraphs.'
     );
 
-  options = defaults(options, DEFAULTS);
+  options = resolveDefaults(options, DEFAULTS);
 
   // Variables
   var order = graph.order,

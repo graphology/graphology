@@ -4,9 +4,7 @@
  *
  * Function generating ladder graphs.
  */
-var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
-  mergePath = require('graphology-utils/merge-path'),
-  range = require('lodash/range');
+var isGraphConstructor = require('graphology-utils/is-graph-constructor');
 
 /**
  * Generates a ladder graph of length n (order will therefore be 2 * n).
@@ -23,10 +21,11 @@ module.exports = function ladder(GraphClass, length) {
 
   var graph = new GraphClass();
 
-  mergePath(graph, range(length));
-  mergePath(graph, range(length, length * 2));
+  var i;
 
-  for (var i = 0; i < length; i++) graph.addEdge(i, i + length);
+  for (i = 0; i < length - 1; i++) graph.mergeEdge(i, i + 1);
+  for (i = length; i < length * 2 - 1; i++) graph.mergeEdge(i, i + 1);
+  for (i = 0; i < length; i++) graph.addEdge(i, i + length);
 
   return graph;
 };

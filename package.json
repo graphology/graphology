@@ -61,6 +61,7 @@
     "graphology-graphml": "file:src/graphml",
     "graphology-indices": "file:src/indices",
     "graphology-layout": "file:src/layout",
+    "graphology-layout-force": "file:src/layout-force",
     "graphology-layout-forceatlas2": "file:src/layout-forceatlas2",
     "graphology-layout-noverlap": "file:src/layout-noverlap",
     "graphology-library": "file:src/library",

@@ -39,13 +39,13 @@
  * https://github.com/vtraag/gephi-leiden-plugin
  * https://github.com/vtraag/leidenalg
  */
-var defaults = require('lodash/defaultsDeep'),
-  isGraph = require('graphology-utils/is-graph'),
-  inferType = require('graphology-utils/infer-type'),
-  SparseMap = require('mnemonist/sparse-map'),
-  SparseQueueSet = require('mnemonist/sparse-queue-set'),
-  createRandomIndex = require('pandemonium/random-index').createRandomIndex,
-  utils = require('./utils.js');
+var resolveDefaults = require('graphology-utils/defaults');
+var isGraph = require('graphology-utils/is-graph');
+var inferType = require('graphology-utils/infer-type');
+var SparseMap = require('mnemonist/sparse-map');
+var SparseQueueSet = require('mnemonist/sparse-queue-set');
+var createRandomIndex = require('pandemonium/random-index').createRandomIndex;
+var utils = require('./utils.js');
 
 var indices = require('graphology-indices/neighborhood/louvain');
 var addWeightToCommunity = utils.addWeightToCommunity;
@@ -517,7 +517,7 @@ function leiden(assign, detailed, graph, options) {
     );
 
   // Attributes name
-  options = defaults({}, options, DEFAULTS);
+  options = resolveDefaults(options, DEFAULTS);
 
   // Empty graph case
   var c = 0;

@@ -35,17 +35,17 @@
  * DOI.org (Crossref), doi:10.1038/s41598-019-41695-z.
  * https://arxiv.org/abs/1810.08473
  */
-var defaults = require('lodash/defaultsDeep'),
-  isGraph = require('graphology-utils/is-graph'),
-  inferType = require('graphology-utils/infer-type'),
-  SparseMap = require('mnemonist/sparse-map'),
-  SparseQueueSet = require('mnemonist/sparse-queue-set'),
-  createRandomIndex = require('pandemonium/random-index').createRandomIndex;
+var resolveDefaults = require('graphology-utils/defaults');
+var isGraph = require('graphology-utils/is-graph');
+var inferType = require('graphology-utils/infer-type');
+var SparseMap = require('mnemonist/sparse-map');
+var SparseQueueSet = require('mnemonist/sparse-queue-set');
+var createRandomIndex = require('pandemonium/random-index').createRandomIndex;
 
 var indices = require('graphology-indices/neighborhood/louvain');
 
-var UndirectedLouvainIndex = indices.UndirectedLouvainIndex,
-  DirectedLouvainIndex = indices.DirectedLouvainIndex;
+var UndirectedLouvainIndex = indices.UndirectedLouvainIndex;
+var DirectedLouvainIndex = indices.DirectedLouvainIndex;
 
 var DEFAULTS = {
   attributes: {
@@ -711,7 +711,7 @@ function louvain(assign, detailed, graph, options) {
     );
 
   // Attributes name
-  options = defaults({}, options, DEFAULTS);
+  options = resolveDefaults(options, DEFAULTS);
 
   // Empty graph case
   var c = 0;

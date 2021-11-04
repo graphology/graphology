@@ -4,8 +4,8 @@
  *
  * Simple layout giving uniform random positions to the nodes.
  */
-var defaults = require('lodash/defaultsDeep'),
-  isGraph = require('graphology-utils/is-graph');
+var resolveDefaults = require('graphology-utils/defaults');
+var isGraph = require('graphology-utils/is-graph');
 
 /**
  * Default options.
@@ -37,7 +37,7 @@ function genericRandomLayout(assign, graph, options) {
       'graphology-layout/random: the given graph is not a valid graphology instance.'
     );
 
-  options = defaults(options, DEFAULTS);
+  options = resolveDefaults(options, DEFAULTS);
 
   var positions = {},
     nodes = graph.nodes(),

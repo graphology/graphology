@@ -141,9 +141,9 @@
  * https://github.com/gephi/gephi/blob/master/modules/StatisticsPlugin/src/main/java/org/gephi/statistics/plugin/Modularity.java
  * https://github.com/igraph/igraph/blob/eca5e809aab1aa5d4eca1e381389bcde9cf10490/src/community.c#L906
  */
-var defaults = require('lodash/defaultsDeep'),
-  isGraph = require('graphology-utils/is-graph'),
-  inferType = require('graphology-utils/infer-type');
+var resolveDefaults = require('graphology-utils/defaults');
+var isGraph = require('graphology-utils/is-graph');
+var inferType = require('graphology-utils/infer-type');
 
 var DEFAULTS = {
   attributes: {
@@ -543,7 +543,7 @@ function denseModularity(graph, options) {
       'graphology-metrics/modularity: cannot compute modularity of a mixed graph.'
     );
 
-  options = defaults({}, options || {}, DEFAULTS);
+  options = resolveDefaults(options, DEFAULTS);
 
   if (trueType === 'directed') return directedDenseModularity(graph, options);
 
@@ -573,7 +573,7 @@ function sparseModularity(graph, options) {
       'graphology-metrics/modularity: cannot compute modularity of a mixed graph.'
     );
 
-  options = defaults({}, options || {}, DEFAULTS);
+  options = resolveDefaults(options, DEFAULTS);
 
   if (trueType === 'directed') return directedSparseModularity(graph, options);
 

@@ -1,6 +1,6 @@
 {
   "name": "graphology-svg",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "SVG rendering routines for graphology.",
   "main": "index.js",
   "files": [
@@ -36,7 +36,6 @@
   },
   "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
-    "graphology-utils": "^1.5.0",
-    "lodash": "^4.17.15"
+    "graphology-utils": "^2.3.0"
   }
 }

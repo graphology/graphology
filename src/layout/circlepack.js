@@ -4,9 +4,9 @@
  *
  * Circlepack layout from d3-hierarchy/gephi.
  */
-var defaults = require('lodash/defaultsDeep'),
-  isGraph = require('graphology-utils/is-graph'),
-  shuffle = require('pandemonium/shuffle-in-place');
+var resolveDefaults = require('graphology-utils/defaults');
+var isGraph = require('graphology-utils/is-graph');
+var shuffle = require('pandemonium/shuffle-in-place');
 
 /**
  * Default options.
@@ -419,7 +419,7 @@ function genericCirclePackLayout(assign, graph, options) {
       'graphology-layout/circlepack: the given graph is not a valid graphology instance.'
     );
 
-  options = defaults(options, DEFAULTS);
+  options = resolveDefaults(options, DEFAULTS);
 
   var posMap = {},
     positions = {},

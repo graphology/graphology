@@ -4,9 +4,7 @@
  *
  * Function generating path graphs.
  */
-var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
-  mergePath = require('graphology-utils/merge-path'),
-  range = require('lodash/range');
+var isGraphConstructor = require('graphology-utils/is-graph-constructor');
 
 /**
  * Generates a path graph with n nodes.
@@ -23,7 +21,7 @@ module.exports = function path(GraphClass, order) {
 
   var graph = new GraphClass();
 
-  mergePath(graph, range(order));
+  for (var i = 0; i < order - 1; i++) graph.mergeEdge(i, i + 1);
 
   return graph;
 };

@@ -9,7 +9,7 @@
  * The PageRank citation ranking: Bringing order to the Web. 1999
  */
 var isGraph = require('graphology-utils/is-graph');
-var defaults = require('lodash/defaults');
+var resolveDefaults = require('graphology-utils/defaults');
 
 /**
  * Defaults.
@@ -51,7 +51,7 @@ function abstractPagerank(assign, graph, options) {
       'graphology-pagerank: the pagerank algorithm does not work with MultiGraphs.'
     );
 
-  options = defaults(options, DEFAULTS);
+  options = resolveDefaults(options, DEFAULTS);
 
   var pagerankAttribute = options.attributes.pagerank,
     weightAttribute = options.attributes.weight,

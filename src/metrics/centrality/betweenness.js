@@ -4,12 +4,12 @@
  *
  * Function computing betweenness centrality.
  */
-var isGraph = require('graphology-utils/is-graph'),
-  lib = require('graphology-shortest-path/indexed-brandes'),
-  defaults = require('lodash/defaults');
+var isGraph = require('graphology-utils/is-graph');
+var lib = require('graphology-shortest-path/indexed-brandes');
+var resolveDefaults = require('graphology-utils/defaults');
 
-var createUnweightedIndexedBrandes = lib.createUnweightedIndexedBrandes,
-  createDijkstraIndexedBrandes = lib.createDijkstraIndexedBrandes;
+var createUnweightedIndexedBrandes = lib.createUnweightedIndexedBrandes;
+var createDijkstraIndexedBrandes = lib.createDijkstraIndexedBrandes;
 
 /**
  * Defaults.
@@ -43,7 +43,7 @@ function abstractBetweennessCentrality(assign, graph, options) {
     );
 
   // Solving options
-  options = defaults({}, options, DEFAULTS);
+  options = resolveDefaults(options, DEFAULTS);
 
   var weightAttribute = options.attributes.weight;
   var centralityAttribute = options.attributes.centrality;
