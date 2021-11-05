@@ -8,7 +8,6 @@ export class OutboundNeighborhoodIndex {
   graph: Graph;
   neighborhood: PointerArray;
   starts: PointerArray;
-  stops: PointerArray;
   nodes: Array<string>;
 
   bounds(index: number): [number, number];
@@ -24,7 +23,6 @@ export class WeightedOutboundNeighborhoodIndex {
   weights: Float64Array;
   neighborhood: PointerArray;
   starts: PointerArray;
-  stops: PointerArray;
   nodes: Array<string>;
 
   bounds(index: number): [number, number];
