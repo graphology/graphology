@@ -5,11 +5,11 @@
  * Indexed version of the famous Brandes routine aiming at computing
  * betweenness centrality efficiently.
  */
-var FixedDeque = require('mnemonist/fixed-deque'),
-  FixedStack = require('mnemonist/fixed-stack'),
-  Heap = require('mnemonist/heap'),
-  typed = require('mnemonist/utils/typed-arrays'),
-  neighborhoodIndices = require('graphology-indices/neighborhood/outbound');
+var FixedDeque = require('mnemonist/fixed-deque');
+var FixedStack = require('mnemonist/fixed-stack');
+var Heap = require('mnemonist/heap');
+var typed = require('mnemonist/utils/typed-arrays');
+var neighborhoodIndices = require('graphology-indices/neighborhood/outbound');
 
 var OutboundNeighborhoodIndex = neighborhoodIndices.OutboundNeighborhoodIndex,
   WeightedOutboundNeighborhoodIndex =
@@ -119,6 +119,8 @@ exports.createDijkstraIndexedBrandes = function createDijkstraIndexedBrandes(
   graph,
   weightAttribute
 ) {
+  if (arguments.length < 2) weightAttribute = 'weight';
+
   var neighborhoodIndex = new WeightedOutboundNeighborhoodIndex(
     graph,
     weightAttribute

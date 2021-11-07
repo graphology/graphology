@@ -152,7 +152,7 @@ describe('Neighborhood Indices', function () {
       graph.mergeEdge(2, 1, {weight: 1});
       graph.mergeEdge(4, 5, {weight: 34});
 
-      var index = new WeightedOutboundNeighborhoodIndex(graph);
+      var index = new WeightedOutboundNeighborhoodIndex(graph, 'weight');
       assert.deepEqual(index.neighborhood, new Uint8Array([1, 0, 2, 4]));
       assert.deepEqual(index.weights, new Float64Array([3, 1, 1, 34]));
 
