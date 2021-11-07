@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.1 (provisional)
+
+- Reorganizing internals.
+
 ## 2.3.0
 
 - Adding private `resolveDefaults`.

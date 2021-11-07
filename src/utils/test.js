@@ -14,10 +14,11 @@ var mergeStar = require('./merge-star.js');
 var renameGraphKeys = require('./rename-graph-keys.js');
 var updateGraphKeys = require('./update-graph-keys.js');
 var memoizedForEach = require('./memoized-for-each.js');
-var createWeightedGetter = require('./weight-getter.js').createWeightGetter;
+var getters = require('./getters.js');
 var resolveDefaults = require('./defaults.js');
 
 var UndirectedGraph = Graph.UndirectedGraph;
+var createWeightGetter = getters.createWeightGetter;
 
 describe('graphology-utils', function () {
   describe('inferType', function () {
@@ -351,7 +352,7 @@ describe('graphology-utils', function () {
     });
   });
 
-  describe('createWeightedGetter', function () {
+  describe('createWeightGetter', function () {
     it('should return valid weights from attributes.', function () {
       var graph = new Graph();
       graph.mergeEdge(1, 2, {weight: 3});
@@ -360,9 +361,9 @@ describe('graphology-utils', function () {
       graph.mergeEdge(6, 7, {weight: NaN});
       graph.mergeEdge(8, 9, {weight: 'test'});
 
-      var defaultGetter = createWeightedGetter(null);
-      var weightGetter = createWeightedGetter('weight');
-      var customGetter = createWeightedGetter('custom');
+      var defaultGetter = createWeightGetter(null);
+      var weightGetter = createWeightGetter('weight');
+      var customGetter = createWeightGetter('custom');
 
       assert.strictEqual(defaultGetter(graph.getEdgeAttributes(1, 2)), 1);
       assert.strictEqual(weightGetter(graph.getEdgeAttributes(1, 2)), 3);
