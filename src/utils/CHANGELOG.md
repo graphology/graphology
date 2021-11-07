@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.3.1 (provisional)
+## 2.3.1
 
 - Reorganizing internals.
 
