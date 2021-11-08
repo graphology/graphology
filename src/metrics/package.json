@@ -1,6 +1,6 @@
 {
   "name": "graphology-metrics",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "description": "Miscellaneous graph metrics for graphology.",
   "main": "index.js",
   "files": [

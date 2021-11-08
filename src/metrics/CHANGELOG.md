@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.18.0 (provisional)
+## 1.18.0
 
 - Adding closeness centrality.
 
