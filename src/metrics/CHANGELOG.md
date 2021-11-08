@@ -1,7 +1,8 @@
 # Changelog
 
-## 1.16.2 (provisional)
+## 1.17.0
 
+- Adding eigenvector centrality.
 - Improving `pagerank` performance.
 
 ## 1.16.1

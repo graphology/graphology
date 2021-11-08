@@ -30,6 +30,7 @@ _Node metrics_
 - [Centrality](#centrality)
   - [Betweenness centrality](#betweenness-centrality)
   - [Degree centrality](#degree-centrality)
+  - [Eigenvector centrality](#eigenvector-centrality)
   - [HITS](#hits)
   - [Pagerank](#pagerank)
 - [Degree](#degree)
@@ -252,6 +253,35 @@ _Arguments_
   - **attributes** <span class="code">?object</span>: custom attribute names:
     - **centrality** <span class="code">?string</span> <span class="default">degreeCentrality</span>: name of the centrality attribute to assign.
 
+### Eigenvector centrality
+
+Computes the eigenvector centrality of a graph's nodes.
+
+```js
+import eigenvectorCentrality from 'graphology-metrics/centrality/eigenvector';
+
+// To compute the eigenvector centrality and return the score per node:
+const scores = eigenvectorCentrality(graph);
+
+// To directly map the result to nodes' attributes:
+eigenvectorCentrality.assign(graph);
+
+// Note that you can also pass options to customize the algorithm:
+const p = eigenvectorCentrality(graph, {tolerance: 1e-3, weighted: false});
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: attributes' names:
+    - **centrality** <span class="code">?string</span> <span class="default">eigenvectorCentrality</span>: name of the node attribute that will be assigned the eigenvector centrality.
+    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
+  - **maxIterations** <span class="code">?number</span> <span class="default">100</span>: maximum number of iterations to perform.
+  - **tolerance** <span class="code">?number</span> <span class="default">1.e-6</span>: convergence error tolerance.
+  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to use available weights or not.
+
+
 ### HITS
 
 Computes the hub/authority metrics for each node using the HITS algorithm.
@@ -284,7 +314,6 @@ _Arguments_
 ### Pagerank
 
 Computes the pagerank metrics for each node.
-
 
 ```js
 import pagerank from 'graphology-metrics/centrality/pagerank';

@@ -23,6 +23,7 @@ _Node metrics_
 - [Centrality](#centrality)
   - [Betweenness centrality](#betweenness-centrality)
   - [Degree centrality](#degree-centrality)
+  - [Eigenvector centrality](#eigenvector-centrality)
   - [HITS](#hits)
   - [Pagerank](#pagerank)
 - [Degree](#degree)
@@ -245,6 +246,35 @@ _Arguments_
   - **attributes** _?object_: custom attribute names:
     - **centrality** _?string_ [`degreeCentrality`]: name of the centrality attribute to assign.
 
+### Eigenvector centrality
+
+Computes the eigenvector centrality of a graph's nodes.
+
+```js
+import eigenvectorCentrality from 'graphology-metrics/centrality/eigenvector';
+
+// To compute the eigenvector centrality and return the score per node:
+const scores = eigenvectorCentrality(graph);
+
+// To directly map the result to nodes' attributes:
+eigenvectorCentrality.assign(graph);
+
+// Note that you can also pass options to customize the algorithm:
+const p = eigenvectorCentrality(graph, {tolerance: 1e-3, weighted: false});
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **options** _?object_: options:
+  - **attributes** _?object_: attributes' names:
+    - **centrality** _?string_ [`eigenvectorCentrality`]: name of the node attribute that will be assigned the eigenvector centrality.
+    - **weight** _?string_ [`weight`]: name of the edges' weight attribute.
+  - **maxIterations** _?number_ [`100`]: maximum number of iterations to perform.
+  - **tolerance** _?number_ [`1.e-6`]: convergence error tolerance.
+  - **weighted** _?boolean_ [`false`]: whether to use available weights or not.
+
+
 ### HITS
 
 Computes the hub/authority metrics for each node using the HITS algorithm.
@@ -277,7 +307,6 @@ _Arguments_
 ### Pagerank
 
 Computes the pagerank metrics for each node.
-
 
 ```js
 import pagerank from 'graphology-metrics/centrality/pagerank';
