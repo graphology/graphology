@@ -1,6 +1,6 @@
 /**
- * Graphology Utils Unit Tests
- * ============================
+ * Graphology Metrics Pagerank Unit Tests
+ * =======================================
  */
 var assert = require('chai').assert;
 var Graph = require('graphology');

@@ -1,12 +1,19 @@
 /**
- * Graphology Pagerank
- * ====================
+ * Graphology Eigenvector Centrality
+ * ==================================
  *
- * JavaScript implementation of the pagerank algorithm for graphology.
+ * JavaScript implementation of the eigenvector centrality.
  *
- * [Reference]:
- * Page, Lawrence; Brin, Sergey; Motwani, Rajeev and Winograd, Terry,
- * The PageRank citation ranking: Bringing order to the Web. 1999
+ * [References]:
+ * https://en.wikipedia.org/wiki/Eigenvector_centrality
+ *
+ * Phillip Bonacich. "Power and Centrality: A Family of Measures."
+ * American Journal of Sociology, 92(5):1170–1182, 1986
+ * http://www.leonidzhukov.net/hse/2014/socialnetworks/papers/Bonacich-Centrality.pdf
+ *
+ * Mark E. J. Newman.
+ * Networks: An Introduct *
+ * Oxford University Press, USA, 2010, pp. 169.
  */
 var isGraph = require('graphology-utils/is-graph');
 var resolveDefaults = require('graphology-utils/defaults');
@@ -18,102 +25,106 @@ var WeightedOutboundNeighborhoodIndex =
  */
 var DEFAULTS = {
   attributes: {
-    pagerank: 'pagerank',
+    centrality: 'eigenvectorCentrality',
     weight: 'weight'
   },
-  alpha: 0.85,
   maxIterations: 100,
   tolerance: 1e-6,
   weighted: false
 };
 
 /**
- * Abstract function applying the pagerank algorithm to the given graph.
+ * Helpers.
+ */
+function safeVariadicHypot(x) {
+  var max = 0;
+  var s = 0;
+
+  for (var i = 0, l = x.length; i < l; i++) {
+    var n = Math.abs(x[i]);
+
+    if (n > max) {
+      s *= (max / n) * (max / n);
+      max = n;
+    }
+    s += n === 0 && max === 0 ? 0 : (n / max) * (n / max);
+  }
+
+  // NOTE: In case of numerical error we'll assume the norm is 1 in our case!
+  return max === Infinity ? 1 : max * Math.sqrt(s);
+}
+
+/**
+ * Abstract function computing the eigenvector centrality of a graph's nodes.
  *
  * @param  {boolean}  assign        - Should we assign the result to nodes.
  * @param  {Graph}    graph         - Target graph.
  * @param  {?object}  option        - Options:
  * @param  {?object}    attributes  - Custom attribute names:
- * @param  {?string}      pagerank  - Name of the pagerank attribute to assign.
+ * @param  {?string}      centrality  - Name of the centrality attribute to assign.
  * @param  {?string}      weight    - Name of the weight algorithm.
- * @param  {?number}  alpha         - Damping parameter.
  * @param  {?number}  maxIterations - Maximum number of iterations to perform.
  * @param  {?number}  tolerance     - Error tolerance when checking for convergence.
  * @param  {?boolean} weighted      - Should we use the graph's weights.
  * @return {object|undefined}
  */
-function abstractPagerank(assign, graph, options) {
+function abstractEigenvectorCentrality(assign, graph, options) {
   if (!isGraph(graph))
     throw new Error(
-      'graphology-metrics/centrality/pagerank: the given graph is not a valid graphology instance.'
+      'graphology-metrics/centrality/eigenvector: the given graph is not a valid graphology instance.'
     );
 
   if (graph.multi)
     throw new Error(
-      'graphology-metrics/centrality/pagerank: the pagerank algorithm does not work with MultiGraphs.'
+      'graphology-metrics/centrality/eigenvector: the eigenvector centrality algorithm does not work with MultiGraphs.'
     );
 
   options = resolveDefaults(options, DEFAULTS);
 
-  var alpha = options.alpha;
   var maxIterations = options.maxIterations;
   var tolerance = options.tolerance;
   var weighted = options.weighted;
 
-  var pagerankAttribute = options.attributes.pagerank;
+  var centralityAttribute = options.attributes.centrality;
   var weightAttribute = weighted ? options.attributes.weight : null;
 
   var N = graph.order;
-  var p = 1 / N;
 
   var index = new WeightedOutboundNeighborhoodIndex(graph, weightAttribute);
 
-  var i, j, l, d;
+  var i, j, l, w;
 
   var x = new Float64Array(graph.order);
 
-  // Normalizing edge weights & indexing dangling nodes
-  var normalizedEdgeWeights = new Float64Array(index.weights.length);
-  var danglingNodes = [];
-
+  // Initializing
   for (i = 0; i < N; i++) {
-    x[i] = p;
-    l = index.starts[i + 1];
-    d = index.outDegrees[i];
-
-    if (d === 0) danglingNodes.push(i);
-
-    for (j = index.starts[i]; j < l; j++) {
-      normalizedEdgeWeights[j] = index.weights[j] / d;
-    }
+    x[i] = 1 / N;
   }
 
   // Power iterations
   var iteration = 0;
   var error = 0;
-  var dangleSum, neighbor, xLast;
+  var neighbor, xLast, norm;
   var converged = false;
 
   while (iteration < maxIterations) {
     xLast = x;
-    x = new Float64Array(graph.order); // TODO: it should be possible to swap two arrays to avoid allocations (bench)
-
-    dangleSum = 0;
-
-    for (i = 0, l = danglingNodes.length; i < l; i++)
-      dangleSum += xLast[danglingNodes[i]];
-
-    dangleSum *= alpha;
+    x = new Float64Array(xLast);
 
     for (i = 0; i < N; i++) {
       l = index.starts[i + 1];
 
       for (j = index.starts[i]; j < l; j++) {
         neighbor = index.neighborhood[j];
-        x[neighbor] += alpha * xLast[i] * normalizedEdgeWeights[j];
+        w = index.weights[j];
+        x[neighbor] += xLast[i] * w;
       }
+    }
 
-      x[i] += dangleSum * p + (1 - alpha) * p;
+    norm = safeVariadicHypot(x);
+
+    for (i = 0; i < N; i++) {
+      x[i] /= norm;
     }
 
     // Checking convergence
@@ -132,10 +143,12 @@ function abstractPagerank(assign, graph, options) {
   }
 
   if (!converged)
-    throw Error('graphology-metrics/centrality/pagerank: failed to converge.');
+    throw Error(
+      'graphology-metrics/centrality/eigenvector: failed to converge.'
+    );
 
   if (assign) {
-    index.assign(pagerankAttribute, x);
+    index.assign(centralityAttribute, x);
     return;
   }
 
@@ -145,7 +158,7 @@ function abstractPagerank(assign, graph, options) {
 /**
  * Exporting.
  */
-var pagerank = abstractPagerank.bind(null, false);
-pagerank.assign = abstractPagerank.bind(null, true);
+var eigenvectorCentrality = abstractEigenvectorCentrality.bind(null, false);
+eigenvectorCentrality.assign = abstractEigenvectorCentrality.bind(null, true);
 
-module.exports = pagerank;
+module.exports = eigenvectorCentrality;
