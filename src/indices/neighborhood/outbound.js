@@ -73,10 +73,16 @@ OutboundNeighborhoodIndex.prototype.collect = function (results) {
 };
 
 OutboundNeighborhoodIndex.prototype.assign = function (prop, results) {
-  var i, l;
+  var i = 0;
 
-  for (i = 0, l = results.length; i < l; i++)
-    this.graph.setNodeAttribute(this.nodes[i], prop, results[i]);
+  this.graph.updateEachNodeAttributes(
+    function (_, attr) {
+      attr[prop] = results[i++];
+
+      return attr;
+    },
+    {attributes: [prop]}
+  );
 };
 
 exports.OutboundNeighborhoodIndex = OutboundNeighborhoodIndex;

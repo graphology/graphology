@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.15.1 (provisional)
+
+- Fixing outbound indices type declarations.
+- Improving `OutboundNeighborhoodIndex.assign` performance.
+
 ## 0.15.0
 
 - Unweighted fallback for `WeightedOutboundNeighborhoodIndex`.

@@ -13,21 +13,12 @@ export class OutboundNeighborhoodIndex {
   bounds(index: number): [number, number];
   project(): {[key: string]: Array<string>};
   collect<T>(results: Array<T>): {[key: string]: T};
-  assign<T>(results: Array<T>): void;
+  assign<T>(name: string, results: Array<T>): void;
 }
 
-export class WeightedOutboundNeighborhoodIndex {
+export class WeightedOutboundNeighborhoodIndex extends OutboundNeighborhoodIndex {
   constructor(graph: Graph, weightAttribute?: string);
 
-  graph: Graph;
   weights: Float64Array;
   outDegrees: Float64Array;
-  neighborhood: PointerArray;
-  starts: PointerArray;
-  nodes: Array<string>;
-
-  bounds(index: number): [number, number];
-  project(): {[key: string]: Array<string>};
-  collect<T>(results: Array<T>): {[key: string]: T};
-  assign<T>(results: Array<T>): void;
 }
