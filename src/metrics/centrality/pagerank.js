@@ -10,6 +10,8 @@
  */
 var isGraph = require('graphology-utils/is-graph');
 var resolveDefaults = require('graphology-utils/defaults');
+var WeightedOutboundNeighborhoodIndex =
+  require('graphology-indices/neighborhood/outbound').WeightedOutboundNeighborhoodIndex;
 
 /**
  * Defaults.
@@ -53,81 +55,48 @@ function abstractPagerank(assign, graph, options) {
 
   options = resolveDefaults(options, DEFAULTS);
 
-  var pagerankAttribute = options.attributes.pagerank,
-    weightAttribute = options.attributes.weight,
-    alpha = options.alpha,
-    maxIterations = options.maxIterations,
-    tolerance = options.tolerance,
-    weighted = options.weighted;
+  var alpha = options.alpha;
+  var maxIterations = options.maxIterations;
+  var tolerance = options.tolerance;
+  var weighted = options.weighted;
 
-  var N = graph.order,
-    p = 1 / N,
-    x = {};
+  var pagerankAttribute = options.attributes.pagerank;
+  var weightAttribute = weighted ? options.attributes.weight : null;
 
+  var N = graph.order;
+  var p = 1 / N;
+
+  var index = new WeightedOutboundNeighborhoodIndex(graph, weightAttribute);
+
+  var i, j, l, d;
+
+  var x = new Float64Array(graph.order);
+
+  // Normalizing edge weights & indexing dangling nodes
+  var normalizedEdgeWeights = new Float64Array(index.weights.length);
   var danglingNodes = [];
 
-  var nodes = graph.nodes(),
-    edges,
-    weights = {},
-    degrees = {},
-    weight,
-    iteration = 0,
-    dangleSum,
-    xLast,
-    neighbor,
-    error,
-    d,
-    k,
-    n,
-    e,
-    i,
-    j,
-    l,
-    m;
-
-  // Initialization
   for (i = 0; i < N; i++) {
-    n = nodes[i];
-    x[n] = p;
+    x[i] = p;
+    l = index.starts[i + 1];
+    d = index.outDegrees[i];
 
-    if (weighted) {
-      // Here, we need to factor in edges' weight
-      d = 0;
+    if (d === 0) danglingNodes.push(i);
 
-      edges = graph.undirectedEdges().concat(graph.outEdges(n));
-
-      for (j = 0, m = edges.length; j < m; j++) {
-        e = edges[j];
-        d += graph.getEdgeAttribute(e, weightAttribute) || 1;
-      }
-    } else {
-      d = graph.undirectedDegree(n) + graph.outDegree(n);
+    for (j = index.starts[i]; j < l; j++) {
+      normalizedEdgeWeights[j] = index.weights[j] / d;
     }
-
-    degrees[n] = d;
-
-    if (d === 0) danglingNodes.push(n);
   }
 
-  // Precompute normalized edge weights
-  edges = graph.edges();
-  for (i = 0, l = graph.size; i < l; i++) {
-    e = edges[i];
-    n = graph.source(e);
+  // Power iterations
+  var iteration = 0;
+  var error = 0;
+  var dangleSum, neighbor, xLast;
+  var converged = false;
 
-    d = degrees[n];
-
-    weight = weighted ? graph.getEdgeAttribute(e, weightAttribute) || 1 : 1;
-
-    weights[e] = weight / d;
-  }
-
-  // Performing the power iterations
   while (iteration < maxIterations) {
     xLast = x;
-    x = {};
-
-    for (k in xLast) x[k] = 0;
+    x = new Float64Array(graph.order); // TODO: it should be possible to swap two arrays to avoid allocations (bench)
 
     dangleSum = 0;
 
@@ -137,35 +106,40 @@ function abstractPagerank(assign, graph, options) {
     dangleSum *= alpha;
 
     for (i = 0; i < N; i++) {
-      n = nodes[i];
-      edges = graph.undirectedEdges(n).concat(graph.outEdges(n));
+      l = index.starts[i + 1];
 
-      for (j = 0, m = edges.length; j < m; j++) {
-        e = edges[j];
-        neighbor = graph.opposite(n, e);
-        x[neighbor] += alpha * xLast[n] * weights[e];
+      for (j = index.starts[i]; j < l; j++) {
+        neighbor = index.neighborhood[j];
+        x[neighbor] += alpha * xLast[i] * normalizedEdgeWeights[j];
       }
 
-      x[n] += dangleSum * p + (1 - alpha) * p;
+      x[i] += dangleSum * p + (1 - alpha) * p;
     }
 
     // Checking convergence
     error = 0;
 
-    for (n in x) error += Math.abs(x[n] - xLast[n]);
+    for (i = 0; i < N; i++) {
+      error += Math.abs(x[i] - xLast[i]);
+    }
 
     if (error < N * tolerance) {
-      if (assign) {
-        for (n in x) graph.setNodeAttribute(n, pagerankAttribute, x[n]);
-      }
-
-      return x;
+      converged = true;
+      break;
     }
 
     iteration++;
   }
 
-  throw Error('graphology-pagerank: failed to converge.');
+  if (!converged)
+    throw Error('graphology-metrics/centrality/pagerank: failed to converge.');
+
+  if (assign) {
+    index.assign(pagerankAttribute, x);
+    return;
+  }
+
+  return index.collect(x);
 }
 
 /**
