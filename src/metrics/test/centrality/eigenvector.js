@@ -5,6 +5,7 @@
 var assert = require('chai').assert;
 var Graph = require('graphology');
 var complete = require('graphology-generators/classic/complete');
+var path = require('graphology-generators/classic/path');
 var eigenvectorCentrality = require('../../centrality/eigenvector');
 
 function deepApproximatelyEqual(t, o, precision) {
@@ -35,5 +36,19 @@ describe('eigenvector centrality', function () {
     }, {});
 
     deepApproximatelyEqual(result, expected, 1e-7);
+  });
+
+  it('should return the correct results with a path graph.', function () {
+    var graph = path(Graph.UndirectedGraph, 3);
+
+    deepApproximatelyEqual(
+      eigenvectorCentrality(graph),
+      {
+        0: 0.5,
+        1: 0.7071,
+        2: 0.5
+      },
+      1e-4
+    );
   });
 });
