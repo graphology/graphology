@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.15.1 (provisional)
+## 0.15.1
 
 - Fixing outbound indices type declarations.
 - Improving `OutboundNeighborhoodIndex.assign` performance.
