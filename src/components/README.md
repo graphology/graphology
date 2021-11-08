@@ -13,6 +13,7 @@ npm install graphology-components
 - [connectedComponents](#connectedcomponents)
 - [largestConnectedComponent](#largestconnectedcomponent)
 - [largestConnectedComponentSubgraph](#largestconnectedcomponentsubgraph)
+- [cropToLargestConnectedComponent](#cropToLargestConnectedComponent)
 - [stronglyConnectedComponents](#stronglyconnectedcomponents)
 
 ### connectedComponents
@@ -45,6 +46,16 @@ Returns a subgraph of the largest connected component of the given graph.
 import {largestConnectedComponentSubgraph} from 'graphology-components';
 
 const subgraph = largestConnectedComponentSubgraph(graph);
+```
+
+### cropToLargestConnectedComponent
+
+Mutates the given graph to remove nodes and edges that are not part of its largest connected component.
+
+```js
+import {cropToLargestConnectedComponent} from 'graphology-components';
+
+cropToLargestConnectedComponent(graph);
 ```
 
 ### stronglyConnectedComponents
