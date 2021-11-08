@@ -155,6 +155,7 @@ describe('Neighborhood Indices', function () {
       var index = new WeightedOutboundNeighborhoodIndex(graph, 'weight');
       assert.deepEqual(index.neighborhood, new Uint8Array([1, 0, 2, 4]));
       assert.deepEqual(index.weights, new Float64Array([3, 1, 1, 34]));
+      assert.deepEqual(index.outDegrees, new Float64Array([3, 2, 0, 34, 0]));
 
       var projection = index.project();
 
@@ -186,6 +187,12 @@ describe('Neighborhood Indices', function () {
           resultIndex[node]
         );
       });
+
+      // Unweighted fallback
+      index = new WeightedOutboundNeighborhoodIndex(graph, null);
+
+      assert.deepEqual(index.weights, new Float64Array([1, 1, 1, 1]));
+      assert.deepEqual(index.outDegrees, new Float64Array([1, 2, 0, 1, 0]));
     });
   });
 

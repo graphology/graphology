@@ -94,6 +94,7 @@ function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
   this.graph = graph;
   this.neighborhood = new NodesPointerArray(upperBound);
   this.weights = new Float64Array(upperBound);
+  this.outDegrees = new Float64Array(graph.order);
 
   this.starts = new NeighborhoodPointerArray(graph.order + 1);
 
@@ -121,6 +122,7 @@ function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
       // NOTE: for weighted mixed beware of merging weights if twice the same neighbor
       this.neighborhood[n] = ids[neighbor];
       this.weights[n++] = weight;
+      this.outDegrees[i] += weight;
     }
   }
 

@@ -21,6 +21,7 @@ export class WeightedOutboundNeighborhoodIndex {
 
   graph: Graph;
   weights: Float64Array;
+  outDegrees: Float64Array;
   neighborhood: PointerArray;
   starts: PointerArray;
   nodes: Array<string>;
