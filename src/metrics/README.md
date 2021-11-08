@@ -22,6 +22,7 @@ _Node metrics_
 
 - [Centrality](#centrality)
   - [Betweenness centrality](#betweenness-centrality)
+  - [Closeness centrality](#closeness-centrality)
   - [Degree centrality](#degree-centrality)
   - [Eigenvector centrality](#eigenvector-centrality)
   - [HITS](#hits)
@@ -215,6 +216,31 @@ _Arguments_
     - **weight** _?string_: Name of the weight attribute.
   - **normalized** _?boolean_ [`true`]: should the result be normalized?
   - **weighted** _?boolean_ [`false`]: should we compute the weighted betweenness centrality?
+
+### Closeness centrality
+
+Computes the closeness centrality of a graph's nodes.
+
+```js
+import closenessCentrality from 'graphology-metrics/centrality/closeness';
+
+// To compute the eigenvector centrality and return the score per node:
+const scores = closenessCentrality(graph);
+
+// To directly map the result to nodes' attributes:
+closenessCentrality.assign(graph);
+
+// Note that you can also pass options to customize the algorithm:
+const p = closenessCentrality(graph, {wassermanFaust: true});
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **options** _?object_: options:
+  - **attributes** _?object_: attributes' names:
+    - **centrality** _?string_ [`eigenvectorCentrality`]: name of the node attribute that will be assigned the eigenvector centrality.
+  - **wassermanFaust** _?boolean_ [`false`]: whether to use Wasserman & Faust's normalization scheme.
 
 #### Degree centrality
 

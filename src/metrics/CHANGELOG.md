@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.18.0 (provisional)
+
+- Adding closeness centrality.
+
 ## 1.17.0
 
 - Adding eigenvector centrality.

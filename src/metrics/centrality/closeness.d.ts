@@ -4,7 +4,7 @@ type ClosenessCentralityOptions = {
   attributes?: {
     centrality?: string;
   };
-  weissmanFaust?: boolean;
+  wassermanFaust?: boolean;
 };
 
 type ClosenessCentralityMapping = {[node: string]: number};
