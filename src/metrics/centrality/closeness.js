@@ -26,7 +26,6 @@ var OutboundNeighborhoodIndex =
 // TODO: weighted
 // TODO: abstract the single source indexed shortest path in lib
 // TODO: what about self loops?
-// TODO: what about direction and shortest path in this case?
 
 /**
  * Defaults.
@@ -42,7 +41,13 @@ var DEFAULTS = {
  * Helpers.
  */
 function IndexedBFS(graph) {
+  // TODO: this is a temp hack linked to #288!
+  var outboundNeighbors = graph.outboundNeighbors;
+  var inboundNeighbors = graph.inboundNeighbors;
+  graph.outboundNeighbors = inboundNeighbors;
   this.index = new OutboundNeighborhoodIndex(graph);
+  graph.outboundNeighbors = outboundNeighbors;
+
   this.queue = new FixedDeque(Array, graph.order);
   this.seen = new SparseSet(graph.order);
 }

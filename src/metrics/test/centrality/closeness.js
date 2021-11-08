@@ -19,14 +19,20 @@ describe('closeness centrality', function () {
     }, /graphology/);
   });
 
-  it.skip('should return the correct results with a directed path graph.', function () {
+  it('should return the correct results with a directed path graph.', function () {
     var graph = path(Graph.DirectedGraph, 3);
     var reversed = reverse(graph);
 
     var result = closenessCentrality(graph);
     var reversedResult = closenessCentrality(reversed);
 
-    deepApproximatelyEqual(result, {0: 0, 1: 0.5, 2: 0.666}, 1e-3);
-    deepApproximatelyEqual(reversedResult, {0: 0.666, 1: 0.5, 2: 0}, 1e-3);
+    deepApproximatelyEqual(result, {0: 0, 1: 1, 2: 0.6666}, 1e-4);
+    deepApproximatelyEqual(reversedResult, {0: 0.6666, 1: 1, 2: 0}, 1e-4);
+
+    result = closenessCentrality(graph, {wassermanFaust: true});
+    reversedResult = closenessCentrality(reversed, {wassermanFaust: true});
+
+    deepApproximatelyEqual(result, {0: 0, 1: 0.5, 2: 0.6666}, 1e-4);
+    deepApproximatelyEqual(reversedResult, {0: 0.6666, 1: 0.5, 2: 0}, 1e-4);
   });
 });
