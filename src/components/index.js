@@ -159,6 +159,18 @@ function largestConnectedComponentSubgraph(graph) {
   return S;
 }
 
+function cropToLargestConnectedComponent(graph) {
+  var component = new Set(largestConnectedComponent(graph));
+
+  var nodes = graph.nodes();
+
+  nodes.forEach(function (key) {
+    if (!component.has(key)) {
+      graph.dropNode(key);
+    }
+  });
+}
+
 /**
  * Function returning a list of strongly connected components.
  *
@@ -242,4 +254,5 @@ function stronglyConnectedComponents(graph) {
 exports.connectedComponents = connectedComponents;
 exports.largestConnectedComponent = largestConnectedComponent;
 exports.largestConnectedComponentSubgraph = largestConnectedComponentSubgraph;
+exports.cropToLargestConnectedComponent = cropToLargestConnectedComponent;
 exports.stronglyConnectedComponents = stronglyConnectedComponents;
