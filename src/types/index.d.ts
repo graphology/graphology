@@ -217,6 +217,31 @@ type Listener = (...args: any[]) => void;
 
 type AttributeUpdateType = 'set' | 'remove' | 'replace' | 'merge';
 
+type AttributeUpdatePayload<ItemAttributes extends Attributes = Attributes> =
+  | {
+      type: 'set';
+      key: string;
+      attributes: ItemAttributes;
+      name: string;
+    }
+  | {
+      type: 'remove';
+      key: string;
+      attributes: ItemAttributes;
+      name: string;
+    }
+  | {
+      type: 'replace';
+      key: string;
+      attributes: ItemAttributes;
+    }
+  | {
+      type: 'merge';
+      key: string;
+      attributes: ItemAttributes;
+      data: ItemAttributes;
+    };
+
 interface GraphEvents<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes,
@@ -240,26 +265,11 @@ interface GraphEvents<
   }): void;
   cleared(): void;
   edgesCleared(): void;
-  attributesUpdated(payload: {
-    type: AttributeUpdateType;
-    attributes: GraphAttributes;
-    name: string;
-    data: GraphAttributes;
-  }): void;
-  nodeAttributesUpdated(payload: {
-    type: AttributeUpdateType;
-    key: string;
-    attributes: NodeAttributes;
-    name: string;
-    data: NodeAttributes;
-  }): void;
-  edgeAttributesUpdated(payload: {
-    type: AttributeUpdateType;
-    key: string;
-    attributes: EdgeAttributes;
-    name: string;
-    data: EdgeAttributes;
-  }): void;
+  attributesUpdated(
+    payload: Omit<AttributeUpdatePayload<GraphAttributes>, 'key'>
+  ): void;
+  nodeAttributesUpdated(payload: AttributeUpdatePayload<NodeAttributes>): void;
+  edgeAttributesUpdated(payload: AttributeUpdatePayload<EdgeAttributes>): void;
   eachNodeAttributesUpdated(payload: {hints: UpdateHints}): void;
   eachEdgeAttributesUpdated(payload: {hints: UpdateHints}): void;
 }
@@ -1892,7 +1902,8 @@ export {
   SerializedNode,
   SerializedEdge,
   SerializedGraph,
-  AttributeUpdateType
+  AttributeUpdateType,
+  AttributeUpdatePayload
 };
 
 export default AbstractGraph;
