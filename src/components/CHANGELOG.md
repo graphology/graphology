@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0 (provisional)
+
+- Adding `cropToLargestConnectedComponent`.
+
 ## 1.2.1
 
 - Fixing erroneous traversal.
