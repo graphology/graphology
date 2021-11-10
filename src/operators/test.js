@@ -7,6 +7,7 @@ var Graph = require('graphology');
 var createTupleComparator =
   require('mnemonist/utils/comparators').createTupleComparator;
 var mergeClique = require('graphology-utils/merge-clique');
+var areSameGraphsDeep = require('graphology-assertions').areSameGraphsDeep;
 
 var reverse = require('./reverse.js');
 var subgraph = require('./subgraph');
@@ -409,16 +410,24 @@ describe('graphology-operators', function () {
         assert.strictEqual(copy.getEdgeAttribute(3, 2, 'weight'), 3);
       });
 
-      it.skip('should be possible to cast a multi graph.', function () {
+      it('should be possible to cast a multi graph.', function () {
         var graph = new Graph({multi: true, type: 'directed'});
 
         graph.mergeEdge(0, 1, {color: 'blue'});
         graph.mergeEdge(0, 1, {color: 'red'});
         graph.mergeEdge(0, 1, {color: 'yellow'});
+        graph.mergeEdge(1, 0);
 
-        // var copy = toUndirected(graph);
+        var copy = toUndirected(graph);
 
-        // console.log(copy);
+        var expected = new Graph({multi: true, type: 'undirected'});
+
+        expected.mergeEdge(0, 1, {color: 'yellow'});
+        expected.mergeEdge(1, 0, {color: 'red'});
+        expected.mergeEdge(1, 0, {color: 'blue'});
+        expected.mergeEdge(0, 1);
+
+        assert.strictEqual(areSameGraphsDeep(copy, expected), true);
       });
     });
   });

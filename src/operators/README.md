@@ -155,6 +155,8 @@ Note that you can pass a function to merge edge attributes in case of mutual edg
 
 If an already undirected graph is passed, the function will only return a copy of it.
 
+If passing a multi graph, directed edges will only be converted as undirected ones and will never be merged.
+
 ```js
 import {toUndirected} from 'graphology-operators';
 // Alternatively, to load only the relevant code:
