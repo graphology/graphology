@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.0 (provisional)
+## 1.3.0
 
 - Adding `cropToLargestConnectedComponent`.
 
