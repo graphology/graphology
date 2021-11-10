@@ -111,6 +111,8 @@ Note that you can pass a function to merge edge attributes in case of mixed edge
 
 If an already directed graph is passed, the function will only return a copy of it.
 
+If passing a multi graph, undirected edges will only be converted as pairs ofmutual ones and will never be merged.
+
 ```js
 import {toDirected} from 'graphology-operators';
 // Alternatively, to load only the relevant code:

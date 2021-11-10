@@ -352,6 +352,23 @@ describe('graphology-operators', function () {
         assert.strictEqual(directed.size, 3);
         assert.strictEqual(directed.selfLoopCount, 1);
       });
+
+      it('should be possible to cast a multi graph.', function () {
+        var graph = new Graph({multi: true, type: 'mixed'});
+
+        graph.mergeUndirectedEdge(0, 1, {color: 'red'});
+        graph.mergeUndirectedEdge(1, 0, {color: 'blue'});
+
+        var copy = toDirected(graph);
+
+        var expected = new Graph({multi: true, type: 'directed'});
+        expected.mergeEdge(0, 1, {color: 'red'});
+        expected.mergeEdge(1, 0, {color: 'blue'});
+        expected.mergeEdge(1, 0, {color: 'red'});
+        expected.mergeEdge(0, 1, {color: 'blue'});
+
+        assert.strictEqual(areSameGraphsDeep(copy, expected), true);
+      });
     });
 
     describe('toUndirected', function () {

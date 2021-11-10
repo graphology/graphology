@@ -32,9 +32,14 @@ module.exports = function toDirected(graph, options) {
   // Merging undirected edges
   graph.forEachUndirectedEdge(function (_, attr, source, target) {
     var existingOutEdge =
-      graph.type === 'mixed' && directedGraph.edge(source, target);
+      !graph.multi &&
+      graph.type === 'mixed' &&
+      directedGraph.edge(source, target);
+
     var existingInEdge =
-      graph.type === 'mixed' && directedGraph.edge(target, source);
+      !graph.multi &&
+      graph.type === 'mixed' &&
+      directedGraph.edge(target, source);
 
     if (existingOutEdge) {
       directedGraph.replaceEdgeAttributes(
