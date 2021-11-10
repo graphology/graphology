@@ -26,36 +26,32 @@ function countOutEdges(graph, node) {
 
 function countAssymetricUndirectedEdges(graph, node) {
   var counts = {};
-  var other, c;
+  var c;
 
   graph.forEachUndirectedEdge(node, function (_e, _ea, source, target) {
-    if (source > target) return;
+    target = node === source ? target : source;
 
-    other = source === node ? target : source;
+    if (node > target) return;
 
-    c = counts[other] || 0;
+    c = counts[target] || 0;
     c++;
 
-    counts[other] = c;
+    counts[target] = c;
   });
 
   return counts;
 }
 
-function collectAssymetricUndirectedEdges(graph, node) {
+function collectOutEdges(graph, node) {
   var entries = {};
-  var other, c;
+  var c;
 
-  graph.forEachUndirectedEdge(node, function (_e, attr, source, target) {
-    if (source > target) return;
-
-    other = source === node ? target : source;
-
-    c = entries[other];
+  graph.forEachOutEdge(node, function (_e, attr, _s, target) {
+    c = entries[target];
 
     if (!c) {
       c = [];
-      entries[other] = c;
+      entries[target] = c;
     }
 
     c.push(objectHash(attr));
@@ -68,11 +64,15 @@ function collectAssymetricUndirectedEdges(graph, node) {
   return entries;
 }
 
-function collectOutEdges(graph, node) {
+function collectAssymetricUndirectedEdges(graph, node) {
   var entries = {};
   var c;
 
-  graph.forEachOutEdge(node, function (_e, attr, _s, target) {
+  graph.forEachUndirectedEdge(node, function (_e, attr, source, target) {
+    target = node === source ? target : source;
+
+    if (node > target) return;
+
     c = entries[target];
 
     if (!c) {
