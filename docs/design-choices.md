@@ -173,3 +173,17 @@ Indeed, even though is possible to expose methods able to change a node's key, o
 2. In most languages, one is not able to change dictionary keys. But you can still somehow do it by deleting the key and add its value using another one. You can also do so with a `Graph`, even if it can feel more cumbersome. But under the hood, since the internal indices will need to update this unique key constraint, an internal method would probably amount to the same operations.
 
 Finally, note that [`graphology-utils`](standard-library/utils) exposes helpers for those kind of scenarios such as the [`renameGraphKeys`](standard-library/utils#renamegraphkeys) function.
+
+## Order of extremities in undirected edge iteration
+
+It can be surprising but when iterating over undirected edges, the argument given as source may not be the node from which we are iterating from:
+
+```js
+graph.forEachUndirectedEdge(node, (edge, attr, source, target) => {
+  console.log(node === source); // Sometimes true, sometimes false
+});
+```
+
+Indeed, we chose to guarantee that the "source" & the "target" are always the same when accessing information about an undirected edge.
+
+This means that, even if this feels arbitrary because an undirected edge has no source nor target, the [`#.source`](read#source) method will always return the same node, and will always be referenced as this edge's source when iterating, from a single node or not.
