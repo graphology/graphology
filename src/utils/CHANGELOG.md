@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.2
+
+- Adding missing `getters.js` file to npm package.
+
 ## 2.3.1
 
 - Reorganizing internals.

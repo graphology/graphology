@@ -1,6 +1,6 @@
 {
   "name": "graphology-utils",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "Miscellaneous utils for graphology.",
   "main": "index.js",
   "files": [
@@ -8,6 +8,7 @@
     "add-edge.js",
     "add-node.js",
     "defaults.js",
+    "getters.js",
     "index.js",
     "infer-type.js",
     "is-graph.js",
@@ -18,8 +19,7 @@
     "merge-path.js",
     "merge-star.js",
     "rename-graph-keys.js",
-    "update-graph-keys.js",
-    "weight-getter.js"
+    "update-graph-keys.js"
   ],
   "types": "./index.d.ts",
   "scripts": {
