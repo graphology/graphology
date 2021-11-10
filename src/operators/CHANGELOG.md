@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.3
+
+- Fixing `toDirected` and `toUndirected` wrt multi graphs.
+
 ## 1.4.2
 
 - Fixing `toDirected` wrt self-loops.
