@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.22.2 (provisional)
+## 0.22.2
 
 - Fixing `#.mergeEdge` & `#.updateEdge` error messages.
 - Improving performance of `#.addEdge` etc. (less deopt).
