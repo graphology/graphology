@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.18.1
+
+- Multi/mixed graphs support for pagerank & eigenvector centrality.
+
 ## 1.18.0
 
 - Adding closeness centrality.
