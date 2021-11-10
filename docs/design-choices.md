@@ -99,6 +99,8 @@ One might note that, contrary to some other libraries, `graphology` returns the 
 
 The user should not expect the `Graph` to retain insertion order. It might be a side effect of the used implementation to retain an order but it is not guaranteed by the specification.
 
+However, if no node/edge was added or dropped from the graph, the order should remain stable from one iteration to the next.
+
 ```js
 const graph = new Graph();
 graph.addNode('First Node');
@@ -160,3 +162,14 @@ graph.order
 updatedGraph.order
 >>> 1
 ```
+
+## Avoiding methods affecting indexing constraints
+
+TL;DR: we won't be adding methods like `#.renameNode`, `#.renameEdge` or `#.setNodeExtremities` etc.
+
+Indeed, even though is possible to expose methods able to change a node's key, or even an edge's extremities, we decided against it for the following reasons:
+
+1. It affects indexing constraints that may be enforced outside of the graph, using events for instance, and this needlessly complexify what you need to react to when developing external indexations of the graphs. For instance, instead of `addNode` and `dropNode` one would also be required to handle something like `renameNode`.
+2. In most languages, one is not able to change dictionary keys. But you can still somehow do it by deleting the key and add its value using another one. You can also do so with a `Graph`, even if it can feel more cumbersome. But under the hood, since the internal indices will need to update this unique key constraint, an internal method would probably amount to the same operations.
+
+Finally, note that [`graphology-utils`](standard-library/utils) exposes helpers for those kind of scenarios such as the [`renameGraphKeys`](standard-library/utils#renamegraphkeys) function.
