@@ -4,6 +4,7 @@
 
 - Fixing `#.mergeEdge` & `#.updateEdge` error messages.
 - Improving performance of `#.addEdge` etc. (less deopt).
+- Improving `#.inspect` output wrt undirected multi edges.
 
 ## 0.22.1
 

@@ -2946,7 +2946,17 @@ export default class Graph extends EventEmitter {
 
       let label = '';
 
-      const desc = `(${data.source.key})${direction}(${data.target.key})`;
+      let source = data.source.key;
+      let target = data.target.key;
+      let tmp;
+
+      if (data.undirected && source > target) {
+        tmp = source;
+        source = target;
+        target = tmp;
+      }
+
+      const desc = `(${source})${direction}(${target})`;
 
       if (!key.startsWith('geid_')) {
         label += `[${key}]: `;
