@@ -2,11 +2,11 @@
  * Graphology Utils Unit Tests
  * ============================
  */
-var assert = require('assert'),
-  Graph = require('graphology'),
-  createTupleComparator =
-    require('mnemonist/utils/comparators').createTupleComparator,
-  mergeClique = require('graphology-utils/merge-clique');
+var assert = require('assert');
+var Graph = require('graphology');
+var createTupleComparator =
+  require('mnemonist/utils/comparators').createTupleComparator;
+var mergeClique = require('graphology-utils/merge-clique');
 
 var reverse = require('./reverse.js');
 var subgraph = require('./subgraph');
@@ -407,6 +407,18 @@ describe('graphology-operators', function () {
         assert.strictEqual(copy.hasEdge(2, 3), true);
         assert.strictEqual(copy.getEdgeAttribute(1, 2, 'weight'), 5);
         assert.strictEqual(copy.getEdgeAttribute(3, 2, 'weight'), 3);
+      });
+
+      it.skip('should be possible to cast a multi graph.', function () {
+        var graph = new Graph({multi: true, type: 'directed'});
+
+        graph.mergeEdge(0, 1, {color: 'blue'});
+        graph.mergeEdge(0, 1, {color: 'red'});
+        graph.mergeEdge(0, 1, {color: 'yellow'});
+
+        // var copy = toUndirected(graph);
+
+        // console.log(copy);
       });
     });
   });

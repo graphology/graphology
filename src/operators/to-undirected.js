@@ -31,17 +31,19 @@ module.exports = function toUndirected(graph, options) {
 
   // Merging directed edges
   graph.forEachDirectedEdge(function (edge, attr, source, target) {
-    var existingEdge = undirectedGraph.edge(source, target);
+    if (!graph.multi) {
+      var existingEdge = undirectedGraph.edge(source, target);
 
-    if (existingEdge) {
-      // We need to merge
-      if (mergeEdge)
-        undirectedGraph.replaceEdgeAttributes(
-          existingEdge,
-          mergeEdge(undirectedGraph.getEdgeAttributes(existingEdge), attr)
-        );
+      if (existingEdge) {
+        // We need to merge
+        if (mergeEdge)
+          undirectedGraph.replaceEdgeAttributes(
+            existingEdge,
+            mergeEdge(undirectedGraph.getEdgeAttributes(existingEdge), attr)
+          );
 
-      return;
+        return;
+      }
     }
 
     copyEdge(undirectedGraph, true, null, source, target, attr);
