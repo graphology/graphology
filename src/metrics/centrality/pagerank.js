@@ -48,11 +48,6 @@ function abstractPagerank(assign, graph, options) {
       'graphology-metrics/centrality/pagerank: the given graph is not a valid graphology instance.'
     );
 
-  if (graph.multi)
-    throw new Error(
-      'graphology-metrics/centrality/pagerank: the pagerank algorithm does not work with MultiGraphs.'
-    );
-
   options = resolveDefaults(options, DEFAULTS);
 
   var alpha = options.alpha;

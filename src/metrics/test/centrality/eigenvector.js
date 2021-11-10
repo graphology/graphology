@@ -50,13 +50,6 @@ describe('eigenvector centrality', function () {
     }, /graphology/);
   });
 
-  it('should throw if provided with a MultiGraph.', function () {
-    assert.throws(function () {
-      var graph = new Graph({multi: true});
-      eigenvectorCentrality(graph);
-    }, /multi/i);
-  });
-
   it('should return the correct results with a complete graph.', function () {
     var graph = complete(Graph.UndirectedGraph, 5);
     var result = eigenvectorCentrality(graph);
@@ -126,5 +119,37 @@ describe('eigenvector centrality', function () {
 
     deepApproximatelyEqual(weightedResult, expected, 1e-5);
     deepApproximatelyEqual(unweightedResult, expected, 1e-5);
+  });
+
+  it('should work with a multi graph.', function () {
+    var graph = new Graph.UndirectedGraph();
+    graph.mergeEdge('A', 'B', {weight: 2});
+    graph.mergeEdge('A', 'C', {weight: 1});
+
+    var multiGraph = new Graph.MultiUndirectedGraph();
+    multiGraph.mergeEdge('A', 'B');
+    multiGraph.mergeEdge('A', 'B');
+    multiGraph.mergeEdge('A', 'C');
+
+    var result = eigenvectorCentrality(graph, {weighted: true});
+    var multiResult = eigenvectorCentrality(multiGraph);
+
+    deepApproximatelyEqual(result, multiResult, 1e-7);
+  });
+
+  it('should work with a mixed graph.', function () {
+    var graph = new Graph.DirectedGraph();
+    graph.mergeEdge('A', 'B');
+    graph.mergeEdge('B', 'A');
+    graph.mergeEdge('A', 'C');
+
+    var mixedGraph = new Graph();
+    mixedGraph.mergeUndirectedEdge('A', 'B');
+    mixedGraph.mergeEdge('A', 'C');
+
+    var result = eigenvectorCentrality(graph);
+    var mixedResult = eigenvectorCentrality(mixedGraph);
+
+    deepApproximatelyEqual(result, mixedResult, 1e-7);
   });
 });

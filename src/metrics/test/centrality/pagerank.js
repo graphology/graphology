@@ -7,6 +7,7 @@ var Graph = require('graphology');
 var pagerank = require('../../centrality/pagerank');
 
 var DirectedGraph = Graph.DirectedGraph;
+var MultiDirectedGraph = Graph.MultiDirectedGraph;
 
 function deepApproximatelyEqual(t, o, precision) {
   for (var k in t) assert.approximately(t[k], o[k], precision);
@@ -40,13 +41,6 @@ describe('pagerank', function () {
     assert.throws(function () {
       pagerank({hello: 'world'});
     }, /graphology/);
-  });
-
-  it('should throw if provided with a MultiGraph.', function () {
-    assert.throws(function () {
-      var graph = new Graph({multi: true});
-      pagerank(graph);
-    }, /multi/i);
   });
 
   it('should properly compute pagerank.', function () {
@@ -128,5 +122,37 @@ describe('pagerank', function () {
     p = pagerank(graph, {weighted: true});
 
     deepApproximatelyEqual(p, weighted, 1e-3);
+  });
+
+  it('should work with a multi graph.', function () {
+    var graph = new DirectedGraph();
+    graph.mergeEdge('A', 'B', {weight: 2});
+    graph.mergeEdge('A', 'C', {weight: 1});
+
+    var multiGraph = new MultiDirectedGraph();
+    multiGraph.mergeEdge('A', 'B');
+    multiGraph.mergeEdge('A', 'B');
+    multiGraph.mergeEdge('A', 'C');
+
+    var result = pagerank(graph, {weighted: true});
+    var multiResult = pagerank(multiGraph);
+
+    deepApproximatelyEqual(result, multiResult, 1e-7);
+  });
+
+  it('should work with a mixed graph.', function () {
+    var graph = new Graph();
+    graph.mergeEdge('A', 'B');
+    graph.mergeEdge('B', 'A');
+    graph.mergeEdge('A', 'C');
+
+    var mixedGraph = new Graph();
+    mixedGraph.mergeUndirectedEdge('A', 'B');
+    mixedGraph.mergeEdge('A', 'C');
+
+    var result = pagerank(graph);
+    var mixedResult = pagerank(mixedGraph);
+
+    deepApproximatelyEqual(result, mixedResult, 1e-7);
   });
 });

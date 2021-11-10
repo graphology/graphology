@@ -74,11 +74,6 @@ function abstractEigenvectorCentrality(assign, graph, options) {
       'graphology-metrics/centrality/eigenvector: the given graph is not a valid graphology instance.'
     );
 
-  if (graph.multi)
-    throw new Error(
-      'graphology-metrics/centrality/eigenvector: the eigenvector centrality algorithm does not work with MultiGraphs.'
-    );
-
   options = resolveDefaults(options, DEFAULTS);
 
   var maxIterations = options.maxIterations;
