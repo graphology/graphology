@@ -207,7 +207,7 @@ type SerializedGraph<
  */
 type Listener = (...args: any[]) => void;
 
-type AttributeUpdateType = 'set' | 'remove' | 'replace' | 'merge';
+type AttributeUpdateType = 'set' | 'remove' | 'replace' | 'merge' | 'update';
 
 type AttributeUpdatePayload<ItemAttributes extends Attributes = Attributes> =
   | {
@@ -232,6 +232,11 @@ type AttributeUpdatePayload<ItemAttributes extends Attributes = Attributes> =
       key: string;
       attributes: ItemAttributes;
       data: ItemAttributes;
+    }
+  | {
+      type: 'update';
+      key: string;
+      attributes: ItemAttributes;
     };
 
 interface GraphEvents<
@@ -592,6 +597,9 @@ declare abstract class AbstractGraph<
   ): this;
   replaceAttributes(attributes: GraphAttributes): this;
   mergeAttributes(attributes: Partial<GraphAttributes>): this;
+  updateAttributes(
+    updater: (attributes: GraphAttributes) => GraphAttributes
+  ): this;
 
   // Node attribute methods
   getNodeAttribute<AttributeName extends keyof NodeAttributes>(
@@ -621,6 +629,10 @@ declare abstract class AbstractGraph<
   ): this;
   replaceNodeAttributes(node: unknown, attributes: NodeAttributes): this;
   mergeNodeAttributes(node: unknown, attributes: Partial<NodeAttributes>): this;
+  updateNodeAttributes(
+    node: unknown,
+    updater: (attributes: NodeAttributes) => NodeAttributes
+  ): this;
 
   updateEachNodeAttributes(
     updater: NodeMapper<NodeAttributes>,
@@ -655,6 +667,10 @@ declare abstract class AbstractGraph<
   ): this;
   replaceEdgeAttributes(edge: unknown, attributes: EdgeAttributes): this;
   mergeEdgeAttributes(edge: unknown, attributes: Partial<EdgeAttributes>): this;
+  updateEdgeAttributes(
+    edge: unknown,
+    updater: (attributes: EdgeAttributes) => EdgeAttributes
+  ): this;
 
   getDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
     edge: unknown,
@@ -689,6 +705,10 @@ declare abstract class AbstractGraph<
     edge: unknown,
     attributes: Partial<EdgeAttributes>
   ): this;
+  updateDirectedEdgeAttributes(
+    edge: unknown,
+    updater: (attributes: EdgeAttributes) => EdgeAttributes
+  ): this;
 
   getUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
     edge: unknown,
@@ -722,6 +742,10 @@ declare abstract class AbstractGraph<
   mergeUndirectedEdgeAttributes(
     edge: unknown,
     attributes: Partial<EdgeAttributes>
+  ): this;
+  updateUndirectedEdgeAttributes(
+    edge: unknown,
+    updater: (attributes: EdgeAttributes) => EdgeAttributes
   ): this;
 
   updateEachEdgeAttributes(
@@ -770,6 +794,11 @@ declare abstract class AbstractGraph<
     target: unknown,
     attributes: Partial<EdgeAttributes>
   ): this;
+  updateEdgeAttributes(
+    source: unknown,
+    target: unknown,
+    updater: (attributes: EdgeAttributes) => EdgeAttributes
+  ): this;
 
   getDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
     source: unknown,
@@ -811,6 +840,11 @@ declare abstract class AbstractGraph<
     target: unknown,
     attributes: Partial<EdgeAttributes>
   ): this;
+  updateDirectedEdgeAttributes(
+    source: unknown,
+    target: unknown,
+    updater: (attributes: EdgeAttributes) => EdgeAttributes
+  ): this;
 
   getUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
     source: unknown,
@@ -851,6 +885,11 @@ declare abstract class AbstractGraph<
     source: unknown,
     target: unknown,
     attributes: Partial<EdgeAttributes>
+  ): this;
+  updateUndirectedEdgeAttributes(
+    source: unknown,
+    target: unknown,
+    updater: (attributes: EdgeAttributes) => EdgeAttributes
   ): this;
 
   // Iteration methods
