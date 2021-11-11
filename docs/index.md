@@ -62,6 +62,14 @@ graph.forEachNode(node => {
 
 A complete changelog can be found [here](https://github.com/graphology/graphology/blob/master/CHANGELOG.md).
 
+## Implementing graphology
+
+There are many ways to implement a Graph data structure and even if `graphology` chose to optimize for most common use cases, you might need a more specialized implementation yourself.
+
+In this case, know that `graphology` can be re-implemented completely without losing the benefit of being able to use its [standard library](standard-library).
+
+For more information, be sure to read [this](implementing-graphology) section of the documentation.
+
 ## Acknowledgments
 
 This documentation has been built with [Jekyll](https://jekyllrb.com/) using the [Just the Docs](https://pmarsceill.github.io/just-the-docs/) theme.
