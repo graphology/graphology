@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.23.0 (provisional)
+
+- Adding `#.updateAttributes`.
+
 ## 0.22.2
 
 - Fixing `#.mergeEdge` & `#.updateEdge` error messages.

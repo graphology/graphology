@@ -1991,6 +1991,31 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method updating the graph's attributes.
+   *
+   * @param  {function} updater - Function used to update the attributes.
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if given updater is not a function.
+   */
+  updateAttributes(updater) {
+    if (typeof updater !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.updateAttributes: provided updater is not a function.'
+      );
+
+    this._attributes = updater(this._attributes);
+
+    // Emitting
+    this.emit('attributesUpdated', {
+      type: 'update',
+      attributes: this._attributes
+    });
+
+    return this;
+  }
+
+  /**
    * Method returning the desired attribute for the given node.
    *
    * @param  {any}    node - Target node.
