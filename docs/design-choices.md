@@ -174,9 +174,11 @@ Indeed, even though is possible to expose methods able to change a node's key, o
 
 Finally, note that [`graphology-utils`](standard-library/utils) exposes helpers for those kind of scenarios such as the [`renameGraphKeys`](standard-library/utils#renamegraphkeys) function.
 
-## Order of extremities in undirected edge iteration
+## Order of undirected egde extremities
 
-It can be surprising but when iterating over undirected edges, the argument given as source may not be the node from which we are iterating from:
+By convention, undirected edge extremities are recorded in the order they were first provided by the user.
+
+Also, it can be surprising but when iterating over undirected edges, the argument given as source may not be the node from which we are iterating from:
 
 ```js
 graph.forEachUndirectedEdge(node, (edge, attr, source, target) => {
@@ -184,6 +186,8 @@ graph.forEachUndirectedEdge(node, (edge, attr, source, target) => {
 });
 ```
 
-Indeed, we chose to guarantee that the "source" & the "target" are always the same when accessing information about an undirected edge.
+Indeed, we chose to guarantee that the "source" & the "target" will always be the same when accessing information about an undirected edge.
 
-This means that, even if this feels arbitrary because an undirected edge has no source nor target, the [`#.source`](read#source) method will always return the same node, and will always be referenced as this edge's source when iterating, from a single node or not.
+This means that, even if this feels arbitrary because source & target are irrelevant for an undirected edge, the [`#.source`](read#source) method will always return the same node, and will always be referenced as this edge's source when iterating, even from a node.
+
+It could be nice sugar to reorder source & target of undirected edges in iteration but it would definitely be confusing or make no sense in some scenarios as `graphology` Graphs can be many things. For instance, let's consider the case when we want to iterate over inbound (undirected + in) or even all edges in a mixed graph.
