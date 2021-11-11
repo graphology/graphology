@@ -29,7 +29,7 @@ import {
   upgradeStructureIndexToMulti
 } from './indices';
 
-import {attachAttributesMethods} from './attributes';
+import {attachEdgeAttributesMethods} from './attributes/edges';
 import {attachEdgeIterationMethods} from './iteration/edges';
 import {attachNeighborIterationMethods} from './iteration/neighbors';
 import {
@@ -3143,7 +3143,7 @@ if (typeof Symbol !== 'undefined')
 /**
  * Attributes-related.
  */
-attachAttributesMethods(Graph);
+attachEdgeAttributesMethods(Graph);
 
 /**
  * Edge iteration-related.

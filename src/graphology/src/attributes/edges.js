@@ -5,13 +5,13 @@
  * Attributes-related methods being exactly the same for nodes & edges,
  * we abstract them here for factorization reasons.
  */
-import {assign, isPlainObject, getMatchingEdge} from './utils';
+import {assign, isPlainObject, getMatchingEdge} from '../utils';
 
 import {
   InvalidArgumentsGraphError,
   NotFoundGraphError,
   UsageGraphError
-} from './errors';
+} from '../errors';
 
 /**
  * Attach an attribute getter method onto the provided class.
@@ -20,7 +20,7 @@ import {
  * @param {string}   method        - Method name.
  * @param {string}   type          - Type of the edge to find.
  */
-function attachAttributeGetter(Class, method, type) {
+function attachEdgeAttributeGetter(Class, method, type) {
   /**
    * Get the desired attribute for the given element (node or edge).
    *
@@ -89,7 +89,7 @@ function attachAttributeGetter(Class, method, type) {
  * @param {string}   method      - Method name.
  * @param {string}   type        - Type of the edge to find.
  */
-function attachAttributesGetter(Class, method, type) {
+function attachEdgeAttributesGetter(Class, method, type) {
   /**
    * Retrieves all the target element's attributes.
    *
@@ -154,7 +154,7 @@ function attachAttributesGetter(Class, method, type) {
  * @param {string}   method      - Method name.
  * @param {string}   type        - Type of the edge to find.
  */
-function attachAttributeChecker(Class, method, type) {
+function attachEdgeAttributeChecker(Class, method, type) {
   /**
    * Checks whether the desired attribute is set for the given element (node or edge).
    *
@@ -223,7 +223,7 @@ function attachAttributeChecker(Class, method, type) {
  * @param {string}   method        - Method name.
  * @param {string}   type          - Type of the edge to find.
  */
-function attachAttributeSetter(Class, method, type) {
+function attachEdgeAttributeSetter(Class, method, type) {
   /**
    * Set the desired attribute for the given element (node or edge).
    *
@@ -305,7 +305,7 @@ function attachAttributeSetter(Class, method, type) {
  * @param {string}   method        - Method name.
  * @param {string}   type          - Type of the edge to find.
  */
-function attachAttributeUpdater(Class, method, type) {
+function attachEdgeAttributeUpdater(Class, method, type) {
   /**
    * Update the desired attribute for the given element (node or edge) using
    * the provided function.
@@ -393,7 +393,7 @@ function attachAttributeUpdater(Class, method, type) {
  * @param {string}   method        - Method name.
  * @param {string}   type          - Type of the edge to find.
  */
-function attachAttributeRemover(Class, method, type) {
+function attachEdgeAttributeRemover(Class, method, type) {
   /**
    * Remove the desired attribute for the given element (node or edge).
    *
@@ -472,7 +472,7 @@ function attachAttributeRemover(Class, method, type) {
  * @param {string}   method        - Method name.
  * @param {string}   type          - Type of the edge to find.
  */
-function attachAttributesReplacer(Class, method, type) {
+function attachEdgeAttributesReplacer(Class, method, type) {
   /**
    * Replace the attributes for the given element (node or edge).
    *
@@ -555,7 +555,7 @@ function attachAttributesReplacer(Class, method, type) {
  * @param {string}   method        - Method name.
  * @param {string}   type          - Type of the edge to find.
  */
-function attachAttributesMerger(Class, method, type) {
+function attachEdgeAttributesMerger(Class, method, type) {
   /**
    * Merge the attributes for the given element (node or edge).
    *
@@ -639,7 +639,7 @@ function attachAttributesMerger(Class, method, type) {
  * @param {string}   method        - Method name.
  * @param {string}   type          - Type of the edge to find.
  */
-function attachAttributesUpdater(Class, method, type) {
+function attachEdgeAttributesUpdater(Class, method, type) {
   /**
    * Update the attributes of the given element (node or edge).
    *
@@ -718,42 +718,42 @@ function attachAttributesUpdater(Class, method, type) {
 /**
  * List of methods to attach.
  */
-const ATTRIBUTES_METHODS = [
+const EDGE_ATTRIBUTES_METHODS = [
   {
     name: element => `get${element}Attribute`,
-    attacher: attachAttributeGetter
+    attacher: attachEdgeAttributeGetter
   },
   {
     name: element => `get${element}Attributes`,
-    attacher: attachAttributesGetter
+    attacher: attachEdgeAttributesGetter
   },
   {
     name: element => `has${element}Attribute`,
-    attacher: attachAttributeChecker
+    attacher: attachEdgeAttributeChecker
   },
   {
     name: element => `set${element}Attribute`,
-    attacher: attachAttributeSetter
+    attacher: attachEdgeAttributeSetter
   },
   {
     name: element => `update${element}Attribute`,
-    attacher: attachAttributeUpdater
+    attacher: attachEdgeAttributeUpdater
   },
   {
     name: element => `remove${element}Attribute`,
-    attacher: attachAttributeRemover
+    attacher: attachEdgeAttributeRemover
   },
   {
     name: element => `replace${element}Attributes`,
-    attacher: attachAttributesReplacer
+    attacher: attachEdgeAttributesReplacer
   },
   {
     name: element => `merge${element}Attributes`,
-    attacher: attachAttributesMerger
+    attacher: attachEdgeAttributesMerger
   },
   {
     name: element => `update${element}Attributes`,
-    attacher: attachAttributesUpdater
+    attacher: attachEdgeAttributesUpdater
   }
 ];
 
@@ -762,8 +762,8 @@ const ATTRIBUTES_METHODS = [
  *
  * @param {function} Graph - Target class.
  */
-export function attachAttributesMethods(Graph) {
-  ATTRIBUTES_METHODS.forEach(function ({name, attacher}) {
+export function attachEdgeAttributesMethods(Graph) {
+  EDGE_ATTRIBUTES_METHODS.forEach(function ({name, attacher}) {
     // For edges
     attacher(Graph, name('Edge'), 'mixed');
 
