@@ -13,6 +13,7 @@ detailed_menu_toc:
   - label: "#.removeAttribute"
   - label: "#.replaceAttributes"
   - label: "#.mergeAttributes"
+  - label: "#.updateAttributes"
   - label: Node Attributes
     subtitle: yes
   - label: "#.getNodeAttribute"
@@ -23,6 +24,7 @@ detailed_menu_toc:
   - label: "#.removeNodeAttribute"
   - label: "#.replaceNodeAttributes"
   - label: "#.mergeNodeAttributes"
+  - label: "#.updateNodeAttributes"
   - label: "#.updateEachNodeAttributes"
   - label: Edge Attributes
     subtitle: yes
@@ -34,6 +36,7 @@ detailed_menu_toc:
   - label: "#.removeEdgeAttribute"
   - label: "#.replaceEdgeAttributes"
   - label: "#.mergeEdgeAttributes"
+  - label: "#.udpateEdgeAttributes"
   - label: "#.updateEachEdgeAttributes"
 ---
 
@@ -187,6 +190,27 @@ graph.mergeAttributes({
 
 * **data** <span class="code">object</span>: data to merge.
 
+## #.updateAttributes
+
+Update the current attributes of the graph using the provided function.
+
+*Example*
+
+```js
+graph.setAttribute('count', 1);
+
+graph.updateAttributes(attr => {
+  return {
+    ...attr,
+    count: attr.count + 1
+  };
+});
+```
+
+*Arguments*
+
+* **updater** <span class="code">function</span>: updater function taking the graph attributes and returning the new ones.
+
 # Node attributes
 
 ## #.getNodeAttribute
@@ -333,6 +357,28 @@ graph.mergeNodeAttributes('Martha', {age: 34, hair: 'brown'});
 
 * **node** <span class="code">any</span>: the node to update.
 * **data** <span class="code">object</span>: data to merge.
+
+## #.updateNodeAttributes
+
+Update the current attributes of a node using the provided function.
+
+*Example*
+
+```js
+graph.addNode('Martha', {occurrences: 36, eyes: 'blue'});
+
+graph.updateNodeAttributes('Martha', attr => {
+  return {
+    ...attr,
+    occurrences: attr.occurrences + 1
+  };
+});
+```
+
+*Arguments*
+
+* **node** <span class="code">any</span>: the node to update.
+* **updater** <span class="code">function</span>: updater function taking the node attributes and returning the new ones.
 
 ## #.updateEachNodeAttributes
 
@@ -618,6 +664,44 @@ graph.mergeEdgeAttributes('Martha', 'Jack', {type: 'LIKES', weight: 3}));
   * **source** <span class="code">any</span>: source of the edge.
   * **target** <span class="code">any</span>: target of the edge.
   * **data** <span class="code">object</span>: data to merge.
+
+## #.updateEdgeAttributes
+
+Update the current attributes of an edge using the provided function.
+
+*Example*
+
+```js
+graph.addNode('Martha');
+graph.addNode('Jack');
+const edge = graph.addEdge('Martha', 'Jack', {type: 'KNOWS', weight: 3});
+
+// Using the edge's key:
+graph.mergeEdgeAttributes(edge, attr => {
+  return {
+    ...attr,
+    weight: attr.weight + 1
+  };
+});
+
+// Using the edge's source & target:
+graph.mergeEdgeAttributes('Martha', 'Jack', attr => {
+  return {
+    ...attr,
+    weight: attr.weight + 1
+  };
+});
+```
+
+*Arguments*
+
+1. Using the key:
+  * **edge** <span class="code">any</span>: the edge to update.
+  * **updater** <span class="code">function</span>: updater function taking the edge attributes and returning the new ones.
+2. Using the source & target:
+  * **source** <span class="code">any</span>: source of the edge.
+  * **target** <span class="code">any</span>: target of the edge.
+  * **updater** <span class="code">function</span>: updater function taking the edge attributes and returning the new ones.
 
 ## #.updateEachEdgeAttributes
 

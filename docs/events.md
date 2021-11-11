@@ -166,7 +166,7 @@ graph.setAttribute('name', 'My Beautiful Graph');
 
 *Payload*
 
-* **type** <span class="code">string</span>: type of the update, one of `set`, `remove`, `replace` or `merge`.
+* **type** <span class="code">string</span>: type of the update, one of `set`, `remove`, `replace`, `merge` or `update`.
 * **attributes** <span class="code">object</span>: the graph's attributes.
 * **name** <span class="code">[string]</span>: the name of the edited attributes if type is `set` or `remove`.
 * **data** <span class="code">[object]</span>: merged data in case the type is `merge`.
@@ -189,7 +189,7 @@ graph.setNodeAttribute('Thomas', 'age', 54);
 
 *Payload*
 
-* **type** <span class="code">string</span>: type of the update, one of `set`, `remove`, `replace` or `merge`.
+* **type** <span class="code">string</span>: type of the update, one of `set`, `remove`, `replace`, `merge` or `update`.
 * **key** <span class="code">string</span>: the affected node's key.
 * **attributes** <span class="code">object</span>: the node's attributes.
 * **name** <span class="code">[string]</span>: the name of the edited attributes if type is `set` or `remove`.
@@ -213,7 +213,7 @@ graph.setEdgeAttribute('T->R', 'type', 'KNOWS');
 
 *Payload*
 
-* **type** <span class="code">string</span>: type of the update, one of `set`, `remove`, `replace` or `merge`.
+* **type** <span class="code">string</span>: type of the update, one of `set`, `remove`, `replace`, `merge` or `update`.
 * **key** <span class="code">string</span>: the affected edge's key.
 * **attributes** <span class="code">object</span>: the edge's attributes.
 * **name** <span class="code">[string]</span>: the name of the edited attributes if type is `set` or `remove`.
