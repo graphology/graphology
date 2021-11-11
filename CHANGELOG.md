@@ -15,7 +15,7 @@
 This release should only affect you in the following cases:
 
 1. You were relying on the keys returned by `#.mergeEdge`, `#.updateEdge` etc. In which case those methods now return a useful tuple containing said key as its first element as well as additional information about whether target elements already existed in the graph or not.
-2. Some hidden adjacency iteration methods were mangled and are still hidden. This could only affect you if you were using `#.forEach` or `#.adjacency`.
+2. Some hidden adjacency iteration methods were mangled and are still hidden. This could only affect you if you were using `#.forEach`, `#.find` or `#.adjacency` (not to be confused with their node, edge & neighbor counterparts).
 
 ## 0.22.2
 

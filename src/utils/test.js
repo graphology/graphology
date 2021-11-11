@@ -13,7 +13,6 @@ var mergePath = require('./merge-path.js');
 var mergeStar = require('./merge-star.js');
 var renameGraphKeys = require('./rename-graph-keys.js');
 var updateGraphKeys = require('./update-graph-keys.js');
-var memoizedForEach = require('./memoized-for-each.js');
 var getters = require('./getters.js');
 var resolveDefaults = require('./defaults.js');
 
@@ -313,42 +312,6 @@ describe('graphology-utils', function () {
       assert(newGraph.hasNode(3));
       assert.strictEqual(newGraph.edge(1, 2), 'rel1');
       assert.strictEqual(newGraph.edge(2, 3), 'rel2');
-    });
-  });
-
-  describe('memoizedForEach', function () {
-    it('should work properly.', function () {
-      var graph = new Graph();
-      graph.mergeEdge('1', '2');
-      graph.mergeEdge('1', '3');
-      graph.mergeEdge('1', '4');
-      graph.mergeEdge('2', '1');
-      graph.mergeEdge('2', '5');
-      graph.mergeEdge('3', '6');
-      graph.mergeEdge('4', '7');
-      graph.mergeEdge('4', '8');
-
-      var validNodes = new Set(['1', '3']);
-
-      var called = 0;
-      var validEdges = new Set();
-
-      function cacher(key) {
-        called++;
-        return validNodes.has(key);
-      }
-
-      memoizedForEach(graph, cacher, function (valid, s, t) {
-        if (!valid) return;
-
-        validEdges.add(s + '->' + t);
-      });
-
-      assert.strictEqual(called, 4);
-      assert.deepStrictEqual(
-        validEdges,
-        new Set(['1->2', '1->3', '1->4', '3->6'])
-      );
     });
   });
 

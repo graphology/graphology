@@ -28,7 +28,15 @@ module.exports = function renameGraphKeys(
   // Renaming edges
   var currentSource, currentSourceRenamed;
 
-  graph.forEach(function (source, target, _sa, _ta, key, attr, undirected) {
+  graph.forEachAdjacencyEntry(function (
+    source,
+    target,
+    _sa,
+    _ta,
+    key,
+    attr,
+    undirected
+  ) {
     // Leveraging the ordered adjacency to save lookups
     if (source !== currentSource) {
       currentSource = source;

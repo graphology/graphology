@@ -55,7 +55,7 @@ function flatTraversal() {
 function newTraversal() {
   let e = 0;
 
-  g.forEach(key => {
+  g.forEachAdjacencyEntry(key => {
     e++;
   });
 

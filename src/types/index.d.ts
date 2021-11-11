@@ -69,27 +69,27 @@ type AdjacencyIterationCallback<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > = (
-  source: string,
-  target: string,
-  sourceAttributes: NodeAttributes,
-  targetAttributes: NodeAttributes,
+  node: string,
+  neighbor: string,
+  nodeAttributes: NodeAttributes,
+  neighborAttributes: NodeAttributes,
   edge: string,
   edgeAttributes: EdgeAttributes,
   undirected: boolean
 ) => void;
 
-type AdjacencyPredicate<
+type AdjacencyIterationCallbackWithDisconnectedNodes<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > = (
-  source: string,
-  target: string,
-  sourceAttributes: NodeAttributes,
-  targetAttributes: NodeAttributes,
-  edge: string,
-  edgeAttributes: EdgeAttributes,
-  undirected: boolean
-) => boolean | void;
+  node: string,
+  neighbor: string | null,
+  nodeAttributes: NodeAttributes,
+  neighborAttributes: NodeAttributes | null,
+  edge: string | null,
+  edgeAttributes: EdgeAttributes | null,
+  undirected: boolean | null
+) => void;
 
 type NodeIterationCallback<NodeAttributes extends Attributes = Attributes> = (
   node: string,
@@ -414,13 +414,10 @@ declare class EventEmitter<
  * Main interface.
  */
 declare abstract class AbstractGraph<
-    NodeAttributes extends Attributes = Attributes,
-    EdgeAttributes extends Attributes = Attributes,
-    GraphAttributes extends Attributes = Attributes
-  >
-  extends EventEmitter<NodeAttributes, EdgeAttributes, GraphAttributes>
-  implements Iterable<AdjacencyEntry<NodeAttributes, EdgeAttributes>>
-{
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes,
+  GraphAttributes extends Attributes = Attributes
+> extends EventEmitter<NodeAttributes, EdgeAttributes, GraphAttributes> {
   // Constructor
   constructor(options?: GraphOptions);
 
@@ -1021,16 +1018,24 @@ declare abstract class AbstractGraph<
   ): this;
 
   // Iteration methods
-  [Symbol.iterator](): IterableIterator<
-    AdjacencyEntry<NodeAttributes, EdgeAttributes>
-  >;
-  forEach(
+  forEachAdjacencyEntry(
     callback: AdjacencyIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
-  find(
-    callback: AdjacencyPredicate<NodeAttributes, EdgeAttributes>
-  ): string | undefined;
-  adjacency(): IterableIterator<AdjacencyEntry<NodeAttributes, EdgeAttributes>>;
+  forEachAssymetricAdjacencyEntry(
+    callback: AdjacencyIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachAdjacencyEntryWithDisconnectedNodes(
+    callback: AdjacencyIterationCallbackWithDisconnectedNodes<
+      NodeAttributes,
+      EdgeAttributes
+    >
+  ): void;
+  forEachAssymetricAdjacencyEntryWithDisconnectedNodes(
+    callback: AdjacencyIterationCallbackWithDisconnectedNodes<
+      NodeAttributes,
+      EdgeAttributes
+    >
+  ): void;
 
   nodes(): Array<string>;
   forEachNode(callback: NodeIterationCallback<NodeAttributes>): void;
@@ -2045,7 +2050,7 @@ export {
   EdgeEntry,
   EdgeMergeResult,
   AdjacencyIterationCallback,
-  AdjacencyPredicate,
+  AdjacencyIterationCallbackWithDisconnectedNodes,
   NodeIterationCallback,
   NodePredicate,
   NodeMapper,

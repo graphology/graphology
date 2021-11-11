@@ -5,16 +5,23 @@
  * Attaching some methods to the Graph class to be able to iterate over a
  * graph's adjacency.
  */
-import Iterator from 'obliterator/iterator';
 
 /**
  * Function iterating over a simple graph's adjacency using a callback.
  *
- * @param {boolean}  breakable - Can we break?
- * @param {Graph}    graph     - Target Graph instance.
- * @param {callback} function  - Iteration callback.
+ * @param {boolean}  breakable         - Can we break?
+ * @param {boolean}  assymetric        - Whether to emit undirected edges only once.
+ * @param {boolean}  disconnectedNodes - Whether to emit disconnected nodes.
+ * @param {Graph}    graph             - Target Graph instance.
+ * @param {callback} function          - Iteration callback.
  */
-export function forEachAdjacencySimple(breakable, graph, callback) {
+export function forEachAdjacencySimple(
+  breakable,
+  assymetric,
+  disconnectedNodes,
+  graph,
+  callback
+) {
   const iterator = graph._nodes.values();
 
   const type = graph.type;
@@ -22,6 +29,8 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
   let step, sourceData, neighbor, adj, edgeData, targetData, shouldBreak;
 
   while (((step = iterator.next()), step.done !== true)) {
+    let hasEdges = false;
+
     sourceData = step.value;
 
     if (type !== 'undirected') {
@@ -31,6 +40,7 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
         edgeData = adj[neighbor];
         targetData = edgeData.target;
 
+        hasEdges = true;
         shouldBreak = callback(
           sourceData.key,
           targetData.key,
@@ -41,7 +51,7 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
           edgeData.undirected
         );
 
-        if (breakable && shouldBreak) return edgeData.key;
+        if (breakable && shouldBreak) return edgeData;
       }
     }
 
@@ -49,11 +59,14 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
       adj = sourceData.undirected;
 
       for (neighbor in adj) {
+        if (assymetric && sourceData.key > neighbor) continue;
+
         edgeData = adj[neighbor];
         targetData = edgeData.target;
 
         if (targetData.key !== neighbor) targetData = edgeData.source;
 
+        hasEdges = true;
         shouldBreak = callback(
           sourceData.key,
           targetData.key,
@@ -64,8 +77,22 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
           edgeData.undirected
         );
 
-        if (breakable && shouldBreak) return edgeData.key;
+        if (breakable && shouldBreak) return edgeData;
       }
+    }
+
+    if (disconnectedNodes && !hasEdges) {
+      shouldBreak = callback(
+        sourceData.key,
+        null,
+        sourceData.attributes,
+        null,
+        null,
+        null,
+        null
+      );
+
+      if (breakable && shouldBreak) return null;
     }
   }
 
@@ -75,26 +102,36 @@ export function forEachAdjacencySimple(breakable, graph, callback) {
 /**
  * Function iterating over a multi graph's adjacency using a callback.
  *
- * @param {boolean}  breakable - Can we break?
- * @param {Graph}    graph    - Target Graph instance.
- * @param {callback} function - Iteration callback.
+ * @param {boolean}  breakable         - Can we break?
+ * @param {boolean}  assymetric        - Whether to emit undirected edges only once.
+ * @param {boolean}  disconnectedNodes - Whether to emit disconnected nodes.
+ * @param {Graph}    graph             - Target Graph instance.
+ * @param {callback} function          - Iteration callback.
  */
-export function forEachAdjacencyMulti(breakable, graph, callback) {
+export function forEachAdjacencyMulti(
+  breakable,
+  assymetric,
+  disconnectedNodes,
+  graph,
+  callback
+) {
   const iterator = graph._nodes.values();
 
   const type = graph.type;
 
-  let step,
-    sourceData,
-    neighbor,
-    container,
-    containerStep,
-    adj,
-    edgeData,
-    targetData,
-    shouldBreak;
+  let step;
+  let sourceData;
+  let neighbor;
+  let container;
+  let containerStep;
+  let adj;
+  let edgeData;
+  let targetData;
+  let shouldBreak;
 
   while (((step = iterator.next()), step.done !== true)) {
+    let hasEdges = false;
+
     sourceData = step.value;
 
     if (type !== 'undirected') {
@@ -109,6 +146,7 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
           edgeData = containerStep.value;
           targetData = edgeData.target;
 
+          hasEdges = true;
           shouldBreak = callback(
             sourceData.key,
             targetData.key,
@@ -119,7 +157,7 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
             edgeData.undirected
           );
 
-          if (breakable && shouldBreak) return edgeData.key;
+          if (breakable && shouldBreak) return edgeData;
         }
       }
     }
@@ -128,6 +166,8 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
       adj = sourceData.undirected;
 
       for (neighbor in adj) {
+        if (assymetric && sourceData.key > neighbor) continue;
+
         container = adj[neighbor].values();
 
         while (
@@ -138,6 +178,7 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
 
           if (targetData.key !== neighbor) targetData = edgeData.source;
 
+          hasEdges = true;
           shouldBreak = callback(
             sourceData.key,
             targetData.key,
@@ -148,186 +189,200 @@ export function forEachAdjacencyMulti(breakable, graph, callback) {
             edgeData.undirected
           );
 
-          if (breakable && shouldBreak) return edgeData.key;
+          if (breakable && shouldBreak) return edgeData;
         }
       }
+    }
+
+    if (disconnectedNodes && !hasEdges) {
+      shouldBreak = callback(
+        sourceData.key,
+        null,
+        sourceData.attributes,
+        null,
+        null,
+        null,
+        null
+      );
+
+      if (breakable && shouldBreak) return null;
     }
   }
 
   return;
 }
 
-export function createAdjacencyIteratorSimple(graph) {
-  const iterator = graph._nodes.values();
+// export function createAdjacencyIteratorSimple(graph) {
+//   const iterator = graph._nodes.values();
 
-  const type = graph.type;
+//   const type = graph.type;
 
-  let state = 'outer',
-    sourceData,
-    neighbors,
-    adj,
-    offset;
+//   let state = 'outer',
+//     sourceData,
+//     neighbors,
+//     adj,
+//     offset;
 
-  return new Iterator(function next() {
-    let step;
+//   return new Iterator(function next() {
+//     let step;
 
-    if (state === 'outer') {
-      step = iterator.next();
+//     if (state === 'outer') {
+//       step = iterator.next();
 
-      if (step.done === true) return step;
+//       if (step.done === true) return step;
 
-      sourceData = step.value;
+//       sourceData = step.value;
 
-      state = 'directed';
-      return next();
-    }
+//       state = 'directed';
+//       return next();
+//     }
 
-    if (state === 'directed') {
-      if (type === 'undirected') {
-        state = 'undirected';
-        return next();
-      }
+//     if (state === 'directed') {
+//       if (type === 'undirected') {
+//         state = 'undirected';
+//         return next();
+//       }
 
-      adj = sourceData.out;
-      neighbors = Object.keys(sourceData.out);
-      offset = 0;
-      state = 'inner-directed';
+//       adj = sourceData.out;
+//       neighbors = Object.keys(sourceData.out);
+//       offset = 0;
+//       state = 'inner-directed';
 
-      return next();
-    }
+//       return next();
+//     }
 
-    if (state === 'undirected') {
-      if (type === 'directed') {
-        state = 'outer';
-        return next();
-      }
+//     if (state === 'undirected') {
+//       if (type === 'directed') {
+//         state = 'outer';
+//         return next();
+//       }
 
-      adj = sourceData.undirected;
-      neighbors = Object.keys(sourceData.undirected);
-      offset = 0;
-      state = 'inner-undirected';
-    }
+//       adj = sourceData.undirected;
+//       neighbors = Object.keys(sourceData.undirected);
+//       offset = 0;
+//       state = 'inner-undirected';
+//     }
 
-    // Inner
-    if (offset >= neighbors.length) {
-      if (state === 'inner-undirected') state = 'outer';
-      else state = 'undirected';
+//     // Inner
+//     if (offset >= neighbors.length) {
+//       if (state === 'inner-undirected') state = 'outer';
+//       else state = 'undirected';
 
-      return next();
-    }
+//       return next();
+//     }
 
-    const neighbor = neighbors[offset++];
-    const edgeData = adj[neighbor];
-    let targetData = edgeData.target;
+//     const neighbor = neighbors[offset++];
+//     const edgeData = adj[neighbor];
+//     let targetData = edgeData.target;
 
-    if (state === 'inner-undirected' && targetData.key === sourceData.key)
-      targetData = edgeData.source;
+//     if (state === 'inner-undirected' && targetData.key === sourceData.key)
+//       targetData = edgeData.source;
 
-    return {
-      done: false,
-      value: {
-        source: sourceData.key,
-        target: targetData.key,
-        sourceAttributes: sourceData.attributes,
-        targetAttributes: targetData.attributes,
-        edgeKey: edgeData.key,
-        edgeAttributes: edgeData.attributes,
-        undirected: edgeData.undirected
-      }
-    };
-  });
-}
+//     return {
+//       done: false,
+//       value: {
+//         source: sourceData.key,
+//         target: targetData.key,
+//         sourceAttributes: sourceData.attributes,
+//         targetAttributes: targetData.attributes,
+//         edgeKey: edgeData.key,
+//         edgeAttributes: edgeData.attributes,
+//         undirected: edgeData.undirected
+//       }
+//     };
+//   });
+// }
 
-export function createAdjacencyIteratorMulti(graph) {
-  const iterator = graph._nodes.values();
+// export function createAdjacencyIteratorMulti(graph) {
+//   const iterator = graph._nodes.values();
 
-  const type = graph.type;
+//   const type = graph.type;
 
-  let state = 'outer',
-    sourceData,
-    neighbors,
-    container = null,
-    adj,
-    offset;
+//   let state = 'outer',
+//     sourceData,
+//     neighbors,
+//     container = null,
+//     adj,
+//     offset;
 
-  return new Iterator(function next() {
-    let step;
+//   return new Iterator(function next() {
+//     let step;
 
-    if (state === 'outer') {
-      step = iterator.next();
+//     if (state === 'outer') {
+//       step = iterator.next();
 
-      if (step.done === true) return step;
+//       if (step.done === true) return step;
 
-      sourceData = step.value;
+//       sourceData = step.value;
 
-      state = 'directed';
-      return next();
-    }
+//       state = 'directed';
+//       return next();
+//     }
 
-    if (state === 'directed') {
-      if (type === 'undirected') {
-        state = 'undirected';
-        return next();
-      }
+//     if (state === 'directed') {
+//       if (type === 'undirected') {
+//         state = 'undirected';
+//         return next();
+//       }
 
-      adj = sourceData.out;
-      neighbors = Object.keys(sourceData.out);
-      offset = 0;
-      state = 'inner-directed';
+//       adj = sourceData.out;
+//       neighbors = Object.keys(sourceData.out);
+//       offset = 0;
+//       state = 'inner-directed';
 
-      return next();
-    }
+//       return next();
+//     }
 
-    if (state === 'undirected') {
-      if (type === 'directed') {
-        state = 'outer';
-        return next();
-      }
+//     if (state === 'undirected') {
+//       if (type === 'directed') {
+//         state = 'outer';
+//         return next();
+//       }
 
-      adj = sourceData.undirected;
-      neighbors = Object.keys(sourceData.undirected);
-      offset = 0;
-      state = 'inner-undirected';
-    }
+//       adj = sourceData.undirected;
+//       neighbors = Object.keys(sourceData.undirected);
+//       offset = 0;
+//       state = 'inner-undirected';
+//     }
 
-    // Inner
-    if (!container && offset >= neighbors.length) {
-      if (state === 'inner-undirected') state = 'outer';
-      else state = 'undirected';
+//     // Inner
+//     if (!container && offset >= neighbors.length) {
+//       if (state === 'inner-undirected') state = 'outer';
+//       else state = 'undirected';
 
-      return next();
-    }
+//       return next();
+//     }
 
-    if (!container) {
-      const neighbor = neighbors[offset++];
-      container = adj[neighbor].values();
-      return next();
-    }
+//     if (!container) {
+//       const neighbor = neighbors[offset++];
+//       container = adj[neighbor].values();
+//       return next();
+//     }
 
-    step = container.next();
+//     step = container.next();
 
-    if (step.done) {
-      container = null;
-      return next();
-    }
+//     if (step.done) {
+//       container = null;
+//       return next();
+//     }
 
-    const edgeData = step.value;
-    let targetData = edgeData.target;
+//     const edgeData = step.value;
+//     let targetData = edgeData.target;
 
-    if (state === 'inner-undirected' && targetData.key === sourceData.key)
-      targetData = edgeData.source;
+//     if (state === 'inner-undirected' && targetData.key === sourceData.key)
+//       targetData = edgeData.source;
 
-    return {
-      done: false,
-      value: {
-        source: sourceData.key,
-        target: targetData.key,
-        sourceAttributes: sourceData.attributes,
-        targetAttributes: targetData.attributes,
-        edge: edgeData.key,
-        edgeAttributes: edgeData.attributes,
-        undirected: edgeData.undirected
-      }
-    };
-  });
-}
+//     return {
+//       done: false,
+//       value: {
+//         source: sourceData.key,
+//         target: targetData.key,
+//         sourceAttributes: sourceData.attributes,
+//         targetAttributes: targetData.attributes,
+//         edge: edgeData.key,
+//         edgeAttributes: edgeData.attributes,
+//         undirected: edgeData.undirected
+//       }
+//     };
+//   });
+// }

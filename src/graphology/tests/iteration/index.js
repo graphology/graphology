@@ -5,220 +5,186 @@
  * Testing the iteration-related methods of the graph.
  */
 import assert from 'assert';
-import take from 'obliterator/take';
-import nodes from './nodes';
-import edges from './edges';
-import neighbors from './neighbors';
+import nodeTests from './nodes';
+import edgeTests from './edges';
+import neighborTests from './neighbors';
 
 export default function iteration(Graph, checkers) {
   return {
     Adjacency: {
-      "it should be possible to iterate over the graph's adjacency using callbacks.":
-        function () {
-          const graph = new Graph();
+      '#.forEachAdjacencyEntry': {
+        'it should iterate over the relevant elements.': function () {
+          function test(multi) {
+            const graph = new Graph({multi});
 
-          graph.addNode(1);
-          graph.addNode(2);
-          graph.addNode(3);
+            graph.addNode('John', {hello: 'world'});
 
-          graph.addEdge(1, 2);
-          graph.addEdge(2, 3);
-          graph.addEdge(3, 1);
-          graph.addUndirectedEdge(1, 2);
+            const [e1] = graph.mergeUndirectedEdge('John', 'Mary', {weight: 3});
+            graph.mergeUndirectedEdge('Thomas', 'John');
 
-          graph.replaceNodeAttributes(2, {hello: 'world'});
+            graph.mergeDirectedEdge('John', 'Thomas');
 
-          const adjacency = [];
+            let count = 0;
+            graph.forEachAdjacencyEntry(
+              (
+                node,
+                neighbor,
+                attr,
+                neighborAttr,
+                edge,
+                edgeAttr,
+                undirected
+              ) => {
+                count++;
 
-          graph.forEach(function (s, t, sa, ta, e, ea, u) {
-            adjacency.push([u, s, t]);
-            assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
-            assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
-            assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
-            assert.strictEqual(graph.isUndirected(e), u);
-          });
+                if (node === 'John') {
+                  assert.deepStrictEqual(attr, {hello: 'world'});
+                } else {
+                  assert.deepStrictEqual(attr, {});
+                }
 
-          assert.deepStrictEqual(adjacency, [
-            [false, '1', '2'],
-            [true, '1', '2'],
-            [false, '2', '3'],
-            [true, '2', '1'],
-            [false, '3', '1']
-          ]);
-        },
+                if (neighbor === 'John') {
+                  assert.deepStrictEqual(neighborAttr, {hello: 'world'});
+                } else {
+                  assert.deepStrictEqual(neighborAttr, {});
+                }
 
-      "it should be possible to iterate over a multi graph's adjacency using callbacks.":
-        function () {
-          const graph = new Graph({multi: true});
+                if (edge === e1) {
+                  assert.deepStrictEqual(edgeAttr, {weight: 3});
+                } else {
+                  assert.deepStrictEqual(edgeAttr, {});
+                }
 
-          graph.addNode(1);
-          graph.addNode(2);
-          graph.addNode(3);
+                assert.strictEqual(graph.isUndirected(edge), undirected);
+              }
+            );
 
-          graph.addEdge(1, 2);
-          graph.addEdge(2, 3);
-          graph.addEdge(3, 1);
-          graph.addEdgeWithKey('test', 2, 3);
-          graph.addUndirectedEdge(1, 2);
+            assert.strictEqual(
+              count,
+              graph.directedSize + graph.undirectedSize * 2
+            );
 
-          graph.replaceNodeAttributes(2, {hello: 'world'});
+            graph.addNode('Disconnected');
 
-          const adjacency = [];
+            count = 0;
 
-          graph.forEach(function (s, t, sa, ta, e, ea, u) {
-            adjacency.push([u, s, t]);
-            assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
-            assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
-            assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
-            assert.strictEqual(graph.isUndirected(e), u);
-          });
+            graph.forEachAdjacencyEntryWithDisconnectedNodes(
+              (
+                node,
+                neighbor,
+                attr,
+                neighborAttr,
+                edge,
+                edgeAttr,
+                undirected
+              ) => {
+                count++;
 
-          assert.deepStrictEqual(adjacency, [
-            [false, '1', '2'],
-            [true, '1', '2'],
-            [false, '2', '3'],
-            [false, '2', '3'],
-            [true, '2', '1'],
-            [false, '3', '1']
-          ]);
-        },
+                if (node !== 'Disconnected') return;
 
-      'it should be possible to find an edge in the adjacency.': function () {
-        const graph = new Graph();
+                assert.strictEqual(neighbor, null);
+                assert.strictEqual(neighborAttr, null);
+                assert.strictEqual(edge, null);
+                assert.strictEqual(edgeAttr, null);
+                assert.strictEqual(undirected, null);
+              },
+              true
+            );
 
-        graph.addNode(1);
-        graph.addNode(2);
-        graph.addNode(3);
+            assert.strictEqual(
+              count,
+              graph.directedSize + graph.undirectedSize * 2 + 1
+            );
+          }
 
-        graph.addEdge(1, 2);
-        graph.addEdge(2, 3);
-        graph.addEdge(3, 1);
-        graph.addUndirectedEdge(1, 2);
-
-        graph.replaceNodeAttributes(2, {hello: 'world'});
-
-        const adjacency = [];
-
-        let found = graph.find(function (s, t, sa, ta, e, ea, u) {
-          adjacency.push([u, s, t]);
-          assert.deepStrictEqual(sa, graph.getNodeAttributes(s));
-          assert.deepStrictEqual(ta, graph.getNodeAttributes(t));
-          assert.deepStrictEqual(ea, graph.getEdgeAttributes(e));
-          assert.strictEqual(graph.isUndirected(e), u);
-
-          if (sa.hello === 'world') return true;
-        });
-
-        assert.strictEqual(found, graph.edge(2, 3));
-
-        assert.deepStrictEqual(adjacency, [
-          [false, '1', '2'],
-          [true, '1', '2'],
-          [false, '2', '3']
-        ]);
-
-        found = graph.find(function () {
-          return false;
-        });
-
-        assert.strictEqual(found, undefined);
+          test(false);
+          test(true);
+        }
       },
 
-      "it should be possible to create an iterator over the graph's adjacency.":
-        function () {
-          const graph = new Graph();
+      '#.forEachAssymetricAdjacencyEntry': {
+        'it should iterate over the relevant elements.': function () {
+          function test(multi) {
+            const graph = new Graph({multi});
 
-          graph.addNode(1);
-          graph.addNode(2);
-          graph.addNode(3);
+            graph.addNode('John', {hello: 'world'});
 
-          graph.addEdge(1, 2);
-          graph.addEdge(2, 3);
-          graph.addEdge(3, 1);
-          graph.addUndirectedEdge(1, 2);
+            graph.mergeUndirectedEdge('John', 'Mary', {weight: 3});
+            graph.mergeUndirectedEdge('Thomas', 'John');
 
-          graph.replaceNodeAttributes(2, {hello: 'world'});
+            graph.mergeDirectedEdge('John', 'Thomas');
 
-          const adj = take(graph.adjacency()).map(
-            ({source, target, undirected}) => [source, target, undirected]
-          );
+            const edges = [];
 
-          assert.deepStrictEqual(adj, [
-            ['1', '2', false],
-            ['1', '2', true],
-            ['2', '3', false],
-            ['2', '1', true],
-            ['3', '1', false]
-          ]);
-        },
+            graph.forEachAssymetricAdjacencyEntry(
+              (
+                node,
+                neighbor,
+                attr,
+                neighborAttr,
+                edge,
+                edgeAttr,
+                undirected
+              ) => {
+                if (undirected) {
+                  assert.strictEqual(node < neighbor, true);
+                }
 
-      "it should be possible to create an iterator over a multi graph's adjacency.":
-        function () {
-          const graph = new Graph({multi: true});
+                edges.push(edge);
+              }
+            );
 
-          graph.addNode(1);
-          graph.addNode(2);
-          graph.addNode(3);
+            assert.strictEqual(
+              edges.length,
+              graph.directedSize + graph.undirectedSize
+            );
 
-          graph.addEdgeWithKey(0, 1, 2);
-          graph.addEdgeWithKey(1, 2, 3);
-          graph.addEdgeWithKey(2, 3, 1);
-          graph.addEdgeWithKey(3, 2, 3);
-          graph.addUndirectedEdgeWithKey(4, 1, 2);
+            assert.deepStrictEqual(new Set(edges).size, edges.length);
 
-          graph.replaceNodeAttributes(2, {hello: 'world'});
+            graph.addNode('Disconnected');
 
-          const adj = take(graph.adjacency()).map(({source, target, edge}) => [
-            source,
-            target,
-            edge
-          ]);
+            let count = 0;
+            let nulls = 0;
 
-          assert.deepStrictEqual(adj, [
-            ['1', '2', '0'],
-            ['1', '2', '4'],
-            ['2', '3', '1'],
-            ['2', '3', '3'],
-            ['2', '1', '4'],
-            ['3', '1', '2']
-          ]);
-        },
+            graph.forEachAssymetricAdjacencyEntryWithDisconnectedNodes(
+              (
+                node,
+                neighbor,
+                attr,
+                neighborAttr,
+                edge,
+                edgeAttr,
+                undirected
+              ) => {
+                count++;
 
-      'it should be possible to iterate via Symbol.iterator.': function () {
-        if (typeof Symbol === 'undefined') return;
+                if (neighbor) return;
 
-        const edgeKeyGenerator = ({undirected, source, target}) => {
-          return `${source}${undirected ? '--' : '->'}${target}`;
-        };
+                nulls++;
+                assert.strictEqual(neighbor, null);
+                assert.strictEqual(neighborAttr, null);
+                assert.strictEqual(edge, null);
+                assert.strictEqual(edgeAttr, null);
+                assert.strictEqual(undirected, null);
+              },
+              true
+            );
 
-        const graph = new Graph({edgeKeyGenerator});
+            assert.strictEqual(
+              count,
+              graph.directedSize + graph.undirectedSize + 3
+            );
 
-        graph.addNode(1);
-        graph.addNode(2);
-        graph.addNode(3);
+            assert.strictEqual(nulls, 3);
+          }
 
-        graph.addEdge(1, 2);
-        graph.addEdge(2, 3);
-        graph.addEdge(3, 1);
-        graph.addUndirectedEdge(1, 2);
-
-        graph.replaceNodeAttributes(2, {hello: 'world'});
-
-        const adj = take(graph[Symbol.iterator]()).map(
-          ({source, target, undirected}) => [source, target, undirected]
-        );
-
-        assert.deepStrictEqual(adj, [
-          ['1', '2', false],
-          ['1', '2', true],
-          ['2', '3', false],
-          ['2', '1', true],
-          ['3', '1', false]
-        ]);
+          test(false);
+          test(true);
+        }
       }
     },
-    Nodes: nodes(Graph, checkers),
-    Edges: edges(Graph, checkers),
-    Neighbors: neighbors(Graph, checkers)
+    Nodes: nodeTests(Graph, checkers),
+    Edges: edgeTests(Graph, checkers),
+    Neighbors: neighborTests(Graph, checkers)
   };
 }

@@ -13,7 +13,6 @@
     "infer-type.js",
     "is-graph.js",
     "is-graph-constructor.js",
-    "memoized-for-each.js",
     "merge-clique.js",
     "merge-cycle.js",
     "merge-path.js",

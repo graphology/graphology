@@ -12,7 +12,7 @@
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run test:types && npm run build",
     "test": "mocha -u exports --require @babel/register ./test.js",
-    "test:types": "tsc --lib es2015,dom --noEmit --noImplicitAny --noImplicitReturns ./test-types.ts"
+    "test:types": "tsc --lib es2015,dom --noEmit --noImplicitAny --noImplicitReturns --strictNullChecks ./test-types.ts"
   },
   "files": [
     "dist",

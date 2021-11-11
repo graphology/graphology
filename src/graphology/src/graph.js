@@ -35,9 +35,7 @@ import attachEdgeIterationMethods from './iteration/edges';
 import attachNeighborIterationMethods from './iteration/neighbors';
 import {
   forEachAdjacencySimple,
-  forEachAdjacencyMulti,
-  createAdjacencyIteratorSimple,
-  createAdjacencyIteratorMulti
+  forEachAdjacencyMulti
 } from './iteration/adjacency';
 
 import {
@@ -2109,40 +2107,47 @@ export default class Graph extends EventEmitter {
    *
    * @param  {function}  callback - Callback to use.
    */
-  forEach(callback) {
+  forEachAdjacencyEntry(callback) {
     if (typeof callback !== 'function')
       throw new InvalidArgumentsGraphError(
-        'Graph.forEach: expecting a callback.'
+        'Graph.forEachAdjacencyEntry: expecting a callback.'
       );
 
-    if (this.multi) forEachAdjacencyMulti(false, this, callback);
-    else forEachAdjacencySimple(false, this, callback);
+    if (this.multi) forEachAdjacencyMulti(false, false, false, this, callback);
+    else forEachAdjacencySimple(false, false, false, this, callback);
+  }
+  forEachAdjacencyEntryWithDisconnectedNodes(callback) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.forEachAdjacencyEntryWithDisconnectedNodes: expecting a callback.'
+      );
+
+    if (this.multi) forEachAdjacencyMulti(false, false, true, this, callback);
+    else forEachAdjacencySimple(false, false, true, this, callback);
   }
 
   /**
-   * Method returning whether a matching edge can be found using given
-   * predicate function.
+   * Method iterating over the graph's assymetric adjacency using the given callback.
    *
    * @param  {function}  callback - Callback to use.
    */
-  find(callback) {
+  forEachAssymetricAdjacencyEntry(callback) {
     if (typeof callback !== 'function')
-      throw new InvalidArgumentsGraphError('Graph.find: expecting a callback.');
+      throw new InvalidArgumentsGraphError(
+        'Graph.forEachAssymetricAdjacencyEntry: expecting a callback.'
+      );
 
-    if (this.multi) return forEachAdjacencyMulti(true, this, callback);
-
-    return forEachAdjacencySimple(true, this, callback);
+    if (this.multi) forEachAdjacencyMulti(false, true, false, this, callback);
+    else forEachAdjacencySimple(false, true, false, this, callback);
   }
+  forEachAssymetricAdjacencyEntryWithDisconnectedNodes(callback) {
+    if (typeof callback !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.forEachAssymetricAdjacencyEntryWithDisconnectedNodes: expecting a callback.'
+      );
 
-  /**
-   * Method returning an iterator over the graph's adjacency.
-   *
-   * @return {Iterator}
-   */
-  adjacency() {
-    if (this.multi) return createAdjacencyIteratorMulti(this);
-
-    return createAdjacencyIteratorSimple(this);
+    if (this.multi) forEachAdjacencyMulti(false, true, true, this, callback);
+    else forEachAdjacencySimple(false, true, true, this, callback);
   }
 
   /**
@@ -2783,13 +2788,6 @@ export default class Graph extends EventEmitter {
     return dummy;
   }
 }
-
-/**
- * Attaching custom inspect method for node >= 10.
- */
-if (typeof Symbol !== 'undefined')
-  Graph.prototype[Symbol.for('nodejs.util.inspect.custom')] =
-    Graph.prototype.inspect;
 
 /**
  * Attaching methods to the prototype.
