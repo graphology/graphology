@@ -103,10 +103,6 @@ type NodeReducer<T, NodeAttributes extends Attributes = Attributes> = (
   attributes: NodeAttributes
 ) => T;
 
-type NodeUpdateIterationCallback<
-  NodeAttributes extends Attributes = Attributes
-> = (node: string, attributes: NodeAttributes) => NodeAttributes;
-
 type NeighborIterationCallback<NodeAttributes extends Attributes = Attributes> =
   (neighbor: string, attributes: NodeAttributes) => void;
 
@@ -180,10 +176,6 @@ type EdgeReducer<
   targetAttributes: NodeAttributes,
   undirected: boolean
 ) => T;
-
-type EdgeUpdateIterationCallback<
-  EdgeAttributes extends Attributes = Attributes
-> = (edge: string, attributes: EdgeAttributes) => EdgeAttributes;
 
 type SerializedNode<NodeAttributes extends Attributes = Attributes> = {
   key: string;
@@ -631,7 +623,7 @@ declare abstract class AbstractGraph<
   mergeNodeAttributes(node: unknown, attributes: Partial<NodeAttributes>): this;
 
   updateEachNodeAttributes(
-    updater: NodeUpdateIterationCallback<NodeAttributes>,
+    updater: NodeMapper<NodeAttributes>,
     hints?: UpdateHints
   ): void;
 
@@ -733,7 +725,7 @@ declare abstract class AbstractGraph<
   ): this;
 
   updateEachEdgeAttributes(
-    updater: EdgeUpdateIterationCallback<EdgeAttributes>,
+    updater: EdgeMapper<EdgeAttributes>,
     hints?: UpdateHints
   ): void;
 
@@ -1889,7 +1881,6 @@ export {
   NodePredicate,
   NodeMapper,
   NodeReducer,
-  NodeUpdateIterationCallback,
   NeighborIterationCallback,
   NeighborPredicate,
   NeighborMapper,
@@ -1898,7 +1889,6 @@ export {
   EdgePredicate,
   EdgeMapper,
   EdgeReducer,
-  EdgeUpdateIterationCallback,
   SerializedNode,
   SerializedEdge,
   SerializedGraph,

@@ -371,6 +371,11 @@ graph.updateEachNodeAttributes((node, attr) => {
 * **hints** <span class="code">[object]</span>: optional hints to emit as part of the [eachNodeAttributesUpdated](events#eachnodeattributesupdated) event:
   * **attributes** <span class="code">[array]</span>: an array of attribute names that will be updated by your action.
 
+**Callback arguments**
+
+* **node** <span class="code">string</span>: the node's key.
+* **attributes** <span class="code">object</span>: the node's attributes.
+
 # Edge attributes
 
 ## #.getEdgeAttribute
@@ -626,7 +631,7 @@ Note that you can optionally pass hints regarding the updated attribute names so
 graph.mergeEdge('Martha', 'John', {weight: 12});
 graph.mergeEdge('Lucy', 'Martin', {weight: 4})
 
-graph.updateEachEdgeAttributes((node, attr) => {
+graph.updateEachEdgeAttributes((edge, attr) => {
   return {
     ...attr,
     weight: attr.weight * 2
@@ -637,7 +642,7 @@ graph.edges().map(e => graph.getEdgeAttribute(e, 'weight'));
 >>> [24, 8]
 
 // Note that you can indicate hints
-graph.updateEachEdgeAttributes((node, attr) => {
+graph.updateEachEdgeAttributes((edge, attr) => {
   return {
     ...attr,
     weight: attr.weight * 2
@@ -650,3 +655,13 @@ graph.updateEachEdgeAttributes((node, attr) => {
 * **updater** <span class="code">function</span>: the udpater function.
 * **hints** <span class="code">[object]</span>: optional hints to emit as part of the [eachEdgeAttributesUpdated](events#eachedgeattributesupdated) event:
   * **attributes** <span class="code">[array]</span>: an array of attribute names that will be updated by your action.
+
+**Callback arguments**
+
+* **edge** <span class="code">string</span>: the edge's key.
+* **attributes** <span class="code">object</span>: the edge's attributes.
+* **source** <span class="code">string</span>: key of the edge's source.
+* **target** <span class="code">string</span>: key of the edge's target.
+* **sourceAttributes** <span class="code">object</span>: attributes of the edge's source.
+* **targetAttributes** <span class="code">object</span>= attributes of the edge's target.
+* **undirected** <span class="code">boolean</span>: whether the edge is undirected.

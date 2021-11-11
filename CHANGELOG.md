@@ -5,6 +5,7 @@
 - Adding `#.updateAttributes`.
 - Adding `#.updateNodeAttributes`.
 - Adding `#.updateEdgeAttributes`.
+- Aligning `#.updateEachEdgeAttributes` callback arguments to `#.forEachEdge`.
 
 ## 0.22.2
 

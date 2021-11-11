@@ -887,12 +887,17 @@ export default function attributes(Graph, checkers) {
         graph.mergeEdgeWithKey(0, 'John', 'Lucy', {weight: 1});
         graph.mergeEdgeWithKey(1, 'John', 'Mary', {weight: 10});
 
-        graph.updateEachEdgeAttributes((edge, attr) => {
-          return {...attr, weight: attr.weight + 1};
-        });
+        graph.updateEachEdgeAttributes(
+          (edge, attr, source, _t, _sa, _ta, undirected) => {
+            assert.strictEqual(source, 'John');
+            assert.strictEqual(undirected, false);
+
+            return {...attr, weight: attr.weight + 1};
+          }
+        );
 
         assert.deepStrictEqual(
-          graph.edges().map(n => graph.getEdgeAttributes(n)),
+          graph.mapEdges((_, attr) => attr),
           [{weight: 2}, {weight: 11}]
         );
       }

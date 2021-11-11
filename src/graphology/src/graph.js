@@ -2361,11 +2361,22 @@ export default class Graph extends EventEmitter {
 
     const iterator = this._edges.values();
 
-    let step, edgeData;
+    let step, edgeData, sourceData, targetData;
 
     while (((step = iterator.next()), step.done !== true)) {
       edgeData = step.value;
-      edgeData.attributes = updater(edgeData.key, edgeData.attributes);
+      sourceData = edgeData.source;
+      targetData = edgeData.target;
+
+      edgeData.attributes = updater(
+        edgeData.key,
+        edgeData.attributes,
+        sourceData.key,
+        targetData.key,
+        sourceData.attributes,
+        targetData.attributes,
+        edgeData.undirected
+      );
     }
 
     this.emit('eachEdgeAttributesUpdated', {
