@@ -49,6 +49,11 @@ const node = graph.addNode('John', {
 
 Adds a node only if the node does not exist in the graph yet. Else it will merge the provided attributes with the already existing ones.
 
+This methods return a 2-tuple containing:
+
+1. the node's key
+2. a boolean indicating whether a node was actually added.
+
 *Example*
 
 ```js
@@ -64,6 +69,9 @@ graph.getNodeAttributes('John');
 >>> {
   eyes: 'blue'
 }
+
+// The method returns a 2-tuple containing useful info
+const [key, nodeWasAdded] = graph.mergeNode('John');
 ```
 
 *Arguments*
@@ -77,6 +85,11 @@ graph.getNodeAttributes('John');
 Adds a node only if the node does not exist in the graph yet. Else it will update the already existing node's attributes using the provided function.
 
 If the node does not yet exist, the updated function must still return the initial attributes and will be given an empty object to do so.
+
+This methods return a 2-tuple containing:
+
+1. the node's key
+2. a boolean indicating whether a node was actually added.
 
 *Example*
 
@@ -99,6 +112,9 @@ graph.updateNode('John', attr => {
 
 graph.getNodeAttribute('John', 'count');
 >>> 2
+
+// The method returns a 2-tuple containing useful info
+const [key, nodeWasAdded] = graph.updateNode('John');
 ```
 
 *Arguments*
@@ -187,6 +203,13 @@ Note that an edge is deemed to already exist in a simple graph if the graph can 
 
 In a multi graph, this method will therefore always add a new edge.
 
+This methods return a 4-tuple containing:
+
+1. the node's key
+2. a boolean indicating whether an edge was actually added.
+3. a boolean indicating whether the source node was added to the graph.
+4. a boolean indicating whether the target node was added to the graph.
+
 ```js
 const graph = new UndirectedGraph();
 
@@ -202,6 +225,9 @@ graph.getEdgeAttributes('John', 'Martha');
 >>> {
   type: 'KNOWS'
 }
+
+// The method returns a 4-tuple containing useful info
+const [key, edgeWasAdded, sourceWasAdded, targetWasAdded] = graph.mergeEdge('John', 'Martha');
 ```
 
 *Arguments*
@@ -225,6 +251,13 @@ Note that in this case, an edge is deemed to already exist in the graph if an ed
 
 If one tries to add an edge with the given key and if the graph has an edge with the same key but a different source & target, the method will throw to notify of the inconsistency.
 
+This methods return a 4-tuple containing:
+
+1. the node's key
+2. a boolean indicating whether an edge was actually added.
+3. a boolean indicating whether the source node was added to the graph.
+4. a boolean indicating whether the target node was added to the graph.
+
 ```js
 const graph = new UndirectedGraph();
 graph.addNodesFrom(['John', 'Martha', 'Thomas']);
@@ -244,6 +277,9 @@ graph.getEdgeAttributes('J->M');
 
 // However, the following will throw an error
 graph.mergeEdgeWithKey('J->M', 'Thomas', 'Martha');
+
+// The method returns a 4-tuple containing useful info
+const [key, edgeWasAdded, sourceWasAdded, targetWasAdded] = graph.mergeEdgeWithKey('J->M', 'John', 'Martha');
 ```
 
 *Arguments*
@@ -270,6 +306,13 @@ Note that an edge is deemed to already exist in a simple graph if the graph can 
 
 In a multi graph, this method will therefore always add a new edge.
 
+This methods return a 4-tuple containing:
+
+1. the node's key
+2. a boolean indicating whether an edge was actually added.
+3. a boolean indicating whether the source node was added to the graph.
+4. a boolean indicating whether the target node was added to the graph.
+
 ```js
 const graph = new UndirectedGraph();
 
@@ -291,6 +334,9 @@ graph.updateEdge('John', 'Martha', attr => {
 
 graph.getEdgeAttribute('John', 'Martha', 'weight');
 >>> 2
+
+// The method returns a 4-tuple containing useful info
+const [key, edgeWasAdded, sourceWasAdded, targetWasAdded] = graph.updateEdge('John', 'Martha');
 ```
 
 *Arguments*
@@ -317,6 +363,13 @@ Note that in this case, an edge is deemed to already exist in the graph if an ed
 
 If one tries to add an edge with the given key and if the graph has an edge with the same key but a different source & target, the method will throw to notify of the inconsistency.
 
+This methods return a 4-tuple containing:
+
+1. the node's key
+2. a boolean indicating whether an edge was actually added.
+3. a boolean indicating whether the source node was added to the graph.
+4. a boolean indicating whether the target node was added to the graph.
+
 ```js
 const graph = new UndirectedGraph();
 
@@ -338,6 +391,9 @@ graph.updateEdgeWithKey('J->M', 'John', 'Martha', attr => {
 
 graph.getEdgeAttribute('J->M', 'weight');
 >>> 2
+
+// The method returns a 4-tuple containing useful info
+const [key, edgeWasAdded, sourceWasAdded, targetWasAdded] = graph.updateEdgeWithKey('J->M', 'John', 'Martha');
 ```
 
 *Arguments*

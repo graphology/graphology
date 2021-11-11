@@ -69,6 +69,20 @@ export default function mutation(Graph, checkers) {
         graph.addNode(4);
 
         assert.doesNotThrow(() => graph.mergeNode(4));
+      },
+
+      'it should return useful information.': function () {
+        const graph = new Graph();
+
+        let [key, wasAdded] = graph.mergeNode('Jack');
+
+        assert.strictEqual(key, 'Jack');
+        assert.strictEqual(wasAdded, true);
+
+        [key, wasAdded] = graph.mergeNode('Jack');
+
+        assert.strictEqual(key, 'Jack');
+        assert.strictEqual(wasAdded, false);
       }
     },
 
@@ -117,6 +131,20 @@ export default function mutation(Graph, checkers) {
         graph.addNode(4);
 
         assert.doesNotThrow(() => graph.updateNode(4));
+      },
+
+      'it should return useful information.': function () {
+        const graph = new Graph();
+
+        let [key, wasAdded] = graph.updateNode('Jack');
+
+        assert.strictEqual(key, 'Jack');
+        assert.strictEqual(wasAdded, true);
+
+        [key, wasAdded] = graph.updateNode('Jack');
+
+        assert.strictEqual(key, 'Jack');
+        assert.strictEqual(wasAdded, false);
       }
     },
 
@@ -375,6 +403,59 @@ export default function mutation(Graph, checkers) {
 
         assert.strictEqual(graph.order, 1);
         assert.strictEqual(graph.size, 1);
+      },
+
+      'it should return useful information.': function () {
+        const graph = new Graph();
+
+        let info = graph.mergeEdge('John', 'Jack');
+
+        assert.deepStrictEqual(info, [
+          graph.edge('John', 'Jack'),
+          true,
+          true,
+          true
+        ]);
+
+        info = graph.mergeEdge('John', 'Jack');
+
+        assert.deepStrictEqual(info, [
+          graph.edge('John', 'Jack'),
+          false,
+          false,
+          false
+        ]);
+
+        graph.addNode('Mary');
+
+        info = graph.mergeEdge('Mary', 'Sue');
+
+        assert.deepStrictEqual(info, [
+          graph.edge('Mary', 'Sue'),
+          true,
+          false,
+          true
+        ]);
+
+        info = graph.mergeEdge('Gwladys', 'Mary');
+
+        assert.deepStrictEqual(info, [
+          graph.edge('Gwladys', 'Mary'),
+          true,
+          true,
+          false
+        ]);
+
+        graph.addNode('Quintin');
+
+        info = graph.mergeEdge('Quintin', 'Mary');
+
+        assert.deepStrictEqual(info, [
+          graph.edge('Quintin', 'Mary'),
+          true,
+          false,
+          false
+        ]);
       }
     },
 
@@ -461,6 +542,59 @@ export default function mutation(Graph, checkers) {
 
         assert.strictEqual(graph.order, 1);
         assert.strictEqual(graph.size, 1);
+      },
+
+      'it should return useful information.': function () {
+        const graph = new Graph();
+
+        let info = graph.updateEdge('John', 'Jack');
+
+        assert.deepStrictEqual(info, [
+          graph.edge('John', 'Jack'),
+          true,
+          true,
+          true
+        ]);
+
+        info = graph.updateEdge('John', 'Jack');
+
+        assert.deepStrictEqual(info, [
+          graph.edge('John', 'Jack'),
+          false,
+          false,
+          false
+        ]);
+
+        graph.addNode('Mary');
+
+        info = graph.updateEdge('Mary', 'Sue');
+
+        assert.deepStrictEqual(info, [
+          graph.edge('Mary', 'Sue'),
+          true,
+          false,
+          true
+        ]);
+
+        info = graph.updateEdge('Gwladys', 'Mary');
+
+        assert.deepStrictEqual(info, [
+          graph.edge('Gwladys', 'Mary'),
+          true,
+          true,
+          false
+        ]);
+
+        graph.addNode('Quintin');
+
+        info = graph.updateEdge('Quintin', 'Mary');
+
+        assert.deepStrictEqual(info, [
+          graph.edge('Quintin', 'Mary'),
+          true,
+          false,
+          false
+        ]);
       }
     },
 

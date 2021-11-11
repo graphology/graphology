@@ -514,7 +514,7 @@ export default function attributes(Graph, checkers) {
     '#.removeEdgeAttribute': {
       'it should correclty remove the attribute.': function () {
         const graph = new Graph();
-        const edge = graph.mergeEdge('John', 'Martha', {weight: 1, size: 3});
+        const [edge] = graph.mergeEdge('John', 'Martha', {weight: 1, size: 3});
 
         graph.removeEdgeAttribute('John', 'Martha', 'weight');
         graph.removeEdgeAttribute(edge, 'size');

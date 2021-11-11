@@ -38,6 +38,8 @@ type NodeEntry<NodeAttributes extends Attributes = Attributes> = {
   attributes: NodeAttributes;
 };
 
+type NodeMergeResult = [key: string, nodeWasAdded: boolean];
+
 type NeighborEntry<NodeAttributes extends Attributes = Attributes> = {
   neighbor: string;
   attributes: NodeAttributes;
@@ -55,6 +57,13 @@ type EdgeEntry<
   targetAttributes: NodeAttributes;
   undirected: boolean;
 };
+
+type EdgeMergeResult = [
+  key: string,
+  edgeWasAdded: boolean,
+  sourceWasAdded: boolean,
+  targetWasAdded: boolean
+];
 
 type AdjacencyIterationCallback<
   NodeAttributes extends Attributes = Attributes,
@@ -467,11 +476,14 @@ declare abstract class AbstractGraph<
 
   // Mutation methods
   addNode(node: unknown, attributes?: NodeAttributes): string;
-  mergeNode(node: unknown, attributes?: Partial<NodeAttributes>): string;
+  mergeNode(
+    node: unknown,
+    attributes?: Partial<NodeAttributes>
+  ): NodeMergeResult;
   updateNode(
     node: unknown,
     updater?: (attributes: NodeAttributes | {}) => NodeAttributes
-  ): string;
+  ): NodeMergeResult;
   addEdge(
     source: unknown,
     target: unknown,
@@ -481,12 +493,12 @@ declare abstract class AbstractGraph<
     source: unknown,
     target: unknown,
     attributes?: Partial<EdgeAttributes>
-  ): string;
+  ): EdgeMergeResult;
   updateEdge(
     source: unknown,
     target: unknown,
     updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
-  ): string;
+  ): EdgeMergeResult;
   addDirectedEdge(
     source: unknown,
     target: unknown,
@@ -496,12 +508,12 @@ declare abstract class AbstractGraph<
     source: unknown,
     target: unknown,
     attributes?: Partial<EdgeAttributes>
-  ): string;
+  ): EdgeMergeResult;
   updateDirectedEdge(
     source: unknown,
     target: unknown,
     updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
-  ): string;
+  ): EdgeMergeResult;
   addUndirectedEdge(
     source: unknown,
     target: unknown,
@@ -511,12 +523,12 @@ declare abstract class AbstractGraph<
     source: unknown,
     target: unknown,
     attributes?: Partial<EdgeAttributes>
-  ): string;
+  ): EdgeMergeResult;
   updateUndirectedEdge(
     source: unknown,
     target: unknown,
     updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
-  ): string;
+  ): EdgeMergeResult;
   addEdgeWithKey(
     edge: unknown,
     source: unknown,
@@ -528,12 +540,12 @@ declare abstract class AbstractGraph<
     source: unknown,
     target: unknown,
     attributes?: Partial<EdgeAttributes>
-  ): string;
+  ): EdgeMergeResult;
   updateEdgeWithKey(
     source: unknown,
     target: unknown,
     updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
-  ): string;
+  ): EdgeMergeResult;
   addDirectedEdgeWithKey(
     edge: unknown,
     source: unknown,
@@ -545,12 +557,12 @@ declare abstract class AbstractGraph<
     source: unknown,
     target: unknown,
     attributes?: Partial<EdgeAttributes>
-  ): string;
+  ): EdgeMergeResult;
   updateDirectedEdgeWithKey(
     source: unknown,
     target: unknown,
     updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
-  ): string;
+  ): EdgeMergeResult;
   addUndirectedEdgeWithKey(
     edge: unknown,
     source: unknown,
@@ -562,12 +574,12 @@ declare abstract class AbstractGraph<
     source: unknown,
     target: unknown,
     attributes?: Partial<EdgeAttributes>
-  ): string;
+  ): EdgeMergeResult;
   updateUndirectedEdgeWithKey(
     source: unknown,
     target: unknown,
     updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
-  ): string;
+  ): EdgeMergeResult;
   dropNode(node: unknown): void;
   dropEdge(edge: unknown): void;
   dropEdge(source: unknown, target: unknown): void;
@@ -1912,8 +1924,10 @@ export {
   GraphOptions,
   AdjacencyEntry,
   NodeEntry,
+  NodeMergeResult,
   NeighborEntry,
   EdgeEntry,
+  EdgeMergeResult,
   AdjacencyIterationCallback,
   AdjacencyPredicate,
   NodeIterationCallback,

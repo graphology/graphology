@@ -645,7 +645,7 @@ export default function read(Graph, checkers) {
       'it should return the correct answer.': function () {
         const graph = new Graph();
         graph.addNode('Jack');
-        const edge = graph.mergeEdge('Thomas', 'Estelle');
+        const [edge] = graph.mergeEdge('Thomas', 'Estelle');
 
         assert.strictEqual(graph.hasExtremity(edge, 'Thomas'), true);
         assert.strictEqual(graph.hasExtremity(edge, 'Estelle'), true);

@@ -396,9 +396,9 @@ function mergeEdge(
       `Graph.${name}: source & target are the same ("${source}"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`
     );
 
-  let sourceData = graph._nodes.get(source),
-    targetData = graph._nodes.get(target),
-    edgeData;
+  let sourceData = graph._nodes.get(source);
+  let targetData = graph._nodes.get(target);
+  let edgeData;
 
   // Do we need to handle duplicate?
   let alreadyExistingEdgeData;
@@ -433,8 +433,10 @@ function mergeEdge(
 
   // Handling duplicates
   if (alreadyExistingEdgeData) {
+    const info = [alreadyExistingEdgeData.key, false, false, false];
+
     // We can skip the attribute merging part if the user did not provide them
-    if (asUpdater ? !updater : !attributes) return alreadyExistingEdgeData.key;
+    if (asUpdater ? !updater : !attributes) return info;
 
     // Updating the attributes
     if (asUpdater) {
@@ -460,7 +462,7 @@ function mergeEdge(
       });
     }
 
-    return alreadyExistingEdgeData.key;
+    return info;
   }
 
   attributes = attributes || {};
@@ -491,13 +493,21 @@ function mergeEdge(
       );
   }
 
+  let sourceWasAdded = false;
+  let targetWasAdded = false;
+
   if (!sourceData) {
     sourceData = unsafeAddNode(graph, source, {});
+    sourceWasAdded = true;
 
-    if (source === target) targetData = sourceData;
+    if (source === target) {
+      targetData = sourceData;
+      targetWasAdded = true;
+    }
   }
   if (!targetData) {
     targetData = unsafeAddNode(graph, target, {});
+    targetWasAdded = true;
   }
 
   // Storing some data
@@ -544,7 +554,7 @@ function mergeEdge(
 
   graph.emit('edgeAdded', eventData);
 
-  return edge;
+  return [edge, true, sourceWasAdded, targetWasAdded];
 }
 
 /**
@@ -1619,7 +1629,7 @@ export default class Graph extends EventEmitter {
           data: attributes
         });
       }
-      return node;
+      return [node, false];
     }
 
     data = new this.NodeDataClass(node, attributes);
@@ -1633,7 +1643,7 @@ export default class Graph extends EventEmitter {
       attributes
     });
 
-    return node;
+    return [node, true];
   }
 
   /**
@@ -1667,7 +1677,7 @@ export default class Graph extends EventEmitter {
           attributes: data.attributes
         });
       }
-      return node;
+      return [node, false];
     }
 
     const attributes = updater ? updater({}) : {};
@@ -1683,7 +1693,7 @@ export default class Graph extends EventEmitter {
       attributes
     });
 
-    return node;
+    return [node, true];
   }
 
   /**
