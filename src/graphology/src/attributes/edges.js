@@ -1,9 +1,6 @@
 /**
- * Graphology Attributes methods
- * ==============================
- *
- * Attributes-related methods being exactly the same for nodes & edges,
- * we abstract them here for factorization reasons.
+ * Graphology Edge Attributes methods
+ * ===================================
  */
 import {assign, isPlainObject, getMatchingEdge} from '../utils';
 
@@ -762,7 +759,7 @@ const EDGE_ATTRIBUTES_METHODS = [
  *
  * @param {function} Graph - Target class.
  */
-export function attachEdgeAttributesMethods(Graph) {
+export default function attachEdgeAttributesMethods(Graph) {
   EDGE_ATTRIBUTES_METHODS.forEach(function ({name, attacher}) {
     // For edges
     attacher(Graph, name('Edge'), 'mixed');

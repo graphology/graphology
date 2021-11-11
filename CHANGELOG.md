@@ -7,6 +7,7 @@
 - Adding `#.updateEdgeAttributes`.
 - Aligning `#.updateEachEdgeAttributes` callback arguments to `#.forEachEdge`.
 - Improving `#.merge*` and `#.update*` function by returning useful information.
+- Improving `#.opposite` performance.
 
 *Migration guide*
 

@@ -640,7 +640,7 @@ function attachNeighborIteratorCreator(Class, description) {
  *
  * @param {function} Graph - Graph class.
  */
-export function attachNeighborIterationMethods(Graph) {
+export default function attachNeighborIterationMethods(Graph) {
   NEIGHBORS_ITERATION.forEach(description => {
     attachNeighborArrayCreator(Graph, description);
     attachForEachNeighbor(Graph, description);

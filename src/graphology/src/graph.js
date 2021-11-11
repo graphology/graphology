@@ -29,9 +29,10 @@ import {
   upgradeStructureIndexToMulti
 } from './indices';
 
-import {attachEdgeAttributesMethods} from './attributes/edges';
-import {attachEdgeIterationMethods} from './iteration/edges';
-import {attachNeighborIterationMethods} from './iteration/neighbors';
+import attachNodeAttributesMethods from './attributes/nodes';
+import attachEdgeAttributesMethods from './attributes/edges';
+import attachEdgeIterationMethods from './iteration/edges';
+import attachNeighborIterationMethods from './iteration/neighbors';
 import {
   forEachAdjacencySimple,
   forEachAdjacencyMulti,
@@ -1480,15 +1481,15 @@ export default class Graph extends EventEmitter {
         `Graph.opposite: could not find the "${edge}" edge in the graph.`
       );
 
-    const source = data.source.key,
-      target = data.target.key;
+    const source = data.source.key;
+    const target = data.target.key;
 
-    if (node !== source && node !== target)
-      throw new NotFoundGraphError(
-        `Graph.opposite: the "${node}" node is not attached to the "${edge}" edge (${source}, ${target}).`
-      );
+    if (node === source) return target;
+    if (node === target) return source;
 
-    return node === source ? target : source;
+    throw new NotFoundGraphError(
+      `Graph.opposite: the "${node}" node is not attached to the "${edge}" edge (${source}, ${target}).`
+    );
   }
 
   /**
@@ -2020,302 +2021,6 @@ export default class Graph extends EventEmitter {
     this.emit('attributesUpdated', {
       type: 'update',
       attributes: this._attributes
-    });
-
-    return this;
-  }
-
-  /**
-   * Method returning the desired attribute for the given node.
-   *
-   * @param  {any}    node - Target node.
-   * @param  {string} name - Name of the attribute to get.
-   * @return {any}
-   *
-   * @throws {Error} - Will throw if the node is not found.
-   */
-  getNodeAttribute(node, name) {
-    node = '' + node;
-
-    const data = this._nodes.get(node);
-
-    if (!data)
-      throw new NotFoundGraphError(
-        `Graph.getNodeAttribute: could not find the "${node}" node in the graph.`
-      );
-
-    return data.attributes[name];
-  }
-
-  /**
-   * Method returning the attributes for the given node.
-   *
-   * @param  {any}    node - Target node.
-   * @return {object}
-   *
-   * @throws {Error} - Will throw if the node is not found.
-   */
-  getNodeAttributes(node) {
-    node = '' + node;
-
-    const data = this._nodes.get(node);
-
-    if (!data)
-      throw new NotFoundGraphError(
-        `Graph.getNodeAttributes: could not find the "${node}" node in the graph.`
-      );
-
-    return data.attributes;
-  }
-
-  /**
-   * Method checking whether the given attribute exists for the given node.
-   *
-   * @param  {any}    node - Target node.
-   * @param  {string} name - Name of the attribute to check.
-   * @return {boolean}
-   *
-   * @throws {Error} - Will throw if the node is not found.
-   */
-  hasNodeAttribute(node, name) {
-    node = '' + node;
-
-    const data = this._nodes.get(node);
-
-    if (!data)
-      throw new NotFoundGraphError(
-        `Graph.hasNodeAttribute: could not find the "${node}" node in the graph.`
-      );
-
-    return data.attributes.hasOwnProperty(name);
-  }
-
-  /**
-   * Method checking setting the desired attribute for the given node.
-   *
-   * @param  {any}    node  - Target node.
-   * @param  {string} name  - Name of the attribute to set.
-   * @param  {any}    value - Value for the attribute.
-   * @return {Graph}
-   *
-   * @throws {Error} - Will throw if less than 3 arguments are passed.
-   * @throws {Error} - Will throw if the node is not found.
-   */
-  setNodeAttribute(node, name, value) {
-    node = '' + node;
-
-    const data = this._nodes.get(node);
-
-    if (!data)
-      throw new NotFoundGraphError(
-        `Graph.setNodeAttribute: could not find the "${node}" node in the graph.`
-      );
-
-    if (arguments.length < 3)
-      throw new InvalidArgumentsGraphError(
-        "Graph.setNodeAttribute: not enough arguments. Either you forgot to pass the attribute's name or value, or you meant to use #.replaceNodeAttributes / #.mergeNodeAttributes instead."
-      );
-
-    data.attributes[name] = value;
-
-    // Emitting
-    this.emit('nodeAttributesUpdated', {
-      key: node,
-      type: 'set',
-      attributes: data.attributes,
-      name
-    });
-
-    return this;
-  }
-
-  /**
-   * Method checking setting the desired attribute for the given node.
-   *
-   * @param  {any}      node    - Target node.
-   * @param  {string}   name    - Name of the attribute to set.
-   * @param  {function} updater - Function that will update the attribute.
-   * @return {Graph}
-   *
-   * @throws {Error} - Will throw if less than 3 arguments are passed.
-   * @throws {Error} - Will throw if updater is not a function.
-   * @throws {Error} - Will throw if the node is not found.
-   */
-  updateNodeAttribute(node, name, updater) {
-    node = '' + node;
-
-    const data = this._nodes.get(node);
-
-    if (!data)
-      throw new NotFoundGraphError(
-        `Graph.updateNodeAttribute: could not find the "${node}" node in the graph.`
-      );
-
-    if (arguments.length < 3)
-      throw new InvalidArgumentsGraphError(
-        "Graph.updateNodeAttribute: not enough arguments. Either you forgot to pass the attribute's name or updater, or you meant to use #.replaceNodeAttributes / #.mergeNodeAttributes instead."
-      );
-
-    if (typeof updater !== 'function')
-      throw new InvalidArgumentsGraphError(
-        'Graph.updateAttribute: updater should be a function.'
-      );
-
-    const attributes = data.attributes;
-    const value = updater(attributes[name]);
-
-    attributes[name] = value;
-
-    // Emitting
-    this.emit('nodeAttributesUpdated', {
-      key: node,
-      type: 'set',
-      attributes: data.attributes,
-      name
-    });
-
-    return this;
-  }
-
-  /**
-   * Method removing the desired attribute for the given node.
-   *
-   * @param  {any}    node  - Target node.
-   * @param  {string} name  - Name of the attribute to remove.
-   * @return {Graph}
-   *
-   * @throws {Error} - Will throw if the node is not found.
-   */
-  removeNodeAttribute(node, name) {
-    node = '' + node;
-
-    const data = this._nodes.get(node);
-
-    if (!data)
-      throw new NotFoundGraphError(
-        `Graph.removeNodeAttribute: could not find the "${node}" node in the graph.`
-      );
-
-    delete data.attributes[name];
-
-    // Emitting
-    this.emit('nodeAttributesUpdated', {
-      key: node,
-      type: 'remove',
-      attributes: data.attributes,
-      name
-    });
-
-    return this;
-  }
-
-  /**
-   * Method completely replacing the attributes of the given node.
-   *
-   * @param  {any}    node       - Target node.
-   * @param  {object} attributes - New attributes.
-   * @return {Graph}
-   *
-   * @throws {Error} - Will throw if the node is not found.
-   * @throws {Error} - Will throw if the given attributes is not a plain object.
-   */
-  replaceNodeAttributes(node, attributes) {
-    node = '' + node;
-
-    const data = this._nodes.get(node);
-
-    if (!data)
-      throw new NotFoundGraphError(
-        `Graph.replaceNodeAttributes: could not find the "${node}" node in the graph.`
-      );
-
-    if (!isPlainObject(attributes))
-      throw new InvalidArgumentsGraphError(
-        'Graph.replaceNodeAttributes: provided attributes are not a plain object.'
-      );
-
-    data.attributes = attributes;
-
-    // Emitting
-    this.emit('nodeAttributesUpdated', {
-      key: node,
-      type: 'replace',
-      attributes: data.attributes
-    });
-
-    return this;
-  }
-
-  /**
-   * Method merging the attributes of the given node with the provided ones.
-   *
-   * @param  {any}    node       - Target node.
-   * @param  {object} attributes - Attributes to merge.
-   * @return {Graph}
-   *
-   * @throws {Error} - Will throw if the node is not found.
-   * @throws {Error} - Will throw if the given attributes is not a plain object.
-   */
-  mergeNodeAttributes(node, attributes) {
-    node = '' + node;
-
-    const data = this._nodes.get(node);
-
-    if (!data)
-      throw new NotFoundGraphError(
-        `Graph.mergeNodeAttributes: could not find the "${node}" node in the graph.`
-      );
-
-    if (!isPlainObject(attributes))
-      throw new InvalidArgumentsGraphError(
-        'Graph.mergeNodeAttributes: provided attributes are not a plain object.'
-      );
-
-    assign(data.attributes, attributes);
-
-    // Emitting
-    this.emit('nodeAttributesUpdated', {
-      key: node,
-      type: 'merge',
-      attributes: data.attributes,
-      data: attributes
-    });
-
-    return this;
-  }
-
-  /**
-   * Method updating the attributes of the given node using the provided function.
-   *
-   * @param  {any}      node    - Target node.
-   * @param  {function} updater - Updater function.
-   * @return {Graph}
-   *
-   * @throws {Error} - Will throw if the node is not found.
-   * @throws {Error} - Will throw if the given updater is not a function.
-   */
-  updateNodeAttributes(node, updater) {
-    node = '' + node;
-
-    const data = this._nodes.get(node);
-
-    if (!data)
-      throw new NotFoundGraphError(
-        `Graph.updateNodeAttributes: could not find the "${node}" node in the graph.`
-      );
-
-    if (typeof updater !== 'function')
-      throw new InvalidArgumentsGraphError(
-        'Graph.updateNodeAttributes: provided updater is not a function.'
-      );
-
-    data.attributes = updater(data.attributes);
-
-    // Emitting
-    this.emit('nodeAttributesUpdated', {
-      key: node,
-      type: 'update',
-      attributes: data.attributes
     });
 
     return this;
@@ -3143,6 +2848,7 @@ if (typeof Symbol !== 'undefined')
 /**
  * Attributes-related.
  */
+attachNodeAttributesMethods(Graph);
 attachEdgeAttributesMethods(Graph);
 
 /**

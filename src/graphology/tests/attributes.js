@@ -295,15 +295,6 @@ export default function attributes(Graph, checkers) {
     },
 
     '#.setNodeAttribute': {
-      'it should throw if not enough arguments are provided.': function () {
-        const graph = new Graph();
-        graph.addNode('Lucy');
-
-        assert.throws(function () {
-          graph.setNodeAttribute('Lucy', {hello: 'world'});
-        }, invalid());
-      },
-
       "it should correctly set the node's attribute.": function () {
         const graph = new Graph();
         graph.addNode('John', {age: 20});
