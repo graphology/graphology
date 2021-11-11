@@ -748,6 +748,31 @@ export default function attributes(Graph, checkers) {
       }
     },
 
+    '#.updateNodeAttributes': {
+      'it should throw if given updater is not a function': function () {
+        const graph = new Graph();
+        graph.addNode('John');
+
+        assert.throws(function () {
+          graph.updateNodeAttributes('John', true);
+        }, invalid());
+      },
+
+      'it should correctly update attributes.': function () {
+        const graph = new Graph();
+        graph.addNode('John', {age: 45});
+
+        graph.updateNodeAttributes('John', attr => {
+          return {...attr, eyes: 'blue'};
+        });
+
+        assert.deepStrictEqual(graph.getNodeAttributes('John'), {
+          age: 45,
+          eyes: 'blue'
+        });
+      }
+    },
+
     '#.updateEachNodeAttributes': {
       'it should throw when given invalid arguments.': function () {
         const graph = new Graph();

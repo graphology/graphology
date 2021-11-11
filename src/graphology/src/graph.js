@@ -2275,6 +2275,43 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method updating the attributes of the given node using the provided function.
+   *
+   * @param  {any}      node    - Target node.
+   * @param  {function} updater - Updater function.
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if the node is not found.
+   * @throws {Error} - Will throw if the given updater is not a function.
+   */
+  updateNodeAttributes(node, updater) {
+    node = '' + node;
+
+    const data = this._nodes.get(node);
+
+    if (!data)
+      throw new NotFoundGraphError(
+        `Graph.updateNodeAttributes: could not find the "${node}" node in the graph.`
+      );
+
+    if (typeof updater !== 'function')
+      throw new InvalidArgumentsGraphError(
+        'Graph.updateNodeAttributes: provided updater is not a function.'
+      );
+
+    data.attributes = updater(data.attributes);
+
+    // Emitting
+    this.emit('nodeAttributesUpdated', {
+      key: node,
+      type: 'update',
+      attributes: data.attributes
+    });
+
+    return this;
+  }
+
+  /**
    * Method used to update each node's attributes using the given function.
    *
    * @param {function}  updater - Updater function to use.

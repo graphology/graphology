@@ -3,6 +3,7 @@
 ## 0.23.0 (provisional)
 
 - Adding `#.updateAttributes`.
+- Adding `#.updateNodeAttributes`.
 
 ## 0.22.2
 
