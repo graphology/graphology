@@ -5,6 +5,7 @@
 - Adding `#.updateAttributes`.
 - Adding `#.updateNodeAttributes`.
 - Adding `#.updateEdgeAttributes`.
+- Adding `#.getSourceAttribute`, `#.getTargetAttribute`, `#.getOppositeAttribute` and friends.
 - Aligning `#.updateEachEdgeAttributes` callback arguments to `#.forEachEdge`.
 - Improving `#.merge*` and `#.update*` function by returning useful information.
 - Improving `#.opposite` performance.

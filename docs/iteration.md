@@ -249,7 +249,7 @@ for (const {edge, attributes, ...} of graph.edgeEntries()) {
 
 Returns an array of relevant edge keys.
 
-**Counterparts**
+**Variants**
 
 ```
 #.inEdges
@@ -273,7 +273,7 @@ Returns an array of relevant edge keys.
 
 Iterates over relevant edges using a callback.
 
-**Counterparts**
+**Variants**
 
 ```
 #.forEachInEdge
@@ -310,7 +310,7 @@ Iterates over relevant edges using a callback.
 
 Returns an array containing the result of a callback applied on the relevant edges.
 
-**Counterparts**
+**Variants**
 
 ```
 #.mapInEdges
@@ -347,7 +347,7 @@ Returns an array containing the result of a callback applied on the relevant edg
 
 Returns an array of edge keys for which the given predicate function returned `true`.
 
-**Counterparts**
+**Variants**
 
 ```
 #.filterInEdges
@@ -386,7 +386,7 @@ Returns the accumulated result of applying a callback combining our current valu
 
 Contrary to JavaScript [Array.reduce](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce), you must provide it because the callback takes more than one argument and we cannot infer the initial value from our first iteration.
 
-**Counterparts**
+**Variants**
 
 ```
 #.reduceInEdges
@@ -427,7 +427,7 @@ Contrary to JavaScript [Array.reduce](https://developer.mozilla.org/fr/docs/Web/
 
 Returns the key of the first edge matching given predicate function or `undefined` if no matching node could be found.
 
-**Counterparts**
+**Variants**
 
 ```
 #.findInEdge
@@ -464,7 +464,7 @@ Returns the key of the first edge matching given predicate function or `undefine
 
 Returns whether any edge in the graph matches the given predicate function.
 
-**Counterparts**
+**Variants**
 
 ```
 #.someInEdge
@@ -501,7 +501,7 @@ Returns whether any edge in the graph matches the given predicate function.
 
 Returns whether all edges in the graph match the given predicate function.
 
-**Counterparts**
+**Variants**
 
 ```
 #.everyInEdge
@@ -538,7 +538,7 @@ Returns whether all edges in the graph match the given predicate function.
 
 Returns an iterator over relevant edges.
 
-**Counterparts**
+**Variants**
 
 ```
 #.inEdgeEntries
@@ -608,7 +608,7 @@ for (const {neighbor, attributes} of graph.neighborEntries()) {
 
 Returns an array of relevant neighbor keys.
 
-**Counterparts**
+**Variants**
 
 ```
 #.inNeighbors
@@ -627,7 +627,7 @@ Returns an array of relevant neighbor keys.
 
 Iterates over the relevant neighbors using a callback.
 
-**Counterparts**
+**Variants**
 
 ```
 #.forEachInNeighbor
@@ -652,7 +652,7 @@ Iterates over the relevant neighbors using a callback.
 
 Returns an array containing the result of a callback applied on the relevant neighbors.
 
-**Counterparts**
+**Variants**
 
 ```
 #.mapInNeighbors
@@ -677,7 +677,7 @@ Returns an array containing the result of a callback applied on the relevant nei
 
 Returns an array of neighbor keys for which the given predicate function returned `true`.
 
-**Counterparts**
+**Variants**
 
 ```
 #.filterInNeighbors
@@ -704,7 +704,7 @@ Returns the accumulated result of applying a callback combining our current valu
 
 Contrary to JavaScript [Array.reduce](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce), you must provide it because the callback takes more than one argument and we cannot infer the initial value from our first iteration.
 
-**Counterparts**
+**Variants**
 
 ```
 #.reduceInNeighbors
@@ -731,7 +731,7 @@ Contrary to JavaScript [Array.reduce](https://developer.mozilla.org/fr/docs/Web/
 
 Returns the key of the first neighbor matching given predicate function or `undefined` if no matching node could be found.
 
-**Counterparts**
+**Variants**
 
 ```
 #.findInNeighbors
@@ -756,7 +756,7 @@ Returns the key of the first neighbor matching given predicate function or `unde
 
 Returns whether any neighbor in the graph matches the given predicate function.
 
-**Counterparts**
+**Variants**
 
 ```
 #.someInNeighbors
@@ -781,7 +781,7 @@ Returns whether any neighbor in the graph matches the given predicate function.
 
 Returns whether all neighbors in the graph match the given predicate function.
 
-**Counterparts**
+**Variants**
 
 ```
 #.everyInNeighbors
@@ -806,7 +806,7 @@ Returns whether all neighbors in the graph match the given predicate function.
 
 Returns an iterator over the relevant neighbors.
 
-**Counterparts**
+**Variants**
 
 ```
 #.inNeighborEntries

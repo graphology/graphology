@@ -6,6 +6,11 @@ import {assign, isPlainObject} from '../utils';
 
 import {InvalidArgumentsGraphError, NotFoundGraphError} from '../errors';
 
+const NODE = 0;
+const SOURCE = 1;
+const TARGET = 2;
+const OPPOSITE = 3;
+
 function findRelevantNodeData(
   graph,
   method,
@@ -19,7 +24,7 @@ function findRelevantNodeData(
 
   nodeOrEdge = '' + nodeOrEdge;
 
-  if (mode === 'node') {
+  if (mode === NODE) {
     nodeData = graph._nodes.get(nodeOrEdge);
 
     if (!nodeData)
@@ -29,7 +34,7 @@ function findRelevantNodeData(
 
     arg1 = nameOrEdge;
     arg2 = add1;
-  } else if (mode === 'opposite') {
+  } else if (mode === OPPOSITE) {
     nameOrEdge = '' + nameOrEdge;
 
     edgeData = graph._edges.get(nameOrEdge);
@@ -62,7 +67,7 @@ function findRelevantNodeData(
         `Graph.${method}: could not find the "${nodeOrEdge}" edge in the graph.`
       );
 
-    if (mode === 'source') {
+    if (mode === SOURCE) {
       nodeData = edgeData.source;
     } else {
       nodeData = edgeData.target;
@@ -342,6 +347,15 @@ const NODE_ATTRIBUTES_METHODS = [
 export default function attachNodeAttributesMethods(Graph) {
   NODE_ATTRIBUTES_METHODS.forEach(function ({name, attacher}) {
     // For nodes
-    attacher(Graph, name('Node'), 'node');
+    attacher(Graph, name('Node'), NODE);
+
+    // For sources
+    attacher(Graph, name('Source'), SOURCE);
+
+    // For targets
+    attacher(Graph, name('Target'), TARGET);
+
+    // For opposites
+    attacher(Graph, name('Opposite'), OPPOSITE);
   });
 }

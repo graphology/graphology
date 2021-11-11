@@ -233,6 +233,12 @@ console.log(age);
 * **node** <span class="code">any</span>: the target node.
 * **attribute** <span class="code">string</span>: name of the attribute to retrieve.
 
+*Variants*
+
+* `#.getSourceAttribute`
+* `#.getTargetAttribute`
+* `#.getOppositeAttribute`
+
 ## #.getNodeAttributes
 
 Returns the desired node's attributes.
@@ -249,6 +255,12 @@ graph.getNodeAttributes('Martha');
 }
 ```
 
+*Variants*
+
+* `#.getSourceAttributes`
+* `#.getTargetAttributes`
+* `#.getOppositeAttributes`
+
 ## #.hasNodeAttribute
 
 Returns whether the desired node's attribute is set.
@@ -264,6 +276,12 @@ graph.hasNodeAttribute('Martha', 'eyes');
 graph.hasNodeAttribute('Martha', 'age');
 >>> false
 ```
+
+*Variants*
+
+* `#.hasSourceAttribute`
+* `#.hasTargetAttribute`
+* `#.hasOppositeAttribute`
 
 ## #.setNodeAttribute
 
@@ -282,6 +300,12 @@ graph.setNodeAttribute('Martha', 'age', 34);
 * **node** <span class="code">any</span>: the node to update.
 * **attribute** <span class="code">string</span>: name of the attribute to set.
 * **value** <span class="code">any</span>: value to set.
+
+*Variants*
+
+* `#.setSourceAttribute`
+* `#.setTargetAttribute`
+* `#.setOppositeAttribute`
 
 ## #.updateNodeAttribute
 
@@ -305,6 +329,12 @@ graph.updateNodeAttribute('Martha', 'occurrences', n => n + 1);
 * **attribute** <span class="code">string</span>: name of the attribute to update.
 * **updater** <span class="code">function</span>: function used to perform the update.
 
+*Variants*
+
+* `#.updateSourceAttribute`
+* `#.updateTargetAttribute`
+* `#.updateOppositeAttribute`
+
 ## #.removeNodeAttribute
 
 Remove the given node's attribute altogether.
@@ -319,6 +349,12 @@ graph.removeNodeAttribute('Martha', 'age');
 graph.hasNodeAttribute('Martha', 'age');
 >>> false
 ```
+
+*Variants*
+
+* `#.removeSourceAttribute`
+* `#.removeTargetAttribute`
+* `#.removeOppositeAttribute`
 
 ## #.replaceNodeAttributes
 
@@ -340,6 +376,11 @@ graph.replaceNodeAttributes('Martha', {
 * **node** <span class="code">any</span>: the node to update.
 * **attributes** <span class="code">object</span>: the new attributes.
 
+*Variants*
+
+* `#.replaceSourceAttributes`
+* `#.replaceTargetAttributes`
+* `#.replaceOppositeAttributes`
 
 ## #.mergeNodeAttributes
 
@@ -357,6 +398,12 @@ graph.mergeNodeAttributes('Martha', {age: 34, hair: 'brown'});
 
 * **node** <span class="code">any</span>: the node to update.
 * **data** <span class="code">object</span>: data to merge.
+
+*Variants*
+
+* `#.mergeSourceAttributes`
+* `#.mergeTargetAttributes`
+* `#.mergeOppositeAttributes`
 
 ## #.updateNodeAttributes
 
@@ -379,6 +426,12 @@ graph.updateNodeAttributes('Martha', attr => {
 
 * **node** <span class="code">any</span>: the node to update.
 * **updater** <span class="code">function</span>: updater function taking the node attributes and returning the new ones.
+
+*Variants*
+
+* `#.updateSourceAttributes`
+* `#.updateTargetAttributes`
+* `#.updateOppositeAttributes`
 
 ## #.updateEachNodeAttributes
 
@@ -454,6 +507,11 @@ graph.getEdgeAttribute('Martha', 'Catherine', 'type');
   * **target** <span class="code">any</span>: target of the edge.
   * **attribute** <span class="code">string</span>: name of the attribute to retrieve.
 
+*Variants*
+
+* `#.getDirectedEdgeAttribute`
+* `#.getUndirectedEdgeAttribute`
+
 ## #.getEdgeAttributes
 
 Returns the desired edge's attributes.
@@ -483,6 +541,11 @@ graph.getEdgeAttributes('Martha', 'Catherine');
 2. Using the source & target:
   * **source** <span class="code">any</span>: source of the edge.
   * **target** <span class="code">any</span>: target of the edge.
+
+*Variants*
+
+* `#.getDirectedEdgeAttributes`
+* `#.getUndirectedEdgeAttributes`
 
 ## #.hasEdgeAttribute
 
@@ -514,6 +577,11 @@ graph.hasEdgeAttribute('Martha', 'Catherine', 'type');
   * **target** <span class="code">any</span>: target of the edge.
   * **attribute** <span class="code">string</span>: name of the attribute to poll.
 
+*Variants*
+
+* `#.hasDirectedEdgeAttribute`
+* `#.hasUndirectedEdgeAttribute`
+
 ## #.setEdgeAttribute
 
 Set the attribute of an edge to the given value.
@@ -543,6 +611,11 @@ graph.setEdgeAttribute('Martha', 'Jack', 'type', 'LIKES');
   * **target** <span class="code">any</span>: target of the edge.
   * **attribute** <span class="code">string</span>: name of the attribute to set.
   * **value** <span class="code">any</span>: value to set.
+
+*Variants*
+
+* `#.setDirectedEdgeAttribute`
+* `#.setUndirectedEdgeAttribute`
 
 ## #.updateEdgeAttribute
 
@@ -578,6 +651,11 @@ graph.updateEdgeAttribute('Martha', 'Jack', 'weight', n => n + 1);
   * **attribute** <span class="code">string</span>: name of the attribute to update.
   * **updater** <span class="code">function</span>: function used to perform the update.
 
+*Variants*
+
+* `#.updateDirectedEdgeAttribute`
+* `#.updateUndirectedEdgeAttribute`
+
 ## #.removeEdgeAttribute
 
 Remove the given edge's attribute altogether.
@@ -609,6 +687,11 @@ graph.hasEdgeAttribute(edge, 'type');
   * **target** <span class="code">any</span>: target of the edge.
   * **attribute** <span class="code">string</span>: name of the attribute to set.
 
+*Variants*
+
+* `#.removeDirectedEdgeAttribute`
+* `#.removeUndirectedEdgeAttribute`
+
 ## #.replaceEdgeAttributes
 
 Completely replace one edge's attributes by the provided object.
@@ -637,6 +720,11 @@ graph.replaceEdgeAttributes('Martha', 'Jack', {type: 'LIKES', weight: 3}));
   * **target** <span class="code">any</span>: target of the edge.
   * **attributes** <span class="code">object</span>: the new attributes.
 
+*Variants*
+
+* `#.replaceDirectedEdgeAttributes`
+* `#.replaceUndirectedEdgeAttributes`
+
 ## #.mergeEdgeAttributes
 
 Merge the current attributes of an edge with the provided object.
@@ -664,6 +752,11 @@ graph.mergeEdgeAttributes('Martha', 'Jack', {type: 'LIKES', weight: 3}));
   * **source** <span class="code">any</span>: source of the edge.
   * **target** <span class="code">any</span>: target of the edge.
   * **data** <span class="code">object</span>: data to merge.
+
+*Variants*
+
+* `#.mergeDirectedEdgeAttributes`
+* `#.mergeUndirectedEdgeAttributes`
 
 ## #.updateEdgeAttributes
 
@@ -702,6 +795,11 @@ graph.mergeEdgeAttributes('Martha', 'Jack', attr => {
   * **source** <span class="code">any</span>: source of the edge.
   * **target** <span class="code">any</span>: target of the edge.
   * **updater** <span class="code">function</span>: updater function taking the edge attributes and returning the new ones.
+
+*Variants*
+
+* `#.updateDirectedEdgeAttributes`
+* `#.updateUndirectedEdgeAttributes`
 
 ## #.updateEachEdgeAttributes
 

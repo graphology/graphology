@@ -7,27 +7,6 @@
 import assert from 'assert';
 import {deepMerge, addNodesFrom} from './helpers';
 
-const METHODS = [
-  'getNodeAttribute',
-  'getNodeAttributes',
-  'hasNodeAttribute',
-  'getEdgeAttribute',
-  'getEdgeAttributes',
-  'hasEdgeAttribute',
-  'setNodeAttribute',
-  'setEdgeAttribute',
-  'updateNodeAttribute',
-  'updateEdgeAttribute',
-  'removeNodeAttribute',
-  'removeEdgeAttribute',
-  'replaceNodeAttributes',
-  'replaceEdgeAttributes',
-  'mergeNodeAttributes',
-  'mergeEdgeAttributes',
-  'updateNodeAttributes',
-  'updateEdgeAttributes'
-];
-
 export default function attributes(Graph, checkers) {
   const {invalid, notFound, usage} = checkers;
 
@@ -35,7 +14,7 @@ export default function attributes(Graph, checkers) {
     return {
       ['#.' + method]: {
         'it should throw if the given path is not found.': function () {
-          if (!~method.indexOf('Edge')) return;
+          if (!method.includes('Edge')) return;
 
           const graph = new Graph();
 
@@ -45,7 +24,7 @@ export default function attributes(Graph, checkers) {
         },
 
         'it should throw when using a path on a multi graph.': function () {
-          if (!~method.indexOf('Edge')) return;
+          if (!method.includes('Edge')) return;
 
           const graph = new Graph({multi: true});
 
@@ -68,7 +47,18 @@ export default function attributes(Graph, checkers) {
 
   const tests = {};
 
-  METHODS.forEach(method => deepMerge(tests, commonTests(method)));
+  const relevantMethods = Object.keys(Graph.prototype).filter(name => {
+    return (
+      (name.includes('NodeAttribute') ||
+        name.includes('EdgeAttribute') ||
+        name.includes('SourceAttribute') ||
+        name.includes('TargetAttribute') ||
+        name.includes('OppositeAttribute')) &&
+      !name.includes('Each')
+    );
+  });
+
+  relevantMethods.forEach(method => deepMerge(tests, commonTests(method)));
 
   return deepMerge(tests, {
     '#.getAttribute': {
@@ -105,6 +95,64 @@ export default function attributes(Graph, checkers) {
             undefined
           );
         }
+    },
+
+    '#.getSourceAttribute': {
+      'it should return the correct value.': function () {
+        const graph = new Graph();
+        graph.addNode('Martha', {age: 34});
+        const [edge] = graph.mergeEdge('Martha', 'Riwan');
+
+        assert.strictEqual(graph.getSourceAttribute(edge, 'age'), 34);
+      },
+
+      'it should return undefined if the attribute does not exist.':
+        function () {
+          const graph = new Graph();
+          graph.addNode('Martha');
+          const [edge] = graph.mergeEdge('Martha', 'Riwan');
+
+          assert.strictEqual(graph.getSourceAttribute(edge, 'age'), undefined);
+        }
+    },
+
+    '#.getTargetAttribute': {
+      'it should return the correct value.': function () {
+        const graph = new Graph();
+        graph.addNode('Martha', {age: 34});
+        const [edge] = graph.mergeEdge('Riwan', 'Martha');
+
+        assert.strictEqual(graph.getTargetAttribute(edge, 'age'), 34);
+      },
+
+      'it should return undefined if the attribute does not exist.':
+        function () {
+          const graph = new Graph();
+          graph.addNode('Martha');
+          const [edge] = graph.mergeEdge('Riwan', 'Martha');
+
+          assert.strictEqual(graph.getTargetAttribute(edge, 'age'), undefined);
+        }
+    },
+
+    '#.getOppositeAttribute': {
+      'it should return the correct value.': function () {
+        const graph = new Graph();
+        graph.addNode('Martha', {age: 34});
+        graph.addNode('Riwan', {age: 25});
+
+        const [edge] = graph.mergeEdge('Riwan', 'Martha');
+
+        assert.strictEqual(
+          graph.getOppositeAttribute('Riwan', edge, 'age'),
+          34
+        );
+
+        assert.strictEqual(
+          graph.getOppositeAttribute('Martha', edge, 'age'),
+          25
+        );
+      }
     },
 
     '#.getEdgeAttribute': {

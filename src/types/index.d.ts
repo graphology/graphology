@@ -646,6 +646,122 @@ declare abstract class AbstractGraph<
     updater: (attributes: NodeAttributes) => NodeAttributes
   ): this;
 
+  getSourceAttribute<AttributeName extends keyof NodeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): NodeAttributes[AttributeName];
+  getSourceAttributes(node: unknown): NodeAttributes;
+  hasSourceAttribute<AttributeName extends keyof NodeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): boolean;
+  setSourceAttribute<AttributeName extends keyof NodeAttributes>(
+    edge: unknown,
+    name: AttributeName,
+    value: NodeAttributes[AttributeName]
+  ): this;
+  updateSourceAttribute<AttributeName extends keyof NodeAttributes>(
+    edge: unknown,
+    name: AttributeName,
+    updater: (
+      value: NodeAttributes[AttributeName] | undefined
+    ) => NodeAttributes[AttributeName]
+  ): this;
+  removeSourceAttribute<AttributeName extends keyof NodeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): this;
+  replaceSourceAttributes(edge: unknown, attributes: NodeAttributes): this;
+  mergeSourceAttributes(
+    edge: unknown,
+    attributes: Partial<NodeAttributes>
+  ): this;
+  updateSourceAttributes(
+    edge: unknown,
+    updater: (attributes: NodeAttributes) => NodeAttributes
+  ): this;
+
+  getTargetAttribute<AttributeName extends keyof NodeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): NodeAttributes[AttributeName];
+  getTargetAttributes(node: unknown): NodeAttributes;
+  hasTargetAttribute<AttributeName extends keyof NodeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): boolean;
+  setTargetAttribute<AttributeName extends keyof NodeAttributes>(
+    edge: unknown,
+    name: AttributeName,
+    value: NodeAttributes[AttributeName]
+  ): this;
+  updateTargetAttribute<AttributeName extends keyof NodeAttributes>(
+    edge: unknown,
+    name: AttributeName,
+    updater: (
+      value: NodeAttributes[AttributeName] | undefined
+    ) => NodeAttributes[AttributeName]
+  ): this;
+  removeTargetAttribute<AttributeName extends keyof NodeAttributes>(
+    edge: unknown,
+    name: AttributeName
+  ): this;
+  replaceTargetAttributes(edge: unknown, attributes: NodeAttributes): this;
+  mergeTargetAttributes(
+    edge: unknown,
+    attributes: Partial<NodeAttributes>
+  ): this;
+  updateTargetAttributes(
+    edge: unknown,
+    updater: (attributes: NodeAttributes) => NodeAttributes
+  ): this;
+
+  getOppositeAttribute<AttributeName extends keyof NodeAttributes>(
+    node: unknown,
+    edge: unknown,
+    name: AttributeName
+  ): NodeAttributes[AttributeName];
+  getOppositeAttributes(node: unknown): NodeAttributes;
+  hasOppositeAttribute<AttributeName extends keyof NodeAttributes>(
+    node: unknown,
+    edge: unknown,
+    name: AttributeName
+  ): boolean;
+  setOppositeAttribute<AttributeName extends keyof NodeAttributes>(
+    node: unknown,
+    edge: unknown,
+    name: AttributeName,
+    value: NodeAttributes[AttributeName]
+  ): this;
+  updateOppositeAttribute<AttributeName extends keyof NodeAttributes>(
+    node: unknown,
+    edge: unknown,
+    name: AttributeName,
+    updater: (
+      value: NodeAttributes[AttributeName] | undefined
+    ) => NodeAttributes[AttributeName]
+  ): this;
+  removeOppositeAttribute<AttributeName extends keyof NodeAttributes>(
+    node: unknown,
+    edge: unknown,
+    name: AttributeName
+  ): this;
+  replaceOppositeAttributes(
+    node: unknown,
+    edge: unknown,
+    attributes: NodeAttributes
+  ): this;
+  mergeOppositeAttributes(
+    node: unknown,
+    edge: unknown,
+    attributes: Partial<NodeAttributes>
+  ): this;
+  updateOppositeAttributes(
+    node: unknown,
+    edge: unknown,
+    updater: (attributes: NodeAttributes) => NodeAttributes
+  ): this;
+
   updateEachNodeAttributes(
     updater: NodeMapper<NodeAttributes>,
     hints?: UpdateHints
