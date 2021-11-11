@@ -138,31 +138,6 @@ graph.hasEdge('Eric', 'Martha');
 >>> true
 ```
 
-## Concerning immutability
-
-While the present specification doesn't cover the case of an immutable graph, it would be very easy to implement it by changing the three following things in the API:
-
-* Make all the mutating methods returns the new graph.
-* Add a boolean `#.immutable` property to the object.
-* Probably disable the event system since the reference will change whenever the graph is edited.
-
-```js
-import ImmutableGraph from 'graphology-immutable';
-
-const graph = new ImmutableGraph();
-
-const updatedGraph = graph.addNode('Martha');
-
-graph === updatedGraph
->>> false
-
-graph.order
->>> 0
-
-updatedGraph.order
->>> 1
-```
-
 ## Avoiding methods affecting indexing constraints
 
 TL;DR: we won't be adding methods like `#.renameNode`, `#.renameEdge` or `#.setNodeExtremities` etc.
