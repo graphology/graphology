@@ -3,6 +3,9 @@ layout: default
 title: communities-louvain
 nav_order: 2
 parent: Standard library
+aux_links:
+  "Library directory": "https://github.com/graphology/graphology/tree/master/src/communities-louvain"
+  
 ---
 
 # Graphology Communities Louvain

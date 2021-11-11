@@ -3,6 +3,9 @@ layout: default
 title: gexf
 nav_order: 5
 parent: Standard library
+aux_links:
+  "Library directory": "https://github.com/graphology/graphology/tree/master/src/gexf"
+  
 ---
 
 [![Build Status](/standard-library/gexf/workflows/Tests/badge.svg)](/standard-library/gexf/actions)

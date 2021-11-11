@@ -3,6 +3,9 @@ layout: default
 title: layout-force
 nav_order: 9
 parent: Standard library
+aux_links:
+  "Library directory": "https://github.com/graphology/graphology/tree/master/src/layout-force"
+  
 ---
 
 # Graphology Force layout

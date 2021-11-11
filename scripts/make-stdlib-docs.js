@@ -84,6 +84,10 @@ stdlib.forEach(({name}, i) => {
 
   let readme = fs.readFileSync(path.join(libPath, 'README.md'), 'utf-8');
 
+  const hasChangelog = fs.existsSync(path.join(libPath, 'CHANGELOG.md'));
+
+  const githubUrl = `https://github.com/graphology/graphology/tree/master/src/${name}`;
+
   readme = readme.replace(/https:\/\/graphology\.github\.io/, '..');
   readme = readme.replace(
     /https:\/\/github\.com\/graphology\/graphology-([A-Za-z\-]+)/g,
@@ -97,6 +101,9 @@ layout: default
 title: ${name}
 nav_order: ${i}
 parent: Standard library
+aux_links:
+  "Library directory": "${githubUrl}"
+  ${hasChangelog ? `"Changelog": "${githubUrl}/CHANGELOG.md"` : ''}
 ---
 
 ${readme}

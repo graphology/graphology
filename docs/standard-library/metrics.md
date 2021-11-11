@@ -3,6 +3,9 @@ layout: default
 title: metrics
 nav_order: 12
 parent: Standard library
+aux_links:
+  "Library directory": "https://github.com/graphology/graphology/tree/master/src/metrics"
+  "Changelog": "https://github.com/graphology/graphology/tree/master/src/metrics/CHANGELOG.md"
 ---
 
 # Graphology metrics

@@ -3,6 +3,9 @@ layout: default
 title: layout
 nav_order: 8
 parent: Standard library
+aux_links:
+  "Library directory": "https://github.com/graphology/graphology/tree/master/src/layout"
+  
 ---
 
 # Graphology Layout

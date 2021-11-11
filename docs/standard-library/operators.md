@@ -3,6 +3,9 @@ layout: default
 title: operators
 nav_order: 13
 parent: Standard library
+aux_links:
+  "Library directory": "https://github.com/graphology/graphology/tree/master/src/operators"
+  "Changelog": "https://github.com/graphology/graphology/tree/master/src/operators/CHANGELOG.md"
 ---
 
 # Graphology Operators

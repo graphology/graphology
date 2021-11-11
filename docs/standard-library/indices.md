@@ -3,6 +3,9 @@ layout: default
 title: indices
 nav_order: 7
 parent: Standard library
+aux_links:
+  "Library directory": "https://github.com/graphology/graphology/tree/master/src/indices"
+  "Changelog": "https://github.com/graphology/graphology/tree/master/src/indices/CHANGELOG.md"
 ---
 
 # Graphology Indices

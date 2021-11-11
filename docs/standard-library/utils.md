@@ -3,6 +3,9 @@ layout: default
 title: utils
 nav_order: 18
 parent: Standard library
+aux_links:
+  "Library directory": "https://github.com/graphology/graphology/tree/master/src/utils"
+  "Changelog": "https://github.com/graphology/graphology/tree/master/src/utils/CHANGELOG.md"
 ---
 
 # Graphology Utils

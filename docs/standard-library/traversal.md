@@ -3,6 +3,9 @@ layout: default
 title: traversal
 nav_order: 17
 parent: Standard library
+aux_links:
+  "Library directory": "https://github.com/graphology/graphology/tree/master/src/traversal"
+  
 ---
 
 # Graphology Traversal

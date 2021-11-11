@@ -3,6 +3,9 @@ layout: default
 title: graphml
 nav_order: 6
 parent: Standard library
+aux_links:
+  "Library directory": "https://github.com/graphology/graphology/tree/master/src/graphml"
+  
 ---
 
 # Graphology GRAPHML Utilities

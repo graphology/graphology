@@ -3,6 +3,9 @@ layout: default
 title: components
 nav_order: 3
 parent: Standard library
+aux_links:
+  "Library directory": "https://github.com/graphology/graphology/tree/master/src/components"
+  "Changelog": "https://github.com/graphology/graphology/tree/master/src/components/CHANGELOG.md"
 ---
 
 # Graphology Components

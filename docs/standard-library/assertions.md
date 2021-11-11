@@ -3,6 +3,9 @@ layout: default
 title: assertions
 nav_order: 0
 parent: Standard library
+aux_links:
+  "Library directory": "https://github.com/graphology/graphology/tree/master/src/assertions"
+  "Changelog": "https://github.com/graphology/graphology/tree/master/src/assertions/CHANGELOG.md"
 ---
 
 # Graphology Assertions
