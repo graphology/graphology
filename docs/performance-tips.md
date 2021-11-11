@@ -98,3 +98,34 @@ graph.addNode('one');
 graph.addNode('two');
 graph.addEdgeWithKey(edgeKeyGenerator(), 'one', 'two');
 ```
+
+## Avoid iterating twice on edges in mixed graphs
+
+It is often desirable to handle directed & undirected egdes differently when operating on mixed graphs.
+
+However the following scheme might underperform:
+
+```js
+graph.forEachDirectedEdge((edge) => {
+  // Do something with directed edges...
+});
+
+graph.forEachUndirectedEdge((edge) => {
+  // Do something with undirected edges...
+});
+```
+
+This is because you will actually iterate twice on the internal edge map.
+
+You should probably prefer using the `undirected` argument of edge iteration likewise:
+
+```js
+graph.forEachEdge((edge, attr, source, target, sa, ta, undirected) => {
+  if (undirected) {
+    // Do something with undirected edges...
+  }
+  else {
+    // Do something with directed edges...
+  }
+});
+```
