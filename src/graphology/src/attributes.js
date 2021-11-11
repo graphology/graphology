@@ -557,7 +557,7 @@ function attachAttributesReplacer(Class, method, type) {
  */
 function attachAttributesMerger(Class, method, type) {
   /**
-   * Replace the attributes for the given element (node or edge).
+   * Merge the attributes for the given element (node or edge).
    *
    * Arity 2:
    * @param  {any}    element    - Target element.
@@ -633,6 +633,89 @@ function attachAttributesMerger(Class, method, type) {
 }
 
 /**
+ * Attach an attribute updater method onto the provided class.
+ *
+ * @param {function} Class         - Target class.
+ * @param {string}   method        - Method name.
+ * @param {string}   type          - Type of the edge to find.
+ */
+function attachAttributesUpdater(Class, method, type) {
+  /**
+   * Update the attributes of the given element (node or edge).
+   *
+   * Arity 2:
+   * @param  {any}      element - Target element.
+   * @param  {function} updater - Updater function.
+   *
+   * Arity 3 (only for edges):
+   * @param  {any}      source  - Source element.
+   * @param  {any}      target  - Target element.
+   * @param  {function} updater - Updater function.
+   *
+   * @return {Graph}            - Returns itself for chaining.
+   *
+   * @throws {Error} - Will throw if too many arguments are provided.
+   * @throws {Error} - Will throw if any of the elements is not found.
+   */
+  Class.prototype[method] = function (element, updater) {
+    let data;
+
+    if (this.type !== 'mixed' && type !== 'mixed' && type !== this.type)
+      throw new UsageGraphError(
+        `Graph.${method}: cannot find this type of edges in your ${this.type} graph.`
+      );
+
+    if (arguments.length > 2) {
+      if (this.multi)
+        throw new UsageGraphError(
+          `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
+        );
+
+      const source = '' + element,
+        target = '' + updater;
+
+      updater = arguments[2];
+
+      data = getMatchingEdge(this, source, target, type);
+
+      if (!data)
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
+        );
+    } else {
+      element = '' + element;
+      data = this._edges.get(element);
+
+      if (!data)
+        throw new NotFoundGraphError(
+          `Graph.${method}: could not find the "${element}" edge in the graph.`
+        );
+    }
+
+    if (typeof updater !== 'function')
+      throw new InvalidArgumentsGraphError(
+        `Graph.${method}: provided updater is not a function.`
+      );
+
+    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
+      throw new NotFoundGraphError(
+        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
+      );
+
+    data.attributes = updater(data.attributes);
+
+    // Emitting
+    this.emit('edgeAttributesUpdated', {
+      key: data.key,
+      type: 'update',
+      attributes: data.attributes
+    });
+
+    return this;
+  };
+}
+
+/**
  * List of methods to attach.
  */
 const ATTRIBUTES_METHODS = [
@@ -667,6 +750,10 @@ const ATTRIBUTES_METHODS = [
   {
     name: element => `merge${element}Attributes`,
     attacher: attachAttributesMerger
+  },
+  {
+    name: element => `update${element}Attributes`,
+    attacher: attachAttributesUpdater
   }
 ];
 

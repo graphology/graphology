@@ -23,7 +23,9 @@ const METHODS = [
   'replaceNodeAttributes',
   'replaceEdgeAttributes',
   'mergeNodeAttributes',
-  'mergeEdgeAttributes'
+  'mergeEdgeAttributes',
+  'updateNodeAttributes',
+  'updateEdgeAttributes'
 ];
 
 export default function attributes(Graph, checkers) {
@@ -769,6 +771,56 @@ export default function attributes(Graph, checkers) {
         assert.deepStrictEqual(graph.getNodeAttributes('John'), {
           age: 45,
           eyes: 'blue'
+        });
+      }
+    },
+
+    '#.updateEdgeAttributes': {
+      'it should throw if given updater is not a function.': function () {
+        const graph = new Graph();
+        addNodesFrom(graph, ['John', 'Martha']);
+        const edge = graph.addEdge('John', 'Martha');
+
+        assert.throws(function () {
+          graph.updateEdgeAttributes(edge, true);
+        }, invalid());
+      },
+
+      'it should also work with typed edges.': function () {
+        const graph = new Graph();
+        addNodesFrom(graph, ['John', 'Thomas']);
+        graph.addDirectedEdge('John', 'Thomas', {test: 0});
+        graph.addUndirectedEdge('John', 'Thomas', {test: 0});
+
+        graph.updateDirectedEdgeAttributes('John', 'Thomas', attr => {
+          return {...attr, weight: 2};
+        });
+        graph.updateUndirectedEdgeAttributes('John', 'Thomas', attr => {
+          return {...attr, weight: 3};
+        });
+
+        assert.deepStrictEqual(
+          graph.getDirectedEdgeAttributes('John', 'Thomas'),
+          {weight: 2, test: 0}
+        );
+        assert.deepStrictEqual(
+          graph.getUndirectedEdgeAttributes('John', 'Thomas'),
+          {weight: 3, test: 0}
+        );
+      },
+
+      'it should correctly update attributes.': function () {
+        const graph = new Graph();
+        addNodesFrom(graph, ['John', 'Martha']);
+        const edge = graph.addEdge('John', 'Martha', {weight: 1});
+
+        graph.updateEdgeAttributes(edge, attr => {
+          return {...attr, type: 'KNOWS'};
+        });
+
+        assert.deepStrictEqual(graph.getEdgeAttributes(edge), {
+          weight: 1,
+          type: 'KNOWS'
         });
       }
     },

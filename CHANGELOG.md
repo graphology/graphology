@@ -4,6 +4,7 @@
 
 - Adding `#.updateAttributes`.
 - Adding `#.updateNodeAttributes`.
+- Adding `#.updateEdgeAttributes`.
 
 ## 0.22.2
 
