@@ -6,7 +6,8 @@
   "files": [
     "*.d.ts",
     "index.js",
-    "neighborhood",
+    "louvain.js",
+    "neighborhood.js",
     "sorted-components.js"
   ],
   "scripts": {
