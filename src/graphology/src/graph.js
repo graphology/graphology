@@ -2774,7 +2774,8 @@ export default class Graph extends EventEmitter {
       if (
         this.hasOwnProperty(k) &&
         !EMITTER_PROPS.has(k) &&
-        typeof this[k] !== 'function'
+        typeof this[k] !== 'function' &&
+        typeof k !== 'symbol'
       )
         dummy[k] = this[k];
     }
@@ -2796,6 +2797,13 @@ export default class Graph extends EventEmitter {
  * prototype when those are very numerous and when their creation is
  * abstracted.
  */
+
+/**
+ * Attaching custom inspect method for node >= 10.
+ */
+if (typeof Symbol !== 'undefined')
+  Graph.prototype[Symbol.for('nodejs.util.inspect.custom')] =
+    Graph.prototype.inspect;
 
 /**
  * Related to edge addition.
@@ -2836,12 +2844,6 @@ EDGE_ADD_METHODS.forEach(method => {
     }
   });
 });
-
-/**
- * Self iterator.
- */
-if (typeof Symbol !== 'undefined')
-  Graph.prototype[Symbol.iterator] = Graph.prototype.adjacency;
 
 /**
  * Attributes-related.
