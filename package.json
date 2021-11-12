@@ -52,6 +52,7 @@
   "dependencies": {
     "graphology": "file:src/graphology",
     "graphology-assertions": "file:src/assertions",
+    "graphology-bipartite": "file:src/bipartite",
     "graphology-canvas": "file:src/canvas",
     "graphology-communities-leiden": "file:src/communities-leiden",
     "graphology-communities-louvain": "file:src/communities-louvain",
