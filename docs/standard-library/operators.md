@@ -60,7 +60,7 @@ const sub = subgraph(graph, function (key, attr) {
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **nodes** _array|Set|function_: either an array of nodes to keep, or a set of nodes to keep or a function taking a node's key and its attributes and tasked to filter the nodes to keep.
+- **nodes** _array\|Set\|function_: either an array of nodes to keep, or a set of nodes to keep or a function taking a node's key and its attributes and tasked to filter the nodes to keep.
 
 ### reverse
 
@@ -142,7 +142,7 @@ const directedGraph = toDirected(graph, (currentAttr, nextAttr) => {
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **mergeOrOptions** <span class="code">?function|object</span>: either a merging function or an options object:
+- **mergeOrOptions** <span class="code">?function\|object</span>: either a merging function or an options object:
   - **mergeEdge** <span class="code">?function</span>: merging function to use.
 
 ### toSimple

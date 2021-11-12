@@ -40,7 +40,7 @@ var graph = gexf.parse(Graph, xmlDocument);
 *Arguments*
 
 * **constructor** *GraphClass*: graphology constructor to use.
-* **source** *string|Document*: source data to parse.
+* **source** *string\|Document*: source data to parse.
 
 ### Writer
 

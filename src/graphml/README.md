@@ -36,4 +36,4 @@ var graph = graphml.parse(Graph, xmlDocument);
 _Arguments_
 
 - **constructor** _GraphClass_: graphology constructor to use.
-- **source** _string|Document_: source data to parse.
+- **source** _string\|Document_: source data to parse.
