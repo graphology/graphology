@@ -31,9 +31,14 @@ var graph = graphml.parse(Graph, string);
 
 // Reading a dom document
 var graph = graphml.parse(Graph, xmlDocument);
+
+// Passing options
+var graph = graphml.parse(Graph, string, {addMissingNodes: true});
 ```
 
 _Arguments_
 
 - **constructor** _GraphClass_: graphology constructor to use.
 - **source** _string\|Document_: source data to parse.
+- **options** *?object*: parsing options:
+  - **addMissingNodes** *?boolean* [`false`]: whether to add missing nodes referenced in the file's edges.

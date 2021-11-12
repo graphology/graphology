@@ -11,8 +11,8 @@ var FILES = [
   'miserables',
   'miserables_broken',
   'multigraph',
-  'mixed_multigraph'
-  // 'unordered'
+  'mixed_multigraph',
+  'missing_nodes'
 ];
 
 function loadFile(name) {

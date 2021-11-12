@@ -205,8 +205,9 @@ module.exports = function createParserFunction(DOMParser, Document) {
    * Function taking either a string or a document and returning a
    * graphology instance.
    *
-   * @param  {function}        Graph  - A graphology constructor.
-   * @param  {string|Document} source - The source to parse.
+   * @param {function}        Graph  - A graphology constructor.
+   * @param {string|Document} source - The source to parse.
+   * @param {object}          options - Parsing options.
    */
 
   // TODO: option to map the data to the attributes for customization, nodeModel, edgeModel, nodeReducer, edgeReducer
@@ -215,7 +216,7 @@ module.exports = function createParserFunction(DOMParser, Document) {
     options = options || {};
 
     var addMissingNodes = options.addMissingNodes === true;
-    var mergingResult;
+    var mergeResult;
 
     var xmlDoc = source;
 
@@ -327,7 +328,7 @@ module.exports = function createParserFunction(DOMParser, Document) {
         graph.upgradeToMulti();
       }
 
-      mergingResult = mergeEdge(
+      mergeResult = mergeEdge(
         graph,
         type !== 'directed',
         id || null,
@@ -336,7 +337,7 @@ module.exports = function createParserFunction(DOMParser, Document) {
         attributes
       );
 
-      if (!addMissingNodes && (mergingResult[2] || mergingResult[3])) {
+      if (!addMissingNodes && (mergeResult[2] || mergeResult[3])) {
         throw new Error(
           'graphology-gexf/parser: one of your gexf file edges points to an inexisting node. Set the parser `addMissingNodes` option to `true` if you do not care.'
         );

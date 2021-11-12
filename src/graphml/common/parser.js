@@ -5,6 +5,7 @@
  * graphology GRAPHML parser using DOMParser to function.
  */
 var isGraphConstructor = require('graphology-utils/is-graph-constructor');
+var mergeEdge = require('graphology-utils/add-edge').mergeEdge;
 
 var DEFAULTS = require('./defaults.js');
 var DEFAULT_FORMATTER = DEFAULTS.DEFAULT_FORMATTER;
@@ -122,10 +123,16 @@ module.exports = function createParserFunction(DOMParser, Document) {
    * Function taking either a string or a document and returning a
    * graphology instance.
    *
-   * @param  {function}        Graph  - A graphology constructor.
-   * @param  {string|Document} source - The source to parse.
+   * @param {function}        Graph   - A graphology constructor.
+   * @param {string|Document} source  - The source to parse.
+   * @param {object}          options - Parsing options.
    */
-  return function parse(Graph, source) {
+  return function parse(Graph, source, options) {
+    options = options || {};
+
+    var addMissingNodes = options.addMissingNodes === true;
+    var mergeResult;
+
     var xmlDoc = source;
 
     if (!isGraphConstructor(Graph))
@@ -217,12 +224,19 @@ module.exports = function createParserFunction(DOMParser, Document) {
         } else if (graph.hasDirectedEdge(s, t)) graph.upgradeToMulti();
       }
 
-      if (type === 'undirected') {
-        if (id) graph.addUndirectedEdgeWithKey(id, s, t, attr);
-        else graph.addUndirectedEdge(s, t, attr);
-      } else {
-        if (id) graph.addDirectedEdgeWithKey(id, s, t, attr);
-        else graph.addDirectedEdge(s, t, attr);
+      mergeResult = mergeEdge(
+        graph,
+        type === 'undirected',
+        id ? id : null,
+        s,
+        t,
+        attr
+      );
+
+      if (!addMissingNodes && (mergeResult[2] || mergeResult[3])) {
+        throw new Error(
+          'graphology-graphml/parser: one of your graphml file edges points to an inexisting node. Set the parser `addMissingNodes` option to `true` if you do not care.'
+        );
       }
     }
 

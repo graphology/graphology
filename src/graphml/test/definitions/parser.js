@@ -170,5 +170,33 @@ module.exports = [
         }
       }
     }
+  },
+  {
+    title: 'Missing Nodes',
+    graphml: 'missing_nodes',
+    options: {
+      addMissingNodes: true
+    },
+    basics: {
+      type: 'directed',
+      multi: false,
+      meta: {
+        id: '1000'
+      },
+      order: 51,
+      node: {
+        key: '9306289',
+        attributes: {}
+      },
+      size: 37,
+      edge: {
+        source: '9504277',
+        target: '9306289',
+        attributes: {
+          modification: 'add',
+          timestamp: '1995-04-11'
+        }
+      }
+    }
   }
 ];
