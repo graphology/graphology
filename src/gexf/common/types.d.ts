@@ -1,5 +1,9 @@
 import {Attributes} from 'graphology-types';
 
+export type GexfParserOptions = {
+  addMissingNodes?: boolean;
+};
+
 type RGBAColor = {
   r: number;
   g: number;

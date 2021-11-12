@@ -38,6 +38,9 @@ module.exports = [
   {
     title: 'Graph with Missing Nodes',
     gexf: 'missing_nodes',
+    options: {
+      addMissingNodes: true
+    },
     basics: {
       type: 'directed',
       multi: false,

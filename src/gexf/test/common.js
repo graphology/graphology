@@ -23,7 +23,7 @@ exports.testAllFiles = function (parser) {
     it(
       'should properly parse the "' + definition.title + '" file.',
       function () {
-        var graph = parser(Graph, resource);
+        var graph = parser(Graph, resource, definition.options || {});
 
         assert.deepStrictEqual(graph.getAttributes(), info.meta);
         assert.strictEqual(graph.order, info.order);

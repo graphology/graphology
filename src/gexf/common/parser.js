@@ -5,9 +5,9 @@
  *
  * Browser version of the graphology GEXF parser using DOMParser to function.
  */
-var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
-  mergeEdge = require('graphology-utils/add-edge').mergeEdge,
-  helpers = require('../common/helpers.js');
+var isGraphConstructor = require('graphology-utils/is-graph-constructor');
+var mergeEdge = require('graphology-utils/add-edge').mergeEdge;
+var helpers = require('../common/helpers.js');
 
 var cast = helpers.cast;
 
@@ -211,7 +211,12 @@ module.exports = function createParserFunction(DOMParser, Document) {
 
   // TODO: option to map the data to the attributes for customization, nodeModel, edgeModel, nodeReducer, edgeReducer
   // TODO: option to disable the model mapping heuristic
-  return function parse(Graph, source) {
+  return function parse(Graph, source, options) {
+    options = options || {};
+
+    var addMissingNodes = options.addMissingNodes === true;
+    var mergingResult;
+
     var xmlDoc = source;
 
     var element, result, type, attributes, id, s, t, i, l;
@@ -322,7 +327,20 @@ module.exports = function createParserFunction(DOMParser, Document) {
         graph.upgradeToMulti();
       }
 
-      mergeEdge(graph, type !== 'directed', id || null, s, t, attributes);
+      mergingResult = mergeEdge(
+        graph,
+        type !== 'directed',
+        id || null,
+        s,
+        t,
+        attributes
+      );
+
+      if (!addMissingNodes && (mergingResult[2] || mergingResult[3])) {
+        throw new Error(
+          'graphology-gexf/parser: one of your gexf file edges points to an inexisting node. Set the parser `addMissingNodes` option to `true` if you do not care.'
+        );
+      }
     }
 
     return graph;

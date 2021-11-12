@@ -45,12 +45,17 @@ var graph = gexf.parse(Graph, string);
 
 // Reading a dom document
 var graph = gexf.parse(Graph, xmlDocument);
+
+// Passing options
+var graph = gexf.parse(Graph, string, {addMissingNodes: true});
 ```
 
 *Arguments*
 
 * **constructor** *GraphClass*: graphology constructor to use.
 * **source** *string\|Document*: source data to parse.
+* **options** *?object*: parsing options:
+  * **addMissingNodes** *?boolean* <span class="default">false</span>: whether to add missing nodes referenced in the file's edges.
 
 ### Writer
 

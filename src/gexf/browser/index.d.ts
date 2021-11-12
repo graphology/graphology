@@ -1,5 +1,5 @@
 import Graph, {Attributes, GraphConstructor} from 'graphology-types';
-import {GexfWriterOptions} from '../common/types';
+import {GexfParserOptions, GexfWriterOptions} from '../common/types';
 
 export function parse<
   NodeAttributes extends Attributes = Attributes,
@@ -7,7 +7,8 @@ export function parse<
   GraphAttributes extends Attributes = Attributes
 >(
   Graph: GraphConstructor<NodeAttributes, EdgeAttributes, GraphAttributes>,
-  source: string | Document
+  source: string | Document,
+  options?: GexfParserOptions
 ): Graph<NodeAttributes, EdgeAttributes, GraphAttributes>;
 
 export function write<

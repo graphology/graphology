@@ -38,7 +38,7 @@
     "graphology-types": ">=0.20.0"
   },
   "dependencies": {
-    "graphology-utils": "^2.1.0",
+    "graphology-utils": "^2.4.1",
     "xml-writer": "^1.7.0",
     "@xmldom/xmldom": "^0.7.5"
   }
