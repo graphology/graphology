@@ -1,0 +1,16 @@
+{
+  "language": "eng",
+  "license": "MIT",
+  "title": "Graphology, a robust and multipurpose Graph object for JavaScript.",
+  "upload_type": "software",
+  "keywords": ["graph", "graph theory", "network", "social network analysis"],
+  "creators": [
+    {
+      "orcid": "0000-0003-4916-8472",
+      "affiliation": "médialab - Sciences Po",
+      "name": "Guillaume Plique"
+    }
+  ],
+  "access_right": "open",
+  "description": "<p>A robust and multipurpose Graph object for JavaScript.</p>"
+}
