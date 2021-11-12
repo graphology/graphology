@@ -42,7 +42,7 @@ var SparseMap = require('mnemonist/sparse-map');
 var SparseQueueSet = require('mnemonist/sparse-queue-set');
 var createRandomIndex = require('pandemonium/random-index').createRandomIndex;
 
-var indices = require('graphology-indices/neighborhood/louvain');
+var indices = require('graphology-indices/louvain');
 
 var UndirectedLouvainIndex = indices.UndirectedLouvainIndex;
 var DirectedLouvainIndex = indices.DirectedLouvainIndex;

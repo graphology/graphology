@@ -1,6 +1,6 @@
 {
   "name": "graphology-shortest-path",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Shortest path functions for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@yomguithereal/helpers": "^1.1.1",
-    "graphology-indices": "^0.15.0",
+    "graphology-indices": "^0.16.0",
     "graphology-utils": "^2.1.2",
     "mnemonist": "^0.38.1"
   }

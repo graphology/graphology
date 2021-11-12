@@ -10,8 +10,8 @@
  */
 var isGraph = require('graphology-utils/is-graph');
 var resolveDefaults = require('graphology-utils/defaults');
-var WeightedOutboundNeighborhoodIndex =
-  require('graphology-indices/neighborhood/outbound').WeightedOutboundNeighborhoodIndex;
+var WeightedNeighborhoodIndex =
+  require('graphology-indices/neighborhood').WeightedNeighborhoodIndex;
 
 /**
  * Defaults.
@@ -61,7 +61,7 @@ function abstractPagerank(assign, graph, options) {
   var N = graph.order;
   var p = 1 / N;
 
-  var index = new WeightedOutboundNeighborhoodIndex(graph, weightAttribute);
+  var index = new WeightedNeighborhoodIndex(graph, weightAttribute);
 
   var i, j, l, d;
 

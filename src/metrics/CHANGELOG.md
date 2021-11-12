@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.18.2
+
+- Upgrading `graphology-indice`.
+
 ## 1.18.1
 
 - Multi/mixed graphs support for pagerank & eigenvector centrality.

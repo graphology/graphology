@@ -9,11 +9,10 @@ var FixedDeque = require('mnemonist/fixed-deque');
 var FixedStack = require('mnemonist/fixed-stack');
 var Heap = require('mnemonist/heap');
 var typed = require('mnemonist/utils/typed-arrays');
-var neighborhoodIndices = require('graphology-indices/neighborhood/outbound');
+var neighborhoodIndices = require('graphology-indices/neighborhood');
 
-var OutboundNeighborhoodIndex = neighborhoodIndices.OutboundNeighborhoodIndex,
-  WeightedOutboundNeighborhoodIndex =
-    neighborhoodIndices.WeightedOutboundNeighborhoodIndex;
+var NeighborhoodIndex = neighborhoodIndices.NeighborhoodIndex,
+  WeightedNeighborhoodIndex = neighborhoodIndices.WeightedNeighborhoodIndex;
 
 /**
  * Indexed unweighted Brandes routine.
@@ -27,7 +26,7 @@ var OutboundNeighborhoodIndex = neighborhoodIndices.OutboundNeighborhoodIndex,
  */
 exports.createUnweightedIndexedBrandes =
   function createUnweightedIndexedBrandes(graph) {
-    var neighborhoodIndex = new OutboundNeighborhoodIndex(graph);
+    var neighborhoodIndex = new NeighborhoodIndex(graph);
 
     var neighborhood = neighborhoodIndex.neighborhood,
       starts = neighborhoodIndex.starts;
@@ -121,10 +120,7 @@ exports.createDijkstraIndexedBrandes = function createDijkstraIndexedBrandes(
 ) {
   if (arguments.length < 2) weightAttribute = 'weight';
 
-  var neighborhoodIndex = new WeightedOutboundNeighborhoodIndex(
-    graph,
-    weightAttribute
-  );
+  var neighborhoodIndex = new WeightedNeighborhoodIndex(graph, weightAttribute);
 
   var neighborhood = neighborhoodIndex.neighborhood,
     weights = neighborhoodIndex.weights,

@@ -1,6 +1,6 @@
 {
   "name": "graphology-metrics",
-  "version": "1.18.1",
+  "version": "1.18.2",
   "description": "Miscellaneous graph metrics for graphology.",
   "main": "index.js",
   "files": [
@@ -52,7 +52,7 @@
     "graphology-types": ">=0.20.0"
   },
   "dependencies": {
-    "graphology-shortest-path": "^1.5.1",
+    "graphology-shortest-path": "^1.5.2",
     "graphology-utils": "^2.3.0",
     "mnemonist": "^0.38.3"
   }

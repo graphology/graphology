@@ -19,8 +19,8 @@ var isGraph = require('graphology-utils/is-graph');
 var resolveDefaults = require('graphology-utils/defaults');
 var FixedDeque = require('mnemonist/fixed-deque');
 var SparseSet = require('mnemonist/sparse-set');
-var OutboundNeighborhoodIndex =
-  require('graphology-indices/neighborhood/outbound').OutboundNeighborhoodIndex;
+var NeighborhoodIndex =
+  require('graphology-indices/neighborhood').NeighborhoodIndex;
 
 // TODO: can be computed for a single node
 // TODO: weighted
@@ -41,13 +41,7 @@ var DEFAULTS = {
  * Helpers.
  */
 function IndexedBFS(graph) {
-  // TODO: this is a temp hack linked to #288!
-  var outboundNeighbors = graph.outboundNeighbors;
-  var inboundNeighbors = graph.inboundNeighbors;
-  graph.outboundNeighbors = inboundNeighbors;
-  this.index = new OutboundNeighborhoodIndex(graph);
-  graph.outboundNeighbors = outboundNeighbors;
-
+  this.index = new NeighborhoodIndex(graph, 'inbound');
   this.queue = new FixedDeque(Array, graph.order);
   this.seen = new SparseSet(graph.order);
 }
