@@ -1,6 +1,6 @@
 {
   "name": "graphology",
-  "version": "0.22.2",
+  "version": "0.23.0",
   "description": "A robust and multipurpose Graph object for JavaScript.",
   "main": "dist/graphology.cjs.js",
   "module": "dist/graphology.esm.js",
@@ -53,7 +53,7 @@
     "obliterator": "^2.0.0"
   },
   "peerDependencies": {
-    "graphology-types": ">=0.21.0"
+    "graphology-types": ">=0.23.0"
   },
   "babel": {
     "presets": [

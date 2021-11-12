@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.23.0 (provisional)
+## 0.23.0
 
 - Adding `#.updateAttributes`.
 - Adding `#.updateNodeAttributes`.
