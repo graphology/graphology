@@ -256,6 +256,19 @@ describe('graphology-utils', function () {
       assert.strictEqual(newGraph.edge(1, 2), 'rel1');
       assert.strictEqual(newGraph.edge(2, 3), 'rel2');
     });
+
+    it.skip('should work with undirected graphs.', function () {
+      var graph = new Graph({type: 'undirected'});
+      graph.mergeEdge('Jon', 'Ishtar');
+      graph.mergeEdge('Julia', 'Robin');
+
+      var newGraph = renameGraphKeys(graph, {
+        Jon: 'Joseph',
+        Ishtar: 'Quixal'
+      });
+
+      console.log(newGraph);
+    });
   });
 
   describe('updateGraphKeys', function () {
