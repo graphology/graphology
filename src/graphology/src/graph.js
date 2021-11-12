@@ -2116,10 +2116,10 @@ export default class Graph extends EventEmitter {
     if (this.multi) forEachAdjacencyMulti(false, false, false, this, callback);
     else forEachAdjacencySimple(false, false, false, this, callback);
   }
-  forEachAdjacencyEntryWithDisconnectedNodes(callback) {
+  forEachAdjacencyEntryWithOrphans(callback) {
     if (typeof callback !== 'function')
       throw new InvalidArgumentsGraphError(
-        'Graph.forEachAdjacencyEntryWithDisconnectedNodes: expecting a callback.'
+        'Graph.forEachAdjacencyEntryWithOrphans: expecting a callback.'
       );
 
     if (this.multi) forEachAdjacencyMulti(false, false, true, this, callback);
@@ -2140,10 +2140,10 @@ export default class Graph extends EventEmitter {
     if (this.multi) forEachAdjacencyMulti(false, true, false, this, callback);
     else forEachAdjacencySimple(false, true, false, this, callback);
   }
-  forEachAssymetricAdjacencyEntryWithDisconnectedNodes(callback) {
+  forEachAssymetricAdjacencyEntryWithOrphans(callback) {
     if (typeof callback !== 'function')
       throw new InvalidArgumentsGraphError(
-        'Graph.forEachAssymetricAdjacencyEntryWithDisconnectedNodes: expecting a callback.'
+        'Graph.forEachAssymetricAdjacencyEntryWithOrphans: expecting a callback.'
       );
 
     if (this.multi) forEachAdjacencyMulti(false, true, true, this, callback);

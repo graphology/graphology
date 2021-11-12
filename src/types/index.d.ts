@@ -78,7 +78,7 @@ type AdjacencyIterationCallback<
   undirected: boolean
 ) => void;
 
-type AdjacencyIterationCallbackWithDisconnectedNodes<
+type AdjacencyIterationCallbackWithOrphans<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > = (
@@ -1024,14 +1024,14 @@ declare abstract class AbstractGraph<
   forEachAssymetricAdjacencyEntry(
     callback: AdjacencyIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
-  forEachAdjacencyEntryWithDisconnectedNodes(
-    callback: AdjacencyIterationCallbackWithDisconnectedNodes<
+  forEachAdjacencyEntryWithOrphans(
+    callback: AdjacencyIterationCallbackWithOrphans<
       NodeAttributes,
       EdgeAttributes
     >
   ): void;
-  forEachAssymetricAdjacencyEntryWithDisconnectedNodes(
-    callback: AdjacencyIterationCallbackWithDisconnectedNodes<
+  forEachAssymetricAdjacencyEntryWithOrphans(
+    callback: AdjacencyIterationCallbackWithOrphans<
       NodeAttributes,
       EdgeAttributes
     >
@@ -2050,7 +2050,7 @@ export {
   EdgeEntry,
   EdgeMergeResult,
   AdjacencyIterationCallback,
-  AdjacencyIterationCallbackWithDisconnectedNodes,
+  AdjacencyIterationCallbackWithOrphans,
   NodeIterationCallback,
   NodePredicate,
   NodeMapper,

@@ -68,7 +68,7 @@ export default function iteration(Graph, checkers) {
 
             count = 0;
 
-            graph.forEachAdjacencyEntryWithDisconnectedNodes(
+            graph.forEachAdjacencyEntryWithOrphans(
               (
                 node,
                 neighbor,
@@ -146,7 +146,7 @@ export default function iteration(Graph, checkers) {
             let count = 0;
             let nulls = 0;
 
-            graph.forEachAssymetricAdjacencyEntryWithDisconnectedNodes(
+            graph.forEachAssymetricAdjacencyEntryWithOrphans(
               (
                 node,
                 neighbor,
