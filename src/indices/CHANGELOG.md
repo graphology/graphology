@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.16.0
+
+- Abstracting `NeighborhoodIndex`.
+- Reorganizing packages.
+
 ## 0.15.1
 
 - Fixing outbound indices type declarations.
