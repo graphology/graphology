@@ -3,7 +3,9 @@
   "version": "0.4.0",
   "description": "GRAPHML parser & writer for graphology.",
   "main": "index.js",
+  "types": "index.d.ts",
   "files": [
+    "*.d.ts",
     "index.js",
     "browser",
     "common",
