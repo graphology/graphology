@@ -5,6 +5,7 @@
   "main": "index.js",
   "files": [
     "index.js",
+    "is-bipartite-by",
     "*.d.ts"
   ],
   "types": "./index.d.ts",
