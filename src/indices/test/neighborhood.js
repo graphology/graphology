@@ -6,11 +6,10 @@ var assert = require('assert');
 var Graph = require('graphology');
 var neighborhoodIndices = require('../neighborhood.js');
 
-var OutboundNeighborhoodIndex = neighborhoodIndices.OutboundNeighborhoodIndex;
-var WeightedOutboundNeighborhoodIndex =
-  neighborhoodIndices.WeightedOutboundNeighborhoodIndex;
+var NeighborhoodIndex = neighborhoodIndices.NeighborhoodIndex;
+var WeightedNeighborhoodIndex = neighborhoodIndices.WeightedNeighborhoodIndex;
 
-describe('OutboundNeighborhoodIndex', function () {
+describe('NeighborhoodIndex', function () {
   it('should properly index the outbound neighborhood of the given graph.', function () {
     var graph = new Graph();
     graph.mergeEdge(1, 2);
@@ -18,7 +17,7 @@ describe('OutboundNeighborhoodIndex', function () {
     graph.mergeEdge(2, 1);
     graph.mergeEdge(4, 5);
 
-    var index = new OutboundNeighborhoodIndex(graph);
+    var index = new NeighborhoodIndex(graph);
     assert.deepEqual(index.neighborhood, new Uint8Array([1, 0, 2, 4]));
 
     var projection = index.project();
@@ -58,7 +57,7 @@ describe('OutboundNeighborhoodIndex', function () {
     graph.addNode(1);
     graph.mergeEdge(2, 3);
 
-    var index = new OutboundNeighborhoodIndex(graph);
+    var index = new NeighborhoodIndex(graph);
 
     assert.deepEqual(index.project(), {
       1: [],
@@ -70,7 +69,7 @@ describe('OutboundNeighborhoodIndex', function () {
   });
 });
 
-describe('WeightedOutboundNeighborhoodIndex', function () {
+describe('WeightedNeighborhoodIndex', function () {
   it('should properly index the weighted outbound neighborhood of the given graph.', function () {
     var graph = new Graph();
     graph.mergeEdge(1, 2, {weight: 3});
@@ -78,7 +77,7 @@ describe('WeightedOutboundNeighborhoodIndex', function () {
     graph.mergeEdge(2, 1, {weight: 1});
     graph.mergeEdge(4, 5, {weight: 34});
 
-    var index = new WeightedOutboundNeighborhoodIndex(graph, 'weight');
+    var index = new WeightedNeighborhoodIndex(graph, 'weight');
     assert.deepEqual(index.neighborhood, new Uint8Array([1, 0, 2, 4]));
     assert.deepEqual(index.weights, new Float64Array([3, 1, 1, 34]));
     assert.deepEqual(index.outDegrees, new Float64Array([3, 2, 0, 34, 0]));
@@ -115,7 +114,7 @@ describe('WeightedOutboundNeighborhoodIndex', function () {
     });
 
     // Unweighted fallback
-    index = new WeightedOutboundNeighborhoodIndex(graph, null);
+    index = new WeightedNeighborhoodIndex(graph, null);
 
     assert.deepEqual(index.weights, new Float64Array([1, 1, 1, 1]));
     assert.deepEqual(index.outDegrees, new Float64Array([1, 2, 0, 1, 0]));

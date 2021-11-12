@@ -1,11 +1,14 @@
 /**
- * Graphology Outbound Neighborhood Indices
+ * Graphology  Neighborhood Indices
  * =========================================
  */
 var typed = require('mnemonist/utils/typed-arrays');
 var createWeightGetter = require('graphology-utils/getters').createWeightGetter;
 
-function OutboundNeighborhoodIndex(graph) {
+function NeighborhoodIndex(graph, method) {
+  method = method || 'outbound';
+  var getNeighbors = graph[method + 'Neighbors'].bind(graph);
+
   var upperBound = graph.directedSize + graph.undirectedSize * 2;
 
   var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
@@ -30,7 +33,7 @@ function OutboundNeighborhoodIndex(graph) {
 
   for (i = 0, l = graph.order; i < l; i++) {
     node = this.nodes[i];
-    neighbors = graph.outboundNeighbors(node);
+    neighbors = getNeighbors(node);
 
     this.starts[i] = n;
 
@@ -42,11 +45,11 @@ function OutboundNeighborhoodIndex(graph) {
   this.starts[i] = upperBound;
 }
 
-OutboundNeighborhoodIndex.prototype.bounds = function (i) {
+NeighborhoodIndex.prototype.bounds = function (i) {
   return [this.starts[i], this.starts[i + 1]];
 };
 
-OutboundNeighborhoodIndex.prototype.project = function () {
+NeighborhoodIndex.prototype.project = function () {
   var self = this;
 
   var projection = {};
@@ -62,7 +65,7 @@ OutboundNeighborhoodIndex.prototype.project = function () {
   return projection;
 };
 
-OutboundNeighborhoodIndex.prototype.collect = function (results) {
+NeighborhoodIndex.prototype.collect = function (results) {
   var i, l;
 
   var o = {};
@@ -72,7 +75,7 @@ OutboundNeighborhoodIndex.prototype.collect = function (results) {
   return o;
 };
 
-OutboundNeighborhoodIndex.prototype.assign = function (prop, results) {
+NeighborhoodIndex.prototype.assign = function (prop, results) {
   var i = 0;
 
   this.graph.updateEachNodeAttributes(
@@ -85,9 +88,12 @@ OutboundNeighborhoodIndex.prototype.assign = function (prop, results) {
   );
 };
 
-exports.OutboundNeighborhoodIndex = OutboundNeighborhoodIndex;
+exports.NeighborhoodIndex = NeighborhoodIndex;
 
-function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
+function WeightedNeighborhoodIndex(graph, weightAttribute, method) {
+  method = method || 'outbound';
+  var getEdges = graph[method + 'Edges'].bind(graph);
+
   var upperBound = graph.directedSize + graph.undirectedSize * 2;
 
   var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
@@ -116,7 +122,7 @@ function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
 
   for (i = 0, l = graph.order; i < l; i++) {
     node = this.nodes[i];
-    edges = graph.outboundEdges(node);
+    edges = getEdges(node);
 
     this.starts[i] = n;
 
@@ -136,13 +142,11 @@ function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
   this.starts[i] = upperBound;
 }
 
-WeightedOutboundNeighborhoodIndex.prototype.bounds =
-  OutboundNeighborhoodIndex.prototype.bounds;
-WeightedOutboundNeighborhoodIndex.prototype.project =
-  OutboundNeighborhoodIndex.prototype.project;
-WeightedOutboundNeighborhoodIndex.prototype.collect =
-  OutboundNeighborhoodIndex.prototype.collect;
-WeightedOutboundNeighborhoodIndex.prototype.assign =
-  OutboundNeighborhoodIndex.prototype.assign;
+WeightedNeighborhoodIndex.prototype.bounds = NeighborhoodIndex.prototype.bounds;
+WeightedNeighborhoodIndex.prototype.project =
+  NeighborhoodIndex.prototype.project;
+WeightedNeighborhoodIndex.prototype.collect =
+  NeighborhoodIndex.prototype.collect;
+WeightedNeighborhoodIndex.prototype.assign = NeighborhoodIndex.prototype.assign;
 
-exports.WeightedOutboundNeighborhoodIndex = WeightedOutboundNeighborhoodIndex;
+exports.WeightedNeighborhoodIndex = WeightedNeighborhoodIndex;

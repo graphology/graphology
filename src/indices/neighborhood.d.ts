@@ -2,7 +2,7 @@ import Graph from 'graphology-types';
 
 type PointerArray = Uint8Array | Uint16Array | Uint32Array | Float64Array;
 
-export class OutboundNeighborhoodIndex {
+export class NeighborhoodIndex {
   constructor(graph: Graph);
 
   graph: Graph;
@@ -16,7 +16,7 @@ export class OutboundNeighborhoodIndex {
   assign<T>(name: string, results: Array<T>): void;
 }
 
-export class WeightedOutboundNeighborhoodIndex extends OutboundNeighborhoodIndex {
+export class WeightedNeighborhoodIndex extends NeighborhoodIndex {
   constructor(graph: Graph, weightAttribute?: string);
 
   weights: Float64Array;

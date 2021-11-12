@@ -9,7 +9,6 @@ var neighborhood = require('./neighborhood.js');
 
 exports.UndirectedLouvainIndex = louvain.UndirectedLouvainIndex;
 exports.DirectedLouvainIndex = louvain.DirectedLouvainIndex;
-exports.OutboundNeighborhoodIndex = neighborhood.OutboundNeighborhoodIndex;
-exports.WeightedOutboundNeighborhoodIndex =
-  neighborhood.WeightedOutboundNeighborhoodIndex;
+exports.NeighborhoodIndex = neighborhood.NeighborhoodIndex;
+exports.WeightedNeighborhoodIndex = neighborhood.WeightedNeighborhoodIndex;
 exports.SortedComponentsIndex = require('./sorted-components.js');
