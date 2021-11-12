@@ -4,4 +4,4 @@ export function copyNode<NodeAttributes extends Attributes = Attributes>(
   graph: Graph,
   key: unknown,
   attributes?: NodeAttributes
-): void;
+): string;

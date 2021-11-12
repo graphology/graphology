@@ -7,5 +7,5 @@
  */
 exports.copyNode = function (graph, key, attributes) {
   attributes = Object.assign({}, attributes);
-  graph.addNode(key, attributes);
+  return graph.addNode(key, attributes);
 };

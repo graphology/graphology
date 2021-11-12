@@ -15,12 +15,12 @@ exports.addEdge = function addEdge(
 ) {
   if (undirected) {
     if (key === null || key === undefined)
-      graph.addUndirectedEdge(source, target, attributes);
-    else graph.addUndirectedEdgeWithKey(key, source, target, attributes);
+      return graph.addUndirectedEdge(source, target, attributes);
+    else return graph.addUndirectedEdgeWithKey(key, source, target, attributes);
   } else {
     if (key === null || key === undefined)
-      graph.addDirectedEdge(source, target, attributes);
-    else graph.addDirectedEdgeWithKey(key, source, target, attributes);
+      return graph.addDirectedEdge(source, target, attributes);
+    else return graph.addDirectedEdgeWithKey(key, source, target, attributes);
   }
 };
 
@@ -36,12 +36,12 @@ exports.copyEdge = function copyEdge(
 
   if (undirected) {
     if (key === null || key === undefined)
-      graph.addUndirectedEdge(source, target, attributes);
-    else graph.addUndirectedEdgeWithKey(key, source, target, attributes);
+      return graph.addUndirectedEdge(source, target, attributes);
+    else return graph.addUndirectedEdgeWithKey(key, source, target, attributes);
   } else {
     if (key === null || key === undefined)
-      graph.addDirectedEdge(source, target, attributes);
-    else graph.addDirectedEdgeWithKey(key, source, target, attributes);
+      return graph.addDirectedEdge(source, target, attributes);
+    else return graph.addDirectedEdgeWithKey(key, source, target, attributes);
   }
 };
 
@@ -55,12 +55,13 @@ exports.mergeEdge = function mergeEdge(
 ) {
   if (undirected) {
     if (key === null || key === undefined)
-      graph.mergeUndirectedEdge(source, target, attributes);
-    else graph.mergeUndirectedEdgeWithKey(key, source, target, attributes);
+      return graph.mergeUndirectedEdge(source, target, attributes);
+    else
+      return graph.mergeUndirectedEdgeWithKey(key, source, target, attributes);
   } else {
     if (key === null || key === undefined)
-      graph.mergeDirectedEdge(source, target, attributes);
-    else graph.mergeDirectedEdgeWithKey(key, source, target, attributes);
+      return graph.mergeDirectedEdge(source, target, attributes);
+    else return graph.mergeDirectedEdgeWithKey(key, source, target, attributes);
   }
 };
 
@@ -74,11 +75,11 @@ exports.updateEdge = function updateEdge(
 ) {
   if (undirected) {
     if (key === null || key === undefined)
-      graph.updateUndirectedEdge(source, target, updater);
-    else graph.updateUndirectedEdgeWithKey(key, source, target, updater);
+      return graph.updateUndirectedEdge(source, target, updater);
+    else return graph.updateUndirectedEdgeWithKey(key, source, target, updater);
   } else {
     if (key === null || key === undefined)
-      graph.updateDirectedEdge(source, target, updater);
-    else graph.updateDirectedEdgeWithKey(key, source, target, updater);
+      return graph.updateDirectedEdge(source, target, updater);
+    else return graph.updateDirectedEdgeWithKey(key, source, target, updater);
   }
 };

@@ -1,4 +1,4 @@
-import Graph, {Attributes} from 'graphology-types';
+import Graph, {Attributes, EdgeMergeResult} from 'graphology-types';
 
 export function addEdge<EdgeAttributes extends Attributes = Attributes>(
   graph: Graph,
@@ -7,7 +7,7 @@ export function addEdge<EdgeAttributes extends Attributes = Attributes>(
   source: unknown,
   target: unknown,
   attributes?: EdgeAttributes
-): void;
+): string;
 
 export function copyEdge<EdgeAttributes extends Attributes = Attributes>(
   graph: Graph,
@@ -16,7 +16,7 @@ export function copyEdge<EdgeAttributes extends Attributes = Attributes>(
   source: unknown,
   target: unknown,
   attributes?: EdgeAttributes
-): void;
+): string;
 
 export function mergeEdge<EdgeAttributes extends Attributes = Attributes>(
   graph: Graph,
@@ -25,7 +25,7 @@ export function mergeEdge<EdgeAttributes extends Attributes = Attributes>(
   source: unknown,
   target: unknown,
   attributes?: EdgeAttributes
-): void;
+): EdgeMergeResult;
 
 export function updateEdge<EdgeAttributes extends Attributes = Attributes>(
   graph: Graph,
@@ -34,4 +34,4 @@ export function updateEdge<EdgeAttributes extends Attributes = Attributes>(
   source: unknown,
   target: unknown,
   updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
-): void;
+): EdgeMergeResult;
