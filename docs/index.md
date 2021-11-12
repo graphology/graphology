@@ -62,7 +62,9 @@ graph.forEachNode(node => {
 
 ## How to cite
 
-`graphology` is published on [Zenodo](https://zenodo.org/) as [![DOI](https://zenodo.org/badge/66482976.svg)](https://zenodo.org/badge/latestdoi/66482976)
+[![DOI](https://zenodo.org/badge/66482976.svg)](https://zenodo.org/badge/latestdoi/66482976)
+
+`graphology` is published on [Zenodo](https://zenodo.org/) as [https://doi.org/10.5281/zenodo.5681257](https://doi.org/10.5281/zenodo.5681257).
 
 You can cite it thusly:
 
