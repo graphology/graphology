@@ -22,7 +22,7 @@ module.exports = function updateGraphKeys(
   // Renaming edges
   var currentSource, currentSourceRenamed;
 
-  graph.forEachAdjacencyEntry(function (
+  graph.forEachAssymetricAdjacencyEntry(function (
     source,
     target,
     sourceAttr,

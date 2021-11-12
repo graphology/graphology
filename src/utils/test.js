@@ -4,6 +4,7 @@
  */
 var assert = require('assert');
 var Graph = require('graphology');
+var areSameGraphs = require('graphology-assertions').areSameGraphs;
 var inferType = require('./infer-type.js');
 var isGraph = require('./is-graph.js');
 var isGraphConstructor = require('./is-graph-constructor.js');
@@ -257,7 +258,7 @@ describe('graphology-utils', function () {
       assert.strictEqual(newGraph.edge(2, 3), 'rel2');
     });
 
-    it.skip('should work with undirected graphs.', function () {
+    it('should work with undirected graphs.', function () {
       var graph = new Graph({type: 'undirected'});
       graph.mergeEdge('Jon', 'Ishtar');
       graph.mergeEdge('Julia', 'Robin');
@@ -267,7 +268,11 @@ describe('graphology-utils', function () {
         Ishtar: 'Quixal'
       });
 
-      console.log(newGraph);
+      var expected = new Graph({type: 'undirected'});
+      expected.mergeEdge('Joseph', 'Quixal');
+      expected.mergeEdge('Julia', 'Robin');
+
+      assert.strictEqual(areSameGraphs(newGraph, expected), true);
     });
   });
 
@@ -325,6 +330,25 @@ describe('graphology-utils', function () {
       assert(newGraph.hasNode(3));
       assert.strictEqual(newGraph.edge(1, 2), 'rel1');
       assert.strictEqual(newGraph.edge(2, 3), 'rel2');
+    });
+
+    it('should work with undirected graphs.', function () {
+      var graph = new Graph({type: 'undirected'});
+      graph.mergeEdge('Jon', 'Ishtar');
+      graph.mergeEdge('Julia', 'Robin');
+
+      var newGraph = updateGraphKeys(graph, function (node) {
+        if (node === 'Jon') return 'Joseph';
+        if (node === 'Ishtar') return 'Quixal';
+
+        return node;
+      });
+
+      var expected = new Graph({type: 'undirected'});
+      expected.mergeEdge('Joseph', 'Quixal');
+      expected.mergeEdge('Julia', 'Robin');
+
+      assert.strictEqual(areSameGraphs(newGraph, expected), true);
     });
   });
 

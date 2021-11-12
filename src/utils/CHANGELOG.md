@@ -4,6 +4,7 @@
 
 - Dropping hidden internals.
 - Adapting `renameGraphKeys` & `updateGraphKeys` to latest graphology version.
+- Fixing `renameGraphKeys` & `updateGraphKeys` for undirected graphs.
 
 ## 2.3.2
 
