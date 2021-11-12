@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/graphology/graphology/workflows/Tests/badge.svg)](https://github.com/graphology/graphology/actions)
+[![Build Status](https://github.com/graphology/graphology/workflows/Tests/badge.svg)](https://github.com/graphology/graphology/actions) [![DOI](https://zenodo.org/badge/66482976.svg)](https://zenodo.org/badge/latestdoi/66482976)
 
 # Graphology
 
@@ -29,6 +29,14 @@ If your version of npm is a bit old, you may need to install `graphology-types` 
 ```
 npm install graphology-types
 ```
+
+## How to cite
+
+`graphology` is published on [Zenodo](https://zenodo.org/) as [![DOI](https://zenodo.org/badge/66482976.svg)](https://zenodo.org/badge/latestdoi/66482976)
+
+You can cite it thusly:
+
+> Guillaume Plique. (2021). Graphology, a robust and multipurpose Graph object for JavaScript. Zenodo. https://doi.org/10.5281/zenodo.5681257
 
 ## Changelog
 

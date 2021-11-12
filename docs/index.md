@@ -60,6 +60,15 @@ graph.forEachNode(node => {
 });
 ```
 
+## How to cite
+
+`graphology` is published on [Zenodo](https://zenodo.org/) as [![DOI](https://zenodo.org/badge/66482976.svg)](https://zenodo.org/badge/latestdoi/66482976)
+
+You can cite it thusly:
+
+> Guillaume Plique. (2021). Graphology, a robust and multipurpose Graph object for JavaScript. Zenodo. https://doi.org/10.5281/zenodo.5681257
+
+
 ## Changelog
 
 A complete changelog can be found [here](https://github.com/graphology/graphology/blob/master/CHANGELOG.md).
