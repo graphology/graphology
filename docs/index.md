@@ -34,6 +34,8 @@ If your version of npm is a bit old, you may need to install `graphology-types` 
 npm install graphology-types
 ```
 
+It can also be useful to pin `graphology-types` version in your `package.json` to avoid resolution issues sometimes.
+
 ## Quick Start
 
 ```js
