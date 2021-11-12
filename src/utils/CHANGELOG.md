@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.1
+
+- Fixing internal `copyNode`, `addEdge`, `copyEdge`, `mergeEdge` & `updateEdge` return value.
+
 ## 2.4.0
 
 - Dropping hidden internals.
