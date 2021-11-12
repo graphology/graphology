@@ -13,7 +13,7 @@
  *
  * [Articles]
  * M. E. J. Newman, « Modularity and community structure in networks »,
- * Proc. Natl. Acad. Sci. USA, vol. 103, no 23,‎ 2006, p. 8577–8582
+ * Proc. Natl. Acad. Sci. USA, vol. 103, no 23, 2006, p. 8577–8582
  * https://dx.doi.org/10.1073%2Fpnas.0601602103
  *
  * Newman, M. E. J. « Community detection in networks: Modularity optimization
