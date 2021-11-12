@@ -17,6 +17,7 @@ npm install graphology-gexf
 
 * [Parser](#parser)
 * [Writer](#writer)
+* [Notes](#notes)
 
 ### Parser
 
@@ -105,3 +106,7 @@ var gexfString = gexf.write(graph, {
   - **formatNode** *?function*: function returning the node's data to write.
   - **formatEdge** *?function*: function returning the edge's data to write.
   - **pretty** *?boolean* [`true`]: pretty-print output?
+
+### Notes
+
+Currently, `mutual` edges are parsed as undirected ones rather than two directed ones because it could produce a key conflict. An option to deal differently with this may be added in the future if it becomes a problem.
