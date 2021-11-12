@@ -1,6 +1,6 @@
 {
   "name": "graphology-utils",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "description": "Miscellaneous utils for graphology.",
   "main": "index.js",
   "files": [
@@ -50,6 +50,6 @@
   },
   "homepage": "https://github.com/graphology/graphology#readme",
   "peerDependencies": {
-    "graphology-types": ">=0.20.0"
+    "graphology-types": ">=0.23.0"
   }
 }
