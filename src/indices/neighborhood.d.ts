@@ -1,9 +1,17 @@
-import Graph from 'graphology-types';
+import Graph, {Attributes} from 'graphology-types';
 
 type PointerArray = Uint8Array | Uint16Array | Uint32Array | Float64Array;
 
+type NeighborhoodMethod =
+  | 'in'
+  | 'out'
+  | 'directed'
+  | 'undirected'
+  | 'inbound'
+  | 'outbound';
+
 export class NeighborhoodIndex {
-  constructor(graph: Graph);
+  constructor(graph: Graph, method?: NeighborhoodMethod);
 
   graph: Graph;
   neighborhood: PointerArray;
@@ -16,8 +24,15 @@ export class NeighborhoodIndex {
   assign<T>(name: string, results: Array<T>): void;
 }
 
-export class WeightedNeighborhoodIndex extends NeighborhoodIndex {
-  constructor(graph: Graph, weightAttribute?: string);
+export class WeightedNeighborhoodIndex<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> extends NeighborhoodIndex {
+  constructor(
+    graph: Graph<NodeAttributes, EdgeAttributes>,
+    weightAttribute?: keyof EdgeAttributes,
+    method?: NeighborhoodMethod
+  );
 
   weights: Float64Array;
   outDegrees: Float64Array;

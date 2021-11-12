@@ -4,6 +4,7 @@
  */
 var assert = require('assert');
 var Graph = require('graphology');
+var reverse = require('graphology-operators/reverse');
 var neighborhoodIndices = require('../neighborhood.js');
 
 var NeighborhoodIndex = neighborhoodIndices.NeighborhoodIndex;
@@ -67,6 +68,19 @@ describe('NeighborhoodIndex', function () {
     assert.deepEqual(index.neighborhood, new Uint8Array([2, 1]));
     assert.deepEqual(index.starts, new Uint8Array([0, 0, 1, 2]));
   });
+
+  it('should be possible to compute a reverse neighborhood index.', function () {
+    var graph = new Graph();
+    graph.mergeEdge(1, 2);
+    graph.mergeUndirectedEdge(1, 2);
+    graph.mergeEdge(2, 3);
+
+    var index = new NeighborhoodIndex(graph, 'inbound');
+
+    var reverseIndex = new NeighborhoodIndex(reverse(graph));
+
+    assert.deepStrictEqual(index, reverseIndex);
+  });
 });
 
 describe('WeightedNeighborhoodIndex', function () {
@@ -118,5 +132,18 @@ describe('WeightedNeighborhoodIndex', function () {
 
     assert.deepEqual(index.weights, new Float64Array([1, 1, 1, 1]));
     assert.deepEqual(index.outDegrees, new Float64Array([1, 2, 0, 1, 0]));
+  });
+
+  it('should be possible to compute a reverse neighborhood index.', function () {
+    var graph = new Graph();
+    graph.mergeEdge(1, 2, {weight: 3});
+    graph.mergeUndirectedEdge(1, 2, {weight: 45});
+    graph.mergeEdge(2, 3, {weight: -3});
+
+    var index = new WeightedNeighborhoodIndex(graph, 'weight', 'inbound');
+
+    var reverseIndex = new WeightedNeighborhoodIndex(reverse(graph), 'weight');
+
+    assert.deepStrictEqual(index, reverseIndex);
   });
 });
