@@ -2010,19 +2010,15 @@ declare abstract class AbstractGraph<
   inspect(): any;
 
   static from<
-    NodeAttributes extends Attributes = Attributes,
-    EdgeAttributes extends Attributes = Attributes,
-    GraphAttributes extends Attributes = Attributes
-  >(
-    data: SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>
-  ): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
+    NA extends Attributes = Attributes,
+    EA extends Attributes = Attributes,
+    GA extends Attributes = Attributes
+  >(data: SerializedGraph<NA, EA, GA>): AbstractGraph<NA, EA, GA>;
   static from<
-    NodeAttributes extends Attributes = Attributes,
-    EdgeAttributes extends Attributes = Attributes,
-    GraphAttributes extends Attributes = Attributes
-  >(
-    graph: AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>
-  ): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
+    NA extends Attributes = Attributes,
+    EA extends Attributes = Attributes,
+    GA extends Attributes = Attributes
+  >(graph: AbstractGraph<NA, EA, GA>): AbstractGraph<NA, EA, GA>;
 }
 
 interface GraphConstructor<
