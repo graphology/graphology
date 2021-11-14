@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.16.1
+
+- Switching to new internal weight getter.
+
 ## 0.16.0
 
 - Abstracting `NeighborhoodIndex`.
