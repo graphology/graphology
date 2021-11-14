@@ -11,7 +11,7 @@ function coerceWeight(value) {
   return value;
 }
 
-exports.createNodeValueGetter = function (nameOrFunction, defaultValue) {
+function createNodeValueGetter(nameOrFunction, defaultValue) {
   var getter = {};
 
   var coerceToDefault = function (v) {
@@ -59,9 +59,9 @@ exports.createNodeValueGetter = function (nameOrFunction, defaultValue) {
   }
 
   return getter;
-};
+}
 
-exports.createEdgeValueGetter = function (nameOrFunction, defaultValue) {
+function createEdgeValueGetter(nameOrFunction, defaultValue) {
   var getter = {};
 
   var coerceToDefault = function (v) {
@@ -82,25 +82,39 @@ exports.createEdgeValueGetter = function (nameOrFunction, defaultValue) {
 
   if (typeof nameOrFunction === 'string') {
     getter.fromAttributes = get;
-    getter.fromGraph = function (graph, node) {
-      return get(graph.getEdgeAttributes(node));
+    getter.fromGraph = function (graph, edge) {
+      return get(graph.getEdgeAttributes(edge));
     };
-    getter.fromEntry = function (node, attributes) {
+    getter.fromEntry = function (edge, attributes) {
       return get(attributes);
     };
+    getter.fromPartialEntry = getter.fromEntry;
   } else if (typeof nameOrFunction === 'function') {
     getter.fromAttributes = function () {
       throw new Error(
         'graphology-utils/getters/createEdgeValueGetter: irrelevant usage.'
       );
     };
-    getter.fromGraph = function (graph, node) {
+    getter.fromGraph = function (graph, edge) {
+      // TODO: we can do better, check #310
+      var extremities = graph.extremities(edge);
       return coerceToDefault(
-        nameOrFunction(node, graph.getEdgeAttributes(node))
+        nameOrFunction(
+          edge,
+          graph.getEdgeAttributes(edge),
+          extremities[0],
+          extremities[1],
+          graph.getNodeAttributes(extremities[0]),
+          graph.getNodeAttributes(extremities[1]),
+          graph.isUndirected(edge)
+        )
       );
     };
-    getter.fromEntry = function (node, attributes) {
-      return coerceToDefault(nameOrFunction(node, attributes));
+    getter.fromEntry = function (e, a, s, t, sa, ta, u) {
+      return coerceToDefault(nameOrFunction(e, a, s, t, sa, ta, u));
+    };
+    getter.fromPartialEntry = function (e, a, s, t) {
+      return coerceToDefault(nameOrFunction(e, a, s, t));
     };
   } else {
     getter.fromAttributes = returnDefault;
@@ -109,15 +123,10 @@ exports.createEdgeValueGetter = function (nameOrFunction, defaultValue) {
   }
 
   return getter;
-};
+}
 
-exports.createWeightGetter = function (name) {
-  var weightGetter = function (attr) {
-    // If no name was provided, it means we don't want a weighted computation
-    if (!name) return 1;
-
-    return coerceWeight(attr[name]);
-  };
-
-  return weightGetter;
+exports.createNodeValueGetter = createNodeValueGetter;
+exports.createEdgeValueGetter = createEdgeValueGetter;
+exports.createEdgeWeightGetter = function (name) {
+  return createEdgeValueGetter(name, coerceWeight);
 };

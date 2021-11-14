@@ -3,7 +3,8 @@
  * =========================================
  */
 var typed = require('mnemonist/utils/typed-arrays');
-var createWeightGetter = require('graphology-utils/getters').createWeightGetter;
+var createEdgeWeightGetter =
+  require('graphology-utils/getters').createEdgeWeightGetter;
 
 function NeighborhoodIndex(graph, method) {
   method = method || 'outbound';
@@ -99,7 +100,7 @@ function WeightedNeighborhoodIndex(graph, weightAttribute, method) {
   var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
   var NodesPointerArray = typed.getPointerArray(graph.order);
 
-  var weightGetter = createWeightGetter(weightAttribute);
+  var weightGetter = createEdgeWeightGetter(weightAttribute).fromAttributes;
 
   // NOTE: directedSize + undirectedSize * 2 is an upper bound for
   // neighborhood size

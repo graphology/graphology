@@ -22,21 +22,21 @@ interface EdgeValueGetter<
   EdgeAttributes extends Attributes = Attributes
 > {
   fromGraph(graph: Graph<NodeAttributes, EdgeAttributes>, edge: unknown): T;
-  fromPath(
-    graph: Graph<NodeAttributes, EdgeAttributes>,
-    source: unknown,
-    target: unknown
-  ): T;
-  fromDirectedPath(
-    graph: Graph<NodeAttributes, EdgeAttributes>,
-    source: unknown,
-    target: unknown
-  ): T;
-  fromUndirectedPath(
-    graph: Graph<NodeAttributes, EdgeAttributes>,
-    source: unknown,
-    target: unknown
-  ): T;
+  // fromPath(
+  //   graph: Graph<NodeAttributes, EdgeAttributes>,
+  //   source: unknown,
+  //   target: unknown
+  // ): T;
+  // fromDirectedPath(
+  //   graph: Graph<NodeAttributes, EdgeAttributes>,
+  //   source: unknown,
+  //   target: unknown
+  // ): T;
+  // fromUndirectedPath(
+  //   graph: Graph<NodeAttributes, EdgeAttributes>,
+  //   source: unknown,
+  //   target: unknown
+  // ): T;
   fromAttributes(attributes: EdgeAttributes): T;
   fromEntry: EdgeMapper<T, NodeAttributes, EdgeAttributes>;
   fromPartialEntry: PartialEdgeMapper<T, EdgeAttributes>;
