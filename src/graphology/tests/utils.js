@@ -38,6 +38,15 @@ export default function utils(Graph) {
         assert.throws(function () {
           copy.addDirectedEdge('one', 'two');
         }, /addDirectedEdge/);
+      },
+
+      'copying the graph should conserve its attributes.': function () {
+        const graph = new Graph();
+        graph.setAttribute('title', 'The Graph');
+
+        const copy = graph.nullCopy();
+
+        assert.deepStrictEqual(graph.getAttributes(), copy.getAttributes());
       }
     },
 

@@ -2,6 +2,7 @@
 
 ## 0.23.1 (provisional)
 
+- Fixing `#.copy` not copying the graph's attributes.
 - Improving performance of `#.copy`.
 
 ## 0.23.0

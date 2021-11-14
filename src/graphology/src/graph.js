@@ -2610,7 +2610,9 @@ export default class Graph extends EventEmitter {
    * @return {Graph}          - The null copy.
    */
   nullCopy(options) {
-    return new Graph(assign({}, this._options, options));
+    const graph = new Graph(assign({}, this._options, options));
+    graph.replaceAttributes(assign({}, this.getAttributes()));
+    return graph;
   }
 
   /**
