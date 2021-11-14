@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.23.1 (provisional)
+## 0.23.1
 
 - Fixing `#.copy` not copying the graph's attributes.
 - Improving performance of `#.copy`.
