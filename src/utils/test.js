@@ -352,26 +352,77 @@ describe('graphology-utils', function () {
     });
   });
 
-  describe('createWeightGetter', function () {
-    it('should return valid weights from attributes.', function () {
-      var graph = new Graph();
-      graph.mergeEdge(1, 2, {weight: 3});
-      graph.mergeEdge(3, 4, {custom: 2});
-      graph.mergeEdge(4, 5);
-      graph.mergeEdge(6, 7, {weight: NaN});
-      graph.mergeEdge(8, 9, {weight: 'test'});
+  describe('getters', function () {
+    describe('createNodeValueGetter', function () {
+      it('should return a useful getter.', function () {
+        var g = new Graph();
+        g.addNode('mary', {label: 'Mary', age: 34, color: 'blue'});
 
-      var defaultGetter = createWeightGetter(null);
-      var weightGetter = createWeightGetter('weight');
-      var customGetter = createWeightGetter('custom');
+        var get = getters.createNodeValueGetter(null);
 
-      assert.strictEqual(defaultGetter(graph.getEdgeAttributes(1, 2)), 1);
-      assert.strictEqual(weightGetter(graph.getEdgeAttributes(1, 2)), 3);
-      assert.strictEqual(weightGetter(graph.getEdgeAttributes(3, 4)), 1);
-      assert.strictEqual(customGetter(graph.getEdgeAttributes(3, 4)), 2);
-      assert.strictEqual(weightGetter(graph.getEdgeAttributes(4, 5)), 1);
-      assert.strictEqual(weightGetter(graph.getEdgeAttributes(6, 7)), 1);
-      assert.strictEqual(weightGetter(graph.getEdgeAttributes(8, 9)), 1);
+        assert.strictEqual(get.fromNode(g, 'mary'), undefined);
+        assert.strictEqual(get.fromAttributes({label: 'Mary'}), undefined);
+        assert.strictEqual(
+          get.fromEntry('mary', g.getNodeAttributes('mary')),
+          undefined
+        );
+
+        get = getters.createNodeValueGetter(null, 'test');
+
+        assert.strictEqual(get.fromNode(g, 'mary'), 'test');
+        assert.strictEqual(get.fromAttributes({label: 'Mary'}), 'test');
+        assert.strictEqual(
+          get.fromEntry('mary', g.getNodeAttributes('mary')),
+          'test'
+        );
+
+        get = getters.createNodeValueGetter(function (node, attr) {
+          return attr.age + 5;
+        });
+
+        assert.strictEqual(get.fromNode(g, 'mary'), 39);
+        assert.throws(function () {
+          get.fromAttributes({label: 'Mary'});
+        });
+        assert.strictEqual(
+          get.fromEntry('mary', g.getNodeAttributes('mary')),
+          39
+        );
+
+        get = getters.createNodeValueGetter('color', function (v) {
+          if (typeof v !== 'number') return 1;
+        });
+
+        assert.strictEqual(get.fromNode(g, 'mary'), 1);
+        assert.strictEqual(get.fromAttributes({label: 'Mary'}), 1);
+        assert.strictEqual(
+          get.fromEntry('mary', g.getNodeAttributes('mary')),
+          1
+        );
+      });
+    });
+
+    describe('createWeightGetter', function () {
+      it('should return valid weights from attributes.', function () {
+        var graph = new Graph();
+        graph.mergeEdge(1, 2, {weight: 3});
+        graph.mergeEdge(3, 4, {custom: 2});
+        graph.mergeEdge(4, 5);
+        graph.mergeEdge(6, 7, {weight: NaN});
+        graph.mergeEdge(8, 9, {weight: 'test'});
+
+        var defaultGetter = createWeightGetter(null);
+        var weightGetter = createWeightGetter('weight');
+        var customGetter = createWeightGetter('custom');
+
+        assert.strictEqual(defaultGetter(graph.getEdgeAttributes(1, 2)), 1);
+        assert.strictEqual(weightGetter(graph.getEdgeAttributes(1, 2)), 3);
+        assert.strictEqual(weightGetter(graph.getEdgeAttributes(3, 4)), 1);
+        assert.strictEqual(customGetter(graph.getEdgeAttributes(3, 4)), 2);
+        assert.strictEqual(weightGetter(graph.getEdgeAttributes(4, 5)), 1);
+        assert.strictEqual(weightGetter(graph.getEdgeAttributes(6, 7)), 1);
+        assert.strictEqual(weightGetter(graph.getEdgeAttributes(8, 9)), 1);
+      });
     });
   });
 
