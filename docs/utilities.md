@@ -6,8 +6,8 @@ menu_toc:
   - "#.copy"
   - "#.nullCopy"
   - "#.emptyCopy"
-  - "#.upgradeToMixed"
-  - "#.upgradeToMulti"
+  # - "#.upgradeToMixed"
+  # - "#.upgradeToMulti"
 ---
 
 # Utilities
@@ -87,6 +87,7 @@ graph.type === newGraph.type
 
 * **options** <span class="code">[object]</span>: options to merge to create a slightly different graph.
 
+<!--
 ## #.upgradeToMixed
 
 Upgrade the graph to a mixed one.
@@ -126,4 +127,4 @@ graph.addEdgeWithKey('B', 1, 2);
 graph.edges(1, 2);
 >>> ['A', 'B']
 ```
-
+ -->

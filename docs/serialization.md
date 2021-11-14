@@ -5,11 +5,11 @@ nav_order: 12
 menu_toc:
   - "Format"
   - "#.import"
-  - "#.importNode"
-  - "#.importEdge"
+  # - "#.importNode"
+  # - "#.importEdge"
   - "#.export"
-  - "#.exportNode"
-  - "#.exportEdge"
+  # - "#.exportNode"
+  # - "#.exportEdge"
 ---
 
 # Serialization
@@ -109,7 +109,7 @@ graph.hasNode('Thomas');
 * **data** <span class="code">serialized graph|Graph</span>: serialized graph data or another Graph instance.
 * **merge** <span class="code">[boolean]</span> <span class="default">false</span>: whether to merge the imported data.
 
-## #.importNode
+<!-- ## #.importNode
 
 Imports a single serialized node into the graph.
 
@@ -149,7 +149,7 @@ graph.hasEdge('Thomas', 'Eric');
 *Arguments*
 
 * **edge** <span class="code">serialized edge</span>: data of the edge to import.
-* **merge** <span class="code">[boolean]</span> <span class="default">false</span>: whether to merge the imported edge.
+* **merge** <span class="code">[boolean]</span> <span class="default">false</span>: whether to merge the imported edge. -->
 
 ## #.export
 
@@ -181,7 +181,7 @@ graph.export();
 }
 ```
 
-## #.exportNode
+<!-- ## #.exportNode
 
 Exports a single node from the graph.
 
@@ -211,4 +211,4 @@ graph.exportEdge('T->M');
   target: 'Martha',
   attributes: {type: 'KNOWS'}
 }
-```
+``` -->
