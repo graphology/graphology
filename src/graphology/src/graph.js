@@ -2642,18 +2642,25 @@ export default class Graph extends EventEmitter {
   copy() {
     const graph = this.emptyCopy();
 
-    this.forEachEdge((edge, attr, source, target, _sa, _ta, undirected) => {
+    const iterator = this._edges.values();
+
+    let step, edgeData;
+
+    while (((step = iterator.next()), step.done !== true)) {
+      edgeData = step.value;
+
+      // NOTE: no need to emit events since user cannot access the instance yet
       addEdge(
         graph,
         'copy',
         false,
-        undirected,
-        edge,
-        source,
-        target,
-        assign({}, attr)
+        edgeData.undirected,
+        edgeData.key,
+        edgeData.source.key,
+        edgeData.target.key,
+        assign({}, edgeData.attributes)
       );
-    });
+    }
 
     return graph;
   }

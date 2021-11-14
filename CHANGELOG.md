@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.23.1 (provisional)
+
+- Improving performance of `#.copy`.
+
 ## 0.23.0
 
 - Adding `#.updateAttributes`.
