@@ -11,7 +11,7 @@ export type PartialEdgeMapper<
 ) => T;
 
 interface NodeValueGetter<T, NodeAttributes extends Attributes = Attributes> {
-  fromNode(graph: Graph<NodeAttributes>, node: unknown): T;
+  fromGraph(graph: Graph<NodeAttributes>, node: unknown): T;
   fromAttributes(attributes: NodeAttributes): T;
   fromEntry: NodeMapper<T, NodeAttributes>;
 }
@@ -21,7 +21,7 @@ interface EdgeValueGetter<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > {
-  fromEdge(graph: Graph<NodeAttributes, EdgeAttributes>, edge: unknown): T;
+  fromGraph(graph: Graph<NodeAttributes, EdgeAttributes>, edge: unknown): T;
   fromPath(
     graph: Graph<NodeAttributes, EdgeAttributes>,
     source: unknown,

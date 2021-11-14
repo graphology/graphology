@@ -360,7 +360,7 @@ describe('graphology-utils', function () {
 
         var get = getters.createNodeValueGetter(null);
 
-        assert.strictEqual(get.fromNode(g, 'mary'), undefined);
+        assert.strictEqual(get.fromGraph(g, 'mary'), undefined);
         assert.strictEqual(get.fromAttributes({label: 'Mary'}), undefined);
         assert.strictEqual(
           get.fromEntry('mary', g.getNodeAttributes('mary')),
@@ -369,7 +369,7 @@ describe('graphology-utils', function () {
 
         get = getters.createNodeValueGetter(null, 'test');
 
-        assert.strictEqual(get.fromNode(g, 'mary'), 'test');
+        assert.strictEqual(get.fromGraph(g, 'mary'), 'test');
         assert.strictEqual(get.fromAttributes({label: 'Mary'}), 'test');
         assert.strictEqual(
           get.fromEntry('mary', g.getNodeAttributes('mary')),
@@ -380,7 +380,7 @@ describe('graphology-utils', function () {
           return attr.age + 5;
         });
 
-        assert.strictEqual(get.fromNode(g, 'mary'), 39);
+        assert.strictEqual(get.fromGraph(g, 'mary'), 39);
         assert.throws(function () {
           get.fromAttributes({label: 'Mary'});
         });
@@ -393,10 +393,84 @@ describe('graphology-utils', function () {
           if (typeof v !== 'number') return 1;
         });
 
-        assert.strictEqual(get.fromNode(g, 'mary'), 1);
+        assert.strictEqual(get.fromGraph(g, 'mary'), 1);
         assert.strictEqual(get.fromAttributes({label: 'Mary'}), 1);
         assert.strictEqual(
           get.fromEntry('mary', g.getNodeAttributes('mary')),
+          1
+        );
+      });
+    });
+
+    describe('createEdgeValueGetter', function () {
+      it('should return a useful getter.', function () {
+        var g = new Graph();
+        g.addNode('Mary');
+        g.addNode('Sue');
+        var directedEdge = g.addDirectedEdge('Mary', 'Sue', {
+          weight: 34,
+          type: 'LOVES'
+        });
+        // var undirectedEdge = g.addUndirectedEdge('Mary', 'Sue', {
+        //   weight: -4,
+        //   type: 'LIKES'
+        // });
+
+        var getEdgeEntry = function (e) {
+          return [
+            e,
+            g.getEdgeAttributes(e),
+            g.source(e),
+            g.target(e),
+            g.getSourceAttributes(e),
+            g.getTargetAttributes(e),
+            g.isUndirected(e)
+          ];
+        };
+
+        // var getPartialEdgeEntry = function (e) {
+        //   return [e, g.getEdgeAttributes(e), g.source(e), g.target(e)];
+        // };
+
+        var get = getters.createEdgeValueGetter(null);
+
+        assert.strictEqual(get.fromGraph(g, directedEdge), undefined);
+        assert.strictEqual(get.fromAttributes({type: 'LIKES'}), undefined);
+        assert.strictEqual(
+          get.fromEntry.apply(null, getEdgeEntry(directedEdge)),
+          undefined
+        );
+
+        get = getters.createEdgeValueGetter(null, 'test');
+
+        assert.strictEqual(get.fromGraph(g, directedEdge), 'test');
+        assert.strictEqual(get.fromAttributes({type: 'LIKES'}), 'test');
+        assert.strictEqual(
+          get.fromEntry.apply(null, getEdgeEntry(directedEdge)),
+          'test'
+        );
+
+        get = getters.createEdgeValueGetter(function (edge, attr) {
+          return attr.weight + 5;
+        });
+
+        assert.strictEqual(get.fromGraph(g, directedEdge), 39);
+        assert.throws(function () {
+          get.fromAttributes({type: 'LIKES'});
+        });
+        assert.strictEqual(
+          get.fromEntry.apply(null, getEdgeEntry(directedEdge)),
+          39
+        );
+
+        get = getters.createEdgeValueGetter('color', function (v) {
+          if (typeof v !== 'number') return 1;
+        });
+
+        assert.strictEqual(get.fromGraph(g, directedEdge), 1);
+        assert.strictEqual(get.fromAttributes({type: 'LIKES'}), 1);
+        assert.strictEqual(
+          get.fromEntry.apply(null, getEdgeEntry(directedEdge)),
           1
         );
       });
