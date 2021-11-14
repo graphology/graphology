@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.0 (provisonal)
+## 1.5.0
 
 - Adding `toMulti`.
 - Adding `toMixed`.

@@ -1,6 +1,6 @@
 {
   "name": "graphology-operators",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "description": "Miscellaneous operators for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
