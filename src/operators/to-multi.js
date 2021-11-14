@@ -13,6 +13,8 @@ module.exports = function toMulti(graph) {
       'graphology-operators/to-multi: expecting a valid graphology instance.'
     );
 
+  if (graph.multi) return graph.copy();
+
   var multiGraph = graph.emptyCopy({multi: true});
 
   // TODO: do this faster when #.copy get options arg

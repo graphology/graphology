@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0 (provisonal)
+
+- Adding `toMulti`.
+- Adding `toMixed`.
+
 ## 1.4.3
 
 - Fixing `toDirected` and `toUndirected` wrt multi graphs.

@@ -7,15 +7,18 @@ var Graph = require('graphology');
 var createTupleComparator =
   require('mnemonist/utils/comparators').createTupleComparator;
 var mergeClique = require('graphology-utils/merge-clique');
-var areSameGraphsDeep = require('graphology-assertions').areSameGraphsDeep;
+var assertions = require('graphology-assertions');
+
+var areSameGraphsDeep = assertions.areSameGraphsDeep;
+var haveSameEdgesDeep = assertions.haveSameEdgesDeep;
 
 var reverse = require('./reverse.js');
 var subgraph = require('./subgraph');
 var union = require('./union.js');
 var disjointUnion = require('./disjoint-union.js');
 var toDirected = require('./to-directed.js');
-// var toMixed = require('./to-mixed.js');
-// var toMulti = require('./to-multi.js');
+var toMixed = require('./to-mixed.js');
+var toMulti = require('./to-multi.js');
 var toSimple = require('./to-simple.js');
 var toUndirected = require('./to-undirected.js');
 
@@ -373,24 +376,43 @@ describe('graphology-operators', function () {
       });
     });
 
-    // describe('toMixed', function () {
-    //   it('should throw when given an invalid graph.', function () {
-    //     assert.throws(function () {
-    //       toMixed('test');
-    //     }, /graphology/);
-    //   });
+    describe('toMixed', function () {
+      it('should throw when given an invalid graph.', function () {
+        assert.throws(function () {
+          toMixed('test');
+        }, /graphology/);
+      });
 
-    //   it('should only return a plain copy of a directed graph.', function () {
-    //     var graph = new Graph({type: 'directed'});
+      it('should only return a plain copy of a directed graph.', function () {
+        var graph = new Graph({type: 'directed'});
 
-    //     graph.mergeEdge(1, 2);
+        graph.mergeEdge(1, 2);
 
-    //     var copy = toDirected(graph);
+        var copy = toMixed(graph);
 
-    //     assert.notStrictEqual(graph, copy);
-    //     assert.deepStrictEqual(graph.nodes(), copy.nodes());
-    //   });
-    // });
+        assert.strictEqual(copy.type, 'mixed');
+        assert.strictEqual(haveSameEdgesDeep(graph, copy), true);
+      });
+    });
+
+    describe('toMulti', function () {
+      it('should throw when given an invalid graph.', function () {
+        assert.throws(function () {
+          toMulti('test');
+        }, /graphology/);
+      });
+
+      it('should only return a plain copy of a directed graph.', function () {
+        var graph = new Graph({multi: false});
+
+        graph.mergeEdge(1, 2);
+
+        var copy = toMulti(graph);
+
+        assert.strictEqual(copy.multi, true);
+        assert.strictEqual(haveSameEdgesDeep(graph, copy), true);
+      });
+    });
 
     describe('toUndirected', function () {
       it('should throw when given an invalid graph.', function () {

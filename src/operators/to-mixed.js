@@ -13,6 +13,8 @@ module.exports = function toMixed(graph) {
       'graphology-operators/to-mixed: expecting a valid graphology instance.'
     );
 
+  if (graph.type === 'mixed') return graph.copy();
+
   var mixedGraph = graph.emptyCopy({type: 'mixed'});
 
   // TODO: do this faster when #.copy get options arg

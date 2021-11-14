@@ -33,6 +33,8 @@ _Binary_
 _Cast_
 
 - [toDirected](#todirected)
+- [toMixed](#tomixed)
+- [toMulti](#tomulti)
 - [toSimple](#tosimple)
 - [toUndirected](#toundirected)
 
@@ -144,6 +146,34 @@ _Arguments_
 - **graph** _Graph_: target graph.
 - **mergeOrOptions** <span class="code">?function\|object</span>: either a merging function or an options object:
   - **mergeEdge** <span class="code">?function</span>: merging function to use.
+
+### toMixed
+
+Returns the given graph as mixed.
+
+If an already mixed graph is passed, the function will only return a copy of it.
+
+```js
+import {toMixed} from 'graphology-operators';
+// Alternatively, to load only the relevant code:
+import toMixed from 'graphology-operators/to-mixed';
+
+const mixedGraph = toMixed(graph);
+```
+
+### toMulti
+
+Returns the given graph as multi.
+
+If an already multi graph is passed, the function will only return a copy of it.
+
+```js
+import {toMulti} from 'graphology-operators';
+// Alternatively, to load only the relevant code:
+import toMulti from 'graphology-operators/to-multi';
+
+const mixedGraph = toMulti(graph);
+```
 
 ### toSimple
 
