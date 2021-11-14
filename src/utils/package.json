@@ -1,6 +1,6 @@
 {
   "name": "graphology-utils",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "Miscellaneous utils for graphology.",
   "main": "index.js",
   "files": [
