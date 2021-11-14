@@ -14,6 +14,8 @@ var subgraph = require('./subgraph');
 var union = require('./union.js');
 var disjointUnion = require('./disjoint-union.js');
 var toDirected = require('./to-directed.js');
+// var toMixed = require('./to-mixed.js');
+// var toMulti = require('./to-multi.js');
 var toSimple = require('./to-simple.js');
 var toUndirected = require('./to-undirected.js');
 
@@ -370,6 +372,25 @@ describe('graphology-operators', function () {
         assert.strictEqual(areSameGraphsDeep(copy, expected), true);
       });
     });
+
+    // describe('toMixed', function () {
+    //   it('should throw when given an invalid graph.', function () {
+    //     assert.throws(function () {
+    //       toMixed('test');
+    //     }, /graphology/);
+    //   });
+
+    //   it('should only return a plain copy of a directed graph.', function () {
+    //     var graph = new Graph({type: 'directed'});
+
+    //     graph.mergeEdge(1, 2);
+
+    //     var copy = toDirected(graph);
+
+    //     assert.notStrictEqual(graph, copy);
+    //     assert.deepStrictEqual(graph.nodes(), copy.nodes());
+    //   });
+    // });
 
     describe('toUndirected', function () {
       it('should throw when given an invalid graph.', function () {

@@ -10,6 +10,8 @@ var haveSameNodes = lib.haveSameNodes;
 var haveSameNodesDeep = lib.haveSameNodesDeep;
 var areSameGraphs = lib.areSameGraphs;
 var areSameGraphsDeep = lib.areSameGraphsDeep;
+var haveSameEdges = lib.haveSameEdges;
+var haveSameEdgesDeep = lib.haveSameEdgesDeep;
 
 var MultiGraph = Graph.MultiGraph;
 
@@ -165,6 +167,89 @@ describe('graphology-utils', function () {
       G.addNode('Evrard');
 
       assert.strictEqual(areSameGraphsDeep(G, H), false);
+    });
+  });
+
+  describe('#.haveSameEdges', function () {
+    it('should return whether both graphs have same edges.', function () {
+      var G = new Graph();
+      G.mergeEdge(0, 1);
+      G.mergeEdge(0, 2);
+
+      assert.strictEqual(haveSameEdges(G, G.copy()), true);
+
+      var H = G.emptyCopy({type: 'mixed'});
+
+      assert.strictEqual(haveSameEdges(G, H), false);
+
+      H.addEdge(0, 1);
+      H.addEdge(0, 2);
+
+      assert.strictEqual(haveSameEdges(G, H), true);
+
+      H = G.emptyCopy({multi: true});
+
+      assert.strictEqual(haveSameEdges(G, H), false);
+
+      H.addEdge(0, 1);
+      H.addEdge(0, 2);
+
+      assert.strictEqual(haveSameEdges(G, H), true);
+
+      H.addEdge(0, 1);
+
+      assert.strictEqual(haveSameEdges(G, H), false);
+
+      H = G.emptyCopy({multi: true, type: 'mixed'});
+
+      H.addEdge(0, 1);
+      H.addEdge(0, 2);
+
+      assert.strictEqual(haveSameEdges(G, H), true);
+    });
+  });
+
+  describe('#.haveSameEdgesDeep', function () {
+    it('should return whether both graphs have same edges & their respective attributes.', function () {
+      var G = new Graph();
+      G.mergeEdge(0, 1, {hello: 'world'});
+      G.mergeEdge(0, 2);
+
+      assert.strictEqual(haveSameEdgesDeep(G, G.copy()), true);
+
+      var H = G.emptyCopy({type: 'mixed'});
+
+      assert.strictEqual(haveSameEdgesDeep(G, H), false);
+
+      H.addEdge(0, 1, {hello: 'world'});
+      H.addEdge(0, 2);
+
+      assert.strictEqual(haveSameEdgesDeep(G, H), true);
+
+      H = G.emptyCopy({multi: true});
+
+      assert.strictEqual(haveSameEdgesDeep(G, H), false);
+
+      H.addEdge(0, 1, {hello: 'world'});
+      H.addEdge(0, 2);
+
+      assert.strictEqual(haveSameEdgesDeep(G, H), true);
+
+      H.addEdge(0, 1, {hello: 'world'});
+
+      assert.strictEqual(haveSameEdgesDeep(G, H), false);
+
+      H = G.emptyCopy({multi: true, type: 'mixed'});
+
+      H.addEdge(0, 1, {hello: 'world'});
+      var edge = H.addEdge(0, 2);
+
+      assert.strictEqual(haveSameEdgesDeep(G, H), true);
+
+      H.setEdgeAttribute(edge, 'color', 'blue');
+
+      assert.strictEqual(haveSameEdges(G, H), true);
+      assert.strictEqual(haveSameEdgesDeep(G, H), false);
     });
   });
 });

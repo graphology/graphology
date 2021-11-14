@@ -1,6 +1,6 @@
 /**
  * Graphology Operators To Directed Caster
- * ==========================================
+ * ========================================
  *
  * Function used to cast any graph to a directed one.
  */

@@ -6,3 +6,5 @@ export function haveSameNodes(G: Graph, H: Graph): boolean;
 export function haveSameNodesDeep(G: Graph, H: Graph): boolean;
 export function areSameGraphs(G: Graph, H: Graph): boolean;
 export function areSameGraphsDeep(G: Graph, H: Graph): boolean;
+export function haveSameEdges(G: Graph, H: Graph): boolean;
+export function haveSameEdgesDeep(G: Graph, H: Graph): boolean;

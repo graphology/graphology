@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.0 (provisional)
+
+- Adding `haveSameEdges` and `haveSameEdgesDeep`.
+
 ## 2.1.1
 
 - Fixing `areSameGraphs` and `areSameGraphsDeep` wrt undirected edges.

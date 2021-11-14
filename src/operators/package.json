@@ -11,6 +11,8 @@
     "reverse.js",
     "subgraph.js",
     "to-directed.js",
+    "to-mixed.js",
+    "to-multi.js",
     "to-undirected.js",
     "to-simple.js",
     "union.js"

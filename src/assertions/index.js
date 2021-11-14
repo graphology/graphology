@@ -99,6 +99,8 @@ function collectAssymetricUndirectedEdges(graph, node) {
  * @return {boolean}
  */
 function abstractHaveSameNodes(deep, G, H) {
+  if (G === H) return true;
+
   if (G.order !== H.order) return false;
 
   return G.everyNode(function (node, attr) {
@@ -113,19 +115,33 @@ function abstractHaveSameNodes(deep, G, H) {
 /**
  * Function returning whether the given graphs are identical.
  *
- * @param  {boolean} deep - Whether to perform deep comparison.
- * @param  {Graph}   G    - First graph.
- * @param  {Graph}   H    - Second graph.
+ * @param  {boolean} deep    - Whether to perform deep comparison.
+ * @param  {boolean} relaxed - Whether to allow graph options to differ.
+ * @param  {Graph}   G       - First graph.
+ * @param  {Graph}   H       - Second graph.
  * @return {boolean}
  */
-function abstractAreSameGraphs(deep, G, H) {
+function abstractAreSameGraphs(deep, relaxed, G, H) {
+  if (G === H) return true;
+
+  // If two graphs have incompatible settings they cannot be identical
+  if (relaxed) {
+    if (
+      (G.type === 'directed' && H.type === 'undirected') ||
+      (G.type === 'undirected' && H.type === 'directed')
+    )
+      return false;
+  }
+
   // If two graphs don't have the same settings they cannot be identical
-  if (
-    G.type !== H.type ||
-    G.allowSelfLoops !== H.allowSelfLoops ||
-    G.multi !== H.multi
-  )
-    return false;
+  else {
+    if (
+      G.type !== H.type ||
+      G.allowSelfLoops !== H.allowSelfLoops ||
+      G.multi !== H.multi
+    )
+      return false;
+  }
 
   // If two graphs don't have the same number of typed edges, they cannot be identical
   if (
@@ -141,7 +157,7 @@ function abstractAreSameGraphs(deep, G, H) {
   var sameUndirectedEdges = false;
 
   // In the simple case we don't need refining
-  if (!G.multi) {
+  if (!G.multi && !H.multi) {
     sameDirectedEdges = G.everyDirectedEdge(function (_e, _ea, source, target) {
       if (!H.hasDirectedEdge(source, target)) return false;
 
@@ -211,5 +227,7 @@ exports.isGraph = require('graphology-utils/is-graph');
 exports.isGraphConstructor = require('graphology-utils/is-graph-constructor');
 exports.haveSameNodes = abstractHaveSameNodes.bind(null, false);
 exports.haveSameNodesDeep = abstractHaveSameNodes.bind(null, true);
-exports.areSameGraphs = abstractAreSameGraphs.bind(null, false);
-exports.areSameGraphsDeep = abstractAreSameGraphs.bind(null, true);
+exports.areSameGraphs = abstractAreSameGraphs.bind(null, false, false);
+exports.areSameGraphsDeep = abstractAreSameGraphs.bind(null, true, false);
+exports.haveSameEdges = abstractAreSameGraphs.bind(null, false, true);
+exports.haveSameEdgesDeep = abstractAreSameGraphs.bind(null, true, true);
