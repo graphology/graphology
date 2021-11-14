@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.2.0 (provisional)
+## 2.2.0
 
 - Adding `haveSameEdges` and `haveSameEdgesDeep`.
 
