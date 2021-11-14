@@ -85,6 +85,15 @@ export default function utils(Graph) {
         assert.throws(function () {
           copy.addDirectedEdge('one', 'two');
         }, /addDirectedEdge/);
+      },
+
+      'copying the graph should conserve its attributes.': function () {
+        const graph = new Graph();
+        graph.setAttribute('title', 'The Graph');
+
+        const copy = graph.emptyCopy();
+
+        assert.deepStrictEqual(graph.getAttributes(), copy.getAttributes());
       }
     },
 
@@ -163,6 +172,15 @@ export default function utils(Graph) {
         });
 
         assert.strictEqual(serializedCopy.size, 4);
+      },
+
+      'copying the graph should conserve its attributes.': function () {
+        const graph = new Graph();
+        graph.setAttribute('title', 'The Graph');
+
+        const copy = graph.copy();
+
+        assert.deepStrictEqual(graph.getAttributes(), copy.getAttributes());
       }
     },
 
