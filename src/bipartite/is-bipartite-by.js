@@ -6,6 +6,8 @@
  * partition criterion.
  */
 const isGraph = require('graphology-utils/is-graph');
+const createNodeValueGetter =
+  require('graphology-utils/getters').createNodeValueGetter;
 
 module.exports = function isBipartiteBy(graph, getNodePartition) {
   if (!isGraph(graph))
@@ -13,10 +15,7 @@ module.exports = function isBipartiteBy(graph, getNodePartition) {
       'graphology-bipartite/is-bipartite-by: the given graph is not a valid graphology instance.'
     );
 
-  if (typeof getNodePartition === 'string') {
-    const nodePartitionAttribute = getNodePartition;
-    getNodePartition = (_, attr) => attr[nodePartitionAttribute];
-  }
+  getNodePartition = createNodeValueGetter(getNodePartition).fromEntry;
 
   const seenPartitions = [];
 
