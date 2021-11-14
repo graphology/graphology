@@ -15,7 +15,8 @@
     "test:types": "tsc --lib es2015,dom --noEmit --noImplicitAny --noImplicitReturns --strictNullChecks ./test-types.ts"
   },
   "files": [
-    "dist",
+    "dist/*.js",
+    "dist/*.ts",
     "specs"
   ],
   "keywords": [
