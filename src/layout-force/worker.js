@@ -43,11 +43,7 @@ ForceSupervisor.prototype.isRunning = function () {
 ForceSupervisor.prototype.runFrame = function () {
   let {converged} = iterate(this.graph, this.nodeStates, this.params);
 
-  helpers.assignLayoutChanges(
-    this.graph,
-    this.nodeStates,
-    this.params.attributes
-  );
+  helpers.assignLayoutChanges(this.graph, this.nodeStates, this.params);
 
   // TODO: figure out convergence
   converged = false;

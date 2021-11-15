@@ -4,6 +4,11 @@
  *
  * Function describing a single iteration of the force layout.
  */
+const {
+  createNodeValueGetter,
+  createEdgeValueGetter
+} = require('graphology-utils/getters');
+
 // const EPSILON = -Infinity;
 
 function hashPair(s, t) {
@@ -15,18 +20,18 @@ function hashPair(s, t) {
 //   return Math.abs(x) < EPSILON;
 // }
 
-module.exports = function iterate(graph, nodeStates, options) {
-  const {shouldSkipNode, shouldSkipEdge, attributes} = options;
-  const {fixed: fixedName} = attributes;
-  const {attraction, repulsion, gravity, inertia, maxMove} = options.settings;
+module.exports = function iterate(graph, nodeStates, params) {
+  const {nodeXAttribute: xKey, nodeYAttribute: yKey} = params;
+  const {attraction, repulsion, gravity, inertia, maxMove} = params.settings;
 
-  const {x: xKey, y: yKey} = attributes;
+  let {shouldSkipNode, shouldSkipEdge, isNodeFixed} = params;
 
-  const isNodeFixed =
-    typeof fixedName === 'function' ? fixedName : (_, attr) => attr[fixedName];
+  isNodeFixed = createNodeValueGetter(isNodeFixed);
+  shouldSkipNode = createNodeValueGetter(shouldSkipEdge, false);
+  shouldSkipEdge = createEdgeValueGetter(shouldSkipEdge, false);
 
   const nodes = graph.filterNodes((n, attr) => {
-    return !shouldSkipNode(n, attr);
+    return !shouldSkipNode.fromEntry(n, attr);
   });
 
   const adjustedOrder = nodes.length;
@@ -89,13 +94,13 @@ module.exports = function iterate(graph, nodeStates, options) {
         if (source === target) return;
 
         if (
-          shouldSkipNode(source, sourceAttr) ||
-          shouldSkipNode(target, targetAttr)
+          shouldSkipNode.fromEntry(source, sourceAttr) ||
+          shouldSkipNode.fromEntry(target, targetAttr)
         )
           return;
 
         if (
-          shouldSkipEdge(
+          shouldSkipEdge.fromEntry(
             edge,
             attr,
             source,
@@ -158,7 +163,7 @@ module.exports = function iterate(graph, nodeStates, options) {
     //   converged = false;
     // }
 
-    if (!isNodeFixed(n, graph.getNodeAttributes(n))) {
+    if (!isNodeFixed.fromGraph(graph, n)) {
       nodeState.x += nodeState.dx;
       nodeState.y += nodeState.dy;
       nodeState.fixed = false;

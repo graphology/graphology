@@ -62,10 +62,9 @@ _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** _object_: options:
-  - **attributes$** <span class="code">?object</span>: related attributes:
-    - **x** <span class="code">?string</span>: name of the x node attribute.
-    - **y** <span class="code">?string</span>: name of the y node attribute.
-    - **fixed** <span class="code">?string|function</span>: name of the fixed node attribute or getter function.
+  - **nodeXAttribute** <span class="code">?string</span> <span class="default">x</span>: name of the `x` position attribute for nodes.
+  - **nodeYAttribute** <span class="code">?string</span> <span class="default">y</span>: name of the `y` position attribute for edges.
+  - **isNodeFixed** <span class="code">?string\|function</span> <span class="default">fixed</span>: name of the `fixed` attribute for nodes or a function getting a node entry (key, attributes) and returning whether the node is fixed.
   - **shouldSkipNode** <span class="code">?function</span>: function returning whether the layout computations should skip this node.
   - **shouldSkipEdge** <span class="code">?function</span>: function returning whether the layout computations should skip this edge.
   - **maxIterations** <span class="code">?number</span> <span class="default">500</span>: maximum number of iterations to perform before stopping. Note that the algorithm will also stop as soon as converged.

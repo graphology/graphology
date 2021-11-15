@@ -18,11 +18,9 @@ export type ForceLayoutParameters<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > = {
-  attributes?: {
-    x?: string;
-    y?: string;
-    fixed?: string | NodePredicate<NodeAttributes>;
-  };
+  nodeXAttribute?: string;
+  nodeYAttribute?: string;
+  isNodeFixed?: string | NodePredicate<NodeAttributes>;
   shouldSkipNode?: NodePredicate<NodeAttributes>;
   shouldSkipEdge?: EdgePredicate<EdgeAttributes>;
   maxIterations?: number;

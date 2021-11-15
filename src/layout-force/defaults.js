@@ -4,16 +4,12 @@
  *
  * Default options & settings used by the library.
  */
-const returnFalse = () => false;
-
 module.exports = {
-  attributes: {
-    x: 'x',
-    y: 'y',
-    fixed: 'fixed'
-  },
-  shouldSkipNode: returnFalse,
-  shouldSkipEdge: returnFalse,
+  nodeXAttribute: 'x',
+  nodeYAttribute: 'y',
+  isNodeFixed: 'fixed',
+  shouldSkipNode: null,
+  shouldSkipEdge: null,
   settings: {
     attraction: 0.0005,
     repulsion: 0.1,

@@ -4,8 +4,8 @@
  *
  * Miscellaneous helper functions related to the force layout.
  */
-exports.assignLayoutChanges = function (graph, nodeStates, attributes) {
-  const {x, y} = attributes;
+exports.assignLayoutChanges = function (graph, nodeStates, params) {
+  const {nodeXAttribute: x, nodeYAttribute: y} = params;
 
   graph.updateEachNodeAttributes(
     (n, attr) => {

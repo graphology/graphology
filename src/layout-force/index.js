@@ -54,7 +54,7 @@ function abstractSynchronousLayout(assign, graph, params) {
 
   // Applying
   if (assign) {
-    helpers.assignLayoutChanges(graph, nodeStates, params.attributes);
+    helpers.assignLayoutChanges(graph, nodeStates, params);
     return;
   }
 
