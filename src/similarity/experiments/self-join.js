@@ -3,6 +3,9 @@ const Graph = require('graphology');
 const {jaccard} = require('mnemonist/set');
 const DATA = require('./resources/polarisation.json');
 
+// TODO: fix similarity computation by implying self loop
+// TODO: use anti-neighbors concept for directedness
+
 const EPSILON = 1e-8;
 
 const polarisation = Graph.from(DATA);
@@ -92,3 +95,36 @@ for (let i = 0; i < nodes.length; i++) {
 console.timeEnd('topology');
 
 console.log(topologyPairs.length, J, upperBound);
+
+// Full graph experiment
+// polarisation.forEachEdge(edge => {
+//   polarisation.mergeEdgeAttributes(edge, {type: 'existed', weight: 0});
+// });
+
+// topologyPairs.forEach(function ([n1, n2, d]) {
+//   if (polarisation.hasEdge(n1, n2)) {
+//     polarisation.mergeEdgeAttributes(n1, n2, {weight: d, type: 'both'});
+//   } else if (polarisation.hasEdge(n2, n1)) {
+//     polarisation.mergeEdgeAttributes(n2, n1, {weight: d, type: 'both'});
+//   } else {
+//     polarisation.addEdge(n1, n2, {type: 'inexistent', weight: d});
+//   }
+// });
+
+// console.error(JSON.stringify(polarisation, null, 2));
+
+// Projection experiment
+// const louvain = require('graphology-communities-louvain');
+// const projection = polarisation.emptyCopy({type: 'undirected'});
+
+// topologyPairs.forEach(([n1, n2, d]) => {
+//   projection.addEdge(n1, n2, {weight: d});
+// });
+
+// const result = louvain.detailed(projection, {weighted: true, resolution: 1.2});
+
+// polarisation.forEachNode(node => {
+//   polarisation.setNodeAttribute(node, 'simsim', '' + result.communities[node]);
+// });
+
+// console.error(JSON.stringify(polarisation, null, 2));
