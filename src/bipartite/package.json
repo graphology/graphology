@@ -1,6 +1,6 @@
 {
   "name": "graphology-bipartite",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Bipartite graph functions for graphology.",
   "main": "index.js",
   "files": [
