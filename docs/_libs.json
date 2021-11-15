@@ -1,5 +1,6 @@
 {
   "assertions": "Miscellaneous assertions (same nodes, same edges etc.).",
+  "bipartite": "Bipartite graph helper functions (coloring, projection etc.).",
   "canvas": "Canvas rendering routines for graphs.",
   "communities-louvain": "Louvain method for community detection.",
   "components": "Connected components (strong, weak etc.).",

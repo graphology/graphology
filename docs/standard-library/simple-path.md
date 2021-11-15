@@ -1,7 +1,7 @@
 ---
 layout: default
 title: simple-path
-nav_order: 15
+nav_order: 16
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/simple-path"

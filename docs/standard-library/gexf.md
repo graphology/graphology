@@ -1,7 +1,7 @@
 ---
 layout: default
 title: gexf
-nav_order: 5
+nav_order: 6
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/gexf"
@@ -9,7 +9,6 @@ aux_links:
 ---
 
 [![Build Status](/standard-library/gexf/workflows/Tests/badge.svg)](/standard-library/gexf/actions)
-
 
 # Graphology GEXF Utilities
 
@@ -25,9 +24,9 @@ npm install graphology-gexf
 
 ## Usage
 
-* [Parser](#parser)
-* [Writer](#writer)
-* [Notes](#notes)
+- [Parser](#parser)
+- [Writer](#writer)
+- [Notes](#notes)
 
 ### Parser
 
@@ -51,12 +50,12 @@ var graph = gexf.parse(Graph, xmlDocument);
 var graph = gexf.parse(Graph, string, {addMissingNodes: true});
 ```
 
-*Arguments*
+_Arguments_
 
-- **constructor** *GraphClass*: graphology constructor to use.
-- **source** *string\|Document*: source data to parse.
-- **options** *?object*: parsing options:
-  - **addMissingNodes** *?boolean* <span class="default">false</span>: whether to add missing nodes referenced in the file's edges.
+- **constructor** _GraphClass_: graphology constructor to use.
+- **source** _string\|Document_: source data to parse.
+- **options** <span class="code">?object</span>: parsing options:
+  - **addMissingNodes** <span class="code">?boolean</span> <span class="default">false</span>: whether to add missing nodes referenced in the file's edges.
 
 ### Writer
 
@@ -73,7 +72,7 @@ var gexfString = gexf.write(graph);
 
 // Using custom formatting for nodes & edges
 var gexfString = gexf.write(graph, {
-  formatNode: function(key, attributes) {
+  formatNode: function (key, attributes) {
     return {
       label: attributes.label,
       attributes: {
@@ -89,7 +88,7 @@ var gexfString = gexf.write(graph, {
       }
     };
   },
-  formatEdge: function(key, attributes) {
+  formatEdge: function (key, attributes) {
     return {
       label: attributes.label,
       attributes: {
@@ -108,14 +107,14 @@ var gexfString = gexf.write(graph, {
 });
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: graphology instance to write.
-* **options** *?object*: Options:
-  - **encoding** *?string* <span class="default">UTF-8</span>: encoding declaration.
-  - **formatNode** *?function*: function returning the node's data to write.
-  - **formatEdge** *?function*: function returning the edge's data to write.
-  - **pretty** *?boolean* <span class="default">true</span>: pretty-print output?
+- **graph** _Graph_: graphology instance to write.
+- **options** <span class="code">?object</span>: Options:
+  - **encoding** <span class="code">?string</span> <span class="default">UTF-8</span>: encoding declaration.
+  - **formatNode** <span class="code">?function</span>: function returning the node's data to write.
+  - **formatEdge** <span class="code">?function</span>: function returning the edge's data to write.
+  - **pretty** <span class="code">?boolean</span> <span class="default">true</span>: pretty-print output?
 
 ### Notes
 

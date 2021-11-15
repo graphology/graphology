@@ -1,7 +1,7 @@
 ---
 layout: default
 title: utils
-nav_order: 18
+nav_order: 19
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/utils"
@@ -20,26 +20,26 @@ npm install graphology-utils
 
 ## Usage
 
-*Assertions*
+_Assertions_
 
-* [#.isGraph](#isgraph)
-* [#.isGraphConstructor](#isgraphconstructor)
+- [#.isGraph](#isgraph)
+- [#.isGraphConstructor](#isgraphconstructor)
 
-*Introspection*
+_Introspection_
 
-* [#.inferType](#infertype)
+- [#.inferType](#infertype)
 
-*Typical edge patterns*
+_Typical edge patterns_
 
-* [#.mergeClique](#mergeclique)
-* [#.mergeCycle](#mergecycle)
-* [#.mergePath](#mergepath)
-* [#.mergeStar](#mergestar)
+- [#.mergeClique](#mergeclique)
+- [#.mergeCycle](#mergecycle)
+- [#.mergePath](#mergepath)
+- [#.mergeStar](#mergestar)
 
-*Miscellaneous helpers*
+_Miscellaneous helpers_
 
-* [#.renameGraphKeys](#renamegraphkeys)
-* [#.updateGraphKeys](#updategraphkeys)
+- [#.renameGraphKeys](#renamegraphkeys)
+- [#.updateGraphKeys](#updategraphkeys)
 
 ### #.inferType
 
@@ -80,9 +80,9 @@ isGraph({hello: 'world'});
 >>> false
 ```
 
-*Arguments*
+_Arguments_
 
-* **value** *any*: value to test.
+- **value** _any_: value to test.
 
 ### #.isGraphConstructor
 
@@ -104,9 +104,9 @@ isGraphConstructor(new Graph());
 >>> false
 ```
 
-*Arguments*
+_Arguments_
 
-* **value** *any*: value to test.
+- **value** _any_: value to test.
 
 ### #.mergeClique
 
@@ -125,7 +125,6 @@ graph.edges().map(e => graph.extremities(e));
 >>> [[1, 2], [1, 3], [2, 3]]
 ```
 
-
 ### #.mergeCycle
 
 Function adding a cycle to the given graph.
@@ -143,10 +142,10 @@ graph.edges().map(e => graph.extremities(e));
 >>> [[1, 2], [2, 3], [3, 4], [4, 5], [5, 1]]
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **cycle** *array*: array of nodes representing the cycle to add.
+- **graph** _Graph_: target graph.
+- **cycle** _array_: array of nodes representing the cycle to add.
 
 ### #.mergePath
 
@@ -165,10 +164,10 @@ graph.edges().map(e => graph.extremities(e));
 >>> [[1, 2], [2, 3], [3, 4], [4, 5]]
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **path** *array*: array of nodes representing the path to add.
+- **graph** _Graph_: target graph.
+- **path** _array_: array of nodes representing the path to add.
 
 ### #.mergeStar
 
@@ -187,10 +186,10 @@ graph.edges().map(e => graph.extremities(e));
 >>> [[1, 2], [1, 3], [1, 4], [1, 5]]
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **star** *array*: array of nodes representing the star to add.
+- **graph** _Graph_: target graph.
+- **star** _array_: array of nodes representing the star to add.
 
 ### #.renameGraphKeys
 
@@ -222,11 +221,11 @@ renamedGraph.edges();
 >>> ['rel1', 'rel2'];
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **nodeKeyMapping** *object*: A key/value map for the node key mapping.
-* **edgeKeyMapping** *?object*: A key/value map for the edge key mapping.
+- **graph** _Graph_: target graph.
+- **nodeKeyMapping** _object_: A key/value map for the node key mapping.
+- **edgeKeyMapping** <span class="code">?object</span>: A key/value map for the edge key mapping.
 
 ### #.updateGraphKeys
 
@@ -265,9 +264,9 @@ updatedGraph.edges();
 >>> ['rel1', 'rel2'];
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: target graph.
-* **nodeKeyUdater** *function*: A function to compute a new node key from the same arguments that would be given to [`#.forEachNode`](https://graphology.github.io/iteration.html#foreachnode).
-* **edgeKeyUpdater** *function*: A function to compute a new edge key from the same arguments that would be given to [`#.forEachEdge`](https://graphology.github.io/iteration.html#foreachedge).
+- **graph** _Graph_: target graph.
+- **nodeKeyUdater** _function_: A function to compute a new node key from the same arguments that would be given to [`#.forEachNode`](https://graphology.github.io/iteration.html#foreachnode).
+- **edgeKeyUpdater** _function_: A function to compute a new edge key from the same arguments that would be given to [`#.forEachEdge`](https://graphology.github.io/iteration.html#foreachedge).
 

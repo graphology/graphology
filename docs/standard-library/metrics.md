@@ -1,7 +1,7 @@
 ---
 layout: default
 title: metrics
-nav_order: 12
+nav_order: 13
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/metrics"
@@ -309,7 +309,6 @@ _Arguments_
   - **maxIterations** <span class="code">?number</span> <span class="default">100</span>: maximum number of iterations to perform.
   - **tolerance** <span class="code">?number</span> <span class="default">1.e-6</span>: convergence error tolerance.
   - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to use available weights or not.
-
 
 ### HITS
 

@@ -1,11 +1,11 @@
 ---
 layout: default
 title: layout-force
-nav_order: 9
+nav_order: 10
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/layout-force"
-  
+  "Changelog": "https://github.com/graphology/graphology/tree/master/src/layout-force/CHANGELOG.md"
 ---
 
 # Graphology Force layout

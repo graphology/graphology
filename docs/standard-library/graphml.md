@@ -1,7 +1,7 @@
 ---
 layout: default
 title: graphml
-nav_order: 6
+nav_order: 7
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/graphml"
@@ -50,6 +50,6 @@ _Arguments_
 
 - **constructor** _GraphClass_: graphology constructor to use.
 - **source** _string\|Document_: source data to parse.
-- **options** *?object*: parsing options:
-  - **addMissingNodes** *?boolean* <span class="default">false</span>: whether to add missing nodes referenced in the file's edges.
+- **options** <span class="code">?object</span>: parsing options:
+  - **addMissingNodes** <span class="code">?boolean</span> <span class="default">false</span>: whether to add missing nodes referenced in the file's edges.
 

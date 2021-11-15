@@ -1,7 +1,7 @@
 ---
 layout: default
 title: shortest-path
-nav_order: 14
+nav_order: 15
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/shortest-path"

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: generators
-nav_order: 4
+nav_order: 5
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/generators"

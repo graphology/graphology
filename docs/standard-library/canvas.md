@@ -1,7 +1,7 @@
 ---
 layout: default
 title: canvas
-nav_order: 1
+nav_order: 2
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/canvas"

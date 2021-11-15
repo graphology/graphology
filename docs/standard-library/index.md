@@ -9,6 +9,7 @@ has_toc: false
 # Standard library
 
 * [assertions](./assertions): *Miscellaneous assertions (same nodes, same edges etc.).*
+* [bipartite](./bipartite): *Bipartite graph helper functions (coloring, projection etc.).*
 * [canvas](./canvas): *Canvas rendering routines for graphs.*
 * [communities-louvain](./communities-louvain): *Louvain method for community detection.*
 * [components](./components): *Connected components (strong, weak etc.).*
