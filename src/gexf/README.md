@@ -1,6 +1,5 @@
 [![Build Status](https://github.com/graphology/graphology-gexf/workflows/Tests/badge.svg)](https://github.com/graphology/graphology-gexf/actions)
 
-
 # Graphology GEXF Utilities
 
 GEXF parser & writer for [`graphology`](https://graphology.github.io).
@@ -15,9 +14,9 @@ npm install graphology-gexf
 
 ## Usage
 
-* [Parser](#parser)
-* [Writer](#writer)
-* [Notes](#notes)
+- [Parser](#parser)
+- [Writer](#writer)
+- [Notes](#notes)
 
 ### Parser
 
@@ -41,12 +40,12 @@ var graph = gexf.parse(Graph, xmlDocument);
 var graph = gexf.parse(Graph, string, {addMissingNodes: true});
 ```
 
-*Arguments*
+_Arguments_
 
-- **constructor** *GraphClass*: graphology constructor to use.
-- **source** *string\|Document*: source data to parse.
-- **options** *?object*: parsing options:
-  - **addMissingNodes** *?boolean* [`false`]: whether to add missing nodes referenced in the file's edges.
+- **constructor** _GraphClass_: graphology constructor to use.
+- **source** _string\|Document_: source data to parse.
+- **options** _?object_: parsing options:
+  - **addMissingNodes** _?boolean_ [`false`]: whether to add missing nodes referenced in the file's edges.
 
 ### Writer
 
@@ -63,7 +62,7 @@ var gexfString = gexf.write(graph);
 
 // Using custom formatting for nodes & edges
 var gexfString = gexf.write(graph, {
-  formatNode: function(key, attributes) {
+  formatNode: function (key, attributes) {
     return {
       label: attributes.label,
       attributes: {
@@ -79,7 +78,7 @@ var gexfString = gexf.write(graph, {
       }
     };
   },
-  formatEdge: function(key, attributes) {
+  formatEdge: function (key, attributes) {
     return {
       label: attributes.label,
       attributes: {
@@ -98,14 +97,14 @@ var gexfString = gexf.write(graph, {
 });
 ```
 
-*Arguments*
+_Arguments_
 
-* **graph** *Graph*: graphology instance to write.
-* **options** *?object*: Options:
-  - **encoding** *?string* [`UTF-8`]: encoding declaration.
-  - **formatNode** *?function*: function returning the node's data to write.
-  - **formatEdge** *?function*: function returning the edge's data to write.
-  - **pretty** *?boolean* [`true`]: pretty-print output?
+- **graph** _Graph_: graphology instance to write.
+- **options** _?object_: Options:
+  - **encoding** _?string_ [`UTF-8`]: encoding declaration.
+  - **formatNode** _?function_: function returning the node's data to write.
+  - **formatEdge** _?function_: function returning the edge's data to write.
+  - **pretty** _?boolean_ [`true`]: pretty-print output?
 
 ### Notes
 

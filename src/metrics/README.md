@@ -300,7 +300,6 @@ _Arguments_
   - **tolerance** _?number_ [`1.e-6`]: convergence error tolerance.
   - **weighted** _?boolean_ [`false`]: whether to use available weights or not.
 
-
 ### HITS
 
 Computes the hub/authority metrics for each node using the HITS algorithm.

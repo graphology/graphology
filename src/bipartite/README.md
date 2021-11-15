@@ -10,7 +10,7 @@ npm install graphology-bipartite
 
 ## Usage
 
-* [isBypartiteBy](#isbypartiteby)
+- [isBypartiteBy](#isbypartiteby)
 
 ### isBypartiteBy
 

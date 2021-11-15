@@ -40,5 +40,5 @@ _Arguments_
 
 - **constructor** _GraphClass_: graphology constructor to use.
 - **source** _string\|Document_: source data to parse.
-- **options** *?object*: parsing options:
-  - **addMissingNodes** *?boolean* [`false`]: whether to add missing nodes referenced in the file's edges.
+- **options** _?object_: parsing options:
+  - **addMissingNodes** _?boolean_ [`false`]: whether to add missing nodes referenced in the file's edges.
