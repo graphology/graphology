@@ -70,6 +70,7 @@
     "graphology-minivan": "file:src/minivan",
     "graphology-operators": "file:src/operators",
     "graphology-shortest-path": "file:src/shortest-path",
+    "graphology-similarity": "file:src/similarity",
     "graphology-simple-path": "file:src/simple-path",
     "graphology-svg": "file:src/svg",
     "graphology-traversal": "file:src/traversal",
