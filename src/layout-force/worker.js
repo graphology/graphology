@@ -20,11 +20,11 @@ function ForceSupervisor(graph, params) {
       'graphology-layout-force/worker: the given graph is not a valid graphology instance.'
     );
 
+  params = resolveDefaults(params, DEFAULTS);
+
   this.callbacks = {};
 
   if (params.onConverged) this.callbacks.onConverged = params.onConverged;
-
-  params = resolveDefaults(params, DEFAULTS);
 
   this.graph = graph;
   this.params = params;
