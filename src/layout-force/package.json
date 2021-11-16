@@ -1,6 +1,6 @@
 {
   "name": "graphology-layout-force",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Simple force-directed layout algorithm for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
