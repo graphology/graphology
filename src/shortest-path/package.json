@@ -9,7 +9,8 @@
     "dijkstra.js",
     "index.js",
     "indexed-brandes.js",
-    "unweighted.js"
+    "unweighted.js",
+    "utils.js"
   ],
   "scripts": {
     "prepublishOnly": "npm test",

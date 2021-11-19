@@ -2,15 +2,16 @@
  * Graphology Unweighted Shortest Path Unit Tests
  * ===============================================
  */
-var assert = require('assert'),
-  library = require('../unweighted.js'),
-  indexLibrary = require('../indexed-brandes.js'),
-  graphology = require('graphology'),
-  mergePath = require('graphology-utils/merge-path');
+var assert = require('assert');
+var library = require('../unweighted.js');
+var indexLibrary = require('../indexed-brandes.js');
+var graphology = require('graphology');
+var mergePath = require('graphology-utils/merge-path');
+var edgePathFromNodePath = require('../utils.js').edgePathFromNodePath;
 
-var Graph = graphology.Graph,
-  DirectedGraph = graphology.DirectedGraph,
-  UndirectedGraph = graphology.UndirectedGraph;
+var Graph = graphology.Graph;
+var DirectedGraph = graphology.DirectedGraph;
+var UndirectedGraph = graphology.UndirectedGraph;
 
 var EDGES = [
   [1, 2],
@@ -384,6 +385,58 @@ describe('unweighted', function () {
           result[0].clear();
         });
       });
+    });
+  });
+
+  describe('edgePathFromNodePath', function () {
+    it('should return the correct edge path.', function () {
+      var graph = new Graph();
+      graph.mergeEdgeWithKey('A', 0, 1);
+      graph.mergeEdgeWithKey('B', 1, 2);
+      graph.addNode(3);
+
+      var nodePath = library.bidirectional(graph, 0, 2);
+
+      assert.deepStrictEqual(nodePath, ['0', '1', '2']);
+
+      var edgePath = edgePathFromNodePath(graph, nodePath);
+
+      assert.deepStrictEqual(edgePath, ['A', 'B']);
+
+      assert.deepStrictEqual(edgePathFromNodePath(graph, [0]), []);
+
+      graph.mergeEdgeWithKey('S', 0, 0);
+
+      assert.deepStrictEqual(edgePathFromNodePath(graph, [0]), ['S']);
+
+      assert.throws(function () {
+        edgePathFromNodePath(graph, ['3', '4', '5']);
+      }, /find/);
+
+      assert.throws(function () {
+        edgePathFromNodePath(graph, ['3', '0', '1']);
+      }, /impossible/);
+    });
+
+    it('should also work with multi graphs.', function () {
+      var graph = new Graph({multi: true});
+      graph.mergeEdgeWithKey('A', 0, 1);
+      graph.mergeEdgeWithKey('B', 1, 2);
+      graph.addNode(3);
+
+      var nodePath = library.bidirectional(graph, 0, 2);
+
+      assert.deepStrictEqual(nodePath, ['0', '1', '2']);
+
+      var edgePath = edgePathFromNodePath(graph, nodePath);
+
+      assert.deepStrictEqual(edgePath, ['A', 'B']);
+
+      assert.deepStrictEqual(edgePathFromNodePath(graph, [0]), []);
+
+      graph.mergeEdgeWithKey('S', 0, 0);
+
+      assert.deepStrictEqual(edgePathFromNodePath(graph, [0]), ['S']);
     });
   });
 });
