@@ -5,7 +5,7 @@ nav_order: 1
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/bipartite"
-  
+  "Changelog": "https://github.com/graphology/graphology/tree/master/src/bipartite/CHANGELOG.md"
 ---
 
 # Graphology Bipartite

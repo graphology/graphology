@@ -50,7 +50,7 @@ const positions = noverlap(graph, {maxIterations: 50});
 const positions = noverlap(graph, {
   maxIterations: 50,
   settings: {
-    gravity: 10
+    ratio: 2
   }
 });
 
