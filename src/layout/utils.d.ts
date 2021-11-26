@@ -26,8 +26,7 @@ type ConversionFunctionOptions = {
 };
 
 export type CoordinateConversionFunction = (
-  coordinates: Coordinates,
-  camera?: Camera
+  coordinates: Coordinates
 ) => Coordinates;
 
 export function createGraphToViewportConversionFunction(

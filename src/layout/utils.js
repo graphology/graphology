@@ -33,7 +33,7 @@ function createGraphToViewportConversionFunction(
   // Resolving options
   options = resolveDefaults(options, CONVERSION_FUNCTION_DEFAULTS);
 
-  var defaultCamera = options.defaultCamera;
+  var camera = options.camera;
 
   // Computing graph dimensions
   var maxGX = graphExtent.x[0];
@@ -58,12 +58,12 @@ function createGraphToViewportConversionFunction(
   var vdx = smallest / viewportWidth;
   var vdy = smallest / viewportHeight;
 
+  var cameraRatio = camera.ratio / smallest;
+  var cos = Math.cos(camera.angle);
+  var sin = Math.sin(camera.angle);
+
   // Assignation function
-  var assign = function (pos, camera) {
-    camera = camera || defaultCamera;
-
-    var cameraRatio = camera.ratio / smallest;
-
+  var assign = function (pos) {
     // Normalize
     var x = 0.5 + (pos.x - gdx) / graphRatio;
     var y = 0.5 + (pos.y - gdy) / graphRatio;
@@ -74,9 +74,6 @@ function createGraphToViewportConversionFunction(
 
     // Rotate
     if (camera.angle) {
-      var cos = Math.cos(camera.angle);
-      var sin = Math.sin(camera.angle);
-
       x = x * cos - y * sin;
       y = y * cos + x * sin;
     }
@@ -88,8 +85,8 @@ function createGraphToViewportConversionFunction(
   };
 
   // Immutable variant
-  var graphToViewport = function (pos, camera) {
-    return assign({x: pos.x, y: pos.y}, camera);
+  var graphToViewport = function (pos) {
+    return assign({x: pos.x, y: pos.y});
   };
 
   return graphToViewport;
