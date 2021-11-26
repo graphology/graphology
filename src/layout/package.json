@@ -9,7 +9,8 @@
     "circlepack.js",
     "circular.js",
     "index.js",
-    "random.js"
+    "random.js",
+    "utils.js"
   ],
   "scripts": {
     "prepublishOnly": "npm test",
