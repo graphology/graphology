@@ -5,7 +5,7 @@ export type CanvasRendererSettings<
   EdgeAttributes extends Attributes = Attributes
 > = {
   batchSize?: number;
-  margin?: number;
+  padding?: number;
   width?: number;
   height?: number;
   nodes?: {

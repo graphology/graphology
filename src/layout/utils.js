@@ -5,6 +5,45 @@
  * Miscellaneous utility functions used by the library.
  */
 var resolveDefaults = require('graphology-utils/defaults');
+var matrices = require('./matrices.js');
+
+var identity = matrices.identity;
+var multiply = matrices.multiply;
+var translate = matrices.translate;
+var scale = matrices.scale;
+var rotate = matrices.rotate;
+var multiplyVec2 = matrices.multiplyVec2;
+
+/**
+ * Function taken from sigma and returning a correction factor to suit the
+ * difference between the graph and the viewport's aspect ratio.
+ */
+function getAspectRatioCorrection(
+  graphWidth,
+  graphHeight,
+  viewportWidth,
+  viewportHeight
+) {
+  var viewportRatio = viewportHeight / viewportWidth;
+  var graphRatio = graphHeight / graphWidth;
+
+  // If the stage and the graphs are in different directions (such as the graph being wider that tall while the stage
+  // is taller than wide), we can stop here to have indeed nodes touching opposite sides:
+  if (
+    (viewportRatio < 1 && graphRatio > 1) ||
+    (viewportRatio > 1 && graphRatio < 1)
+  ) {
+    return 1;
+  }
+
+  // Else, we need to fit the graph inside the stage:
+  // 1. If the graph is "squarer" (ie. with a ratio closer to 1), we need to make the largest sides touch;
+  // 2. If the stage is "squarer", we need to make the smallest sides touch.
+  return Math.min(
+    Math.max(graphRatio, 1 / graphRatio),
+    Math.max(1 / viewportRatio, viewportRatio)
+  );
+}
 
 /**
  * Factory for a function converting from an arbitrary graph space to a
@@ -22,9 +61,7 @@ var CONVERSION_FUNCTION_DEFAULTS = {
   padding: 0
 };
 
-// TODO: test with null graph or 1-graph
 // TODO: padding
-// TODO: correction ratio
 function createGraphToViewportConversionFunction(
   graphExtent,
   viewportDimensions,
@@ -54,32 +91,41 @@ function createGraphToViewportConversionFunction(
   var gdy = (maxGY + minGY) / 2;
 
   var smallest = Math.min(viewportWidth, viewportHeight);
+  smallest -= 2 * options.padding;
 
-  var vdx = smallest / viewportWidth;
-  var vdy = smallest / viewportHeight;
+  var correction = getAspectRatioCorrection(
+    graphWidth,
+    graphHeight,
+    viewportWidth,
+    viewportHeight
+  );
 
-  var cameraRatio = camera.ratio / smallest;
-  var cos = Math.cos(camera.angle);
-  var sin = Math.sin(camera.angle);
+  var matrix = identity();
+
+  multiply(
+    matrix,
+    scale(
+      identity(),
+      2 * (smallest / viewportWidth) * correction,
+      2 * (smallest / viewportHeight) * correction
+    )
+  );
+  multiply(matrix, rotate(identity(), -camera.angle));
+  multiply(matrix, scale(identity(), 1 / camera.ratio));
+  multiply(matrix, translate(identity(), -camera.x, -camera.y));
 
   // Assignation function
   var assign = function (pos) {
     // Normalize
-    var x = 0.5 + (pos.x - gdx) / graphRatio;
-    var y = 0.5 + (pos.y - gdy) / graphRatio;
+    pos.x = 0.5 + (pos.x - gdx) / graphRatio;
+    pos.y = 0.5 + (pos.y - gdy) / graphRatio;
 
-    // Align
-    x = (x - camera.x) / cameraRatio;
-    y = (camera.y - y) / cameraRatio;
+    // Applying matrix transformation
+    multiplyVec2(matrix, pos);
 
-    // Rotate
-    if (camera.angle) {
-      x = x * cos - y * sin;
-      y = y * cos + x * sin;
-    }
-
-    pos.x = x + smallest / 2 / vdx;
-    pos.y = y + smallest / 2 / vdy;
+    // Realigning with canvas coordinates
+    pos.x = ((1 + pos.x) * viewportWidth) / 2;
+    pos.y = ((1 - pos.y) * viewportHeight) / 2;
 
     return pos;
   };
@@ -88,6 +134,8 @@ function createGraphToViewportConversionFunction(
   var graphToViewport = function (pos) {
     return assign({x: pos.x, y: pos.y});
   };
+
+  graphToViewport.assign = assign;
 
   return graphToViewport;
 }

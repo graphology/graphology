@@ -53,7 +53,7 @@ renderToPNG(graph, './graph.png', settings, () => console.log('Done!'));
 
 - **width** _?number_ [`2048`]: width of the canvas. Will be the same as `height` if not provided.
 - **height** _?number_ [`2048`]: height of the canvas. Will be the same as `width` if not provided.
-- **margin** _?number_ [`20`]: margin to keep around the drawing.
+- **padding** _?number_ [`20`]: padding to keep around the drawing.
 - **nodes** _?object_: node-related settings:
   - **defaultColor** _?string_ [`#999`]: default color for nodes.
   - **reducer** _?function_: reducer fonction for nodes taking the rendering settings, the node key and its attributes and tasked to return rendering info such as `color`, `size` etc.

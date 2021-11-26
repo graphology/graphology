@@ -25,9 +25,10 @@ type ConversionFunctionOptions = {
   padding?: number;
 };
 
-export type CoordinateConversionFunction = (
-  coordinates: Coordinates
-) => Coordinates;
+export interface CoordinateConversionFunction {
+  (coordinates: Coordinates): Coordinates;
+  assign(coordinates: Coordinates): Coordinates;
+}
 
 export function createGraphToViewportConversionFunction(
   graphExtent: GraphExtent,

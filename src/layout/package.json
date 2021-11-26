@@ -9,6 +9,7 @@
     "circlepack.js",
     "circular.js",
     "index.js",
+    "matrices.js",
     "random.js",
     "utils.js"
   ],
