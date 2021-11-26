@@ -3,16 +3,13 @@ import Graph from 'graphology-types';
 type RNGFunction = () => number;
 
 export type RandomLayoutOptions = {
-  attributes?: {
-    x: string;
-    y: string;
-  };
+  dimensions?: string[];
   center?: number;
   rng?: RNGFunction;
   scale?: number;
 };
 
-type LayoutMapping = {[key: string]: {x: number; y: number}};
+type LayoutMapping = {[node: string]: {[dimension: number]: number}};
 
 interface IRandomLayout {
   (graph: Graph, options?: RandomLayoutOptions): LayoutMapping;

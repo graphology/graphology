@@ -11,10 +11,7 @@ var isGraph = require('graphology-utils/is-graph');
  * Default options.
  */
 var DEFAULTS = {
-  attributes: {
-    x: 'x',
-    y: 'y'
-  },
+  dimensions: ['x', 'y'],
   center: 0.5,
   scale: 1
 };
@@ -37,41 +34,49 @@ function genericCircularLayout(assign, graph, options) {
 
   options = resolveDefaults(options, DEFAULTS);
 
-  var positions = {},
-    nodes = graph.nodes(),
-    center = options.center,
-    scale = options.scale,
-    tau = Math.PI * 2;
+  var dimensions = options.dimensions;
 
-  var l = nodes.length,
-    node,
-    x,
-    y,
-    i;
+  if (!Array.isArray(dimensions) || dimensions.length !== 2)
+    throw new Error('graphology-layout/random: given dimensions are invalid.');
 
-  for (i = 0; i < l; i++) {
-    node = nodes[i];
+  var center = options.center;
+  var scale = options.scale;
+  var tau = Math.PI * 2;
 
-    x = scale * Math.cos((i * tau) / l);
-    y = scale * Math.sin((i * tau) / l);
+  var offset = (center - 0.5) * scale;
+  var l = graph.order;
 
-    if (center !== 0.5) {
-      x += center - 0.5 * scale;
-      y += center - 0.5 * scale;
-    }
+  var x = dimensions[0];
+  var y = dimensions[1];
 
-    positions[node] = {
-      x: x,
-      y: y
-    };
+  function assignPosition(i, target) {
+    target[x] = scale * Math.cos((i * tau) / l) + offset;
+    target[y] = scale * Math.sin((i * tau) / l) + offset;
 
-    if (assign) {
-      graph.setNodeAttribute(node, options.attributes.x, x);
-      graph.setNodeAttribute(node, options.attributes.y, y);
-    }
+    return target;
   }
 
-  return positions;
+  var i = 0;
+
+  if (!assign) {
+    var positions = {};
+
+    graph.forEachNode(function (node) {
+      positions[node] = assignPosition(i++, {});
+    });
+
+    return positions;
+  }
+
+  graph.updateEachNodeAttributes(
+    function (_, attr) {
+      assignPosition(i++, attr);
+      return attr;
+    },
+    {
+      attributes: dimensions
+    }
+  );
 }
 
 var circularLayout = genericCircularLayout.bind(null, false);

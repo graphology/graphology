@@ -11,10 +11,7 @@ var isGraph = require('graphology-utils/is-graph');
  * Default options.
  */
 var DEFAULTS = {
-  attributes: {
-    x: 'x',
-    y: 'y'
-  },
+  dimensions: ['x', 'y'],
   center: 0.5,
   rng: Math.random,
   scale: 1
@@ -25,7 +22,7 @@ var DEFAULTS = {
  *
  * @param  {Graph}    graph          - Target  graph.
  * @param  {object}   [options]      - Options:
- * @param  {object}     [attributes] - Attributes names to map.
+ * @param  {array}      [dimensions] - List of dimensions of the layout.
  * @param  {number}     [center]     - Center of the layout.
  * @param  {function}   [rng]        - Custom RNG function to be used.
  * @param  {number}     [scale]      - Scale of the layout.
@@ -39,41 +36,45 @@ function genericRandomLayout(assign, graph, options) {
 
   options = resolveDefaults(options, DEFAULTS);
 
-  var positions = {},
-    nodes = graph.nodes(),
-    center = options.center,
-    rng = options.rng,
-    scale = options.scale;
+  var dimensions = options.dimensions;
 
-  var l = nodes.length,
-    node,
-    x,
-    y,
-    i;
+  if (!Array.isArray(dimensions) || dimensions.length < 1)
+    throw new Error('graphology-layout/random: given dimensions are invalid.');
 
-  for (i = 0; i < l; i++) {
-    node = nodes[i];
+  var d = dimensions.length;
+  var center = options.center;
+  var rng = options.rng;
+  var scale = options.scale;
 
-    x = rng() * scale;
-    y = rng() * scale;
+  var offset = (center - 0.5) * scale;
 
-    if (center !== 0.5) {
-      x += center - 0.5 * scale;
-      y += center - 0.5 * scale;
+  function assignPosition(target) {
+    for (var i = 0; i < d; i++) {
+      target[dimensions[i]] = rng() * scale + offset;
     }
 
-    positions[node] = {
-      x: x,
-      y: y
-    };
-
-    if (assign) {
-      graph.setNodeAttribute(node, options.attributes.x, x);
-      graph.setNodeAttribute(node, options.attributes.y, y);
-    }
+    return target;
   }
 
-  return positions;
+  if (!assign) {
+    var positions = {};
+
+    graph.forEachNode(function (node) {
+      positions[node] = assignPosition({});
+    });
+
+    return positions;
+  }
+
+  graph.updateEachNodeAttributes(
+    function (_, attr) {
+      assignPosition(attr);
+      return attr;
+    },
+    {
+      attributes: dimensions
+    }
+  );
 }
 
 var randomLayout = genericRandomLayout.bind(null, false);
