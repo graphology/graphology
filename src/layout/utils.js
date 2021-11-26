@@ -119,12 +119,13 @@ function createGraphToViewportConversionFunction(
   multiply(matrix, scale(identity(), 1 / camera.ratio));
   multiply(matrix, translate(identity(), -camera.x, -camera.y));
 
+  // Normalizing graph space to squished square
+  multiply(matrix, translate(identity(), 0.5, 0.5));
+  multiply(matrix, scale(identity(), 1 / graphRatio));
+  multiply(matrix, translate(identity(), -gdx, -gdy));
+
   // Assignation function
   var assign = function (pos) {
-    // Normalize
-    pos.x = 0.5 + (pos.x - gdx) / graphRatio;
-    pos.y = 0.5 + (pos.y - gdy) / graphRatio;
-
     // Applying matrix transformation
     multiplyVec2(matrix, pos);
 
