@@ -101,6 +101,12 @@ function createGraphToViewportConversionFunction(
 
   var matrix = identity();
 
+  // Realigning with canvas coordinates
+  multiply(matrix, scale(identity(), viewportWidth / 2, viewportHeight / 2));
+  multiply(matrix, translate(identity(), 1, 1));
+  multiply(matrix, scale(identity(), 1, -1));
+
+  // Applying camera and transforming space
   multiply(
     matrix,
     scale(
@@ -121,10 +127,6 @@ function createGraphToViewportConversionFunction(
 
     // Applying matrix transformation
     multiplyVec2(matrix, pos);
-
-    // Realigning with canvas coordinates
-    pos.x = ((1 + pos.x) * viewportWidth) / 2;
-    pos.y = ((1 - pos.y) * viewportHeight) / 2;
 
     return pos;
   };
