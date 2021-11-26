@@ -61,7 +61,6 @@ var CONVERSION_FUNCTION_DEFAULTS = {
   padding: 0
 };
 
-// TODO: padding
 function createGraphToViewportConversionFunction(
   graphExtent,
   viewportDimensions,
@@ -73,10 +72,10 @@ function createGraphToViewportConversionFunction(
   var camera = options.camera;
 
   // Computing graph dimensions
-  var maxGX = graphExtent.x[0];
-  var maxGY = graphExtent.y[0];
-  var minGX = graphExtent.x[1];
-  var minGY = graphExtent.y[1];
+  var maxGX = graphExtent.x[1];
+  var maxGY = graphExtent.y[1];
+  var minGX = graphExtent.x[0];
+  var minGY = graphExtent.y[0];
 
   var graphWidth = maxGX - minGX;
   var graphHeight = maxGY - minGY;
