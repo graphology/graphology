@@ -10,44 +10,18 @@ npm install graphology-layout
 
 ## Usage
 
-- [circlePack](#circlePack)
+_Basic_
+
 - [circular](#circular)
 - [random](#random)
 
-### #.circlePack
+_Advanced_
 
-Arranges the nodes as a bubble chart, according to specified attributes.
+- [circlePack](#circlePack)
 
-_Example_
+_Utilities_
 
-```js
-import {circlepack} from 'graphology-layout';
-// Alternatively, to load only the relevant code:
-import circlepack from 'graphology-layout/circlepack';
-
-const positions = circlepack(graph);
-
-// With options
-const positions = circlepack(graph, {
-  hierarchyAttributes: ['degree', 'community'],
-  rng: customRngFunction
-});
-
-// To directly assign the positions to the nodes:
-circlepack.assign(graph);
-```
-
-_Arguments_
-
-- **graph** _Graph_: target graph.
-- **options** _?object_: options:
-  - **attributes** _?object_: attributes to map:
-    - **x** _?string_ [`x`]: name of the x position.
-    - **y** _?string_ [`y`]: name of the y position.
-  - **center** _?number_ [`0`]: center of the layout.
-  - **hierarchyAttributes** _?list_ [`[]`]: attributes used to group nodes.
-  - **rng** _?function_ [`Math.random`]: custom RNG function to use.
-  - **scale** _?number_ [`1`]: scale of the layout.
+- [rotation](#rotation)
 
 ### #.circular
 
@@ -111,3 +85,69 @@ _Arguments_
   - **center** _?number_ [`0.5`]: center of the layout.
   - **rng** _?function_ [`Math.random`]: custom RNG function to use.
   - **scale** _?number_ [`1`]: scale of the layout.
+
+### #.circlePack
+
+Arranges the nodes as a bubble chart, according to specified attributes.
+
+_Example_
+
+```js
+import {circlepack} from 'graphology-layout';
+// Alternatively, to load only the relevant code:
+import circlepack from 'graphology-layout/circlepack';
+
+const positions = circlepack(graph);
+
+// With options
+const positions = circlepack(graph, {
+  hierarchyAttributes: ['degree', 'community'],
+  rng: customRngFunction
+});
+
+// To directly assign the positions to the nodes:
+circlepack.assign(graph);
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **options** _?object_: options:
+  - **attributes** _?object_: attributes to map:
+    - **x** _?string_ [`x`]: name of the x position.
+    - **y** _?string_ [`y`]: name of the y position.
+  - **center** _?number_ [`0`]: center of the layout.
+  - **hierarchyAttributes** _?list_ [`[]`]: attributes used to group nodes.
+  - **rng** _?function_ [`Math.random`]: custom RNG function to use.
+  - **scale** _?number_ [`1`]: scale of the layout.
+
+### #.rotation
+
+Rotates the node coordinates of the given graph by the given angle in radians (or in degrees using an option).
+
+Note that this function rotates your graph based on its center. If you want to use zero as the center for your rotation, use the `centeredOnZero` option. This option can also be used as an optimization strategy if you know your graph is already centered on zero to avoid needing to compute the graph's extent.
+
+_Example_
+
+```js
+import {rotation} from 'graphology-layout';
+// Alternatively, to load only the relevant code:
+import rotation from 'graphology-layout/rotation';
+
+const positions = rotation(graph, Math.PI / 2);
+
+// With options:
+const positions = rotation(graph, Math.PI / 2, {centeredOnZero: true});
+
+// To directly assign the positions to the nodes:
+rotation.assign(graph, Math.PI / 2);
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **angle** _number_: rotation angle in radians (or degrees using an option below).
+- **options** _?object_: options:
+  - **dimensions** _?array_ [`['x', 'y']`]: dimensions to use for the rotation. Cannot work with dimensions != 2.
+  - **degrees** _?boolean_ [`false`]: whether the given angle is in degrees.
+  - **centeredOnZero** _?boolean_ [`false`]: whether to rotate the graph around `0`, rather than the graph's center.
