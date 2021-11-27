@@ -5,7 +5,7 @@ nav_order: 2
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/canvas"
-  
+  "Changelog": "https://github.com/graphology/graphology/tree/master/src/canvas/CHANGELOG.md"
 ---
 
 # Graphology Canvas
