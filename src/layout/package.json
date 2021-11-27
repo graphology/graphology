@@ -1,6 +1,6 @@
 {
   "name": "graphology-layout",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Collection of basic layout algorithms for graphology.",
   "main": "index.js",
   "types": "index.d.ts",

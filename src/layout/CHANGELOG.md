@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.0 (provisional)
+## 0.5.0
 
 - Adding `rotation`.
 - Adding `createGraphToViewportConversionFunction`.
