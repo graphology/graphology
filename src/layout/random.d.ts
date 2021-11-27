@@ -9,7 +9,7 @@ export type RandomLayoutOptions = {
   scale?: number;
 };
 
-type LayoutMapping = {[node: string]: {[dimension: number]: number}};
+type LayoutMapping = {[node: string]: {[dimension: string]: number}};
 
 interface IRandomLayout {
   (graph: Graph, options?: RandomLayoutOptions): LayoutMapping;

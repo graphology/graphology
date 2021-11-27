@@ -6,7 +6,7 @@ export type CircularLayoutOptions = {
   scale?: number;
 };
 
-type LayoutMapping = {[node: string]: {[dimension: number]: number}};
+type LayoutMapping = {[node: string]: {[dimension: string]: number}};
 
 interface ICircularLayout {
   (graph: Graph, options?: CircularLayoutOptions): LayoutMapping;
