@@ -17,7 +17,7 @@ var RAD_CONVERSION = Math.PI / 180;
  */
 var DEFAULTS = {
   dimensions: ['x', 'y'],
-  alreadyCentered: false,
+  centeredOnZero: false,
   degrees: false
 };
 
@@ -44,29 +44,39 @@ function genericRotation(assign, graph, angle, options) {
   if (!Array.isArray(dimensions) || dimensions.length !== 2)
     throw new Error('graphology-layout/random: given dimensions are invalid.');
 
+  // Handling null graph
+  if (graph.order === 0) {
+    if (assign) return;
+
+    return {};
+  }
+
   var xd = dimensions[0];
   var yd = dimensions[1];
 
-  // TODO: 1-graph & null graph
+  var xCenter = 0;
+  var yCenter = 0;
 
-  // Finding bounds of the graph
-  var xMin = Infinity;
-  var xMax = -Infinity;
-  var yMin = Infinity;
-  var yMax = -Infinity;
+  if (!options.centeredOnZero) {
+    // Finding bounds of the graph
+    var xMin = Infinity;
+    var xMax = -Infinity;
+    var yMin = Infinity;
+    var yMax = -Infinity;
 
-  graph.forEachNode(function (node, attr) {
-    var x = attr[xd];
-    var y = attr[yd];
+    graph.forEachNode(function (node, attr) {
+      var x = attr[xd];
+      var y = attr[yd];
 
-    if (x < xMin) xMin = x;
-    if (x > xMax) xMax = x;
-    if (y < yMin) yMin = y;
-    if (y > yMax) yMax = y;
-  });
+      if (x < xMin) xMin = x;
+      if (x > xMax) xMax = x;
+      if (y < yMin) yMin = y;
+      if (y > yMax) yMax = y;
+    });
 
-  var xCenter = (xMin + xMax) / 2;
-  var yCenter = (yMin + yMax) / 2;
+    xCenter = (xMin + xMax) / 2;
+    yCenter = (yMin + yMax) / 2;
+  }
 
   var cos = Math.cos(angle);
   var sin = Math.sin(angle);
@@ -100,7 +110,7 @@ function genericRotation(assign, graph, angle, options) {
       return attr;
     },
     {
-      attributes: ['x', 'y']
+      attributes: dimensions
     }
   );
 }

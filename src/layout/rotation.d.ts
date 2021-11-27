@@ -2,7 +2,7 @@ import Graph from 'graphology-types';
 
 export type RotationOptions = {
   dimensions?: string[];
-  alreadyCentered?: boolean;
+  centeredOnZero?: boolean;
   degrees?: boolean;
 };
 
