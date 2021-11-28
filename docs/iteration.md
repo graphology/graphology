@@ -303,7 +303,7 @@ Iterates over relevant edges using a callback.
 * **source** <span class="code">string</span>: key of the edge's source.
 * **target** <span class="code">string</span>: key of the edge's target.
 * **sourceAttributes** <span class="code">object</span>: attributes of the edge's source.
-* **targetAttributes** <span class="code">object</span>= attributes of the edge's target.
+* **targetAttributes** <span class="code">object</span>: attributes of the edge's target.
 * **undirected** <span class="code">boolean</span>: whether the edge is undirected.
 
 ### #.mapEdges
@@ -340,7 +340,7 @@ Returns an array containing the result of a callback applied on the relevant edg
 * **source** <span class="code">string</span>: key of the edge's source.
 * **target** <span class="code">string</span>: key of the edge's target.
 * **sourceAttributes** <span class="code">object</span>: attributes of the edge's source.
-* **targetAttributes** <span class="code">object</span>= attributes of the edge's target.
+* **targetAttributes** <span class="code">object</span>: attributes of the edge's target.
 * **undirected** <span class="code">boolean</span>: whether the edge is undirected.
 
 ### #.filterEdges
@@ -377,7 +377,7 @@ Returns an array of edge keys for which the given predicate function returned `t
 * **source** <span class="code">string</span>: key of the edge's source.
 * **target** <span class="code">string</span>: key of the edge's target.
 * **sourceAttributes** <span class="code">object</span>: attributes of the edge's source.
-* **targetAttributes** <span class="code">object</span>= attributes of the edge's target.
+* **targetAttributes** <span class="code">object</span>: attributes of the edge's target.
 * **undirected** <span class="code">boolean</span>: whether the edge is undirected.
 
 ### #.reduceEdges
@@ -420,7 +420,7 @@ Contrary to JavaScript [Array.reduce](https://developer.mozilla.org/fr/docs/Web/
 * **source** <span class="code">string</span>: key of the edge's source.
 * **target** <span class="code">string</span>: key of the edge's target.
 * **sourceAttributes** <span class="code">object</span>: attributes of the edge's source.
-* **targetAttributes** <span class="code">object</span>= attributes of the edge's target.
+* **targetAttributes** <span class="code">object</span>: attributes of the edge's target.
 * **undirected** <span class="code">boolean</span>: whether the edge is undirected.
 
 ### #.findEdge
@@ -457,7 +457,7 @@ Returns the key of the first edge matching given predicate function or `undefine
 * **source** <span class="code">string</span>: key of the edge's source.
 * **target** <span class="code">string</span>: key of the edge's target.
 * **sourceAttributes** <span class="code">object</span>: attributes of the edge's source.
-* **targetAttributes** <span class="code">object</span>= attributes of the edge's target.
+* **targetAttributes** <span class="code">object</span>: attributes of the edge's target.
 * **undirected** <span class="code">boolean</span>: whether the edge is undirected.
 
 ### #.someEdge
@@ -494,7 +494,7 @@ Returns whether any edge in the graph matches the given predicate function.
 * **source** <span class="code">string</span>: key of the edge's source.
 * **target** <span class="code">string</span>: key of the edge's target.
 * **sourceAttributes** <span class="code">object</span>: attributes of the edge's source.
-* **targetAttributes** <span class="code">object</span>= attributes of the edge's target.
+* **targetAttributes** <span class="code">object</span>: attributes of the edge's target.
 * **undirected** <span class="code">boolean</span>: whether the edge is undirected.
 
 ### #.everyEdge
@@ -531,7 +531,7 @@ Returns whether all edges in the graph match the given predicate function.
 * **source** <span class="code">string</span>: key of the edge's source.
 * **target** <span class="code">string</span>: key of the edge's target.
 * **sourceAttributes** <span class="code">object</span>: attributes of the edge's source.
-* **targetAttributes** <span class="code">object</span>= attributes of the edge's target.
+* **targetAttributes** <span class="code">object</span>: attributes of the edge's target.
 * **undirected** <span class="code">boolean</span>: whether the edge is undirected.
 
 ### #.edgeEntries
@@ -565,7 +565,7 @@ Returns an iterator over relevant edges.
 * **source** <span class="code">string</span>: key of the edge's source.
 * **target** <span class="code">string</span>: key of the edge's target.
 * **sourceAttributes** <span class="code">object</span>: attributes of the edge's source.
-* **targetAttributes** <span class="code">object</span>= attributes of the edge's target.
+* **targetAttributes** <span class="code">object</span>: attributes of the edge's target.
 
 ## Neighbors
 
