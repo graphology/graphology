@@ -11,11 +11,6 @@ const {
 
 // const EPSILON = -Infinity;
 
-function hashPair(s, t) {
-  if (s < t) return s + '§' + t;
-  return t + '§' + s;
-}
-
 // function isVeryCloseToZero(x) {
 //   return Math.abs(x) < EPSILON;
 // }
@@ -58,8 +53,6 @@ module.exports = function iterate(graph, nodeStates, params) {
       };
   }
 
-  const distancesCache = {};
-
   // Repulsion
   if (repulsion)
     for (let i = 0; i < adjustedOrder; i++) {
@@ -74,8 +67,6 @@ module.exports = function iterate(graph, nodeStates, params) {
         const dx = n2State.x - n1State.x;
         const dy = n2State.y - n1State.y;
         const distance = Math.sqrt(dx * dx + dy * dy) || 1;
-
-        distancesCache[hashPair(n1, n2)] = distance;
 
         // Repulse nodes relatively to 1 / distance:
         const repulsionX = (repulsion / distance) * dx;
@@ -118,7 +109,8 @@ module.exports = function iterate(graph, nodeStates, params) {
         // Compute distance:
         const dx = n2State.x - n1State.x;
         const dy = n2State.y - n1State.y;
-        const distance = distancesCache[hashPair(source, target)];
+
+        const distance = Math.sqrt(dx * dx + dy * dy) || 1;
 
         // Attract nodes relatively to their distance:
         const attractionX = attraction * distance * dx;
