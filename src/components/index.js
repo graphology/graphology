@@ -27,7 +27,7 @@ function forEachConnectedComponent(graph, callback) {
   var stack = [];
 
   function addToStack(target) {
-    if (!seen.has(target)) stack.push(target);
+    stack.push(target);
   }
 
   graph.forEachNode(function (node) {
@@ -67,7 +67,7 @@ function forEachConnectedComponentOrder(graph, callback) {
   var stack = [];
 
   function addToStack(target) {
-    if (!seen.has(target)) stack.push(target);
+    stack.push(target);
   }
 
   graph.forEachNode(function (node) {
@@ -116,7 +116,7 @@ function forEachConnectedComponentOrderWithEdgeFilter(
 
     if (!edgeFilter(e, a, s, t, sa, ta, u)) return;
 
-    if (!seen.has(t)) stack.push(t);
+    stack.push(t);
   }
 
   graph.forEachNode(function (node) {
@@ -181,7 +181,7 @@ function largestConnectedComponent(graph) {
   var component;
 
   function addToStack(target) {
-    if (!seen.has(target)) stack.push(target);
+    stack.push(target);
   }
 
   graph.someNode(function (node) {

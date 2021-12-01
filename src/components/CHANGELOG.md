@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1 (provisional)
+
+- Improving performance.
+
 ## 1.4.0
 
 - Adding `forEachConnectedComponent`.
