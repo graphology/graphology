@@ -19,6 +19,7 @@ var assertions = require('graphology-assertions');
 var areSameGraphs = assertions.areSameGraphs;
 var areSameGraphsDeep = assertions.areSameGraphsDeep;
 
+var countConnectedComponents = lib.countConnectedComponents;
 var connectedComponents = lib.connectedComponents;
 var largestConnectedComponent = lib.largestConnectedComponent;
 var stronglyConnectedComponents = lib.stronglyConnectedComponents;
@@ -83,6 +84,8 @@ describe('graphology-components', function () {
         ['5', '6'],
         ['7']
       ]);
+
+      assert.strictEqual(components.length, countConnectedComponents(graph));
     });
 
     it('should also work with self loops.', function () {
@@ -94,6 +97,8 @@ describe('graphology-components', function () {
       var components = connectedComponents(graph);
 
       assert.deepStrictEqual(components, [['1', '2'], ['3']]);
+
+      assert.strictEqual(components.length, countConnectedComponents(graph));
     });
 
     it('should work in the directed case.', function () {
@@ -113,6 +118,8 @@ describe('graphology-components', function () {
       component.sort();
 
       assert.deepStrictEqual(component, ['1', '2', '3', '4', '5']);
+
+      assert.strictEqual(components.length, countConnectedComponents(graph));
     });
   });
 

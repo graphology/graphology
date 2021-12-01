@@ -141,6 +141,16 @@ function forEachConnectedComponentOrderWithEdgeFilter(
   });
 }
 
+function countConnectedComponents(graph) {
+  var n = 0;
+
+  forEachConnectedComponentOrder(graph, function () {
+    n++;
+  });
+
+  return n;
+}
+
 /**
  * Function returning a list of a graph's connected components as arrays
  * of node keys.
@@ -352,6 +362,7 @@ exports.forEachConnectedComponent = forEachConnectedComponent;
 exports.forEachConnectedComponentOrder = forEachConnectedComponentOrder;
 exports.forEachConnectedComponentOrderWithEdgeFilter =
   forEachConnectedComponentOrderWithEdgeFilter;
+exports.countConnectedComponents = countConnectedComponents;
 exports.connectedComponents = connectedComponents;
 exports.largestConnectedComponent = largestConnectedComponent;
 exports.largestConnectedComponentSubgraph = largestConnectedComponentSubgraph;

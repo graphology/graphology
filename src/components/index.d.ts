@@ -16,6 +16,7 @@ export function forEachConnectedComponentOrder<
   edgeFilter: EdgePredicate<NodeAttributes, EdgeAttributes>,
   callback: (componentOrder: number) => void
 ): void;
+export function countConnectedComponents(graph: Graph): number;
 export function connectedComponents(graph: Graph): Array<Array<string>>;
 export function largestConnectedComponent(graph: Graph): Array<string>;
 export function stronglyConnectedComponents(graph: Graph): Array<Array<string>>;
