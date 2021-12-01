@@ -4,6 +4,7 @@
 
 - Adding `forEachConnectedComponent`.
 - Improving performance of `cropToLargestConnectedComponent`.
+- Improving performance of `largestConnectedComponent`.
 
 ## 1.3.0
 

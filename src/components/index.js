@@ -134,27 +134,28 @@ function largestConnectedComponent(graph) {
   var stack = [];
   var component;
 
-  var nodes = graph.nodes();
+  function addToStack(target) {
+    if (!seen.has(target)) stack.push(target);
+  }
 
-  var i, l, node, n1;
-
-  for (i = 0, l = nodes.length; i < l; i++) {
-    node = nodes[i];
-
-    if (seen.has(node)) continue;
+  graph.someNode(function (node) {
+    if (seen.has(node)) return;
 
     component = [];
+
     stack.push(node);
 
+    var source;
+
     while (stack.length !== 0) {
-      n1 = stack.pop();
+      source = stack.pop();
 
-      if (seen.has(n1)) continue;
+      if (seen.has(source)) continue;
 
-      seen.add(n1);
-      component.push(n1);
+      seen.add(source);
+      component.push(source);
 
-      extend(stack, graph.neighbors(n1));
+      graph.forEachNeighbor(source, addToStack);
     }
 
     if (component.length > largestComponent.length)
@@ -165,8 +166,10 @@ function largestConnectedComponent(graph) {
     // remaining nodes to visit, we can safely assert we found the
     // overall largest component already.
     remaining = order - seen.size;
-    if (largestComponent.length > remaining) return largestComponent;
-  }
+    if (largestComponent.length > remaining) return true;
+
+    return false;
+  });
 
   return largestComponent;
 }
