@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.19.0 (provisional)
+
+- Adding `simmelianStrength`.
+
 ## 1.18.2
 
 - Upgrading `graphology-indice`.

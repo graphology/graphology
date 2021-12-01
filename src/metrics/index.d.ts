@@ -5,5 +5,6 @@ export {default as eccentricity} from './eccentricity';
 export {default as extent} from './extent';
 export {default as layoutQuality} from './layout-quality';
 export {default as modularity} from './modularity';
+export {default as simmelianStrength} from './simmelian-strength';
 export {default as weightedDegree} from './weighted-degree';
 export {default as weightedSize} from './weighted-size';

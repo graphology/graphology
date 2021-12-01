@@ -11,5 +11,6 @@ exports.eccentricity = require('./eccentricity.js');
 exports.extent = require('./extent.js');
 exports.layoutQuality = require('./layout-quality');
 exports.modularity = require('./modularity.js');
+exports.simmelianStrength = require('./simmelian-strength.js');
 exports.weightedDegree = require('./weighted-degree.js');
 exports.weightedSize = require('./weighted-size.js');
