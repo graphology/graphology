@@ -72,6 +72,7 @@
     "graphology-shortest-path": "file:src/shortest-path",
     "graphology-similarity": "file:src/similarity",
     "graphology-simple-path": "file:src/simple-path",
+    "graphology-sparsification": "file:src/sparsification",
     "graphology-svg": "file:src/svg",
     "graphology-traversal": "file:src/traversal",
     "graphology-types": "file:src/types",

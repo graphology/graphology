@@ -1,0 +1,39 @@
+{
+  "name": "graphology-sparsification",
+  "version": "0.0.1",
+  "description": "Sparsification methods & helpers for graphology.",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "*.d.ts"
+  ],
+  "types": "./index.d.ts",
+  "scripts": {
+    "prepublishOnly": "npm test",
+    "test": "mocha test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology.git"
+  },
+  "keywords": [
+    "graph",
+    "graphology",
+    "sparsification"
+  ],
+  "author": {
+    "name": "Guillaume Plique",
+    "url": "http://github.com/Yomguithereal"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology#readme",
+  "peerDependencies": {
+    "graphology-types": ">=0.19.0"
+  },
+  "dependencies": {
+    "graphology-utils": "^2.4.1"
+  }
+}
