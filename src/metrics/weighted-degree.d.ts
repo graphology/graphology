@@ -23,6 +23,11 @@ interface IWeightedDegree extends IWeightedDegreeBase {
   weightedOutDegree: IWeightedDegreeBase;
 }
 
-declare const weightedDegree: IWeightedDegree;
+declare const weightedDegree: IWeightedDegreeBase;
+declare const weightedInDegree: IWeightedDegreeBase;
+declare const weightedOutDegree: IWeightedDegreeBase;
 
-export default weightedDegree;
+declare const defaultWeightedDegree: IWeightedDegree;
+
+export {weightedDegree, weightedInDegree, weightedOutDegree};
+export default defaultWeightedDegree;
