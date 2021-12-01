@@ -1,4 +1,4 @@
-import Graph from 'graphology-types';
+import Graph, {Attributes, EdgePredicate} from 'graphology-types';
 
 export function forEachConnectedComponent(
   graph: Graph,
@@ -6,6 +6,14 @@ export function forEachConnectedComponent(
 ): void;
 export function forEachConnectedComponentOrder(
   graph: Graph,
+  callback: (componentOrder: number) => void
+): void;
+export function forEachConnectedComponentOrder<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph,
+  edgeFilter: EdgePredicate<NodeAttributes, EdgeAttributes>,
   callback: (componentOrder: number) => void
 ): void;
 export function connectedComponents(graph: Graph): Array<Array<string>>;

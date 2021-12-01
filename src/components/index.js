@@ -94,6 +94,53 @@ function forEachConnectedComponentOrder(graph, callback) {
   });
 }
 
+function forEachConnectedComponentOrderWithEdgeFilter(
+  graph,
+  edgeFilter,
+  callback
+) {
+  if (!isGraph(graph))
+    throw new Error(
+      'graphology-components: the given graph is not a valid graphology instance.'
+    );
+
+  // A null graph has no connected components by definition
+  if (!graph.order) return;
+
+  var seen = new Set();
+  var stack = [];
+  var source;
+
+  function addToStack(e, a, s, t, sa, ta, u) {
+    if (source === t) t = s;
+
+    if (!edgeFilter(e, a, s, t, sa, ta, u)) return;
+
+    if (!seen.has(t)) stack.push(t);
+  }
+
+  graph.forEachNode(function (node) {
+    if (seen.has(node)) return;
+
+    var order = 0;
+
+    stack.push(node);
+
+    while (stack.length !== 0) {
+      source = stack.pop();
+
+      if (seen.has(source)) continue;
+
+      seen.add(source);
+      order++;
+
+      graph.forEachEdge(source, addToStack);
+    }
+
+    callback(order);
+  });
+}
+
 /**
  * Function returning a list of a graph's connected components as arrays
  * of node keys.
@@ -303,6 +350,8 @@ function stronglyConnectedComponents(graph) {
  */
 exports.forEachConnectedComponent = forEachConnectedComponent;
 exports.forEachConnectedComponentOrder = forEachConnectedComponentOrder;
+exports.forEachConnectedComponentOrderWithEdgeFilter =
+  forEachConnectedComponentOrderWithEdgeFilter;
 exports.connectedComponents = connectedComponents;
 exports.largestConnectedComponent = largestConnectedComponent;
 exports.largestConnectedComponentSubgraph = largestConnectedComponentSubgraph;

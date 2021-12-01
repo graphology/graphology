@@ -26,6 +26,8 @@ var largestConnectedComponentSubgraph = lib.largestConnectedComponentSubgraph;
 var cropToLargestConnectedComponent = lib.cropToLargestConnectedComponent;
 var forEachConnectedComponent = lib.forEachConnectedComponent;
 var forEachConnectedComponentOrder = lib.forEachConnectedComponentOrder;
+var forEachConnectedComponentOrderWithEdgeFilter =
+  lib.forEachConnectedComponentOrderWithEdgeFilter;
 
 var sortComponents = function (components) {
   components.forEach(function (c) {
@@ -484,6 +486,62 @@ describe('graphology-components', function () {
       });
 
       assert.deepStrictEqual(o1, o2);
+    });
+  });
+
+  describe('#.forEachConnectedComponentOrderWithEdgeFilter', function () {
+    it('should correctly return the correct orders.', function () {
+      var graph = new Graph();
+      graph.mergeEdge(1, 2, {hidden: true});
+      graph.mergeEdge(2, 3);
+
+      graph.mergeEdge(5, 6);
+
+      graph.addNode(7);
+
+      var orders = [];
+
+      forEachConnectedComponentOrderWithEdgeFilter(
+        graph,
+        function () {
+          return true;
+        },
+        function (order) {
+          orders.push(order);
+        }
+      );
+
+      assert.deepStrictEqual(new Set(orders), new Set([1, 2, 3]));
+
+      orders = [];
+
+      forEachConnectedComponentOrderWithEdgeFilter(
+        graph,
+        function () {
+          return false;
+        },
+        function (order) {
+          orders.push(order);
+        }
+      );
+
+      assert.deepStrictEqual(orders, [1, 1, 1, 1, 1, 1]);
+
+      orders = [];
+
+      forEachConnectedComponentOrderWithEdgeFilter(
+        graph,
+        function (_, attr) {
+          return !attr.hidden;
+        },
+        function (order) {
+          orders.push(order);
+        }
+      );
+
+      orders.sort();
+
+      assert.deepStrictEqual(orders, [1, 1, 2, 2]);
     });
   });
 
