@@ -149,7 +149,7 @@ Indeed, even though is possible to expose methods able to change a node's key, o
 
 Finally, note that [`graphology-utils`](standard-library/utils) exposes helpers for those kind of scenarios such as the [`renameGraphKeys`](standard-library/utils#renamegraphkeys) function.
 
-## Order of undirected egde extremities
+## Order of undirected edge extremities
 
 By convention, undirected edge extremities are recorded in the order they were first provided by the user.
 

@@ -41,6 +41,10 @@ _Node metrics_
 - [Eccentricity](#eccentricity)
 - [Weighted degree](#weighted-degree)
 
+_Edge metrics_
+
+- [Simmelian strength](#simmelian-strength)
+
 _Attributes metrics_
 
 - [Modalities](#modalities)
@@ -51,7 +55,9 @@ _Layout quality metrics_
 - [Neighborhood Preservation](#neighborhood-preservation)
 - [Stress](#stress)
 
-### Density
+### Graph metrics
+
+#### Density
 
 Computes the density of the given graph.
 
@@ -89,7 +95,7 @@ Or:
 - **order** _number_: number of nodes in the graph.
 - **size** _number_: number of edges in the graph.
 
-### Diameter
+#### Diameter
 
 Computes the diameter, i.e the maximum eccentricity of any node of the given graph.
 
@@ -114,7 +120,7 @@ _Arguments_
 
 - **graph** _Graph_: target graph.
 
-### Extent
+#### Extent
 
 Computes the extent - min, max - of a node or edge's attribute.
 
@@ -139,7 +145,7 @@ _Arguments_
 - **graph** _Graph_: target graph.
 - **attributes** _string|array_: single attribute names or array of attribute names.
 
-### Modularity
+#### Modularity
 
 Computes the modularity, given the graph and a node partition. It works on both directed & undirected networks and will return the relevant modularity.
 
@@ -168,7 +174,7 @@ _Arguments_
   - **resolution** <span class="code">?number</span>: resolution parameter (`γ`).
   - **weighted** <span class="code">?boolean</span> <span class="default">true</span>: whether to compute weighted modularity or not.
 
-### Weighted size
+#### Weighted size
 
 Computes the weighted size, i.e. the sum of the graph's edges' weight, of the given graph.
 
@@ -227,7 +233,7 @@ _Arguments_
   - **normalized** <span class="code">?boolean</span> <span class="default">true</span>: should the result be normalized?
   - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: should we compute the weighted betweenness centrality?
 
-### Closeness centrality
+#### Closeness centrality
 
 Computes the closeness centrality of a graph's nodes.
 
@@ -282,7 +288,7 @@ _Arguments_
   - **attributes** <span class="code">?object</span>: custom attribute names:
     - **centrality** <span class="code">?string</span> <span class="default">degreeCentrality</span>: name of the centrality attribute to assign.
 
-### Eigenvector centrality
+#### Eigenvector centrality
 
 Computes the eigenvector centrality of a graph's nodes.
 
@@ -310,7 +316,7 @@ _Arguments_
   - **tolerance** <span class="code">?number</span> <span class="default">1.e-6</span>: convergence error tolerance.
   - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to use available weights or not.
 
-### HITS
+#### HITS
 
 Computes the hub/authority metrics for each node using the HITS algorithm.
 
@@ -339,7 +345,7 @@ _Arguments_
   - **normalize** <span class="code">?boolean</span> <span class="default">true</span>: should the result be normalized by the sum of values.
   - **tolerance** <span class="code">?number</span> <span class="default">1.e-8</span>: convergence error tolerance.
 
-### Pagerank
+#### Pagerank
 
 Computes the pagerank metrics for each node.
 
@@ -368,7 +374,9 @@ _Arguments_
   - **tolerance** <span class="code">?number</span> <span class="default">1.e-6</span>: convergence error tolerance.
   - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to use available weights or not.
 
-### Weighted degree
+### Node metrics
+
+#### Weighted degree
 
 Computes the weighted degree of nodes. The weighted degree of a node is the sum of its edges' weights.
 
@@ -414,7 +422,7 @@ _Options_
   - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the weight attribute.
   - **weightedDegree** <span class="code">?string</span> <span class="default">weightedDegree</span>: name of the attribute to assign.
 
-### Degree
+#### Degree
 
 Returns degree information for every node in the graph. Note that [`graphology`](https://graphology.github.io)'s API already gives you access to this information through `#.degree` etc. So only consider this function as a convenience to extract/assign all degrees at once.
 
@@ -483,7 +491,7 @@ _Arguments_
     - **directedDegree** <span class="code">?string</span>: Name of the mixed directedDegree attribute.
   - **types** <span class="code">?array</span>: List of degree types to extract.
 
-### Eccentricity
+#### Eccentricity
 
 Computes the eccentricity which is the maximum of the shortest paths between the given node and any other node.
 
@@ -509,9 +517,27 @@ _Arguments_
 - **graph** _Graph_: target graph.
 - **node** _any_: desired node.
 
-### Modalities
+### Edge metrics
 
-Method returning a node categorical attribute's modalities and related statistics.
+#### Simmelian strength
+
+Function returning the simmelian strength, i.e. the number of triangles an edge is part of, of all the edges in the given graph.
+
+```js
+import simmelianStrength from 'graphology-metrics/simmelian-strength';
+
+// To compute strength for every edge:
+const strengths = simmelianStrength(graph);
+
+// To directly map the result onto edge attributes (`simmelianStrength`):
+simmelianStrength.assign(graph);
+```
+
+### Attribute metrics
+
+#### Modalities
+
+Function returning a node categorical attribute's modalities and related statistics.
 
 ```js
 import modalities from 'graphology-metrics/modalities';
@@ -546,7 +572,9 @@ _Arguments_
 - **graph** _Graph_: target graph.
 - **attribute** _string|array_: target categorical attribute or array of categorical attributes.
 
-### Edge Uniformity
+### Layout quality metrics
+
+#### Edge Uniformity
 
 Computes the edge uniformity layout quality metric from the given graph having `x` and `y` positions attached to its nodes. Edge uniformity is the normalized standard deviation of edge length of the graph. Lower values should be synonym of better layout according to this particular metric.
 
@@ -559,7 +587,7 @@ edgeUniformity(graph);
 >>> ~1.132
 ```
 
-### Neighborhood preservation
+#### Neighborhood preservation
 
 Computes the "neighborhood preservation" layout quality metric from the given graph having `x` and `y` positions attached to its nodes. Neighborhood preservation is the average proportion of node neighborhood being the same both in the graph's topology and its 2d layout space. The metric is therefore comprised between `0` and `1`, `1` being the best, meaning that every node keeps its neighborhood perfectly intact within the layout space.
 
@@ -572,7 +600,7 @@ neighborhoodPreservation(graph);
 // >>> 0.456
 ```
 
-### Stress
+#### Stress
 
 Computes the "stress" layout quality metric from the given graph having `x` and `y` positions attached to its nodes. Stress is the sum of normalized delta between node topology distances and their layout space distances. Lower values should be synonym of better layout according to this particular metric.
 

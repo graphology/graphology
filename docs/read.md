@@ -44,6 +44,8 @@ graph.hasNode('Jack');
 
 Returns whether the given edge is found in the graph or whether an edge links the given source & target.
 
+See also [#.areNeighbors](#areneighbors).
+
 *Example*
 
 ```js
@@ -317,6 +319,8 @@ graph.isSelfLoop(edge);
 ## #.areNeighbors
 
 Returns whether both nodes are neighbors.
+
+See also [#.hasEdge](#hasedge).
 
 *Examples*
 

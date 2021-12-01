@@ -20,11 +20,39 @@ npm install graphology-components
 
 ## Usage
 
+- [forEachConnectedComponent](#foreachconnectedcomponent)
+- [forEachConnectedComponentOrder](#foreachconnectedcomponentorder)
 - [connectedComponents](#connectedcomponents)
 - [largestConnectedComponent](#largestconnectedcomponent)
 - [largestConnectedComponentSubgraph](#largestconnectedcomponentsubgraph)
 - [cropToLargestConnectedComponent](#cropToLargestConnectedComponent)
 - [stronglyConnectedComponents](#stronglyconnectedcomponents)
+
+### forEachConnectedComponent
+
+Iterates over the connected components of the given graph using a callback.
+
+```js
+import {forEachConnectedComponent} from 'graphology-components';
+
+forEachConnectedComponent(graph, component => {
+  console.log(component);
+});
+```
+
+### forEachConnectedComponentOrder
+
+Specialized version of [forEachConnectedComponent](#foreachconnectedcomponent) that iterates over the connected component orders, i.e. the number of nodes they contain.
+
+It consumes less memory than a naive approach mapping the component lengths using `forEachConnectedComponent`.
+
+```js
+import {forEachConnectedComponentOrder} from 'graphology-components';
+
+forEachConnectedComponentOrder(graph, order => {
+  console.log(order);
+});
+```
 
 ### connectedComponents
 
