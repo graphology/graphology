@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1 (provisional)
+
+- Improving performance of `cropToLargestConnectedComponent`.
+
 ## 1.3.0
 
 - Adding `cropToLargestConnectedComponent`.

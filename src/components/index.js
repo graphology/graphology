@@ -159,12 +159,16 @@ function largestConnectedComponentSubgraph(graph) {
   return S;
 }
 
+/**
+ * Function mutating a graph in order to drop every node and edge that does
+ * not belong to its largest connected component.
+ *
+ * @param  {Graph} graph - Target graph.
+ */
 function cropToLargestConnectedComponent(graph) {
   var component = new Set(largestConnectedComponent(graph));
 
-  var nodes = graph.nodes();
-
-  nodes.forEach(function (key) {
+  graph.forEachNode(function (key) {
     if (!component.has(key)) {
       graph.dropNode(key);
     }
