@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4.0 (provisional)
+## 1.4.0
 
 - Adding `forEachConnectedComponent`.
 - Improving performance of `cropToLargestConnectedComponent`.
