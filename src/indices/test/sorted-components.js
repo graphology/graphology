@@ -23,22 +23,18 @@ describe('SortedComponentsIndex', function () {
 
     assert.strictEqual(index.count, 6);
     assert.deepStrictEqual(Array.from(index.orders), [5, 4, 2, 1, 1, 1]);
-    assert.deepStrictEqual(
-      Array.from(index.offsets),
-      [0, 5, 9, 11, 12, 13, 14]
-    );
+    assert.deepStrictEqual(Array.from(index.offsets), [9, 0, 7, 4, 5, 6]);
 
-    var components = Array.from(index.orders).map(function (order, i) {
-      return new Set(index.nodes.slice(index.offsets[i], index.offsets[i + 1]));
-    });
+    var components = Array.from(index.orders)
+      .map(function (order, i) {
+        var start = index.offsets[i];
+        var end = start + order;
 
-    assert.deepStrictEqual(components, [
-      new Set(['10', '11', '12', '13', '14']),
-      new Set(['1', '2', '3', '4']),
-      new Set(['5', '6']),
-      new Set(['8']),
-      new Set(['9']),
-      new Set(['7'])
-    ]);
+        return index.nodes.slice(start, end).sort().join(',');
+      })
+      .sort()
+      .join('$');
+
+    assert.strictEqual(components, '1,2,3,4$10,11,12,13,14$5,6$7$8$9');
   });
 });
