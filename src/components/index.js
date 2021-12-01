@@ -7,7 +7,6 @@
 var isGraph = require('graphology-utils/is-graph');
 var copyNode = require('graphology-utils/add-node').copyNode;
 var copyEdge = require('graphology-utils/add-edge').copyEdge;
-var extend = require('@yomguithereal/helpers/extend');
 
 /**
  * Function iterating over a graph's connected component using a callback.

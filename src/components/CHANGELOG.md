@@ -5,6 +5,7 @@
 - Adding `forEachConnectedComponent`.
 - Improving performance of `cropToLargestConnectedComponent`.
 - Improving performance of `largestConnectedComponent`.
+- Dropping dependency to `@yomguithereal/helpers`.
 
 ## 1.3.0
 
