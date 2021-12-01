@@ -4,6 +4,10 @@ export function forEachConnectedComponent(
   graph: Graph,
   callback: (component: Array<string>) => void
 ): void;
+export function forEachConnectedComponentOrder(
+  graph: Graph,
+  callback: (componentOrder: number) => void
+): void;
 export function connectedComponents(graph: Graph): Array<Array<string>>;
 export function largestConnectedComponent(graph: Graph): Array<string>;
 export function stronglyConnectedComponents(graph: Graph): Array<Array<string>>;

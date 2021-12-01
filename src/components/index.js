@@ -28,7 +28,7 @@ function forEachConnectedComponent(graph, callback) {
   var stack = [];
 
   function addToStack(target) {
-    stack.push(target);
+    if (!seen.has(target)) stack.push(target);
   }
 
   graph.forEachNode(function (node) {
@@ -52,6 +52,46 @@ function forEachConnectedComponent(graph, callback) {
     }
 
     callback(component);
+  });
+}
+
+function forEachConnectedComponentOrder(graph, callback) {
+  if (!isGraph(graph))
+    throw new Error(
+      'graphology-components: the given graph is not a valid graphology instance.'
+    );
+
+  // A null graph has no connected components by definition
+  if (!graph.order) return;
+
+  var seen = new Set();
+  var stack = [];
+
+  function addToStack(target) {
+    if (!seen.has(target)) stack.push(target);
+  }
+
+  graph.forEachNode(function (node) {
+    if (seen.has(node)) return;
+
+    var order = 0;
+
+    stack.push(node);
+
+    var source;
+
+    while (stack.length !== 0) {
+      source = stack.pop();
+
+      if (seen.has(source)) continue;
+
+      seen.add(source);
+      order++;
+
+      graph.forEachNeighbor(source, addToStack);
+    }
+
+    callback(order);
   });
 }
 
@@ -260,6 +300,7 @@ function stronglyConnectedComponents(graph) {
  * Exporting.
  */
 exports.forEachConnectedComponent = forEachConnectedComponent;
+exports.forEachConnectedComponentOrder = forEachConnectedComponentOrder;
 exports.connectedComponents = connectedComponents;
 exports.largestConnectedComponent = largestConnectedComponent;
 exports.largestConnectedComponentSubgraph = largestConnectedComponentSubgraph;

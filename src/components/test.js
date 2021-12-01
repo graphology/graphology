@@ -2,28 +2,30 @@
  * Graphology Utils Unit Tests
  * ============================
  */
-var assert = require('assert'),
-  Graph = require('graphology'),
-  erdosRenyi = require('graphology-generators/random/erdos-renyi'),
-  disjointUnion = require('graphology-operators/disjoint-union'),
-  range = require('lodash/range'),
-  random = require('pandemonium/random'),
-  sortBy = require('lodash/sortBy'),
-  takeWhile = require('lodash/takeWhile'),
-  isEqual = require('lodash/isEqual'),
-  lib = require('./'),
-  subgraph = require('graphology-operators/subgraph'),
-  isGraph = require('graphology-utils/is-graph'),
-  assertions = require('graphology-assertions');
+var assert = require('assert');
+var Graph = require('graphology');
+var erdosRenyi = require('graphology-generators/random/erdos-renyi');
+var disjointUnion = require('graphology-operators/disjoint-union');
+var range = require('lodash/range');
+var random = require('pandemonium/random');
+var sortBy = require('lodash/sortBy');
+var takeWhile = require('lodash/takeWhile');
+var isEqual = require('lodash/isEqual');
+var lib = require('./');
+var subgraph = require('graphology-operators/subgraph');
+var isGraph = require('graphology-utils/is-graph');
+var assertions = require('graphology-assertions');
 
-var areSameGraphs = assertions.areSameGraphs,
-  areSameGraphsDeep = assertions.areSameGraphsDeep;
+var areSameGraphs = assertions.areSameGraphs;
+var areSameGraphsDeep = assertions.areSameGraphsDeep;
 
-var connectedComponents = lib.connectedComponents,
-  largestConnectedComponent = lib.largestConnectedComponent,
-  stronglyConnectedComponents = lib.stronglyConnectedComponents,
-  largestConnectedComponentSubgraph = lib.largestConnectedComponentSubgraph,
-  cropToLargestConnectedComponent = lib.cropToLargestConnectedComponent;
+var connectedComponents = lib.connectedComponents;
+var largestConnectedComponent = lib.largestConnectedComponent;
+var stronglyConnectedComponents = lib.stronglyConnectedComponents;
+var largestConnectedComponentSubgraph = lib.largestConnectedComponentSubgraph;
+var cropToLargestConnectedComponent = lib.cropToLargestConnectedComponent;
+var forEachConnectedComponent = lib.forEachConnectedComponent;
+var forEachConnectedComponentOrder = lib.forEachConnectedComponentOrder;
 
 var sortComponents = function (components) {
   components.forEach(function (c) {
@@ -457,6 +459,31 @@ describe('graphology-components', function () {
       });
 
       assert.deepStrictEqual(edgesGraph, edgesResultGraph);
+    });
+  });
+
+  describe('#.forEachConnectedComponentOrder', function () {
+    it('should return the correct information.', function () {
+      var graph = new Graph();
+      graph.mergeEdge(1, 2);
+      graph.mergeEdge(2, 3);
+
+      graph.mergeEdge(5, 6);
+
+      graph.addNode(7);
+
+      var o1 = [];
+      var o2 = [];
+
+      forEachConnectedComponent(graph, function (component) {
+        o1.push(component.length);
+      });
+
+      forEachConnectedComponentOrder(graph, function (order) {
+        o2.push(order);
+      });
+
+      assert.deepStrictEqual(o1, o2);
     });
   });
 
