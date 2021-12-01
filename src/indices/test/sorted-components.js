@@ -30,6 +30,8 @@ describe('SortedComponentsIndex', function () {
         var start = index.offsets[i];
         var end = start + order;
 
+        assert(end <= index.nodes.length);
+
         return index.nodes.slice(start, end).sort().join(',');
       })
       .sort()
