@@ -22,6 +22,7 @@ npm install graphology-components
 
 - [forEachConnectedComponent](#foreachconnectedcomponent)
 - [forEachConnectedComponentOrder](#foreachconnectedcomponentorder)
+- [countConnectedComponents](#countconnectedcomponents)
 - [connectedComponents](#connectedcomponents)
 - [largestConnectedComponent](#largestconnectedcomponent)
 - [largestConnectedComponentSubgraph](#largestconnectedcomponentsubgraph)
@@ -52,6 +53,16 @@ import {forEachConnectedComponentOrder} from 'graphology-components';
 forEachConnectedComponentOrder(graph, order => {
   console.log(order);
 });
+```
+
+### countConnectedComponents
+
+Returns the number of connected components of the given graph.
+
+```js
+import {countConnectedComponents} from 'graphology-components';
+
+const count = countConnectedComponents(graph);
 ```
 
 ### connectedComponents

@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.0 (provisional)
+## 1.5.0
 
 - Adding `countConnectedComponents`.
 - Improving performance.
