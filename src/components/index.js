@@ -10,6 +10,52 @@ var copyEdge = require('graphology-utils/add-edge').copyEdge;
 var extend = require('@yomguithereal/helpers/extend');
 
 /**
+ * Function iterating over a graph's connected component using a callback.
+ *
+ * @param {Graph}    graph    - Target graph.
+ * @param {function} callback - Iteration callback.
+ */
+function forEachConnectedComponent(graph, callback) {
+  if (!isGraph(graph))
+    throw new Error(
+      'graphology-components: the given graph is not a valid graphology instance.'
+    );
+
+  // A null graph has no connected components by definition
+  if (!graph.order) return;
+
+  var seen = new Set();
+  var stack = [];
+
+  function addToStack(target) {
+    stack.push(target);
+  }
+
+  graph.forEachNode(function (node) {
+    if (seen.has(node)) return;
+
+    var component = [];
+
+    stack.push(node);
+
+    var source;
+
+    while (stack.length !== 0) {
+      source = stack.pop();
+
+      if (seen.has(source)) continue;
+
+      seen.add(source);
+      component.push(source);
+
+      graph.forEachNeighbor(source, addToStack);
+    }
+
+    callback(component);
+  });
+}
+
+/**
  * Function returning a list of a graph's connected components as arrays
  * of node keys.
  *
@@ -17,48 +63,11 @@ var extend = require('@yomguithereal/helpers/extend');
  * @return {array}
  */
 function connectedComponents(graph) {
-  if (!isGraph(graph))
-    throw new Error(
-      'graphology-components: the given graph is not a valid graphology instance.'
-    );
-
-  if (!graph.order) return [];
-
-  if (!graph.size)
-    return graph.mapNodes(function (node) {
-      return [node];
-    });
-
-  var seen = new Set();
   var components = [];
-  var stack = [];
-  var component;
 
-  var nodes = graph.nodes();
-
-  var i, l, node, n1;
-
-  for (i = 0, l = nodes.length; i < l; i++) {
-    node = nodes[i];
-
-    if (seen.has(node)) continue;
-
-    component = [];
-    stack.push(node);
-
-    while (stack.length !== 0) {
-      n1 = stack.pop();
-
-      if (seen.has(n1)) continue;
-
-      seen.add(n1);
-      component.push(n1);
-
-      extend(stack, graph.neighbors(n1));
-    }
-
+  forEachConnectedComponent(graph, function (component) {
     components.push(component);
-  }
+  });
 
   return components;
 }
@@ -76,13 +85,6 @@ function largestConnectedComponent(graph) {
     );
 
   if (!graph.order) return [];
-
-  if (!graph.size)
-    return [
-      graph.findNode(function () {
-        return true;
-      })
-    ];
 
   var order = graph.order;
   var remaining;
@@ -118,8 +120,10 @@ function largestConnectedComponent(graph) {
     if (component.length > largestComponent.length)
       largestComponent = component;
 
-    // Early exit condition
-    // NOTE: could be done each time we traverse a node but would complexify
+    // Early exit condition:
+    // If current largest component's size is larger than the number of
+    // remaining nodes to visit, we can safely assert we found the
+    // overall largest component already.
     remaining = order - seen.size;
     if (largestComponent.length > remaining) return largestComponent;
   }
@@ -255,6 +259,7 @@ function stronglyConnectedComponents(graph) {
 /**
  * Exporting.
  */
+exports.forEachConnectedComponent = forEachConnectedComponent;
 exports.connectedComponents = connectedComponents;
 exports.largestConnectedComponent = largestConnectedComponent;
 exports.largestConnectedComponentSubgraph = largestConnectedComponentSubgraph;
