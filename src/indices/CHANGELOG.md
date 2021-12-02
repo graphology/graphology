@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.17.0 (provisional)
+
+- Adding `DFSStack`.
+- Improving `SortedComponents`.
+
 ## 0.16.1
 
 - Switching to new internal weight getter.

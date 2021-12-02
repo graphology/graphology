@@ -4,6 +4,8 @@
  *
  * An index storing the connected components of given graph sorted by order.
  */
+var DFSStack = require('./dfs-stack.js');
+
 function SortedComponentsIndex(graph) {
   var orders = [];
   var offsets = [];
@@ -13,17 +15,14 @@ function SortedComponentsIndex(graph) {
 
   if (!graph.order) return;
 
-  var seen = new Set();
-  var stack = [];
-  var componentOrder;
+  var stack = new DFSStack(graph.order);
+  var push = stack.push.bind(stack);
 
-  function neighborCallback(neighbor) {
-    stack.push(neighbor);
-  }
+  var componentOrder;
 
   // Performing DFS
   graph.forEachNode(function (node) {
-    if (seen.has(node)) return;
+    if (stack.has(node)) return;
 
     componentOrder = 0;
     offsets.push(n);
@@ -31,16 +30,13 @@ function SortedComponentsIndex(graph) {
 
     var source;
 
-    while (stack.length !== 0) {
+    while (stack.size !== 0) {
       source = stack.pop();
-
-      if (seen.has(source)) continue;
 
       componentOrder += 1;
       nodes[n++] = source;
-      seen.add(source);
 
-      graph.forEachNeighbor(source, neighborCallback);
+      graph.forEachNeighbor(source, push);
     }
 
     orders.push(componentOrder);
