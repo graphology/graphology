@@ -199,7 +199,7 @@ function largestConnectedComponent(graph) {
     // If current largest component's size is larger than the number of
     // remaining nodes to visit, we can safely assert we found the
     // overall largest component already.
-    remaining = order - stack.size;
+    remaining = order - stack.seen.size;
     if (largestComponent.length > remaining) return true;
 
     return false;
