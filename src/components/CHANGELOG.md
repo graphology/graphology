@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.2
+
+- Fixing early exit of `largestConnecteComponent`.
+
 ## 1.5.1
 
 - Improving performance.
