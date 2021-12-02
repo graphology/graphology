@@ -5,6 +5,7 @@
   "main": "index.js",
   "files": [
     "*.d.ts",
+    "dfs-stack.js",
     "index.js",
     "louvain.js",
     "neighborhood.js",

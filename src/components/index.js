@@ -7,6 +7,7 @@
 var isGraph = require('graphology-utils/is-graph');
 var copyNode = require('graphology-utils/add-node').copyNode;
 var copyEdge = require('graphology-utils/add-edge').copyEdge;
+var DFSStack = require('graphology-indices/dfs-stack');
 
 /**
  * Function iterating over a graph's connected component using a callback.
@@ -23,15 +24,11 @@ function forEachConnectedComponent(graph, callback) {
   // A null graph has no connected components by definition
   if (!graph.order) return;
 
-  var seen = new Set();
-  var stack = [];
-
-  function addToStack(target) {
-    stack.push(target);
-  }
+  var stack = new DFSStack(graph.order);
+  var push = stack.push.bind(stack);
 
   graph.forEachNode(function (node) {
-    if (seen.has(node)) return;
+    if (stack.has(node)) return;
 
     var component = [];
 
@@ -39,15 +36,12 @@ function forEachConnectedComponent(graph, callback) {
 
     var source;
 
-    while (stack.length !== 0) {
+    while (stack.size !== 0) {
       source = stack.pop();
 
-      if (seen.has(source)) continue;
-
-      seen.add(source);
       component.push(source);
 
-      graph.forEachNeighbor(source, addToStack);
+      graph.forEachNeighbor(source, push);
     }
 
     callback(component);
@@ -63,15 +57,11 @@ function forEachConnectedComponentOrder(graph, callback) {
   // A null graph has no connected components by definition
   if (!graph.order) return;
 
-  var seen = new Set();
-  var stack = [];
-
-  function addToStack(target) {
-    stack.push(target);
-  }
+  var stack = new DFSStack(graph.order);
+  var push = stack.push.bind(stack);
 
   graph.forEachNode(function (node) {
-    if (seen.has(node)) return;
+    if (stack.has(node)) return;
 
     var order = 0;
 
@@ -79,15 +69,12 @@ function forEachConnectedComponentOrder(graph, callback) {
 
     var source;
 
-    while (stack.length !== 0) {
+    while (stack.size !== 0) {
       source = stack.pop();
 
-      if (seen.has(source)) continue;
-
-      seen.add(source);
       order++;
 
-      graph.forEachNeighbor(source, addToStack);
+      graph.forEachNeighbor(source, push);
     }
 
     callback(order);
@@ -107,11 +94,11 @@ function forEachConnectedComponentOrderWithEdgeFilter(
   // A null graph has no connected components by definition
   if (!graph.order) return;
 
-  var seen = new Set();
-  var stack = [];
+  var stack = new DFSStack(graph.order);
+
   var source;
 
-  function addToStack(e, a, s, t, sa, ta, u) {
+  function push(e, a, s, t, sa, ta, u) {
     if (source === t) t = s;
 
     if (!edgeFilter(e, a, s, t, sa, ta, u)) return;
@@ -120,21 +107,18 @@ function forEachConnectedComponentOrderWithEdgeFilter(
   }
 
   graph.forEachNode(function (node) {
-    if (seen.has(node)) return;
+    if (stack.has(node)) return;
 
     var order = 0;
 
     stack.push(node);
 
-    while (stack.length !== 0) {
+    while (stack.size !== 0) {
       source = stack.pop();
 
-      if (seen.has(source)) continue;
-
-      seen.add(source);
       order++;
 
-      graph.forEachEdge(source, addToStack);
+      graph.forEachEdge(source, push);
     }
 
     callback(order);
@@ -185,17 +169,14 @@ function largestConnectedComponent(graph) {
   var order = graph.order;
   var remaining;
 
-  var seen = new Set();
+  var stack = new DFSStack(graph.order);
+  var push = stack.push.bind(stack);
+
   var largestComponent = [];
-  var stack = [];
   var component;
 
-  function addToStack(target) {
-    stack.push(target);
-  }
-
   graph.someNode(function (node) {
-    if (seen.has(node)) return;
+    if (stack.has(node)) return;
 
     component = [];
 
@@ -203,15 +184,12 @@ function largestConnectedComponent(graph) {
 
     var source;
 
-    while (stack.length !== 0) {
+    while (stack.size !== 0) {
       source = stack.pop();
 
-      if (seen.has(source)) continue;
-
-      seen.add(source);
       component.push(source);
 
-      graph.forEachNeighbor(source, addToStack);
+      graph.forEachNeighbor(source, push);
     }
 
     if (component.length > largestComponent.length)
@@ -221,7 +199,7 @@ function largestConnectedComponent(graph) {
     // If current largest component's size is larger than the number of
     // remaining nodes to visit, we can safely assert we found the
     // overall largest component already.
-    remaining = order - seen.size;
+    remaining = order - stack.size;
     if (largestComponent.length > remaining) return true;
 
     return false;

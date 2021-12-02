@@ -1,6 +1,6 @@
 /**
- * Graphology  Neighborhood Indices
- * =========================================
+ * Graphology Neighborhood Indices
+ * ================================
  */
 var typed = require('mnemonist/utils/typed-arrays');
 var createEdgeWeightGetter =
