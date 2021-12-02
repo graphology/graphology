@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.17.0 (provisional)
+## 0.16.2
 
 - Adding `DFSStack`.
 - Improving `SortedComponents`.
