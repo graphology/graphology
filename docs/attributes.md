@@ -770,7 +770,7 @@ graph.addNode('Jack');
 const edge = graph.addEdge('Martha', 'Jack', {type: 'KNOWS', weight: 3});
 
 // Using the edge's key:
-graph.mergeEdgeAttributes(edge, attr => {
+graph.updateEdgeAttributes(edge, attr => {
   return {
     ...attr,
     weight: attr.weight + 1
@@ -778,7 +778,7 @@ graph.mergeEdgeAttributes(edge, attr => {
 });
 
 // Using the edge's source & target:
-graph.mergeEdgeAttributes('Martha', 'Jack', attr => {
+graph.updateEdgeAttributes('Martha', 'Jack', attr => {
   return {
     ...attr,
     weight: attr.weight + 1
