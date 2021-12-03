@@ -87,10 +87,10 @@ _Arguments_
 
 - **graph** _Graph_: target graph.
 - **getNodePartition** _string\|function_: node attribute name or getter function taking a node entry (node, attributes) and returning this node's partition.
-- **keepSelfLoops** _boolean_: when true, the returned graph will contain node with self loops indicating an edge between two nodes that are part of the same partition in the given graph.
-- **options** _?object_: optional object containing one or two of the following merging functions:
+- **options** _?object_: optional object containing one or two of the following merging functions and/or a boolean argument:
   - **mergeEdge** _?function_: edge merging function to use. Takes two NodeAttributes objects and returns a new NodeAttributes object.
   - **mergeNode** _?function_: node merging function to use. Takes two NodeAttributes objects and returns a new NodeAttributes object.
+  - **createSelfLoops** _boolean_: when true, a self loop will be created on a node in the out graph if there are edges linking two nodes that are part of the same partition as that node in the given graph. Defaults to true.
 
 ### disjointUnion
 

@@ -10,12 +10,13 @@ type MergeNodeFunction<NodeAttributes extends Attributes = Attributes> = (
   conflictingNodeAttributes: NodeAttributes
 ) => NodeAttributes;
 
-type induceOptions<
+type InduceOptions<
   EdgeAttributes,
   NodeAttributes extends Attributes = Attributes
 > = {
   mergeEdge: MergeEdgeFunction<EdgeAttributes>;
   mergeNode: MergeNodeFunction<NodeAttributes>;
+  createSelfLoops: boolean;
 };
 
 export default function induce<
@@ -24,8 +25,7 @@ export default function induce<
   GraphAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes, GraphAttributes>,
-  getNodePartition: string | NodeMapper<string>,
-  keepSelfLoops: boolean
+  getNodePartition: string | NodeMapper<string>
 ): Graph<NodeAttributes, EdgeAttributes, GraphAttributes>;
 
 export default function induce<
@@ -35,6 +35,5 @@ export default function induce<
 >(
   graph: Graph<NodeAttributes, EdgeAttributes, GraphAttributes>,
   getNodePartition: string | NodeMapper<string>,
-  keepSelfLoops: boolean,
-  options?: induceOptions<EdgeAttributes, NodeAttributes>
+  options?: InduceOptions<EdgeAttributes, NodeAttributes>
 ): Graph<NodeAttributes, EdgeAttributes, GraphAttributes>;

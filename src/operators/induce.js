@@ -5,16 +5,13 @@
  * Function used to induce a graph by community.
  */
 var isGraph = require('graphology-utils/is-graph');
-var Graph = require('graphology');
+var toMulti = require('graphology-operators/to-multi');
+var copyNode = require('graphology-utils/add-node').copyNode;
+var copyEdge = require('graphology-utils/add-edge').copyEdge;
 var createNodeValueGetter =
   require('graphology-utils/getters').createNodeValueGetter;
 
-module.exports = function induce(
-  graph,
-  getNodePartition,
-  keepSelfLoops,
-  options
-) {
+module.exports = function induce(graph, getNodePartition, options) {
   if (!isGraph(graph)) {
     throw new Error(
       'graphology-operators/induce: expecting a valid graphology instance.'
@@ -29,21 +26,24 @@ module.exports = function induce(
   var mergeNode =
     typeof options.mergeNode === 'function' ? options.mergeNode : null;
 
+  var createSelfLoops =
+    typeof options.createSelfLoops === 'boolean'
+      ? options.createSelfLoops
+      : true;
+
+  var isMulti = graph.multi;
+
   getNodePartition = createNodeValueGetter(getNodePartition).fromEntry;
 
-  var resultGraph = new Graph();
+  var resultGraph = graph.nullCopy({multi: false});
 
   graph.forEachNode(function (key, nodeAttr) {
     var partition = getNodePartition(key, nodeAttr);
 
     if (!resultGraph.hasNode(partition)) {
-      if (mergeNode) {
-        resultGraph.mergeNode(partition, nodeAttr);
-      } else {
-        resultGraph.mergeNode(partition);
-      }
+      copyNode(resultGraph, partition, mergeNode ? nodeAttr : null);
     } else if (mergeNode) {
-      resultGraph.mergeNodeAttributes(
+      resultGraph.replaceNodeAttributes(
         partition,
         mergeNode(resultGraph.getNodeAttributes(partition), nodeAttr)
       );
@@ -63,54 +63,39 @@ module.exports = function induce(
     var targetPartition = getNodePartition(target, targetAttributes);
 
     if (!resultGraph.hasEdge(sourcePartition, targetPartition)) {
-      if (keepSelfLoops && sourcePartition === targetPartition) {
-        if (undirected) {
-          if (mergeEdge) {
-            resultGraph.addUndirectedEdge(
-              sourcePartition,
-              sourcePartition,
-              attr
-            );
-          } else {
-            resultGraph.addUndirectedEdge(sourcePartition, sourcePartition);
-          }
-        } else {
-          if (mergeEdge) {
-            resultGraph.addDirectedEdge(sourcePartition, sourcePartition, attr);
-          } else {
-            resultGraph.addDirectedEdge(sourcePartition, sourcePartition);
-          }
-        }
-      } else if (sourcePartition !== targetPartition) {
-        if (undirected) {
-          if (mergeEdge) {
-            resultGraph.addUndirectedEdge(
-              sourcePartition,
-              targetPartition,
-              attr
-            );
-          } else {
-            resultGraph.addUndirectedEdge(sourcePartition, targetPartition);
-          }
-        } else {
-          if (mergeEdge) {
-            resultGraph.addDirectedEdge(sourcePartition, targetPartition, attr);
-          } else {
-            resultGraph.addDirectedEdge(sourcePartition, targetPartition);
-          }
-        }
-      }
+      if (createSelfLoops && sourcePartition === targetPartition)
+        copyEdge(
+          resultGraph,
+          undirected,
+          null,
+          sourcePartition,
+          sourcePartition,
+          mergeEdge ? attr : null
+        );
+      else if (sourcePartition !== targetPartition)
+        copyEdge(
+          resultGraph,
+          undirected,
+          null,
+          sourcePartition,
+          targetPartition,
+          mergeEdge ? attr : null
+        );
     } else {
       var edgeAttr = resultGraph.getEdgeAttributes(
         sourcePartition,
         targetPartition
       );
       if (Object.keys(edgeAttr).length === 0 && mergeEdge) {
-        resultGraph.mergeEdgeAttributes(sourcePartition, targetPartition, attr);
+        resultGraph.replaceEdgeAttributes(
+          sourcePartition,
+          targetPartition,
+          attr
+        );
       }
 
       if (mergeEdge) {
-        resultGraph.mergeEdgeAttributes(
+        resultGraph.replaceEdgeAttributes(
           sourcePartition,
           targetPartition,
           mergeEdge(
@@ -121,5 +106,7 @@ module.exports = function induce(
       }
     }
   });
+
+  if (isMulti) resultGraph = toMulti(resultGraph);
   return resultGraph;
 };
