@@ -4,7 +4,16 @@
  *
  * Layout arranging the graph's components in a squarified treemap of sorts.
  */
+var resolveDefaults = require('graphology-utils/defaults');
 var SortedComponentsIndex = require('graphology-indices/sorted-components');
+
+/**
+ * Default options.
+ */
+var DEFAULTS = {
+  width: 1,
+  height: 1
+};
 
 /**
  * Helpers.
@@ -196,12 +205,14 @@ function squarify(acc, sizes, x, y, dx, dy) {
 
 /* eslint-disable */
 function componentGrid(assign, graph, options) {
+  options = resolveDefaults(options, DEFAULTS);
+
   var index = new SortedComponentsIndex(graph);
-  var sizes = normalizeSizes(index, 1, 1);
+  var sizes = normalizeSizes(index, options.width, options.height);
 
   var acc = [];
 
-  squarify(acc, sizes, 1, 1, 1, 1);
+  squarify(acc, sizes, 0, 0, options.width, options.height);
 
   return acc;
 }
