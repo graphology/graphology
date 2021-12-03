@@ -14,6 +14,7 @@ _Unary_
 
 - [subgraph](#subgraph)
 - [reverse](#reverse)
+- [induce](#induce)
 
 _Binary_
 
@@ -69,6 +70,27 @@ const reversedGraph = reverse(graph);
 _Arguments_
 
 - **graph** _Graph_: target graph.
+
+### induce
+
+Induce the given graph by community. Returns a graph containing one node per community and one edge per pair of comunities linked in the given graph.
+
+```js
+import {induce} from 'graphology-operators';
+//Alternatively, to load only the relevant code:
+import induce from 'graphology-operators/induce';
+
+const inducedGraph = induce(graph, getNodePartition, keepSelfLoops, options);
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **getNodePartition** _string\|function_: node attribute name or getter function taking a node entry (node, attributes) and returning this node's partition.
+- **keepSelfLoops** _boolean_: when true, the returned graph will contain node with self loops indicating an edge between two nodes that are part of the same partition in the given graph.
+- **options** _?object_: optional object containing one or two of the following merging functions:
+  - **mergeEdge** _?function_: edge merging function to use. Takes two NodeAttributes objects and returns a new NodeAttributes object.
+  - **mergeNode** _?function_: node merging function to use. Takes two NodeAttributes objects and returns a new NodeAttributes object.
 
 ### disjointUnion
 

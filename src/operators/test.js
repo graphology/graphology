@@ -21,6 +21,7 @@ var toMixed = require('./to-mixed.js');
 var toMulti = require('./to-multi.js');
 var toSimple = require('./to-simple.js');
 var toUndirected = require('./to-undirected.js');
+var induce = require('./induce.js');
 
 function addNodesFrom(graph, nodes) {
   nodes.forEach(function (node) {
@@ -141,6 +142,220 @@ describe('graphology-operators', function () {
         assert.strictEqual(sub.hasEdge(0, 1), true);
         assert.strictEqual(sub.hasEdge(1, 2), false);
         assert.strictEqual(sub.size, 1);
+      });
+    });
+
+    describe('induce', function () {
+      it('should throw when given an invalid graph.', function () {
+        assert.throws(function () {
+          induce('test', 'test', false);
+        }, /graphology/);
+      });
+
+      it('should return the correct results.', function () {
+        var graph = new Graph({type: 'undirected'});
+
+        graph.mergeNode(1, {community: 'first'});
+        graph.mergeNode(2, {community: 'second'});
+        graph.mergeNode(3, {community: 'third'});
+        graph.mergeNode(4, {community: 'fourth'});
+        graph.mergeNode(5, {community: 'first'});
+
+        graph.mergeEdge(1, 2, {weight: 2});
+        graph.mergeEdge(2, 1, {weight: 3});
+        graph.mergeEdge(3, 2, {weight: 3});
+        graph.mergeEdge(3, 3, {weight: 7});
+        graph.mergeEdge(5, 2, {weight: 1});
+        var inducedGraph = induce(graph, 'community', true);
+
+        assert.notStrictEqual(graph, inducedGraph);
+        assert.strictEqual(inducedGraph.order, 4);
+        assert.strictEqual(inducedGraph.size, 3);
+        assert.strictEqual(inducedGraph.hasEdge('first', 'second'), true);
+        assert.strictEqual(inducedGraph.hasEdge('third', 'second'), true);
+        assert.strictEqual(inducedGraph.hasEdge('third', 'third'), true);
+        assert.strictEqual(
+          inducedGraph.hasEdgeAttribute('first', 'second', 'weight'),
+          false
+        );
+      });
+
+      it('should be possible to pass an options object containing a `mergeEdge` function and a `mergeNode` function.', function () {
+        var graph = new Graph({type: 'undirected'});
+
+        graph.mergeNode(1, {community: 'first', weight: 1});
+        graph.mergeNode(2, {community: 'second', weight: 1});
+        graph.mergeNode(3, {community: 'third', weight: 1});
+        graph.mergeNode(4, {community: 'fourth', weight: 1});
+        graph.mergeNode(5, {community: 'first', weight: 1});
+
+        graph.mergeEdge(1, 2, {weight: 2});
+        graph.mergeEdge(2, 1, {weight: 3});
+        graph.mergeEdge(3, 2, {weight: 3});
+        graph.mergeEdge(3, 3, {weight: 7});
+        graph.mergeEdge(5, 2, {weight: 1});
+
+        var inducedGraph = induce(graph, 'community', true, {
+          mergeNode: function (current, next) {
+            current.weight += next.weight;
+
+            return current;
+          },
+          mergeEdge: function (current, next) {
+            current.weight += next.weight;
+
+            return current;
+          }
+        });
+
+        assert.notStrictEqual(graph, inducedGraph);
+        assert.strictEqual(inducedGraph.order, 4);
+        assert.strictEqual(inducedGraph.size, 3);
+        assert.strictEqual(inducedGraph.hasEdge('first', 'second'), true);
+        assert.strictEqual(inducedGraph.hasEdge('third', 'second'), true);
+        assert.strictEqual(inducedGraph.hasEdge('third', 'third'), true);
+        assert.strictEqual(
+          inducedGraph.getEdgeAttribute('first', 'second', 'weight'),
+          4
+        );
+        assert.strictEqual(
+          inducedGraph.getEdgeAttribute('third', 'second', 'weight'),
+          3
+        );
+        assert.strictEqual(inducedGraph.getNodeAttribute('first', 'weight'), 2);
+      });
+
+      it('should handle directed graphs.', function () {
+        var graph = new Graph({type: 'directed'});
+
+        graph.mergeNode(1, {community: 'first'});
+        graph.mergeNode(2, {community: 'second'});
+        graph.mergeNode(3, {community: 'third'});
+        graph.mergeNode(4, {community: 'fourth'});
+        graph.mergeNode(5, {community: 'first'});
+        graph.mergeNode(6, {community: 'fifth'});
+
+        graph.mergeEdge(1, 2, {weight: 2});
+        graph.mergeEdge(2, 1, {weight: 3});
+        graph.mergeEdge(3, 2, {weight: 3});
+        graph.mergeEdge(3, 3, {weight: 7});
+        graph.mergeEdge(5, 2, {weight: 1});
+
+        var inducedGraph = induce(graph, 'community', false, {
+          mergeEdge: function (current, next) {
+            current.weight += next.weight;
+
+            return current;
+          }
+        });
+
+        assert.notStrictEqual(graph, inducedGraph);
+        assert.strictEqual(inducedGraph.order, 5);
+        assert.strictEqual(inducedGraph.size, 3);
+        assert.strictEqual(inducedGraph.hasEdge('first', 'second'), true);
+        assert.strictEqual(inducedGraph.hasEdge('third', 'second'), true);
+        assert.strictEqual(inducedGraph.hasEdge('third', 'third'), false);
+        assert.strictEqual(
+          inducedGraph.getEdgeAttribute('first', 'second', 'weight'),
+          3
+        );
+        assert.strictEqual(
+          inducedGraph.getEdgeAttribute('second', 'first', 'weight'),
+          3
+        );
+      });
+
+      it('should work with mixed type graphs.', function () {
+        var graph = new Graph({type: 'mixed'});
+
+        graph.mergeNode(1, {community: 'first'});
+        graph.mergeNode(2, {community: 'second'});
+        graph.mergeNode(3, {community: 'third'});
+        graph.mergeNode(4, {community: 'fourth'});
+        graph.mergeNode(5, {community: 'first'});
+        graph.mergeNode(6, {community: 'fifth'});
+
+        graph.addDirectedEdge(1, 2, {weight: 2});
+        graph.addUndirectedEdge(2, 1, {weight: 3});
+        graph.addUndirectedEdge(3, 2, {weight: 3});
+        graph.addDirectedEdge(3, 3, {weight: 7});
+        graph.addDirectedEdge(5, 2, {weight: 1});
+
+        var inducedGraph = induce(graph, 'community', false, {
+          mergeEdge: function (current, next) {
+            current.weight += next.weight;
+
+            return current;
+          }
+        });
+
+        assert.notStrictEqual(graph, inducedGraph);
+        assert.strictEqual(inducedGraph.order, 5);
+        assert.strictEqual(inducedGraph.size, 3);
+        assert.strictEqual(inducedGraph.hasEdge('first', 'second'), true);
+        assert.strictEqual(inducedGraph.hasEdge('second', 'first'), true);
+        assert.strictEqual(inducedGraph.hasEdge('third', 'second'), true);
+        assert.strictEqual(inducedGraph.hasEdge('third', 'third'), false);
+        assert.strictEqual(
+          inducedGraph.getEdgeAttribute('first', 'second', 'weight'),
+          3
+        );
+        assert.strictEqual(
+          inducedGraph.getEdgeAttribute('second', 'first', 'weight'),
+          3
+        );
+      });
+
+      it('should work with multi graphs.', function () {
+        var graph = new Graph({multi: true, type: 'mixed'});
+
+        graph.mergeNode(1, {community: 'first'});
+        graph.mergeNode(2, {community: 'second'});
+        graph.mergeNode(3, {community: 'third'});
+        graph.mergeNode(4, {community: 'fourth'});
+        graph.mergeNode(5, {community: 'first'});
+        graph.mergeNode(6, {community: 'fifth'});
+
+        graph.addDirectedEdge(1, 2, {weight: 2});
+        graph.addDirectedEdge(1, 2, {weight: 3});
+        graph.addUndirectedEdge(2, 1, {weight: 3});
+        graph.addUndirectedEdge(3, 2, {weight: 3});
+        graph.addUndirectedEdge(3, 2, {weight: 4});
+        graph.addDirectedEdge(3, 3, {weight: 7});
+        graph.addDirectedEdge(3, 3, {weight: 1});
+        graph.addDirectedEdge(5, 2, {weight: 1});
+
+        var inducedGraph = induce(graph, 'community', true, {
+          mergeEdge: function (current, next) {
+            current.weight += next.weight;
+
+            return current;
+          }
+        });
+
+        assert.notStrictEqual(graph, inducedGraph);
+        assert.strictEqual(inducedGraph.order, 5);
+        assert.strictEqual(inducedGraph.size, 4);
+        assert.strictEqual(inducedGraph.hasEdge('first', 'second'), true);
+        assert.strictEqual(inducedGraph.hasEdge('second', 'first'), true);
+        assert.strictEqual(inducedGraph.hasEdge('third', 'second'), true);
+        assert.strictEqual(inducedGraph.hasEdge('third', 'third'), true);
+        assert.strictEqual(
+          inducedGraph.getEdgeAttribute('first', 'second', 'weight'),
+          6
+        );
+        assert.strictEqual(
+          inducedGraph.getEdgeAttribute('second', 'first', 'weight'),
+          3
+        );
+        assert.strictEqual(
+          inducedGraph.getEdgeAttribute('third', 'second', 'weight'),
+          7
+        );
+        assert.strictEqual(
+          inducedGraph.getEdgeAttribute('third', 'third', 'weight'),
+          8
+        );
       });
     });
   });
