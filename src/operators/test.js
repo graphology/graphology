@@ -327,11 +327,11 @@ describe('graphology-operators', function () {
         graph.addUndirectedEdge(2, 1, {weight: 3});
         graph.addUndirectedEdge(3, 2, {weight: 3});
         graph.addUndirectedEdge(3, 2, {weight: 4});
-        // graph.addDirectedEdge(3, 2, {weight: 5});
+        graph.addDirectedEdge(3, 2, {weight: 5});
         graph.addDirectedEdge(3, 3, {weight: 7});
         graph.addDirectedEdge(3, 3, {weight: 1});
         graph.addDirectedEdge(5, 2, {weight: 1});
-        // graph.addUndirectedEdge(5, 2, {weight: 6});
+        graph.addUndirectedEdge(5, 2, {weight: 6});
 
         var inducedGraph = induce(graph, 'community', {
           mergeEdge: function (current, next) {
@@ -342,7 +342,7 @@ describe('graphology-operators', function () {
           createSelfLoops: true
         });
 
-        var resultGraph = new Graph({multi: true, type: 'mixed'});
+        var resultGraph = new Graph({multi: false, type: 'mixed'});
 
         resultGraph.mergeNode('first');
         resultGraph.mergeNode('second');
@@ -351,10 +351,9 @@ describe('graphology-operators', function () {
         resultGraph.mergeNode('fifth');
 
         resultGraph.addDirectedEdge('first', 'second', {weight: 6});
-        // resultGraph.addUndirectedEdge('first', 'second', {weight: 6});
-        resultGraph.addUndirectedEdge('second', 'first', {weight: 3});
+        resultGraph.addUndirectedEdge('second', 'first', {weight: 9});
         resultGraph.addUndirectedEdge('third', 'second', {weight: 7});
-        // resultGraph.addDirectedEdge('third', 'second', {weight: 5});
+        resultGraph.addDirectedEdge('third', 'second', {weight: 5});
         resultGraph.addDirectedEdge('third', 'third', {weight: 8});
 
         var result = areSameGraphsDeep(resultGraph, inducedGraph);
