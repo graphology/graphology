@@ -59,10 +59,9 @@ module.exports = function induce(graph, getNodePartition, options) {
     var targetPartition = getNodePartition(target, targetAttributes);
 
     if (
-      (undirected &&
-        !resultGraph.hasUndirectedEdge(sourcePartition, targetPartition)) ||
-      (!undirected &&
-        !resultGraph.hasDirectedEdge(sourcePartition, targetPartition))
+      undirected
+        ? !resultGraph.hasUndirectedEdge(sourcePartition, targetPartition)
+        : !resultGraph.hasDirectedEdge(sourcePartition, targetPartition)
     ) {
       if (createSelfLoops && sourcePartition === targetPartition)
         copyEdge(
@@ -83,20 +82,7 @@ module.exports = function induce(graph, getNodePartition, options) {
           mergeEdge ? attr : null
         );
     } else {
-      var edgeAttr;
       if (undirected) {
-        edgeAttr = resultGraph.getUndirectedEdgeAttributes(
-          sourcePartition,
-          targetPartition
-        );
-        if (edgeAttr === {} && mergeEdge) {
-          resultGraph.replaceUndirectedEdgeAttributes(
-            sourcePartition,
-            targetPartition,
-            attr
-          );
-        }
-
         if (mergeEdge) {
           resultGraph.updateUndirectedEdgeAttributes(
             sourcePartition,
@@ -107,18 +93,6 @@ module.exports = function induce(graph, getNodePartition, options) {
           );
         }
       } else {
-        edgeAttr = resultGraph.getDirectedEdgeAttributes(
-          sourcePartition,
-          targetPartition
-        );
-        if (edgeAttr === {} && mergeEdge) {
-          resultGraph.replaceDirectedEdgeAttributes(
-            sourcePartition,
-            targetPartition,
-            attr
-          );
-        }
-
         if (mergeEdge) {
           resultGraph.updateDirectedEdgeAttributes(
             sourcePartition,
