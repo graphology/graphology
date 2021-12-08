@@ -408,12 +408,7 @@ function mergeEdge(
     if (edgeData) {
       // Here, we need to ensure, if the user gave a key, that source & target
       // are coherent
-      if (
-        edgeData.source.key !== source ||
-        edgeData.target.key !== target ||
-        (undirected &&
-          (edgeData.source.key !== target || edgeData.target.key !== source))
-      ) {
+      if (!(edgeData.source.key == source && edgeData.target.key == target || undirected && (edgeData.source.key == target && edgeData.target.key == source))) {
         throw new UsageGraphError(
           `Graph.${name}: inconsistency detected when attempting to merge the "${edge}" edge with "${source}" source & "${target}" target vs. ("${edgeData.source.key}", "${edgeData.target.key}").`
         );

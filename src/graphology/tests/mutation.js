@@ -388,6 +388,14 @@ export default function mutation(Graph, checkers) {
         }, usage());
       },
 
+       'it should be able to add undirected edges': function () {
+        const graph = new Graph();
+        graph.mergeUndirectedEdgeWithKey('J<->M', 'John', 'Martha');
+
+        graph.mergeUndirectedEdgeWithKey('J<->M', 'John', 'Martha');
+        graph.mergeUndirectedEdgeWithKey('J<->M', 'Martha', 'John');
+      },
+
       'it should distinguish between typed edges.': function () {
         const graph = new Graph();
         graph.mergeEdge('John', 'Martha', {type: 'LIKES'});
