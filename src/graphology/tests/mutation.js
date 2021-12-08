@@ -388,7 +388,7 @@ export default function mutation(Graph, checkers) {
         }, usage());
       },
 
-      'it should be able to merge undirected edges in both directions':
+      'it should be able to merge undirected edges in both directions.':
         function () {
           assert.doesNotThrow(function () {
             const graph = new Graph();

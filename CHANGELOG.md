@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.23.2
+
+- Fixing a `#.mergeUndirectedEdgeWithKey` & `#.updateUndirectedEdgeWithKey` bug when source & target are given in the reverse order.
+
 ## 0.23.1
 
 - Fixing `#.copy` not copying the graph's attributes.
@@ -15,7 +19,7 @@
 - Improving `#.merge*` and `#.update*` function by returning useful information.
 - Improving `#.opposite` performance.
 
-*Migration guide*
+_Migration guide_
 
 This release should only affect you in the following cases:
 
@@ -56,7 +60,7 @@ This release should only affect you in the following cases:
 - Improving `#.forEachNode` performance.
 - Upgrading `obliterator` and improving iterator-based methods.
 
-*Migration guide*
+_Migration guide_
 
 This release should only affect you in the following use-cases:
 

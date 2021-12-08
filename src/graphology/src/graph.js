@@ -407,20 +407,21 @@ function mergeEdge(
 
     if (edgeData) {
       // Here, we need to ensure, if the user gave a key, that source & target
-      // are coherent
+      // are consistent
       if (edgeData.source.key !== source || edgeData.target.key !== target) {
-        // if source or target inconsistent
+        // If source or target inconsistent
         if (
           !undirected ||
           edgeData.source.key !== target ||
           edgeData.target.key !== source
         ) {
-          // if directed, or source/target aren't flipped
+          // If directed, or source/target aren't flipped
           throw new UsageGraphError(
             `Graph.${name}: inconsistency detected when attempting to merge the "${edge}" edge with "${source}" source & "${target}" target vs. ("${edgeData.source.key}", "${edgeData.target.key}").`
           );
         }
       }
+
       alreadyExistingEdgeData = edgeData;
     }
   }

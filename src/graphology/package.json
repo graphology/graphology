@@ -1,6 +1,6 @@
 {
   "name": "graphology",
-  "version": "0.23.1",
+  "version": "0.23.2",
   "description": "A robust and multipurpose Graph object for JavaScript.",
   "main": "dist/graphology.cjs.js",
   "module": "dist/graphology.esm.js",
