@@ -388,10 +388,9 @@ export default function mutation(Graph, checkers) {
         }, usage());
       },
 
-       'it should be able to add undirected edges': function () {
+       'it should be able to merge undirected edges in both directions': function () {
         const graph = new Graph();
         graph.mergeUndirectedEdgeWithKey('J<->M', 'John', 'Martha');
-
         graph.mergeUndirectedEdgeWithKey('J<->M', 'John', 'Martha');
         graph.mergeUndirectedEdgeWithKey('J<->M', 'Martha', 'John');
       },
