@@ -6,6 +6,7 @@
  */
 import assert from 'assert';
 import {addNodesFrom} from './helpers';
+import {UsageGraphError} from '../src/errors';
 
 export default function mutation(Graph, checkers) {
   const {invalid, notFound, usage} = checkers;
@@ -388,12 +389,15 @@ export default function mutation(Graph, checkers) {
         }, usage());
       },
 
-       'it should be able to merge undirected edges in both directions': function () {
-        const graph = new Graph();
-        graph.mergeUndirectedEdgeWithKey('J<->M', 'John', 'Martha');
-        graph.mergeUndirectedEdgeWithKey('J<->M', 'John', 'Martha');
-        graph.mergeUndirectedEdgeWithKey('J<->M', 'Martha', 'John');
-      },
+      'it should be able to merge undirected edges in both directions':
+        function () {
+          assert.doesNotThrow(function () {
+            const graph = new Graph();
+            graph.mergeUndirectedEdgeWithKey('J<->M', 'John', 'Martha');
+            graph.mergeUndirectedEdgeWithKey('J<->M', 'John', 'Martha');
+            graph.mergeUndirectedEdgeWithKey('J<->M', 'Martha', 'John');
+          }, UsageGraphError);
+        },
 
       'it should distinguish between typed edges.': function () {
         const graph = new Graph();
