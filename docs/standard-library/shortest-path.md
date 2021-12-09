@@ -5,7 +5,7 @@ nav_order: 15
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/shortest-path"
-  
+  "Changelog": "https://github.com/graphology/graphology/tree/master/src/shortest-path/CHANGELOG.md"
 ---
 
 # Graphology Shortest Path
@@ -21,42 +21,17 @@ npm install graphology-shortest-path
 ## Usage
 
 - [Unweighted](#unweighted)
-  - [shortestPath](#shortestpath)
   - [bidirectional](#bidirectional)
   - [singleSource](#singlesource)
   - [singleSourceLength](#singlesourcelength)
   - [undirectedSingleSourceLength](#undirectedsinglesourcelength)
-  - [brandes](#brandes)
 - [Dijkstra](#dijkstra)
   - [bidirectional](#dijkstra-bidirectional)
   - [singleSource](#dijkstra-singlesource)
-  - [brandes](#dijkstra-brandes)
+- [Utilities](#utilities)
+  - [edgePathFromNodePath](#edgepathfromnodepath)
 
 ## Unweighted
-
-### shortestPath
-
-Returns the shortest path in the graph between source & target or `null` if such a path does not exist (same as [bidirectional](#bidirectional)).
-
-If you only pass the source & omit the target, will return a map of every shortest path between the source & all the nodes of the graph (same as [singleSource](#singlesource)).
-
-```js
-import shortestPath from 'graphology-shortest-path';
-// Alternatively, if you want to load only the relevant code
-import shortestPath from 'graphology-shortest-path/unweighted';
-
-// Returning the shortest path between source & target
-const path = shortestPath(graph, source, target);
-
-// Returning every shortest path between source & every node of the graph
-const paths = shortestPath(graph, source);
-```
-
-_Arguments_
-
-- **graph** _Graph_: a `graphology` instance.
-- **source** _any_: source node.
-- **target** <span class="code">?any</span>: optionally, target node.
 
 ### bidirectional
 
@@ -131,24 +106,6 @@ _Arguments_
 - **graph** _Graph_: a `graphology` instance.
 - **source** _any_: source node.
 
-### brandes
-
-Apply Ulrik Brandes' method to collect single source shortest paths from the given node. This is mostly used to compute betweenness centrality.
-
-```js
-import {brandes} from 'graphology-shortest-path';
-// Alternatively, if you want to load only the relevant code
-import {brandes} from 'graphology-shortest-path/unweighted';
-
-// Returning S, P & sigma
-const [S, P, sigma] = brandes(graph, source);
-```
-
-_Arguments_
-
-- **graph** _Graph_: a `graphology` instance.
-- **source** _any_: source node.
-
 ## Dijkstra
 
 <h3 id="dijkstra-bidirectional">bidirectional</h3>
@@ -164,7 +121,15 @@ import dijkstra from 'graphology-shortest-path/dijkstra';
 const path = dijkstra.bidirectional(graph, source, target);
 
 // If you store edges' weight in custom attribute
-const paths = dijkstra.bidirectional(graph, source, target, 'customWeight');
+const path = dijkstra.bidirectional(graph, source, target, 'customWeight');
+
+// Using a custom weight getter function
+const path = dijkstra.bidirectional(
+  graph,
+  source,
+  target,
+  (_, attr) => attr.importance
+);
 ```
 
 _Arguments_
@@ -172,7 +137,7 @@ _Arguments_
 - **graph** _Graph_: a `graphology` instance.
 - **source** _any_: source node.
 - **target** _any_: target node.
-- **weightAttribute** <span class="code">?string</span> <span class="default">weight</span>: name of the weight attribute.
+- **getEdgeWeight** <span class="code">?string\|function</span> <span class="default">weight</span>: name of the weight attribute or getter function.
 
 <h3 id="dijkstra-singlesource">singleSource</h3>
 
@@ -188,33 +153,33 @@ const paths = dijkstra.singleSource(graph, source);
 
 // If you store edges' weight in custom attribute
 const paths = dijkstra.singleSource(graph, source, 'customWeight');
+
+// Using a custom weight getter function
+const path = dijkstra.singleSource(graph, source, (_, attr) => attr.importance);
 ```
 
 _Arguments_
 
 - **graph** _Graph_: a `graphology` instance.
 - **source** _any_: source node.
-- **weightAttribute** <span class="code">?string</span> <span class="default">weight</span>: name of the weight attribute.
+- **getEdgeWeight** <span class="code">?string\|function</span> <span class="default">weight</span>: name of the weight attribute or getter function.
 
-<h3 id="dijkstra-brandes">brandes</h3>
+## Utilities
 
-Apply Ulrik Brandes' method to collect single source shortest paths from the given node. This is mostly used to compute betweenness centrality.
+### edgePathFromNodePath
+
+Helper function that can convert a node path to an edge path.
 
 ```js
-import {dijkstra} from 'graphology-shortest-path';
+import {edgePathFromNodePath} from 'graphology-shortest-path';
 // Alternatively, if you want to load only the relevant code
-import dijkstra from 'graphology-shortest-path/dijkstra';
+import {edgePathFromNodePath} from 'graphology-shortest-path/utils';
 
-// Returning S, P & sigma
-const [S, P, sigma] = dijkstra.brandes(graph, source);
-
-// If you store edges' weight in custom attribute
-const [S, P, sigma] = dijkstra.brandes(graph, source, 'customWeight');
+const edgePath = edgePathFromNodePath(graph, nodePath);
 ```
 
 _Arguments_
 
 - **graph** _Graph_: a `graphology` instance.
-- **source** _any_: source node.
-- **weightAttribute** <span class="code">?string</span> <span class="default">weight</span>: name of the weight attribute.
+- **edgePath** _Array_: edge path to convert.
 

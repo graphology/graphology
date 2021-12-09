@@ -31,13 +31,6 @@ _Graph metrics_
 
 _Node metrics_
 
-- [Centrality](#centrality)
-  - [Betweenness centrality](#betweenness-centrality)
-  - [Closeness centrality](#closeness-centrality)
-  - [Degree centrality](#degree-centrality)
-  - [Eigenvector centrality](#eigenvector-centrality)
-  - [HITS](#hits)
-  - [Pagerank](#pagerank)
 - [Degree](#degree)
 - [Eccentricity](#eccentricity)
 - [Weighted degree](#weighted-degree)
@@ -46,9 +39,14 @@ _Edge metrics_
 
 - [Simmelian strength](#simmelian-strength)
 
-_Attributes metrics_
+_Centrality_
 
-- [Modalities](#modalities)
+- [Betweenness centrality](#betweenness-centrality)
+- [Closeness centrality](#closeness-centrality)
+- [Degree centrality](#degree-centrality)
+- [Eigenvector centrality](#eigenvector-centrality)
+- [HITS](#hits)
+- [Pagerank](#pagerank)
 
 _Layout quality metrics_
 
@@ -56,15 +54,15 @@ _Layout quality metrics_
 - [Neighborhood Preservation](#neighborhood-preservation)
 - [Stress](#stress)
 
-### Graph metrics
+## Graph metrics
 
-#### Density
+### Density
 
 Computes the density of the given graph.
 
 ```js
 import {density} from 'graphology-metrics';
-import density from 'graphology-metrics/density';
+import density from 'graphology-metrics/graph/density';
 
 // Passing a graph instance
 const d = density(graph);
@@ -80,7 +78,7 @@ import {
   multiMixedDensity,
   multiDirectedDensity,
   multiUndirectedDensity
-} from 'graphology-metric/density';
+} from 'graphology-metric/graph/density';
 
 const d = undirectedDensity(mixedGraph);
 ```
@@ -96,14 +94,14 @@ Or:
 - **order** _number_: number of nodes in the graph.
 - **size** _number_: number of edges in the graph.
 
-#### Diameter
+### Diameter
 
 Computes the diameter, i.e the maximum eccentricity of any node of the given graph.
 
 ```js
 import {diameter} from 'graphology-metrics';
 // Alternatively, to load only the relevant code:
-import diameter from 'graphology-metrics/diameter';
+import diameter from 'graphology-metrics/graph/diameter';
 
 const graph = new Graph();
 graph.addNode('1');
@@ -121,12 +119,12 @@ _Arguments_
 
 - **graph** _Graph_: target graph.
 
-#### Extent
+### Extent
 
 Computes the extent - min, max - of a node or edge's attribute.
 
 ```js
-import extent from 'graphology-metrics/extent';
+import extent from 'graphology-metrics/graph/extent';
 
 // Retrieving a single node attribute's extent
 extent(graph, 'size');
@@ -146,14 +144,14 @@ _Arguments_
 - **graph** _Graph_: target graph.
 - **attributes** _string|array_: single attribute names or array of attribute names.
 
-#### Modularity
+### Modularity
 
 Computes the modularity, given the graph and a node partition. It works on both directed & undirected networks and will return the relevant modularity.
 
 ```js
 import {modularity} from 'graphology-metrics';
 // Alternatively, to load only the relevant code:
-import modularity from 'graphology-metrics/modularity';
+import modularity from 'graphology-metrics/graph/modularity';
 
 // Simplest way
 const Q = modularity(graph);
@@ -175,14 +173,14 @@ _Arguments_
   - **resolution** <span class="code">?number</span>: resolution parameter (`γ`).
   - **weighted** <span class="code">?boolean</span> <span class="default">true</span>: whether to compute weighted modularity or not.
 
-#### Simple size
+### Simple size
 
 Computes the simple size of a given graph, i.e. its number of edges if we consider the graph simple, even if it has multiple edges between pairs of nodes.
 
 ```js
 import {simpleSize} from 'graphology-metrics';
 // Alternatively, to load only the relevant code:
-import simpleSize from 'graphology-metrics/simple-size';
+import simpleSize from 'graphology-metrics/graph/simple-size';
 
 const graph = new MultiGraph();
 graph.mergeEdge(1, 2);
@@ -194,14 +192,14 @@ simpleSize(graph);
 >>> 3
 ```
 
-#### Weighted size
+### Weighted size
 
 Computes the weighted size, i.e. the sum of the graph's edges' weight, of the given graph.
 
 ```js
 import {weightedSize} from 'graphology-metrics';
 // Alternatively, to load only the relevant code:
-import weightedSize from 'graphology-metrics/weighted-size';
+import weightedSize from 'graphology-metrics/graph/weighted-size';
 
 const graph = new Graph();
 graph.mergeEdge(1, 2, {weight: 3});
@@ -224,187 +222,14 @@ _Arguments_
 - **graph** _Graph_: target graph.
 - **getEdgeWeight** <span class="code">?string\|function</span> <span class="default">weight</span>: name of the weight attribute or getter function.
 
-### Centrality
+## Node metrics
 
-#### Betweenness centrality
-
-Computes the betweenness centrality for every node.
-
-```js
-import betweennessCentrality from 'graphology-metrics/centrality/betweenness';
-
-// To compute centrality for every node:
-const centrality = betweennessCentrality(graph);
-
-// To compute weighted betweenness centrality
-const centrality = betweennessCentrality(graph, {weighted: true});
-
-// To directly map the result onto nodes' attributes (`betweennessCentrality`):
-betweennessCentrality.assign(graph);
-
-// To directly map the result onto a custom attribute:
-betweennessCentrality.assign(graph, {attributes: {centrality: 'myCentrality'}});
-```
-
-_Arguments_
-
-- **graph** _Graph_: target graph.
-- **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: Custom attribute names:
-    - **centrality** <span class="code">?string</span> <span class="default">betweennessCentrality</span>: Name of the centrality attribute to assign.
-    - **weight** <span class="code">?string</span>: Name of the weight attribute.
-  - **normalized** <span class="code">?boolean</span> <span class="default">true</span>: should the result be normalized?
-  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: should we compute the weighted betweenness centrality?
-
-#### Closeness centrality
-
-Computes the closeness centrality of a graph's nodes.
-
-```js
-import closenessCentrality from 'graphology-metrics/centrality/closeness';
-
-// To compute the eigenvector centrality and return the score per node:
-const scores = closenessCentrality(graph);
-
-// To directly map the result to nodes' attributes:
-closenessCentrality.assign(graph);
-
-// Note that you can also pass options to customize the algorithm:
-const p = closenessCentrality(graph, {wassermanFaust: true});
-```
-
-_Arguments_
-
-- **graph** _Graph_: target graph.
-- **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: attributes' names:
-    - **centrality** <span class="code">?string</span> <span class="default">eigenvectorCentrality</span>: name of the node attribute that will be assigned the eigenvector centrality.
-  - **wassermanFaust** <span class="code">?boolean</span> <span class="default">false</span>: whether to use Wasserman & Faust's normalization scheme.
-
-#### Degree centrality
-
-Computes the degree centrality for every node.
-
-```js
-import degreeCentrality from 'graphology-metrics/centrality/degree';
-// Or to load more specific functions:
-import {
-  degreeCentrality,
-  inDegreeCentrality,
-  outDegreeCentrality
-} from 'graphology-metrics/centrality/degree';
-
-// To compute degree centrality for every node:
-const centrality = degreeCentrality(graph);
-
-// To directly map the result onto nodes' attributes (`degreeCentrality`):
-degreeCentrality.assign(graph);
-
-// To directly map the result onto a custom attribute:
-degreeCentrality.assign(graph, {attributes: {centrality: 'myCentrality'}});
-```
-
-_Arguments_
-
-- **graph** _Graph_: target graph.
-- **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: custom attribute names:
-    - **centrality** <span class="code">?string</span> <span class="default">degreeCentrality</span>: name of the centrality attribute to assign.
-
-#### Eigenvector centrality
-
-Computes the eigenvector centrality of a graph's nodes.
-
-```js
-import eigenvectorCentrality from 'graphology-metrics/centrality/eigenvector';
-
-// To compute the eigenvector centrality and return the score per node:
-const scores = eigenvectorCentrality(graph);
-
-// To directly map the result to nodes' attributes:
-eigenvectorCentrality.assign(graph);
-
-// Note that you can also pass options to customize the algorithm:
-const p = eigenvectorCentrality(graph, {tolerance: 1e-3, weighted: false});
-```
-
-_Arguments_
-
-- **graph** _Graph_: target graph.
-- **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: attributes' names:
-    - **centrality** <span class="code">?string</span> <span class="default">eigenvectorCentrality</span>: name of the node attribute that will be assigned the eigenvector centrality.
-    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
-  - **maxIterations** <span class="code">?number</span> <span class="default">100</span>: maximum number of iterations to perform.
-  - **tolerance** <span class="code">?number</span> <span class="default">1.e-6</span>: convergence error tolerance.
-  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to use available weights or not.
-
-#### HITS
-
-Computes the hub/authority metrics for each node using the HITS algorithm.
-
-```js
-import hits from 'graphology-metrics/centrality/hits';
-
-// To compute and return the result as 'hubs' & 'authorities':
-const {hubs, authorities} = hits(graph);
-
-// To directly map the result to nodes' attributes:
-hits.assign(graph);
-
-// Note that you can also pass options to customize the algorithm:
-const {hubs, authorities} = hits(graph, {normalize: false});
-```
-
-_Arguments_
-
-- **graph** _Graph_: target graph.
-- **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: attributes' names:
-    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
-    - **hub** <span class="code">?string</span> <span class="default">hub</span>: name of the node attribute holding hub information.
-    - **authority** <span class="code">?string</span> <span class="default">authority</span>: name of the node attribute holding authority information.
-  - **maxIterations** <span class="code">?number</span> <span class="default">100</span>: maximum number of iterations to perform.
-  - **normalize** <span class="code">?boolean</span> <span class="default">true</span>: should the result be normalized by the sum of values.
-  - **tolerance** <span class="code">?number</span> <span class="default">1.e-8</span>: convergence error tolerance.
-
-#### Pagerank
-
-Computes the pagerank metrics for each node.
-
-```js
-import pagerank from 'graphology-metrics/centrality/pagerank';
-
-// To compute pagerank and return the score per node:
-const scores = pagerank(graph);
-
-// To directly map the result to nodes' attributes:
-pagerank.assign(graph);
-
-// Note that you can also pass options to customize the algorithm:
-const p = pagerank(graph, {alpha: 0.9, weighted: false});
-```
-
-_Arguments_
-
-- **graph** _Graph_: target graph.
-- **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: attributes' names:
-    - **pagerank** <span class="code">?string</span> <span class="default">pagerank</span>: name of the node attribute that will be assigned the pagerank score.
-    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
-  - **alpha** <span class="code">?number</span> <span class="default">0.85</span>: damping parameter of the algorithm.
-  - **maxIterations** <span class="code">?number</span> <span class="default">100</span>: maximum number of iterations to perform.
-  - **tolerance** <span class="code">?number</span> <span class="default">1.e-6</span>: convergence error tolerance.
-  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to use available weights or not.
-
-### Node metrics
-
-#### Weighted degree
+### Weighted degree
 
 Computes the weighted degree of nodes. The weighted degree of a node is the sum of its edges' weights.
 
 ```js
-import weightedDegree from 'graphology-metrics/weighted-degree';
+import weightedDegree from 'graphology-metrics/node/weighted-degree';
 // Or to load more specific functions:
 import {
   weightedDegree,
@@ -445,12 +270,12 @@ _Options_
   - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the weight attribute.
   - **weightedDegree** <span class="code">?string</span> <span class="default">weightedDegree</span>: name of the attribute to assign.
 
-#### Degree
+### Degree
 
 Returns degree information for every node in the graph. Note that [`graphology`](https://graphology.github.io)'s API already gives you access to this information through `#.degree` etc. So only consider this function as a convenience to extract/assign all degrees at once.
 
 ```js
-import degree from 'graphology-metrics/degree';
+import degree from 'graphology-metrics/node/degree';
 
 import degree, {
   inDegree,
@@ -514,14 +339,14 @@ _Arguments_
     - **directedDegree** <span class="code">?string</span>: Name of the mixed directedDegree attribute.
   - **types** <span class="code">?array</span>: List of degree types to extract.
 
-#### Eccentricity
+### Eccentricity
 
 Computes the eccentricity which is the maximum of the shortest paths between the given node and any other node.
 
 ```js
 import {eccentricity} from 'graphology-metrics';
 // Alternatively, to load only the relevant code:
-import eccentricity from 'graphology-metrics/eccentricity';
+import eccentricity from 'graphology-metrics/node/eccentricity';
 
 graph.addNode('1');
 graph.addNode('2');
@@ -540,14 +365,14 @@ _Arguments_
 - **graph** _Graph_: target graph.
 - **node** _any_: desired node.
 
-### Edge metrics
+## Edge metrics
 
-#### Simmelian strength
+### Simmelian strength
 
 Function returning the simmelian strength, i.e. the number of triangles an edge is part of, of all the edges in the given graph.
 
 ```js
-import simmelianStrength from 'graphology-metrics/simmelian-strength';
+import simmelianStrength from 'graphology-metrics/edge/simmelian-strength';
 
 // To compute strength for every edge:
 const strengths = simmelianStrength(graph);
@@ -556,48 +381,182 @@ const strengths = simmelianStrength(graph);
 simmelianStrength.assign(graph);
 ```
 
-### Attribute metrics
+## Centrality
 
-#### Modalities
+### Betweenness centrality
 
-Function returning a node categorical attribute's modalities and related statistics.
+Computes the betweenness centrality for every node.
 
 ```js
-import modalities from 'graphology-metrics/modalities';
+import betweennessCentrality from 'graphology-metrics/centrality/betweenness';
 
-// Retrieving the 'type' attribute's modalities
-const info = modalities(graph, 'type');
->>> {
-  value1: {
-    nodes: 34,
-    internalEdges: 277,
-    internalDensity: 0.03,
-    externalEdges: 45,
-    externalDensity: 0.05,
-    inboundEdges: 67,
-    inboundDensity: 0.07,
-    outboundEdges: 124,
-    outboundDensity: 0.003
-  },
-  ...
-}
+// To compute centrality for every node:
+const centrality = betweennessCentrality(graph);
 
-// Retrieving modalities info for several attributes at once
-const info = modalities(graph, ['type', 'lang']);
->>> {
-  type: {...},
-  lang: {...}
-}
+// To compute weighted betweenness centrality
+const centrality = betweennessCentrality(graph, {weighted: true});
+
+// To directly map the result onto nodes' attributes (`betweennessCentrality`):
+betweennessCentrality.assign(graph);
+
+// To directly map the result onto a custom attribute:
+betweennessCentrality.assign(graph, {attributes: {centrality: 'myCentrality'}});
 ```
 
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **attribute** _string|array_: target categorical attribute or array of categorical attributes.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: Custom attribute names:
+    - **centrality** <span class="code">?string</span> <span class="default">betweennessCentrality</span>: Name of the centrality attribute to assign.
+    - **weight** <span class="code">?string</span>: Name of the weight attribute.
+  - **normalized** <span class="code">?boolean</span> <span class="default">true</span>: should the result be normalized?
+  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: should we compute the weighted betweenness centrality?
 
-### Layout quality metrics
+### Closeness centrality
 
-#### Edge Uniformity
+Computes the closeness centrality of a graph's nodes.
+
+```js
+import closenessCentrality from 'graphology-metrics/centrality/closeness';
+
+// To compute the eigenvector centrality and return the score per node:
+const scores = closenessCentrality(graph);
+
+// To directly map the result to nodes' attributes:
+closenessCentrality.assign(graph);
+
+// Note that you can also pass options to customize the algorithm:
+const p = closenessCentrality(graph, {wassermanFaust: true});
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: attributes' names:
+    - **centrality** <span class="code">?string</span> <span class="default">eigenvectorCentrality</span>: name of the node attribute that will be assigned the eigenvector centrality.
+  - **wassermanFaust** <span class="code">?boolean</span> <span class="default">false</span>: whether to use Wasserman & Faust's normalization scheme.
+
+### Degree centrality
+
+Computes the degree centrality for every node.
+
+```js
+import degreeCentrality from 'graphology-metrics/centrality/degree';
+// Or to load more specific functions:
+import {
+  degreeCentrality,
+  inDegreeCentrality,
+  outDegreeCentrality
+} from 'graphology-metrics/centrality/degree';
+
+// To compute degree centrality for every node:
+const centrality = degreeCentrality(graph);
+
+// To directly map the result onto nodes' attributes (`degreeCentrality`):
+degreeCentrality.assign(graph);
+
+// To directly map the result onto a custom attribute:
+degreeCentrality.assign(graph, {attributes: {centrality: 'myCentrality'}});
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: custom attribute names:
+    - **centrality** <span class="code">?string</span> <span class="default">degreeCentrality</span>: name of the centrality attribute to assign.
+
+### Eigenvector centrality
+
+Computes the eigenvector centrality of a graph's nodes.
+
+```js
+import eigenvectorCentrality from 'graphology-metrics/centrality/eigenvector';
+
+// To compute the eigenvector centrality and return the score per node:
+const scores = eigenvectorCentrality(graph);
+
+// To directly map the result to nodes' attributes:
+eigenvectorCentrality.assign(graph);
+
+// Note that you can also pass options to customize the algorithm:
+const p = eigenvectorCentrality(graph, {tolerance: 1e-3, weighted: false});
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: attributes' names:
+    - **centrality** <span class="code">?string</span> <span class="default">eigenvectorCentrality</span>: name of the node attribute that will be assigned the eigenvector centrality.
+    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
+  - **maxIterations** <span class="code">?number</span> <span class="default">100</span>: maximum number of iterations to perform.
+  - **tolerance** <span class="code">?number</span> <span class="default">1.e-6</span>: convergence error tolerance.
+  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to use available weights or not.
+
+### HITS
+
+Computes the hub/authority metrics for each node using the HITS algorithm.
+
+```js
+import hits from 'graphology-metrics/centrality/hits';
+
+// To compute and return the result as 'hubs' & 'authorities':
+const {hubs, authorities} = hits(graph);
+
+// To directly map the result to nodes' attributes:
+hits.assign(graph);
+
+// Note that you can also pass options to customize the algorithm:
+const {hubs, authorities} = hits(graph, {normalize: false});
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: attributes' names:
+    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
+    - **hub** <span class="code">?string</span> <span class="default">hub</span>: name of the node attribute holding hub information.
+    - **authority** <span class="code">?string</span> <span class="default">authority</span>: name of the node attribute holding authority information.
+  - **maxIterations** <span class="code">?number</span> <span class="default">100</span>: maximum number of iterations to perform.
+  - **normalize** <span class="code">?boolean</span> <span class="default">true</span>: should the result be normalized by the sum of values.
+  - **tolerance** <span class="code">?number</span> <span class="default">1.e-8</span>: convergence error tolerance.
+
+### Pagerank
+
+Computes the pagerank metrics for each node.
+
+```js
+import pagerank from 'graphology-metrics/centrality/pagerank';
+
+// To compute pagerank and return the score per node:
+const scores = pagerank(graph);
+
+// To directly map the result to nodes' attributes:
+pagerank.assign(graph);
+
+// Note that you can also pass options to customize the algorithm:
+const p = pagerank(graph, {alpha: 0.9, weighted: false});
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **options** <span class="code">?object</span>: options:
+  - **attributes** <span class="code">?object</span>: attributes' names:
+    - **pagerank** <span class="code">?string</span> <span class="default">pagerank</span>: name of the node attribute that will be assigned the pagerank score.
+    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
+  - **alpha** <span class="code">?number</span> <span class="default">0.85</span>: damping parameter of the algorithm.
+  - **maxIterations** <span class="code">?number</span> <span class="default">100</span>: maximum number of iterations to perform.
+  - **tolerance** <span class="code">?number</span> <span class="default">1.e-6</span>: convergence error tolerance.
+  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to use available weights or not.
+
+## Layout quality metrics
+
+### Edge Uniformity
 
 Computes the edge uniformity layout quality metric from the given graph having `x` and `y` positions attached to its nodes. Edge uniformity is the normalized standard deviation of edge length of the graph. Lower values should be synonym of better layout according to this particular metric.
 
@@ -610,7 +569,7 @@ edgeUniformity(graph);
 >>> ~1.132
 ```
 
-#### Neighborhood preservation
+### Neighborhood preservation
 
 Computes the "neighborhood preservation" layout quality metric from the given graph having `x` and `y` positions attached to its nodes. Neighborhood preservation is the average proportion of node neighborhood being the same both in the graph's topology and its 2d layout space. The metric is therefore comprised between `0` and `1`, `1` being the best, meaning that every node keeps its neighborhood perfectly intact within the layout space.
 
@@ -623,7 +582,7 @@ neighborhoodPreservation(graph);
 // >>> 0.456
 ```
 
-#### Stress
+### Stress
 
 Computes the "stress" layout quality metric from the given graph having `x` and `y` positions attached to its nodes. Stress is the sum of normalized delta between node topology distances and their layout space distances. Lower values should be synonym of better layout according to this particular metric.
 
