@@ -55,7 +55,7 @@
     "graphology-types": ">=0.20.0"
   },
   "dependencies": {
-    "graphology-shortest-path": "^1.5.2",
+    "graphology-shortest-path": "^2.0.0",
     "graphology-utils": "^2.4.2",
     "mnemonist": "^0.39.0"
   }
