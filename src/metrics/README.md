@@ -435,8 +435,6 @@ _Arguments_
 Computes the degree centrality for every node.
 
 ```js
-import degreeCentrality from 'graphology-metrics/centrality/degree';
-// Or to load more specific functions:
 import {
   degreeCentrality,
   inDegreeCentrality,
@@ -444,21 +442,20 @@ import {
 } from 'graphology-metrics/centrality/degree';
 
 // To compute degree centrality for every node:
-const centrality = degreeCentrality(graph);
+const centralities = degreeCentrality(graph);
 
 // To directly map the result onto nodes' attributes (`degreeCentrality`):
 degreeCentrality.assign(graph);
 
 // To directly map the result onto a custom attribute:
-degreeCentrality.assign(graph, {attributes: {centrality: 'myCentrality'}});
+degreeCentrality.assign(graph, {nodeCentralityAttribute: 'myCentrality'});
 ```
 
 _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** _?object_: options:
-  - **attributes** _?object_: custom attribute names:
-    - **centrality** _?string_ [`degreeCentrality`]: name of the centrality attribute to assign.
+  - **nodeCentralityAttribute** _?string_ [`degreeCentrality`]: name of the centrality attribute to assign.
 
 ### Eigenvector centrality
 

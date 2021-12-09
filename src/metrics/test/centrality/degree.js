@@ -2,12 +2,12 @@
  * Graphology Degree Centrality Unit Tests
  * ========================================
  */
-var assert = require('chai').assert,
-  Graph = require('graphology'),
-  degree = require('../../centrality/degree');
+var assert = require('chai').assert;
+var Graph = require('graphology');
+var lib = require('../../centrality/degree');
 
-var UndirectedGraph = Graph.UndirectedGraph,
-  DirectedGraph = Graph.DirectedGraph;
+var UndirectedGraph = Graph.UndirectedGraph;
+var DirectedGraph = Graph.DirectedGraph;
 
 var GRAPHS = {
   basic: {
@@ -84,17 +84,17 @@ describe('degree centrality', function () {
 
   it('should throw if an invalid graph is provided.', function () {
     assert.throws(function () {
-      degree({hello: 'world'});
+      lib.degreeCentrality({hello: 'world'});
     }, /graphology/);
   });
 
   it('should throw when trying to compute in/out degree centrality on an undirected graph.', function () {
     assert.throws(function () {
-      degree.inDegreeCentrality(new UndirectedGraph());
+      lib.inDegreeCentrality(new UndirectedGraph());
     }, /undirected/);
 
     assert.throws(function () {
-      degree.outDegreeCentrality(new UndirectedGraph());
+      lib.outDegreeCentrality(new UndirectedGraph());
     }, /undirected/);
   });
 
@@ -102,30 +102,30 @@ describe('degree centrality', function () {
     var graph = getBasicGraph();
 
     // Degree
-    var centralities = degree.degreeCentrality(graph);
+    var centralities = lib.degreeCentrality(graph);
     assert.deepEqual(centralities, GRAPHS.basic.degreeCentrality);
 
-    degree.degreeCentrality.assign(graph);
+    lib.degreeCentrality.assign(graph);
     assert.deepEqual(
       collect(graph, 'degreeCentrality'),
       GRAPHS.basic.degreeCentrality
     );
 
     // InDegree
-    centralities = degree.inDegreeCentrality(graph);
+    centralities = lib.inDegreeCentrality(graph);
     assert.deepEqual(centralities, GRAPHS.basic.inDegreeCentrality);
 
-    degree.inDegreeCentrality.assign(graph);
+    lib.inDegreeCentrality.assign(graph);
     assert.deepEqual(
       collect(graph, 'inDegreeCentrality'),
       GRAPHS.basic.inDegreeCentrality
     );
 
     // OutDegree
-    centralities = degree.outDegreeCentrality(graph);
+    centralities = lib.outDegreeCentrality(graph);
     assert.deepEqual(centralities, GRAPHS.basic.outDegreeCentrality);
 
-    degree.outDegreeCentrality.assign(graph);
+    lib.outDegreeCentrality.assign(graph);
     assert.deepEqual(
       collect(graph, 'outDegreeCentrality'),
       GRAPHS.basic.outDegreeCentrality
@@ -135,8 +135,8 @@ describe('degree centrality', function () {
   it('should be possible to give a custom attribute name.', function () {
     var graph = getBasicGraph();
 
-    degree.degreeCentrality.assign(graph, {
-      attributes: {centrality: 'centrality'}
+    lib.degreeCentrality.assign(graph, {
+      nodeCentralityAttribute: 'centrality'
     });
     assert.deepEqual(
       collect(graph, 'centrality'),
