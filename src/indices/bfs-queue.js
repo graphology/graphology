@@ -27,6 +27,7 @@ BFSQueue.prototype.push = function (node) {
   if (seenSizeBefore === this.seen.size) return false;
 
   this.queue.push(node);
+  this.size++;
 
   return true;
 };
@@ -40,6 +41,7 @@ BFSQueue.prototype.pushWith = function (node, item) {
   if (seenSizeBefore === this.seen.size) return false;
 
   this.queue.push(item);
+  this.size++;
 
   return true;
 };

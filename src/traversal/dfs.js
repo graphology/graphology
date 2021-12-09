@@ -6,6 +6,7 @@
  */
 var isGraph = require('graphology-utils/is-graph');
 var TraversalRecord = require('./utils').TraversalRecord;
+var DFSStack = require('graphology-indices/dfs-stack');
 
 /**
  * DFS traversal in the given graph using a callback function
@@ -27,30 +28,27 @@ function dfs(graph, callback) {
   // Early termination
   if (graph.order === 0) return;
 
-  var seen = new Set();
-  var stack = [];
-  var depth, record;
+  var stack = new DFSStack(graph.order);
+  var record;
 
-  function neighborCallback(neighbor, attr) {
-    if (seen.has(neighbor)) return;
-
-    seen.add(neighbor);
-    stack.push(new TraversalRecord(neighbor, attr, depth + 1));
+  function visit(neighbor, attr) {
+    stack.pushWith(
+      neighbor,
+      new TraversalRecord(neighbor, attr, record.depth + 1)
+    );
   }
 
   graph.forEachNode(function (node, attr) {
-    if (seen.has(node)) return;
+    if (stack.has(node)) return;
 
-    seen.add(node);
-    stack.push(new TraversalRecord(node, attr, 0));
+    stack.pushWith(node, new TraversalRecord(node, attr, 0));
 
-    while (stack.length !== 0) {
+    while (stack.size !== 0) {
       record = stack.pop();
-      depth = record.depth;
 
-      callback(record.node, record.attributes, depth);
+      callback(record.node, record.attributes, record.depth);
 
-      graph.forEachOutboundNeighbor(record.node, neighborCallback);
+      graph.forEachOutboundNeighbor(record.node, visit);
     }
   });
 }
@@ -79,27 +77,27 @@ function dfsFromNode(graph, node, callback) {
 
   node = '' + node;
 
-  var seen = new Set();
-  var stack = [];
-  var depth, record;
+  var stack = new DFSStack(graph.order);
+  var record;
 
-  function neighborCallback(neighbor, attr) {
-    if (seen.has(neighbor)) return;
-
-    seen.add(neighbor);
-    stack.push(new TraversalRecord(neighbor, attr, depth + 1));
+  function visit(neighbor, attr) {
+    stack.pushWith(
+      neighbor,
+      new TraversalRecord(neighbor, attr, record.depth + 1)
+    );
   }
 
-  seen.add(node);
-  stack.push(new TraversalRecord(node, graph.getNodeAttributes(node), 0));
+  stack.pushWith(
+    node,
+    new TraversalRecord(node, graph.getNodeAttributes(node), 0)
+  );
 
-  while (stack.length !== 0) {
+  while (stack.size !== 0) {
     record = stack.pop();
-    depth = record.depth;
 
-    callback(record.node, record.attributes, depth);
+    callback(record.node, record.attributes, record.depth);
 
-    graph.forEachOutboundNeighbor(record.node, neighborCallback);
+    graph.forEachOutboundNeighbor(record.node, visit);
   }
 }
 

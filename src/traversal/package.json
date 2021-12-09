@@ -41,7 +41,7 @@
     "graphology-types": ">=0.20.0"
   },
   "dependencies": {
-    "graphology-utils": "^2.0.0",
-    "mnemonist": "^0.38.3"
+    "graphology-indices": "^0.16.4",
+    "graphology-utils": "^2.0.0"
   }
 }

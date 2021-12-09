@@ -5,7 +5,7 @@
  * Breadth-First Search traversal function.
  */
 var isGraph = require('graphology-utils/is-graph');
-var FixedDeque = require('mnemonist/fixed-deque');
+var BFSQueue = require('graphology-indices/bfs-queue');
 var TraversalRecord = require('./utils').TraversalRecord;
 
 /**
@@ -28,30 +28,27 @@ function bfs(graph, callback) {
   // Early termination
   if (graph.order === 0) return;
 
-  var seen = new Set();
-  var queue = new FixedDeque(Array, graph.order);
-  var record, depth;
+  var queue = new BFSQueue(graph.order);
+  var record;
 
-  function neighborCallback(neighbor, attr) {
-    if (seen.has(neighbor)) return;
-
-    seen.add(neighbor);
-    queue.push(new TraversalRecord(neighbor, attr, depth + 1));
+  function visit(neighbor, attr) {
+    queue.pushWith(
+      neighbor,
+      new TraversalRecord(neighbor, attr, record.depth + 1)
+    );
   }
 
   graph.forEachNode(function (node, attr) {
-    if (seen.has(node)) return;
+    if (queue.has(node)) return;
 
-    seen.add(node);
-    queue.push(new TraversalRecord(node, attr, 0));
+    queue.pushWith(node, new TraversalRecord(node, attr, 0));
 
     while (queue.size !== 0) {
       record = queue.shift();
-      depth = record.depth;
 
-      callback(record.node, record.attributes, depth);
+      callback(record.node, record.attributes, record.depth);
 
-      graph.forEachOutboundNeighbor(record.node, neighborCallback);
+      graph.forEachOutboundNeighbor(record.node, visit);
     }
   });
 }
@@ -80,27 +77,27 @@ function bfsFromNode(graph, node, callback) {
 
   node = '' + node;
 
-  var seen = new Set();
-  var queue = new FixedDeque(Array, graph.order);
-  var depth, record;
+  var queue = new BFSQueue(graph.order);
+  var record;
 
-  function neighborCallback(neighbor, attr) {
-    if (seen.has(neighbor)) return;
-
-    seen.add(neighbor);
-    queue.push(new TraversalRecord(neighbor, attr, depth + 1));
+  function visit(neighbor, attr) {
+    queue.pushWith(
+      neighbor,
+      new TraversalRecord(neighbor, attr, record.depth + 1)
+    );
   }
 
-  seen.add(node);
-  queue.push(new TraversalRecord(node, graph.getNodeAttributes(node), 0));
+  queue.pushWith(
+    node,
+    new TraversalRecord(node, graph.getNodeAttributes(node), 0)
+  );
 
   while (queue.size !== 0) {
     record = queue.shift();
-    depth = record.depth;
 
-    callback(record.node, record.attributes, depth);
+    callback(record.node, record.attributes, record.depth);
 
-    graph.forEachOutboundNeighbor(record.node, neighborCallback);
+    graph.forEachOutboundNeighbor(record.node, visit);
   }
 }
 
