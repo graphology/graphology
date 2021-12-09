@@ -38,6 +38,6 @@
   },
   "dependencies": {
     "graphology-utils": "^2.4.2",
-    "mnemonist": "^0.38.0"
+    "mnemonist": "^0.39.0"
   }
 }

@@ -1,6 +1,6 @@
 /**
- * Graphology DFS Stack.
- * ======================
+ * Graphology DFS Stack
+ * =====================
  *
  * An experiment to speed up DFS in graphs and connected component detection.
  *
@@ -25,6 +25,19 @@ DFSStack.prototype.push = function (node) {
   if (seenSizeBefore === this.seen.size) return false;
 
   this.stack[this.size++] = node;
+
+  return true;
+};
+
+DFSStack.prototype.pushWith = function (node, item) {
+  var seenSizeBefore = this.seen.size;
+
+  this.seen.add(node);
+
+  // If node was already seen
+  if (seenSizeBefore === this.seen.size) return false;
+
+  this.stack[this.size++] = item;
 
   return true;
 };
