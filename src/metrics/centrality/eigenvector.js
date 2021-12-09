@@ -24,13 +24,10 @@ var WeightedNeighborhoodIndex =
  * Defaults.
  */
 var DEFAULTS = {
-  attributes: {
-    centrality: 'eigenvectorCentrality',
-    weight: 'weight'
-  },
+  nodeCentralityAttribute: 'eigenvectorCentrality',
+  getEdgeWeight: 'weight',
   maxIterations: 100,
-  tolerance: 1e-6,
-  weighted: false
+  tolerance: 1e-6
 };
 
 /**
@@ -60,12 +57,10 @@ function safeVariadicHypot(x) {
  * @param  {boolean}  assign        - Should we assign the result to nodes.
  * @param  {Graph}    graph         - Target graph.
  * @param  {?object}  option        - Options:
- * @param  {?object}    attributes  - Custom attribute names:
- * @param  {?string}      centrality  - Name of the centrality attribute to assign.
- * @param  {?string}      weight    - Name of the weight algorithm.
- * @param  {?number}  maxIterations - Maximum number of iterations to perform.
- * @param  {?number}  tolerance     - Error tolerance when checking for convergence.
- * @param  {?boolean} weighted      - Should we use the graph's weights.
+ * @param  {?string}    nodeCentralityAttribute - Name of the centrality attribute to assign.
+ * @param  {?string}    getEdgeWeight - Name of the weight algorithm or getter function.
+ * @param  {?number}    maxIterations - Maximum number of iterations to perform.
+ * @param  {?number}    tolerance     - Error tolerance when checking for convergence.
  * @return {object|undefined}
  */
 function abstractEigenvectorCentrality(assign, graph, options) {
@@ -78,14 +73,10 @@ function abstractEigenvectorCentrality(assign, graph, options) {
 
   var maxIterations = options.maxIterations;
   var tolerance = options.tolerance;
-  var weighted = options.weighted;
-
-  var centralityAttribute = options.attributes.centrality;
-  var weightAttribute = weighted ? options.attributes.weight : null;
 
   var N = graph.order;
 
-  var index = new WeightedNeighborhoodIndex(graph, weightAttribute);
+  var index = new WeightedNeighborhoodIndex(graph, options.getEdgeWeight);
 
   var i, j, l, w;
 
@@ -143,7 +134,7 @@ function abstractEigenvectorCentrality(assign, graph, options) {
     );
 
   if (assign) {
-    index.assign(centralityAttribute, x);
+    index.assign(options.nodeCentralityAttribute, x);
     return;
   }
 

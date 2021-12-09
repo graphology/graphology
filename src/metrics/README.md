@@ -471,16 +471,18 @@ const scores = eigenvectorCentrality(graph);
 eigenvectorCentrality.assign(graph);
 
 // Note that you can also pass options to customize the algorithm:
-const p = eigenvectorCentrality(graph, {tolerance: 1e-3, weighted: false});
+const p = eigenvectorCentrality(graph, {tolerance: 1e-3});
+
+// To ignore your graph's weights
+eigenvectorCentrality.assign(graph, {getEdgeWeight: null});
 ```
 
 _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** _?object_: options:
-  - **attributes** _?object_: attributes' names:
-    - **centrality** _?string_ [`eigenvectorCentrality`]: name of the node attribute that will be assigned the eigenvector centrality.
-    - **weight** _?string_ [`weight`]: name of the edges' weight attribute.
+  - **nodeCentralityAttribute** _?string_ [`eigenvectorCentrality`]: name of the node attribute that will be assigned the eigenvector centrality.
+  - **getEdgeWeight** _?string\|function_ [`weight`]: name of the edges' weight attribute or getter function.
   - **maxIterations** _?number_ [`100`]: maximum number of iterations to perform.
   - **tolerance** _?number_ [`1.e-6`]: convergence error tolerance.
   - **weighted** _?boolean_ [`false`]: whether to use available weights or not.

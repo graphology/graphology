@@ -1,23 +1,32 @@
-import Graph from 'graphology-types';
+import Graph, {Attributes} from 'graphology-types';
+import {MinimalEdgeMapper} from 'graphology-utils/getters';
 
-type EigenvectorCentralityOptions = {
-  attributes?: {
-    centrality?: string;
-    weight?: string;
-  };
+type EigenvectorCentralityOptions<
+  EdgeAttributes extends Attributes = Attributes
+> = {
+  nodeCentralityAttribute?: string;
+  getEdgeWeight?:
+    | keyof EdgeAttributes
+    | MinimalEdgeMapper<number, EdgeAttributes>
+    | null;
   maxIterations?: number;
   tolerance?: number;
-  weighted?: boolean;
 };
 
 type EigenvectorCentralityMapping = {[node: string]: number};
 
-interface EigenvectorCentrality {
+interface EigenvectorCentrality<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> {
   (
-    graph: Graph,
-    options?: EigenvectorCentralityOptions
+    graph: Graph<NodeAttributes, EdgeAttributes>,
+    options?: EigenvectorCentralityOptions<EdgeAttributes>
   ): EigenvectorCentralityMapping;
-  assign(graph: Graph, options?: EigenvectorCentralityOptions): void;
+  assign(
+    graph: Graph,
+    options?: EigenvectorCentralityOptions<EdgeAttributes>
+  ): void;
 }
 
 declare const eigenvectorCentrality: EigenvectorCentrality;

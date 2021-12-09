@@ -90,7 +90,7 @@ describe('eigenvector centrality', function () {
     graph.setEdgeAttribute(0, 1, 'weight', 5);
 
     deepApproximatelyEqual(
-      eigenvectorCentrality(graph, {weighted: true}),
+      eigenvectorCentrality(graph),
       {
         0: 0.6933,
         1: 0.7071,
@@ -114,11 +114,21 @@ describe('eigenvector centrality', function () {
 
     var graph = getDirectedGraph();
 
-    var unweightedResult = eigenvectorCentrality(graph);
-    var weightedResult = eigenvectorCentrality(graph, {weighted: true});
+    var unweightedResult = eigenvectorCentrality(graph, {getEdgeWeight: null});
+    var weightedResult = eigenvectorCentrality(graph);
 
     deepApproximatelyEqual(weightedResult, expected, 1e-5);
     deepApproximatelyEqual(unweightedResult, expected, 1e-5);
+
+    graph.setEdgeAttribute(2, 4, 'weight', 45);
+
+    weightedResult = eigenvectorCentrality(graph);
+
+    assert.notDeepEqual(weightedResult, unweightedResult);
+
+    weightedResult = eigenvectorCentrality(graph, {getEdgeWeight: 'test'});
+
+    assert.deepStrictEqual(weightedResult, unweightedResult);
   });
 
   it('should work with a multi graph.', function () {
