@@ -4,20 +4,20 @@
  */
 var assert = require('chai').assert;
 var Graph = require('graphology');
-var density = require('../../graph/density.js');
+var lib = require('../../graph/density.js');
 
 describe('density', function () {
   it('should throw if given wrong arguments.', function () {
     assert.throws(function () {
-      density(null);
+      lib.density(null);
     }, /instance/);
 
     assert.throws(function () {
-      density('test', 1);
+      lib.density('test', 1);
     }, /number/);
 
     assert.throws(function () {
-      density(45, 'test');
+      lib.density(45, 'test');
     }, /number/);
   });
 
@@ -44,26 +44,26 @@ describe('density', function () {
     multiGraph.mergeEdge(1, 3);
     multiGraph.mergeEdge(1, 3);
 
-    assert.strictEqual(density(mixedGraph), 2 / 9);
-    assert.strictEqual(density(directedGraph), 2 / 6);
-    assert.strictEqual(density(undirectedGraph), 2 / 3);
-    assert.strictEqual(density(multiGraph), 4 / 3);
-    assert.strictEqual(density.undirectedDensity(multiGraph), 2 / 3);
+    assert.strictEqual(lib.density(mixedGraph), 2 / 9);
+    assert.strictEqual(lib.density(directedGraph), 2 / 6);
+    assert.strictEqual(lib.density(undirectedGraph), 2 / 3);
+    assert.strictEqual(lib.density(multiGraph), 4 / 3);
+    assert.strictEqual(lib.undirectedDensity(multiGraph), 2 / 3);
 
     assert.strictEqual(
-      density.mixedDensity(mixedGraph.order, mixedGraph.size),
+      lib.mixedDensity(mixedGraph.order, mixedGraph.size),
       2 / 9
     );
     assert.strictEqual(
-      density.directedDensity(directedGraph.order, directedGraph.size),
+      lib.directedDensity(directedGraph.order, directedGraph.size),
       2 / 6
     );
     assert.strictEqual(
-      density.undirectedDensity(undirectedGraph.order, directedGraph.size),
+      lib.undirectedDensity(undirectedGraph.order, directedGraph.size),
       2 / 3
     );
     assert.strictEqual(
-      density.multiUndirectedDensity(multiGraph.order, multiGraph.size),
+      lib.multiUndirectedDensity(multiGraph.order, multiGraph.size),
       4 / 3
     );
   });

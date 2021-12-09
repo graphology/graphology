@@ -48,11 +48,11 @@ _Layout quality metrics_
 
 ### Density
 
-Computes the density of the given graph.
+Computes the density of the given graph. Note that multi variants can exceed `0`, as it is also the case when considering self loops.
 
 ```js
 import {density} from 'graphology-metrics';
-import density from 'graphology-metrics/graph/density';
+import {density} from 'graphology-metrics/graph/density';
 
 // Passing a graph instance
 const d = density(graph);

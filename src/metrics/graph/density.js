@@ -66,14 +66,14 @@ function abstractDensity(type, multi, graph) {
     order = graph;
     size = arguments[3];
 
-    if (typeof order !== 'number')
+    if (typeof order !== 'number' || order < 0)
       throw new Error(
-        'graphology-metrics/density: given order is not a number.'
+        'graphology-metrics/density: given order is not a valid number.'
       );
 
-    if (typeof size !== 'number')
+    if (typeof size !== 'number' || size < 0)
       throw new Error(
-        'graphology-metrics/density: given size is not a number.'
+        'graphology-metrics/density: given size is not a valid number.'
       );
   } else {
     if (!isGraph(graph))
@@ -106,17 +106,12 @@ function abstractDensity(type, multi, graph) {
 }
 
 /**
- * Creating the exported functions.
- */
-var density = abstractDensity.bind(null, null, null);
-density.directedDensity = abstractDensity.bind(null, 'directed', false);
-density.undirectedDensity = abstractDensity.bind(null, 'undirected', false);
-density.mixedDensity = abstractDensity.bind(null, 'mixed', false);
-density.multiDirectedDensity = abstractDensity.bind(null, 'directed', true);
-density.multiUndirectedDensity = abstractDensity.bind(null, 'undirected', true);
-density.multiMixedDensity = abstractDensity.bind(null, 'mixed', true);
-
-/**
  * Exporting.
  */
-module.exports = density;
+exports.density = abstractDensity.bind(null, null, null);
+exports.directedDensity = abstractDensity.bind(null, 'directed', false);
+exports.undirectedDensity = abstractDensity.bind(null, 'undirected', false);
+exports.mixedDensity = abstractDensity.bind(null, 'mixed', false);
+exports.multiDirectedDensity = abstractDensity.bind(null, 'directed', true);
+exports.multiUndirectedDensity = abstractDensity.bind(null, 'undirected', true);
+exports.multiMixedDensity = abstractDensity.bind(null, 'mixed', true);
