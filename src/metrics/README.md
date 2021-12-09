@@ -381,27 +381,30 @@ Computes the betweenness centrality for every node.
 import betweennessCentrality from 'graphology-metrics/centrality/betweenness';
 
 // To compute centrality for every node:
-const centrality = betweennessCentrality(graph);
-
-// To compute weighted betweenness centrality
-const centrality = betweennessCentrality(graph, {weighted: true});
+const centralities = betweennessCentrality(graph);
 
 // To directly map the result onto nodes' attributes (`betweennessCentrality`):
 betweennessCentrality.assign(graph);
 
 // To directly map the result onto a custom attribute:
-betweennessCentrality.assign(graph, {attributes: {centrality: 'myCentrality'}});
+betweennessCentrality.assign(graph, {nodeCentralityAttribute: 'myCentrality'});
+
+// To ignore weights
+const centralities = betweennessCentrality(graph, {getEdgeWeight: null});
+
+// To use a getter function for weights
+const centralities = betweennessCentrality(graph, {
+  getEdgeWeight: (_, attr) => attr.importance
+});
 ```
 
 _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** _?object_: options:
-  - **attributes** _?object_: Custom attribute names:
-    - **centrality** _?string_ [`betweennessCentrality`]: Name of the centrality attribute to assign.
-    - **weight** _?string_: Name of the weight attribute.
+  - **nodeCentralityAttribute** _?string_ [`betweennessCentrality`]: Name of the centrality attribute to assign.
+  - **getEdgeWeight** _?string\|function_ [`weight`]: Name of the edge weight attribute or getter function.
   - **normalized** _?boolean_ [`true`]: should the result be normalized?
-  - **weighted** _?boolean_ [`false`]: should we compute the weighted betweenness centrality?
 
 ### Closeness centrality
 

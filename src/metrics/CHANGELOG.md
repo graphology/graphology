@@ -5,6 +5,7 @@
 - Changing folder organization.
 - Adding `simmelianStrength`.
 - Adding `simpleSize`.
+- Changing output attribute & getters paradigm.
 - Improving `weightedSize`.
 - Improving performance of `diameter`.
 - Dropping `modalities`.

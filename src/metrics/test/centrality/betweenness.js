@@ -322,12 +322,12 @@ describe('betweenness centrality', function () {
     deepApproximatelyEqual(
       centralities,
       {
-        0: 0.2,
-        1: 0,
-        2: 0.4,
-        3: 0.3,
-        4: 0.4,
-        5: 0
+        0: 0.184,
+        1: 0.034,
+        2: 0,
+        3: 0.067,
+        4: 0.184,
+        5: 0.034
       },
       1e-3
     );
