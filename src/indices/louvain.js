@@ -57,52 +57,35 @@
  * does not affect delta comparisons.
  */
 var typed = require('mnemonist/utils/typed-arrays');
+var resolveDefaults = require('graphology-utils/defaults');
+var createEdgeWeightGetter =
+  require('graphology-utils/getters').createEdgeWeightGetter;
 
 var INSPECT = Symbol.for('nodejs.util.inspect.custom');
 
 var DEFAULTS = {
-  attributes: {
-    weight: 'weight'
-  },
+  getEdgeWeight: 'weight',
   keepDendrogram: false,
-  resolution: 1,
-  weighted: false
+  resolution: 1
 };
 
 function UndirectedLouvainIndex(graph, options) {
   // Solving options
-  options = options || {};
-  var attributes = options.attributes || {};
+  options = resolveDefaults(options, DEFAULTS);
 
-  var keepDendrogram = options.keepDendrogram === true;
-
-  var resolution =
-    typeof options.resolution === 'number'
-      ? options.resolution
-      : DEFAULTS.resolution;
+  var resolution = options.resolution;
 
   // Weight getters
-  var weighted = options.weighted === true;
-
-  var weightAttribute = attributes.weight || DEFAULTS.attributes.weight;
-
-  var getWeight = function (attr) {
-    if (!weighted) return 1;
-
-    var weight = attr[weightAttribute];
-
-    if (typeof weight !== 'number' || isNaN(weight)) return 1;
-
-    return weight;
-  };
+  var getEdgeWeight = createEdgeWeightGetter(options.getEdgeWeight).fromEntry;
 
   // Building the index
   var size = (graph.size - graph.selfLoopCount) * 2;
 
   var NeighborhoodPointerArray = typed.getPointerArray(size);
   var NodesPointerArray = typed.getPointerArray(graph.order + 1);
+
   // NOTE: this memory optimization can yield overflow deopt when computing deltas
-  var WeightsArray = weighted
+  var WeightsArray = options.getEdgeWeight
     ? Float64Array
     : typed.getPointerArray(graph.size * 2);
 
@@ -115,7 +98,7 @@ function UndirectedLouvainIndex(graph, options) {
   this.level = 0;
   this.graph = graph;
   this.nodes = new Array(graph.order);
-  this.keepDendrogram = keepDendrogram;
+  this.keepDendrogram = options.keepDendrogram;
 
   // Edge-level
   this.neighborhood = new NodesPointerArray(size);
@@ -159,8 +142,8 @@ function UndirectedLouvainIndex(graph, options) {
   });
 
   // Single sweep over the edges
-  graph.forEachEdge(function (edge, attr, source, target) {
-    weight = getWeight(attr);
+  graph.forEachEdge(function (edge, attr, source, target, sa, ta, u) {
+    weight = getEdgeWeight(edge, attr, source, target, sa, ta, u);
 
     source = ids[source];
     target = ids[target];
@@ -544,38 +527,21 @@ UndirectedLouvainIndex.prototype[INSPECT] = function () {
 
 function DirectedLouvainIndex(graph, options) {
   // Solving options
-  options = options || {};
-  var attributes = options.attributes || {};
+  options = resolveDefaults(options, DEFAULTS);
 
-  var keepDendrogram = options.keepDendrogram === true;
-
-  var resolution =
-    typeof options.resolution === 'number'
-      ? options.resolution
-      : DEFAULTS.resolution;
+  var resolution = options.resolution;
 
   // Weight getters
-  var weighted = options.weighted === true;
-
-  var weightAttribute = attributes.weight || DEFAULTS.attributes.weight;
-
-  var getWeight = function (attr) {
-    if (!weighted) return 1;
-
-    var weight = attr[weightAttribute];
-
-    if (typeof weight !== 'number' || isNaN(weight)) return 1;
-
-    return weight;
-  };
+  var getEdgeWeight = createEdgeWeightGetter(options.getEdgeWeight).fromEntry;
 
   // Building the index
   var size = (graph.size - graph.selfLoopCount) * 2;
 
   var NeighborhoodPointerArray = typed.getPointerArray(size);
   var NodesPointerArray = typed.getPointerArray(graph.order + 1);
+
   // NOTE: this memory optimization can yield overflow deopt when computing deltas
-  var WeightsArray = weighted
+  var WeightsArray = options.getEdgeWeight
     ? Float64Array
     : typed.getPointerArray(graph.size * 2);
 
@@ -588,7 +554,7 @@ function DirectedLouvainIndex(graph, options) {
   this.level = 0;
   this.graph = graph;
   this.nodes = new Array(graph.order);
-  this.keepDendrogram = keepDendrogram;
+  this.keepDendrogram = options.keepDendrogram;
 
   // Edge-level
   // NOTE: edges are stored out then in, in this order
@@ -637,8 +603,8 @@ function DirectedLouvainIndex(graph, options) {
   });
 
   // Single sweep over the edges
-  graph.forEachEdge(function (edge, attr, source, target) {
-    weight = getWeight(attr);
+  graph.forEachEdge(function (edge, attr, source, target, sa, ta, u) {
+    weight = getEdgeWeight(edge, attr, source, target, sa, ta, u);
 
     source = ids[source];
     target = ids[target];

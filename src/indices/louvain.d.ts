@@ -1,20 +1,30 @@
-import Graph from 'graphology-types';
+import Graph, {Attributes, EdgeMapper} from 'graphology-types';
 
 type PointerArray = Uint8Array | Uint16Array | Uint32Array | Float64Array;
 
-type LouvainIndexOptions = {
-  attributes: {
-    weight: string;
-  };
-  keepDendrogram: boolean;
-  weighted: boolean;
+type LouvainIndexOptions<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> = {
+  getEdgeWeight?:
+    | keyof EdgeAttributes
+    | EdgeMapper<number, NodeAttributes, EdgeAttributes>
+    | null;
+  keepDendrogram?: boolean;
+  resolution?: number;
 };
 
 type CommunityMapping = {[key: string]: number};
 type NeighborhoodProjection = {[key: string]: Array<string>};
 
-export class UndirectedLouvainIndex {
-  constructor(graph: Graph, options?: LouvainIndexOptions);
+export class UndirectedLouvainIndex<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> {
+  constructor(
+    graph: Graph<NodeAttributes, EdgeAttributes>,
+    options?: LouvainIndexOptions<NodeAttributes, EdgeAttributes>
+  );
 
   M: number;
   C: number;
@@ -62,8 +72,14 @@ export class UndirectedLouvainIndex {
   assign(prop: string, level?: number): void;
 }
 
-export class DirectedLouvainIndex {
-  constructor(graph: Graph, options?: LouvainIndexOptions);
+export class DirectedLouvainIndex<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> {
+  constructor(
+    graph: Graph<NodeAttributes, EdgeAttributes>,
+    options?: LouvainIndexOptions<NodeAttributes, EdgeAttributes>
+  );
 
   M: number;
   C: number;

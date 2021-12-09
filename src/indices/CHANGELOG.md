@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.16.4 (provisional)
+
+- `UndirectedLouvainIndex` & `DirectedLouvainIndex` now able to take a getter argument.
+
 ## 0.16.3
 
 - Fixing `WeightedNeighborhoodIndex` getter argument.

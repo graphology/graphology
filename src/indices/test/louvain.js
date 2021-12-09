@@ -82,7 +82,7 @@ describe('LouvainIndex', function () {
   it('should properly index the given undirected graph.', function () {
     var graph = fromEdges(Graph.UndirectedGraph, EDGES);
 
-    var index = new UndirectedLouvainIndex(graph, {weighted: true});
+    var index = new UndirectedLouvainIndex(graph);
     // console.log(index);
 
     assert.strictEqual(index.M, 161);
@@ -122,7 +122,7 @@ describe('LouvainIndex', function () {
   it('should properly index the given directed graph.', function () {
     var graph = fromEdges(Graph.DirectedGraph, EDGES);
 
-    var index = new DirectedLouvainIndex(graph, {weighted: true});
+    var index = new DirectedLouvainIndex(graph);
     // console.log(index);
 
     assert.strictEqual(index.M, 162);
@@ -192,7 +192,7 @@ describe('LouvainIndex', function () {
 
   it('should be possible to move a node from one community to the other in the undirected case.', function () {
     var graph = fromEdges(Graph.UndirectedGraph, EDGES);
-    var index = new UndirectedLouvainIndex(graph);
+    var index = new UndirectedLouvainIndex(graph, {getEdgeWeight: null});
 
     var before = {
       belongings: index.belongings.slice(),
@@ -271,7 +271,7 @@ describe('LouvainIndex', function () {
 
   it('should be possible to move a node from one community to the other in the directed case.', function () {
     var graph = fromEdges(Graph.DirectedGraph, EDGES);
-    var index = new DirectedLouvainIndex(graph);
+    var index = new DirectedLouvainIndex(graph, {getEdgeWeight: null});
 
     var before = {
       belongings: index.belongings.slice(),
@@ -362,7 +362,7 @@ describe('LouvainIndex', function () {
     var graph = fromEdges(Graph.UndirectedGraph, EDGES);
     var index = new UndirectedLouvainIndex(graph, {
       keepDendrogram: true,
-      keepCounts: true
+      getEdgeWeight: null
     });
 
     // node '1', '5' => community '4' (0)
@@ -487,7 +487,7 @@ describe('LouvainIndex', function () {
     var graph = fromEdges(Graph.DirectedGraph, EDGES);
     var index = new DirectedLouvainIndex(graph, {
       keepDendrogram: true,
-      keepCounts: true
+      getEdgeWeight: null
     });
 
     // node '1', '5' => community '4' (0)
@@ -617,7 +617,7 @@ describe('LouvainIndex', function () {
 
   it('should be possible to compute modularity delta in the undirected case.', function () {
     var graph = fromEdges(Graph.UndirectedGraph, EDGES);
-    var index = new UndirectedLouvainIndex(graph);
+    var index = new UndirectedLouvainIndex(graph, {getEdgeWeight: null});
     applyMoves(index, UNDIRECTED_MOVES);
 
     // node '2' to community '4'
@@ -633,7 +633,7 @@ describe('LouvainIndex', function () {
 
   it('should be possible to compute modularity delta in the directed case.', function () {
     var graph = fromEdges(Graph.DirectedGraph, EDGES);
-    var index = new DirectedLouvainIndex(graph);
+    var index = new DirectedLouvainIndex(graph, {getEdgeWeight: null});
     applyMoves(index, DIRECTED_MOVES);
 
     // node '2' to community '4'
@@ -649,21 +649,26 @@ describe('LouvainIndex', function () {
 
   function modularityDeltaSanityUndirected(resolution) {
     var graph = fromEdges(Graph.UndirectedGraph, EDGES);
-    var index = new UndirectedLouvainIndex(graph, {resolution: resolution});
+    var index = new UndirectedLouvainIndex(graph, {
+      resolution: resolution,
+      getEdgeWeight: null
+    });
     applyMoves(index, UNDIRECTED_MOVES);
 
     // node '2' to other community
     var delta = index.delta(1, 3, 1, 4);
 
     var indexWithIsolatedNode = new UndirectedLouvainIndex(graph, {
-      resolution: resolution
+      resolution: resolution,
+      getEdgeWeight: null
     });
     indexWithIsolatedNode.expensiveMove(0, 4);
     indexWithIsolatedNode.expensiveMove(5, 2);
     indexWithIsolatedNode.expensiveMove(3, 2);
 
     var indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph, {
-      resolution: resolution
+      resolution: resolution,
+      getEdgeWeight: null
     });
     indexWithNodeInOtherCommunity.expensiveMove(1, 4);
     indexWithNodeInOtherCommunity.expensiveMove(0, 4);
@@ -678,7 +683,8 @@ describe('LouvainIndex', function () {
     index.zoomOut();
 
     indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph, {
-      resolution: resolution
+      resolution: resolution,
+      getEdgeWeight: null
     });
     applyMoves(indexWithNodeInOtherCommunity, UNDIRECTED_MOVES);
     indexWithNodeInOtherCommunity.zoomOut();
@@ -703,21 +709,26 @@ describe('LouvainIndex', function () {
     // Self loop to spice up the mix
     // graph.addEdge(1, 1);
 
-    var index = new DirectedLouvainIndex(graph, {resolution: resolution});
+    var index = new DirectedLouvainIndex(graph, {
+      resolution: resolution,
+      getEdgeWeight: null
+    });
     applyMoves(index, DIRECTED_MOVES);
 
     // node '2' to other community
     var delta = index.delta(1, 2, 1, 1, 4);
 
     var indexWithIsolatedNode = new DirectedLouvainIndex(graph, {
-      resolution: resolution
+      resolution: resolution,
+      getEdgeWeight: null
     });
     indexWithIsolatedNode.expensiveMove(0, 4);
     indexWithIsolatedNode.expensiveMove(5, 2);
     indexWithIsolatedNode.expensiveMove(3, 2);
 
     var indexWithNodeInOtherCommunity = new DirectedLouvainIndex(graph, {
-      resolution: resolution
+      resolution: resolution,
+      getEdgeWeight: null
     });
     indexWithNodeInOtherCommunity.expensiveMove(1, 4);
     indexWithNodeInOtherCommunity.expensiveMove(0, 4);
@@ -732,7 +743,8 @@ describe('LouvainIndex', function () {
     index.zoomOut();
 
     indexWithNodeInOtherCommunity = new DirectedLouvainIndex(graph, {
-      resolution: resolution
+      resolution: resolution,
+      getEdgeWeight: null
     });
     applyMoves(indexWithNodeInOtherCommunity, DIRECTED_MOVES);
     indexWithNodeInOtherCommunity.zoomOut();
@@ -753,13 +765,15 @@ describe('LouvainIndex', function () {
 
   it('delta computations should remain sound when moving to same community, in the undirected case.', function () {
     var graph = fromEdges(Graph.UndirectedGraph, EDGES);
-    var index = new UndirectedLouvainIndex(graph);
+    var index = new UndirectedLouvainIndex(graph, {getEdgeWeight: null});
     applyMoves(index, UNDIRECTED_MOVES);
 
     // node '2' to own community
     var delta = index.deltaWithOwnCommunity(1, 3, 2, 2);
 
-    var indexWithIsolatedNode = new UndirectedLouvainIndex(graph);
+    var indexWithIsolatedNode = new UndirectedLouvainIndex(graph, {
+      getEdgeWeight: null
+    });
     indexWithIsolatedNode.expensiveMove(0, 4);
     indexWithIsolatedNode.expensiveMove(5, 2);
     indexWithIsolatedNode.expensiveMove(3, 2);
@@ -777,13 +791,15 @@ describe('LouvainIndex', function () {
 
   it('delta computations should remain sound when moving to same community, in the directed case.', function () {
     var graph = fromEdges(Graph.DirectedGraph, EDGES);
-    var index = new DirectedLouvainIndex(graph);
+    var index = new DirectedLouvainIndex(graph, {getEdgeWeight: null});
     applyMoves(index, DIRECTED_MOVES);
 
     // node '2' to own community
     var delta = index.deltaWithOwnCommunity(1, 2, 1, 2, 2);
 
-    var indexWithIsolatedNode = new DirectedLouvainIndex(graph);
+    var indexWithIsolatedNode = new DirectedLouvainIndex(graph, {
+      getEdgeWeight: null
+    });
     indexWithIsolatedNode.expensiveMove(0, 4);
     indexWithIsolatedNode.expensiveMove(5, 2);
     indexWithIsolatedNode.expensiveMove(3, 2);
@@ -801,7 +817,7 @@ describe('LouvainIndex', function () {
 
   it('should not break if a community is deprived of its "owner".', function () {
     var graph = fromEdges(Graph.UndirectedGraph, EDGES);
-    var index = new UndirectedLouvainIndex(graph);
+    var index = new UndirectedLouvainIndex(graph, {getEdgeWeight: null});
     applyMoves(index, UNDIRECTED_MOVES);
 
     index.expensiveMove(2, 4);
@@ -852,7 +868,7 @@ describe('LouvainIndex', function () {
 
     graph.addEdge(0, 0);
 
-    var index = new UndirectedLouvainIndex(graph);
+    var index = new UndirectedLouvainIndex(graph, {getEdgeWeight: null});
     index.expensiveMove(1, 0);
     index.expensiveMove(3, 2);
 
@@ -878,7 +894,7 @@ describe('LouvainIndex', function () {
 
     graph.addEdge(0, 0);
 
-    index = new DirectedLouvainIndex(graph);
+    index = new DirectedLouvainIndex(graph, {getEdgeWeight: null});
     index.expensiveMove(1, 0);
     index.expensiveMove(3, 2);
 
@@ -915,7 +931,7 @@ describe('LouvainIndex', function () {
     graph.mergeEdge(1, 3);
     graph.mergeEdge(3, 2);
 
-    index = new DirectedLouvainIndex(graph);
+    index = new DirectedLouvainIndex(graph, {getEdgeWeight: null});
 
     index.expensiveMove(1, 0);
     index.expensiveMove(3, 2);
@@ -938,11 +954,15 @@ describe('LouvainIndex', function () {
     var undirectedGraph = fromEdges(Graph.UndirectedGraph, EDGES);
     var directedGraph = toDirected(undirectedGraph);
 
-    var undirectedIndex = new UndirectedLouvainIndex(undirectedGraph);
+    var undirectedIndex = new UndirectedLouvainIndex(undirectedGraph, {
+      getEdgeWeight: null
+    });
     applyMoves(undirectedIndex, UNDIRECTED_MOVES);
     undirectedIndex.zoomOut();
 
-    var directedIndex = new DirectedLouvainIndex(directedGraph);
+    var directedIndex = new DirectedLouvainIndex(directedGraph, {
+      getEdgeWeight: null
+    });
     directedIndex.expensiveMove(1, 2);
     directedIndex.expensiveMove(0, 4);
     directedIndex.expensiveMove(5, 2);
@@ -998,7 +1018,7 @@ describe('LouvainIndex', function () {
     var graph = fromEdges(Graph.UndirectedGraph, EDGES);
     graph.addEdge(1, 1);
 
-    var index = new UndirectedLouvainIndex(graph);
+    var index = new UndirectedLouvainIndex(graph, {getEdgeWeight: null});
     applyMoves(index, UNDIRECTED_MOVES);
 
     // NOTE: this is aligned to igraph
@@ -1007,7 +1027,7 @@ describe('LouvainIndex', function () {
     graph = fromEdges(Graph.DirectedGraph, EDGES);
     graph.addEdge(1, 1);
 
-    index = new DirectedLouvainIndex(graph);
+    index = new DirectedLouvainIndex(graph, {getEdgeWeight: null});
     applyMoves(index, DIRECTED_MOVES);
 
     closeTo(index.modularity(), 0.375);
@@ -1016,7 +1036,8 @@ describe('LouvainIndex', function () {
   it('should be possible to tweak resolution.', function () {
     var undirectedGraph = fromEdges(Graph.UndirectedGraph, EDGES);
     var undirectedIndex = new UndirectedLouvainIndex(undirectedGraph, {
-      resolution: 0.5
+      resolution: 0.5,
+      getEdgeWeight: null
     });
     applyMoves(undirectedIndex, UNDIRECTED_MOVES);
 
@@ -1024,7 +1045,8 @@ describe('LouvainIndex', function () {
 
     var directedGraph = fromEdges(Graph.DirectedGraph, EDGES);
     var directedIndex = new DirectedLouvainIndex(directedGraph, {
-      resolution: 0.5
+      resolution: 0.5,
+      getEdgeWeight: null
     });
     applyMoves(directedIndex, DIRECTED_MOVES);
 
@@ -1033,8 +1055,8 @@ describe('LouvainIndex', function () {
 
   it('should be possible to isolate nodes in the undirected case.', function () {
     var graph = fromEdges(Graph.UndirectedGraph, EDGES);
-    var rawIndex = new UndirectedLouvainIndex(graph);
-    var index = new UndirectedLouvainIndex(graph);
+    var rawIndex = new UndirectedLouvainIndex(graph, {getEdgeWeight: null});
+    var index = new UndirectedLouvainIndex(graph, {getEdgeWeight: null});
     applyMoves(index, UNDIRECTED_MOVES);
 
     graph.nodes().forEach(function (node, i) {
@@ -1056,8 +1078,8 @@ describe('LouvainIndex', function () {
 
   it('should be possible to isolate nodes in the directed case.', function () {
     var graph = fromEdges(Graph.DirectedGraph, EDGES);
-    var rawIndex = new DirectedLouvainIndex(graph);
-    var index = new DirectedLouvainIndex(graph);
+    var rawIndex = new DirectedLouvainIndex(graph, {getEdgeWeight: null});
+    var index = new DirectedLouvainIndex(graph, {getEdgeWeight: null});
     applyMoves(index, DIRECTED_MOVES);
 
     graph.nodes().forEach(function (node, i) {
@@ -1118,7 +1140,7 @@ describe('LouvainIndex', function () {
 
   it('should work with undirected multi graphs.', function () {
     var graph = fromEdges(Graph.UndirectedGraph, EDGES);
-    var index = new UndirectedLouvainIndex(graph);
+    var index = new UndirectedLouvainIndex(graph, {getEdgeWeight: null});
     applyMoves(index, UNDIRECTED_MOVES);
 
     var multiGraph = graph.copy();
@@ -1138,9 +1160,7 @@ describe('LouvainIndex', function () {
       return attr;
     });
 
-    var multiIndex = new UndirectedLouvainIndex(multiGraph, {
-      weighted: true
-    });
+    var multiIndex = new UndirectedLouvainIndex(multiGraph);
     applyMoves(multiIndex, UNDIRECTED_MOVES);
 
     assert.strictEqual(index.M, multiIndex.M);
@@ -1149,7 +1169,7 @@ describe('LouvainIndex', function () {
 
   it('should work with directed multi graphs.', function () {
     var graph = fromEdges(Graph.DirectedGraph, EDGES);
-    var index = new DirectedLouvainIndex(graph);
+    var index = new DirectedLouvainIndex(graph, {getEdgeWeight: null});
     applyMoves(index, DIRECTED_MOVES);
 
     var multiGraph = graph.copy();
@@ -1169,7 +1189,7 @@ describe('LouvainIndex', function () {
       return attr;
     });
 
-    var multiIndex = new DirectedLouvainIndex(multiGraph, {weighted: true});
+    var multiIndex = new DirectedLouvainIndex(multiGraph);
     applyMoves(multiIndex, DIRECTED_MOVES);
 
     assert.strictEqual(index.M, multiIndex.M);
