@@ -67,8 +67,6 @@ describe('hits', function () {
     for (node in result.hubs) {
       assert.approximately(result.hubs[node], HUBS[node], 0.0001);
     }
-
-    assert.strictEqual(result.converged, true);
   });
 
   it("should be possible to assign results directly to the nodes' attributes.", function () {
@@ -103,7 +101,7 @@ describe('hits', function () {
   it('should be possible to customize the target attributes.', function () {
     var graph = HITS_GRAPH.copy();
 
-    hits.assign(graph, {attributes: {authority: 'a', hub: 'h'}});
+    hits.assign(graph, {nodeAuthorityAttribute: 'a', nodeHubAttribute: 'h'});
 
     var nodes = graph.nodes(),
       node,

@@ -3,9 +3,7 @@ import {MinimalEdgeMapper} from 'graphology-utils/getters';
 
 type BetweennessCentralityMapping = {[node: string]: number};
 
-type BetweennessCentralityOptions<
-  EdgeAttributes extends Attributes = Attributes
-> = {
+type BetweennessCentralityOptions<EdgeAttributes extends Attributes> = {
   nodeCentralityAttribute?: string;
   getEdgeWeight?:
     | keyof EdgeAttributes
@@ -14,15 +12,18 @@ type BetweennessCentralityOptions<
   normalized?: boolean;
 };
 
-interface IBetweennessCentrality<
-  NodeAttributes extends Attributes = Attributes,
-  EdgeAttributes extends Attributes = Attributes
-> {
-  (
+interface IBetweennessCentrality {
+  <
+    NodeAttributes extends Attributes = Attributes,
+    EdgeAttributes extends Attributes = Attributes
+  >(
     graph: Graph<NodeAttributes, EdgeAttributes>,
     options?: BetweennessCentralityOptions<EdgeAttributes>
   ): BetweennessCentralityMapping;
-  assign(
+  assign<
+    NodeAttributes extends Attributes = Attributes,
+    EdgeAttributes extends Attributes = Attributes
+  >(
     graph: Graph<NodeAttributes, EdgeAttributes>,
     options?: BetweennessCentralityOptions<EdgeAttributes>
   ): void;

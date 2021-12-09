@@ -6,16 +6,18 @@
  */
 var resolveDefaults = require('graphology-utils/defaults');
 var isGraph = require('graphology-utils/is-graph');
+var createEdgeWeightGetter =
+  require('graphology-utils/getters').createEdgeWeightGetter;
+
+// TODO: optimize using NeighborhoodIndex
 
 /**
  * Defaults.
  */
 var DEFAULTS = {
-  attributes: {
-    authority: 'authority',
-    hub: 'hub',
-    weight: 'weight'
-  },
+  nodeAuthorityAttribute: 'authority',
+  nodeHubAttribute: 'hub',
+  getEdgeWeight: 'weight',
   maxIterations: 100,
   normalize: true,
   tolerance: 1e-8
@@ -78,26 +80,25 @@ function hits(assign, graph, options) {
 
   options = resolveDefaults(options, DEFAULTS);
 
+  var getEdgeWeight = createEdgeWeightGetter(options.getEdgeWeight).fromEntry;
+
   // Variables
-  var order = graph.order,
-    size = graph.size,
-    nodes = graph.nodes(),
-    edges = graph.edges(),
-    hubs = dict(nodes, 1 / order),
-    weights = {},
-    converged = false,
-    lastHubs,
-    authorities;
+  var order = graph.order;
+  var nodes = graph.nodes();
+  var edges;
+  var hubs = dict(nodes, 1 / order);
+  var weights = {};
+  var converged = false;
+  var lastHubs;
+  var authorities;
 
   // Iteration variables
-  var node, neighbor, edge, iteration, maxAuthority, maxHub, error, s, i, j, m;
+  var node, neighbor, edge, iteration, maxAuthority, maxHub, error, S, i, j, m;
 
   // Indexing weights
-  for (i = 0; i < size; i++) {
-    edge = edges[i];
-    weights[edge] =
-      graph.getEdgeAttribute(edge, options.attributes.weight) || 1;
-  }
+  graph.forEachEdge(function (e, a, s, t, sa, ta, u) {
+    weights[e] = getEdgeWeight(e, a, s, t, sa, ta, u);
+  });
 
   // Performing iterations
   for (iteration = 0; iteration < options.maxIterations; iteration++) {
@@ -110,7 +111,7 @@ function hits(assign, graph, options) {
     // Iterating over nodes to update authorities
     for (i = 0; i < order; i++) {
       node = nodes[i];
-      edges = graph.outEdges(node).concat(graph.undirectedEdges(node));
+      edges = graph.outboundEdges(node);
 
       // Iterating over neighbors
       for (j = 0, m = edges.length; j < m; j++) {
@@ -127,7 +128,7 @@ function hits(assign, graph, options) {
     // Iterating over nodes to update hubs
     for (i = 0; i < order; i++) {
       node = nodes[i];
-      edges = graph.outEdges(node).concat(graph.undirectedEdges(node));
+      edges = graph.outboundEdges(node);
 
       for (j = 0, m = edges.length; j < m; j++) {
         edge = edges[j];
@@ -140,13 +141,13 @@ function hits(assign, graph, options) {
     }
 
     // Normalizing
-    s = 1 / maxHub;
+    S = 1 / maxHub;
 
-    for (node in hubs) hubs[node] *= s;
+    for (node in hubs) hubs[node] *= S;
 
-    s = 1 / maxAuthority;
+    S = 1 / maxAuthority;
 
-    for (node in authorities) authorities[node] *= s;
+    for (node in authorities) authorities[node] *= S;
 
     // Checking convergence
     error = 0;
@@ -159,31 +160,38 @@ function hits(assign, graph, options) {
     }
   }
 
+  if (!converged)
+    throw Error('graphology-metrics/centrality/hits: failed to converge.');
+
   // Should we normalize the result?
   if (options.normalize) {
-    s = 1 / sum(authorities);
+    S = 1 / sum(authorities);
 
-    for (node in authorities) authorities[node] *= s;
+    for (node in authorities) authorities[node] *= S;
 
-    s = 1 / sum(hubs);
+    S = 1 / sum(hubs);
 
-    for (node in hubs) hubs[node] *= s;
+    for (node in hubs) hubs[node] *= S;
   }
 
   // Should we assign the results to the graph?
   if (assign) {
-    for (i = 0; i < order; i++) {
-      node = nodes[i];
-      graph.setNodeAttribute(
-        node,
-        options.attributes.authority,
-        authorities[node]
-      );
-      graph.setNodeAttribute(node, options.attributes.hub, hubs[node]);
-    }
+    graph.updateEachNodeAttributes(
+      function (n, attr) {
+        attr[options.nodeAuthorityAttribute] = authorities[n];
+        attr[options.nodeHubAttribute] = hubs[n];
+
+        return attr;
+      },
+      {
+        attributes: [options.nodeAuthorityAttribute, options.nodeHubAttribute]
+      }
+    );
+
+    return;
   }
 
-  return {converged: converged, hubs: hubs, authorities: authorities};
+  return {hubs: hubs, authorities: authorities};
 }
 
 /**

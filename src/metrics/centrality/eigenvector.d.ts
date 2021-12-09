@@ -15,16 +15,19 @@ type EigenvectorCentralityOptions<
 
 type EigenvectorCentralityMapping = {[node: string]: number};
 
-interface EigenvectorCentrality<
-  NodeAttributes extends Attributes = Attributes,
-  EdgeAttributes extends Attributes = Attributes
-> {
-  (
+interface EigenvectorCentrality {
+  <
+    NodeAttributes extends Attributes = Attributes,
+    EdgeAttributes extends Attributes = Attributes
+  >(
     graph: Graph<NodeAttributes, EdgeAttributes>,
     options?: EigenvectorCentralityOptions<EdgeAttributes>
   ): EigenvectorCentralityMapping;
-  assign(
-    graph: Graph,
+  assign<
+    NodeAttributes extends Attributes = Attributes,
+    EdgeAttributes extends Attributes = Attributes
+  >(
+    graph: Graph<NodeAttributes, EdgeAttributes>,
     options?: EigenvectorCentralityOptions<EdgeAttributes>
   ): void;
 }

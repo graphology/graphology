@@ -508,10 +508,9 @@ _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** _?object_: options:
-  - **attributes** _?object_: attributes' names:
-    - **weight** _?string_ [`weight`]: name of the edges' weight attribute.
-    - **hub** _?string_ [`hub`]: name of the node attribute holding hub information.
-    - **authority** _?string_ [`authority`]: name of the node attribute holding authority information.
+  - **getEdgeWeight** _?string\|function_ [`weight`]: name of the edges' weight attribute or getter function.
+  - **nodeHubAttribute** _?string_ [`hub`]: name of the node attribute holding hub information.
+  - **nodeAuthorityAttribute** _?string_ [`authority`]: name of the node attribute holding authority information.
   - **maxIterations** _?number_ [`100`]: maximum number of iterations to perform.
   - **normalize** _?boolean_ [`true`]: should the result be normalized by the sum of values.
   - **tolerance** _?number_ [`1.e-8`]: convergence error tolerance.
