@@ -28,4 +28,5 @@ For now, here are the exposed indices:
 - A directed and undirected index used to track an evolving community structure when running the Louvain community detection algorithm.
 - An indexed view of a graph's connected components sorted by order.
 - A specialized stack/set that can be used to perform memory-efficient DFS traversals.
+- A specialized queue/set that can be used to perform memory-efficient BFS traversals.
 

@@ -1,10 +1,11 @@
 {
   "name": "graphology-indices",
-  "version": "0.16.4",
+  "version": "0.16.5",
   "description": "Miscellaneous indices for graphology.",
   "main": "index.js",
   "files": [
     "*.d.ts",
+    "bfs-queue.js",
     "dfs-stack.js",
     "index.js",
     "louvain.js",

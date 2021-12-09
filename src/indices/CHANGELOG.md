@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.16.5
+
+- Adding `BFSQueue`.
+- Adding `DFSStack.pushWith`.
+
 ## 0.16.4
 
 - `UndirectedLouvainIndex` & `DirectedLouvainIndex` now able to take a getter argument.

@@ -5,7 +5,7 @@ nav_order: 18
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/traversal"
-  
+  "Changelog": "https://github.com/graphology/graphology/tree/master/src/traversal/CHANGELOG.md"
 ---
 
 # Graphology Traversal
