@@ -146,4 +146,16 @@ describe('WeightedNeighborhoodIndex', function () {
 
     assert.deepStrictEqual(index, reverseIndex);
   });
+
+  it('should be possible to pass a weight getter.', function () {
+    var graph = new Graph();
+    graph.mergeEdge(1, 2, {importance: 3});
+    graph.mergeEdge(2, 3, {importance: 5});
+
+    var index = new WeightedNeighborhoodIndex(graph, function (_, attr) {
+      return attr.importance;
+    });
+
+    assert.deepStrictEqual(Array.from(index.weights), [3, 5]);
+  });
 });

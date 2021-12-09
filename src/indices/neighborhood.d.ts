@@ -1,4 +1,5 @@
 import Graph, {Attributes} from 'graphology-types';
+import {MinimalEdgeMapper} from 'graphology-utils/getters';
 
 type PointerArray = Uint8Array | Uint16Array | Uint32Array | Float64Array;
 
@@ -30,7 +31,9 @@ export class WeightedNeighborhoodIndex<
 > extends NeighborhoodIndex {
   constructor(
     graph: Graph<NodeAttributes, EdgeAttributes>,
-    weightAttribute?: keyof EdgeAttributes,
+    weightAttribute?:
+      | keyof EdgeAttributes
+      | MinimalEdgeMapper<number, EdgeAttributes>,
     method?: NeighborhoodMethod
   );
 

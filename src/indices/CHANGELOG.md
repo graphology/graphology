@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.16.2 (provisional)
+
+- Fixing `WeightedNeighborhoodIndex` getter argument.
+
 ## 0.16.2
 
 - Adding `DFSStack`.

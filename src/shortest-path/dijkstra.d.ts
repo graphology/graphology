@@ -16,7 +16,9 @@ export function bidirectional<
   graph: Graph<NodeAttributes, EdgeAttributes>,
   source: unknown,
   target: unknown,
-  getEdgeWeight?: keyof EdgeAttributes | MinimalEdgeMapper<EdgeAttributes>
+  getEdgeWeight?:
+    | keyof EdgeAttributes
+    | MinimalEdgeMapper<number, EdgeAttributes>
 ): BidirectionalDijstraResult;
 
 export function singleSource<
@@ -25,7 +27,9 @@ export function singleSource<
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
   source: unknown,
-  getEdgeWeight?: keyof EdgeAttributes | MinimalEdgeMapper<EdgeAttributes>
+  getEdgeWeight?:
+    | keyof EdgeAttributes
+    | MinimalEdgeMapper<number, EdgeAttributes>
 ): SingleSourceDijkstraResult;
 
 export function brandes<
@@ -34,5 +38,7 @@ export function brandes<
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
   source: unknown,
-  getEdgeWeight?: keyof EdgeAttributes | MinimalEdgeMapper<EdgeAttributes>
+  getEdgeWeight?:
+    | keyof EdgeAttributes
+    | MinimalEdgeMapper<number, EdgeAttributes>
 ): BrandesResult;

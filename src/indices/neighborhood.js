@@ -91,7 +91,7 @@ NeighborhoodIndex.prototype.assign = function (prop, results) {
 
 exports.NeighborhoodIndex = NeighborhoodIndex;
 
-function WeightedNeighborhoodIndex(graph, weightAttribute, method) {
+function WeightedNeighborhoodIndex(graph, getEdgeWeight, method) {
   method = method || 'outbound';
   var getEdges = graph[method + 'Edges'].bind(graph);
 
@@ -100,7 +100,7 @@ function WeightedNeighborhoodIndex(graph, weightAttribute, method) {
   var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
   var NodesPointerArray = typed.getPointerArray(graph.order);
 
-  var weightGetter = createEdgeWeightGetter(weightAttribute).fromAttributes;
+  var weightGetter = createEdgeWeightGetter(getEdgeWeight).fromMinimalEntry;
 
   // NOTE: directedSize + undirectedSize * 2 is an upper bound for
   // neighborhood size
@@ -130,7 +130,7 @@ function WeightedNeighborhoodIndex(graph, weightAttribute, method) {
     for (j = 0, m = edges.length; j < m; j++) {
       edge = edges[j];
       neighbor = graph.opposite(node, edge);
-      weight = weightGetter(graph.getEdgeAttributes(edge));
+      weight = weightGetter(edge, graph.getEdgeAttributes(edge));
 
       // NOTE: for weighted mixed beware of merging weights if twice the same neighbor
       this.neighborhood[n] = ids[neighbor];
