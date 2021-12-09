@@ -172,6 +172,23 @@ describe('graphology-traversal', function () {
 
       assert.deepStrictEqual(path, ['0', '1', '2', '3']);
     });
+
+    it('should be possible to change the traversal mode.', function () {
+      var graph = pathGraph(Graph.DirectedGraph, 5);
+
+      var path = [];
+
+      dfsFromNode(
+        graph,
+        '2',
+        function (node) {
+          path.push(node);
+        },
+        {mode: 'inbound'}
+      );
+
+      assert.deepStrictEqual(path, ['2', '1', '0']);
+    });
   });
 
   describe('bfs', function () {
@@ -337,6 +354,23 @@ describe('graphology-traversal', function () {
       });
 
       assert.deepStrictEqual(path, new Set(['0', '1', '2', '3']));
+    });
+
+    it('should be possible to change the traversal mode.', function () {
+      var graph = pathGraph(Graph.DirectedGraph, 5);
+
+      var path = [];
+
+      bfsFromNode(
+        graph,
+        '2',
+        function (node) {
+          path.push(node);
+        },
+        {mode: 'inbound'}
+      );
+
+      assert.deepStrictEqual(path, ['2', '1', '0']);
     });
   });
 });

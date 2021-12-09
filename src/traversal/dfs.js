@@ -6,7 +6,10 @@
  */
 var isGraph = require('graphology-utils/is-graph');
 var DFSStack = require('graphology-indices/dfs-stack');
-var TraversalRecord = require('./utils').TraversalRecord;
+var utils = require('./utils');
+
+var TraversalRecord = utils.TraversalRecord;
+var capitalize = utils.capitalize;
 
 /**
  * DFS traversal in the given graph using a callback function
@@ -14,7 +17,9 @@ var TraversalRecord = require('./utils').TraversalRecord;
  * @param {Graph}    graph    - Target graph.
  * @param {function} callback - Iteration callback.
  */
-function dfs(graph, callback) {
+function dfs(graph, callback, options) {
+  options = options || {};
+
   if (!isGraph(graph))
     throw new Error(
       'graphology-traversal/dfs: expecting a graphology instance.'
@@ -27,6 +32,11 @@ function dfs(graph, callback) {
 
   // Early termination
   if (graph.order === 0) return;
+
+  var forEachNeighbor =
+    graph['forEach' + capitalize(options.mode || 'outbound') + 'Neighbor'].bind(
+      graph
+    );
 
   var stack = new DFSStack(graph.order);
   var record, stop;
@@ -50,7 +60,7 @@ function dfs(graph, callback) {
 
       if (stop === true) continue;
 
-      graph.forEachOutboundNeighbor(record.node, visit);
+      forEachNeighbor(record.node, visit);
     }
   });
 }
@@ -63,7 +73,9 @@ function dfs(graph, callback) {
  * @param {string}   node     - Starting node.
  * @param {function} callback - Iteration callback.
  */
-function dfsFromNode(graph, node, callback) {
+function dfsFromNode(graph, node, callback, options) {
+  options = options || {};
+
   if (!isGraph(graph))
     throw new Error(
       'graphology-traversal/dfs: expecting a graphology instance.'
@@ -76,6 +88,11 @@ function dfsFromNode(graph, node, callback) {
 
   // Early termination
   if (graph.order === 0) return;
+
+  var forEachNeighbor =
+    graph['forEach' + capitalize(options.mode || 'outbound') + 'Neighbor'].bind(
+      graph
+    );
 
   node = '' + node;
 
@@ -101,7 +118,7 @@ function dfsFromNode(graph, node, callback) {
 
     if (stop === true) continue;
 
-    graph.forEachOutboundNeighbor(record.node, visit);
+    forEachNeighbor(record.node, visit);
   }
 }
 
