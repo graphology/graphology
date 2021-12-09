@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@yomguithereal/helpers": "^1.1.1",
-    "graphology-indices": "^0.16.2",
+    "graphology-indices": "^0.16.3",
     "graphology-utils": "^2.4.3",
     "mnemonist": "^0.39.0"
   }

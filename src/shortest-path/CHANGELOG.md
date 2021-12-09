@@ -4,4 +4,5 @@
 
 - Reorganization.
 - Dijkstra using weight getters.
+- Indexed Brandes using weight getters.
 - Adding `edgePathFromNodePath`.

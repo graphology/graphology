@@ -11,8 +11,8 @@ var Heap = require('mnemonist/heap');
 var typed = require('mnemonist/utils/typed-arrays');
 var neighborhoodIndices = require('graphology-indices/neighborhood');
 
-var NeighborhoodIndex = neighborhoodIndices.NeighborhoodIndex,
-  WeightedNeighborhoodIndex = neighborhoodIndices.WeightedNeighborhoodIndex;
+var NeighborhoodIndex = neighborhoodIndices.NeighborhoodIndex;
+var WeightedNeighborhoodIndex = neighborhoodIndices.WeightedNeighborhoodIndex;
 
 /**
  * Indexed unweighted Brandes routine.
@@ -110,17 +110,18 @@ function BRANDES_DIJKSTRA_HEAP_COMPARATOR(a, b) {
  * Ulrik Brandes: A Faster Algorithm for Betweenness Centrality.
  * Journal of Mathematical Sociology 25(2):163-177, 2001.
  *
- * @param  {Graph}    graph           - The graphology instance.
- * @param  {string}   weightAttribute - Name of the weight attribute.
+ * @param  {Graph}    graph         - The graphology instance.
+ * @param  {string}   getEdgeWeight - Name of the weight attribute or getter function.
  * @return {function}
  */
 exports.createDijkstraIndexedBrandes = function createDijkstraIndexedBrandes(
   graph,
-  weightAttribute
+  getEdgeWeight
 ) {
-  if (arguments.length < 2) weightAttribute = 'weight';
-
-  var neighborhoodIndex = new WeightedNeighborhoodIndex(graph, weightAttribute);
+  var neighborhoodIndex = new WeightedNeighborhoodIndex(
+    graph,
+    getEdgeWeight || 'weight'
+  );
 
   var neighborhood = neighborhoodIndex.neighborhood,
     weights = neighborhoodIndex.weights,
