@@ -23,14 +23,12 @@ var DEFAULTS = {
 /**
  * Abstract function computing beetweenness centrality for the given graph.
  *
- * @param  {boolean} assign           - Assign the results to node attributes?
- * @param  {Graph}   graph            - Target graph.
- * @param  {object}  [options]        - Options:
- * @param  {object}    [attributes]   - Attribute names:
- * @param  {string}      [weight]     - Name of the weight attribute.
- * @param  {string}      [centrality] - Name of the attribute to assign.
- * @param  {boolean} [normalized]     - Should the centrality be normalized?
- * @param  {boolean} [weighted]       - Weighted graph?
+ * @param  {boolean} assign                      - Assign the results to node attributes?
+ * @param  {Graph}   graph                       - Target graph.
+ * @param  {object}  [options]                   - Options:
+ * @param  {object}    [nodeCentralityAttribute] - Name of the attribute to assign.
+ * @param  {string}    [getEdgeWeight]           - Name of the weight attribute or getter function.
+ * @param  {boolean}   [normalized]              - Should the centrality be normalized?
  * @param  {object}
  */
 function abstractBetweennessCentrality(assign, graph, options) {
