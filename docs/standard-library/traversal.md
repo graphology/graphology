@@ -65,7 +65,7 @@ bfsFromNode(graph, 'node1', function (node, attr, depth) {
 });
 
 // Stopping at depth 3
-bfsFromNode(graph, function (node, attr, depth) {
+bfsFromNode(graph, 'node1', function (node, attr, depth) {
   return depth >= 3;
 });
 ```
@@ -118,7 +118,7 @@ dfsFromNode(graph, 'node1', function (node, attr, depth) {
 });
 
 // Stopping at depth 3
-dfsFromNode(graph, function (node, attr, depth) {
+dfsFromNode(graph, 'node1', function (node, attr, depth) {
   return depth >= 3;
 });
 ```
