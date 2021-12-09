@@ -1,9 +1,7 @@
 import Graph from 'graphology-types';
 
 type ClosenessCentralityOptions = {
-  attributes?: {
-    centrality?: string;
-  };
+  nodeCentralityAttribute?: string;
   wassermanFaust?: boolean;
 };
 

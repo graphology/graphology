@@ -31,9 +31,7 @@ var NeighborhoodIndex =
  * Defaults.
  */
 var DEFAULTS = {
-  attributes: {
-    centrality: 'closenessCentrality'
-  },
+  nodeCentralityAttribute: 'closenessCentrality',
   wassermanFaust: false
 };
 
@@ -93,8 +91,7 @@ IndexedBFS.prototype.fromNode = function (i) {
  * @param  {boolean}  assign        - Should we assign the result to nodes.
  * @param  {Graph}    graph         - Target graph.
  * @param  {?object}  option        - Options:
- * @param  {?object}    attributes  - Custom attribute names:
- * @param  {?string}      centrality  - Name of the centrality attribute to assign.
+ * @param  {?string}   nodeCentralityAttribute - Name of the centrality attribute to assign.
  * @param  {?boolean}  wassermanFaust - Whether to compute the Wasserman & Faust
  *                                      variant of the metric.
  * @return {object|undefined}
@@ -136,7 +133,7 @@ function abstractClosenessCentrality(assign, graph, options) {
   }
 
   if (assign) {
-    return bfs.index.assign(options.attributes.centrality, mapping);
+    return bfs.index.assign(options.nodeCentralityAttribute, mapping);
   }
 
   return bfs.index.collect(mapping);

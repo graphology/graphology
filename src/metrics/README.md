@@ -427,8 +427,7 @@ _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** _?object_: options:
-  - **attributes** _?object_: attributes' names:
-    - **centrality** _?string_ [`eigenvectorCentrality`]: name of the node attribute that will be assigned the eigenvector centrality.
+  - **nodeCentralityAttribute** _?string_ [`closenessCentrality`]: name of the node attribute that will be assigned the closeness centrality.
   - **wassermanFaust** _?boolean_ [`false`]: whether to use Wasserman & Faust's normalization scheme.
 
 ### Degree centrality
