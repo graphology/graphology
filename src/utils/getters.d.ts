@@ -10,6 +10,11 @@ export type PartialEdgeMapper<
   target: string
 ) => T;
 
+export type MinimalEdgeMapper<
+  T,
+  EdgeAttributes extends Attributes = Attributes
+> = (edge: string, attributes: EdgeAttributes) => T;
+
 interface NodeValueGetter<T, NodeAttributes extends Attributes = Attributes> {
   fromGraph(graph: Graph<NodeAttributes>, node: unknown): T;
   fromAttributes(attributes: NodeAttributes): T;
@@ -40,6 +45,7 @@ interface EdgeValueGetter<
   fromAttributes(attributes: EdgeAttributes): T;
   fromEntry: EdgeMapper<T, NodeAttributes, EdgeAttributes>;
   fromPartialEntry: PartialEdgeMapper<T, EdgeAttributes>;
+  fromMinimalEntry: MinimalEdgeMapper<T, EdgeAttributes>;
 }
 
 export function createNodeValueGetter<
@@ -63,7 +69,6 @@ export function createEdgeValueGetter<
 ): EdgeValueGetter<T, NodeAttributes, EdgeAttributes>;
 
 export function createEdgeWeightGetter<
-  T,
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 >(
@@ -71,4 +76,4 @@ export function createEdgeWeightGetter<
     | string
     | EdgeMapper<number, NodeAttributes, EdgeAttributes>
     | PartialEdgeMapper<number, EdgeAttributes>
-): EdgeValueGetter<T, NodeAttributes, EdgeAttributes>;
+): EdgeValueGetter<number, NodeAttributes, EdgeAttributes>;

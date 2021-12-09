@@ -89,6 +89,7 @@ function createEdgeValueGetter(nameOrFunction, defaultValue) {
       return get(attributes);
     };
     getter.fromPartialEntry = getter.fromEntry;
+    getter.fromMinimalEntry = getter.fromEntry;
   } else if (typeof nameOrFunction === 'function') {
     getter.fromAttributes = function () {
       throw new Error(
@@ -116,10 +117,14 @@ function createEdgeValueGetter(nameOrFunction, defaultValue) {
     getter.fromPartialEntry = function (e, a, s, t) {
       return coerceToDefault(nameOrFunction(e, a, s, t));
     };
+    getter.fromMinimalEntry = function (e, a) {
+      return coerceToDefault(nameOrFunction(e, a));
+    };
   } else {
     getter.fromAttributes = returnDefault;
     getter.fromGraph = returnDefault;
     getter.fromEntry = returnDefault;
+    getter.fromMinimalEntry = returnDefault;
   }
 
   return getter;
