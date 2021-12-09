@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.16.2 (provisional)
+## 0.16.3
 
 - Fixing `WeightedNeighborhoodIndex` getter argument.
 
