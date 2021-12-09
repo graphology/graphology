@@ -48,15 +48,12 @@ var UndirectedLouvainIndex = indices.UndirectedLouvainIndex;
 var DirectedLouvainIndex = indices.DirectedLouvainIndex;
 
 var DEFAULTS = {
-  attributes: {
-    community: 'community',
-    weight: 'weight'
-  },
+  nodeCommunityAttribute: 'community',
+  getEdgeWeight: 'weight',
   fastLocalMoves: true,
   randomWalk: true,
   resolution: 1,
-  rng: Math.random,
-  weighted: false
+  rng: Math.random
 };
 
 function addWeightToCommunity(map, community, weight) {
@@ -93,12 +90,9 @@ function tieBreaker(
 
 function undirectedLouvain(detailed, graph, options) {
   var index = new UndirectedLouvainIndex(graph, {
-    attributes: {
-      weight: options.attributes.weight
-    },
+    getEdgeWeight: options.getEdgeWeight,
     keepDendrogram: detailed,
-    resolution: options.resolution,
-    weighted: options.weighted
+    resolution: options.resolution
   });
 
   var randomIndex = createRandomIndex(options.rng);
@@ -380,12 +374,9 @@ function undirectedLouvain(detailed, graph, options) {
 
 function directedLouvain(detailed, graph, options) {
   var index = new DirectedLouvainIndex(graph, {
-    attributes: {
-      weight: options.attributes.weight
-    },
+    getEdgeWeight: options.getEdgeWeight,
     keepDendrogram: detailed,
-    resolution: options.resolution,
-    weighted: options.weighted
+    resolution: options.resolution
   });
 
   var randomIndex = createRandomIndex(options.rng);
@@ -686,15 +677,13 @@ function directedLouvain(detailed, graph, options) {
  * @param  {boolean} detailed           - Whether to return detailed information.
  * @param  {Graph}   graph              - Target graph.
  * @param  {object}  options            - Options:
- * @param  {object}    attributes         - Attribute names:
- * @param  {string}      community          - Community node attribute name.
- * @param  {string}      weight             - Weight edge attribute name.
- * @param  {string}    deltaComputation   - Method to use to compute delta computations.
- * @param  {boolean}   fastLocalMoves     - Whether to use the fast local move optimization.
- * @param  {boolean}   randomWalk         - Whether to traverse the graph in random order.
- * @param  {number}    resolution         - Resolution parameter.
- * @param  {function}  rng                - RNG function to use.
- * @param  {boolean}   weighted           - Whether to compute the weighted version.
+ * @param  {string}    nodeCommunityAttribute - Community node attribute name.
+ * @param  {string}    getEdgeWeight          - Weight edge attribute name or getter function.
+ * @param  {string}    deltaComputation       - Method to use to compute delta computations.
+ * @param  {boolean}   fastLocalMoves         - Whether to use the fast local move optimization.
+ * @param  {boolean}   randomWalk             - Whether to traverse the graph in random order.
+ * @param  {number}    resolution             - Resolution parameter.
+ * @param  {function}  rng                    - RNG function to use.
  * @return {object}
  */
 function louvain(assign, detailed, graph, options) {
@@ -719,7 +708,7 @@ function louvain(assign, detailed, graph, options) {
   if (graph.size === 0) {
     if (assign) {
       graph.forEachNode(function (node) {
-        graph.setNodeAttribute(node, options.attributes.communities, c++);
+        graph.setNodeAttribute(node, options.nodeCommunityAttribute, c++);
       });
 
       return;
@@ -755,7 +744,7 @@ function louvain(assign, detailed, graph, options) {
   // Standard output
   if (!detailed) {
     if (assign) {
-      index.assign(options.attributes.community);
+      index.assign(options.nodeCommunityAttribute);
       return;
     }
 
@@ -775,7 +764,7 @@ function louvain(assign, detailed, graph, options) {
   };
 
   if (assign) {
-    index.assign(options.attributes.community);
+    index.assign(options.nodeCommunityAttribute);
     return output;
   }
 

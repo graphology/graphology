@@ -43,28 +43,26 @@ louvain.assign(graph);
 
 // If you need to pass custom options
 louvain.assign(graph, {
-  attributes: {
-    weight: 'myCustomWeight',
-    community: 'myCustomCommunity'
-  }
+  resolution: 0.8
 });
 
 // If you want to return some details about the algorithm's execution
 var details = louvain.detailed(graph);
+
+// If you want to ignore your graph's weights
+louvain.assign(graph, {getEdgeWeight: null});
 ```
 
 _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** _?object_: options:
-  - **attributes** _?object_: attributes' names:
-    - **weight** _?string_ [`weight`]: name of the edges' weight attribute.
-    - **community** _?string_ [`community`]: name of the community attribute.
+  - **getEdgeWeight** _?string\|function_ [`weight`]: name of the edges' weight attribute or getter function.
+  - **nodeCommunityAttribute** _?string_ [`community`]: name of the community attribute.
   - **fastLocalMoves** _?boolean_ [`true`]: whether to use a well-known optimization relying on a queue set to traverse the graph more efficiently.
   - **randomWalk** _?boolean_ [`true`]: whether to traverse the graph randomly.
   - **resolution** _?number_ [`1`]: resolution parameter. An increased resolution should produce more communities.
   - **rng** _?function_ [`Math.random`]: RNG function to use for `randomWalk`. Useful if you need to seed your rng using, for instance, [seedrandom](https://www.npmjs.com/package/seedrandom).
-  - **weighted** _?boolean_ [`false`]: whether to take edge weights into account.
 
 _Detailed Output_
 

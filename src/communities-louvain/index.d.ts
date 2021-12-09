@@ -1,22 +1,25 @@
-import Graph from 'graphology';
+import Graph, {Attributes, EdgeMapper} from 'graphology-types';
 
 type RNGFunction = () => number;
 
 type PointerArray = Uint8Array | Uint16Array | Uint32Array | Float64Array;
 
-export type LouvainOptions = {
-  attributes?: {
-    community?: string;
-    weight?: string;
-  };
+export type LouvainOptions<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> = {
+  nodeCommunityAttribute?: string;
+  getEdgeWeight?:
+    | keyof EdgeAttributes
+    | EdgeMapper<number, NodeAttributes, EdgeAttributes>
+    | null;
   fastLocalMoves?: boolean;
   randomWalk?: boolean;
   resolution?: number;
   rng?: RNGFunction;
-  weighted?: boolean;
 };
 
-type LouvainMapping = {[key: string]: number};
+type LouvainMapping = {[node: string]: number};
 
 export type DetailedLouvainOutput = {
   communities: LouvainMapping;
@@ -29,10 +32,24 @@ export type DetailedLouvainOutput = {
   resolution: number;
 };
 
-declare const louvain: {
-  (graph: Graph, options?: LouvainOptions): LouvainMapping;
-  assign(graph: Graph, options?: LouvainOptions): void;
-  detailed(graph: Graph, options?: LouvainOptions): DetailedLouvainOutput;
-};
+interface ILouvain<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> {
+  (
+    graph: Graph<NodeAttributes, EdgeAttributes>,
+    options?: LouvainOptions<NodeAttributes, EdgeAttributes>
+  ): LouvainMapping;
+  assign(
+    graph: Graph<NodeAttributes, EdgeAttributes>,
+    options?: LouvainOptions<NodeAttributes, EdgeAttributes>
+  ): void;
+  detailed(
+    graph: Graph<NodeAttributes, EdgeAttributes>,
+    options?: LouvainOptions<NodeAttributes, EdgeAttributes>
+  ): DetailedLouvainOutput;
+}
+
+declare const louvain: ILouvain;
 
 export default louvain;

@@ -2,17 +2,17 @@
  * Graphology Louvain Unit Tests
  * ==============================
  */
-var assert = require('chai').assert,
-  seedrandom = require('seedrandom'),
-  Graph = require('graphology'),
-  modularity = require('graphology-metrics/graph/modularity'),
-  emptyGraph = require('graphology-generators/classic/empty'),
-  toUndirected = require('graphology-operators/to-undirected'),
-  // netToImg = require('net-to-img'),
-  path = require('path'),
-  gexf = require('graphology-gexf'),
-  fs = require('fs'),
-  louvain = require('../');
+var assert = require('chai').assert;
+var seedrandom = require('seedrandom');
+var Graph = require('graphology');
+var modularity = require('graphology-metrics/graph/modularity');
+var emptyGraph = require('graphology-generators/classic/empty');
+var toUndirected = require('graphology-operators/to-undirected');
+// var netToImg = require('net-to-img');
+var path = require('path');
+var gexf = require('graphology-gexf');
+var fs = require('fs');
+var louvain = require('../');
 
 // Tweaking defaults for tests
 louvain.defaults.randomWalk = false;
@@ -378,7 +378,7 @@ describe('graphology-communities-louvain', function () {
       graph.setEdgeAttribute(edge, 'weight', 0.5);
     });
 
-    var multiResult = louvain.detailed(graph, {weighted: true});
+    var multiResult = louvain.detailed(graph);
 
     assert.closeTo(result.modularity, multiResult.modularity, 0.00001);
 
@@ -394,11 +394,48 @@ describe('graphology-communities-louvain', function () {
     var result = louvain.detailed(ricardo, {
       rng: customRng,
       randomWalk: true,
-      fastLocalMoves: true,
-      weighted: true
+      fastLocalMoves: true
     });
 
     assert.strictEqual(result.count, 37);
     assert.closeTo(result.modularity, 0.2464, 0.0001);
+  });
+
+  it('should work with the ricardo graph with custom weights.', function () {
+    var customRng = seedrandom('nansi');
+
+    var customRicardo = ricardo.copy();
+
+    customRicardo.updateEachEdgeAttributes(function (_, attr) {
+      attr.importance = attr.weight;
+      delete attr.weight;
+
+      return attr;
+    });
+
+    var result = louvain.detailed(customRicardo, {
+      rng: customRng,
+      randomWalk: true,
+      fastLocalMoves: true,
+      getEdgeWeight: function (_, attr) {
+        return attr.importance;
+      }
+    });
+
+    assert.strictEqual(result.count, 37);
+    assert.closeTo(result.modularity, 0.2464, 0.0001);
+  });
+
+  it('should work with the ricardo graph without weights.', function () {
+    var customRng = seedrandom('nansi');
+
+    var result = louvain.detailed(ricardo, {
+      rng: customRng,
+      randomWalk: true,
+      fastLocalMoves: true,
+      getEdgeWeight: null
+    });
+
+    assert.closeTo(result.modularity, 0.2991, 0.0001);
   });
 });
