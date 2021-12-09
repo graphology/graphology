@@ -42,7 +42,7 @@
     "graphology-types": ">=0.19.0"
   },
   "dependencies": {
-    "graphology-indices": "^0.16.3",
+    "graphology-indices": "^0.16.4",
     "graphology-utils": "^2.4.4",
     "mnemonist": "^0.39.0",
     "pandemonium": "^2.3.0"
