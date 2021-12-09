@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.5.0 (provisional)
+## 2.5.0
 
 - Adding `inferMulti`.
 
