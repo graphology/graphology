@@ -1,22 +1,31 @@
-import Graph from 'graphology-types';
+import Graph, {Attributes} from 'graphology-types';
+import {MinimalEdgeMapper} from 'graphology-utils/getters';
 
-type BetweennessCentralityMapping = {[key: string]: number};
+type BetweennessCentralityMapping = {[node: string]: number};
 
-type BetweennessCentralityOptions = {
-  attributes?: {
-    centrality?: string;
-    weight?: string;
-  };
+type BetweennessCentralityOptions<
+  EdgeAttributes extends Attributes = Attributes
+> = {
+  nodeCentralityAttribute?: string;
+  getEdgeWeight?:
+    | keyof EdgeAttributes
+    | MinimalEdgeMapper<number, EdgeAttributes>
+    | null;
   normalized?: boolean;
-  weighted?: boolean;
 };
 
-interface IBetweennessCentrality {
+interface IBetweennessCentrality<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> {
   (
-    graph: Graph,
-    options?: BetweennessCentralityOptions
+    graph: Graph<NodeAttributes, EdgeAttributes>,
+    options?: BetweennessCentralityOptions<EdgeAttributes>
   ): BetweennessCentralityMapping;
-  assign(graph: Graph, options?: BetweennessCentralityOptions): void;
+  assign(
+    graph: Graph<NodeAttributes, EdgeAttributes>,
+    options?: BetweennessCentralityOptions<EdgeAttributes>
+  ): void;
 }
 
 declare const betweennessCentrality: IBetweennessCentrality;

@@ -34,7 +34,7 @@ function resolveDefaults(target, defaults) {
     }
 
     // Leaf
-    if (existing === undefined || existing === null) {
+    if (existing === undefined) {
       output[k] = def;
     } else {
       output[k] = existing;

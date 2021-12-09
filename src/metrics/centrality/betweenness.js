@@ -15,12 +15,9 @@ var createDijkstraIndexedBrandes = lib.createDijkstraIndexedBrandes;
  * Defaults.
  */
 var DEFAULTS = {
-  attributes: {
-    centrality: 'betweennessCentrality',
-    weight: 'weight'
-  },
-  normalized: true,
-  weighted: false
+  nodeCentralityAttribute: 'betweennessCentrality',
+  getEdgeWeight: 'weight',
+  normalized: true
 };
 
 /**
@@ -45,13 +42,11 @@ function abstractBetweennessCentrality(assign, graph, options) {
   // Solving options
   options = resolveDefaults(options, DEFAULTS);
 
-  var weightAttribute = options.attributes.weight;
-  var centralityAttribute = options.attributes.centrality;
+  var outputName = options.nodeCentralityAttribute;
   var normalized = options.normalized;
-  var weighted = options.weighted;
 
-  var brandes = weighted
-    ? createDijkstraIndexedBrandes(graph, weightAttribute)
+  var brandes = options.getEdgeWeight
+    ? createDijkstraIndexedBrandes(graph, options.getEdgeWeight)
     : createUnweightedIndexedBrandes(graph);
 
   var N = graph.order;
@@ -97,7 +92,7 @@ function abstractBetweennessCentrality(assign, graph, options) {
     for (i = 0; i < N; i++) centralities[i] *= scale;
   }
 
-  if (assign) return brandes.index.assign(centralityAttribute, centralities);
+  if (assign) return brandes.index.assign(outputName, centralities);
 
   return brandes.index.collect(centralities);
 }

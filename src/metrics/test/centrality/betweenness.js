@@ -91,7 +91,7 @@ describe('betweenness centrality', function () {
       4: 0
     });
 
-    centralities = betweenness(graph, {weighted: true, normalized: false});
+    centralities = betweenness(graph, {normalized: false});
 
     assert.deepEqual(centralities, {
       0: 0,
@@ -113,7 +113,7 @@ describe('betweenness centrality', function () {
       2: 0
     });
 
-    centralities = betweenness(graph, {normalized: false, weighted: true});
+    centralities = betweenness(graph, {normalized: false});
 
     assert.deepEqual(centralities, {
       0: 0,
@@ -145,7 +145,7 @@ describe('betweenness centrality', function () {
       2: 0
     });
 
-    centralities = betweenness(graph, {normalized: true, weighted: true});
+    centralities = betweenness(graph, {normalized: true});
 
     assert.deepEqual(centralities, {
       0: 0,
@@ -174,7 +174,7 @@ describe('betweenness centrality', function () {
 
     deepApproximatelyEqual(centralities, test, 1e-3);
 
-    centralities = betweenness(graph, {normalized: false, weighted: true});
+    centralities = betweenness(graph, {normalized: false});
 
     deepApproximatelyEqual(centralities, test, 1e-3);
   });
@@ -199,7 +199,7 @@ describe('betweenness centrality', function () {
 
     deepApproximatelyEqual(centralities, test, 1e-3);
 
-    centralities = betweenness(graph, {weighted: true});
+    centralities = betweenness(graph);
 
     deepApproximatelyEqual(centralities, test, 1e-3);
   });
@@ -229,7 +229,7 @@ describe('betweenness centrality', function () {
 
     deepApproximatelyEqual(centralities, test, 1e-3);
 
-    centralities = betweenness(graph, {weighted: true});
+    centralities = betweenness(graph);
 
     deepApproximatelyEqual(centralities, test, 1e-3);
   });
@@ -250,7 +250,7 @@ describe('betweenness centrality', function () {
 
     deepApproximatelyEqual(centralities, test, 1e-3);
 
-    centralities = betweenness(graph, {normalized: false, weighted: true});
+    centralities = betweenness(graph, {normalized: false});
 
     deepApproximatelyEqual(centralities, test, 1e-3);
   });
@@ -301,8 +301,7 @@ describe('betweenness centrality', function () {
     var graph = getWeightedGraph1();
 
     var centralities = betweenness(graph, {
-      normalized: false,
-      weighted: true
+      normalized: false
     });
 
     assert.deepEqual(centralities, {
@@ -315,12 +314,30 @@ describe('betweenness centrality', function () {
     });
   });
 
+  it('Unweighted graph 1', function () {
+    var graph = getWeightedGraph1();
+
+    var centralities = betweenness(graph, {getEdgeWeight: null});
+
+    deepApproximatelyEqual(
+      centralities,
+      {
+        0: 0.2,
+        1: 0,
+        2: 0.4,
+        3: 0.3,
+        4: 0.4,
+        5: 0
+      },
+      1e-3
+    );
+  });
+
   it('Weighted graph 2', function () {
     var graph = getWeightedGraph2();
 
     var centralities = betweenness(graph, {
-      normalized: false,
-      weighted: true
+      normalized: false
     });
 
     assert.deepEqual(centralities, {
@@ -337,11 +354,8 @@ describe('betweenness centrality', function () {
 
     betweenness.assign(graph, {
       normalized: false,
-      weighted: true,
-      attributes: {
-        centrality: 'centrality',
-        weight: 'w'
-      }
+      getEdgeWeight: 'w',
+      nodeCentralityAttribute: 'centrality'
     });
 
     var test = {

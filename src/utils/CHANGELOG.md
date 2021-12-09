@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.4
+
+- Fixing internal `resolveDefaults`.
+
 ## 2.4.3
 
 - Tweaking internal `getters`.

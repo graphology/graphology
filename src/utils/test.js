@@ -554,13 +554,13 @@ describe('graphology-utils', function () {
       );
 
       assert.deepStrictEqual(
-        resolveDefaults({index: new Set([0, 1])}, {index: null}),
+        resolveDefaults({index: new Set([0, 1])}, {index: undefined}),
         {index: new Set([0, 1])}
       );
 
       assert.deepStrictEqual(
         resolveDefaults({index: null}, {index: new Set([0, 1])}),
-        {index: new Set([0, 1])}
+        {index: null}
       );
     });
   });
