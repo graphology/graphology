@@ -14,10 +14,13 @@ var capitalize = utils.capitalize;
 /**
  * BFS traversal in the given graph using a callback function
  *
- * @param {Graph}    graph    - Target graph.
- * @param {function} callback - Iteration callback.
+ * @param {Graph}    graph        - Target graph.
+ * @param {string}   startingNode - Optional Starting node.
+ * @param {function} callback     - Iteration callback.
+ * @param {object}   options      - Options:
+ * @param {string}     mode         - Traversal mode.
  */
-function bfs(graph, callback, options) {
+function abstractBfs(graph, startingNode, callback, options) {
   options = options || {};
 
   if (!isGraph(graph))
@@ -38,6 +41,17 @@ function bfs(graph, callback, options) {
       graph
     );
 
+  var forEachNode;
+
+  if (startingNode === null) {
+    forEachNode = graph.forEachNode.bind(graph);
+  } else {
+    forEachNode = function (fn) {
+      startingNode = '' + startingNode;
+      fn(startingNode, graph.getNodeAttributes(startingNode));
+    };
+  }
+
   var queue = new BFSQueue(graph.order);
   var record, stop;
 
@@ -48,7 +62,7 @@ function bfs(graph, callback, options) {
     );
   }
 
-  graph.forEachNode(function (node, attr) {
+  forEachNode(function (node, attr) {
     if (queue.has(node)) return;
 
     queue.pushWith(node, new TraversalRecord(node, attr, 0));
@@ -65,62 +79,7 @@ function bfs(graph, callback, options) {
   });
 }
 
-/**
- * BFS traversal in the given graph, starting from the given node, using a
- * callback function.
- *
- * @param {Graph}    graph    - Target graph.
- * @param {string}   node     - Starting node.
- * @param {function} callback - Iteration callback.
- */
-function bfsFromNode(graph, node, callback, options) {
-  options = options || {};
-
-  if (!isGraph(graph))
-    throw new Error(
-      'graphology-traversal/dfs: expecting a graphology instance.'
-    );
-
-  if (typeof callback !== 'function')
-    throw new Error(
-      'graphology-traversal/dfs: given callback is not a function.'
-    );
-
-  // Early termination
-  if (graph.order === 0) return;
-
-  var forEachNeighbor =
-    graph['forEach' + capitalize(options.mode || 'outbound') + 'Neighbor'].bind(
-      graph
-    );
-
-  node = '' + node;
-
-  var queue = new BFSQueue(graph.order);
-  var record, stop;
-
-  function visit(neighbor, attr) {
-    queue.pushWith(
-      neighbor,
-      new TraversalRecord(neighbor, attr, record.depth + 1)
-    );
-  }
-
-  queue.pushWith(
-    node,
-    new TraversalRecord(node, graph.getNodeAttributes(node), 0)
-  );
-
-  while (queue.size !== 0) {
-    record = queue.shift();
-
-    stop = callback(record.node, record.attributes, record.depth);
-
-    if (stop === true) continue;
-
-    forEachNeighbor(record.node, visit);
-  }
-}
-
-exports.bfs = bfs;
-exports.bfsFromNode = bfsFromNode;
+exports.bfs = function (graph, callback, options) {
+  return abstractBfs(graph, null, callback, options);
+};
+exports.bfsFromNode = abstractBfs;
