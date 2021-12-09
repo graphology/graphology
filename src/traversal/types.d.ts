@@ -4,4 +4,4 @@ export type TraversalCallback<N extends Attributes = Attributes> = (
   key: string,
   attributes: N,
   depth: number
-) => void;
+) => boolean | void;

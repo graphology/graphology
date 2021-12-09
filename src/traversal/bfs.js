@@ -29,7 +29,7 @@ function bfs(graph, callback) {
   if (graph.order === 0) return;
 
   var queue = new BFSQueue(graph.order);
-  var record;
+  var record, stop;
 
   function visit(neighbor, attr) {
     queue.pushWith(
@@ -46,7 +46,9 @@ function bfs(graph, callback) {
     while (queue.size !== 0) {
       record = queue.shift();
 
-      callback(record.node, record.attributes, record.depth);
+      stop = callback(record.node, record.attributes, record.depth);
+
+      if (stop === true) continue;
 
       graph.forEachOutboundNeighbor(record.node, visit);
     }
@@ -78,7 +80,7 @@ function bfsFromNode(graph, node, callback) {
   node = '' + node;
 
   var queue = new BFSQueue(graph.order);
-  var record;
+  var record, stop;
 
   function visit(neighbor, attr) {
     queue.pushWith(
@@ -95,7 +97,9 @@ function bfsFromNode(graph, node, callback) {
   while (queue.size !== 0) {
     record = queue.shift();
 
-    callback(record.node, record.attributes, record.depth);
+    stop = callback(record.node, record.attributes, record.depth);
+
+    if (stop === true) continue;
 
     graph.forEachOutboundNeighbor(record.node, visit);
   }

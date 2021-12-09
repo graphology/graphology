@@ -2,11 +2,12 @@
  * Graphology Utils Unit Tests
  * ============================
  */
-var assert = require('assert'),
-  Graph = require('graphology'),
-  mergeCycle = require('graphology-utils/merge-cycle'),
-  mergeStar = require('graphology-utils/merge-star'),
-  erdosRenyi = require('graphology-generators/random/erdos-renyi');
+var assert = require('assert');
+var Graph = require('graphology');
+var mergeCycle = require('graphology-utils/merge-cycle');
+var mergeStar = require('graphology-utils/merge-star');
+var erdosRenyi = require('graphology-generators/random/erdos-renyi');
+var pathGraph = require('graphology-generators/classic/path');
 
 var lib = require('./index');
 var bfs = lib.bfs;
@@ -158,6 +159,19 @@ describe('graphology-traversal', function () {
 
       assert.deepStrictEqual(path, new Set(['0']));
     });
+
+    it('should be possible to stop.', function () {
+      var graph = pathGraph(Graph, 10);
+
+      var path = [];
+
+      dfsFromNode(graph, '0', function (node, attr, depth) {
+        path.push(node);
+        return depth >= 3;
+      });
+
+      assert.deepStrictEqual(path, ['0', '1', '2', '3']);
+    });
   });
 
   describe('bfs', function () {
@@ -302,6 +316,27 @@ describe('graphology-traversal', function () {
       });
 
       assert.deepStrictEqual(path, new Set(['0']));
+    });
+
+    it('should be possible to stop.', function () {
+      var graph = new Graph();
+
+      graph.mergeEdge(0, 1);
+      graph.mergeEdge(1, 2);
+      graph.mergeEdge(0, 2);
+      graph.mergeEdge(2, 3);
+      graph.mergeEdge(3, 4);
+      graph.mergeEdge(3, 5);
+      graph.mergeEdge(4, 6);
+
+      var path = new Set();
+
+      bfsFromNode(graph, '0', function (node, attr, depth) {
+        path.add(node);
+        return depth > 1;
+      });
+
+      assert.deepStrictEqual(path, new Set(['0', '1', '2', '3']));
     });
   });
 });

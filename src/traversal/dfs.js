@@ -5,8 +5,8 @@
  * Depth-First Search traversal function.
  */
 var isGraph = require('graphology-utils/is-graph');
-var TraversalRecord = require('./utils').TraversalRecord;
 var DFSStack = require('graphology-indices/dfs-stack');
+var TraversalRecord = require('./utils').TraversalRecord;
 
 /**
  * DFS traversal in the given graph using a callback function
@@ -29,7 +29,7 @@ function dfs(graph, callback) {
   if (graph.order === 0) return;
 
   var stack = new DFSStack(graph.order);
-  var record;
+  var record, stop;
 
   function visit(neighbor, attr) {
     stack.pushWith(
@@ -46,7 +46,9 @@ function dfs(graph, callback) {
     while (stack.size !== 0) {
       record = stack.pop();
 
-      callback(record.node, record.attributes, record.depth);
+      stop = callback(record.node, record.attributes, record.depth);
+
+      if (stop === true) continue;
 
       graph.forEachOutboundNeighbor(record.node, visit);
     }
@@ -78,7 +80,7 @@ function dfsFromNode(graph, node, callback) {
   node = '' + node;
 
   var stack = new DFSStack(graph.order);
-  var record;
+  var record, stop;
 
   function visit(neighbor, attr) {
     stack.pushWith(
@@ -95,7 +97,9 @@ function dfsFromNode(graph, node, callback) {
   while (stack.size !== 0) {
     record = stack.pop();
 
-    callback(record.node, record.attributes, record.depth);
+    stop = callback(record.node, record.attributes, record.depth);
+
+    if (stop === true) continue;
 
     graph.forEachOutboundNeighbor(record.node, visit);
   }
