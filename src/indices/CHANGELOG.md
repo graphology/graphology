@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.16.4 (provisional)
+## 0.16.4
 
 - `UndirectedLouvainIndex` & `DirectedLouvainIndex` now able to take a getter argument.
 
