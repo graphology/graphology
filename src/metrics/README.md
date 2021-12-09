@@ -16,6 +16,7 @@ _Graph metrics_
 - [Diameter](#diameter)
 - [Extent](#extent)
 - [Modularity](#modularity)
+- [Simple size](#simple-size)
 - [Weighted size](#weighted-size)
 
 _Node metrics_
@@ -163,6 +164,25 @@ _Arguments_
   - **communities** _?object_: object mapping nodes to their respective communities.
   - **resolution** _?number_: resolution parameter (`γ`).
   - **weighted** _?boolean_ [`true`]: whether to compute weighted modularity or not.
+
+#### Simple size
+
+Computes the simple size of a given graph, i.e. its number of edges if we consider the graph simple, even if it has multiple edges between pairs of nodes.
+
+```js
+import {simpleSize} from 'graphology-metrics';
+// Alternatively, to load only the relevant code:
+import simpleSize from 'graphology-metrics/simple-size';
+
+const graph = new MultiGraph();
+graph.mergeEdge(1, 2);
+graph.mergeEdge(1, 2);
+graph.mergeEdge(4, 3);
+graph.mergeUndirectedEdge(5, 6);
+
+simpleSize(graph);
+>>> 3
+```
 
 #### Weighted size
 

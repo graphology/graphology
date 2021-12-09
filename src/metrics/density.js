@@ -5,6 +5,7 @@
  * Functions used to compute the density of the given graph.
  */
 var isGraph = require('graphology-utils/is-graph');
+var simpleSize = require('./simple-size.js');
 
 /**
  * Returns the undirected density.
@@ -39,26 +40,6 @@ function mixedDensity(order, size) {
   var d = order * (order - 1);
 
   return size / (d + d / 2);
-}
-
-/**
- * Returns the size a multi graph would have if it were a simple one.
- *
- * @param  {Graph}  graph - Target graph.
- * @return {number}
- */
-function simpleSizeForMultiGraphs(graph) {
-  var nodes = graph.nodes(),
-    size = 0,
-    i,
-    l;
-
-  for (i = 0, l = nodes.length; i < l; i++) {
-    size += graph.outNeighbors(nodes[i]).length;
-    size += graph.undirectedNeighbors(nodes[i]).length / 2;
-  }
-
-  return size;
 }
 
 /**
@@ -103,7 +84,7 @@ function abstractDensity(type, multi, graph) {
     order = graph.order;
     size = graph.size;
 
-    if (graph.multi && multi === false) size = simpleSizeForMultiGraphs(graph);
+    if (graph.multi && multi === false) size = simpleSize(graph);
   }
 
   // When the graph has only one node, its density is 0
