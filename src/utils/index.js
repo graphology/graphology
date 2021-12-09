@@ -4,6 +4,7 @@
  *
  * Library endpoint.
  */
+exports.inferMulti = require('./infer-multi.js');
 exports.inferType = require('./infer-type.js');
 exports.isGraph = require('./is-graph.js');
 exports.isGraphConstructor = require('./is-graph-constructor.js');

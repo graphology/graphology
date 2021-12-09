@@ -17,6 +17,7 @@ _Assertions_
 
 _Introspection_
 
+- [#.inferMulti](#infermulti)
 - [#.inferType](#infertype)
 
 _Typical edge patterns_
@@ -31,29 +32,11 @@ _Miscellaneous helpers_
 - [#.renameGraphKeys](#renamegraphkeys)
 - [#.updateGraphKeys](#updategraphkeys)
 
-### #.inferType
-
-Function returning the inferred type of the given graph. This function is useful to check whether a given mixed graph is in fact a mere `directed` or `undirected` graph based on its actual edges.
-
-```js
-import Graph from 'graphology';
-import {inferType} from 'graphology-utils';
-// Alternatively, if you want to only load the relevant code:
-import inferType from 'graphology-utils/infer-type';
-
-const graph = new Graph();
-graph.addUndirectedEdge(1, 2);
-
-inferType(graph);
->>> 'directed'
-```
-
 ### #.isGraph
 
 Function returning whether the given value is a `graphology` implementation's instance.
 
 ```js
-import Graph from 'graphology';
 import {isGraph} from 'graphology-utils';
 // Alternatively, if you want to only load the relevant code:
 import isGraph from 'graphology-utils/is-graph';
@@ -79,7 +62,6 @@ _Arguments_
 Function returning whether the given value is a `graphology` constructor.
 
 ```js
-import Graph from 'graphology';
 import {isGraphConstructor} from 'graphology-utils';
 // Alternatively, if you want to only load the relevant code:
 import isGraphConstructor from 'graphology-utils/is-graph-constructor';
@@ -98,12 +80,48 @@ _Arguments_
 
 - **value** _any_: value to test.
 
+### #.inferMulti
+
+Function returning whether the given graph is truly multi, i.e. if we can find at least one occurrence of multiple edges of the same type and direction between two nodes.
+
+```js
+import {inferMulti} from 'graphology-utils';
+// Alternatively, if you want to only load the relevant code:
+import inferMulti from 'graphology-utils/infer-multi';
+
+const graph = new MultiGraph();
+graph.addEdge(1, 2);
+
+inferMulti(graph);
+>>> false
+
+graph.addEdge(1, 2);
+
+inferMulti(graph);
+>>> true
+```
+
+### #.inferType
+
+Function returning the inferred type of the given graph. This function is useful to check whether a given mixed graph is in fact a mere `directed` or `undirected` graph based on its actual edges.
+
+```js
+import {inferType} from 'graphology-utils';
+// Alternatively, if you want to only load the relevant code:
+import inferType from 'graphology-utils/infer-type';
+
+const graph = new Graph();
+graph.addUndirectedEdge(1, 2);
+
+inferType(graph);
+>>> 'directed'
+```
+
 ### #.mergeClique
 
 Function adding a clique to the given graph.
 
 ```js
-import Graph from 'graphology';
 import {mergeClique} from 'graphology-utils';
 // Alternatively, if you want to only load the relevant code:
 import mergeClique from 'graphology-utils/merge-clique';
@@ -120,7 +138,6 @@ graph.edges().map(e => graph.extremities(e));
 Function adding a cycle to the given graph.
 
 ```js
-import Graph from 'graphology';
 import {mergeCycle} from 'graphology-utils';
 // Alternatively, if you want to only load the relevant code:
 import mergeCycle from 'graphology-utils/merge-cycle';
@@ -142,7 +159,6 @@ _Arguments_
 Function adding a path to the given graph.
 
 ```js
-import Graph from 'graphology';
 import {mergePath} from 'graphology-utils';
 // Alternatively, if you want to only load the relevant code:
 import mergePath from 'graphology-utils/merge-path';
@@ -164,7 +180,6 @@ _Arguments_
 Function adding a star to the given graph.
 
 ```js
-import Graph from 'graphology';
 import {mergeStar} from 'graphology-utils';
 // Alternatively, if you want to only load the relevant code:
 import mergeStar from 'graphology-utils/merge-star';
@@ -186,7 +201,6 @@ _Arguments_
 Function renaming the nodes & edges key of a graph using mappings and returning a new graph with renamed keys.
 
 ```js
-import Graph from 'graphology';
 import {renameGraphKeys} from 'graphology-utils';
 // Alternatively, if you want to only load the relevant code:
 import renameGraphKeys from 'graphology-utils/rename-graph-keys';
@@ -222,7 +236,6 @@ _Arguments_
 Function updating the nodes & edges key of a graph using functions and returning a new graph with updated keys.
 
 ```js
-import Graph from 'graphology';
 import {updateGraphKeys} from 'graphology-utils';
 // Alternatively, if you want to only load the relevant code:
 import updateGraphKeys from 'graphology-utils/update-graph-keys';

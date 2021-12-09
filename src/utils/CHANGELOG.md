@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.0 (provisional)
+
+- Adding `inferMulti`.
+
 ## 2.4.4
 
 - Fixing internal `resolveDefaults`.

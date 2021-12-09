@@ -11,6 +11,7 @@
     "getters.js",
     "index.js",
     "infer-type.js",
+    "infer-multi.js",
     "is-graph.js",
     "is-graph-constructor.js",
     "merge-clique.js",

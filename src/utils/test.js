@@ -5,6 +5,7 @@
 var assert = require('assert');
 var Graph = require('graphology');
 var areSameGraphs = require('graphology-assertions').areSameGraphs;
+var inferMulti = require('./infer-multi.js');
 var inferType = require('./infer-type.js');
 var isGraph = require('./is-graph.js');
 var isGraphConstructor = require('./is-graph-constructor.js');
@@ -20,6 +21,45 @@ var resolveDefaults = require('./defaults.js');
 var UndirectedGraph = Graph.UndirectedGraph;
 
 describe('graphology-utils', function () {
+  describe('inferMulti', function () {
+    it('should correctly infer whether the given graph is multi.', function () {
+      var graph = new Graph();
+
+      assert.strictEqual(inferMulti(graph), false);
+
+      graph = new Graph({multi: true});
+
+      assert.strictEqual(inferMulti(graph), false);
+
+      graph.addNode('A');
+
+      assert.strictEqual(inferMulti(graph), false);
+
+      graph.mergeEdge('A', 'B');
+
+      assert.strictEqual(inferMulti(graph), false);
+
+      graph.mergeEdge('A', 'B');
+
+      assert.strictEqual(inferMulti(graph), true);
+
+      graph = new Graph({multi: true});
+      graph.mergeUndirectedEdge('A', 'B');
+      graph.mergeDirectedEdge('A', 'B');
+
+      assert.strictEqual(inferMulti(graph), false);
+
+      graph.addDirectedEdge('B', 'A');
+
+      assert.strictEqual(inferMulti(graph), false);
+
+      graph.mergeUndirectedEdge('C', 'D');
+      graph.mergeUndirectedEdge('D', 'C');
+
+      assert.strictEqual(inferMulti(graph), true);
+    });
+  });
+
   describe('inferType', function () {
     it('should correctly infer the type of the given graph.', function () {
       var graph = new Graph({type: 'mixed'});

@@ -58,11 +58,11 @@ _Layout quality metrics_
 
 ### Density
 
-Computes the density of the given graph.
+Computes the density of the given graph. Note that multi variants can exceed `0`, as it is also the case when considering self loops.
 
 ```js
 import {density} from 'graphology-metrics';
-import density from 'graphology-metrics/graph/density';
+import {density} from 'graphology-metrics/graph/density';
 
 // Passing a graph instance
 const d = density(graph);
@@ -81,6 +81,11 @@ import {
 } from 'graphology-metric/graph/density';
 
 const d = undirectedDensity(mixedGraph);
+
+// If you need to chose the kind of density dynamically
+import {abstractDensity} from 'graphology-metric/graph/density';
+
+abstractDensity('directed', true, 10, 24);
 ```
 
 _Arguments_
@@ -91,6 +96,21 @@ Either:
 
 Or:
 
+- **order** _number_: number of nodes in the graph.
+- **size** _number_: number of edges in the graph.
+
+_Abstract version arguments_
+
+Either:
+
+- **type** _string_: type of density to compute (`directed`, `undirected` or `mixed`).
+- **multi** _boolean_: whether to compute density for the multi of simple case.
+- **graph** _Graph_: target graph.
+
+Or:
+
+- **type** _string_: type of density to compute (`directed`, `undirected` or `mixed`).
+- **multi** _boolean_: whether to compute density for the multi of simple case.
 - **order** _number_: number of nodes in the graph.
 - **size** _number_: number of edges in the graph.
 
@@ -437,8 +457,7 @@ _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: attributes' names:
-    - **centrality** <span class="code">?string</span> <span class="default">eigenvectorCentrality</span>: name of the node attribute that will be assigned the eigenvector centrality.
+  - **nodeCentralityAttribute** <span class="code">?string</span> <span class="default">closenessCentrality</span>: name of the node attribute that will be assigned the closeness centrality.
   - **wassermanFaust** <span class="code">?boolean</span> <span class="default">false</span>: whether to use Wasserman & Faust's normalization scheme.
 
 ### Degree centrality
@@ -446,8 +465,6 @@ _Arguments_
 Computes the degree centrality for every node.
 
 ```js
-import degreeCentrality from 'graphology-metrics/centrality/degree';
-// Or to load more specific functions:
 import {
   degreeCentrality,
   inDegreeCentrality,
@@ -455,21 +472,20 @@ import {
 } from 'graphology-metrics/centrality/degree';
 
 // To compute degree centrality for every node:
-const centrality = degreeCentrality(graph);
+const centralities = degreeCentrality(graph);
 
 // To directly map the result onto nodes' attributes (`degreeCentrality`):
 degreeCentrality.assign(graph);
 
 // To directly map the result onto a custom attribute:
-degreeCentrality.assign(graph, {attributes: {centrality: 'myCentrality'}});
+degreeCentrality.assign(graph, {nodeCentralityAttribute: 'myCentrality'});
 ```
 
 _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: custom attribute names:
-    - **centrality** <span class="code">?string</span> <span class="default">degreeCentrality</span>: name of the centrality attribute to assign.
+  - **nodeCentralityAttribute** <span class="code">?string</span> <span class="default">degreeCentrality</span>: name of the centrality attribute to assign.
 
 ### Eigenvector centrality
 
@@ -485,19 +501,20 @@ const scores = eigenvectorCentrality(graph);
 eigenvectorCentrality.assign(graph);
 
 // Note that you can also pass options to customize the algorithm:
-const p = eigenvectorCentrality(graph, {tolerance: 1e-3, weighted: false});
+const p = eigenvectorCentrality(graph, {tolerance: 1e-3});
+
+// To ignore your graph's weights
+eigenvectorCentrality.assign(graph, {getEdgeWeight: null});
 ```
 
 _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: attributes' names:
-    - **centrality** <span class="code">?string</span> <span class="default">eigenvectorCentrality</span>: name of the node attribute that will be assigned the eigenvector centrality.
-    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
+  - **nodeCentralityAttribute** <span class="code">?string</span> <span class="default">eigenvectorCentrality</span>: name of the node attribute that will be assigned the eigenvector centrality.
+  - **getEdgeWeight** <span class="code">?string\|function</span> <span class="default">weight</span>: name of the edges' weight attribute or getter function.
   - **maxIterations** <span class="code">?number</span> <span class="default">100</span>: maximum number of iterations to perform.
   - **tolerance** <span class="code">?number</span> <span class="default">1.e-6</span>: convergence error tolerance.
-  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to use available weights or not.
 
 ### HITS
 
@@ -520,10 +537,9 @@ _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: attributes' names:
-    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
-    - **hub** <span class="code">?string</span> <span class="default">hub</span>: name of the node attribute holding hub information.
-    - **authority** <span class="code">?string</span> <span class="default">authority</span>: name of the node attribute holding authority information.
+  - **getEdgeWeight** <span class="code">?string\|function</span> <span class="default">weight</span>: name of the edges' weight attribute or getter function.
+  - **nodeHubAttribute** <span class="code">?string</span> <span class="default">hub</span>: name of the node attribute holding hub information.
+  - **nodeAuthorityAttribute** <span class="code">?string</span> <span class="default">authority</span>: name of the node attribute holding authority information.
   - **maxIterations** <span class="code">?number</span> <span class="default">100</span>: maximum number of iterations to perform.
   - **normalize** <span class="code">?boolean</span> <span class="default">true</span>: should the result be normalized by the sum of values.
   - **tolerance** <span class="code">?number</span> <span class="default">1.e-8</span>: convergence error tolerance.
@@ -542,20 +558,21 @@ const scores = pagerank(graph);
 pagerank.assign(graph);
 
 // Note that you can also pass options to customize the algorithm:
-const p = pagerank(graph, {alpha: 0.9, weighted: false});
+const p = pagerank(graph, {alpha: 0.9});
+
+// To ignore your graph's weights
+pagerank.assign(graph, {getEdgeWeight: null});
 ```
 
 _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: attributes' names:
-    - **pagerank** <span class="code">?string</span> <span class="default">pagerank</span>: name of the node attribute that will be assigned the pagerank score.
-    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
+  - **nodePagerankAttribute** <span class="code">?string</span> <span class="default">pagerank</span>: name of the node attribute that will be assigned the pagerank score.
+  - **getEdgeWeight** <span class="code">?string\|function</span> <span class="default">weight</span>: name of the edges' weight attribute or getter function.
   - **alpha** <span class="code">?number</span> <span class="default">0.85</span>: damping parameter of the algorithm.
   - **maxIterations** <span class="code">?number</span> <span class="default">100</span>: maximum number of iterations to perform.
   - **tolerance** <span class="code">?number</span> <span class="default">1.e-6</span>: convergence error tolerance.
-  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to use available weights or not.
 
 ## Layout quality metrics
 
