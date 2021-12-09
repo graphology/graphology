@@ -6,6 +6,7 @@ exports.modularity = require('./modularity.js');
 exports.simpleSize = require('./simple-size.js');
 exports.weightedSize = require('./weighted-size.js');
 
+exports.abstractDensity = density.abstractDensity;
 exports.density = density.density;
 exports.directedDensity = density.directedDensity;
 exports.undirectedDensity = density.undirectedDensity;

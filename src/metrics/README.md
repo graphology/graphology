@@ -71,6 +71,11 @@ import {
 } from 'graphology-metric/graph/density';
 
 const d = undirectedDensity(mixedGraph);
+
+// If you need to chose the kind of density dynamically
+import {abstractDensity} from 'graphology-metric/graph/density';
+
+abstractDensity('directed', true, 10, 24);
 ```
 
 _Arguments_
@@ -81,6 +86,21 @@ Either:
 
 Or:
 
+- **order** _number_: number of nodes in the graph.
+- **size** _number_: number of edges in the graph.
+
+_Abstract version arguments_
+
+Either:
+
+- **type** _string_: type of density to compute (`directed`, `undirected` or `mixed`).
+- **multi** _boolean_: whether to compute density for the multi of simple case.
+- **graph** _Graph_: target graph.
+
+Or:
+
+- **type** _string_: type of density to compute (`directed`, `undirected` or `mixed`).
+- **multi** _boolean_: whether to compute density for the multi of simple case.
 - **order** _number_: number of nodes in the graph.
 - **size** _number_: number of edges in the graph.
 

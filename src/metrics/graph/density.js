@@ -108,6 +108,7 @@ function abstractDensity(type, multi, graph) {
 /**
  * Exporting.
  */
+exports.abstractDensity = abstractDensity;
 exports.density = abstractDensity.bind(null, null, null);
 exports.directedDensity = abstractDensity.bind(null, 'directed', false);
 exports.undirectedDensity = abstractDensity.bind(null, 'undirected', false);

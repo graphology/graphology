@@ -1,4 +1,16 @@
-import Graph from 'graphology-types';
+import Graph, {GraphType} from 'graphology-types';
+
+export function abstractDensity(
+  type: GraphType,
+  multi: boolean,
+  graph: Graph
+): number;
+export function abstractDensity(
+  type: GraphType,
+  multi: boolean,
+  order: number,
+  size: number
+): number;
 
 export function density(graph: Graph): number;
 export function density(order: number, size: number): number;
