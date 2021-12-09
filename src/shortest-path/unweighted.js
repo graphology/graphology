@@ -5,9 +5,9 @@
  * Basic algorithms to find the shortest paths between nodes in a graph
  * whose edges are not weighted.
  */
-var isGraph = require('graphology-utils/is-graph'),
-  Queue = require('mnemonist/queue'),
-  extend = require('@yomguithereal/helpers/extend');
+var isGraph = require('graphology-utils/is-graph');
+var Queue = require('mnemonist/queue');
+var extend = require('@yomguithereal/helpers/extend');
 
 /**
  * Function attempting to find the shortest path in a graph between
@@ -271,21 +271,6 @@ var undirectedSingleSourceLength = asbtractSingleSourceLength.bind(
 );
 
 /**
- * Main polymorphic function taking either only a source or a
- * source/target combo.
- *
- * @param  {Graph}  graph      - Target graph.
- * @param  {any}    source     - Source node.
- * @param  {any}    [target]   - Target node.
- * @return {array|object|null} - The map of found paths.
- */
-function shortestPath(graph, source, target) {
-  if (arguments.length < 3) return singleSource(graph, source);
-
-  return bidirectional(graph, source, target);
-}
-
-/**
  * Function using Ulrik Brandes' method to map single source shortest paths
  * from selected node.
  *
@@ -358,10 +343,8 @@ function brandes(graph, source) {
 /**
  * Exporting.
  */
-shortestPath.bidirectional = bidirectional;
-shortestPath.singleSource = singleSource;
-shortestPath.singleSourceLength = singleSourceLength;
-shortestPath.undirectedSingleSourceLength = undirectedSingleSourceLength;
-shortestPath.brandes = brandes;
-
-module.exports = shortestPath;
+exports.bidirectional = bidirectional;
+exports.singleSource = singleSource;
+exports.singleSourceLength = singleSourceLength;
+exports.undirectedSingleSourceLength = undirectedSingleSourceLength;
+exports.brandes = brandes;

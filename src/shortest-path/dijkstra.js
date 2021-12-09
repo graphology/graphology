@@ -4,15 +4,15 @@
  *
  * Graphology implementation of Dijkstra shortest path for weighted graphs.
  */
-var isGraph = require('graphology-utils/is-graph'),
-  Heap = require('mnemonist/heap');
+var isGraph = require('graphology-utils/is-graph');
+var createEdgeWeightGetter =
+  require('graphology-utils/getters').createEdgeWeightGetter;
+var Heap = require('mnemonist/heap');
 
 /**
  * Defaults & helpers.
  */
-var DEFAULTS = {
-  weightAttribute: 'weight'
-};
+var DEFAULT_WEIGHT_ATTRIBUTE = 'weight';
 
 function DIJKSTRA_HEAP_COMPARATOR(a, b) {
   if (a[0] > b[0]) return 1;
@@ -48,13 +48,13 @@ function BRANDES_DIJKSTRA_HEAP_COMPARATOR(a, b) {
  *
  * Note that this implementation was basically copied from networkx.
  *
- * @param  {Graph}  graph           - The graphology instance.
- * @param  {string} source          - Source node.
- * @param  {string} target          - Target node.
- * @param  {string} weightAttribute - Name of the weight attribute.
- * @param  {array}                  - The found path if any and its cost.
+ * @param  {Graph}  graph         - The graphology instance.
+ * @param  {string} source        - Source node.
+ * @param  {string} target        - Target node.
+ * @param  {string} getEdgeWeight - Name of the weight attribute or getter function.
+ * @param  {array}                - The found path if any and its cost.
  */
-function abstractBidirectionalDijkstra(graph, source, target, weightAttribute) {
+function abstractBidirectionalDijkstra(graph, source, target, getEdgeWeight) {
   source = '' + source;
   target = '' + target;
 
@@ -78,15 +78,9 @@ function abstractBidirectionalDijkstra(graph, source, target, weightAttribute) {
         '" target node does not exist in the given graph.'
     );
 
-  weightAttribute = weightAttribute || DEFAULTS.weightAttribute;
-
-  var getWeight = function (edge) {
-    var weight = graph.getEdgeAttribute(edge, weightAttribute);
-
-    if (typeof weight !== 'number' || isNaN(weight)) return 1;
-
-    return weight;
-  };
+  getEdgeWeight = createEdgeWeightGetter(
+    getEdgeWeight || DEFAULT_WEIGHT_ATTRIBUTE
+  ).fromMinimalEntry;
 
   if (source === target) return [0, [source]];
 
@@ -142,7 +136,7 @@ function abstractBidirectionalDijkstra(graph, source, target, weightAttribute) {
     for (i = 0, l = edges.length; i < l; i++) {
       e = edges[i];
       u = graph.opposite(v, e);
-      cost = distances[dir][v] + getWeight(e);
+      cost = distances[dir][v] + getEdgeWeight(e, graph.getEdgeAttributes(e));
 
       if (u in distances[dir] && cost < distances[dir][u]) {
         throw Error(
@@ -177,18 +171,18 @@ function abstractBidirectionalDijkstra(graph, source, target, weightAttribute) {
  * TODO: it might be more performant to use a dedicated objet for the heap's
  * items.
  *
- * @param  {Graph}  graph           - The graphology instance.
- * @param  {array}  sources         - A list of sources.
- * @param  {string} weightAttribute - Name of the weight attribute.
- * @param  {number} cutoff          - Maximum depth of the search.
- * @param  {string} target          - Optional target to reach.
- * @param  {object} paths           - Optional paths object to maintain.
- * @return {object}                 - Returns the paths.
+ * @param  {Graph}  graph         - The graphology instance.
+ * @param  {array}  sources       - A list of sources.
+ * @param  {string} getEdgeWeight - Name of the weight attribute or getter function.
+ * @param  {number} cutoff        - Maximum depth of the search.
+ * @param  {string} target        - Optional target to reach.
+ * @param  {object} paths         - Optional paths object to maintain.
+ * @return {object}               - Returns the paths.
  */
 function abstractDijkstraMultisource(
   graph,
   sources,
-  weightAttribute,
+  getEdgeWeight,
   cutoff,
   target,
   paths
@@ -205,16 +199,9 @@ function abstractDijkstraMultisource(
         '" target node does not exist in the given graph.'
     );
 
-  weightAttribute = weightAttribute || DEFAULTS.weightAttribute;
-
-  // Building necessary functions
-  var getWeight = function (edge) {
-    var weight = graph.getEdgeAttribute(edge, weightAttribute);
-
-    if (typeof weight !== 'number' || isNaN(weight)) return 1;
-
-    return weight;
-  };
+  getEdgeWeight = createEdgeWeightGetter(
+    getEdgeWeight || DEFAULT_WEIGHT_ATTRIBUTE
+  ).fromMinimalEntry;
 
   var distances = {},
     seen = {},
@@ -257,7 +244,7 @@ function abstractDijkstraMultisource(
     for (j = 0, m = edges.length; j < m; j++) {
       e = edges[j];
       u = graph.opposite(v, e);
-      cost = getWeight(e) + distances[v];
+      cost = getEdgeWeight(e, graph.getEdgeAttributes(e)) + distances[v];
 
       if (cutoff && cost > cutoff) continue;
 
@@ -281,26 +268,21 @@ function abstractDijkstraMultisource(
  * Single source Dijkstra shortest path between given node & other nodes in
  * the graph.
  *
- * @param  {Graph}  graph           - The graphology instance.
- * @param  {string} source          - Source node.
- * @param  {string} weightAttribute - Name of the weight attribute.
- * @return {object}                 - An object of found paths.
+ * @param  {Graph}  graph         - The graphology instance.
+ * @param  {string} source        - Source node.
+ * @param  {string} getEdgeWeight - Name of the weight attribute or getter function.
+ * @return {object}               - An object of found paths.
  */
-function singleSourceDijkstra(graph, source, weightAttribute) {
+function singleSourceDijkstra(graph, source, getEdgeWeight) {
   var paths = {};
 
-  abstractDijkstraMultisource(graph, [source], weightAttribute, 0, null, paths);
+  abstractDijkstraMultisource(graph, [source], getEdgeWeight, 0, null, paths);
 
   return paths;
 }
 
-function bidirectionalDijkstra(graph, source, target, weightAttribute) {
-  return abstractBidirectionalDijkstra(
-    graph,
-    source,
-    target,
-    weightAttribute
-  )[1];
+function bidirectionalDijkstra(graph, source, target, getEdgeWeight) {
+  return abstractBidirectionalDijkstra(graph, source, target, getEdgeWeight)[1];
 }
 
 /**
@@ -311,14 +293,17 @@ function bidirectionalDijkstra(graph, source, target, weightAttribute) {
  * Ulrik Brandes: A Faster Algorithm for Betweenness Centrality.
  * Journal of Mathematical Sociology 25(2):163-177, 2001.
  *
- * @param  {Graph}  graph           - Target graph.
- * @param  {any}    source          - Source node.
- * @param  {string} weightAttribute - Name of the weight attribute.
- * @return {array}                  - [Stack, Paths, Sigma]
+ * @param  {Graph}  graph         - Target graph.
+ * @param  {any}    source        - Source node.
+ * @param  {string} getEdgeWeight - Name of the weight attribute or getter function.
+ * @return {array}                - [Stack, Paths, Sigma]
  */
-function brandes(graph, source, weightAttribute) {
+function brandes(graph, source, getEdgeWeight) {
   source = '' + source;
-  weightAttribute = weightAttribute || DEFAULTS.weightAttribute;
+
+  getEdgeWeight = createEdgeWeightGetter(
+    getEdgeWeight || DEFAULT_WEIGHT_ATTRIBUTE
+  ).fromMinimalEntry;
 
   var S = [],
     P = {},
@@ -371,7 +356,7 @@ function brandes(graph, source, weightAttribute) {
     for (i = 0, l = edges.length; i < l; i++) {
       e = edges[i];
       w = graph.opposite(v, e);
-      cost = dist + (graph.getEdgeAttribute(e, weightAttribute) || 1);
+      cost = dist + getEdgeWeight(e, graph.getEdgeAttributes(e));
 
       if (!(w in D) && (!(w in seen) || cost < seen[w])) {
         seen[w] = cost;
@@ -391,8 +376,6 @@ function brandes(graph, source, weightAttribute) {
 /**
  * Exporting.
  */
-module.exports = {
-  bidirectional: bidirectionalDijkstra,
-  singleSource: singleSourceDijkstra,
-  brandes: brandes
-};
+exports.bidirectional = bidirectionalDijkstra;
+exports.singleSource = singleSourceDijkstra;
+exports.brandes = brandes;

@@ -1,4 +1,5 @@
-import Graph from 'graphology-types';
+import Graph, {Attributes} from 'graphology-types';
+import {MinimalEdgeMapper} from 'graphology-utils/getters';
 
 type SingleSourceDijkstraResult = {[key: string]: string[]};
 type BidirectionalDijstraResult = string[];
@@ -8,20 +9,30 @@ type BrandesResult = [
   {[key: string]: number}
 ];
 
-interface IDijkstra {
-  bidirectional(
-    graph: Graph,
-    source: string,
-    target: string,
-    weightAttribute: string
-  ): BidirectionalDijstraResult;
-  singleSource(
-    graph: Graph,
-    source: string,
-    weightAttribute: string
-  ): SingleSourceDijkstraResult;
-  brandes(graph: Graph, source: string, weightAttribute: string): BrandesResult;
-}
+export function bidirectional<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph<NodeAttributes, EdgeAttributes>,
+  source: unknown,
+  target: unknown,
+  getEdgeWeight?: string | MinimalEdgeMapper<EdgeAttributes>
+): BidirectionalDijstraResult;
 
-declare const dijkstra: IDijkstra;
-export default dijkstra;
+export function singleSource<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph<NodeAttributes, EdgeAttributes>,
+  source: unknown,
+  getEdgeWeight?: string | MinimalEdgeMapper<EdgeAttributes>
+): SingleSourceDijkstraResult;
+
+export function brandes<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph<NodeAttributes, EdgeAttributes>,
+  source: unknown,
+  getEdgeWeight?: string | MinimalEdgeMapper<EdgeAttributes>
+): BrandesResult;

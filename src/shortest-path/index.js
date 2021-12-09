@@ -4,10 +4,16 @@
  *
  * Library endpoint.
  */
-var dijkstra = require('./dijkstra.js');
 var unweighted = require('./unweighted.js');
+var utils = require('./utils.js');
 
-unweighted.dijkstra = dijkstra;
-unweighted.unweighted = unweighted;
+exports.unweighted = unweighted;
+exports.dijkstra = require('./dijkstra.js');
 
-module.exports = unweighted;
+exports.bidirectional = unweighted.bidirectional;
+exports.singleSource = unweighted.singleSource;
+exports.singleSourceLength = unweighted.singleSourceLength;
+exports.undirectedSingleSourceLength = unweighted.undirectedSingleSourceLength;
+exports.brandes = unweighted.brandes;
+
+exports.edgePathFromNodePath = utils.edgePathFromNodePath;

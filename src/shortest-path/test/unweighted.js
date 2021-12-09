@@ -276,27 +276,6 @@ describe('unweighted', function () {
     });
   });
 
-  describe('shortestPath', function () {
-    it('the polymorphism should work properly.', function () {
-      var graph = new Graph();
-      graph.mergeEdge(1, 2);
-      graph.mergeEdge(2, 3);
-      graph.mergeEdge(3, 4);
-
-      var path = library(graph, 2, 4);
-
-      assert.deepStrictEqual(path, ['2', '3', '4']);
-
-      var paths = library(graph, 2);
-
-      assert.deepStrictEqual(paths, {
-        2: ['2'],
-        3: ['2', '3'],
-        4: ['2', '3', '4']
-      });
-    });
-  });
-
   describe('brandes', function () {
     var graph = new UndirectedGraph();
 
