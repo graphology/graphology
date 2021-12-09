@@ -5,7 +5,7 @@ nav_order: 3
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/communities-louvain"
-  
+  "Changelog": "https://github.com/graphology/graphology/tree/master/src/communities-louvain/CHANGELOG.md"
 ---
 
 # Graphology Communities Louvain
@@ -53,28 +53,26 @@ louvain.assign(graph);
 
 // If you need to pass custom options
 louvain.assign(graph, {
-  attributes: {
-    weight: 'myCustomWeight',
-    community: 'myCustomCommunity'
-  }
+  resolution: 0.8
 });
 
 // If you want to return some details about the algorithm's execution
 var details = louvain.detailed(graph);
+
+// If you want to ignore your graph's weights
+louvain.assign(graph, {getEdgeWeight: null});
 ```
 
 _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: attributes' names:
-    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
-    - **community** <span class="code">?string</span> <span class="default">community</span>: name of the community attribute.
+  - **getEdgeWeight** <span class="code">?string\|function</span> <span class="default">weight</span>: name of the edges' weight attribute or getter function.
+  - **nodeCommunityAttribute** <span class="code">?string</span> <span class="default">community</span>: name of the community attribute.
   - **fastLocalMoves** <span class="code">?boolean</span> <span class="default">true</span>: whether to use a well-known optimization relying on a queue set to traverse the graph more efficiently.
   - **randomWalk** <span class="code">?boolean</span> <span class="default">true</span>: whether to traverse the graph randomly.
   - **resolution** <span class="code">?number</span> <span class="default">1</span>: resolution parameter. An increased resolution should produce more communities.
   - **rng** <span class="code">?function</span> <span class="default">Math.random</span>: RNG function to use for `randomWalk`. Useful if you need to seed your rng using, for instance, [seedrandom](https://www.npmjs.com/package/seedrandom).
-  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to take edge weights into account.
 
 _Detailed Output_
 

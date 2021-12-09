@@ -391,27 +391,30 @@ Computes the betweenness centrality for every node.
 import betweennessCentrality from 'graphology-metrics/centrality/betweenness';
 
 // To compute centrality for every node:
-const centrality = betweennessCentrality(graph);
-
-// To compute weighted betweenness centrality
-const centrality = betweennessCentrality(graph, {weighted: true});
+const centralities = betweennessCentrality(graph);
 
 // To directly map the result onto nodes' attributes (`betweennessCentrality`):
 betweennessCentrality.assign(graph);
 
 // To directly map the result onto a custom attribute:
-betweennessCentrality.assign(graph, {attributes: {centrality: 'myCentrality'}});
+betweennessCentrality.assign(graph, {nodeCentralityAttribute: 'myCentrality'});
+
+// To ignore weights
+const centralities = betweennessCentrality(graph, {getEdgeWeight: null});
+
+// To use a getter function for weights
+const centralities = betweennessCentrality(graph, {
+  getEdgeWeight: (_, attr) => attr.importance
+});
 ```
 
 _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: Custom attribute names:
-    - **centrality** <span class="code">?string</span> <span class="default">betweennessCentrality</span>: Name of the centrality attribute to assign.
-    - **weight** <span class="code">?string</span>: Name of the weight attribute.
+  - **nodeCentralityAttribute** <span class="code">?string</span> <span class="default">betweennessCentrality</span>: Name of the centrality attribute to assign.
+  - **getEdgeWeight** <span class="code">?string\|function</span> <span class="default">weight</span>: Name of the edge weight attribute or getter function.
   - **normalized** <span class="code">?boolean</span> <span class="default">true</span>: should the result be normalized?
-  - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: should we compute the weighted betweenness centrality?
 
 ### Closeness centrality
 

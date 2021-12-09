@@ -1,6 +1,6 @@
 {
   "name": "graphology-communities-louvain",
-  "version": "1.5.3",
+  "version": "2.0.0",
   "description": "Louvain community detection for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
