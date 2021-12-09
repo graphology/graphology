@@ -485,7 +485,6 @@ _Arguments_
   - **getEdgeWeight** _?string\|function_ [`weight`]: name of the edges' weight attribute or getter function.
   - **maxIterations** _?number_ [`100`]: maximum number of iterations to perform.
   - **tolerance** _?number_ [`1.e-6`]: convergence error tolerance.
-  - **weighted** _?boolean_ [`false`]: whether to use available weights or not.
 
 ### HITS
 
@@ -529,20 +528,21 @@ const scores = pagerank(graph);
 pagerank.assign(graph);
 
 // Note that you can also pass options to customize the algorithm:
-const p = pagerank(graph, {alpha: 0.9, weighted: false});
+const p = pagerank(graph, {alpha: 0.9});
+
+// To ignore your graph's weights
+pagerank.assign(graph, {getEdgeWeight: null});
 ```
 
 _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** _?object_: options:
-  - **attributes** _?object_: attributes' names:
-    - **pagerank** _?string_ [`pagerank`]: name of the node attribute that will be assigned the pagerank score.
-    - **weight** _?string_ [`weight`]: name of the edges' weight attribute.
+  - **nodePagerankAttribute** _?string_ [`pagerank`]: name of the node attribute that will be assigned the pagerank score.
+  - **getEdgeWeight** _?string\|function_ [`weight`]: name of the edges' weight attribute or getter function.
   - **alpha** _?number_ [`0.85`]: damping parameter of the algorithm.
   - **maxIterations** _?number_ [`100`]: maximum number of iterations to perform.
   - **tolerance** _?number_ [`1.e-6`]: convergence error tolerance.
-  - **weighted** _?boolean_ [`false`]: whether to use available weights or not.
 
 ## Layout quality metrics
 

@@ -17,14 +17,11 @@ var WeightedNeighborhoodIndex =
  * Defaults.
  */
 var DEFAULTS = {
-  attributes: {
-    pagerank: 'pagerank',
-    weight: 'weight'
-  },
+  nodePagerankAttribute: 'pagerank',
+  getEdgeWeight: 'weight',
   alpha: 0.85,
   maxIterations: 100,
-  tolerance: 1e-6,
-  weighted: false
+  tolerance: 1e-6
 };
 
 /**
@@ -53,15 +50,13 @@ function abstractPagerank(assign, graph, options) {
   var alpha = options.alpha;
   var maxIterations = options.maxIterations;
   var tolerance = options.tolerance;
-  var weighted = options.weighted;
 
-  var pagerankAttribute = options.attributes.pagerank;
-  var weightAttribute = weighted ? options.attributes.weight : null;
+  var pagerankAttribute = options.nodePagerankAttribute;
 
   var N = graph.order;
   var p = 1 / N;
 
-  var index = new WeightedNeighborhoodIndex(graph, weightAttribute);
+  var index = new WeightedNeighborhoodIndex(graph, options.getEdgeWeight);
 
   var i, j, l, d;
 
