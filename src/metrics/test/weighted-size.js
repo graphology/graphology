@@ -2,9 +2,9 @@
  * Graphology Weighted Size Unit Tests
  * ====================================
  */
-var assert = require('assert'),
-  Graph = require('graphology'),
-  weightedSize = require('../weighted-size.js');
+var assert = require('assert');
+var Graph = require('graphology');
+var weightedSize = require('../weighted-size.js');
 
 describe('weightedSize', function () {
   it('should throw if given wrong arguments.', function () {
@@ -35,5 +35,18 @@ describe('weightedSize', function () {
     graph.mergeEdge(2, 3, {w: 4});
 
     assert.strictEqual(weightedSize(graph, 'w'), 34);
+  });
+
+  it('should work with a custom getter.', function () {
+    var graph = new Graph();
+    graph.mergeEdge(1, 2, {importance: 12});
+    graph.mergeEdge(2, 3, {importance: 8});
+
+    assert.strictEqual(
+      weightedSize(graph, function (_, attr) {
+        return attr.importance;
+      }),
+      20
+    );
   });
 });

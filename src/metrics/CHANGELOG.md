@@ -3,6 +3,7 @@
 ## 1.19.0 (provisional)
 
 - Adding `simmelianStrength`.
+- Improving `weightedSize`.
 
 ## 1.18.2
 

@@ -194,12 +194,15 @@ weightedSize(graph);
 // With custom weight attribute
 weightedSize(graph, 'myWeightAttribute');
 >>> 4
+
+// With custom getter
+weightedSize(graph, (_, attr) => attr.importance);
 ```
 
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **weightAttribute** <span class="code">?string</span> <span class="default">weight</span>: name of the weight attribute.
+- **getEdgeWeight** <span class="code">?string\|function</span> <span class="default">weight</span>: name of the weight attribute or getter function.
 
 ### Centrality
 

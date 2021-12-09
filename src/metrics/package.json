@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "graphology-shortest-path": "^1.5.2",
-    "graphology-utils": "^2.3.0",
-    "mnemonist": "^0.38.3"
+    "graphology-utils": "^2.4.2",
+    "mnemonist": "^0.39.0"
   }
 }

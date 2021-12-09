@@ -5,6 +5,8 @@
  * Function returning the sum of the graph's edges' weights.
  */
 var isGraph = require('graphology-utils/is-graph');
+var createEdgeWeightGetter =
+  require('graphology-utils/getters').createEdgeWeightGetter;
 
 /**
  * Defaults.
@@ -14,30 +16,26 @@ var DEFAULT_WEIGHT_ATTRIBUTE = 'weight';
 /**
  * Weighted size function.
  *
- * @param  {Graph}  graph             - Target graph.
- * @param  {string} [weightAttribute] - Name of the weight attribute.
+ * @param  {Graph}  graph                    - Target graph.
+ * @param  {string|function} [getEdgeWeight] - Name of the weight attribute or getter function.
  * @return {number}
  */
-module.exports = function weightedSize(graph, weightAttribute) {
+module.exports = function weightedSize(graph, getEdgeWeight) {
   // Handling errors
   if (!isGraph(graph))
     throw new Error(
       'graphology-metrics/weighted-size: the given graph is not a valid graphology instance.'
     );
 
-  weightAttribute = weightAttribute || DEFAULT_WEIGHT_ATTRIBUTE;
+  getEdgeWeight = createEdgeWeightGetter(
+    getEdgeWeight || DEFAULT_WEIGHT_ATTRIBUTE
+  ).fromEntry;
 
-  var edges = graph.edges(),
-    W = 0,
-    w,
-    i,
-    l;
+  var size = 0;
 
-  for (i = 0, l = edges.length; i < l; i++) {
-    w = graph.getEdgeAttribute(edges[i], weightAttribute);
+  graph.forEachEdge(function (e, a, s, t, sa, ta, u) {
+    size += getEdgeWeight(e, a, s, t, sa, ta, u);
+  });
 
-    if (typeof w === 'number') W += w;
-  }
-
-  return W;
+  return size;
 };
