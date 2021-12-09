@@ -2,9 +2,9 @@
  * Graphology Density Unit Tests
  * ==============================
  */
-var assert = require('chai').assert,
-  Graph = require('graphology'),
-  density = require('../density.js');
+var assert = require('chai').assert;
+var Graph = require('graphology');
+var density = require('../../graph/density.js');
 
 describe('density', function () {
   it('should throw if given wrong arguments.', function () {

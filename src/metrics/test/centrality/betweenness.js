@@ -2,19 +2,19 @@
  * Graphology Betweenness Centrality Unit Tests
  * =============================================
  */
-var assert = require('chai').assert,
-  Graph = require('graphology'),
-  generators = require('graphology-generators'),
-  mergePath = require('graphology-utils/merge-path'),
-  betweenness = require('../../centrality/betweenness');
+var assert = require('chai').assert;
+var Graph = require('graphology');
+var generators = require('graphology-generators');
+var mergePath = require('graphology-utils/merge-path');
+var betweenness = require('../../centrality/betweenness');
 
-var UndirectedGraph = Graph.UndirectedGraph,
-  DirectedGraph = Graph.DirectedGraph;
+var UndirectedGraph = Graph.UndirectedGraph;
+var DirectedGraph = Graph.DirectedGraph;
 
-var complete = generators.classic.complete.bind(null, UndirectedGraph),
-  path = generators.classic.path.bind(null, UndirectedGraph),
-  directedPath = generators.classic.path.bind(null, DirectedGraph),
-  ladder = generators.classic.ladder.bind(null, UndirectedGraph);
+var complete = generators.classic.complete.bind(null, UndirectedGraph);
+var path = generators.classic.path.bind(null, UndirectedGraph);
+var directedPath = generators.classic.path.bind(null, DirectedGraph);
+var ladder = generators.classic.ladder.bind(null, UndirectedGraph);
 
 function deepApproximatelyEqual(t, o, precision) {
   for (var k in t) assert.approximately(t[k], o[k], precision);

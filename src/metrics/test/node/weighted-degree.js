@@ -2,9 +2,9 @@
  * Graphology Weighted Size Unit Tests
  * ====================================
  */
-var assert = require('assert'),
-  Graph = require('graphology'),
-  weightedDegree = require('../weighted-degree.js');
+var assert = require('assert');
+var Graph = require('graphology');
+var weightedDegree = require('../../node/weighted-degree.js');
 
 var UndirectedGraph = Graph.UndirectedGraph;
 

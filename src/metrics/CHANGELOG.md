@@ -1,10 +1,13 @@
 # Changelog
 
-## 1.19.0 (provisional)
+## 2.0.0 (provisional)
 
+- Changing folder organization.
 - Adding `simmelianStrength`.
 - Adding `simpleSize`.
 - Improving `weightedSize`.
+- Improving performance of `diameter`.
+- Dropping `modalities`.
 
 ## 1.18.2
 

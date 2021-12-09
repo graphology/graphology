@@ -10,8 +10,8 @@
  * 103(23), 8577–8582.
  * http://doi.org/10.1073/pnas.0601602103
  */
-var isGraph = require('graphology-utils/is-graph'),
-  iwanthue = require('iwanthue');
+var isGraph = require('graphology-utils/is-graph');
+var iwanthue = require('iwanthue');
 
 var slugify = require('./slugify.js');
 

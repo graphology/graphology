@@ -1,11 +1,5 @@
-export {default as centrality} from './centrality';
-export {default as density} from './density';
-export {default as diameter} from './diameter';
-export {default as eccentricity} from './eccentricity';
-export {default as extent} from './extent';
-export {default as layoutQuality} from './layout-quality';
-export {default as modularity} from './modularity';
-export {default as simmelianStrength} from './simmelian-strength';
-export {default as simpleSize} from './simple-size';
-export {default as weightedDegree} from './weighted-degree';
-export {default as weightedSize} from './weighted-size';
+export * as centrality from './centrality';
+export * as edge from './edge';
+export * as graph from './graph';
+export * as layoutQuality from './layout-quality';
+export * as node from './node';

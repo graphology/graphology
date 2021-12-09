@@ -2,25 +2,25 @@
  * Graphology Modularity Unit Tests
  * =================================
  */
-var assert = require('chai').assert,
-  Graph = require('graphology'),
-  modularity = require('../modularity.js'),
-  toDirected = require('graphology-operators/to-directed');
+var assert = require('chai').assert;
+var Graph = require('graphology');
+var modularity = require('../../graph/modularity.js');
+var toDirected = require('graphology-operators/to-directed');
 
-var UndirectedGraph = Graph.UndirectedGraph,
-  DirectedGraph = Graph.DirectedGraph,
-  MultiGraph = Graph.MultiGraph;
+var UndirectedGraph = Graph.UndirectedGraph;
+var DirectedGraph = Graph.DirectedGraph;
+var MultiGraph = Graph.MultiGraph;
 
 /**
  * Datasets.
  */
-var clique3 = Graph.from(require('./datasets/clique3.json'), {
+var clique3 = Graph.from(require('../datasets/clique3.json'), {
   type: 'directed'
 });
-var directed500 = Graph.from(require('./datasets/directed500.json'), {
+var directed500 = Graph.from(require('../datasets/directed500.json'), {
   type: 'directed'
 });
-var undirected500 = Graph.from(require('./datasets/undirected500.json'), {
+var undirected500 = Graph.from(require('../datasets/undirected500.json'), {
   type: 'undirected'
 });
 

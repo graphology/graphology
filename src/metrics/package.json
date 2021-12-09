@@ -4,10 +4,13 @@
   "description": "Miscellaneous graph metrics for graphology.",
   "main": "index.js",
   "files": [
-    "*.js",
+    "index.js",
     "*.d.ts",
     "centrality",
-    "layout-quality"
+    "edge",
+    "graph",
+    "layout-quality",
+    "node"
   ],
   "scripts": {
     "prepublishOnly": "npm test",

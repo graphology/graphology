@@ -2,9 +2,9 @@
  * Graphology Extent Unit Tests
  * =============================
  */
-var assert = require('chai').assert,
-  Graph = require('graphology'),
-  lib = require('../extent.js');
+var assert = require('chai').assert;
+var Graph = require('graphology');
+var lib = require('../../graph/extent.js');
 
 describe('extent', function () {
   var graph = new Graph();

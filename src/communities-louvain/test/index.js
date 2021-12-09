@@ -5,7 +5,7 @@
 var assert = require('chai').assert,
   seedrandom = require('seedrandom'),
   Graph = require('graphology'),
-  modularity = require('graphology-metrics/modularity'),
+  modularity = require('graphology-metrics/graph/modularity'),
   emptyGraph = require('graphology-generators/classic/empty'),
   toUndirected = require('graphology-operators/to-undirected'),
   // netToImg = require('net-to-img'),

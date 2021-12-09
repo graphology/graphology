@@ -2,10 +2,10 @@
  * Graphology Eccentricity Unit Tests
  * ==============================
  */
-var assert = require('chai').assert,
-  Graph = require('graphology'),
-  emptyGraph = require('graphology-generators/classic/empty'),
-  eccentricity = require('../eccentricity.js');
+var assert = require('chai').assert;
+var Graph = require('graphology');
+var emptyGraph = require('graphology-generators/classic/empty');
+var eccentricity = require('../../node/eccentricity.js');
 
 function createGraph(type) {
   var graph = new Graph({type: type});

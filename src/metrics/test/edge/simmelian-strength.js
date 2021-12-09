@@ -5,7 +5,7 @@
 var assert = require('assert');
 var Graph = require('graphology');
 var complete = require('graphology-generators/classic/complete');
-var simmelianStrength = require('../simmelian-strength.js');
+var simmelianStrength = require('../../edge/simmelian-strength.js');
 
 var UndirectedGraph = Graph.UndirectedGraph;
 

@@ -4,7 +4,7 @@
  */
 var assert = require('assert');
 var Graph = require('graphology');
-var weightedSize = require('../weighted-size.js');
+var weightedSize = require('../../graph/weighted-size.js');
 
 describe('weightedSize', function () {
   it('should throw if given wrong arguments.', function () {

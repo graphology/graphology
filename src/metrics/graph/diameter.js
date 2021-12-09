@@ -5,7 +5,7 @@
  * Functions used to compute the diameter of the given graph.
  */
 var isGraph = require('graphology-utils/is-graph');
-var eccentricity = require('./eccentricity.js');
+var eccentricity = require('../node/eccentricity.js');
 
 module.exports = function diameter(graph) {
   if (!isGraph(graph))
@@ -15,15 +15,15 @@ module.exports = function diameter(graph) {
 
   if (graph.size === 0) return Infinity;
 
-  var D = -Infinity,
-    ecc = 0;
-  var nodes = graph.nodes();
+  var max = -Infinity;
 
-  for (var i = 0, l = nodes.length; i < l; i++) {
-    ecc = eccentricity(graph, nodes[i]);
-    if (ecc > D) D = ecc;
-    if (D === Infinity) break;
-  }
+  graph.someNode(function (node) {
+    var e = eccentricity(graph, node);
 
-  return D;
+    if (e > max) max = e;
+
+    return max === Infinity;
+  });
+
+  return max;
 };

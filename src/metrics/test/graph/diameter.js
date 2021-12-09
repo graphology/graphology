@@ -2,10 +2,10 @@
  * Graphology Diameter Unit Tests
  * ==============================
  */
-var assert = require('chai').assert,
-  Graph = require('graphology'),
-  emptyGraph = require('graphology-generators/classic/empty'),
-  diameter = require('../diameter.js');
+var assert = require('chai').assert;
+var Graph = require('graphology');
+var emptyGraph = require('graphology-generators/classic/empty');
+var diameter = require('../../graph/diameter.js');
 
 function createGraph(type) {
   var graph = new Graph({type: type});
@@ -33,25 +33,25 @@ function createGraph(type) {
   return graph;
 }
 
-describe('eccentricity', function () {
-  it('should calculate the diameter of the given node in an undirected graph with two connected component.', function () {
+describe('diameter', function () {
+  it('should return infinity with multiple components.', function () {
     var graph = createGraph('undirected');
     graph.addNode('6');
     var result = diameter(graph);
     assert.strictEqual(result, Infinity);
   });
 
-  it('should calculate the diameter of the given node in a directed graph.', function () {
+  it('should return infinity when all nodes cannot be reached from anywhere in a directed graph.', function () {
     var result = diameter(createGraph('directed'));
     assert.strictEqual(result, Infinity);
   });
 
-  it('should return Infinity if the graph is empty.', function () {
+  it('should return infinity if the graph is empty.', function () {
     var graph = emptyGraph(Graph, 6);
     assert.strictEqual(diameter(graph), Infinity);
   });
 
-  it('should calculate the diameter of the given node in an undirected graph.', function () {
+  it('should return the correct diameter.', function () {
     var result = diameter(createGraph('undirected'));
     assert.strictEqual(result, 3);
   });

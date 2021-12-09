@@ -4,7 +4,7 @@
  */
 var assert = require('assert');
 var Graph = require('graphology');
-var simpleSize = require('../simple-size.js');
+var simpleSize = require('../../graph/simple-size.js');
 
 describe('simpleSize', function () {
   it('should throw if given wrong arguments.', function () {

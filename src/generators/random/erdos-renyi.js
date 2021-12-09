@@ -4,8 +4,8 @@
  *
  * Function generating binomial graphs.
  */
-var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
-  density = require('graphology-metrics/density');
+var isGraphConstructor = require('graphology-utils/is-graph-constructor');
+var density = require('graphology-metrics/graph/density');
 
 /**
  * Generates a binomial graph graph with n nodes.

@@ -8,7 +8,7 @@ var Graph = require('graphology');
 var louvainIndices = require('graphology-indices/louvain');
 var leidenIndices = require('../utils.js');
 var mergeClique = require('graphology-utils/merge-clique');
-var modularity = require('graphology-metrics/modularity');
+var modularity = require('graphology-metrics/graph/modularity');
 var generateFigC1Graph = require('./utils').generateFigC1Graph;
 var leiden = require('../');
 

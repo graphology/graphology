@@ -2,9 +2,9 @@
  * Graphology Degree Unit Tests
  * ==============================
  */
-var assert = require('chai').assert,
-  Graph = require('graphology'),
-  degree = require('../degree.js');
+var assert = require('chai').assert;
+var Graph = require('graphology');
+var degree = require('../../node/degree.js');
 
 var inDegree = degree.inDegree;
 var outDegree = degree.outDegree;
