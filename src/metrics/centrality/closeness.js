@@ -26,6 +26,7 @@ var NeighborhoodIndex =
 // TODO: weighted
 // TODO: abstract the single source indexed shortest path in lib
 // TODO: what about self loops?
+// TODO: refactor a BFSQueue working on integer ranges in graphology-indices?
 
 /**
  * Defaults.

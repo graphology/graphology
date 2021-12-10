@@ -22,6 +22,7 @@ module.exports = function diameter(graph) {
 
     if (e > max) max = e;
 
+    // If the graph is not connected, its diameter is infinite
     return max === Infinity;
   });
 

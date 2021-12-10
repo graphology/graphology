@@ -1,7 +1,7 @@
 var density = require('./density.js');
+var extent = require('./extent.js');
 
 exports.diameter = require('./diameter.js');
-exports.extent = require('./extent.js');
 exports.modularity = require('./modularity.js');
 exports.simpleSize = require('./simple-size.js');
 exports.weightedSize = require('./weighted-size.js');
@@ -14,3 +14,6 @@ exports.mixedDensity = density.mixedDensity;
 exports.multiDirectedDensity = density.multiDirectedDensity;
 exports.multiUndirectedDensity = density.multiUndirectedDensity;
 exports.multiMixedDensity = density.multiMixedDensity;
+
+exports.nodeExtent = extent.nodeExtent;
+exports.edgeExtent = extent.edgeExtent;

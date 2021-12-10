@@ -1,19 +1,30 @@
-import Graph from 'graphology-types';
+import Graph, {Attributes} from 'graphology-types';
 
 export type Extent = [number, number];
-export type ExtentMapping = {[key: string]: Extent};
+export type ExtentMapping = {[name: string]: Extent};
 
-interface IExtent {
-  (graph: Graph, attribute: string): Extent;
-  (graph: Graph, attributes: Array<string>): ExtentMapping;
+export function nodeExtent<NodeAttributes extends Attributes = Attributes>(
+  graph: Graph<NodeAttributes>,
+  attribute: keyof NodeAttributes
+): Extent;
 
-  nodeExtent(graph: Graph, attribute: string): Extent;
-  nodeExtent(graph: Graph, attributes: Array<string>): ExtentMapping;
+export function nodeExtent<NodeAttributes extends Attributes = Attributes>(
+  graph: Graph<NodeAttributes>,
+  attributes: Array<keyof NodeAttributes>
+): ExtentMapping;
 
-  edgeExtent(graph: Graph, attribute: string): Extent;
-  edgeExtent(graph: Graph, attributes: Array<string>): ExtentMapping;
-}
+export function edgeExtent<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph<NodeAttributes, EdgeAttributes>,
+  attribute: keyof EdgeAttributes
+): Extent;
 
-declare const extent: IExtent;
-
-export default extent;
+export function edgeExtent<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph<NodeAttributes, EdgeAttributes>,
+  attributes: Array<keyof EdgeAttributes>
+): ExtentMapping;

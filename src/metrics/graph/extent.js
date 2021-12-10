@@ -87,8 +87,5 @@ function edgeExtent(graph, attribute) {
 /**
  * Exporting.
  */
-var extent = nodeExtent;
-extent.nodeExtent = nodeExtent;
-extent.edgeExtent = edgeExtent;
-
-module.exports = extent;
+exports.nodeExtent = nodeExtent;
+exports.edgeExtent = edgeExtent;

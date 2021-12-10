@@ -51,7 +51,6 @@ _Layout quality metrics_
 Computes the density of the given graph. Note that multi variants can exceed `0`, as it is also the case when considering self loops.
 
 ```js
-import {density} from 'graphology-metrics';
 import {density} from 'graphology-metrics/graph/density';
 
 // Passing a graph instance
@@ -109,8 +108,6 @@ Or:
 Computes the diameter, i.e the maximum eccentricity of any node of the given graph.
 
 ```js
-import {diameter} from 'graphology-metrics';
-// Alternatively, to load only the relevant code:
 import diameter from 'graphology-metrics/graph/diameter';
 
 const graph = new Graph();
@@ -134,18 +131,20 @@ _Arguments_
 Computes the extent - min, max - of a node or edge's attribute.
 
 ```js
-import extent from 'graphology-metrics/graph/extent';
+import {nodeExtent, edgeExtent} from 'graphology-metrics/graph';
+// Alternatively, to load only the relevant code:
+import {nodeExtent, edgeExtent} from 'graphology-metrics/graph/extent';
 
 // Retrieving a single node attribute's extent
-extent(graph, 'size');
+nodeExtent(graph, 'size');
 >>> [1, 34]
 
 // Retrieving multiple node attributes' extents
-extent(graph, ['x', 'y']);
+nodeExtent(graph, ['x', 'y']);
 >>> {x: [-4, 3], y: [-34, 56]}
 
-// For edges
-extent.edgeExtent(graph, 'weight');
+// The same for edges
+edgeExtent(graph, 'weight');
 >>> [0, 5.7]
 ```
 
@@ -159,8 +158,6 @@ _Arguments_
 Computes the modularity, given the graph and a node partition. It works on both directed & undirected networks and will return the relevant modularity.
 
 ```js
-import {modularity} from 'graphology-metrics';
-// Alternatively, to load only the relevant code:
 import modularity from 'graphology-metrics/graph/modularity';
 
 // Simplest way
@@ -207,8 +204,6 @@ simpleSize(graph);
 Computes the weighted size, i.e. the sum of the graph's edges' weight, of the given graph.
 
 ```js
-import {weightedSize} from 'graphology-metrics';
-// Alternatively, to load only the relevant code:
 import weightedSize from 'graphology-metrics/graph/weighted-size';
 
 const graph = new Graph();
@@ -245,7 +240,7 @@ import {
   weightedDegree,
   weightedInDegree,
   weightedOutDegree
-} from 'graphology-metrics/weighted-degree';
+} from 'graphology-metrics/node/weighted-degree';
 
 // To compute weighted degree of a single node
 weightedDegree(graph, 'A');
@@ -293,7 +288,7 @@ import degree, {
   undirectedDegree,
   directedDegree,
   allDegree
-} from 'graphology-metrics/degree';
+} from 'graphology-metrics/node/degree';
 
 // To extract degree information for every node
 const degrees = degree(graph);
@@ -354,8 +349,6 @@ _Arguments_
 Computes the eccentricity which is the maximum of the shortest paths between the given node and any other node.
 
 ```js
-import {eccentricity} from 'graphology-metrics';
-// Alternatively, to load only the relevant code:
 import eccentricity from 'graphology-metrics/node/eccentricity';
 
 graph.addNode('1');

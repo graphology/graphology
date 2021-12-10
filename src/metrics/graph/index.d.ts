@@ -9,7 +9,7 @@ export {
   multiMixedDensity
 } from './density';
 export {default as diameter} from './diameter';
-export {default as extent} from './extent';
+export {nodeExtent, edgeExtent} from './extent';
 export {default as modularity} from './modularity';
 export {default as simpleSize} from './simple-size';
 export {default as weightedSize} from './weighted-size';
