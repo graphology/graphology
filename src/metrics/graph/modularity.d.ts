@@ -1,21 +1,42 @@
-import Graph from 'graphology-types';
+import Graph, {Attributes, NodeMapper, EdgeMapper} from 'graphology-types';
 
-type CommunityMapping = {[key: string]: string | number};
-
-type ModularityOptions = {
-  attributes?: {
-    community?: string;
-    weight?: string;
-  };
-  communities?: CommunityMapping;
-  weighted?: boolean;
+type ModularityOptions<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> = {
+  getNodeCommunity?:
+    | keyof NodeAttributes
+    | NodeMapper<string | number, NodeAttributes>;
+  getEdgeWeight?:
+    | keyof EdgeAttributes
+    | EdgeMapper<number, NodeAttributes, EdgeAttributes>
+    | null;
+  resolution?: number;
 };
 
 interface IModularity {
-  (graph: Graph, options?: ModularityOptions): number;
+  <
+    NodeAttributes extends Attributes = Attributes,
+    EdgeAttributes extends Attributes = Attributes
+  >(
+    graph: Graph<NodeAttributes, EdgeAttributes>,
+    options?: ModularityOptions<NodeAttributes, EdgeAttributes>
+  ): number;
 
-  dense(graph: Graph, options?: ModularityOptions): number;
-  sparse(graph: Graph, options?: ModularityOptions): number;
+  dense<
+    NodeAttributes extends Attributes = Attributes,
+    EdgeAttributes extends Attributes = Attributes
+  >(
+    graph: Graph<NodeAttributes, EdgeAttributes>,
+    options?: ModularityOptions<NodeAttributes, EdgeAttributes>
+  ): number;
+  sparse<
+    NodeAttributes extends Attributes = Attributes,
+    EdgeAttributes extends Attributes = Attributes
+  >(
+    graph: Graph<NodeAttributes, EdgeAttributes>,
+    options?: ModularityOptions<NodeAttributes, EdgeAttributes>
+  ): number;
 
   undirectedDelta(
     M: number,

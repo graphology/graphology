@@ -144,57 +144,41 @@
 var resolveDefaults = require('graphology-utils/defaults');
 var isGraph = require('graphology-utils/is-graph');
 var inferType = require('graphology-utils/infer-type');
+var getters = require('graphology-utils/getters');
 
 var DEFAULTS = {
-  attributes: {
-    community: 'community',
-    weight: 'weight'
-  },
-  communities: null,
-  resolution: 1,
-  weighted: true
+  getNodeCommunity: 'community',
+  getEdgeWeight: 'weight',
+  resolution: 1
 };
 
-function createWeightGetter(weighted, weightAttribute) {
-  return function (attr) {
-    if (!attr) return 0;
-
-    if (!weighted) return 1;
-
-    var w = attr[weightAttribute];
-
-    if (typeof w !== 'number') w = 1;
-
-    return w;
-  };
-}
-
 function collectForUndirectedDense(graph, options) {
-  var communities = new Array(graph.order),
-    weightedDegrees = new Float64Array(graph.order),
-    M = 0;
+  var communities = new Array(graph.order);
+  var weightedDegrees = new Float64Array(graph.order);
+  var weights = {};
+  var M = 0;
 
-  var ids = {};
-
-  var getWeight = createWeightGetter(
-    options.weighted,
-    options.attributes.weight
-  );
+  var getEdgeWeight = getters.createEdgeWeightGetter(
+    options.getEdgeWeight
+  ).fromEntry;
+  var getNodeCommunity = getters.createNodeValueGetter(
+    options.getNodeCommunity
+  ).fromEntry;
 
   // Collecting communities
   var i = 0;
+  var ids = {};
   graph.forEachNode(function (node, attr) {
     ids[node] = i;
-    communities[i++] = options.communities
-      ? options.communities[node]
-      : attr[options.attributes.community];
+    communities[i++] = getNodeCommunity(node, attr);
   });
 
   // Collecting weights
-  graph.forEachUndirectedEdge(function (edge, attr, source, target) {
-    var weight = getWeight(attr);
+  graph.forEachUndirectedEdge(function (edge, attr, source, target, sa, ta, u) {
+    var weight = getEdgeWeight(edge, attr, source, target, sa, ta, u);
 
     M += weight;
+    weights[edge] = weight;
 
     weightedDegrees[ids[source]] += weight;
 
@@ -203,7 +187,7 @@ function collectForUndirectedDense(graph, options) {
   });
 
   return {
-    getWeight: getWeight,
+    weights: weights,
     communities: communities,
     weightedDegrees: weightedDegrees,
     M: M
@@ -211,39 +195,40 @@ function collectForUndirectedDense(graph, options) {
 }
 
 function collectForDirectedDense(graph, options) {
-  var communities = new Array(graph.order),
-    weightedInDegrees = new Float64Array(graph.order),
-    weightedOutDegrees = new Float64Array(graph.order),
-    M = 0;
+  var communities = new Array(graph.order);
+  var weightedInDegrees = new Float64Array(graph.order);
+  var weightedOutDegrees = new Float64Array(graph.order);
+  var weights = {};
+  var M = 0;
 
-  var ids = {};
-
-  var getWeight = createWeightGetter(
-    options.weighted,
-    options.attributes.weight
-  );
+  var getEdgeWeight = getters.createEdgeWeightGetter(
+    options.getEdgeWeight
+  ).fromEntry;
+  var getNodeCommunity = getters.createNodeValueGetter(
+    options.getNodeCommunity
+  ).fromEntry;
 
   // Collecting communities
   var i = 0;
+  var ids = {};
   graph.forEachNode(function (node, attr) {
     ids[node] = i;
-    communities[i++] = options.communities
-      ? options.communities[node]
-      : attr[options.attributes.community];
+    communities[i++] = getNodeCommunity(node, attr);
   });
 
   // Collecting weights
-  graph.forEachDirectedEdge(function (edge, attr, source, target) {
-    var weight = getWeight(attr);
+  graph.forEachDirectedEdge(function (edge, attr, source, target, sa, ta, u) {
+    var weight = getEdgeWeight(edge, attr, source, target, sa, ta, u);
 
     M += weight;
+    weights[edge] = weight;
 
     weightedOutDegrees[ids[source]] += weight;
     weightedInDegrees[ids[target]] += weight;
   });
 
   return {
-    getWeight: getWeight,
+    weights: weights,
     communities: communities,
     weightedInDegrees: weightedInDegrees,
     weightedOutDegrees: weightedOutDegrees,
@@ -263,7 +248,7 @@ function undirectedDenseModularity(graph, options) {
 
   var nodes = graph.nodes();
 
-  var i, j, l, Aij, didj, edgeAttributes;
+  var i, j, l, Aij, didj, e;
 
   var S = 0;
 
@@ -278,13 +263,13 @@ function undirectedDenseModularity(graph, options) {
       // NOTE: we could go from O(n^2) to O(avg.C^2)
       if (communities[i] !== communities[j]) continue;
 
-      edgeAttributes = graph.undirectedEdge(nodes[i], nodes[j]);
+      e = graph.undirectedEdge(nodes[i], nodes[j]);
 
-      Aij = result.getWeight(edgeAttributes);
+      Aij = result.weights[e] || 0;
       didj = weightedDegrees[i] * weightedDegrees[j];
 
       // We add twice if we have a self loop
-      if (i === j && typeof edgeAttributes !== 'undefined')
+      if (i === j && typeof e !== 'undefined')
         S += (Aij - (didj / M2) * resolution) * 2;
       else S += Aij - (didj / M2) * resolution;
     }
@@ -306,7 +291,7 @@ function directedDenseModularity(graph, options) {
 
   var nodes = graph.nodes();
 
-  var i, j, l, Aij, didj, edgeAttributes;
+  var i, j, l, Aij, didj, e;
 
   var S = 0;
 
@@ -319,9 +304,9 @@ function directedDenseModularity(graph, options) {
       // NOTE: we could go from O(n^2) to O(avg.C^2)
       if (communities[i] !== communities[j]) continue;
 
-      edgeAttributes = graph.directedEdge(nodes[i], nodes[j]);
+      e = graph.directedEdge(nodes[i], nodes[j]);
 
-      Aij = result.getWeight(edgeAttributes);
+      Aij = result.weights[e] || 0;
       didj = weightedInDegrees[i] * weightedOutDegrees[j];
 
       // Here we multiply by two to simulate iteration through lower part
@@ -333,21 +318,17 @@ function directedDenseModularity(graph, options) {
 }
 
 function collectCommunitesForUndirected(graph, options) {
-  var communities = {},
-    totalWeights = {},
-    internalWeights = {};
+  var communities = {};
+  var totalWeights = {};
+  var internalWeights = {};
 
-  if (options.communities) communities = options.communities;
+  var getNodeCommunity = getters.createNodeValueGetter(
+    options.getNodeCommunity
+  ).fromEntry;
 
   graph.forEachNode(function (node, attr) {
-    var community;
-
-    if (!options.communities) {
-      community = attr[options.attributes.community];
-      communities[node] = community;
-    } else {
-      community = communities[node];
-    }
+    var community = getNodeCommunity(node, attr);
+    communities[node] = community;
 
     if (typeof community === 'undefined')
       throw new Error(
@@ -368,22 +349,18 @@ function collectCommunitesForUndirected(graph, options) {
 }
 
 function collectCommunitesForDirected(graph, options) {
-  var communities = {},
-    totalInWeights = {},
-    totalOutWeights = {},
-    internalWeights = {};
+  var communities = {};
+  var totalInWeights = {};
+  var totalOutWeights = {};
+  var internalWeights = {};
 
-  if (options.communities) communities = options.communities;
+  var getNodeCommunity = getters.createNodeValueGetter(
+    options.getNodeCommunity
+  ).fromEntry;
 
   graph.forEachNode(function (node, attr) {
-    var community;
-
-    if (!options.communities) {
-      community = attr[options.attributes.community];
-      communities[node] = community;
-    } else {
-      community = communities[node];
-    }
+    var community = getNodeCommunity(node, attr);
+    communities[node] = community;
 
     if (typeof community === 'undefined')
       throw new Error(
@@ -412,17 +389,24 @@ function undirectedSparseModularity(graph, options) {
 
   var M = 0;
 
-  var totalWeights = result.totalWeights,
-    internalWeights = result.internalWeights,
-    communities = result.communities;
+  var totalWeights = result.totalWeights;
+  var internalWeights = result.internalWeights;
+  var communities = result.communities;
 
-  var getWeight = createWeightGetter(
-    options.weighted,
-    options.attributes.weight
-  );
+  var getEdgeWeight = getters.createEdgeWeightGetter(
+    options.getEdgeWeight
+  ).fromEntry;
 
-  graph.forEachUndirectedEdge(function (edge, edgeAttr, source, target) {
-    var weight = getWeight(edgeAttr);
+  graph.forEachUndirectedEdge(function (
+    edge,
+    edgeAttr,
+    source,
+    target,
+    sa,
+    ta,
+    u
+  ) {
+    var weight = getEdgeWeight(edge, edgeAttr, source, target, sa, ta, u);
 
     M += weight;
 
@@ -437,8 +421,8 @@ function undirectedSparseModularity(graph, options) {
     internalWeights[sourceCommunity] += weight * 2;
   });
 
-  var Q = 0,
-    M2 = M * 2;
+  var Q = 0;
+  var M2 = M * 2;
 
   for (var C in internalWeights)
     Q +=
@@ -454,18 +438,25 @@ function directedSparseModularity(graph, options) {
 
   var M = 0;
 
-  var totalInWeights = result.totalInWeights,
-    totalOutWeights = result.totalOutWeights,
-    internalWeights = result.internalWeights,
-    communities = result.communities;
+  var totalInWeights = result.totalInWeights;
+  var totalOutWeights = result.totalOutWeights;
+  var internalWeights = result.internalWeights;
+  var communities = result.communities;
 
-  var getWeight = createWeightGetter(
-    options.weighted,
-    options.attributes.weight
-  );
+  var getEdgeWeight = getters.createEdgeWeightGetter(
+    options.getEdgeWeight
+  ).fromEntry;
 
-  graph.forEachDirectedEdge(function (edge, edgeAttr, source, target) {
-    var weight = getWeight(edgeAttr);
+  graph.forEachDirectedEdge(function (
+    edge,
+    edgeAttr,
+    source,
+    target,
+    sa,
+    ta,
+    u
+  ) {
+    var weight = getEdgeWeight(edge, edgeAttr, source, target, sa, ta, u);
 
     M += weight;
 

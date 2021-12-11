@@ -163,9 +163,11 @@ import modularity from 'graphology-metrics/graph/modularity';
 // Simplest way
 const Q = modularity(graph);
 
-// If the partition is not given by node attributes
+// Custom node partition
 const Q = modularity(graph, {
-  communities: {1: 0, 2: 0, 3: 1, 4: 1, 5: 1}
+  getNodeCommunity(node, attr) {
+    return attr.customPartition;
+  }
 });
 ```
 
@@ -173,12 +175,9 @@ _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** _?object_: options:
-  - **attributes** _?object_: attributes' names:
-    - **community** _?string_ [`community`]: name of the nodes' community attribute in case we need to read them from the graph itself.
-    - **weight** _?string_ [`weight`]: name of the edges' weight attribute.
-  - **communities** _?object_: object mapping nodes to their respective communities.
+  - **getNodeCommunity** _?string\|function_ [`community`]: name of the node community attribute or getter function.
+  - **getEdgeWeight** _?string\|function_ [`weight`]: name of the edges' weight attribute or getter function.
   - **resolution** _?number_: resolution parameter (`γ`).
-  - **weighted** _?boolean_ [`true`]: whether to compute weighted modularity or not.
 
 ### Simple size
 

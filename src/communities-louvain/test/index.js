@@ -35,6 +35,12 @@ function distinctSize(obj) {
   return indexer.size;
 }
 
+function lookup(o) {
+  return function (n) {
+    return o[n];
+  };
+}
+
 function parse(dataset, t) {
   var graph = new Graph({type: t}),
     n = dataset.nodes,
@@ -194,7 +200,7 @@ describe('graphology-communities-louvain', function () {
     var communities = louvain(clique3.graph);
 
     assert.closeTo(
-      modularity(clique3.graph, {communities: communities}),
+      modularity(clique3.graph, {getNodeCommunity: lookup(communities)}),
       0.524,
       0.001
     );
@@ -210,7 +216,9 @@ describe('graphology-communities-louvain', function () {
     // dumpToImage(complex500.graph, result.communities);
     assert.closeTo(
       result.modularity,
-      modularity(complex500.graph, {communities: result.communities}),
+      modularity(complex500.graph, {
+        getNodeCommunity: lookup(result.communities)
+      }),
       0.0001
     );
     assert.strictEqual(
@@ -225,7 +233,9 @@ describe('graphology-communities-louvain', function () {
     // dumpToImage(undirected500.graph, result.communities);
     assert.closeTo(
       result.modularity,
-      modularity(undirected500.graph, {communities: result.communities}),
+      modularity(undirected500.graph, {
+        getNodeCommunity: lookup(result.communities)
+      }),
       0.0001
     );
     assert.strictEqual(
@@ -240,7 +250,9 @@ describe('graphology-communities-louvain', function () {
     // dumpToImage(undirected1000.graph, result.communities);
     assert.closeTo(
       result.modularity,
-      modularity(undirected1000.graph, {communities: result.communities}),
+      modularity(undirected1000.graph, {
+        getNodeCommunity: lookup(result.communities)
+      }),
       0.0001
     );
     assert.strictEqual(
@@ -255,7 +267,9 @@ describe('graphology-communities-louvain', function () {
     // dumpToImage(directed1000.graph, result.communities);
     assert.closeTo(
       result.modularity,
-      modularity(directed1000.graph, {communities: result.communities}),
+      modularity(directed1000.graph, {
+        getNodeCommunity: lookup(result.communities)
+      }),
       0.0001
     );
     assert.strictEqual(
@@ -270,7 +284,9 @@ describe('graphology-communities-louvain', function () {
 
     assert.closeTo(
       result.modularity,
-      modularity(undirectedEuroSis, {communities: result.communities}),
+      modularity(undirectedEuroSis, {
+        getNodeCommunity: lookup(result.communities)
+      }),
       0.0001
     );
     // printReport(result);
@@ -284,7 +300,7 @@ describe('graphology-communities-louvain', function () {
 
     assert.closeTo(
       result.modularity,
-      modularity(euroSis, {communities: result.communities}),
+      modularity(euroSis, {getNodeCommunity: lookup(result.communities)}),
       0.0001
     );
     // printReport(result);

@@ -21,6 +21,12 @@ function rng(seed) {
   return seedrandom(seed || 'test');
 }
 
+function lookup(o) {
+  return function (n) {
+    return o[n];
+  };
+}
+
 function getDoubleCliqueGraph() {
   var graph = new Graph.UndirectedGraph();
   mergeClique(graph, [0, 1, 2]);
@@ -147,14 +153,14 @@ describe('graphology-communities-leiden', function () {
       var results = leiden.detailed(graph, {rng: rng()});
 
       var naiveQ = modularity(graph, {
-        communities: {
+        getNodeCommunity: lookup({
           0: 0,
           1: 0,
           2: 0,
           3: 1,
           4: 1,
           5: 1
-        }
+        })
       });
 
       console.log(results);
@@ -173,7 +179,7 @@ describe('graphology-communities-leiden', function () {
       var results = leiden.detailed(graph, {weighted: true});
 
       var naiveQ = modularity(graph, {
-        communities: {
+        getNodeCommunity: lookup({
           0: 0,
           2: 0,
           3: 0,
@@ -182,7 +188,7 @@ describe('graphology-communities-leiden', function () {
           5: 1,
           6: 1,
           7: 1
-        }
+        })
       });
 
       console.log(naiveQ);

@@ -58,6 +58,12 @@ function closeTo(A, B) {
   assert.closeTo(A, B, 0.001);
 }
 
+function lookup(communities) {
+  return function (node) {
+    return communities[node];
+  };
+}
+
 /**
  * Actual unit tests.
  */
@@ -184,7 +190,7 @@ describe('modularity', function () {
     graph.mergeEdge(2, 3);
 
     assert.throws(function () {
-      modularity(graph, {communities: {1: 0, 2: 0}});
+      modularity(graph, {getNodeCommunity: lookup({1: 0, 2: 0})});
     }, /partition/);
   });
 
@@ -194,7 +200,10 @@ describe('modularity', function () {
     graph.mergeEdge(1, 3);
     graph.mergeEdge(2, 3);
 
-    closeTo(modularity(graph, {communities: {1: 0, 2: 0, 3: 0}}), 0);
+    closeTo(
+      modularity(graph, {getNodeCommunity: lookup({1: 0, 2: 0, 3: 0})}),
+      0
+    );
   });
 
   it('should handle tiny weighted graphs (5 nodes).', function () {
@@ -210,7 +219,9 @@ describe('modularity', function () {
     graph.mergeEdge(4, 5, {weight: 100});
 
     closeTo(
-      modularity(graph, {communities: {1: 0, 2: 0, 3: 0, 4: 1, 5: 1}}),
+      modularity(graph, {
+        getNodeCommunity: lookup({1: 0, 2: 0, 3: 0, 4: 1, 5: 1})
+      }),
       0.337
     );
 
@@ -225,7 +236,9 @@ describe('modularity', function () {
     graph.mergeEdge(4, 5, {weight: 100});
 
     closeTo(
-      modularity(graph, {communities: {1: 0, 2: 0, 3: 0, 4: 1, 5: 1}}),
+      modularity(graph, {
+        getNodeCommunity: lookup({1: 0, 2: 0, 3: 0, 4: 1, 5: 1})
+      }),
       0.342
     );
   });
@@ -244,7 +257,10 @@ describe('modularity', function () {
     graph.mergeEdge(4, 5, {weight: 100});
 
     closeTo(
-      modularity(graph, {communities: communities, weighted: false}),
+      modularity(graph, {
+        getNodeCommunity: lookup(communities),
+        getEdgeWeight: null
+      }),
       -0.081
     );
 
@@ -259,8 +275,11 @@ describe('modularity', function () {
     unweighted.mergeEdge(4, 5);
 
     assert.strictEqual(
-      modularity(graph, {communities: communities, weighted: false}),
-      modularity(unweighted, {communities: communities})
+      modularity(graph, {
+        getNodeCommunity: lookup(communities),
+        getEdgeWeight: null
+      }),
+      modularity(unweighted, {getNodeCommunity: lookup(communities)})
     );
   });
 
@@ -276,10 +295,8 @@ describe('modularity', function () {
     graph.mergeEdge(4, 5, {customWeight: 100});
 
     var options = {
-      attributes: {
-        weight: 'customWeight'
-      },
-      communities: {1: 0, 2: 0, 3: 0, 4: 1, 5: 1}
+      getEdgeWeight: 'customWeight',
+      getNodeCommunity: lookup({1: 0, 2: 0, 3: 0, 4: 1, 5: 1})
     };
 
     closeTo(modularity(graph, options), 0.337);
@@ -330,7 +347,9 @@ describe('modularity', function () {
     graph.mergeEdge(5, 1);
 
     closeTo(
-      modularity(graph, {communities: {1: 0, 5: 0, 2: 1, 3: 1, 4: 1}}),
+      modularity(graph, {
+        getNodeCommunity: lookup({1: 0, 5: 0, 2: 1, 3: 1, 4: 1})
+      }),
       0.333
     );
   });
