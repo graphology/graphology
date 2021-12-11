@@ -21,7 +21,6 @@ _Graph metrics_
 
 _Node metrics_
 
-- [Degree](#degree)
 - [Eccentricity](#eccentricity)
 - [Weighted degree](#weighted-degree)
 
@@ -233,115 +232,30 @@ _Arguments_
 Computes the weighted degree of nodes. The weighted degree of a node is the sum of its edges' weights.
 
 ```js
-import weightedDegree from 'graphology-metrics/node/weighted-degree';
-// Or to load more specific functions:
 import {
   weightedDegree,
   weightedInDegree,
-  weightedOutDegree
+  weightedOutDegree,
+  weightedInboundDegree,
+  weightedOutboundDegree,
+  weightedUndirectedDegree,
+  weightedDirectedDegree
 } from 'graphology-metrics/node/weighted-degree';
 
-// To compute weighted degree of a single node
+// To compute weighted degree of a node
 weightedDegree(graph, 'A');
 
-// To compute weighted degree of every node
-const weightedDegrees = weightedDegree(graph);
-
-// To compute normalized weighted degree, i.e. weighted degree will be
-// divided by the node's relevant degree
-weightedDegree(graph, 'A', {normalized: true});
-
-// To directly map the result onto node attributes
-weightedDegree.assign(graph);
+// To use a custom weight
+weightedDegree(graph, 'A', function (_, attr) {
+  return attr.importance;
+});
 ```
 
 _Arguments_
-
-To compute the weighted degree of a single node:
 
 - **graph** _Graph_: target graph.
 - **node** _any_: desired node.
-- **options** _?object_: options. See below.
-
-To compute the weighted degree of every node:
-
-- **graph** _Graph_: target graph.
-- **options** _?object_: options. See below.
-
-_Options_
-
-- **attributes** _?object_: custom attribute names:
-  - **weight** _?string_ [`weight`]: name of the weight attribute.
-  - **weightedDegree** _?string_ [`weightedDegree`]: name of the attribute to assign.
-
-### Degree
-
-Returns degree information for every node in the graph. Note that [`graphology`](https://graphology.github.io)'s API already gives you access to this information through `#.degree` etc. So only consider this function as a convenience to extract/assign all degrees at once.
-
-```js
-import degree from 'graphology-metrics/node/degree';
-
-import degree, {
-  inDegree,
-  outDegree,
-  undirectedDegree,
-  directedDegree,
-  allDegree
-} from 'graphology-metrics/node/degree';
-
-// To extract degree information for every node
-const degrees = degree(graph);
->>> {node1: 34, node2: 45, ...}
-
-// To extract only in degree information for every node
-const inDegrees = inDegree(graph);
-
-// To extract full degree breakdown for every node
-const degrees = allDegree(graph);
->>> { // Assuming the graph is directed
-  node1: {
-    inDegree: 2,
-    outDegree: 36
-  },
-  ...
-}
-
-// To map degree information to node attributes
-degree.assign(graph);
-graph.getNodeAttribute(node, 'degree');
->>> 45
-
-// To map only degree & in degree to node attributes
-allDegree.assign(graph, {types: ['degree', 'inDegree']});
-
-// To map only degree & in degree with different names
-allDegree(
-  graph,
-  {
-    attributes: {
-      inDegree: 'in',
-      outDegree: 'out'
-    },
-    types: ['inDegree', 'outDegree']
-  }
-)
->>> {
-  1: {in: 1, out: 1},
-  ...
-}
-```
-
-_Arguments_
-
-- **graph** _Graph_: target graph.
-- **options** _?object_: options:
-  - **attributes** _?object_: Custom attribute names:
-    - **degree** _?string_: Name of the mixed degree attribute.
-    - **inDegree** _?string_: Name of the mixed inDegree attribute.
-    - **outDegree** _?string_: Name of the mixed outDegree attribute.
-    - **undirectedDegree** _?string_: Name of the mixed undirectedDegree attribute.
-    - **directedDegree** _?string_: Name of the mixed directedDegree attribute.
-  - **types** _?array_: List of degree types to extract.
+- **getEdgeWeight** _?string\|function_: name of the edge weight attribute or getter function.
 
 ### Eccentricity
 

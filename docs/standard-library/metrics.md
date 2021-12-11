@@ -31,7 +31,6 @@ _Graph metrics_
 
 _Node metrics_
 
-- [Degree](#degree)
 - [Eccentricity](#eccentricity)
 - [Weighted degree](#weighted-degree)
 
@@ -61,7 +60,6 @@ _Layout quality metrics_
 Computes the density of the given graph. Note that multi variants can exceed `0`, as it is also the case when considering self loops.
 
 ```js
-import {density} from 'graphology-metrics';
 import {density} from 'graphology-metrics/graph/density';
 
 // Passing a graph instance
@@ -119,8 +117,6 @@ Or:
 Computes the diameter, i.e the maximum eccentricity of any node of the given graph.
 
 ```js
-import {diameter} from 'graphology-metrics';
-// Alternatively, to load only the relevant code:
 import diameter from 'graphology-metrics/graph/diameter';
 
 const graph = new Graph();
@@ -144,18 +140,20 @@ _Arguments_
 Computes the extent - min, max - of a node or edge's attribute.
 
 ```js
-import extent from 'graphology-metrics/graph/extent';
+import {nodeExtent, edgeExtent} from 'graphology-metrics/graph';
+// Alternatively, to load only the relevant code:
+import {nodeExtent, edgeExtent} from 'graphology-metrics/graph/extent';
 
 // Retrieving a single node attribute's extent
-extent(graph, 'size');
+nodeExtent(graph, 'size');
 >>> [1, 34]
 
 // Retrieving multiple node attributes' extents
-extent(graph, ['x', 'y']);
+nodeExtent(graph, ['x', 'y']);
 >>> {x: [-4, 3], y: [-34, 56]}
 
-// For edges
-extent.edgeExtent(graph, 'weight');
+// The same for edges
+edgeExtent(graph, 'weight');
 >>> [0, 5.7]
 ```
 
@@ -169,16 +167,16 @@ _Arguments_
 Computes the modularity, given the graph and a node partition. It works on both directed & undirected networks and will return the relevant modularity.
 
 ```js
-import {modularity} from 'graphology-metrics';
-// Alternatively, to load only the relevant code:
 import modularity from 'graphology-metrics/graph/modularity';
 
 // Simplest way
 const Q = modularity(graph);
 
-// If the partition is not given by node attributes
+// Custom node partition
 const Q = modularity(graph, {
-  communities: {1: 0, 2: 0, 3: 1, 4: 1, 5: 1}
+  getNodeCommunity(node, attr) {
+    return attr.customPartition;
+  }
 });
 ```
 
@@ -186,12 +184,9 @@ _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: attributes' names:
-    - **community** <span class="code">?string</span> <span class="default">community</span>: name of the nodes' community attribute in case we need to read them from the graph itself.
-    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edges' weight attribute.
-  - **communities** <span class="code">?object</span>: object mapping nodes to their respective communities.
+  - **getNodeCommunity** <span class="code">?string\|function</span> <span class="default">community</span>: name of the node community attribute or getter function.
+  - **getEdgeWeight** <span class="code">?string\|function</span> <span class="default">weight</span>: name of the edges' weight attribute or getter function.
   - **resolution** <span class="code">?number</span>: resolution parameter (`γ`).
-  - **weighted** <span class="code">?boolean</span> <span class="default">true</span>: whether to compute weighted modularity or not.
 
 ### Simple size
 
@@ -217,8 +212,6 @@ simpleSize(graph);
 Computes the weighted size, i.e. the sum of the graph's edges' weight, of the given graph.
 
 ```js
-import {weightedSize} from 'graphology-metrics';
-// Alternatively, to load only the relevant code:
 import weightedSize from 'graphology-metrics/graph/weighted-size';
 
 const graph = new Graph();
@@ -249,123 +242,36 @@ _Arguments_
 Computes the weighted degree of nodes. The weighted degree of a node is the sum of its edges' weights.
 
 ```js
-import weightedDegree from 'graphology-metrics/node/weighted-degree';
-// Or to load more specific functions:
 import {
   weightedDegree,
   weightedInDegree,
-  weightedOutDegree
-} from 'graphology-metrics/weighted-degree';
+  weightedOutDegree,
+  weightedInboundDegree,
+  weightedOutboundDegree,
+  weightedUndirectedDegree,
+  weightedDirectedDegree
+} from 'graphology-metrics/node/weighted-degree';
 
-// To compute weighted degree of a single node
+// To compute weighted degree of a node
 weightedDegree(graph, 'A');
 
-// To compute weighted degree of every node
-const weightedDegrees = weightedDegree(graph);
-
-// To compute normalized weighted degree, i.e. weighted degree will be
-// divided by the node's relevant degree
-weightedDegree(graph, 'A', {normalized: true});
-
-// To directly map the result onto node attributes
-weightedDegree.assign(graph);
+// To use a custom weight
+weightedDegree(graph, 'A', function (_, attr) {
+  return attr.importance;
+});
 ```
 
 _Arguments_
-
-To compute the weighted degree of a single node:
 
 - **graph** _Graph_: target graph.
 - **node** _any_: desired node.
-- **options** <span class="code">?object</span>: options. See below.
-
-To compute the weighted degree of every node:
-
-- **graph** _Graph_: target graph.
-- **options** <span class="code">?object</span>: options. See below.
-
-_Options_
-
-- **attributes** <span class="code">?object</span>: custom attribute names:
-  - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the weight attribute.
-  - **weightedDegree** <span class="code">?string</span> <span class="default">weightedDegree</span>: name of the attribute to assign.
-
-### Degree
-
-Returns degree information for every node in the graph. Note that [`graphology`](https://graphology.github.io)'s API already gives you access to this information through `#.degree` etc. So only consider this function as a convenience to extract/assign all degrees at once.
-
-```js
-import degree from 'graphology-metrics/node/degree';
-
-import degree, {
-  inDegree,
-  outDegree,
-  undirectedDegree,
-  directedDegree,
-  allDegree
-} from 'graphology-metrics/degree';
-
-// To extract degree information for every node
-const degrees = degree(graph);
->>> {node1: 34, node2: 45, ...}
-
-// To extract only in degree information for every node
-const inDegrees = inDegree(graph);
-
-// To extract full degree breakdown for every node
-const degrees = allDegree(graph);
->>> { // Assuming the graph is directed
-  node1: {
-    inDegree: 2,
-    outDegree: 36
-  },
-  ...
-}
-
-// To map degree information to node attributes
-degree.assign(graph);
-graph.getNodeAttribute(node, 'degree');
->>> 45
-
-// To map only degree & in degree to node attributes
-allDegree.assign(graph, {types: ['degree', 'inDegree']});
-
-// To map only degree & in degree with different names
-allDegree(
-  graph,
-  {
-    attributes: {
-      inDegree: 'in',
-      outDegree: 'out'
-    },
-    types: ['inDegree', 'outDegree']
-  }
-)
->>> {
-  1: {in: 1, out: 1},
-  ...
-}
-```
-
-_Arguments_
-
-- **graph** _Graph_: target graph.
-- **options** <span class="code">?object</span>: options:
-  - **attributes** <span class="code">?object</span>: Custom attribute names:
-    - **degree** <span class="code">?string</span>: Name of the mixed degree attribute.
-    - **inDegree** <span class="code">?string</span>: Name of the mixed inDegree attribute.
-    - **outDegree** <span class="code">?string</span>: Name of the mixed outDegree attribute.
-    - **undirectedDegree** <span class="code">?string</span>: Name of the mixed undirectedDegree attribute.
-    - **directedDegree** <span class="code">?string</span>: Name of the mixed directedDegree attribute.
-  - **types** <span class="code">?array</span>: List of degree types to extract.
+- **getEdgeWeight** <span class="code">?string\|function</span>: name of the edge weight attribute or getter function.
 
 ### Eccentricity
 
 Computes the eccentricity which is the maximum of the shortest paths between the given node and any other node.
 
 ```js
-import {eccentricity} from 'graphology-metrics';
-// Alternatively, to load only the relevant code:
 import eccentricity from 'graphology-metrics/node/eccentricity';
 
 graph.addNode('1');

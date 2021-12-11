@@ -1,33 +1,69 @@
-import Graph from 'graphology-types';
+import Graph, {Attributes, EdgeMapper} from 'graphology-types';
 
-type WeightedDegreeOptions = {
-  attributes?: {
-    weight?: string;
-    weightedDegree?: string;
-  };
-};
+type EdgeWeightGetter<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> = keyof EdgeAttributes | EdgeMapper<number, NodeAttributes, EdgeAttributes>;
 
-type WeightedDegreeMapping = {[key: string]: number};
+export function weightedDegree<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph<NodeAttributes, EdgeAttributes>,
+  node: unknown,
+  getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
+): number;
 
-interface IWeightedDegreeBase {
-  (graph: Graph, options?: WeightedDegreeOptions): WeightedDegreeMapping;
-  (graph: Graph, node: unknown, options?: WeightedDegreeOptions): number;
+export function weightedInDegree<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph<NodeAttributes, EdgeAttributes>,
+  node: unknown,
+  getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
+): number;
 
-  assign(graph: Graph, options?: WeightedDegreeOptions): void;
-  assign(graph: Graph, node: unknown, options?: WeightedDegreeOptions): void;
-}
+export function weightedOutDegree<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph<NodeAttributes, EdgeAttributes>,
+  node: unknown,
+  getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
+): number;
 
-interface IWeightedDegree extends IWeightedDegreeBase {
-  weightedDegree: IWeightedDegreeBase;
-  weightedInDegree: IWeightedDegreeBase;
-  weightedOutDegree: IWeightedDegreeBase;
-}
+export function weightedInboundDegree<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph<NodeAttributes, EdgeAttributes>,
+  node: unknown,
+  getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
+): number;
 
-declare const weightedDegree: IWeightedDegreeBase;
-declare const weightedInDegree: IWeightedDegreeBase;
-declare const weightedOutDegree: IWeightedDegreeBase;
+export function weightedOutboundDegree<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph<NodeAttributes, EdgeAttributes>,
+  node: unknown,
+  getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
+): number;
 
-declare const defaultWeightedDegree: IWeightedDegree;
+export function weightedUndirectedDegree<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph<NodeAttributes, EdgeAttributes>,
+  node: unknown,
+  getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
+): number;
 
-export {weightedDegree, weightedInDegree, weightedOutDegree};
-export default defaultWeightedDegree;
+export function weightedDirectedDegree<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph<NodeAttributes, EdgeAttributes>,
+  node: unknown,
+  getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
+): number;
