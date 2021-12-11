@@ -23,9 +23,9 @@ function erdosRenyi(GraphClass, options) {
       'graphology-generators/random/erdos-renyi: invalid Graph constructor.'
     );
 
-  var order = options.order,
-    probability = options.probability,
-    rng = options.rng || Math.random;
+  var order = options.order;
+  var probability = options.probability;
+  var rng = options.rng || Math.random;
 
   var graph = new GraphClass();
 
@@ -89,16 +89,15 @@ function erdosRenyiSparse(GraphClass, options) {
       'graphology-generators/random/erdos-renyi: invalid Graph constructor.'
     );
 
-  var order = options.order,
-    probability = options.probability,
-    rng = options.rng || Math.random;
+  var order = options.order;
+  var probability = options.probability;
+  var rng = options.rng || Math.random;
 
   var graph = new GraphClass();
 
   // If user gave a size, we need to compute probability
   if (typeof options.approximateSize === 'number') {
-    var densityFunction = density[graph.type + 'Density'];
-    probability = densityFunction(order, options.approximateSize);
+    probability = density(graph.type, false, order, options.approximateSize);
   }
 
   if (typeof order !== 'number' || order <= 0)
