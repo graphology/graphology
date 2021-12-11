@@ -1,6 +1,6 @@
 {
   "name": "graphology-simple-path",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Simple path related functions for graphology.",
   "main": "index.js",
   "files": [
@@ -37,6 +37,6 @@
   },
   "dependencies": {
     "graphology-utils": "^1.8.0",
-    "mnemonist": "^0.38.0"
+    "mnemonist": "^0.39.0"
   }
 }
