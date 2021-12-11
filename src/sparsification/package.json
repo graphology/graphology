@@ -4,8 +4,10 @@
   "description": "Sparsification methods & helpers for graphology.",
   "main": "index.js",
   "files": [
+    "*.d.ts",
+    "global-threshold.js",
     "index.js",
-    "*.d.ts"
+    "utils.js"
   ],
   "types": "./index.d.ts",
   "scripts": {

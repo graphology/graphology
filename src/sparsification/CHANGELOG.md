@@ -2,4 +2,4 @@
 
 ## 0.0.1 (provisional)
 
-- Initial release.
+- Adding `globalThreshold`.
