@@ -7,6 +7,11 @@
 var deepEqual = require('fast-deep-equal/es6');
 
 /**
+ * Constants.
+ */
+var SIZE = Symbol('size');
+
+/**
  * Helpers.
  */
 function areUnorderedCollectionsOfAttributesIdentical(a1, a2) {
@@ -40,10 +45,7 @@ function areUnorderedCollectionsOfAttributesIdentical(a1, a2) {
 }
 
 function compareNeighborEntries(entries1, entries2) {
-  var keys1 = Object.keys(entries1);
-  var keys2 = Object.keys(entries2);
-
-  if (keys1.length !== keys2.length) return false;
+  if (entries1[SIZE] !== entries2[SIZE]) return false;
 
   for (var k in entries1) {
     if (!areUnorderedCollectionsOfAttributesIdentical(entries1[k], entries2[k]))
@@ -87,6 +89,7 @@ function countAssymetricUndirectedEdges(graph, node) {
 
 function collectOutEdges(graph, node) {
   var entries = {};
+  entries[SIZE] = 0;
   var c;
 
   graph.forEachOutEdge(node, function (_e, attr, _s, target) {
@@ -94,6 +97,7 @@ function collectOutEdges(graph, node) {
 
     if (!c) {
       c = [];
+      entries[SIZE] += 1;
       entries[target] = c;
     }
 
@@ -105,6 +109,7 @@ function collectOutEdges(graph, node) {
 
 function collectAssymetricUndirectedEdges(graph, node) {
   var entries = {};
+  entries[SIZE] = 0;
   var c;
 
   graph.forEachUndirectedEdge(node, function (_e, attr, source, target) {
@@ -116,6 +121,7 @@ function collectAssymetricUndirectedEdges(graph, node) {
 
     if (!c) {
       c = [];
+      entries[SIZE] += 1;
       entries[target] = c;
     }
 
