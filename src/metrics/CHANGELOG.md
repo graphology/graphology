@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0 (provisional)
+
+- Adding edge `disparity` metric.
+
 ## 2.0.0
 
 - Changing folder organization.

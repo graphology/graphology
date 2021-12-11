@@ -26,6 +26,7 @@ _Node metrics_
 
 _Edge metrics_
 
+- [Disparity](#disparity)
 - [Simmelian strength](#simmelian-strength)
 
 _Centrality_
@@ -282,6 +283,36 @@ _Arguments_
 - **node** _any_: desired node.
 
 ## Edge metrics
+
+### Disparity
+
+Function computing a score for each edge which is necessary to apply a "disparity filter" as described in the following paper:
+
+> Serrano, M. Ángeles, Marián Boguná, and Alessandro Vespignani. "Extracting the multiscale backbone of complex weighted networks." Proceedings of the national academy of sciences 106.16 (2009): 6483-6488.
+
+Note that this metric requires a weighted graph or will return a useless result.
+
+Beware, the results must be interpreted thusly: a lower score means a more relevant edge, as is intuited in the paper's formulae. This means you can prune edges that have a score greater than a given threshold, as a statistical test. Some other implementations might differ in that they offer the opposite intuition (i.e. greater score = more relevant edge).
+
+```js
+import disparity from 'graphology-metrics/edge/disparity';
+
+// To compute strength for every edge:
+const disparities = disparity(graph);
+
+// To directly map the result onto edge attributes (`disparity`):
+disparity.assign(graph);
+
+// Using custom weights
+disparity.assign(graph, {getEdgeWeight: (_, attr) => attr.importance});
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **options** _?object_: options:
+  - **edgeDisparityAttribute** _?string_ [`disparity`]: Name of the disparity attribute to assign.
+  - **getEdgeWeight** _?string\|function_ [`weight`]: Name of the edge weight attribute or getter function.
 
 ### Simmelian strength
 
