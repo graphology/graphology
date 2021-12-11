@@ -43,7 +43,7 @@
     "graphology-types": ">=0.19.0"
   },
   "dependencies": {
-    "graphology-metrics": "^1.16.1",
+    "graphology-metrics": "^2.0.0",
     "graphology-utils": "^2.3.0"
   }
 }

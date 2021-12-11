@@ -5,7 +5,7 @@
  * Function generating binomial graphs.
  */
 var isGraphConstructor = require('graphology-utils/is-graph-constructor');
-var density = require('graphology-metrics/graph/density');
+var density = require('graphology-metrics/graph/density').abstractDensity;
 
 /**
  * Generates a binomial graph graph with n nodes.
@@ -31,8 +31,7 @@ function erdosRenyi(GraphClass, options) {
 
   // If user gave a size, we need to compute probability
   if (typeof options.approximateSize === 'number') {
-    var densityFunction = density[graph.type + 'Density'];
-    probability = densityFunction(order, options.approximateSize);
+    probability = density(graph.type, false, order, options.approximateSize);
   }
 
   if (typeof order !== 'number' || order <= 0)

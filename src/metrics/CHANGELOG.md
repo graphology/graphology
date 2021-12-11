@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0 (provisional)
+## 2.0.0
 
 - Changing folder organization.
 - Adding `simmelianStrength`.
