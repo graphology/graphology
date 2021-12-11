@@ -11,6 +11,7 @@ exports.generators = require('./generators');
 exports.gexf = require('./gexf');
 exports.graphml = require('./graphml');
 exports.layout = require('./layout');
+exports.layoutForce = require('./layout-force');
 exports.layoutForceAtlas2 = require('./layout-forceatlas2');
 exports.layoutNoverlap = require('./layout-noverlap');
 exports.metrics = require('./metrics');

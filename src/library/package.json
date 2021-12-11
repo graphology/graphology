@@ -1,6 +1,6 @@
 {
   "name": "graphology-library",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Graphology's standard library.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -36,23 +36,24 @@
   },
   "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
-    "graphology-assertions": "~1.2.0",
-    "graphology-communities-louvain": "~1.4.0",
-    "graphology-components": "~1.1.0",
-    "graphology-generators": "~0.11.0",
-    "graphology-gexf": "~0.8.1",
-    "graphology-graphml": "^0.3.0",
-    "graphology-layout": "~0.4.0",
-    "graphology-layout-forceatlas2": "~0.6.0",
-    "graphology-layout-noverlap": "^0.3.0",
-    "graphology-metrics": "~1.14.2",
-    "graphology-operators": "~1.4.0",
-    "graphology-shortest-path": "~1.4.0",
-    "graphology-simple-path": "^0.1.0",
-    "graphology-traversal": "^0.2.0",
-    "graphology-utils": "~2.1.2"
+    "graphology-assertions": "~2.2.0",
+    "graphology-communities-louvain": "~2.0.0",
+    "graphology-components": "~1.5.2",
+    "graphology-generators": "~0.11.2",
+    "graphology-gexf": "~0.10.1",
+    "graphology-graphml": "^0.5.0",
+    "graphology-layout": "~0.5.0",
+    "graphology-layout-force": "~0.2.3",
+    "graphology-layout-forceatlas2": "~0.8.1",
+    "graphology-layout-noverlap": "^0.4.1",
+    "graphology-metrics": "~2.0.0",
+    "graphology-operators": "~1.5.0",
+    "graphology-shortest-path": "~2.0.0",
+    "graphology-simple-path": "^0.1.2",
+    "graphology-traversal": "^0.3.0",
+    "graphology-utils": "~2.5.0"
   },
   "peerDependencies": {
-    "graphology-types": ">=0.20.0"
+    "graphology-types": ">=0.23.0"
   }
 }

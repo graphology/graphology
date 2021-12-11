@@ -5,6 +5,7 @@ export * as generators from './generators';
 export * as gexf from './gexf';
 export * as graphml from './graphml';
 export * as layout from './layout';
+export * as layoutForce from './layout-force';
 export * as layoutForceAtlas2 from './layout-forceatlas2';
 export * as layoutNoverlap from './layout-noverlap';
 export * as metrics from './metrics';

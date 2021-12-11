@@ -3,6 +3,7 @@ export * as communitiesLouvain from './communities-louvain';
 export * as components from './components';
 export * as generators from './generators';
 export * as layout from './layout';
+export * as layoutForce from './layout-force';
 export * as layoutForceAtlas2 from './layout-forceatlas2';
 export * as layoutNoverlap from './layout-noverlap';
 export * as metrics from './metrics';
@@ -13,6 +14,7 @@ export * as traversal from './traversal';
 export * as utils from './utils';
 
 // Browser specific
+export {default as ForceLayout} from 'graphology-layout-force/worker';
 export {default as FA2Layout} from 'graphology-layout-forceatlas2/worker';
 export {default as NoverlapLayout} from 'graphology-layout-noverlap/worker';
 export * as gexf from 'graphology-gexf/browser';
