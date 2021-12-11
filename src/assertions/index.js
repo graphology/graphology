@@ -5,11 +5,54 @@
  * Various assertions concerning graphs.
  */
 var deepEqual = require('fast-deep-equal/es6');
-var objectHash = require('object-hash');
 
 /**
  * Helpers.
  */
+function areUnorderedCollectionsOfAttributesIdentical(a1, a2) {
+  var l1 = a1.length;
+  var l2 = a2.length;
+
+  if (l1 !== l2) return false;
+
+  var o1, o2;
+  var i, j;
+  var matches = new Set();
+
+  outside: for (i = 0; i < l1; i++) {
+    o1 = a1[i];
+
+    for (j = 0; j < l2; j++) {
+      if (matches.has(j)) continue;
+
+      o2 = a2[j];
+
+      if (deepEqual(o1, o2)) {
+        matches.add(j);
+        continue outside;
+      }
+    }
+
+    return false;
+  }
+
+  return true;
+}
+
+function compareNeighborEntries(entries1, entries2) {
+  var keys1 = Object.keys(entries1);
+  var keys2 = Object.keys(entries2);
+
+  if (keys1.length !== keys2.length) return false;
+
+  for (var k in entries1) {
+    if (!areUnorderedCollectionsOfAttributesIdentical(entries1[k], entries2[k]))
+      return false;
+  }
+
+  return true;
+}
+
 function countOutEdges(graph, node) {
   var counts = {};
   var c;
@@ -54,12 +97,8 @@ function collectOutEdges(graph, node) {
       entries[target] = c;
     }
 
-    c.push(objectHash(attr));
+    c.push(attr);
   });
-
-  for (var k in entries) {
-    entries[k].sort();
-  }
 
   return entries;
 }
@@ -80,12 +119,8 @@ function collectAssymetricUndirectedEdges(graph, node) {
       entries[target] = c;
     }
 
-    c.push(objectHash(attr));
+    c.push(attr);
   });
-
-  for (var k in entries) {
-    entries[k].sort();
-  }
 
   return entries;
 }
@@ -193,12 +228,13 @@ function abstractAreSameGraphs(deep, relaxed, G, H) {
   // In the multi case, things are a bit more complex
   else {
     var aggregationFunction = deep ? collectOutEdges : countOutEdges;
+    var comparisonFunction = deep ? compareNeighborEntries : deepEqual;
 
     sameDirectedEdges = G.everyNode(function (node) {
       var gCounts = aggregationFunction(G, node);
       var hCounts = aggregationFunction(H, node);
 
-      return deepEqual(gCounts, hCounts);
+      return comparisonFunction(gCounts, hCounts);
     });
 
     if (!sameDirectedEdges) return false;
@@ -211,7 +247,7 @@ function abstractAreSameGraphs(deep, relaxed, G, H) {
       var gCounts = aggregationFunction(G, node);
       var hCounts = aggregationFunction(H, node);
 
-      return deepEqual(gCounts, hCounts);
+      return comparisonFunction(gCounts, hCounts);
     });
 
     if (!sameUndirectedEdges) return false;
