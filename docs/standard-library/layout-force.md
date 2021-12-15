@@ -31,6 +31,8 @@ npm install graphology-layout-force
 
 Each node's starting position must be set before running the force layout algorithm. Two attributes called `x` and `y` must therefore be defined for all the graph nodes.
 
+Note also that the algorithm has an edge-case where the layout cannot be computed if all of your nodes starts with `x=0` and `y=0`.
+
 ### Settings
 
 - **attraction** <span class="code">?number</span> <span class="default">0.0005</span>: importance of the attraction force, that attracts each pair of connected nodes like elastics.
