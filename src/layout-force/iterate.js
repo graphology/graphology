@@ -22,7 +22,7 @@ module.exports = function iterate(graph, nodeStates, params) {
   let {shouldSkipNode, shouldSkipEdge, isNodeFixed} = params;
 
   isNodeFixed = createNodeValueGetter(isNodeFixed);
-  shouldSkipNode = createNodeValueGetter(shouldSkipEdge, false);
+  shouldSkipNode = createNodeValueGetter(shouldSkipNode, false);
   shouldSkipEdge = createEdgeValueGetter(shouldSkipEdge, false);
 
   const nodes = graph.filterNodes((n, attr) => {
