@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.16.6 (provisional)
+
+- Scaling necessary memory with selected method for `NeighborhoodIndex` and `WeightedNeighborhoodIndex`.
+
 ## 0.16.5
 
 - Adding `BFSQueue`.

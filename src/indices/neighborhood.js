@@ -6,11 +6,21 @@ var typed = require('mnemonist/utils/typed-arrays');
 var createEdgeWeightGetter =
   require('graphology-utils/getters').createEdgeWeightGetter;
 
+function upperBoundPerMethod(method, graph) {
+  if (method === 'outbound' || method === 'inbound')
+    return graph.directedSize + graph.undirectedSize * 2;
+
+  if (method === 'in' || method === 'out' || method === 'directed')
+    return graph.directedSize;
+
+  return graph.undirectedSize * 2;
+}
+
 function NeighborhoodIndex(graph, method) {
   method = method || 'outbound';
   var getNeighbors = graph[method + 'Neighbors'].bind(graph);
 
-  var upperBound = graph.directedSize + graph.undirectedSize * 2;
+  var upperBound = upperBoundPerMethod(method, graph);
 
   var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
   var NodesPointerArray = typed.getPointerArray(graph.order);
@@ -95,7 +105,7 @@ function WeightedNeighborhoodIndex(graph, getEdgeWeight, method) {
   method = method || 'outbound';
   var getEdges = graph[method + 'Edges'].bind(graph);
 
-  var upperBound = graph.directedSize + graph.undirectedSize * 2;
+  var upperBound = upperBoundPerMethod(method, graph);
 
   var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
   var NodesPointerArray = typed.getPointerArray(graph.order);
