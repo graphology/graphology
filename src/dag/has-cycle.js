@@ -1,6 +1,6 @@
 /**
- * Graphology Cycle Creation Checker
- * ==================================
+ * Graphology Cycle Detection
+ * ===========================
  *
  * Function returning whether the given graph contains at least one cycle.
  *
