@@ -28,6 +28,8 @@ Function returning whether adding the given directed edge to a DAG will create a
 
 Note that this function expects a valid DAG and even if passing a cyclic graph could work it could also very well lead to undefined behavior ranging from an infinite loop to overkill memory usage.
 
+Note finally that this function will also work with DAG forests (sets of disconnected DAGs living in the same graph instance).
+
 ```js
 import {willCreateCycle} from 'graphology-dag';
 // Alternatively, to load only the relevant code:
