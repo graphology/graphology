@@ -617,14 +617,14 @@ export default class Graph extends EventEmitter {
 
     // It also ensures that automatically generated edge keys are unlikely
     // to produce collisions with arbitrary keys given by users.
-    const instanceId = INSTANCE_ID();
+    const instancePrefix = 'geid_' + INSTANCE_ID() + '_';
     let edgeId = 0;
 
     const edgeKeyGenerator = () => {
       let availableEdgeKey;
 
       do {
-        availableEdgeKey = 'geid_' + instanceId + '_' + edgeId++;
+        availableEdgeKey = instancePrefix + edgeId++;
       } while (this._edges.has(availableEdgeKey));
 
       return availableEdgeKey;

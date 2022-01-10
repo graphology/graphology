@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.23.3 (provisional)
+
+- Improving performance of internal edge key generator.
+
 ## 0.23.2
 
 - Fixing a `#.mergeUndirectedEdgeWithKey` & `#.updateUndirectedEdgeWithKey` bug when source & target are given in the reverse order.
