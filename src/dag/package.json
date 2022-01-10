@@ -4,6 +4,7 @@
   "description": "Directed acyclic graph functions for graphology.",
   "main": "index.js",
   "files": [
+    "has-cycle.js",
     "index.js",
     "will-create-cycle.js",
     "*.d.ts"

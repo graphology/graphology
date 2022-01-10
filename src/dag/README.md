@@ -10,7 +10,33 @@ npm install graphology-dag
 
 ## Usage
 
+- [hasCycle](#hascycle)
 - [willCreateCycle](#willcreatecycle)
+
+### hasCycle
+
+Function returning whether the given directed graph contains at least one cycle.
+
+Note that this function will also work with a disconnected graph.
+
+```js
+import {hasCycle} from 'graphology-dag';
+// Alternatively, to load only the relevant code:
+import hasCycle from 'graphology-dag/has-cycle';
+
+const graph = new DirectedGraph();
+graph.mergeEdge(0, 1);
+graph.mergeEdge(1, 2);
+graph.mergeEdge(2, 3);
+
+hasCycle(graph);
+>>> false
+
+graph.mergeEdge(3, 0);
+
+hasCycle(graph);
+>>> true
+```
 
 ### willCreateCycle
 
