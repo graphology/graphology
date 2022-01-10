@@ -1,7 +1,7 @@
 ---
 layout: default
 title: gexf
-nav_order: 6
+nav_order: 7
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/gexf"

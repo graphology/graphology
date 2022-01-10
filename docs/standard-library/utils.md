@@ -1,7 +1,7 @@
 ---
 layout: default
 title: utils
-nav_order: 19
+nav_order: 20
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/utils"

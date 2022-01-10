@@ -1,7 +1,7 @@
 ---
 layout: default
 title: layout
-nav_order: 9
+nav_order: 10
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/layout"

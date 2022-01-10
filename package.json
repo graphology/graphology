@@ -57,6 +57,7 @@
     "graphology-communities-leiden": "file:src/communities-leiden",
     "graphology-communities-louvain": "file:src/communities-louvain",
     "graphology-components": "file:src/components",
+    "graphology-dag": "file:src/dag",
     "graphology-generators": "file:src/generators",
     "graphology-gexf": "file:src/gexf",
     "graphology-graphml": "file:src/graphml",
