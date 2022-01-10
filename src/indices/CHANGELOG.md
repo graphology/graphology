@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.16.6 (provisional)
+## 0.16.6
 
 - Scaling necessary memory with selected method for `NeighborhoodIndex` and `WeightedNeighborhoodIndex`.
 
