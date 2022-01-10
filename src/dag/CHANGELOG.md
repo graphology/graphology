@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (provisional)
+## 0.1.0
 
 - Adding `hasCycle`.
 
