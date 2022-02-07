@@ -106,21 +106,6 @@ export function clearEdgeFromStructureIndex(graph, undirected, edgeData) {
 }
 
 /**
- * Function clearing the whole 'structure' index.
- *
- * @param {Graph} graph - Target Graph instance.
- */
-export function clearStructureIndex(graph) {
-  const iterator = graph._nodes.values();
-
-  let step;
-
-  while (((step = iterator.next()), step.done !== true)) {
-    step.value.clear();
-  }
-}
-
-/**
  * Function used to upgrade a simple `structure` index to a multi on.
  *
  * @param {Graph}  graph - Target Graph instance.

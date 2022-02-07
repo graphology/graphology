@@ -25,7 +25,6 @@ import {
 import {
   updateStructureIndex,
   clearEdgeFromStructureIndex,
-  clearStructureIndex,
   upgradeStructureIndexToMulti
 } from './indices';
 
@@ -1839,7 +1838,14 @@ export default class Graph extends EventEmitter {
    * @return {Graph}
    */
   clearEdges() {
-    clearStructureIndex(this);
+    // Clearing structure index
+    const iterator = this._nodes.values();
+
+    let step;
+
+    while (((step = iterator.next()), step.done !== true)) {
+      step.value.clear();
+    }
 
     // Clearing edges
     this._edges.clear();
