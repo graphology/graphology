@@ -7,7 +7,6 @@
  */
 import Iterator from 'obliterator/iterator';
 import chain from 'obliterator/chain';
-import take from 'obliterator/take';
 
 import {NotFoundGraphError, InvalidArgumentsGraphError} from '../errors';
 
@@ -48,53 +47,6 @@ const NEIGHBORS_ITERATION = [
     type: 'undirected'
   }
 ];
-
-/**
- * Function merging neighbors into the given set iterating over the given object.
- *
- * @param {BasicSet} neighbors - Neighbors set.
- * @param {object}   object    - Target object.
- */
-function merge(neighbors, object) {
-  if (typeof object === 'undefined') return;
-
-  for (const neighbor in object) neighbors.add(neighbor);
-}
-
-/**
- * Function creating an array of relevant neighbors for the given node.
- *
- * @param  {string}       type      - Type of neighbors.
- * @param  {string}       direction - Direction.
- * @param  {any}          nodeData  - Target node's data.
- * @return {Array}                  - The list of neighbors.
- */
-function createNeighborArrayForNode(type, direction, nodeData) {
-  // If we want only undirected or in or out, we can roll some optimizations
-  if (type !== 'mixed') {
-    if (type === 'undirected') return Object.keys(nodeData.undirected);
-
-    if (typeof direction === 'string') return Object.keys(nodeData[direction]);
-  }
-
-  // Else we need to keep a set of neighbors not to return duplicates
-  const neighbors = new Set();
-
-  if (type !== 'undirected') {
-    if (direction !== 'out') {
-      merge(neighbors, nodeData.in);
-    }
-    if (direction !== 'in') {
-      merge(neighbors, nodeData.out);
-    }
-  }
-
-  if (type !== 'directed') {
-    merge(neighbors, nodeData.undirected);
-  }
-
-  return take(neighbors.values(), neighbors.size);
-}
 
 /**
  * Function iterating over the given node's relevant neighbors to match
@@ -210,6 +162,31 @@ function forEachNeighbor(breakable, type, direction, nodeData, callback) {
   }
 
   return;
+}
+
+/**
+ * Function creating an array of relevant neighbors for the given node.
+ *
+ * @param  {string}       type      - Type of neighbors.
+ * @param  {string}       direction - Direction.
+ * @param  {any}          nodeData  - Target node's data.
+ * @return {Array}                  - The list of neighbors.
+ */
+function createNeighborArrayForNode(type, direction, nodeData) {
+  // If we want only undirected or in or out, we can roll some optimizations
+  if (type !== 'mixed') {
+    if (type === 'undirected') return Object.keys(nodeData.undirected);
+
+    if (typeof direction === 'string') return Object.keys(nodeData[direction]);
+  }
+
+  const neighbors = [];
+
+  forEachNeighbor(false, type, direction, nodeData, function (key) {
+    neighbors.push(key);
+  });
+
+  return neighbors;
 }
 
 /**
