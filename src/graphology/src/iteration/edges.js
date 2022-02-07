@@ -50,22 +50,6 @@ const EDGES_ITERATION = [
 ];
 
 /**
- * Function collecting edges from the given object.
- *
- * @param  {array}  edges  - Edges array to populate.
- * @param  {object} object - Target object.
- * @return {array}         - The found edges.
- */
-function collectSimple(edges, object) {
-  for (const k in object) edges.push(object[k].key);
-}
-
-function collectMulti(edges, object) {
-  for (const k in object)
-    object[k].forEach(edgeData => edges.push(edgeData.key));
-}
-
-/**
  * Function iterating over edges from the given object to match one of them.
  *
  * @param {object}   object   - Target object.
@@ -186,30 +170,6 @@ function createIterator(object, avoid) {
       }
     };
   });
-}
-
-/**
- * Function collecting edges from the given object at given key.
- *
- * @param  {array}  edges  - Edges array to populate.
- * @param  {object} object - Target object.
- * @param  {mixed}  k      - Neighbor key.
- * @return {array}         - The found edges.
- */
-function collectForKeySimple(edges, object, k) {
-  const edgeData = object[k];
-
-  if (!edgeData) return;
-
-  edges.push(edgeData.key);
-}
-
-function collectForKeyMulti(edges, object, k) {
-  const edgesData = object[k];
-
-  if (!edgesData) return;
-
-  edgesData.forEach(edgeData => edges.push(edgeData.key));
 }
 
 /**
@@ -441,36 +401,6 @@ function createEdgeIterator(graph, type) {
 }
 
 /**
- * Function creating an array of edges for the given type & the given node.
- *
- * @param  {boolean} multi     - Whether the graph is multi or not.
- * @param  {string}  type      - Type of edges to retrieve.
- * @param  {string}  direction - In or out?
- * @param  {any}     nodeData  - Target node's data.
- * @return {array}             - Array of edges.
- */
-function createEdgeArrayForNode(multi, type, direction, nodeData) {
-  const edges = [];
-
-  const fn = multi ? collectMulti : collectSimple;
-
-  if (type !== 'undirected') {
-    if (direction !== 'out') fn(edges, nodeData.in);
-    if (direction !== 'in') fn(edges, nodeData.out);
-
-    // Handling self loop edge case
-    if (!direction && nodeData.directedSelfLoops > 0)
-      edges.splice(edges.lastIndexOf(nodeData.key), 1);
-  }
-
-  if (type !== 'directed') {
-    fn(edges, nodeData.undirected);
-  }
-
-  return edges;
-}
-
-/**
  * Function iterating over a node's edges using a callback to match one of them.
  *
  * @param  {boolean}  multi     - Whether the graph is multi or not.
@@ -519,6 +449,25 @@ function forEachEdgeForNode(
 }
 
 /**
+ * Function creating an array of edges for the given type & the given node.
+ *
+ * @param  {boolean} multi     - Whether the graph is multi or not.
+ * @param  {string}  type      - Type of edges to retrieve.
+ * @param  {string}  direction - In or out?
+ * @param  {any}     nodeData  - Target node's data.
+ * @return {array}             - Array of edges.
+ */
+function createEdgeArrayForNode(multi, type, direction, nodeData) {
+  const edges = []; // TODO: possibility to know size beforehand or factorize with map
+
+  forEachEdgeForNode(false, multi, type, direction, nodeData, function (key) {
+    edges.push(key);
+  });
+
+  return edges;
+}
+
+/**
  * Function iterating over a node's edges using a callback.
  *
  * @param  {string}   type      - Type of edges to retrieve.
@@ -544,41 +493,6 @@ function createEdgeIteratorForNode(type, direction, nodeData) {
   }
 
   return iterator;
-}
-
-/**
- * Function creating an array of edges for the given path.
- *
- * @param  {string}   type       - Type of edges to retrieve.
- * @param  {boolean}  multi      - Whether the graph is multi.
- * @param  {string}   direction  - In or out?
- * @param  {NodeData} sourceData - Source node's data.
- * @param  {any}      target     - Target node.
- * @return {array}               - Array of edges.
- */
-function createEdgeArrayForPath(type, multi, direction, sourceData, target) {
-  const fn = multi ? collectForKeyMulti : collectForKeySimple;
-
-  const edges = [];
-
-  if (type !== 'undirected') {
-    if (typeof sourceData.in !== 'undefined' && direction !== 'out')
-      fn(edges, sourceData.in, target);
-
-    if (typeof sourceData.out !== 'undefined' && direction !== 'in')
-      fn(edges, sourceData.out, target);
-
-    // Handling self loop edge case
-    if (!direction && sourceData.directedSelfLoops > 0)
-      edges.splice(edges.lastIndexOf(sourceData.key), 1);
-  }
-
-  if (type !== 'directed') {
-    if (typeof sourceData.undirected !== 'undefined')
-      fn(edges, sourceData.undirected, target);
-  }
-
-  return edges;
 }
 
 /**
@@ -635,6 +549,34 @@ function forEachEdgeForPath(
   }
 
   return;
+}
+
+/**
+ * Function creating an array of edges for the given path.
+ *
+ * @param  {string}   type       - Type of edges to retrieve.
+ * @param  {boolean}  multi      - Whether the graph is multi.
+ * @param  {string}   direction  - In or out?
+ * @param  {NodeData} sourceData - Source node's data.
+ * @param  {any}      target     - Target node.
+ * @return {array}               - Array of edges.
+ */
+function createEdgeArrayForPath(type, multi, direction, sourceData, target) {
+  const edges = []; // TODO: possibility to know size beforehand or factorize with map
+
+  forEachEdgeForPath(
+    false,
+    type,
+    multi,
+    direction,
+    sourceData,
+    target,
+    function (key) {
+      edges.push(key);
+    }
+  );
+
+  return edges;
 }
 
 /**
