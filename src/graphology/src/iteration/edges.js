@@ -66,54 +66,12 @@ function collectMulti(edges, object) {
 }
 
 /**
- * Function iterating over edges from the given object using a callback.
- *
- * @param {object}   object   - Target object.
- * @param {function} callback - Function to call.
- */
-function forEachSimple(object, callback, avoid) {
-  for (const k in object) {
-    if (k === avoid) continue;
-
-    const edgeData = object[k];
-
-    callback(
-      edgeData.key,
-      edgeData.attributes,
-      edgeData.source.key,
-      edgeData.target.key,
-      edgeData.source.attributes,
-      edgeData.target.attributes,
-      edgeData.undirected
-    );
-  }
-}
-
-function forEachMulti(object, callback, avoid) {
-  for (const k in object) {
-    if (k === avoid) continue;
-
-    object[k].forEach(edgeData =>
-      callback(
-        edgeData.key,
-        edgeData.attributes,
-        edgeData.source.key,
-        edgeData.target.key,
-        edgeData.source.attributes,
-        edgeData.target.attributes,
-        edgeData.undirected
-      )
-    );
-  }
-}
-
-/**
  * Function iterating over edges from the given object to match one of them.
  *
  * @param {object}   object   - Target object.
  * @param {function} callback - Function to call.
  */
-function findSimple(object, callback, avoid) {
+function forEachSimple(breakable, object, callback, avoid) {
   let shouldBreak = false;
 
   for (const k in object) {
@@ -131,13 +89,13 @@ function findSimple(object, callback, avoid) {
       edgeData.undirected
     );
 
-    if (shouldBreak) return edgeData.key;
+    if (breakable && shouldBreak) return edgeData.key;
   }
 
   return;
 }
 
-function findMulti(object, callback, avoid) {
+function forEachMulti(breakable, object, callback, avoid) {
   let iterator, step, edgeData, source, target;
 
   let shouldBreak = false;
@@ -162,7 +120,7 @@ function findMulti(object, callback, avoid) {
         edgeData.undirected
       );
 
-      if (shouldBreak) return edgeData.key;
+      if (breakable && shouldBreak) return edgeData.key;
     }
   }
 
@@ -255,51 +213,6 @@ function collectForKeyMulti(edges, object, k) {
 }
 
 /**
- * Function iterating over the egdes from the object at given key using
- * a callback.
- *
- * @param {object}   object   - Target object.
- * @param {mixed}    k        - Neighbor key.
- * @param {function} callback - Callback to use.
- */
-function forEachForKeySimple(object, k, callback) {
-  const edgeData = object[k];
-
-  if (!edgeData) return;
-
-  const sourceData = edgeData.source;
-  const targetData = edgeData.target;
-
-  callback(
-    edgeData.key,
-    edgeData.attributes,
-    sourceData.key,
-    targetData.key,
-    sourceData.attributes,
-    targetData.attributes,
-    edgeData.undirected
-  );
-}
-
-function forEachForKeyMulti(object, k, callback) {
-  const edgesData = object[k];
-
-  if (!edgesData) return;
-
-  edgesData.forEach(edgeData =>
-    callback(
-      edgeData.key,
-      edgeData.attributes,
-      edgeData.source.key,
-      edgeData.target.key,
-      edgeData.source.attributes,
-      edgeData.target.attributes,
-      edgeData.undirected
-    )
-  );
-}
-
-/**
  * Function iterating over the egdes from the object at given key to match
  * one of them.
  *
@@ -307,7 +220,7 @@ function forEachForKeyMulti(object, k, callback) {
  * @param {mixed}    k        - Neighbor key.
  * @param {function} callback - Callback to use.
  */
-function findForKeySimple(object, k, callback) {
+function forEachForKeySimple(breakable, object, k, callback) {
   const edgeData = object[k];
 
   if (!edgeData) return;
@@ -324,12 +237,13 @@ function findForKeySimple(object, k, callback) {
       sourceData.attributes,
       targetData.attributes,
       edgeData.undirected
-    )
+    ) &&
+    breakable
   )
     return edgeData.key;
 }
 
-function findForKeyMulti(object, k, callback) {
+function forEachForKeyMulti(breakable, object, k, callback) {
   const edgesData = object[k];
 
   if (!edgesData) return;
@@ -352,7 +266,7 @@ function findForKeyMulti(object, k, callback) {
       edgeData.undirected
     );
 
-    if (shouldBreak) return edgeData.key;
+    if (breakable && shouldBreak) return edgeData.key;
   }
 
   return;
@@ -441,41 +355,6 @@ function createEdgeArray(graph, type) {
 }
 
 /**
- * Function iterating over a graph's edges using a callback.
- *
- * @param  {Graph}    graph    - Target Graph instance.
- * @param  {string}   type     - Type of edges to retrieve.
- * @param  {function} callback - Function to call.
- */
-function forEachEdge(graph, type, callback) {
-  if (graph.size === 0) return;
-
-  const shouldFilter = type !== 'mixed' && type !== graph.type;
-  const mask = type === 'undirected';
-
-  let step, data;
-  const iterator = graph._edges.values();
-
-  while (((step = iterator.next()), step.done !== true)) {
-    data = step.value;
-
-    if (shouldFilter && data.undirected !== mask) continue;
-
-    const {key, attributes, source, target} = data;
-
-    callback(
-      key,
-      attributes,
-      source.key,
-      target.key,
-      source.attributes,
-      target.attributes,
-      data.undirected
-    );
-  }
-}
-
-/**
  * Function iterating over a graph's edges using a callback to match one of
  * them.
  *
@@ -483,7 +362,7 @@ function forEachEdge(graph, type, callback) {
  * @param  {string}   type     - Type of edges to retrieve.
  * @param  {function} callback - Function to call.
  */
-function findEdge(graph, type, callback) {
+function forEachEdge(breakable, graph, type, callback) {
   if (graph.size === 0) return;
 
   const shouldFilter = type !== 'mixed' && type !== graph.type;
@@ -510,7 +389,7 @@ function findEdge(graph, type, callback) {
       data.undirected
     );
 
-    if (shouldBreak) return key;
+    if (breakable && shouldBreak) return key;
   }
 
   return;
@@ -592,29 +471,6 @@ function createEdgeArrayForNode(multi, type, direction, nodeData) {
 }
 
 /**
- * Function iterating over a node's edges using a callback.
- *
- * @param  {boolean}  multi     - Whether the graph is multi or not.
- * @param  {string}   type      - Type of edges to retrieve.
- * @param  {string}   direction - In or out?
- * @param  {any}      nodeData  - Target node's data.
- * @param  {function} callback  - Function to call.
- */
-function forEachEdgeForNode(multi, type, direction, nodeData, callback) {
-  const fn = multi ? forEachMulti : forEachSimple;
-
-  if (type !== 'undirected') {
-    if (direction !== 'out') fn(nodeData.in, callback);
-    if (direction !== 'in')
-      fn(nodeData.out, callback, !direction ? nodeData.key : null);
-  }
-
-  if (type !== 'directed') {
-    fn(nodeData.undirected, callback);
-  }
-}
-
-/**
  * Function iterating over a node's edges using a callback to match one of them.
  *
  * @param  {boolean}  multi     - Whether the graph is multi or not.
@@ -623,28 +479,40 @@ function forEachEdgeForNode(multi, type, direction, nodeData, callback) {
  * @param  {any}      nodeData  - Target node's data.
  * @param  {function} callback  - Function to call.
  */
-function findEdgeForNode(multi, type, direction, nodeData, callback) {
-  const fn = multi ? findMulti : findSimple;
+function forEachEdgeForNode(
+  breakable,
+  multi,
+  type,
+  direction,
+  nodeData,
+  callback
+) {
+  const fn = multi ? forEachMulti : forEachSimple;
 
   let found;
 
   if (type !== 'undirected') {
     if (direction !== 'out') {
-      found = fn(nodeData.in, callback);
+      found = fn(breakable, nodeData.in, callback);
 
-      if (found) return found;
+      if (breakable && found) return found;
     }
     if (direction !== 'in') {
-      found = fn(nodeData.out, callback, !direction ? nodeData.key : null);
+      found = fn(
+        breakable,
+        nodeData.out,
+        callback,
+        !direction ? nodeData.key : null
+      );
 
-      if (found) return found;
+      if (breakable && found) return found;
     }
   }
 
   if (type !== 'directed') {
-    found = fn(nodeData.undirected, callback);
+    found = fn(breakable, nodeData.undirected, callback);
 
-    if (found) return found;
+    if (breakable && found) return found;
   }
 
   return;
@@ -714,41 +582,6 @@ function createEdgeArrayForPath(type, multi, direction, sourceData, target) {
 }
 
 /**
- * Function iterating over edges for the given path using a callback.
- *
- * @param  {string}   type       - Type of edges to retrieve.
- * @param  {boolean}  multi      - Whether the graph is multi.
- * @param  {string}   direction  - In or out?
- * @param  {NodeData} sourceData - Source node's data.
- * @param  {string}   target     - Target node.
- * @param  {function} callback   - Function to call.
- */
-function forEachEdgeForPath(
-  type,
-  multi,
-  direction,
-  sourceData,
-  target,
-  callback
-) {
-  const fn = multi ? forEachForKeyMulti : forEachForKeySimple;
-
-  if (type !== 'undirected') {
-    if (typeof sourceData.in !== 'undefined' && direction !== 'out')
-      fn(sourceData.in, target, callback);
-
-    if (sourceData.key !== target)
-      if (typeof sourceData.out !== 'undefined' && direction !== 'in')
-        fn(sourceData.out, target, callback);
-  }
-
-  if (type !== 'directed') {
-    if (typeof sourceData.undirected !== 'undefined')
-      fn(sourceData.undirected, target, callback);
-  }
-}
-
-/**
  * Function iterating over edges for the given path using a callback to match
  * one of them.
  *
@@ -759,36 +592,45 @@ function forEachEdgeForPath(
  * @param  {string}   target     - Target node.
  * @param  {function} callback   - Function to call.
  */
-function findEdgeForPath(type, multi, direction, sourceData, target, callback) {
-  const fn = multi ? findForKeyMulti : findForKeySimple;
+function forEachEdgeForPath(
+  breakable,
+  type,
+  multi,
+  direction,
+  sourceData,
+  target,
+  callback
+) {
+  const fn = multi ? forEachForKeyMulti : forEachForKeySimple;
 
   let found;
 
   if (type !== 'undirected') {
     if (typeof sourceData.in !== 'undefined' && direction !== 'out') {
-      found = fn(sourceData.in, target, callback);
+      found = fn(breakable, sourceData.in, target, callback);
 
-      if (found) return found;
+      if (breakable && found) return found;
     }
 
     if (sourceData.key !== target)
       if (typeof sourceData.out !== 'undefined' && direction !== 'in') {
         found = fn(
+          breakable,
           sourceData.out,
           target,
           callback,
           !direction ? sourceData.key : null
         );
 
-        if (found) return found;
+        if (breakable && found) return found;
       }
   }
 
   if (type !== 'directed') {
     if (typeof sourceData.undirected !== 'undefined') {
-      found = fn(sourceData.undirected, target, callback);
+      found = fn(breakable, sourceData.undirected, target, callback);
 
-      if (found) return found;
+      if (breakable && found) return found;
     }
   }
 
@@ -957,7 +799,7 @@ function attachForEachEdge(Class, description) {
 
     if (arguments.length === 1) {
       callback = source;
-      return forEachEdge(this, type, callback);
+      return forEachEdge(false, this, type, callback);
     }
 
     if (arguments.length === 2) {
@@ -974,6 +816,7 @@ function attachForEachEdge(Class, description) {
       // Iterating over a node's edges
       // TODO: maybe attach the sub method to the instance dynamically?
       return forEachEdgeForNode(
+        false,
         this.multi,
         type === 'mixed' ? this.type : type,
         direction,
@@ -1000,6 +843,7 @@ function attachForEachEdge(Class, description) {
 
       // Iterating over the edges between source & target
       return forEachEdgeForPath(
+        false,
         type,
         this.multi,
         direction,
@@ -1221,7 +1065,7 @@ function attachFindEdge(Class, description) {
 
     if (arguments.length === 1) {
       callback = source;
-      return findEdge(this, type, callback);
+      return forEachEdge(true, this, type, callback);
     }
 
     if (arguments.length === 2) {
@@ -1237,7 +1081,8 @@ function attachFindEdge(Class, description) {
 
       // Iterating over a node's edges
       // TODO: maybe attach the sub method to the instance dynamically?
-      return findEdgeForNode(
+      return forEachEdgeForNode(
+        true,
         this.multi,
         type === 'mixed' ? this.type : type,
         direction,
@@ -1263,7 +1108,8 @@ function attachFindEdge(Class, description) {
         );
 
       // Iterating over the edges between source & target
-      return findEdgeForPath(
+      return forEachEdgeForPath(
+        true,
         type,
         this.multi,
         direction,
