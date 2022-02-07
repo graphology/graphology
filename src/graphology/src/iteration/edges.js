@@ -599,7 +599,8 @@ function createEdgeIteratorForPath(type, direction, sourceData, target) {
     if (
       typeof sourceData.out !== 'undefined' &&
       direction !== 'in' &&
-      target in sourceData.out
+      target in sourceData.out &&
+      (direction || sourceData.key !== target)
     )
       iterator = chain(iterator, createIteratorForKey(sourceData.out, target));
   }

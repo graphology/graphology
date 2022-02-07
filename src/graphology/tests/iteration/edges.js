@@ -6,6 +6,7 @@
  */
 import assert from 'assert';
 import take from 'obliterator/take';
+import map from 'obliterator/map';
 import {deepMerge, sameMembers, addNodesFrom} from '../helpers';
 
 const METHODS = [
@@ -985,6 +986,7 @@ export default function edgesIteration(Graph, checkers) {
         loopy.addEdgeWithKey('e2', 'n', 'n');
         loopy.addUndirectedEdgeWithKey('e3', 'n', 'n');
 
+        // Arrays
         assert.deepStrictEqual(loopy.edges('n'), ['e1', 'e2', 'e3']);
         assert.deepStrictEqual(loopy.outboundEdges('n'), ['e1', 'e2', 'e3']);
         assert.deepStrictEqual(loopy.inboundEdges('n'), ['e1', 'e2', 'e3']);
@@ -1009,7 +1011,67 @@ export default function edgesIteration(Graph, checkers) {
         assert.deepStrictEqual(loopy.undirectedEdges('n', 'n'), ['e3']);
         assert.deepStrictEqual(loopy.directedEdges('n', 'n'), ['e1', 'e2']);
 
-        // TODO: add iterators
+        // Iterators
+        const mapKeys = it => take(map(it, e => e.edge));
+
+        assert.deepStrictEqual(mapKeys(loopy.edgeEntries('n')), [
+          'e1',
+          'e2',
+          'e3'
+        ]);
+        assert.deepStrictEqual(mapKeys(loopy.outboundEdgeEntries('n')), [
+          'e1',
+          'e2',
+          'e3'
+        ]);
+        assert.deepStrictEqual(mapKeys(loopy.inboundEdgeEntries('n')), [
+          'e1',
+          'e2',
+          'e3'
+        ]);
+        assert.deepStrictEqual(mapKeys(loopy.outEdgeEntries('n')), [
+          'e1',
+          'e2'
+        ]);
+        assert.deepStrictEqual(mapKeys(loopy.inEdgeEntries('n')), ['e1', 'e2']);
+        assert.deepStrictEqual(mapKeys(loopy.undirectedEdgeEntries('n')), [
+          'e3'
+        ]);
+        assert.deepStrictEqual(mapKeys(loopy.directedEdgeEntries('n')), [
+          'e1',
+          'e2'
+        ]);
+
+        assert.deepStrictEqual(mapKeys(loopy.edgeEntries('n', 'n')), [
+          'e1',
+          'e2',
+          'e3'
+        ]);
+        assert.deepStrictEqual(mapKeys(loopy.outboundEdgeEntries('n', 'n')), [
+          'e1',
+          'e2',
+          'e3'
+        ]);
+        assert.deepStrictEqual(mapKeys(loopy.inboundEdgeEntries('n', 'n')), [
+          'e1',
+          'e2',
+          'e3'
+        ]);
+        assert.deepStrictEqual(mapKeys(loopy.outEdgeEntries('n', 'n')), [
+          'e1',
+          'e2'
+        ]);
+        assert.deepStrictEqual(mapKeys(loopy.inEdgeEntries('n', 'n')), [
+          'e1',
+          'e2'
+        ]);
+        assert.deepStrictEqual(mapKeys(loopy.undirectedEdgeEntries('n', 'n')), [
+          'e3'
+        ]);
+        assert.deepStrictEqual(mapKeys(loopy.directedEdgeEntries('n', 'n')), [
+          'e1',
+          'e2'
+        ]);
       }
     }
   };

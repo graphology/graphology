@@ -6,6 +6,7 @@
 - Refactoring internal edge & neighbor iteration schemes.
 - Dropping undocumented `#.upgradeToMixed` & `#.upgradeToMulti`.
 - Refactoring internal indices.
+- Fixing edge iteration wrt. self loops.
 
 ## 0.23.2
 
