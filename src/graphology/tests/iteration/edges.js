@@ -975,6 +975,41 @@ export default function edgesIteration(Graph, checkers) {
         });
 
         assert.deepStrictEqual(edges, ['u']);
+      },
+
+      'self loops in multi graphs should work properly (#352).': function () {
+        const loopy = new Graph({multi: true});
+
+        loopy.addNode('n');
+        loopy.addEdgeWithKey('e1', 'n', 'n');
+        loopy.addEdgeWithKey('e2', 'n', 'n');
+        loopy.addUndirectedEdgeWithKey('e3', 'n', 'n');
+
+        assert.deepStrictEqual(loopy.edges('n'), ['e1', 'e2', 'e3']);
+        assert.deepStrictEqual(loopy.outboundEdges('n'), ['e1', 'e2', 'e3']);
+        assert.deepStrictEqual(loopy.inboundEdges('n'), ['e1', 'e2', 'e3']);
+        assert.deepStrictEqual(loopy.outEdges('n'), ['e1', 'e2']);
+        assert.deepStrictEqual(loopy.inEdges('n'), ['e1', 'e2']);
+        assert.deepStrictEqual(loopy.undirectedEdges('n'), ['e3']);
+        assert.deepStrictEqual(loopy.directedEdges('n'), ['e1', 'e2']);
+
+        assert.deepStrictEqual(loopy.edges('n', 'n'), ['e1', 'e2', 'e3']);
+        assert.deepStrictEqual(loopy.outboundEdges('n', 'n'), [
+          'e1',
+          'e2',
+          'e3'
+        ]);
+        assert.deepStrictEqual(loopy.inboundEdges('n', 'n'), [
+          'e1',
+          'e2',
+          'e3'
+        ]);
+        assert.deepStrictEqual(loopy.outEdges('n', 'n'), ['e1', 'e2']);
+        assert.deepStrictEqual(loopy.inEdges('n', 'n'), ['e1', 'e2']);
+        assert.deepStrictEqual(loopy.undirectedEdges('n', 'n'), ['e3']);
+        assert.deepStrictEqual(loopy.directedEdges('n', 'n'), ['e1', 'e2']);
+
+        // TODO: add iterators
       }
     }
   };

@@ -432,7 +432,7 @@ function forEachEdgeForNode(
         breakable,
         nodeData.out,
         callback,
-        !direction ? nodeData.key : null
+        !direction ? nodeData.key : undefined
       );
 
       if (breakable && found) return found;
@@ -484,7 +484,7 @@ function createEdgeIteratorForNode(type, direction, nodeData) {
     if (direction !== 'in' && typeof nodeData.out !== 'undefined')
       iterator = chain(
         iterator,
-        createIterator(nodeData.out, !direction ? nodeData.key : null)
+        createIterator(nodeData.out, !direction ? nodeData.key : undefined)
       );
   }
 
@@ -526,18 +526,15 @@ function forEachEdgeForPath(
       if (breakable && found) return found;
     }
 
-    if (sourceData.key !== target)
-      if (typeof sourceData.out !== 'undefined' && direction !== 'in') {
-        found = fn(
-          breakable,
-          sourceData.out,
-          target,
-          callback,
-          !direction ? sourceData.key : null
-        );
+    if (
+      typeof sourceData.out !== 'undefined' &&
+      direction !== 'in' &&
+      (direction || sourceData.key !== target)
+    ) {
+      found = fn(breakable, sourceData.out, target, callback);
 
-        if (breakable && found) return found;
-      }
+      if (breakable && found) return found;
+    }
   }
 
   if (type !== 'directed') {

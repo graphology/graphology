@@ -121,8 +121,7 @@ EdgeData.prototype.attach = function () {
   // Handling source
   this.source[outKey][target] = this;
 
-  // If selfLoop, we break here
-  if (source === target && this.undirected) return;
+  if (this.undirected && source === target) return;
 
   // Handling target
   this.target[inKey][source] = this;
@@ -145,9 +144,10 @@ EdgeData.prototype.attachMulti = function () {
     container = new Set();
     adj[target] = container;
 
-    // Handling symmetrical target container
-    if (source !== target || !this.undirected)
+    if (!(this.undirected && source === target)) {
+      // Handling target
       this.target[inKey][source] = container;
+    }
   }
 
   container.add(this);
