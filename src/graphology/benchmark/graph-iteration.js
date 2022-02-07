@@ -22,7 +22,10 @@ while (g.order < N) g.mergeEdge(randomString(4, 50), randomString(4, 50));
 // console.timeEnd('nodes array');
 
 console.time('forEachNode');
-for (i = 0; i < I; i++) g.forEachNode(node => (v = node));
+for (i = 0; i < I; i++)
+  g.forEachNode(node => {
+    v = node;
+  });
 console.timeEnd('forEachNode');
 
 console.time('for...of node');
@@ -41,7 +44,10 @@ console.timeEnd('step node');
 // ---
 
 console.time('forEachEdge');
-for (i = 0; i < I; i++) g.forEachEdge(edge => (v = edge));
+for (i = 0; i < I; i++)
+  g.forEachEdge(edge => {
+    v = edge;
+  });
 console.timeEnd('forEachEdge');
 
 console.time('for...of edge');
