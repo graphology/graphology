@@ -97,49 +97,6 @@ function createNeighborArrayForNode(type, direction, nodeData) {
 }
 
 /**
- * Function iterating over the given node's relevant neighbors using a
- * callback.
- *
- * @param  {string}   type      - Type of neighbors.
- * @param  {string}   direction - Direction.
- * @param  {any}      nodeData  - Target node's data.
- * @param  {function} callback  - Callback to use.
- */
-function forEachInObject(nodeData, object, callback) {
-  for (const k in object) {
-    let edgeData = object[k];
-
-    if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
-
-    const sourceData = edgeData.source,
-      targetData = edgeData.target;
-
-    const neighborData = sourceData === nodeData ? targetData : sourceData;
-
-    callback(neighborData.key, neighborData.attributes);
-  }
-}
-
-function forEachInObjectOnce(visited, nodeData, object, callback) {
-  for (const k in object) {
-    let edgeData = object[k];
-
-    if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
-
-    const sourceData = edgeData.source,
-      targetData = edgeData.target;
-
-    const neighborData = sourceData === nodeData ? targetData : sourceData;
-
-    if (visited.has(neighborData.key)) continue;
-
-    visited.add(neighborData.key);
-
-    callback(neighborData.key, neighborData.attributes);
-  }
-}
-
-/**
  * Function iterating over the given node's relevant neighbors to match
  * one of them using a predicated function.
  *
@@ -148,7 +105,7 @@ function forEachInObjectOnce(visited, nodeData, object, callback) {
  * @param  {any}      nodeData  - Target node's data.
  * @param  {function} callback  - Callback to use.
  */
-function findInObject(nodeData, object, callback) {
+function forEachInObject(breakable, nodeData, object, callback) {
   for (const k in object) {
     let edgeData = object[k];
 
@@ -161,13 +118,13 @@ function findInObject(nodeData, object, callback) {
 
     const shouldBreak = callback(neighborData.key, neighborData.attributes);
 
-    if (shouldBreak) return neighborData.key;
+    if (breakable && shouldBreak) return neighborData.key;
   }
 
   return;
 }
 
-function findInObjectOnce(visited, nodeData, object, callback) {
+function forEachInObjectOnce(breakable, visited, nodeData, object, callback) {
   for (const k in object) {
     let edgeData = object[k];
 
@@ -184,47 +141,30 @@ function findInObjectOnce(visited, nodeData, object, callback) {
 
     const shouldBreak = callback(neighborData.key, neighborData.attributes);
 
-    if (shouldBreak) return neighborData.key;
+    if (breakable && shouldBreak) return neighborData.key;
   }
 
   return;
 }
 
-function forEachNeighborForNode(type, direction, nodeData, callback) {
+function forEachNeighbor(breakable, type, direction, nodeData, callback) {
   // If we want only undirected or in or out, we can roll some optimizations
   if (type !== 'mixed') {
     if (type === 'undirected')
-      return forEachInObject(nodeData, nodeData.undirected, callback);
+      return forEachInObject(
+        breakable,
+        nodeData,
+        nodeData.undirected,
+        callback
+      );
 
     if (typeof direction === 'string')
-      return forEachInObject(nodeData, nodeData[direction], callback);
-  }
-
-  // Else we need to keep a set of neighbors not to return duplicates
-  const visited = new Set();
-
-  if (type !== 'undirected') {
-    if (direction !== 'out') {
-      forEachInObjectOnce(visited, nodeData, nodeData.in, callback);
-    }
-    if (direction !== 'in') {
-      forEachInObjectOnce(visited, nodeData, nodeData.out, callback);
-    }
-  }
-
-  if (type !== 'directed') {
-    forEachInObjectOnce(visited, nodeData, nodeData.undirected, callback);
-  }
-}
-
-function findNeighbor(type, direction, nodeData, callback) {
-  // If we want only undirected or in or out, we can roll some optimizations
-  if (type !== 'mixed') {
-    if (type === 'undirected')
-      return findInObject(nodeData, nodeData.undirected, callback);
-
-    if (typeof direction === 'string')
-      return findInObject(nodeData, nodeData[direction], callback);
+      return forEachInObject(
+        breakable,
+        nodeData,
+        nodeData[direction],
+        callback
+      );
   }
 
   // Else we need to keep a set of neighbors not to return duplicates
@@ -234,21 +174,39 @@ function findNeighbor(type, direction, nodeData, callback) {
 
   if (type !== 'undirected') {
     if (direction !== 'out') {
-      found = findInObjectOnce(visited, nodeData, nodeData.in, callback);
+      found = forEachInObjectOnce(
+        breakable,
+        visited,
+        nodeData,
+        nodeData.in,
+        callback
+      );
 
-      if (found) return found;
+      if (breakable && found) return found;
     }
     if (direction !== 'in') {
-      found = findInObjectOnce(visited, nodeData, nodeData.out, callback);
+      found = forEachInObjectOnce(
+        breakable,
+        visited,
+        nodeData,
+        nodeData.out,
+        callback
+      );
 
-      if (found) return found;
+      if (breakable && found) return found;
     }
   }
 
   if (type !== 'directed') {
-    found = findInObjectOnce(visited, nodeData, nodeData.undirected, callback);
+    found = forEachInObjectOnce(
+      breakable,
+      visited,
+      nodeData,
+      nodeData.undirected,
+      callback
+    );
 
-    if (found) return found;
+    if (breakable && found) return found;
   }
 
   return;
@@ -430,7 +388,8 @@ function attachForEachNeighbor(Class, description) {
       );
 
     // Here, we want to iterate over a node's relevant neighbors
-    forEachNeighborForNode(
+    forEachNeighbor(
+      false,
       type === 'mixed' ? this.type : type,
       direction,
       nodeData,
@@ -542,7 +501,8 @@ function attachFindNeighbor(Class, description) {
       );
 
     // Here, we want to iterate over a node's relevant neighbors
-    return findNeighbor(
+    return forEachNeighbor(
+      true,
       type === 'mixed' ? this.type : type,
       direction,
       nodeData,
