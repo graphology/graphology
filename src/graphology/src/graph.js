@@ -22,7 +22,7 @@ import {
   EdgeData
 } from './data';
 
-import {updateStructureIndex, clearEdgeFromStructureIndex} from './indices';
+import {clearEdgeFromStructureIndex} from './indices';
 
 import attachNodeAttributesMethods from './attributes/nodes';
 import attachEdgeAttributesMethods from './attributes/edges';
@@ -298,15 +298,8 @@ function addEdge(
   }
 
   // Updating relevant index
-  updateStructureIndex(
-    graph,
-    undirected,
-    edgeData,
-    source,
-    target,
-    sourceData,
-    targetData
-  );
+  if (graph.multi) edgeData.attachMulti();
+  else edgeData.attach();
 
   if (undirected) graph._undirectedSize++;
   else graph._directedSize++;
@@ -533,15 +526,8 @@ function mergeEdge(
   }
 
   // Updating relevant index
-  updateStructureIndex(
-    graph,
-    undirected,
-    edgeData,
-    source,
-    target,
-    sourceData,
-    targetData
-  );
+  if (graph.multi) edgeData.attachMulti();
+  else edgeData.attach();
 
   if (undirected) graph._undirectedSize++;
   else graph._directedSize++;

@@ -6,65 +6,6 @@
  */
 
 /**
- * Function updating the 'structure' index with the given edge's data.
- * Note that in the case of the multi graph, related edges are stored in a
- * set that is the same for A -> B & B <- A.
- *
- * @param {Graph}    graph      - Target Graph instance.
- * @param {EdgeData} edgeData   - Added edge's data.
- * @param {NodeData} sourceData - Source node's data.
- * @param {NodeData} targetData - Target node's data.
- */
-export function updateStructureIndex(
-  graph,
-  undirected,
-  edgeData,
-  source,
-  target,
-  sourceData,
-  targetData
-) {
-  const multi = graph.multi;
-
-  let outKey = 'out';
-  let inKey = 'in';
-
-  if (undirected) outKey = inKey = 'undirected';
-
-  let adj, container;
-
-  if (multi) {
-    // Handling source
-    adj = sourceData[outKey];
-    container = adj[target];
-
-    if (typeof container === 'undefined') {
-      container = new Set();
-      adj[target] = container;
-    }
-
-    container.add(edgeData);
-
-    // If selfLoop, we break here
-    if (source === target && undirected) return;
-
-    // Handling target (we won't add the edge because it was already taken
-    // care of with source above)
-    adj = targetData[inKey];
-    if (typeof adj[source] === 'undefined') adj[source] = container;
-  } else {
-    // Handling source
-    sourceData[outKey][target] = edgeData;
-
-    // If selfLoop, we break here
-    if (source === target && undirected) return;
-
-    // Handling target
-    targetData[inKey][source] = edgeData;
-  }
-}
-
-/**
  * Function clearing the 'structure' index data related to the given edge.
  *
  * @param {Graph}    graph    - Target Graph instance.

@@ -64,15 +64,6 @@ DirectedNodeData.prototype.clear = function () {
   this.out = {};
 };
 
-DirectedNodeData.prototype.upgradeToMixed = function () {
-  // Degrees
-  this.undirectedDegree = 0;
-  this.undirectedSelfLoops = 0;
-
-  // Indices
-  this.undirected = {};
-};
-
 /**
  * UndirectedNodeData class.
  *
@@ -97,17 +88,6 @@ UndirectedNodeData.prototype.clear = function () {
   this.undirected = {};
 };
 
-UndirectedNodeData.prototype.upgradeToMixed = function () {
-  // Degrees
-  this.inDegree = 0;
-  this.outDegree = 0;
-  this.directedSelfLoops = 0;
-
-  // Indices
-  this.in = {};
-  this.out = {};
-};
-
 /**
  * EdgeData class.
  *
@@ -128,3 +108,47 @@ export function EdgeData(undirected, key, source, target, attributes) {
   this.source = source;
   this.target = target;
 }
+
+EdgeData.prototype.attach = function () {
+  let outKey = 'out';
+  let inKey = 'in';
+
+  if (this.undirected) outKey = inKey = 'undirected';
+
+  const source = this.source.key;
+  const target = this.target.key;
+
+  // Handling source
+  this.source[outKey][target] = this;
+
+  // If selfLoop, we break here
+  if (source === target && this.undirected) return;
+
+  // Handling target
+  this.target[inKey][source] = this;
+};
+
+EdgeData.prototype.attachMulti = function () {
+  let outKey = 'out';
+  let inKey = 'in';
+
+  const source = this.source.key;
+  const target = this.target.key;
+
+  if (this.undirected) outKey = inKey = 'undirected';
+
+  // Handling source
+  const adj = this.source[outKey];
+  let container = adj[target];
+
+  if (typeof container === 'undefined') {
+    container = new Set();
+    adj[target] = container;
+
+    // Handling symmetrical target container
+    if (source !== target || !this.undirected)
+      this.target[inKey][source] = container;
+  }
+
+  container.add(this);
+};
