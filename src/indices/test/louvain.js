@@ -6,6 +6,7 @@ var assert = require('chai').assert;
 var Graph = require('graphology');
 var mergeClique = require('graphology-utils/merge-clique');
 var toDirected = require('graphology-operators/to-directed');
+var toMulti = require('graphology-operators/to-multi');
 var louvain = require('../louvain.js');
 
 var UndirectedLouvainIndex = louvain.UndirectedLouvainIndex;
@@ -1143,8 +1144,7 @@ describe('LouvainIndex', function () {
     var index = new UndirectedLouvainIndex(graph, {getEdgeWeight: null});
     applyMoves(index, UNDIRECTED_MOVES);
 
-    var multiGraph = graph.copy();
-    multiGraph.upgradeToMulti();
+    var multiGraph = toMulti(graph);
 
     var toDuplicate = [];
     multiGraph.forEachEdge(function (_, a, s, t) {
@@ -1172,8 +1172,7 @@ describe('LouvainIndex', function () {
     var index = new DirectedLouvainIndex(graph, {getEdgeWeight: null});
     applyMoves(index, DIRECTED_MOVES);
 
-    var multiGraph = graph.copy();
-    multiGraph.upgradeToMulti();
+    var multiGraph = toMulti(graph);
 
     var toDuplicate = [];
     multiGraph.forEachEdge(function (_, a, s, t) {

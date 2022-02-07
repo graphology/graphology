@@ -6,8 +6,6 @@ menu_toc:
   - "#.copy"
   - "#.nullCopy"
   - "#.emptyCopy"
-  # - "#.upgradeToMixed"
-  # - "#.upgradeToMulti"
 ---
 
 # Utilities
@@ -86,45 +84,3 @@ graph.type === newGraph.type
 *Arguments*
 
 * **options** <span class="code">[object]</span>: options to merge to create a slightly different graph.
-
-<!--
-## #.upgradeToMixed
-
-Upgrade the graph to a mixed one.
-
-*Example*
-
-```js
-const graph = new UndirectedGraph();
-graph.addNodesFrom([1, 2]);
-
-// Let's upgrade the graph
-graph.upgradeToMixed();
-
-// We can now add directed edges to this graph
-graph.addDirectedEdge(1, 2);
-```
-
-## #.upgradeToMulti
-
-Upgrade the graph to a multi one.
-
-*Example*
-
-```js
-const graph = new Graph();
-graph.addNodesFrom([1, 2]);
-graph.addEdgeWithKey('A', 1, 2);
-
-// This will throw
-graph.addEdgeWithKey('B', 1, 2);
-
-// Let's upgrade the graph
-graph.upgradeToMulti();
-
-// We can now add multiple edges to this graph
-graph.addEdgeWithKey('B', 1, 2);
-graph.edges(1, 2);
->>> ['A', 'B']
-```
- -->

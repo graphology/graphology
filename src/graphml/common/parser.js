@@ -6,6 +6,8 @@
  */
 var isGraphConstructor = require('graphology-utils/is-graph-constructor');
 var mergeEdge = require('graphology-utils/add-edge').mergeEdge;
+var toMixed = require('graphology-operators/to-mixed');
+var toMulti = require('graphology-operators/to-multi');
 
 var DEFAULTS = require('./defaults.js');
 var DEFAULT_FORMATTER = DEFAULTS.DEFAULT_FORMATTER;
@@ -215,13 +217,13 @@ module.exports = function createParserFunction(DOMParser, Document) {
 
       // Should we upgrade to a mixed graph?
       if (!graph.type !== 'mixed' && type !== graph.type)
-        graph.upgradeToMixed();
+        graph = toMixed(graph);
 
       // Should we upgrade to a multi graph?
       if (!graph.multi) {
         if (type === 'undirected') {
-          if (graph.hasUndirectedEdge(s, t)) graph.upgradeToMulti();
-        } else if (graph.hasDirectedEdge(s, t)) graph.upgradeToMulti();
+          if (graph.hasUndirectedEdge(s, t)) graph = toMulti(graph);
+        } else if (graph.hasDirectedEdge(s, t)) graph = toMulti(graph);
       }
 
       mergeResult = mergeEdge(

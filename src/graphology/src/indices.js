@@ -104,34 +104,3 @@ export function clearEdgeFromStructureIndex(graph, undirected, edgeData) {
 
   delete targetIndex[source];
 }
-
-/**
- * Function used to upgrade a simple `structure` index to a multi on.
- *
- * @param {Graph}  graph - Target Graph instance.
- */
-export function upgradeStructureIndexToMulti(graph) {
-  graph._nodes.forEach((data, node) => {
-    // Directed
-    if (data.out) {
-      for (const neighbor in data.out) {
-        const edges = new Set();
-        edges.add(data.out[neighbor]);
-        data.out[neighbor] = edges;
-        graph._nodes.get(neighbor).in[node] = edges;
-      }
-    }
-
-    // Undirected
-    if (data.undirected) {
-      for (const neighbor in data.undirected) {
-        if (neighbor > node) continue;
-
-        const edges = new Set();
-        edges.add(data.undirected[neighbor]);
-        data.undirected[neighbor] = edges;
-        graph._nodes.get(neighbor).undirected[node] = edges;
-      }
-    }
-  });
-}

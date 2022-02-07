@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
+    "graphology-operators": "^1.5.0",
     "graphology-utils": "^2.4.1",
     "xml-writer": "^1.7.0",
     "@xmldom/xmldom": "^0.7.5"

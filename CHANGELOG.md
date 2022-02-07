@@ -1,9 +1,10 @@
 # Changelog
 
-## 0.23.3 (provisional)
+## 0.24.0 (provisional)
 
 - Improving performance of internal edge key generator.
 - Refactoring internal edge & neighbor iteration schemes.
+- Dropping undocumented `#.upgradeToMixed` & `#.upgradeToMulti`.
 
 ## 0.23.2
 

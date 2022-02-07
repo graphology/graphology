@@ -8,6 +8,7 @@ var Graph = require('graphology');
 var modularity = require('graphology-metrics/graph/modularity');
 var emptyGraph = require('graphology-generators/classic/empty');
 var toUndirected = require('graphology-operators/to-undirected');
+var toMulti = require('graphology-operators/to-multi');
 // var netToImg = require('net-to-img');
 var path = require('path');
 var gexf = require('graphology-gexf');
@@ -379,7 +380,7 @@ describe('graphology-communities-louvain', function () {
     assert.strictEqual(result.communities[4], result.communities[5]);
     assert.strictEqual(result.communities[5], result.communities[6]);
 
-    graph.upgradeToMulti();
+    graph = toMulti(graph);
     var toDuplicate = [];
 
     graph.forEachEdge(function (_e, _a, s, t) {

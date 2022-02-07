@@ -22,11 +22,7 @@ import {
   EdgeData
 } from './data';
 
-import {
-  updateStructureIndex,
-  clearEdgeFromStructureIndex,
-  upgradeStructureIndexToMulti
-} from './indices';
+import {updateStructureIndex, clearEdgeFromStructureIndex} from './indices';
 
 import attachNodeAttributesMethods from './attributes/nodes';
 import attachEdgeAttributesMethods from './attributes/edges';
@@ -2674,47 +2670,6 @@ export default class Graph extends EventEmitter {
     }
 
     return graph;
-  }
-
-  /**
-   * Method upgrading the graph to a mixed one.
-   *
-   * @return {Graph} - The copy.
-   */
-  upgradeToMixed() {
-    if (this.type === 'mixed') return this;
-
-    // Upgrading node data:
-    // NOTE: maybe this could lead to some de-optimization by usual
-    // JavaScript engines but I cannot be sure of it. Another solution
-    // would be to reinstantiate the classes but this surely has a performance
-    // and memory impact.
-    this._nodes.forEach(data => data.upgradeToMixed());
-
-    // Mutating the options & the instance
-    this._options.type = 'mixed';
-    readOnlyProperty(this, 'type', this._options.type);
-    privateProperty(this, 'NodeDataClass', MixedNodeData);
-
-    return this;
-  }
-
-  /**
-   * Method upgrading the graph to a multi one.
-   *
-   * @return {Graph} - The copy.
-   */
-  upgradeToMulti() {
-    if (this.multi) return this;
-
-    // Mutating the options & the instance
-    this._options.multi = true;
-    readOnlyProperty(this, 'multi', true);
-
-    // Upgrading indices
-    upgradeStructureIndexToMulti(this);
-
-    return this;
   }
 
   /**---------------------------------------------------------------------------
