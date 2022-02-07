@@ -152,3 +152,35 @@ EdgeData.prototype.attachMulti = function () {
 
   container.add(this);
 };
+
+EdgeData.prototype.detach = function () {
+  const source = this.source.key;
+  const target = this.target.key;
+
+  let outKey = 'out';
+  let inKey = 'in';
+
+  if (this.undirected) outKey = inKey = 'undirected';
+
+  delete this.source[outKey][target];
+  delete this.target[inKey][source];
+};
+
+EdgeData.prototype.detachMulti = function () {
+  const source = this.source.key;
+  const target = this.target.key;
+
+  let outKey = 'out';
+  let inKey = 'in';
+
+  if (this.undirected) outKey = inKey = 'undirected';
+
+  const adj = this.source[outKey][target];
+
+  if (adj.size === 1) {
+    delete this.source[outKey][target];
+    delete this.target[inKey][source];
+  } else {
+    adj.delete(this);
+  }
+};

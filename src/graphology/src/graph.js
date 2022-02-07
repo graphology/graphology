@@ -22,8 +22,6 @@ import {
   EdgeData
 } from './data';
 
-import {clearEdgeFromStructureIndex} from './indices';
-
 import attachNodeAttributesMethods from './attributes/nodes';
 import attachEdgeAttributesMethods from './attributes/edges';
 import attachEdgeIterationMethods from './iteration/edges';
@@ -1778,7 +1776,8 @@ export default class Graph extends EventEmitter {
     }
 
     // Clearing index
-    clearEdgeFromStructureIndex(this, undirected, edgeData);
+    if (this.multi) edgeData.detachMulti();
+    else edgeData.detach();
 
     if (undirected) this._undirectedSize--;
     else this._directedSize--;
