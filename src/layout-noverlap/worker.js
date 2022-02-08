@@ -65,9 +65,9 @@ function NoverlapLayoutSupervisor(graph, params) {
     alreadyRespawning = true;
 
     self.spawnWorker();
-    setImmediate(function () {
+    setTimeout(function () {
       alreadyRespawning = false;
-    });
+    }, 0);
   };
 
   graph.on('nodeAdded', this.handleAddition);
