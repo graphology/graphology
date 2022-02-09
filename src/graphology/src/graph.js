@@ -2397,9 +2397,25 @@ export default class Graph extends EventEmitter {
    * @return {Graph}              - Returns itself for chaining.
    */
   import(data, merge = false) {
-    // Importing a Graph instance
+    // Importing a Graph instance directly
     if (isGraph(data)) {
-      this.import(data.export(), merge);
+      // Nodes
+      data.forEachNode((n, a) => {
+        if (merge) this.mergeNode(n, a);
+        else this.addNode(n, a);
+      });
+
+      // Edges
+      data.forEachEdge((e, a, s, t, _sa, _ta, u) => {
+        if (merge) {
+          if (u) this.mergeUndirectedEdgeWithKey(e, s, t, a);
+          else this.mergeDirectedEdgeWithKey(e, s, t, a);
+        } else {
+          if (u) this.addUndirectedEdgeWithKey(e, s, t, a);
+          else this.addDirectedEdgeWithKey(e, s, t, a);
+        }
+      });
+
       return this;
     }
 
