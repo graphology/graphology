@@ -37,3 +37,13 @@ const weighted = new Graph<{weight: number}>();
 
 weighted.addNode('test', {weight: 34});
 weighted.reduceNodes((x, node, attr) => x + attr.weight, 0);
+
+weighted.on('edgeAttributesUpdated', payload => {
+  console.log(payload.key.toUpperCase());
+
+  if (payload.type === 'merge') {
+    console.log(payload.data);
+  }
+});
+
+weighted.emit('nodeAdded', {key: 'fake', attributes: {weight: 24}});

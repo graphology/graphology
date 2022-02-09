@@ -215,6 +215,7 @@ type SerializedGraph<
  * @note Taken from here: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/events/index.d.ts
  */
 type Listener = (...args: any[]) => void;
+type EventsMapping = Record<string, Listener>;
 
 type AttributeUpdateType = 'set' | 'remove' | 'replace' | 'merge' | 'update';
 
@@ -248,11 +249,11 @@ type AttributeUpdatePayload<ItemAttributes extends Attributes = Attributes> =
       attributes: ItemAttributes;
     };
 
-interface GraphEvents<
+type GraphEvents<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
-> {
+> = {
   nodeAdded(payload: {key: string; attributes: NodeAttributes}): void;
   edgeAdded(payload: {
     key: string;
@@ -278,136 +279,45 @@ interface GraphEvents<
   edgeAttributesUpdated(payload: AttributeUpdatePayload<EdgeAttributes>): void;
   eachNodeAttributesUpdated(payload: {hints: UpdateHints}): void;
   eachEdgeAttributesUpdated(payload: {hints: UpdateHints}): void;
-}
+};
 
-declare class EventEmitter<
-  NodeAttributes extends Attributes = Attributes,
-  EdgeAttributes extends Attributes = Attributes,
-  GraphAttributes extends Attributes = Attributes
-> {
-  static listenerCount(emitter: EventEmitter, type: string | number): number;
+declare class GraphEventEmitter<Events extends EventsMapping> {
+  static listenerCount<Events extends EventsMapping>(
+    emitter: GraphEventEmitter<Events>,
+    type: string | number
+  ): number;
   static defaultMaxListeners: number;
 
-  eventNames(): Array<string | number>;
+  eventNames<Event extends keyof Events>(): Array<Event>;
   setMaxListeners(n: number): this;
   getMaxListeners(): number;
-  emit(type: string | number, ...args: any[]): boolean;
-  addListener<
-    Event extends keyof GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >
-  >(
+  emit<Event extends keyof Events>(
     type: Event,
-    listener: GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >[Event]
-  ): this;
-  addListener(type: string | number, listener: Listener): this;
-  on<
-    Event extends keyof GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >
-  >(
+    ...args: Parameters<Events[Event]>
+  ): boolean;
+  addListener<Event extends keyof Events>(
     type: Event,
-    listener: GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >[Event]
+    listener: Events[Event]
   ): this;
-  on(type: string | number, listener: Listener): this;
-  once<
-    Event extends keyof GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >
-  >(
+  on<Event extends keyof Events>(type: Event, listener: Events[Event]): this;
+  once<Event extends keyof Events>(type: Event, listener: Events[Event]): this;
+  prependListener<Event extends keyof Events>(
     type: Event,
-    listener: GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >[Event]
+    listener: Events[Event]
   ): this;
-  once(type: string | number, listener: Listener): this;
-  prependListener<
-    Event extends keyof GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >
-  >(
+  prependOnceListener<Event extends keyof Events>(
     type: Event,
-    listener: GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >[Event]
+    listener: Events[Event]
   ): this;
-  prependListener(type: string | number, listener: Listener): this;
-  prependOnceListener<
-    Event extends keyof GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >
-  >(
+  removeListener<Event extends keyof Events>(
     type: Event,
-    listener: GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >[Event]
+    listener: Events[Event]
   ): this;
-  prependOnceListener(type: string | number, listener: Listener): this;
-  removeListener<
-    Event extends keyof GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >
-  >(
-    type: Event,
-    listener: GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >[Event]
-  ): this;
-  removeListener(type: string | number, listener: Listener): this;
-  off<
-    Event extends keyof GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >
-  >(
-    type: Event,
-    listener: GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >[Event]
-  ): this;
-  off(type: string | number, listener: Listener): this;
-  removeAllListeners<
-    Event extends keyof GraphEvents<
-      NodeAttributes,
-      EdgeAttributes,
-      GraphAttributes
-    >
-  >(type?: Event): this;
-  removeAllListeners(type?: string | number): this;
-  listeners(type: string | number): Listener[];
-  listenerCount(type: string | number): number;
-  rawListeners(type: string | number): Listener[];
+  off<Event extends keyof Events>(type: Event, listener: Events[Event]): this;
+  removeAllListeners<Event extends keyof Events>(type?: Event): this;
+  listeners<Event extends keyof Events>(type: Event): Events[Event][];
+  listenerCount<Event extends keyof Events>(type: Event): number;
+  rawListeners<Event extends keyof Events>(type: Event): Events[Event][];
 }
 
 /**
@@ -417,7 +327,9 @@ declare abstract class AbstractGraph<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
-> extends EventEmitter<NodeAttributes, EdgeAttributes, GraphAttributes> {
+> extends GraphEventEmitter<
+  GraphEvents<NodeAttributes, EdgeAttributes, GraphAttributes>
+> {
   // Constructor
   constructor(options?: GraphOptions);
 
