@@ -1208,10 +1208,72 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method returning the given node's inbound degree.
+   *
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's inbound degree.
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  inboundDegree(node) {
+    node = '' + node;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.inboundDegree: could not find the "${node}" node in the graph.`
+      );
+
+    let degree = 0;
+
+    if (this.type !== 'directed') {
+      degree += nodeData.undirectedDegree;
+    }
+
+    if (this.type !== 'undirected') {
+      degree += nodeData.inDegree;
+    }
+
+    return degree;
+  }
+
+  /**
+   * Method returning the given node's outbound degree.
+   *
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's outbound degree.
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  outboundDegree(node) {
+    node = '' + node;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.outboundDegree: could not find the "${node}" node in the graph.`
+      );
+
+    let degree = 0;
+
+    if (this.type !== 'directed') {
+      degree += nodeData.undirectedDegree;
+    }
+
+    if (this.type !== 'undirected') {
+      degree += nodeData.outDegree;
+    }
+
+    return degree;
+  }
+
+  /**
    * Method returning the given node's directed degree.
    *
    * @param  {any}     node - The node's key.
-   * @return {number}       - The node's in degree.
+   * @return {number}       - The node's degree.
    *
    * @throws {Error} - Will throw if the node isn't in the graph.
    */
@@ -1343,10 +1405,88 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method returning the given node's inbound degree without considering self loops.
+   *
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's inbound degree.
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  inboundDegreeWithoutSelfLoops(node) {
+    node = '' + node;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.inboundDegreeWithoutSelfLoops: could not find the "${node}" node in the graph.`
+      );
+
+    let self;
+    let degree = 0;
+    let loops = 0;
+
+    if (this.type !== 'directed') {
+      degree += nodeData.undirectedDegree;
+
+      self = nodeData.undirected[node];
+      loops += (self ? (this.multi ? self.size : 1) : 0) * 2;
+    }
+
+    if (this.type !== 'undirected') {
+      degree += nodeData.inDegree;
+
+      self = nodeData.out[node];
+      loops += self ? (this.multi ? self.size : 1) : 0;
+    }
+
+    return degree - loops;
+  }
+
+  /**
+   * Method returning the given node's outbound degree without considering self loops.
+   *
+   * @param  {any}     node - The node's key.
+   * @return {number}       - The node's outbound degree.
+   *
+   * @throws {Error} - Will throw if the node isn't in the graph.
+   */
+  outboundDegreeWithoutSelfLoops(node) {
+    node = '' + node;
+
+    const nodeData = this._nodes.get(node);
+
+    if (!nodeData)
+      throw new NotFoundGraphError(
+        `Graph.outboundDegreeWithoutSelfLoops: could not find the "${node}" node in the graph.`
+      );
+
+    let self;
+    let degree = 0;
+    let loops = 0;
+
+    if (this.type !== 'directed') {
+      degree += nodeData.undirectedDegree;
+
+      self = nodeData.undirected[node];
+      loops += (self ? (this.multi ? self.size : 1) : 0) * 2;
+    }
+
+    if (this.type !== 'undirected') {
+      degree += nodeData.outDegree;
+
+      self = nodeData.in[node];
+      loops += self ? (this.multi ? self.size : 1) : 0;
+    }
+
+    return degree - loops;
+  }
+
+  /**
    * Method returning the given node's directed degree without considering self loops.
    *
    * @param  {any}     node - The node's key.
-   * @return {number}       - The node's in degree.
+   * @return {number}       - The node's degree.
    *
    * @throws {Error} - Will throw if the node isn't in the graph.
    */

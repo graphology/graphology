@@ -758,6 +758,40 @@ export default function read(Graph, checkers) {
         }
       },
 
+      '#.inboundDegree': {
+        'it should throw if the node is not found in the graph.': function () {
+          const graph = new Graph();
+
+          assert.throws(function () {
+            graph.inboundDegree('Test');
+          }, notFound());
+        },
+
+        'it should return the correct in degree.': function () {
+          const graph = new Graph();
+          addNodesFrom(graph, ['Helen', 'Sue', 'William', 'John']);
+          graph.addDirectedEdge('Helen', 'Sue');
+          graph.addDirectedEdge('William', 'Sue');
+          graph.addUndirectedEdge('Helen', 'Sue');
+
+          assert.strictEqual(graph.inboundDegree('Sue'), 3);
+
+          graph.addDirectedEdge('Sue', 'Sue');
+
+          assert.strictEqual(graph.inboundDegree('Sue'), 4);
+          assert.strictEqual(graph.inboundDegreeWithoutSelfLoops('Sue'), 3);
+        },
+
+        'it should always the undirected degree in an undirected graph.':
+          function () {
+            const graph = new Graph({type: 'undirected'});
+            addNodesFrom(graph, ['Helen', 'Sue']);
+            graph.addEdge('Helen', 'Sue');
+
+            assert.strictEqual(graph.inboundDegree('Helen'), 1);
+          }
+      },
+
       '#.outDegree': {
         'it should throw if the node is not found in the graph.': function () {
           const graph = new Graph();
@@ -788,6 +822,40 @@ export default function read(Graph, checkers) {
 
           assert.strictEqual(graph.outDegree('Sue'), 0);
         }
+      },
+
+      '#.outboundDegree': {
+        'it should throw if the node is not found in the graph.': function () {
+          const graph = new Graph();
+
+          assert.throws(function () {
+            graph.outboundDegree('Test');
+          }, notFound());
+        },
+
+        'it should return the correct out degree.': function () {
+          const graph = new Graph();
+          addNodesFrom(graph, ['Helen', 'Sue', 'William', 'John']);
+          graph.addDirectedEdge('Helen', 'Sue');
+          graph.addDirectedEdge('Helen', 'William');
+          graph.addUndirectedEdge('Helen', 'Sue');
+
+          assert.strictEqual(graph.outboundDegree('Helen'), 3);
+
+          graph.addDirectedEdge('Helen', 'Helen');
+
+          assert.strictEqual(graph.outboundDegree('Helen'), 4);
+          assert.strictEqual(graph.outboundDegreeWithoutSelfLoops('Helen'), 3);
+        },
+
+        'it should always the undirected degree in an undirected graph.':
+          function () {
+            const graph = new Graph({type: 'undirected'});
+            addNodesFrom(graph, ['Helen', 'Sue']);
+            graph.addEdge('Helen', 'Sue');
+
+            assert.strictEqual(graph.outboundDegree('Sue'), 1);
+          }
       },
 
       '#.directedDegree': {

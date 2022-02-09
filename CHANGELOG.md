@@ -2,6 +2,7 @@
 
 ## 0.24.0 (provisional)
 
+- Adding `#.inboundDegree`, `#.outboundDegree`, `#.inboundDegreeWithoutSelfLoops`, `#.outboundDegreeWithoutSelfLoops`.
 - Refactoring internal edge & neighbor iteration schemes.
 - Dropping undocumented `#.upgradeToMixed` & `#.upgradeToMulti`.
 - Refactoring internal indices.

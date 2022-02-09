@@ -359,11 +359,15 @@ declare abstract class AbstractGraph<
   edge(source: unknown, target: unknown): string | undefined;
   inDegree(node: unknown): number;
   outDegree(node: unknown): number;
+  inboundDegree(node: unknown): number;
+  outboundDegree(node: unknown): number;
   directedDegree(node: unknown): number;
   undirectedDegree(node: unknown): number;
   degree(node: unknown): number;
   inDegreeWithoutSelfLoops(node: unknown): number;
   outDegreeWithoutSelfLoops(node: unknown): number;
+  inboundDegreeWithoutSelfLoops(node: unknown): number;
+  outboundDegreeWithoutSelfLoops(node: unknown): number;
   directedDegreeWithoutSelfLoops(node: unknown): number;
   undirectedDegreeWithoutSelfLoops(node: unknown): number;
   degreeWithoutSelfLoops(node: unknown): number;
