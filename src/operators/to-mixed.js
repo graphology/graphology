@@ -5,7 +5,6 @@
  * Function used to cast any graph to a mixed one.
  */
 var isGraph = require('graphology-utils/is-graph');
-var copyEdge = require('graphology-utils/add-edge').copyEdge;
 
 module.exports = function toMixed(graph) {
   if (!isGraph(graph))
@@ -13,14 +12,5 @@ module.exports = function toMixed(graph) {
       'graphology-operators/to-mixed: expecting a valid graphology instance.'
     );
 
-  if (graph.type === 'mixed') return graph.copy();
-
-  var mixedGraph = graph.emptyCopy({type: 'mixed'});
-
-  // TODO: do this faster when #.copy get options arg
-  graph.forEachEdge(function (e, a, s, t, sa, ta, u) {
-    copyEdge(mixedGraph, u, e, s, t, a);
-  });
-
-  return mixedGraph;
+  return graph.copy({type: 'mixed'});
 };

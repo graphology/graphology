@@ -3,6 +3,7 @@
 ## 0.24.0 (provisional)
 
 - Adding `#.inboundDegree`, `#.outboundDegree`, `#.inboundDegreeWithoutSelfLoops`, `#.outboundDegreeWithoutSelfLoops`.
+- Adding possibility to pass upgrading options to `#.copy`.
 - Refactoring internal edge & neighbor iteration schemes.
 - Dropping undocumented `#.upgradeToMixed` & `#.upgradeToMulti`.
 - Refactoring internal indices.

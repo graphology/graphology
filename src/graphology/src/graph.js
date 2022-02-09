@@ -2687,10 +2687,40 @@ export default class Graph extends EventEmitter {
   /**
    * Method returning an exact copy of the graph.
    *
-   * @return {Graph} - The copy.
+   * @param  {object} options - Upgrade options.
+   * @return {Graph}          - The copy.
    */
-  copy() {
-    const graph = this.emptyCopy();
+  copy(options) {
+    options = options || {};
+
+    if (
+      typeof options.type === 'string' &&
+      options.type !== this.type &&
+      options.type !== 'mixed'
+    )
+      throw new UsageGraphError(
+        `Graph.copy: cannot create an incompatible copy from "${this.type}" type to "${options.type}" because this would mean losing information about the current graph.`
+      );
+
+    if (
+      typeof options.multi === 'boolean' &&
+      options.multi !== this.multi &&
+      options.multi !== true
+    )
+      throw new UsageGraphError(
+        'Graph.copy: cannot create an incompatible copy by downgrading a multi graph to a simple one because this would mean losing information about the current graph.'
+      );
+
+    if (
+      typeof options.allowSelfLoops === 'boolean' &&
+      options.allowSelfLoops !== this.allowSelfLoops &&
+      options.allowSelfLoops !== true
+    )
+      throw new UsageGraphError(
+        'Graph.copy: cannot create an incompatible copy from a graph allowing self loops to one that does not because this would mean losing information about the current graph.'
+      );
+
+    const graph = this.emptyCopy(options);
 
     const iterator = this._edges.values();
 

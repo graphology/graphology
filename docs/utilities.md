@@ -31,6 +31,10 @@ graph.type === newGraph.type
 >>> true
 ```
 
+*Arguments*
+
+* **options** <span class="code">[object]</span>: options to merge to create a slightly different graph. Note that those options will be validated to ensure that created graph is an "upgrade" and so no information can be lost. For instance, a mixed graph can be created from a directed one, but the reverse is not true.
+
 ## #.nullCopy
 
 Returns a null copy, i.e. a copy of the graph without nodes nor edges, of the current instance while retaining the type & the options of the graph.
@@ -54,7 +58,7 @@ graph.type === newGraph.type
 
 *Arguments*
 
-* **options** <span class="code">[object]</span>: options to merge to create a slightly different graph.
+* **options** <span class="code">[object]</span>: options to merge to create a graph with different characteristics.
 
 ## #.emptyCopy
 
@@ -83,4 +87,4 @@ graph.type === newGraph.type
 
 *Arguments*
 
-* **options** <span class="code">[object]</span>: options to merge to create a slightly different graph.
+* **options** <span class="code">[object]</span>: options to merge to create a graph with different characteristics.

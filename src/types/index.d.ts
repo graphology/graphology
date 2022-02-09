@@ -1910,11 +1910,15 @@ declare abstract class AbstractGraph<
   ): this;
 
   // Utils
-  nullCopy(): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
-  emptyCopy(): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
-  copy(): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
-  upgradeToMixed(): this;
-  upgradeToMulti(): this;
+  nullCopy(
+    options?: Partial<GraphOptions>
+  ): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
+  emptyCopy(
+    options?: Partial<GraphOptions>
+  ): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
+  copy(
+    options?: Partial<GraphOptions>
+  ): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
 
   // Well-known methods
   toJSON(): SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;

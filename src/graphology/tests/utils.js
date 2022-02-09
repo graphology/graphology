@@ -9,7 +9,9 @@ import {addNodesFrom} from './helpers';
 
 const PROPERTIES = ['type', 'multi', 'map', 'selfLoops'];
 
-export default function utils(Graph) {
+export default function utils(Graph, checkers) {
+  const {usage} = checkers;
+
   return {
     '#.nullCopy': {
       'it should create an null copy of the graph.': function () {
@@ -181,6 +183,41 @@ export default function utils(Graph) {
         const copy = graph.copy();
 
         assert.deepStrictEqual(graph.getAttributes(), copy.getAttributes());
+      },
+
+      'it should be possible to upgrade a graph.': function () {
+        const strict = new Graph({type: 'directed', allowSelfLoops: false});
+        const loose = new Graph({multi: true});
+
+        assert.strictEqual(strict.copy({type: 'directed'}).type, 'directed');
+        assert.strictEqual(strict.copy({multi: false}).multi, false);
+        assert.strictEqual(
+          strict.copy({allowSelfLoops: false}).allowSelfLoops,
+          false
+        );
+
+        assert.strictEqual(strict.copy({type: 'mixed'}).type, 'mixed');
+        assert.strictEqual(strict.copy({multi: true}).multi, true);
+        assert.strictEqual(
+          strict.copy({allowSelfLoops: true}).allowSelfLoops,
+          true
+        );
+
+        assert.throws(function () {
+          strict.copy({type: 'undirected'});
+        }, usage());
+
+        assert.throws(function () {
+          loose.copy({type: 'undirected'});
+        }, usage());
+
+        assert.throws(function () {
+          loose.copy({multi: false});
+        }, usage());
+
+        assert.throws(function () {
+          loose.copy({allowSelfLoops: false});
+        }, usage());
       }
     }
   };

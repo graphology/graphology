@@ -3,6 +3,7 @@
 ## 0.24.0 (provisional)
 
 - Improving event emitter types.
+- Fixing copy method types.
 - Aligning type declarations to `graphology` 0.24.0.
 
 ## 0.23.0

@@ -51,7 +51,7 @@ export default function specs(Graph, implementation) {
       Iteration: iteration(Graph, errorCheckers),
       Serialization: serialization(Graph, errorCheckers),
       Events: events(Graph),
-      Utils: utils(Graph),
+      Utils: utils(Graph, errorCheckers),
       'Known Methods': knownMethods(Graph, errorCheckers),
       Miscellaneous: misc(Graph)
     }
