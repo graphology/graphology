@@ -7,6 +7,8 @@
 - Dropping undocumented `#.upgradeToMixed` & `#.upgradeToMulti`.
 - Refactoring internal indices.
 - Fixing edge iteration wrt. self loops.
+- Improving memory usage.
+- Improving performance of default degree methods.
 
 ## 0.23.2
 

@@ -277,22 +277,18 @@ function addEdge(
   graph._edges.set(edge, edgeData);
 
   // Incrementing node degree counters
-  if (source === target) {
-    if (undirected) {
-      sourceData.undirectedSelfLoops++;
-      graph._undirectedSelfLoopCount++;
-    } else {
-      sourceData.directedSelfLoops++;
-      graph._directedSelfLoopCount++;
-    }
+  const isSelfLoop = source === target;
+
+  if (undirected) {
+    sourceData.undirectedDegree++;
+    targetData.undirectedDegree++;
+
+    if (isSelfLoop) graph._undirectedSelfLoopCount++;
   } else {
-    if (undirected) {
-      sourceData.undirectedDegree++;
-      targetData.undirectedDegree++;
-    } else {
-      sourceData.outDegree++;
-      targetData.inDegree++;
-    }
+    sourceData.outDegree++;
+    targetData.inDegree++;
+
+    if (isSelfLoop) graph._directedSelfLoopCount++;
   }
 
   // Updating relevant index
@@ -505,22 +501,18 @@ function mergeEdge(
   graph._edges.set(edge, edgeData);
 
   // Incrementing node degree counters
-  if (source === target) {
-    if (undirected) {
-      sourceData.undirectedSelfLoops++;
-      graph._undirectedSelfLoopCount++;
-    } else {
-      sourceData.directedSelfLoops++;
-      graph._directedSelfLoopCount++;
-    }
+  const isSelfLoop = source === target;
+
+  if (undirected) {
+    sourceData.undirectedDegree++;
+    targetData.undirectedDegree++;
+
+    if (isSelfLoop) graph._undirectedSelfLoopCount++;
   } else {
-    if (undirected) {
-      sourceData.undirectedDegree++;
-      targetData.undirectedDegree++;
-    } else {
-      sourceData.outDegree++;
-      targetData.inDegree++;
-    }
+    sourceData.outDegree++;
+    targetData.inDegree++;
+
+    if (isSelfLoop) graph._directedSelfLoopCount++;
   }
 
   // Updating relevant index
@@ -1143,7 +1135,7 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'undirected') return 0;
 
-    return nodeData.inDegree + nodeData.directedSelfLoops;
+    return nodeData.inDegree;
   }
 
   /**
@@ -1166,7 +1158,7 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'undirected') return 0;
 
-    return nodeData.outDegree + nodeData.directedSelfLoops;
+    return nodeData.outDegree;
   }
 
   /**
@@ -1189,12 +1181,7 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'undirected') return 0;
 
-    const loops = nodeData.directedSelfLoops;
-
-    const inDegree = nodeData.inDegree + loops;
-    const outDegree = nodeData.outDegree + loops;
-
-    return inDegree + outDegree;
+    return nodeData.inDegree + nodeData.outDegree;
   }
 
   /**
@@ -1217,9 +1204,7 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'directed') return 0;
 
-    const loops = nodeData.undirectedSelfLoops;
-
-    return nodeData.undirectedDegree + loops * 2;
+    return nodeData.undirectedDegree;
   }
 
   /**
@@ -1243,12 +1228,11 @@ export default class Graph extends EventEmitter {
     let degree = 0;
 
     if (this.type !== 'directed') {
-      degree += nodeData.undirectedDegree + nodeData.undirectedSelfLoops * 2;
+      degree += nodeData.undirectedDegree;
     }
 
     if (this.type !== 'undirected') {
-      degree +=
-        nodeData.inDegree + nodeData.outDegree + nodeData.directedSelfLoops * 2;
+      degree += nodeData.inDegree + nodeData.outDegree;
     }
 
     return degree;
@@ -1274,7 +1258,10 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'undirected') return 0;
 
-    return nodeData.inDegree;
+    const self = nodeData.in[node];
+    const loops = self ? (this.multi ? self.size : 1) : 0;
+
+    return nodeData.inDegree - loops;
   }
 
   /**
@@ -1297,7 +1284,10 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'undirected') return 0;
 
-    return nodeData.outDegree;
+    const self = nodeData.out[node];
+    const loops = self ? (this.multi ? self.size : 1) : 0;
+
+    return nodeData.outDegree - loops;
   }
 
   /**
@@ -1320,7 +1310,10 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'undirected') return 0;
 
-    return nodeData.inDegree + nodeData.outDegree;
+    const self = nodeData.out[node];
+    const loops = self ? (this.multi ? self.size : 1) : 0;
+
+    return nodeData.inDegree + nodeData.outDegree - loops * 2;
   }
 
   /**
@@ -1343,7 +1336,10 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'directed') return 0;
 
-    return nodeData.undirectedDegree;
+    const self = nodeData.undirected[node];
+    const loops = self ? (this.multi ? self.size : 1) : 0;
+
+    return nodeData.undirectedDegree - loops * 2;
   }
 
   /**
@@ -1364,17 +1360,25 @@ export default class Graph extends EventEmitter {
         `Graph.degreeWithoutSelfLoops: could not find the "${node}" node in the graph.`
       );
 
+    let self;
     let degree = 0;
+    let loops = 0;
 
     if (this.type !== 'directed') {
       degree += nodeData.undirectedDegree;
+
+      self = nodeData.undirected[node];
+      loops += (self ? (this.multi ? self.size : 1) : 0) * 2;
     }
 
     if (this.type !== 'undirected') {
       degree += nodeData.inDegree + nodeData.outDegree;
+
+      self = nodeData.out[node];
+      loops += (self ? (this.multi ? self.size : 1) : 0) * 2;
     }
 
-    return degree;
+    return degree - loops;
   }
 
   /**
@@ -1757,22 +1761,18 @@ export default class Graph extends EventEmitter {
 
     const undirected = edgeData.undirected;
 
-    if (sourceData === targetData) {
-      if (undirected) {
-        sourceData.undirectedSelfLoops--;
-        this._undirectedSelfLoopCount--;
-      } else {
-        sourceData.directedSelfLoops--;
-        this._directedSelfLoopCount--;
-      }
+    const isSelfLoop = sourceData === targetData;
+
+    if (undirected) {
+      sourceData.undirectedDegree--;
+      targetData.undirectedDegree--;
+
+      if (isSelfLoop) this._undirectedSelfLoopCount--;
     } else {
-      if (undirected) {
-        sourceData.undirectedDegree--;
-        targetData.undirectedDegree--;
-      } else {
-        sourceData.outDegree--;
-        targetData.inDegree--;
-      }
+      sourceData.outDegree--;
+      targetData.inDegree--;
+
+      if (isSelfLoop) this._directedSelfLoopCount--;
     }
 
     // Clearing index
