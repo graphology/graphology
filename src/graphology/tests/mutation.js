@@ -726,6 +726,12 @@ export default function mutation(Graph, checkers) {
           assert.strictEqual(graph.size, 2);
           assert.strictEqual(graph.directedSelfLoopCount, 1);
           assert.strictEqual(graph.undirectedSelfLoopCount, 1);
+
+          copy.dropNode('A');
+
+          assert.strictEqual(copy.size, 0);
+          assert.strictEqual(copy.directedSelfLoopCount, 0);
+          assert.strictEqual(copy.undirectedSelfLoopCount, 0);
         },
 
       'it should also coerce keys as strings.': function () {
