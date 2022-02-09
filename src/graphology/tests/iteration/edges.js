@@ -1072,6 +1072,28 @@ export default function edgesIteration(Graph, checkers) {
           'e1',
           'e2'
         ]);
+      },
+
+      'findOutboundEdge should work on multigraphs (#319).': function () {
+        const loopy = new Graph({multi: true});
+
+        loopy.mergeEdgeWithKey('e1', 'n', 'm');
+        loopy.mergeEdgeWithKey('e2', 'n', 'n');
+
+        assert.strictEqual(
+          loopy.findOutboundEdge((_e, _a, s, t) => s === t),
+          'e2'
+        );
+
+        assert.strictEqual(
+          loopy.findOutboundEdge('n', (_e, _a, s, t) => s === t),
+          'e2'
+        );
+
+        assert.strictEqual(
+          loopy.findOutboundEdge('n', 'n', (_e, _a, s, t) => s === t),
+          'e2'
+        );
       }
     }
   };
