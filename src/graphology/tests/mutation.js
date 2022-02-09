@@ -691,7 +691,7 @@ export default function mutation(Graph, checkers) {
         }, notFound());
       },
 
-      'it should correctly remove the given edge from the graph.': function () {
+      'it should correctly remove the given node from the graph.': function () {
         const graph = new Graph();
         addNodesFrom(graph, ['John', 'Margaret']);
         const edge = graph.addEdge('John', 'Margaret');
@@ -706,6 +706,27 @@ export default function mutation(Graph, checkers) {
         assert.strictEqual(graph.degree('John'), 0);
         assert.strictEqual(graph.hasDirectedEdge('John', 'Margaret'), false);
       },
+
+      'it should also work with mied, multi graphs and self loops.':
+        function () {
+          const graph = new Graph({multi: true});
+          graph.mergeEdge('A', 'B');
+          graph.mergeEdge('A', 'B');
+          graph.mergeEdge('B', 'A');
+          graph.mergeEdge('A', 'B');
+          graph.mergeEdge('A', 'A');
+          graph.mergeUndirectedEdge('A', 'B');
+          graph.mergeUndirectedEdge('A', 'B');
+          graph.mergeUndirectedEdge('A', 'A');
+
+          const copy = graph.copy();
+
+          graph.dropNode('B');
+
+          assert.strictEqual(graph.size, 2);
+          assert.strictEqual(graph.directedSelfLoopCount, 1);
+          assert.strictEqual(graph.undirectedSelfLoopCount, 1);
+        },
 
       'it should also coerce keys as strings.': function () {
         function Key(name) {
