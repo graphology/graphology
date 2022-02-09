@@ -49,8 +49,8 @@ function attachEdgeAttributeGetter(Class, method, type) {
           `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
         );
 
-      const source = '' + element,
-        target = '' + name;
+      const source = '' + element;
+      const target = '' + name;
 
       name = arguments[2];
 
@@ -183,8 +183,8 @@ function attachEdgeAttributeChecker(Class, method, type) {
           `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
         );
 
-      const source = '' + element,
-        target = '' + name;
+      const source = '' + element;
+      const target = '' + name;
 
       name = arguments[2];
 
@@ -254,8 +254,8 @@ function attachEdgeAttributeSetter(Class, method, type) {
           `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
         );
 
-      const source = '' + element,
-        target = '' + name;
+      const source = '' + element;
+      const target = '' + name;
 
       name = arguments[2];
       value = arguments[3];
@@ -337,8 +337,8 @@ function attachEdgeAttributeUpdater(Class, method, type) {
           `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
         );
 
-      const source = '' + element,
-        target = '' + name;
+      const source = '' + element;
+      const target = '' + name;
 
       name = arguments[2];
       updater = arguments[3];
@@ -422,8 +422,8 @@ function attachEdgeAttributeRemover(Class, method, type) {
           `Graph.${method}: cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about.`
         );
 
-      const source = '' + element,
-        target = '' + name;
+      const source = '' + element;
+      const target = '' + name;
 
       name = arguments[2];
 

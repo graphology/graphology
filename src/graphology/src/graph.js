@@ -531,6 +531,52 @@ function mergeEdge(
 }
 
 /**
+ * Internal method used to drop an edge.
+ *
+ * @param  {Graph}    graph    - Target graph.
+ * @param  {EdgeData} edgeData - Data of the edge to drop.
+ */
+function dropEdgeFromData(graph, edgeData) {
+  // Dropping the edge from the register
+  graph._edges.delete(edgeData.key);
+
+  // Updating related degrees
+  const {source: sourceData, target: targetData, attributes} = edgeData;
+
+  const undirected = edgeData.undirected;
+
+  const isSelfLoop = sourceData === targetData;
+
+  if (undirected) {
+    sourceData.undirectedDegree--;
+    targetData.undirectedDegree--;
+
+    if (isSelfLoop) graph._undirectedSelfLoopCount--;
+  } else {
+    sourceData.outDegree--;
+    targetData.inDegree--;
+
+    if (isSelfLoop) graph._directedSelfLoopCount--;
+  }
+
+  // Clearing index
+  if (graph.multi) edgeData.detachMulti();
+  else edgeData.detach();
+
+  if (undirected) graph._undirectedSize--;
+  else graph._directedSize--;
+
+  // Emitting
+  graph.emit('edgeDropped', {
+    key: edgeData.key,
+    attributes,
+    source: sourceData.key,
+    target: targetData.key,
+    undirected
+  });
+}
+
+/**
  * Graph class
  *
  * @constructor
@@ -1840,10 +1886,40 @@ export default class Graph extends EventEmitter {
       );
 
     // Removing attached edges
-    // TODO: we could do faster
-    this.forEachEdge(node, edge => {
-      this.dropEdge(edge);
-    });
+    // NOTE: we could be faster here, but this is such a pain to maintain
+    if (this.type !== 'undirected') {
+      for (const neighbor in nodeData.out) {
+        if (this.multi) {
+          nodeData.out[neighbor].forEach(edgeData => {
+            dropEdgeFromData(this, edgeData);
+          });
+        } else {
+          dropEdgeFromData(this, nodeData.out[neighbor]);
+        }
+      }
+
+      for (const neighbor in nodeData.in) {
+        if (this.multi) {
+          nodeData.in[neighbor].forEach(edgeData => {
+            dropEdgeFromData(this, edgeData);
+          });
+        } else {
+          dropEdgeFromData(this, nodeData.in[neighbor]);
+        }
+      }
+    }
+
+    if (this.type !== 'directed') {
+      for (const neighbor in nodeData.undirected) {
+        if (this.multi) {
+          nodeData.undirected[neighbor].forEach(edgeData => {
+            dropEdgeFromData(this, edgeData);
+          });
+        } else {
+          dropEdgeFromData(this, nodeData.undirected[neighbor]);
+        }
+      }
+    }
 
     // Dropping the node from the register
     this._nodes.delete(node);
@@ -1873,8 +1949,8 @@ export default class Graph extends EventEmitter {
     let edgeData;
 
     if (arguments.length > 1) {
-      const source = '' + arguments[0],
-        target = '' + arguments[1];
+      const source = '' + arguments[0];
+      const target = '' + arguments[1];
 
       edgeData = getMatchingEdge(this, source, target, this.type);
 
@@ -1893,43 +1969,7 @@ export default class Graph extends EventEmitter {
         );
     }
 
-    // Dropping the edge from the register
-    this._edges.delete(edgeData.key);
-
-    // Updating related degrees
-    const {source: sourceData, target: targetData, attributes} = edgeData;
-
-    const undirected = edgeData.undirected;
-
-    const isSelfLoop = sourceData === targetData;
-
-    if (undirected) {
-      sourceData.undirectedDegree--;
-      targetData.undirectedDegree--;
-
-      if (isSelfLoop) this._undirectedSelfLoopCount--;
-    } else {
-      sourceData.outDegree--;
-      targetData.inDegree--;
-
-      if (isSelfLoop) this._directedSelfLoopCount--;
-    }
-
-    // Clearing index
-    if (this.multi) edgeData.detachMulti();
-    else edgeData.detach();
-
-    if (undirected) this._undirectedSize--;
-    else this._directedSize--;
-
-    // Emitting
-    this.emit('edgeDropped', {
-      key: edge,
-      attributes,
-      source: sourceData.key,
-      target: targetData.key,
-      undirected
-    });
+    dropEdgeFromData(this, edgeData);
 
     return this;
   }
