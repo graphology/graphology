@@ -2356,48 +2356,6 @@ export default class Graph extends EventEmitter {
    */
 
   /**
-   * Method exporting the target node.
-   *
-   * @param  {any}   node - Target node.
-   * @return {array}      - The serialized node.
-   *
-   * @throws {Error} - Will throw if the node is not found.
-   */
-  exportNode(node) {
-    node = '' + node;
-
-    const data = this._nodes.get(node);
-
-    if (!data)
-      throw new NotFoundGraphError(
-        `Graph.exportNode: could not find the "${node}" node in the graph.`
-      );
-
-    return serializeNode(node, data);
-  }
-
-  /**
-   * Method exporting the target edge.
-   *
-   * @param  {any}   edge - Target edge.
-   * @return {array}      - The serialized edge.
-   *
-   * @throws {Error} - Will throw if the edge is not found.
-   */
-  exportEdge(edge) {
-    edge = '' + edge;
-
-    const data = this._edges.get(edge);
-
-    if (!data)
-      throw new NotFoundGraphError(
-        `Graph.exportEdge: could not find the "${edge}" edge in the graph.`
-      );
-
-    return serializeEdge(edge, data);
-  }
-
-  /**
    * Method used to export the whole graph.
    *
    * @return {object} - The serialized graph.
@@ -2438,7 +2396,7 @@ export default class Graph extends EventEmitter {
    * @param  {boolean} merge - Whether to merge the given node.
    * @return {Graph}         - Returns itself for chaining.
    */
-  importNode(data, merge = false) {
+  _importNode(data, merge = false) {
     // Validating
     const error = validateSerializedNode(data);
 
@@ -2473,7 +2431,7 @@ export default class Graph extends EventEmitter {
    * @param  {boolean} merge - Whether to merge the given edge.
    * @return {Graph}         - Returns itself for chaining.
    */
-  importEdge(data, merge = false) {
+  _importEdge(data, merge = false) {
     // Validating
     const error = validateSerializedEdge(data);
 
@@ -2570,7 +2528,7 @@ export default class Graph extends EventEmitter {
           'Graph.import: invalid nodes. Expecting an array.'
         );
 
-      for (i = 0, l = list.length; i < l; i++) this.importNode(list[i], merge);
+      for (i = 0, l = list.length; i < l; i++) this._importNode(list[i], merge);
     }
 
     if (data.edges) {
@@ -2581,7 +2539,7 @@ export default class Graph extends EventEmitter {
           'Graph.import: invalid edges. Expecting an array.'
         );
 
-      for (i = 0, l = list.length; i < l; i++) this.importEdge(list[i], merge);
+      for (i = 0, l = list.length; i < l; i++) this._importEdge(list[i], merge);
     }
 
     return this;

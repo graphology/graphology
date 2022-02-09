@@ -1981,11 +1981,7 @@ declare abstract class AbstractGraph<
   ): IterableIterator<NeighborEntry<NodeAttributes>>;
 
   // Serialization methods
-  exportNode(node: unknown): SerializedNode<NodeAttributes>;
-  exportEdge(edge: unknown): SerializedEdge<EdgeAttributes>;
   export(): SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
-  importNode(data: SerializedNode<NodeAttributes>, merge?: boolean): this;
-  importEdge(data: SerializedEdge<EdgeAttributes>, merge?: boolean): this;
   import(
     data: Partial<
       SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>

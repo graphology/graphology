@@ -269,14 +269,14 @@ exports.performTypeInference = function (graph, options) {
     .nodes()
     .slice(0, sampleSize)
     .map(function (key) {
-      return graph.exportNode(key);
+      return {key: key, attributes: graph.getNodeAttributes(key)};
     });
 
   var edges = graph
     .edges()
     .slice(0, sampleSize)
     .map(function (key) {
-      return graph.exportEdge(key);
+      return {key: key, attributes: graph.getEdgeAttributes(key)};
     });
 
   return {

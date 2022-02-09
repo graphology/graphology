@@ -9,6 +9,7 @@
 - Fixing edge iteration wrt. self loops.
 - Improving memory usage.
 - Improving performance of default degree methods.
+- Stabilizing serialization internals.
 
 ## 0.23.2
 

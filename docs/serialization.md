@@ -5,11 +5,7 @@ nav_order: 12
 menu_toc:
   - "Format"
   - "#.import"
-  # - "#.importNode"
-  # - "#.importEdge"
   - "#.export"
-  # - "#.exportNode"
-  # - "#.exportEdge"
 ---
 
 # Serialization
@@ -24,7 +20,7 @@ A node is serialized as an object containing the following keys:
 
 ```js
 graph.addNode('Thomas', {age: 34});
-graph.exportNode('Thomas');
+// Serialized would be:
 >>> {key: 'Thomas', attributes: {age: 34}}
 ```
 
@@ -40,13 +36,12 @@ An edge is serialized as an object containing the following keys:
 ```js
 graph.addNodesFrom(['Thomas', 'Eric']);
 graph.addEdgeWithKey('T->E', 'Thomas', 'Eric', {type: 'KNOWS'});
-graph.exportEdge('T->E');
+// Serialized would be:
 >>> {
   key: 'T->E',
   source: 'Thomas',
   target: 'Eric',
-  attributes: {type: 'KNOWS'},
-  undirected: false
+  attributes: {type: 'KNOWS'}
 }
 ```
 
@@ -109,48 +104,6 @@ graph.hasNode('Thomas');
 * **data** <span class="code">serialized graph|Graph</span>: serialized graph data or another Graph instance.
 * **merge** <span class="code">[boolean]</span> <span class="default">false</span>: whether to merge the imported data.
 
-<!-- ## #.importNode
-
-Imports a single serialized node into the graph.
-
-*Example*
-
-```js
-graph.importNode({key: 'Thomas', attributes: {eyes: 'blue'}});
-
-graph.getNodeAttribute('Thomas', 'eyes');
->>> 'blue'
-```
-
-*Arguments*
-
-* **node** <span class="code">serialized node</span>: data of the node to import.
-* **merge** <span class="code">[boolean]</span> <span class="default">false</span>: whether to merge the imported node.
-
-## #.importEdge
-
-Imports a single serialized edge into the graph.
-
-*Example*
-
-```js
-graph.addNodesFrom(['Thomas', 'Eric']);
-graph.importEdge({
-  key:'T->E',
-  source: 'Thomas',
-  target: 'Eric',
-  attributes: {type: 'KNOWS'}
-});
-
-graph.hasEdge('Thomas', 'Eric');
->>> true
-```
-
-*Arguments*
-
-* **edge** <span class="code">serialized edge</span>: data of the edge to import.
-* **merge** <span class="code">[boolean]</span> <span class="default">false</span>: whether to merge the imported edge. -->
-
 ## #.export
 
 Exports the whole instance's data as a serialized graph.
@@ -180,35 +133,3 @@ graph.export();
   ]
 }
 ```
-
-<!-- ## #.exportNode
-
-Exports a single node from the graph.
-
-*Example*
-
-```js
-graph.addNode('Thomas', {age: 34});
-
-graph.exportNode('Thomas');
->>> {key: 'Thomas', attributes: {age: 34}}
-```
-
-## #.exportEdge
-
-Exports a single edge from the graph.
-
-*Example*
-
-```js
-graph.addNodesFrom(['Thomas', 'Martha']);
-graph.addEdgeWithKey('T->M', 'Thomas', 'Martha', {type: 'KNOWS'});
-
-graph.exportEdge('T->M');
->>> {
-  key: 'T->M',
-  source: 'Thomas',
-  target: 'Martha',
-  attributes: {type: 'KNOWS'}
-}
-``` -->

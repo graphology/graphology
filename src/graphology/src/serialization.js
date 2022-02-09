@@ -2,17 +2,7 @@
  * Graphology Serialization Utilities
  * ===================================
  *
- * Collection of functions used to validate import-export formats & to ouput
- * them from internal graph data.
- *
- * Serialized Node:
- * {key, ?attributes}
- *
- * Serialized Edge:
- * {key?, source, target, attributes?, undirected?}
- *
- * Serialized Graph:
- * {nodes[], edges?[]}
+ * Collection of functions used by the graph serialization schemes.
  */
 import {assign, isPlainObject, isEmpty} from './utils';
 
