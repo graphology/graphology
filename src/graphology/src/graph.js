@@ -2378,114 +2378,15 @@ export default class Graph extends EventEmitter {
     });
 
     return {
-      attributes: this.getAttributes(),
-      nodes,
-      edges,
       options: {
         type: this.type,
         multi: this.multi,
         allowSelfLoops: this.allowSelfLoops
-      }
+      },
+      attributes: this.getAttributes(),
+      nodes,
+      edges
     };
-  }
-
-  /**
-   * Method used to import a serialized node.
-   *
-   * @param  {object} data   - The serialized node.
-   * @param  {boolean} merge - Whether to merge the given node.
-   * @return {Graph}         - Returns itself for chaining.
-   */
-  _importNode(data, merge = false) {
-    // Validating
-    const error = validateSerializedNode(data);
-
-    if (error) {
-      if (error === 'not-object')
-        throw new InvalidArgumentsGraphError(
-          'Graph.importNode: invalid serialized node. A serialized node should be a plain object with at least a "key" property.'
-        );
-      if (error === 'no-key')
-        throw new InvalidArgumentsGraphError(
-          'Graph.importNode: no key provided.'
-        );
-      if (error === 'invalid-attributes')
-        throw new InvalidArgumentsGraphError(
-          'Graph.importNode: invalid attributes. Attributes should be a plain object, null or omitted.'
-        );
-    }
-
-    // Adding the node
-    const {key, attributes = {}} = data;
-
-    if (merge) this.mergeNode(key, attributes);
-    else this.addNode(key, attributes);
-
-    return this;
-  }
-
-  /**
-   * Method used to import a serialized edge.
-   *
-   * @param  {object}  data  - The serialized edge.
-   * @param  {boolean} merge - Whether to merge the given edge.
-   * @return {Graph}         - Returns itself for chaining.
-   */
-  _importEdge(data, merge = false) {
-    // Validating
-    const error = validateSerializedEdge(data);
-
-    if (error) {
-      if (error === 'not-object')
-        throw new InvalidArgumentsGraphError(
-          'Graph.importEdge: invalid serialized edge. A serialized edge should be a plain object with at least a "source" & "target" property.'
-        );
-      if (error === 'no-source')
-        throw new InvalidArgumentsGraphError(
-          'Graph.importEdge: missing souce.'
-        );
-      if (error === 'no-target')
-        throw new InvalidArgumentsGraphError(
-          'Graph.importEdge: missing target.'
-        );
-      if (error === 'invalid-attributes')
-        throw new InvalidArgumentsGraphError(
-          'Graph.importEdge: invalid attributes. Attributes should be a plain object, null or omitted.'
-        );
-      if (error === 'invalid-undirected')
-        throw new InvalidArgumentsGraphError(
-          'Graph.importEdge: invalid undirected. Undirected should be boolean or omitted.'
-        );
-    }
-
-    // Adding the edge
-    const {source, target, attributes = {}, undirected = false} = data;
-
-    let method;
-
-    if ('key' in data) {
-      method = merge
-        ? undirected
-          ? this.mergeUndirectedEdgeWithKey
-          : this.mergeDirectedEdgeWithKey
-        : undirected
-        ? this.addUndirectedEdgeWithKey
-        : this.addDirectedEdgeWithKey;
-
-      method.call(this, data.key, source, target, attributes);
-    } else {
-      method = merge
-        ? undirected
-          ? this.mergeUndirectedEdge
-          : this.mergeDirectedEdge
-        : undirected
-        ? this.addUndirectedEdge
-        : this.addDirectedEdge;
-
-      method.call(this, source, target, attributes);
-    }
-
-    return this;
   }
 
   /**
@@ -2518,7 +2419,7 @@ export default class Graph extends EventEmitter {
       else this.replaceAttributes(data.attributes);
     }
 
-    let i, l, list;
+    let i, l, list, node, edge;
 
     if (data.nodes) {
       list = data.nodes;
@@ -2528,7 +2429,18 @@ export default class Graph extends EventEmitter {
           'Graph.import: invalid nodes. Expecting an array.'
         );
 
-      for (i = 0, l = list.length; i < l; i++) this._importNode(list[i], merge);
+      for (i = 0, l = list.length; i < l; i++) {
+        node = list[i];
+
+        // Validating
+        validateSerializedNode(node);
+
+        // Adding the node
+        const {key, attributes} = node;
+
+        if (merge) this.mergeNode(key, attributes);
+        else this.addNode(key, attributes);
+      }
     }
 
     if (data.edges) {
@@ -2539,7 +2451,39 @@ export default class Graph extends EventEmitter {
           'Graph.import: invalid edges. Expecting an array.'
         );
 
-      for (i = 0, l = list.length; i < l; i++) this._importEdge(list[i], merge);
+      for (i = 0, l = list.length; i < l; i++) {
+        edge = list[i];
+
+        // Validating
+        validateSerializedEdge(edge);
+
+        // Adding the edge
+        const {source, target, attributes, undirected = false} = edge;
+
+        let method;
+
+        if ('key' in edge) {
+          method = merge
+            ? undirected
+              ? this.mergeUndirectedEdgeWithKey
+              : this.mergeDirectedEdgeWithKey
+            : undirected
+            ? this.addUndirectedEdgeWithKey
+            : this.addDirectedEdgeWithKey;
+
+          method.call(this, edge.key, source, target, attributes);
+        } else {
+          method = merge
+            ? undirected
+              ? this.mergeUndirectedEdge
+              : this.mergeDirectedEdge
+            : undirected
+            ? this.addUndirectedEdge
+            : this.addDirectedEdge;
+
+          method.call(this, source, target, attributes);
+        }
+      }
     }
 
     return this;

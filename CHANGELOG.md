@@ -2,14 +2,14 @@
 
 ## 0.23.3 (provisional)
 
-- Improving performance of internal edge key generator.
 - Refactoring internal edge & neighbor iteration schemes.
 - Dropping undocumented `#.upgradeToMixed` & `#.upgradeToMulti`.
 - Refactoring internal indices.
 - Fixing edge iteration wrt. self loops.
+- Improving performance of internal edge key generator.
 - Improving memory usage.
 - Improving performance of default degree methods.
-- Stabilizing serialization internals.
+- Improving serialization performance.
 
 ## 0.23.2
 

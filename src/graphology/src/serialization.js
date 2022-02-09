@@ -4,6 +4,7 @@
  *
  * Collection of functions used by the graph serialization schemes.
  */
+import {InvalidArgumentsGraphError} from './errors';
 import {assign, isPlainObject, isEmpty} from './utils';
 
 /**
@@ -51,17 +52,23 @@ export function serializeEdge(key, data) {
  * @return {string|null}
  */
 export function validateSerializedNode(value) {
-  if (!isPlainObject(value)) return 'not-object';
+  if (!isPlainObject(value))
+    throw new InvalidArgumentsGraphError(
+      'Graph.import: invalid serialized node. A serialized node should be a plain object with at least a "key" property.'
+    );
 
-  if (!('key' in value)) return 'no-key';
+  if (!('key' in value))
+    throw new InvalidArgumentsGraphError(
+      'Graph.import: serialized node is missing its key.'
+    );
 
   if (
     'attributes' in value &&
     (!isPlainObject(value.attributes) || value.attributes === null)
   )
-    return 'invalid-attributes';
-
-  return null;
+    throw new InvalidArgumentsGraphError(
+      'Graph.import: invalid attributes. Attributes should be a plain object, null or omitted.'
+    );
 }
 
 /**
@@ -71,20 +78,31 @@ export function validateSerializedNode(value) {
  * @return {string|null}
  */
 export function validateSerializedEdge(value) {
-  if (!isPlainObject(value)) return 'not-object';
+  if (!isPlainObject(value))
+    throw new InvalidArgumentsGraphError(
+      'Graph.import: invalid serialized edge. A serialized edge should be a plain object with at least a "source" & "target" property.'
+    );
 
-  if (!('source' in value)) return 'no-source';
+  if (!('source' in value))
+    throw new InvalidArgumentsGraphError(
+      'Graph.import: serialized edge is missing its source.'
+    );
 
-  if (!('target' in value)) return 'no-target';
+  if (!('target' in value))
+    throw new InvalidArgumentsGraphError(
+      'Graph.import: serialized edge is missing its target.'
+    );
 
   if (
     'attributes' in value &&
     (!isPlainObject(value.attributes) || value.attributes === null)
   )
-    return 'invalid-attributes';
+    throw new InvalidArgumentsGraphError(
+      'Graph.import: invalid attributes. Attributes should be a plain object, null or omitted.'
+    );
 
   if ('undirected' in value && typeof value.undirected !== 'boolean')
-    return 'invalid-undirected';
-
-  return null;
+    throw new InvalidArgumentsGraphError(
+      'Graph.import: invalid undirectedness information. Undirected should be boolean or omitted.'
+    );
 }
