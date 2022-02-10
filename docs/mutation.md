@@ -453,6 +453,11 @@ graph.dropEdge('John', 'Martha');
   * **source** <span class="code">any</span>: source node of the edge to drop.
   * **target** <span class="code">any</span>: target node of the edge to drop.
 
+*Variants*
+
+* `#.dropDirectedEdge`
+* `#.dropUndirectedEdge`
+
 ## #.clear
 
 Drop every node & every edge from the graph, leaving it empty.

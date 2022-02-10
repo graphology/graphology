@@ -755,6 +755,70 @@ export default function mutation(Graph, checkers) {
       }
     },
 
+    '#.dropDirectedEdge': {
+      'it should throw if given incorrect arguments.': function () {
+        assert.throws(function () {
+          const graph = new Graph({multi: true});
+          graph.mergeEdge('a', 'b');
+          graph.dropDirectedEdge('a', 'b');
+        }, usage());
+
+        assert.throws(function () {
+          const graph = new Graph({multi: true});
+          graph.mergeEdgeWithKey('1', 'a', 'b');
+          graph.dropDirectedEdge('1');
+        }, usage());
+
+        assert.throws(function () {
+          const graph = new Graph();
+          graph.dropDirectedEdge('a', 'b');
+        }, notFound());
+      },
+
+      'it should correctly drop the relevant edge.': function () {
+        const graph = new Graph();
+        graph.mergeUndirectedEdge('a', 'b');
+        graph.mergeDirectedEdge('a', 'b');
+        graph.dropDirectedEdge('a', 'b');
+
+        assert.strictEqual(graph.directedSize, 0);
+        assert.strictEqual(graph.hasDirectedEdge('a', 'b'), false);
+        assert.strictEqual(graph.hasUndirectedEdge('a', 'b'), true);
+      }
+    },
+
+    '#.dropUndirectedEdge': {
+      'it should throw if given incorrect arguments.': function () {
+        assert.throws(function () {
+          const graph = new Graph({multi: true, type: 'undirected'});
+          graph.mergeEdge('a', 'b');
+          graph.dropUndirectedEdge('a', 'b');
+        }, usage());
+
+        assert.throws(function () {
+          const graph = new Graph({multi: true, type: 'undirected'});
+          graph.mergeEdgeWithKey('1', 'a', 'b');
+          graph.dropUndirectedEdge('1');
+        }, usage());
+
+        assert.throws(function () {
+          const graph = new Graph({type: 'undirected'});
+          graph.dropUndirectedEdge('a', 'b');
+        }, notFound());
+      },
+
+      'it should correctly drop the relevant edge.': function () {
+        const graph = new Graph();
+        graph.mergeUndirectedEdge('a', 'b');
+        graph.mergeDirectedEdge('a', 'b');
+        graph.dropUndirectedEdge('a', 'b');
+
+        assert.strictEqual(graph.undirectedSize, 0);
+        assert.strictEqual(graph.hasUndirectedEdge('a', 'b'), false);
+        assert.strictEqual(graph.hasDirectedEdge('a', 'b'), true);
+      }
+    },
+
     '#.clear': {
       'it should empty the graph.': function () {
         const graph = new Graph();

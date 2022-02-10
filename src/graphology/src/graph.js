@@ -1975,6 +1975,75 @@ export default class Graph extends EventEmitter {
   }
 
   /**
+   * Method used to drop a single directed edge from the graph.
+   *
+   * @param  {any}    source - Source node.
+   * @param  {any}    target - Target node.
+   *
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if the edge doesn't exist.
+   */
+  dropDirectedEdge(source, target) {
+    if (arguments.length < 2)
+      throw new UsageGraphError(
+        'Graph.dropDirectedEdge: it does not make sense to try and drop a directed edge by key. What if the edge with this key is undirected? Use #.dropEdge for this purpose instead.'
+      );
+
+    if (this.multi)
+      throw new UsageGraphError(
+        'Graph.dropDirectedEdge: cannot use a {source,target} combo when dropping an edge in a MultiGraph since we cannot infer the one you want to delete as there could be multiple ones.'
+      );
+
+    source = '' + source;
+    target = '' + target;
+
+    const edgeData = getMatchingEdge(this, source, target, 'directed');
+
+    if (!edgeData)
+      throw new NotFoundGraphError(
+        `Graph.dropDirectedEdge: could not find a "${source}" -> "${target}" edge in the graph.`
+      );
+
+    dropEdgeFromData(this, edgeData);
+
+    return this;
+  }
+
+  /**
+   * Method used to drop a single undirected edge from the graph.
+   *
+   * @param  {any}    source - Source node.
+   * @param  {any}    target - Target node.
+   *
+   * @return {Graph}
+   *
+   * @throws {Error} - Will throw if the edge doesn't exist.
+   */
+  dropUndirectedEdge(source, target) {
+    if (arguments.length < 2)
+      throw new UsageGraphError(
+        'Graph.dropUndirectedEdge: it does not make sense to drop a directed edge by key. What if the edge with this key is undirected? Use #.dropEdge for this purpose instead.'
+      );
+
+    if (this.multi)
+      throw new UsageGraphError(
+        'Graph.dropUndirectedEdge: cannot use a {source,target} combo when dropping an edge in a MultiGraph since we cannot infer the one you want to delete as there could be multiple ones.'
+      );
+
+    const edgeData = getMatchingEdge(this, source, target, 'undirected');
+
+    if (!edgeData)
+      throw new NotFoundGraphError(
+        `Graph.dropUndirectedEdge: could not find a "${source}" -> "${target}" edge in the graph.`
+      );
+
+    dropEdgeFromData(this, edgeData);
+
+    return this;
+  }
+
+  /**
    * Method used to remove every edge & every node from the graph.
    *
    * @return {Graph}

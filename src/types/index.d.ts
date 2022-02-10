@@ -496,6 +496,8 @@ declare abstract class AbstractGraph<
   dropNode(node: unknown): void;
   dropEdge(edge: unknown): void;
   dropEdge(source: unknown, target: unknown): void;
+  dropDirectedEdge(source: unknown, target: unknown): void;
+  dropUndirectedEdge(source: unknown, target: unknown): void;
   clear(): void;
   clearEdges(): void;
 
