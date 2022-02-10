@@ -190,23 +190,30 @@ function createDedupedObjectIterator(visited, nodeData, object) {
   let i = 0;
 
   return new Iterator(function next() {
-    if (i >= l) return {done: true};
+    let neighborData = null;
 
-    let edgeData = object[keys[i++]];
+    do {
+      if (i >= l) return {done: true};
 
-    if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
+      let edgeData = object[keys[i++]];
 
-    const sourceData = edgeData.source,
-      targetData = edgeData.target;
+      if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
 
-    const neighborData = sourceData === nodeData ? targetData : sourceData;
+      const sourceData = edgeData.source;
+      const targetData = edgeData.target;
 
-    if (visited) {
-      const earlierSize = visited.size;
-      visited.add(neighborData.key);
+      neighborData = sourceData === nodeData ? targetData : sourceData;
 
-      if (visited.size === earlierSize) return next();
-    }
+      if (visited) {
+        const earlierSize = visited.size;
+        visited.add(neighborData.key);
+
+        if (visited.size === earlierSize) {
+          neighborData = null;
+          continue;
+        }
+      }
+    } while (neighborData === null);
 
     return {
       done: false,
