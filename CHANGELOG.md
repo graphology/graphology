@@ -9,6 +9,7 @@
 - Refactoring internal indices.
 - Fixing edge iteration wrt. self loops.
 - Improving performance of edge iterators.
+- Improving perfromance of neighbor iterarors.
 - Improving performance of node deletion.
 - Improving performance of internal edge key generator.
 - Improving memory usage.

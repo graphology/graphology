@@ -57,25 +57,6 @@ const NEIGHBORS_ITERATION = [
  * @param  {any}      nodeData  - Target node's data.
  * @param  {function} callback  - Callback to use.
  */
-function forEachInObject(breakable, nodeData, object, callback) {
-  for (const k in object) {
-    let edgeData = object[k];
-
-    if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
-
-    const sourceData = edgeData.source;
-    const targetData = edgeData.target;
-
-    const neighborData = sourceData === nodeData ? targetData : sourceData;
-
-    const shouldBreak = callback(neighborData.key, neighborData.attributes);
-
-    if (breakable && shouldBreak) return neighborData.key;
-  }
-
-  return;
-}
-
 function forEachInObjectOnce(breakable, visited, nodeData, object, callback) {
   for (const k in object) {
     let edgeData = object[k];
@@ -87,9 +68,12 @@ function forEachInObjectOnce(breakable, visited, nodeData, object, callback) {
 
     const neighborData = sourceData === nodeData ? targetData : sourceData;
 
-    if (visited.has(neighborData.key)) continue;
+    if (visited) {
+      const earlierSize = visited.size;
+      visited.add(neighborData.key);
 
-    visited.add(neighborData.key);
+      if (visited.size === earlierSize) continue;
+    }
 
     const shouldBreak = callback(neighborData.key, neighborData.attributes);
 
@@ -103,16 +87,18 @@ function forEachNeighbor(breakable, type, direction, nodeData, callback) {
   // If we want only undirected or in or out, we can roll some optimizations
   if (type !== 'mixed') {
     if (type === 'undirected')
-      return forEachInObject(
+      return forEachInObjectOnce(
         breakable,
+        null,
         nodeData,
         nodeData.undirected,
         callback
       );
 
     if (typeof direction === 'string')
-      return forEachInObject(
+      return forEachInObjectOnce(
         breakable,
+        null,
         nodeData,
         nodeData[direction],
         callback
@@ -197,34 +183,9 @@ function createNeighborArrayForNode(type, direction, nodeData) {
  * @param  {any}      nodeData  - Target node's data.
  * @return {Iterator}
  */
-function createObjectIterator(nodeData, object) {
-  const keys = Object.keys(object),
-    l = keys.length;
-
-  let i = 0;
-
-  return new Iterator(function () {
-    if (i >= l) return {done: true};
-
-    let edgeData = object[keys[i++]];
-
-    if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
-
-    const sourceData = edgeData.source,
-      targetData = edgeData.target;
-
-    const neighborData = sourceData === nodeData ? targetData : sourceData;
-
-    return {
-      done: false,
-      value: {neighbor: neighborData.key, attributes: neighborData.attributes}
-    };
-  });
-}
-
 function createDedupedObjectIterator(visited, nodeData, object) {
-  const keys = Object.keys(object),
-    l = keys.length;
+  const keys = Object.keys(object);
+  const l = keys.length;
 
   let i = 0;
 
@@ -240,9 +201,12 @@ function createDedupedObjectIterator(visited, nodeData, object) {
 
     const neighborData = sourceData === nodeData ? targetData : sourceData;
 
-    if (visited.has(neighborData.key)) return next();
+    if (visited) {
+      const earlierSize = visited.size;
+      visited.add(neighborData.key);
 
-    visited.add(neighborData.key);
+      if (visited.size === earlierSize) return next();
+    }
 
     return {
       done: false,
@@ -255,10 +219,10 @@ function createNeighborIterator(type, direction, nodeData) {
   // If we want only undirected or in or out, we can roll some optimizations
   if (type !== 'mixed') {
     if (type === 'undirected')
-      return createObjectIterator(nodeData, nodeData.undirected);
+      return createDedupedObjectIterator(null, nodeData, nodeData.undirected);
 
     if (typeof direction === 'string')
-      return createObjectIterator(nodeData, nodeData[direction]);
+      return createDedupedObjectIterator(null, nodeData, nodeData[direction]);
   }
 
   let iterator = Iterator.empty();
