@@ -51,7 +51,7 @@
   "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
     "events": "^3.3.0",
-    "obliterator": "^2.0.0"
+    "obliterator": "^2.0.2"
   },
   "peerDependencies": {
     "graphology-types": ">=0.23.0"
