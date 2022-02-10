@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.24.0 (provisional)
+## 0.24.0
 
 - Adding `#.inboundDegree`, `#.outboundDegree`, `#.inboundDegreeWithoutSelfLoops`, `#.outboundDegreeWithoutSelfLoops`.
 - Adding missing `#.dropDirectedEdge` & `#.dropUndirectedEdge`.
