@@ -37,9 +37,18 @@ export default function attributes(Graph, checkers) {
           function () {
             const graph = new Graph();
 
-            assert.throws(function () {
-              graph[method]('Test');
-            }, notFound());
+            if (
+              (method.includes('Edge') && method.includes('Directed')) ||
+              method.includes('Undirected')
+            ) {
+              assert.throws(function () {
+                graph[method]('Test');
+              }, usage());
+            } else {
+              assert.throws(function () {
+                graph[method]('Test');
+              }, notFound());
+            }
           }
       }
     };

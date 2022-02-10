@@ -61,6 +61,11 @@ function attachEdgeAttributeGetter(Class, method, type) {
           `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
         );
     } else {
+      if (type !== 'mixed')
+        throw new UsageGraphError(
+          `Graph.${method}: calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type.`
+        );
+
       element = '' + element;
       data = this._edges.get(element);
 
@@ -69,11 +74,6 @@ function attachEdgeAttributeGetter(Class, method, type) {
           `Graph.${method}: could not find the "${element}" edge in the graph.`
         );
     }
-
-    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(
-        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
-      );
 
     return data.attributes[name];
   };
@@ -126,6 +126,11 @@ function attachEdgeAttributesGetter(Class, method, type) {
           `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
         );
     } else {
+      if (type !== 'mixed')
+        throw new UsageGraphError(
+          `Graph.${method}: calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type.`
+        );
+
       element = '' + element;
       data = this._edges.get(element);
 
@@ -134,11 +139,6 @@ function attachEdgeAttributesGetter(Class, method, type) {
           `Graph.${method}: could not find the "${element}" edge in the graph.`
         );
     }
-
-    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(
-        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
-      );
 
     return data.attributes;
   };
@@ -195,6 +195,11 @@ function attachEdgeAttributeChecker(Class, method, type) {
           `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
         );
     } else {
+      if (type !== 'mixed')
+        throw new UsageGraphError(
+          `Graph.${method}: calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type.`
+        );
+
       element = '' + element;
       data = this._edges.get(element);
 
@@ -203,11 +208,6 @@ function attachEdgeAttributeChecker(Class, method, type) {
           `Graph.${method}: could not find the "${element}" edge in the graph.`
         );
     }
-
-    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(
-        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
-      );
 
     return data.attributes.hasOwnProperty(name);
   };
@@ -267,6 +267,11 @@ function attachEdgeAttributeSetter(Class, method, type) {
           `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
         );
     } else {
+      if (type !== 'mixed')
+        throw new UsageGraphError(
+          `Graph.${method}: calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type.`
+        );
+
       element = '' + element;
       data = this._edges.get(element);
 
@@ -275,11 +280,6 @@ function attachEdgeAttributeSetter(Class, method, type) {
           `Graph.${method}: could not find the "${element}" edge in the graph.`
         );
     }
-
-    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(
-        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
-      );
 
     data.attributes[name] = value;
 
@@ -350,6 +350,11 @@ function attachEdgeAttributeUpdater(Class, method, type) {
           `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
         );
     } else {
+      if (type !== 'mixed')
+        throw new UsageGraphError(
+          `Graph.${method}: calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type.`
+        );
+
       element = '' + element;
       data = this._edges.get(element);
 
@@ -362,11 +367,6 @@ function attachEdgeAttributeUpdater(Class, method, type) {
     if (typeof updater !== 'function')
       throw new InvalidArgumentsGraphError(
         `Graph.${method}: updater should be a function.`
-      );
-
-    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(
-        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
       );
 
     data.attributes[name] = updater(data.attributes[name]);
@@ -434,6 +434,11 @@ function attachEdgeAttributeRemover(Class, method, type) {
           `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
         );
     } else {
+      if (type !== 'mixed')
+        throw new UsageGraphError(
+          `Graph.${method}: calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type.`
+        );
+
       element = '' + element;
       data = this._edges.get(element);
 
@@ -442,11 +447,6 @@ function attachEdgeAttributeRemover(Class, method, type) {
           `Graph.${method}: could not find the "${element}" edge in the graph.`
         );
     }
-
-    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(
-        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
-      );
 
     delete data.attributes[name];
 
@@ -513,6 +513,11 @@ function attachEdgeAttributesReplacer(Class, method, type) {
           `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
         );
     } else {
+      if (type !== 'mixed')
+        throw new UsageGraphError(
+          `Graph.${method}: calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type.`
+        );
+
       element = '' + element;
       data = this._edges.get(element);
 
@@ -525,11 +530,6 @@ function attachEdgeAttributesReplacer(Class, method, type) {
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(
         `Graph.${method}: provided attributes are not a plain object.`
-      );
-
-    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(
-        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
       );
 
     data.attributes = attributes;
@@ -596,6 +596,11 @@ function attachEdgeAttributesMerger(Class, method, type) {
           `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
         );
     } else {
+      if (type !== 'mixed')
+        throw new UsageGraphError(
+          `Graph.${method}: calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type.`
+        );
+
       element = '' + element;
       data = this._edges.get(element);
 
@@ -608,11 +613,6 @@ function attachEdgeAttributesMerger(Class, method, type) {
     if (!isPlainObject(attributes))
       throw new InvalidArgumentsGraphError(
         `Graph.${method}: provided attributes are not a plain object.`
-      );
-
-    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(
-        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
       );
 
     assign(data.attributes, attributes);
@@ -680,6 +680,11 @@ function attachEdgeAttributesUpdater(Class, method, type) {
           `Graph.${method}: could not find an edge for the given path ("${source}" - "${target}").`
         );
     } else {
+      if (type !== 'mixed')
+        throw new UsageGraphError(
+          `Graph.${method}: calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type.`
+        );
+
       element = '' + element;
       data = this._edges.get(element);
 
@@ -692,11 +697,6 @@ function attachEdgeAttributesUpdater(Class, method, type) {
     if (typeof updater !== 'function')
       throw new InvalidArgumentsGraphError(
         `Graph.${method}: provided updater is not a function.`
-      );
-
-    if (type !== 'mixed' && data.undirected !== (type === 'undirected'))
-      throw new NotFoundGraphError(
-        `Graph.${method}: could not find the "${element}" ${type} edge in the graph.`
       );
 
     data.attributes = updater(data.attributes);
