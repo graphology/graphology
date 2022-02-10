@@ -49,6 +49,25 @@ const NEIGHBORS_ITERATION = [
 ];
 
 /**
+ * Helpers.
+ */
+function CompositeSetWrapper() {
+  this.A = null;
+  this.B = null;
+}
+
+CompositeSetWrapper.prototype.wrap = function (set) {
+  if (this.A === null) this.A = set;
+  else if (this.B === null) this.B = set;
+};
+
+CompositeSetWrapper.prototype.has = function (key) {
+  if (this.A !== null && key in this.A) return true;
+  if (this.B !== null && key in this.B) return true;
+  return false;
+};
+
+/**
  * Function iterating over the given node's relevant neighbors to match
  * one of them using a predicated function.
  *
@@ -68,12 +87,7 @@ function forEachInObjectOnce(breakable, visited, nodeData, object, callback) {
 
     const neighborData = sourceData === nodeData ? targetData : sourceData;
 
-    if (visited) {
-      const earlierSize = visited.size;
-      visited.add(neighborData.key);
-
-      if (visited.size === earlierSize) continue;
-    }
+    if (visited && visited.has(neighborData.key)) continue;
 
     const shouldBreak = callback(neighborData.key, neighborData.attributes);
 
@@ -106,7 +120,8 @@ function forEachNeighbor(breakable, type, direction, nodeData, callback) {
   }
 
   // Else we need to keep a set of neighbors not to return duplicates
-  const visited = new Set();
+  // We cheat by querying the other adjacencies
+  const visited = new CompositeSetWrapper();
 
   let found;
 
@@ -114,13 +129,15 @@ function forEachNeighbor(breakable, type, direction, nodeData, callback) {
     if (direction !== 'out') {
       found = forEachInObjectOnce(
         breakable,
-        visited,
+        null,
         nodeData,
         nodeData.in,
         callback
       );
 
       if (breakable && found) return found;
+
+      visited.wrap(nodeData.in);
     }
     if (direction !== 'in') {
       found = forEachInObjectOnce(
@@ -132,6 +149,8 @@ function forEachNeighbor(breakable, type, direction, nodeData, callback) {
       );
 
       if (breakable && found) return found;
+
+      visited.wrap(nodeData.out);
     }
   }
 
@@ -193,7 +212,10 @@ function createDedupedObjectIterator(visited, nodeData, object) {
     let neighborData = null;
 
     do {
-      if (i >= l) return {done: true};
+      if (i >= l) {
+        if (visited) visited.wrap(object);
+        return {done: true};
+      }
 
       let edgeData = object[keys[i++]];
 
@@ -204,14 +226,9 @@ function createDedupedObjectIterator(visited, nodeData, object) {
 
       neighborData = sourceData === nodeData ? targetData : sourceData;
 
-      if (visited) {
-        const earlierSize = visited.size;
-        visited.add(neighborData.key);
-
-        if (visited.size === earlierSize) {
-          neighborData = null;
-          continue;
-        }
+      if (visited && visited.has(neighborData.key)) {
+        neighborData = null;
+        continue;
       }
     } while (neighborData === null);
 
@@ -235,7 +252,8 @@ function createNeighborIterator(type, direction, nodeData) {
   let iterator = Iterator.empty();
 
   // Else we need to keep a set of neighbors not to return duplicates
-  const visited = new Set();
+  // We cheat by querying the other adjacencies
+  const visited = new CompositeSetWrapper();
 
   if (type !== 'undirected') {
     if (direction !== 'out') {
