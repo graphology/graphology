@@ -118,44 +118,48 @@ function forEachMulti(breakable, object, callback, avoid) {
  * @return {Iterator}
  */
 function createIterator(object, avoid) {
-  const keys = Object.keys(object),
-    l = keys.length;
+  const keys = Object.keys(object);
+  const l = keys.length;
 
-  let inner = null,
-    i = 0;
+  let edgeContainer = null;
+  let i = 0;
 
   return new Iterator(function next() {
-    let edgeData;
+    let edgeData, target;
 
-    if (inner) {
-      const step = inner.next();
+    do {
+      if (edgeContainer) {
+        const step = edgeContainer.next();
 
-      if (step.done) {
-        inner = null;
+        if (step.done) {
+          edgeContainer = null;
+          i++;
+          continue;
+        }
+
+        edgeData = step.value;
+      } else {
+        if (i >= l) return {done: true};
+
+        const k = keys[i];
+
+        if (k === avoid) {
+          i++;
+          continue;
+        }
+
+        target = object[k];
+
+        if (target instanceof Set) {
+          edgeContainer = target.values();
+          continue;
+        }
+
+        edgeData = target;
+
         i++;
-        return next();
       }
-
-      edgeData = step.value;
-    } else {
-      if (i >= l) return {done: true};
-
-      const k = keys[i];
-
-      if (k === avoid) {
-        i++;
-        return next();
-      }
-
-      edgeData = object[k];
-
-      if (edgeData instanceof Set) {
-        inner = edgeData.values();
-        return next();
-      }
-
-      i++;
-    }
+    } while (!edgeData);
 
     return {
       done: false,

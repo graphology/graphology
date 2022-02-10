@@ -8,7 +8,8 @@
 - Dropping undocumented `#.upgradeToMixed` & `#.upgradeToMulti`.
 - Refactoring internal indices.
 - Fixing edge iteration wrt. self loops.
-- Improving perfromance of node deletion.
+- Improving performance of edge iterators.
+- Improving performance of node deletion.
 - Improving performance of internal edge key generator.
 - Improving memory usage.
 - Improving performance of default degree methods.
