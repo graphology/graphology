@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.24.2
+
+- Fixing `#.getSourceAttributes` and `#.getTargetAttributes` signature.
+
 ## 0.24.1
 
 - Adds missing edge argument to `#.updateEdgeWithKey` methods.
