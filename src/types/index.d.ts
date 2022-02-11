@@ -455,6 +455,7 @@ declare abstract class AbstractGraph<
     attributes?: Partial<EdgeAttributes>
   ): EdgeMergeResult;
   updateEdgeWithKey(
+    edge: unknown,
     source: unknown,
     target: unknown,
     updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
@@ -472,6 +473,7 @@ declare abstract class AbstractGraph<
     attributes?: Partial<EdgeAttributes>
   ): EdgeMergeResult;
   updateDirectedEdgeWithKey(
+    edge: unknown,
     source: unknown,
     target: unknown,
     updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
@@ -489,6 +491,7 @@ declare abstract class AbstractGraph<
     attributes?: Partial<EdgeAttributes>
   ): EdgeMergeResult;
   updateUndirectedEdgeWithKey(
+    edge: unknown,
     source: unknown,
     target: unknown,
     updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
