@@ -2,7 +2,7 @@
 
 ## 0.24.1
 
-- Adds missing edge argument to UpdateEdgeWithKey methods.
+- Adds missing edge argument to `#.updateEdgeWithKey` methods.
 
 ## 0.24.0
 
