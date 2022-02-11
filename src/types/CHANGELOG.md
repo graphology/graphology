@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.24.1
+
+- Adds missing edge argument to UpdateEdgeWithKey methods.
+
 ## 0.24.0
 
 - Improving event emitter types.
