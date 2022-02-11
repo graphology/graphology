@@ -568,7 +568,7 @@ declare abstract class AbstractGraph<
     edge: unknown,
     name: AttributeName
   ): NodeAttributes[AttributeName];
-  getSourceAttributes(node: unknown): NodeAttributes;
+  getSourceAttributes(edge: unknown): NodeAttributes;
   hasSourceAttribute<AttributeName extends keyof NodeAttributes>(
     edge: unknown,
     name: AttributeName
