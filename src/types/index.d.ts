@@ -603,7 +603,7 @@ declare abstract class AbstractGraph<
     edge: unknown,
     name: AttributeName
   ): NodeAttributes[AttributeName];
-  getTargetAttributes(node: unknown): NodeAttributes;
+  getTargetAttributes(edge: unknown): NodeAttributes;
   hasTargetAttribute<AttributeName extends keyof NodeAttributes>(
     edge: unknown,
     name: AttributeName
