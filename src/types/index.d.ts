@@ -719,7 +719,7 @@ declare abstract class AbstractGraph<
   ): this;
 
   updateEachEdgeAttributes(
-    updater: EdgeMapper<EdgeAttributes, EdgeAttributes>,
+    updater: EdgeMapper<EdgeAttributes, NodeAttributes, EdgeAttributes>,
     hints?: UpdateHints
   ): void;
 

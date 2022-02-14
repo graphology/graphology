@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.24.3 (provisional)
+
+- Fixing `#.updateEachNodeAttributes` & `#.updateEachEdgeAttributes` signature.
+
 ## 0.24.2
 
 - Fixing `#.getSourceAttributes` and `#.getTargetAttributes` signature.
