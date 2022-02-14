@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.24.3 (provisional)
+## 0.24.3
 
 - Fixing `#.updateEachNodeAttributes` & `#.updateEachEdgeAttributes` signature.
 - Adding missing generic to `UpdateHints`.

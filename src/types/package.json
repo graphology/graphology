@@ -1,6 +1,6 @@
 {
   "name": "graphology-types",
-  "version": "0.24.2",
+  "version": "0.24.3",
   "description": "TypeScript declaration for graphology.",
   "main": "index.d.ts",
   "files": [
