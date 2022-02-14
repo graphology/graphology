@@ -12,7 +12,9 @@ type Attributes = {[name: string]: any};
 
 type GraphType = 'mixed' | 'directed' | 'undirected';
 
-type UpdateHints = {attributes?: Array<string>};
+type UpdateHints<ItemAttributes extends Attributes = Attributes> = {
+  attributes?: Array<keyof ItemAttributes>;
+};
 
 type GraphOptions = {
   allowSelfLoops?: boolean;
@@ -277,8 +279,12 @@ type GraphEvents<
   ): void;
   nodeAttributesUpdated(payload: AttributeUpdatePayload<NodeAttributes>): void;
   edgeAttributesUpdated(payload: AttributeUpdatePayload<EdgeAttributes>): void;
-  eachNodeAttributesUpdated(payload: {hints: UpdateHints}): void;
-  eachEdgeAttributesUpdated(payload: {hints: UpdateHints}): void;
+  eachNodeAttributesUpdated(payload: {
+    hints: UpdateHints<NodeAttributes>;
+  }): void;
+  eachEdgeAttributesUpdated(payload: {
+    hints: UpdateHints<EdgeAttributes>;
+  }): void;
 };
 
 declare class GraphEventEmitter<Events extends EventsMapping> {
@@ -682,7 +688,7 @@ declare abstract class AbstractGraph<
 
   updateEachNodeAttributes(
     updater: NodeMapper<NodeAttributes, NodeAttributes>,
-    hints?: UpdateHints
+    hints?: UpdateHints<NodeAttributes>
   ): void;
 
   // Edge attribute methods
@@ -720,7 +726,7 @@ declare abstract class AbstractGraph<
 
   updateEachEdgeAttributes(
     updater: EdgeMapper<EdgeAttributes, NodeAttributes, EdgeAttributes>,
-    hints?: UpdateHints
+    hints?: UpdateHints<EdgeAttributes>
   ): void;
 
   // Edge attribute methods (source, target)
