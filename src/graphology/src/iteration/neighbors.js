@@ -78,9 +78,7 @@ CompositeSetWrapper.prototype.has = function (key) {
  */
 function forEachInObjectOnce(breakable, visited, nodeData, object, callback) {
   for (const k in object) {
-    let edgeData = object[k];
-
-    if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
+    const edgeData = object[k];
 
     const sourceData = edgeData.source;
     const targetData = edgeData.target;
@@ -217,9 +215,7 @@ function createDedupedObjectIterator(visited, nodeData, object) {
         return {done: true};
       }
 
-      let edgeData = object[keys[i++]];
-
-      if (edgeData instanceof Set) edgeData = edgeData.values().next().value;
+      const edgeData = object[keys[i++]];
 
       const sourceData = edgeData.source;
       const targetData = edgeData.target;
