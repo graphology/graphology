@@ -189,6 +189,9 @@ EdgeData.prototype.detachMulti = function () {
       // No-op delete in case of undirected self-loop
       delete this.target[inKey][source];
     } else {
+      // Detaching
+      this.next.previous = undefined;
+
       // NOTE: could avoid the lookups by creating a #.become mutating method
       this.source[outKey][target] = this.next;
 
