@@ -137,13 +137,12 @@ EdgeData.prototype.attachMulti = function () {
   let head = adj[target];
 
   if (typeof head === 'undefined') {
-    head = this;
-    adj[target] = head;
+    adj[target] = this;
 
     // Self-loop optimization
     if (!(this.undirected && source === target)) {
       // Handling target
-      this.target[inKey][source] = head;
+      this.target[inKey][source] = this;
     }
 
     return;
@@ -152,6 +151,11 @@ EdgeData.prototype.attachMulti = function () {
   // Prepending to doubly-linked list
   head.previous = this;
   this.next = head;
+
+  // Pointing to new head
+  // NOTE: use mutating swap later to avoid lookup?
+  adj[target] = this;
+  this.target[inKey][source] = this;
 };
 
 EdgeData.prototype.detach = function () {
