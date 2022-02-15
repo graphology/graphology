@@ -185,9 +185,14 @@ EdgeData.prototype.detachMulti = function () {
     // Should we delete the adjacency entry because it is now empty?
     if (this.next === undefined) {
       delete this.source[outKey][target];
+
+      // No-op delete in case of undirected self-loop
       delete this.target[inKey][source];
     } else {
+      // NOTE: could avoid the lookups by creating a #.become mutating method
       this.source[outKey][target] = this.next;
+
+      // No-op delete in case of undirected self-loop
       this.target[inKey][source] = this.next;
     }
   } else {
