@@ -134,7 +134,7 @@ EdgeData.prototype.attachMulti = function () {
 
   // Handling source
   const adj = this.source[outKey];
-  let head = adj[target];
+  const head = adj[target];
 
   if (typeof head === 'undefined') {
     adj[target] = this;
