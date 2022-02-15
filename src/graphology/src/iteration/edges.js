@@ -127,13 +127,13 @@ function createIterator(object, avoid) {
 
   return new Iterator(function next() {
     do {
-      if (i >= l) return {done: true};
-
       if (!edgeData) {
+        if (i >= l) return {done: true};
+
         const k = keys[i++];
 
         if (k === avoid) {
-          edgeData = null;
+          edgeData = undefined;
           continue;
         }
 

@@ -987,90 +987,90 @@ export default function edgesIteration(Graph, checkers) {
         loopy.addUndirectedEdgeWithKey('e3', 'n', 'n');
 
         // Arrays
-        assert.deepStrictEqual(loopy.edges('n'), ['e1', 'e2', 'e3']);
-        assert.deepStrictEqual(loopy.outboundEdges('n'), ['e1', 'e2', 'e3']);
-        assert.deepStrictEqual(loopy.inboundEdges('n'), ['e1', 'e2', 'e3']);
-        assert.deepStrictEqual(loopy.outEdges('n'), ['e1', 'e2']);
-        assert.deepStrictEqual(loopy.inEdges('n'), ['e1', 'e2']);
+        assert.deepStrictEqual(loopy.edges('n'), ['e2', 'e1', 'e3']);
+        assert.deepStrictEqual(loopy.outboundEdges('n'), ['e2', 'e1', 'e3']);
+        assert.deepStrictEqual(loopy.inboundEdges('n'), ['e2', 'e1', 'e3']);
+        assert.deepStrictEqual(loopy.outEdges('n'), ['e2', 'e1']);
+        assert.deepStrictEqual(loopy.inEdges('n'), ['e2', 'e1']);
         assert.deepStrictEqual(loopy.undirectedEdges('n'), ['e3']);
-        assert.deepStrictEqual(loopy.directedEdges('n'), ['e1', 'e2']);
+        assert.deepStrictEqual(loopy.directedEdges('n'), ['e2', 'e1']);
 
-        assert.deepStrictEqual(loopy.edges('n', 'n'), ['e1', 'e2', 'e3']);
+        assert.deepStrictEqual(loopy.edges('n', 'n'), ['e2', 'e1', 'e3']);
         assert.deepStrictEqual(loopy.outboundEdges('n', 'n'), [
-          'e1',
           'e2',
+          'e1',
           'e3'
         ]);
         assert.deepStrictEqual(loopy.inboundEdges('n', 'n'), [
-          'e1',
           'e2',
+          'e1',
           'e3'
         ]);
-        assert.deepStrictEqual(loopy.outEdges('n', 'n'), ['e1', 'e2']);
-        assert.deepStrictEqual(loopy.inEdges('n', 'n'), ['e1', 'e2']);
+        assert.deepStrictEqual(loopy.outEdges('n', 'n'), ['e2', 'e1']);
+        assert.deepStrictEqual(loopy.inEdges('n', 'n'), ['e2', 'e1']);
         assert.deepStrictEqual(loopy.undirectedEdges('n', 'n'), ['e3']);
-        assert.deepStrictEqual(loopy.directedEdges('n', 'n'), ['e1', 'e2']);
+        assert.deepStrictEqual(loopy.directedEdges('n', 'n'), ['e2', 'e1']);
 
         // Iterators
         const mapKeys = it => take(map(it, e => e.edge));
 
         assert.deepStrictEqual(mapKeys(loopy.edgeEntries('n')), [
-          'e1',
           'e2',
+          'e1',
           'e3'
         ]);
         assert.deepStrictEqual(mapKeys(loopy.outboundEdgeEntries('n')), [
-          'e1',
           'e2',
+          'e1',
           'e3'
         ]);
         assert.deepStrictEqual(mapKeys(loopy.inboundEdgeEntries('n')), [
-          'e1',
           'e2',
+          'e1',
           'e3'
         ]);
         assert.deepStrictEqual(mapKeys(loopy.outEdgeEntries('n')), [
-          'e1',
-          'e2'
+          'e2',
+          'e1'
         ]);
-        assert.deepStrictEqual(mapKeys(loopy.inEdgeEntries('n')), ['e1', 'e2']);
+        assert.deepStrictEqual(mapKeys(loopy.inEdgeEntries('n')), ['e2', 'e1']);
         assert.deepStrictEqual(mapKeys(loopy.undirectedEdgeEntries('n')), [
           'e3'
         ]);
         assert.deepStrictEqual(mapKeys(loopy.directedEdgeEntries('n')), [
-          'e1',
-          'e2'
+          'e2',
+          'e1'
         ]);
 
         assert.deepStrictEqual(mapKeys(loopy.edgeEntries('n', 'n')), [
-          'e1',
           'e2',
+          'e1',
           'e3'
         ]);
         assert.deepStrictEqual(mapKeys(loopy.outboundEdgeEntries('n', 'n')), [
-          'e1',
           'e2',
+          'e1',
           'e3'
         ]);
         assert.deepStrictEqual(mapKeys(loopy.inboundEdgeEntries('n', 'n')), [
-          'e1',
           'e2',
+          'e1',
           'e3'
         ]);
         assert.deepStrictEqual(mapKeys(loopy.outEdgeEntries('n', 'n')), [
-          'e1',
-          'e2'
+          'e2',
+          'e1'
         ]);
         assert.deepStrictEqual(mapKeys(loopy.inEdgeEntries('n', 'n')), [
-          'e1',
-          'e2'
+          'e2',
+          'e1'
         ]);
         assert.deepStrictEqual(mapKeys(loopy.undirectedEdgeEntries('n', 'n')), [
           'e3'
         ]);
         assert.deepStrictEqual(mapKeys(loopy.directedEdgeEntries('n', 'n')), [
-          'e1',
-          'e2'
+          'e2',
+          'e1'
         ]);
       },
 

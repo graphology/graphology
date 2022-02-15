@@ -1885,39 +1885,38 @@ export default class Graph extends EventEmitter {
         `Graph.dropNode: could not find the "${node}" node in the graph.`
       );
 
+    let edgeData;
+
     // Removing attached edges
     // NOTE: we could be faster here, but this is such a pain to maintain
     if (this.type !== 'undirected') {
       for (const neighbor in nodeData.out) {
-        if (this.multi) {
-          nodeData.out[neighbor].forEach(edgeData => {
-            dropEdgeFromData(this, edgeData);
-          });
-        } else {
-          dropEdgeFromData(this, nodeData.out[neighbor]);
-        }
+        edgeData = nodeData.out[neighbor];
+
+        do {
+          dropEdgeFromData(this, edgeData);
+          edgeData = edgeData.next;
+        } while (edgeData);
       }
 
       for (const neighbor in nodeData.in) {
-        if (this.multi) {
-          nodeData.in[neighbor].forEach(edgeData => {
-            dropEdgeFromData(this, edgeData);
-          });
-        } else {
-          dropEdgeFromData(this, nodeData.in[neighbor]);
-        }
+        edgeData = nodeData.in[neighbor];
+
+        do {
+          dropEdgeFromData(this, edgeData);
+          edgeData = edgeData.next;
+        } while (edgeData);
       }
     }
 
     if (this.type !== 'directed') {
       for (const neighbor in nodeData.undirected) {
-        if (this.multi) {
-          nodeData.undirected[neighbor].forEach(edgeData => {
-            dropEdgeFromData(this, edgeData);
-          });
-        } else {
-          dropEdgeFromData(this, nodeData.undirected[neighbor]);
-        }
+        edgeData = nodeData.undirected[neighbor];
+
+        do {
+          dropEdgeFromData(this, edgeData);
+          edgeData = edgeData.next;
+        } while (edgeData);
       }
     }
 
