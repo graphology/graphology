@@ -80,17 +80,16 @@ function forEachSimple(breakable, object, callback, avoid) {
 }
 
 function forEachMulti(breakable, object, callback, avoid) {
-  let iterator, step, edgeData, source, target;
+  let edgeData, source, target;
 
   let shouldBreak = false;
 
   for (const k in object) {
     if (k === avoid) continue;
 
-    iterator = object[k].values();
+    edgeData = object[k];
 
-    while (((step = iterator.next()), step.done !== true)) {
-      edgeData = step.value;
+    do {
       source = edgeData.source;
       target = edgeData.target;
 
@@ -105,7 +104,9 @@ function forEachMulti(breakable, object, callback, avoid) {
       );
 
       if (breakable && shouldBreak) return edgeData.key;
-    }
+
+      edgeData = edgeData.next;
+    } while (edgeData !== undefined);
   }
 
   return;
@@ -208,18 +209,13 @@ function forEachForKeySimple(breakable, object, k, callback) {
 }
 
 function forEachForKeyMulti(breakable, object, k, callback) {
-  const edgesData = object[k];
+  let edgeData = object[k];
 
-  if (!edgesData) return;
+  if (!edgeData) return;
 
   let shouldBreak = false;
 
-  const iterator = edgesData.values();
-  let step, edgeData;
-
-  while (((step = iterator.next()), step.done !== true)) {
-    edgeData = step.value;
-
+  do {
     shouldBreak = callback(
       edgeData.key,
       edgeData.attributes,
@@ -231,7 +227,9 @@ function forEachForKeyMulti(breakable, object, k, callback) {
     );
 
     if (breakable && shouldBreak) return edgeData.key;
-  }
+
+    edgeData = edgeData.next;
+  } while (edgeData !== undefined);
 
   return;
 }

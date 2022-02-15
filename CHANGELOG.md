@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.24.1 (provisional)
+
+- Improving performance and memory usage of multigraphs.
+
 ## 0.24.0
 
 - Adding `#.inboundDegree`, `#.outboundDegree`, `#.inboundDegreeWithoutSelfLoops`, `#.outboundDegreeWithoutSelfLoops`.
