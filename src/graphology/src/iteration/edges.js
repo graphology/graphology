@@ -122,43 +122,24 @@ function createIterator(object, avoid) {
   const keys = Object.keys(object);
   const l = keys.length;
 
-  let edgeContainer = null;
+  let edgeData;
   let i = 0;
 
   return new Iterator(function next() {
-    let edgeData, target;
-
     do {
-      if (edgeContainer) {
-        const step = edgeContainer.next();
+      if (i >= l) return {done: true};
 
-        if (step.done) {
-          edgeContainer = null;
-          i++;
-          continue;
-        }
-
-        edgeData = step.value;
-      } else {
-        if (i >= l) return {done: true};
-
-        const k = keys[i];
+      if (!edgeData) {
+        const k = keys[i++];
 
         if (k === avoid) {
-          i++;
+          edgeData = null;
           continue;
         }
 
-        target = object[k];
-
-        if (target instanceof Set) {
-          edgeContainer = target.values();
-          continue;
-        }
-
-        edgeData = target;
-
-        i++;
+        edgeData = object[k];
+      } else {
+        edgeData = edgeData.next;
       }
     } while (!edgeData);
 
@@ -242,40 +223,38 @@ function forEachForKeyMulti(breakable, object, k, callback) {
  * @return {Iterator}
  */
 function createIteratorForKey(object, k) {
-  const v = object[k];
+  let edgeData = object[k];
 
-  if (v instanceof Set) {
-    const iterator = v.values();
-
+  if (edgeData.next !== undefined) {
     return new Iterator(function () {
-      const step = iterator.next();
+      if (!edgeData) return {done: true};
 
-      if (step.done) return step;
+      const value = {
+        edge: edgeData.key,
+        attributes: edgeData.attributes,
+        source: edgeData.source.key,
+        target: edgeData.target.key,
+        sourceAttributes: edgeData.source.attributes,
+        targetAttributes: edgeData.target.attributes,
+        undirected: edgeData.undirected
+      };
 
-      const edgeData = step.value;
+      edgeData = edgeData.next;
 
       return {
         done: false,
-        value: {
-          edge: edgeData.key,
-          attributes: edgeData.attributes,
-          source: edgeData.source.key,
-          target: edgeData.target.key,
-          sourceAttributes: edgeData.source.attributes,
-          targetAttributes: edgeData.target.attributes,
-          undirected: edgeData.undirected
-        }
+        value
       };
     });
   }
 
   return Iterator.of([
-    v.key,
-    v.attributes,
-    v.source.key,
-    v.target.key,
-    v.source.attributes,
-    v.target.attributes
+    edgeData.key,
+    edgeData.attributes,
+    edgeData.source.key,
+    edgeData.target.key,
+    edgeData.source.attributes,
+    edgeData.target.attributes
   ]);
 }
 
