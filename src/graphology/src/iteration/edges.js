@@ -248,14 +248,15 @@ function createIteratorForKey(object, k) {
     });
   }
 
-  return Iterator.of([
-    edgeData.key,
-    edgeData.attributes,
-    edgeData.source.key,
-    edgeData.target.key,
-    edgeData.source.attributes,
-    edgeData.target.attributes
-  ]);
+  return Iterator.of({
+    edge: edgeData.key,
+    attributes: edgeData.attributes,
+    source: edgeData.source.key,
+    target: edgeData.target.key,
+    sourceAttributes: edgeData.source.attributes,
+    targetAttributes: edgeData.target.attributes,
+    undirected: edgeData.undirected
+  });
 }
 
 /**
