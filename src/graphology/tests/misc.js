@@ -34,33 +34,44 @@ export default function misc(Graph) {
 
           assert.deepStrictEqual(graph.neighbors('A'), []);
           assert.deepStrictEqual(graph.neighbors('B'), []);
+        },
+
+      'exhaustive deletion use-cases should not break doubly-linked lists implementation of multigraph edge storage.':
+        function () {
+          const graph = new Graph({multi: true});
+          graph.mergeEdgeWithKey('1', 'A', 'B');
+          graph.mergeEdgeWithKey('2', 'A', 'B');
+          graph.mergeEdgeWithKey('3', 'A', 'B');
+          graph.mergeEdgeWithKey('4', 'A', 'B');
+
+          graph.dropEdge('1');
+          graph.dropEdge('2');
+          graph.dropEdge('3');
+          graph.dropEdge('4');
+
+          assert.strictEqual(graph.size, 0);
+          assert.strictEqual(graph.areNeighbors('A', 'B'), false);
+
+          graph.mergeEdgeWithKey('1', 'A', 'B');
+          graph.mergeEdgeWithKey('2', 'A', 'B');
+          graph.mergeEdgeWithKey('3', 'A', 'B');
+          graph.mergeEdgeWithKey('4', 'A', 'B');
+
+          assert.strictEqual(graph.size, 4);
+          assert.strictEqual(graph.areNeighbors('A', 'B'), true);
+
+          graph.dropEdge('2');
+          graph.dropEdge('3');
+
+          assert.strictEqual(graph.size, 2);
+          assert.strictEqual(graph.areNeighbors('A', 'B'), true);
+
+          graph.dropEdge('4');
+          graph.dropEdge('1');
+
+          assert.strictEqual(graph.size, 0);
+          assert.strictEqual(graph.areNeighbors('A', 'B'), false);
         }
-
-      // 'copy of the graph should work even with edge wrangling.': function () {
-      //   const graph = new Graph();
-      //   graph.addNode('n0');
-      //   graph.addNode('n1');
-      //   graph.addNode('n2');
-      //   graph.addNode('n3');
-      //   graph.addEdge('n0', 'n1');
-      //   graph.addEdge('n1', 'n2');
-      //   graph.addEdge('n2', 'n3');
-      //   graph.addEdge('n3', 'n0');
-
-      //   // Surgery
-      //   const newNode = 'n12';
-      //   graph.addNode(newNode);
-      //   const e = graph.edge('n1', 'n2');
-      //   graph.dropEdge(e);
-      //   graph.addEdge('n1', newNode);
-      //   graph.addEdgeWithKey(e, newNode, 'n2');
-
-      //   console.log(graph);
-
-      //   const copy = graph.copy();
-
-      //   assert.strictEqual(graph.size, copy.size);
-      // }
     },
 
     'Key coercion': {

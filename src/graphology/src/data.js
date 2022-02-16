@@ -134,19 +134,28 @@ EdgeData.prototype.attachMulti = function () {
 
   // Handling source
   const adj = this.source[outKey];
-  let container = adj[target];
+  const head = adj[target];
 
-  if (typeof container === 'undefined') {
-    container = new Set();
-    adj[target] = container;
+  if (typeof head === 'undefined') {
+    adj[target] = this;
 
+    // Self-loop optimization
     if (!(this.undirected && source === target)) {
       // Handling target
-      this.target[inKey][source] = container;
+      this.target[inKey][source] = this;
     }
+
+    return;
   }
 
-  container.add(this);
+  // Prepending to doubly-linked list
+  head.previous = this;
+  this.next = head;
+
+  // Pointing to new head
+  // NOTE: use mutating swap later to avoid lookup?
+  adj[target] = this;
+  this.target[inKey][source] = this;
 };
 
 EdgeData.prototype.detach = function () {
@@ -159,6 +168,8 @@ EdgeData.prototype.detach = function () {
   if (this.undirected) outKey = inKey = 'undirected';
 
   delete this.source[outKey][target];
+
+  // No-op delete in case of undirected self-loop
   delete this.target[inKey][source];
 };
 
@@ -171,12 +182,33 @@ EdgeData.prototype.detachMulti = function () {
 
   if (this.undirected) outKey = inKey = 'undirected';
 
-  const adj = this.source[outKey][target];
+  // Deleting from doubly-linked list
+  if (this.previous === undefined) {
+    // We are dealing with the head
 
-  if (adj.size === 1) {
-    delete this.source[outKey][target];
-    delete this.target[inKey][source];
+    // Should we delete the adjacency entry because it is now empty?
+    if (this.next === undefined) {
+      delete this.source[outKey][target];
+
+      // No-op delete in case of undirected self-loop
+      delete this.target[inKey][source];
+    } else {
+      // Detaching
+      this.next.previous = undefined;
+
+      // NOTE: could avoid the lookups by creating a #.become mutating method
+      this.source[outKey][target] = this.next;
+
+      // No-op delete in case of undirected self-loop
+      this.target[inKey][source] = this.next;
+    }
   } else {
-    adj.delete(this);
+    // We are dealing with another list node
+    this.previous.next = this.next;
+
+    // If not last
+    if (this.next !== undefined) {
+      this.next.previous = this.previous;
+    }
   }
 };

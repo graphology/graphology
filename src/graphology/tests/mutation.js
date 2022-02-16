@@ -707,7 +707,7 @@ export default function mutation(Graph, checkers) {
         assert.strictEqual(graph.hasDirectedEdge('John', 'Margaret'), false);
       },
 
-      'it should also work with mied, multi graphs and self loops.':
+      'it should also work with mixed, multi graphs and self loops.':
         function () {
           const graph = new Graph({multi: true});
           graph.mergeEdge('A', 'B');

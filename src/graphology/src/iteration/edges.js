@@ -80,17 +80,16 @@ function forEachSimple(breakable, object, callback, avoid) {
 }
 
 function forEachMulti(breakable, object, callback, avoid) {
-  let iterator, step, edgeData, source, target;
+  let edgeData, source, target;
 
   let shouldBreak = false;
 
   for (const k in object) {
     if (k === avoid) continue;
 
-    iterator = object[k].values();
+    edgeData = object[k];
 
-    while (((step = iterator.next()), step.done !== true)) {
-      edgeData = step.value;
+    do {
       source = edgeData.source;
       target = edgeData.target;
 
@@ -105,7 +104,9 @@ function forEachMulti(breakable, object, callback, avoid) {
       );
 
       if (breakable && shouldBreak) return edgeData.key;
-    }
+
+      edgeData = edgeData.next;
+    } while (edgeData !== undefined);
   }
 
   return;
@@ -121,43 +122,24 @@ function createIterator(object, avoid) {
   const keys = Object.keys(object);
   const l = keys.length;
 
-  let edgeContainer = null;
+  let edgeData;
   let i = 0;
 
   return new Iterator(function next() {
-    let edgeData, target;
-
     do {
-      if (edgeContainer) {
-        const step = edgeContainer.next();
-
-        if (step.done) {
-          edgeContainer = null;
-          i++;
-          continue;
-        }
-
-        edgeData = step.value;
-      } else {
+      if (!edgeData) {
         if (i >= l) return {done: true};
 
-        const k = keys[i];
+        const k = keys[i++];
 
         if (k === avoid) {
-          i++;
+          edgeData = undefined;
           continue;
         }
 
-        target = object[k];
-
-        if (target instanceof Set) {
-          edgeContainer = target.values();
-          continue;
-        }
-
-        edgeData = target;
-
-        i++;
+        edgeData = object[k];
+      } else {
+        edgeData = edgeData.next;
       }
     } while (!edgeData);
 
@@ -208,18 +190,13 @@ function forEachForKeySimple(breakable, object, k, callback) {
 }
 
 function forEachForKeyMulti(breakable, object, k, callback) {
-  const edgesData = object[k];
+  let edgeData = object[k];
 
-  if (!edgesData) return;
+  if (!edgeData) return;
 
   let shouldBreak = false;
 
-  const iterator = edgesData.values();
-  let step, edgeData;
-
-  while (((step = iterator.next()), step.done !== true)) {
-    edgeData = step.value;
-
+  do {
     shouldBreak = callback(
       edgeData.key,
       edgeData.attributes,
@@ -231,7 +208,9 @@ function forEachForKeyMulti(breakable, object, k, callback) {
     );
 
     if (breakable && shouldBreak) return edgeData.key;
-  }
+
+    edgeData = edgeData.next;
+  } while (edgeData !== undefined);
 
   return;
 }
@@ -244,41 +223,40 @@ function forEachForKeyMulti(breakable, object, k, callback) {
  * @return {Iterator}
  */
 function createIteratorForKey(object, k) {
-  const v = object[k];
+  let edgeData = object[k];
 
-  if (v instanceof Set) {
-    const iterator = v.values();
-
+  if (edgeData.next !== undefined) {
     return new Iterator(function () {
-      const step = iterator.next();
+      if (!edgeData) return {done: true};
 
-      if (step.done) return step;
+      const value = {
+        edge: edgeData.key,
+        attributes: edgeData.attributes,
+        source: edgeData.source.key,
+        target: edgeData.target.key,
+        sourceAttributes: edgeData.source.attributes,
+        targetAttributes: edgeData.target.attributes,
+        undirected: edgeData.undirected
+      };
 
-      const edgeData = step.value;
+      edgeData = edgeData.next;
 
       return {
         done: false,
-        value: {
-          edge: edgeData.key,
-          attributes: edgeData.attributes,
-          source: edgeData.source.key,
-          target: edgeData.target.key,
-          sourceAttributes: edgeData.source.attributes,
-          targetAttributes: edgeData.target.attributes,
-          undirected: edgeData.undirected
-        }
+        value
       };
     });
   }
 
-  return Iterator.of([
-    v.key,
-    v.attributes,
-    v.source.key,
-    v.target.key,
-    v.source.attributes,
-    v.target.attributes
-  ]);
+  return Iterator.of({
+    edge: edgeData.key,
+    attributes: edgeData.attributes,
+    source: edgeData.source.key,
+    target: edgeData.target.key,
+    sourceAttributes: edgeData.source.attributes,
+    targetAttributes: edgeData.target.attributes,
+    undirected: edgeData.undirected
+  });
 }
 
 /**

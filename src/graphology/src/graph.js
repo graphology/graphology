@@ -26,10 +26,7 @@ import attachNodeAttributesMethods from './attributes/nodes';
 import attachEdgeAttributesMethods from './attributes/edges';
 import attachEdgeIterationMethods from './iteration/edges';
 import attachNeighborIterationMethods from './iteration/neighbors';
-import {
-  forEachAdjacencySimple,
-  forEachAdjacencyMulti
-} from './iteration/adjacency';
+import {forEachAdjacency} from './iteration/adjacency';
 
 import {
   serializeNode,
@@ -1885,39 +1882,38 @@ export default class Graph extends EventEmitter {
         `Graph.dropNode: could not find the "${node}" node in the graph.`
       );
 
+    let edgeData;
+
     // Removing attached edges
     // NOTE: we could be faster here, but this is such a pain to maintain
     if (this.type !== 'undirected') {
       for (const neighbor in nodeData.out) {
-        if (this.multi) {
-          nodeData.out[neighbor].forEach(edgeData => {
-            dropEdgeFromData(this, edgeData);
-          });
-        } else {
-          dropEdgeFromData(this, nodeData.out[neighbor]);
-        }
+        edgeData = nodeData.out[neighbor];
+
+        do {
+          dropEdgeFromData(this, edgeData);
+          edgeData = edgeData.next;
+        } while (edgeData);
       }
 
       for (const neighbor in nodeData.in) {
-        if (this.multi) {
-          nodeData.in[neighbor].forEach(edgeData => {
-            dropEdgeFromData(this, edgeData);
-          });
-        } else {
-          dropEdgeFromData(this, nodeData.in[neighbor]);
-        }
+        edgeData = nodeData.in[neighbor];
+
+        do {
+          dropEdgeFromData(this, edgeData);
+          edgeData = edgeData.next;
+        } while (edgeData);
       }
     }
 
     if (this.type !== 'directed') {
       for (const neighbor in nodeData.undirected) {
-        if (this.multi) {
-          nodeData.undirected[neighbor].forEach(edgeData => {
-            dropEdgeFromData(this, edgeData);
-          });
-        } else {
-          dropEdgeFromData(this, nodeData.undirected[neighbor]);
-        }
+        edgeData = nodeData.undirected[neighbor];
+
+        do {
+          dropEdgeFromData(this, edgeData);
+          edgeData = edgeData.next;
+        } while (edgeData);
       }
     }
 
@@ -2352,8 +2348,7 @@ export default class Graph extends EventEmitter {
         'Graph.forEachAdjacencyEntry: expecting a callback.'
       );
 
-    if (this.multi) forEachAdjacencyMulti(false, false, false, this, callback);
-    else forEachAdjacencySimple(false, false, false, this, callback);
+    forEachAdjacency(false, false, false, this, callback);
   }
   forEachAdjacencyEntryWithOrphans(callback) {
     if (typeof callback !== 'function')
@@ -2361,8 +2356,7 @@ export default class Graph extends EventEmitter {
         'Graph.forEachAdjacencyEntryWithOrphans: expecting a callback.'
       );
 
-    if (this.multi) forEachAdjacencyMulti(false, false, true, this, callback);
-    else forEachAdjacencySimple(false, false, true, this, callback);
+    forEachAdjacency(false, false, true, this, callback);
   }
 
   /**
@@ -2376,8 +2370,7 @@ export default class Graph extends EventEmitter {
         'Graph.forEachAssymetricAdjacencyEntry: expecting a callback.'
       );
 
-    if (this.multi) forEachAdjacencyMulti(false, true, false, this, callback);
-    else forEachAdjacencySimple(false, true, false, this, callback);
+    forEachAdjacency(false, true, false, this, callback);
   }
   forEachAssymetricAdjacencyEntryWithOrphans(callback) {
     if (typeof callback !== 'function')
@@ -2385,8 +2378,7 @@ export default class Graph extends EventEmitter {
         'Graph.forEachAssymetricAdjacencyEntryWithOrphans: expecting a callback.'
       );
 
-    if (this.multi) forEachAdjacencyMulti(false, true, true, this, callback);
-    else forEachAdjacencySimple(false, true, true, this, callback);
+    forEachAdjacency(false, true, true, this, callback);
   }
 
   /**
