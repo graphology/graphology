@@ -291,9 +291,11 @@ describe('graphology-simple-path', function () {
             var source = graph.source(edges[0]);
             var target = graph.target(edges[0]);
 
-            var labels = edges.map(function (edge) {
-              return graph.getEdgeAttribute(edge, 'label');
-            });
+            var labels = edges
+              .map(function (edge) {
+                return graph.getEdgeAttribute(edge, 'label');
+              })
+              .sort();
 
             return source + '(' + labels.join(',') + ')' + target;
           });
@@ -324,9 +326,11 @@ describe('graphology-simple-path', function () {
             var source = graph.source(edges[0]);
             var target = graph.target(edges[0]);
 
-            var labels = edges.map(function (edge) {
-              return graph.getEdgeAttribute(edge, 'label');
-            });
+            var labels = edges
+              .map(function (edge) {
+                return graph.getEdgeAttribute(edge, 'label');
+              })
+              .sort();
 
             return source + '(' + labels.join(',') + ')' + target;
           });
@@ -361,9 +365,11 @@ describe('graphology-simple-path', function () {
             var source = graph.source(edges[0]);
             var target = graph.target(edges[0]);
 
-            var labels = edges.map(function (edge) {
-              return graph.getEdgeAttribute(edge, 'label');
-            });
+            var labels = edges
+              .map(function (edge) {
+                return graph.getEdgeAttribute(edge, 'label');
+              })
+              .sort();
 
             return source + '(' + labels.join(',') + ')' + target;
           });
