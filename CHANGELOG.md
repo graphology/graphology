@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.24.1 (provisional)
+## 0.24.1
 
 - Improving performance and memory usage of multigraphs.
 
