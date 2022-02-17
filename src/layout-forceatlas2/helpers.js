@@ -172,41 +172,68 @@ exports.graphToByteArrays = function (graph, weightAttribute) {
 /**
  * Function applying the layout back to the graph.
  *
+ * @param {Graph}         graph         - Target graph.
+ * @param {Float32Array}  NodeMatrix    - Node matrix.
+ * @param {function|null} outputReducer - A node reducer.
+ */
+exports.assignLayoutChanges = function (graph, NodeMatrix, outputReducer) {
+  var i = 0;
+
+  graph.updateEachNodeAttributes(function (node, attr) {
+    attr.x = NodeMatrix[i];
+    attr.y = NodeMatrix[i + 1];
+
+    i += PPN;
+
+    return outputReducer ? outputReducer(node, attr) : attr;
+  });
+};
+
+/**
+ * Function reading the positions (only) from the graph, to write them in the matrix.
+ *
  * @param {Graph}        graph      - Target graph.
  * @param {Float32Array} NodeMatrix - Node matrix.
  */
-exports.assignLayoutChanges = function (graph, NodeMatrix) {
+exports.readGraphPositions = function (graph, NodeMatrix) {
   var i = 0;
 
-  graph.updateEachNodeAttributes(
-    function (node, attr) {
-      attr.x = NodeMatrix[i];
-      attr.y = NodeMatrix[i + 1];
+  graph.forEachNode(function (node, attr) {
+    NodeMatrix[i] = attr.x;
+    NodeMatrix[i + 1] = attr.y;
 
-      i += PPN;
-
-      return attr;
-    },
-    {attributes: ['x', 'y']}
-  );
+    i += PPN;
+  });
 };
 
 /**
  * Function collecting the layout positions.
  *
- * @param  {Graph}        graph      - Target graph.
- * @param  {Float32Array} NodeMatrix - Node matrix.
- * @return {object}                  - Map to node positions.
+ * @param  {Graph}         graph         - Target graph.
+ * @param  {Float32Array}  NodeMatrix    - Node matrix.
+ * @param  {function|null} outputReducer - A nodes reducer.
+ * @return {object}                      - Map to node positions.
  */
-exports.collectLayoutChanges = function (graph, NodeMatrix) {
+exports.collectLayoutChanges = function (graph, NodeMatrix, outputReducer) {
   var nodes = graph.nodes(),
     positions = {};
 
   for (var i = 0, j = 0, l = NodeMatrix.length; i < l; i += PPN) {
-    positions[nodes[j]] = {
-      x: NodeMatrix[i],
-      y: NodeMatrix[i + 1]
-    };
+    if (outputReducer) {
+      var newAttr = Object.assign({}, graph.getNodeAttributes(nodes[j]));
+      newAttr.x = NodeMatrix[i];
+      newAttr.y = NodeMatrix[i + 1];
+      newAttr = outputReducer(nodes[j], newAttr);
+      positions[nodes[j]] = {
+        x: newAttr.x,
+        y: newAttr.y
+      };
+    } else {
+      positions[nodes[j]] = {
+        x: NodeMatrix[i],
+        y: NodeMatrix[i + 1]
+      };
+    }
 
     j++;
   }

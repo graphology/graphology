@@ -48,6 +48,8 @@ function FA2LayoutSupervisor(graph, params) {
   this.matrices = null;
   this.running = false;
   this.killed = false;
+  this.outputReducer =
+    typeof params.outputReducer === 'function' ? params.outputReducer : null;
 
   // Binding listeners
   this.handleMessage = this.handleMessage.bind(this);
@@ -104,7 +106,8 @@ FA2LayoutSupervisor.prototype.handleMessage = function (event) {
 
   var matrix = new Float32Array(event.data.nodes);
 
-  helpers.assignLayoutChanges(this.graph, matrix);
+  helpers.assignLayoutChanges(this.graph, matrix, this.outputReducer);
+  if (this.outputReducer) helpers.readGraphPositions(this.graph, matrix);
   this.matrices.nodes = matrix;
 
   // Looping

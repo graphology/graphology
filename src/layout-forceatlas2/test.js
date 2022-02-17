@@ -98,6 +98,45 @@ describe('graphology-layout-forceatlas2', function () {
           Ada: {x: 24, y: -1}
         });
       });
+
+      it('should work as expected with a custom outputReducer.', function () {
+        var graph = new Graph();
+
+        var data = {
+          John: {
+            size: 4,
+            x: 3,
+            y: 4
+          },
+          Martha: {
+            x: 10,
+            y: 5
+          },
+          Ada: {
+            x: 23,
+            y: -2
+          }
+        };
+
+        for (var node in data) graph.addNode(node, data[node]);
+
+        var positions = helpers.collectLayoutChanges(
+          graph,
+          [
+            4, 5, 0, 0, 0, 0, 2, 1, 4, 0, 11, 6, 0, 0, 0, 0, 3, 1, 1, 0, 24, -1,
+            0, 0, 0, 0, 2, 1, 1, 0
+          ],
+          function (n, attributes) {
+            return Object.assign({}, attributes, {y: n === 'John' ? 1 : 2});
+          }
+        );
+
+        assert.deepEqual(positions, {
+          John: {x: 4, y: 1},
+          Martha: {x: 11, y: 2},
+          Ada: {x: 24, y: 2}
+        });
+      });
     });
 
     describe('#.assignLayoutChanges', function () {
@@ -140,6 +179,51 @@ describe('graphology-layout-forceatlas2', function () {
           Martha: {x: 11, y: 6},
           Ada: {x: 24, y: -1}
         });
+      });
+
+      it('should work as expected with a custom outputReducer.', function () {
+        var graph = new Graph();
+
+        var data = {
+          John: {
+            x: 3,
+            y: 4
+          },
+          Martha: {
+            x: 10,
+            y: 5
+          },
+          Ada: {
+            x: 23,
+            y: -2
+          }
+        };
+
+        for (var node in data) graph.addNode(node, data[node]);
+
+        helpers.assignLayoutChanges(
+          graph,
+          [
+            4, 5, 0, 0, 0, 0, 2, 1, 4, 0, 11, 6, 0, 0, 0, 0, 3, 1, 1, 0, 24, -1,
+            0, 0, 0, 0, 2, 1, 1, 0
+          ],
+          function (n, attributes) {
+            return Object.assign({}, attributes, {y: n === 'John' ? 1 : 2});
+          }
+        );
+
+        assert.deepEqual(
+          {
+            John: graph.getNodeAttributes('John'),
+            Martha: graph.getNodeAttributes('Martha'),
+            Ada: graph.getNodeAttributes('Ada')
+          },
+          {
+            John: {x: 4, y: 1},
+            Martha: {x: 11, y: 2},
+            Ada: {x: 24, y: 2}
+          }
+        );
       });
     });
   });
