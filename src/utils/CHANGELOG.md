@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.1
+
+- Adding missing `default.d.ts` declaration file.
+
 ## 2.5.0
 
 - Adding `inferMulti`.
