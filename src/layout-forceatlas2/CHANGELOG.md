@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.2
+
+- Adding experimental & undocumented feature.
+
 ## 0.8.1
 
 - Fixing options types.
