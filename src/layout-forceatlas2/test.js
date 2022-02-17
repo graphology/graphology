@@ -99,7 +99,7 @@ describe('graphology-layout-forceatlas2', function () {
         });
       });
 
-      it('should work as expected with a custom reducer.', function () {
+      it('should work as expected with a custom outputReducer.', function () {
         var graph = new Graph();
 
         var data = {
@@ -181,7 +181,7 @@ describe('graphology-layout-forceatlas2', function () {
         });
       });
 
-      it('should work as expected with a custom reducer.', function () {
+      it('should work as expected with a custom outputReducer.', function () {
         var graph = new Graph();
 
         var data = {

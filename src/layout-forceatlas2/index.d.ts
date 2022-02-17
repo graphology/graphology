@@ -22,7 +22,7 @@ export type ForceAtlas2LayoutOptions = {
   iterations: number;
   settings?: ForceAtlas2Settings;
   weighted?: boolean;
-  reducer?: (key: string, attributes: any) => any;
+  outputReducer?: (key: string, attributes: any) => any;
 };
 
 interface IForceAtlas2Layout {

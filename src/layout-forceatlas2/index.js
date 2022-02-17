@@ -13,15 +13,15 @@ var DEFAULT_SETTINGS = require('./defaults.js');
 /**
  * Asbtract function used to run a certain number of iterations.
  *
- * @param  {boolean}       assign       - Whether to assign positions.
- * @param  {Graph}         graph        - Target graph.
- * @param  {object|number} params       - If number, params.iterations, else:
- * @param  {object}          attributes - Attribute names:
- * @param  {string}            weight   - Name of the edge weight attribute.
- * @param  {boolean}         weighted   - Whether to take edge weights into account.
- * @param  {number}          iterations - Number of iterations.
- * @param  {function|null}   reducer    - A node reducer
- * @param  {object}          [settings] - Settings.
+ * @param  {boolean}       assign          - Whether to assign positions.
+ * @param  {Graph}         graph           - Target graph.
+ * @param  {object|number} params          - If number, params.iterations, else:
+ * @param  {object}          attributes    - Attribute names:
+ * @param  {string}            weight      - Name of the edge weight attribute.
+ * @param  {boolean}         weighted      - Whether to take edge weights into account.
+ * @param  {number}          iterations    - Number of iterations.
+ * @param  {function|null}   outputReducer - A node reducer
+ * @param  {object}          [settings]    - Settings.
  * @return {object|undefined}
  */
 function abstractSynchronousLayout(assign, graph, params) {
@@ -47,7 +47,8 @@ function abstractSynchronousLayout(assign, graph, params) {
   var attributes = params.attributes || {};
   var weightAttribute = params.weighted ? attributes.weight || 'weight' : null;
 
-  var reducer = typeof params.reducer === 'function' ? params.reducer : null;
+  var outputReducer =
+    typeof params.outputReducer === 'function' ? params.outputReducer : null;
 
   // Validating settings
   var settings = helpers.assign({}, DEFAULT_SETTINGS, params.settings);
@@ -69,7 +70,7 @@ function abstractSynchronousLayout(assign, graph, params) {
 
   // Applying
   if (assign) {
-    helpers.assignLayoutChanges(graph, matrices.nodes, reducer);
+    helpers.assignLayoutChanges(graph, matrices.nodes, outputReducer);
     return;
   }
 

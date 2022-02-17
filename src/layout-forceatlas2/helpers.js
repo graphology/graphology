@@ -172,11 +172,11 @@ exports.graphToByteArrays = function (graph, weightAttribute) {
 /**
  * Function applying the layout back to the graph.
  *
- * @param {Graph}         graph      - Target graph.
- * @param {Float32Array}  NodeMatrix - Node matrix.
- * @param {function|null} reducer    - A nodes reducer.
+ * @param {Graph}         graph         - Target graph.
+ * @param {Float32Array}  NodeMatrix    - Node matrix.
+ * @param {function|null} outputReducer - A node reducer.
  */
-exports.assignLayoutChanges = function (graph, NodeMatrix, reducer) {
+exports.assignLayoutChanges = function (graph, NodeMatrix, outputReducer) {
   var i = 0;
 
   graph.updateEachNodeAttributes(function (node, attr) {
@@ -185,7 +185,7 @@ exports.assignLayoutChanges = function (graph, NodeMatrix, reducer) {
 
     i += PPN;
 
-    return reducer ? reducer(node, attr) : attr;
+    return outputReducer ? outputReducer(node, attr) : attr;
   });
 };
 
@@ -209,21 +209,21 @@ exports.readGraphPositions = function (graph, NodeMatrix) {
 /**
  * Function collecting the layout positions.
  *
- * @param  {Graph}        graph      - Target graph.
- * @param  {Float32Array} NodeMatrix - Node matrix.
- * @param {function|null} reducer    - A nodes reducer.
- * @return {object}                  - Map to node positions.
+ * @param  {Graph}         graph         - Target graph.
+ * @param  {Float32Array}  NodeMatrix    - Node matrix.
+ * @param  {function|null} outputReducer - A nodes reducer.
+ * @return {object}                      - Map to node positions.
  */
-exports.collectLayoutChanges = function (graph, NodeMatrix, reducer) {
+exports.collectLayoutChanges = function (graph, NodeMatrix, outputReducer) {
   var nodes = graph.nodes(),
     positions = {};
 
   for (var i = 0, j = 0, l = NodeMatrix.length; i < l; i += PPN) {
-    if (reducer) {
+    if (outputReducer) {
       var newAttr = Object.assign({}, graph.getNodeAttributes(nodes[j]));
       newAttr.x = NodeMatrix[i];
       newAttr.y = NodeMatrix[i + 1];
-      newAttr = reducer(nodes[j], newAttr);
+      newAttr = outputReducer(nodes[j], newAttr);
       positions[nodes[j]] = {
         x: newAttr.x,
         y: newAttr.y
