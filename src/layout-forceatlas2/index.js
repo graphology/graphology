@@ -20,6 +20,7 @@ var DEFAULT_SETTINGS = require('./defaults.js');
  * @param  {string}            weight   - Name of the edge weight attribute.
  * @param  {boolean}         weighted   - Whether to take edge weights into account.
  * @param  {number}          iterations - Number of iterations.
+ * @param  {function|null}   reducer    - A node reducer
  * @param  {object}          [settings] - Settings.
  * @return {object|undefined}
  */
@@ -46,6 +47,8 @@ function abstractSynchronousLayout(assign, graph, params) {
   var attributes = params.attributes || {};
   var weightAttribute = params.weighted ? attributes.weight || 'weight' : null;
 
+  var reducer = typeof params.reducer === 'function' ? params.reducer : null;
+
   // Validating settings
   var settings = helpers.assign({}, DEFAULT_SETTINGS, params.settings);
   var validationError = helpers.validateSettings(settings);
@@ -66,7 +69,7 @@ function abstractSynchronousLayout(assign, graph, params) {
 
   // Applying
   if (assign) {
-    helpers.assignLayoutChanges(graph, matrices.nodes);
+    helpers.assignLayoutChanges(graph, matrices.nodes, reducer);
     return;
   }
 

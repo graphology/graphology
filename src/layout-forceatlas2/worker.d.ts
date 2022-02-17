@@ -7,6 +7,7 @@ export type FA2LayoutSupervisorParameters = {
   };
   settings?: ForceAtlas2Settings;
   weighted?: boolean;
+  reducer?: (key: string, attributes: any) => any;
 };
 
 export default class FA2LayoutSupervisor {
