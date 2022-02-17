@@ -126,8 +126,8 @@ describe('graphology-layout-forceatlas2', function () {
             4, 5, 0, 0, 0, 0, 2, 1, 4, 0, 11, 6, 0, 0, 0, 0, 3, 1, 1, 0, 24, -1,
             0, 0, 0, 0, 2, 1, 1, 0
           ],
-          function (node, attributes) {
-            return Object.assign({}, attributes, {y: node === 'John' ? 1 : 2});
+          function (n, attributes) {
+            return Object.assign({}, attributes, {y: n === 'John' ? 1 : 2});
           }
         );
 
@@ -207,8 +207,8 @@ describe('graphology-layout-forceatlas2', function () {
             4, 5, 0, 0, 0, 0, 2, 1, 4, 0, 11, 6, 0, 0, 0, 0, 3, 1, 1, 0, 24, -1,
             0, 0, 0, 0, 2, 1, 1, 0
           ],
-          function (node, attributes) {
-            return Object.assign({}, attributes, {y: node === 'John' ? 1 : 2});
+          function (n, attributes) {
+            return Object.assign({}, attributes, {y: n === 'John' ? 1 : 2});
           }
         );
 
