@@ -81,15 +81,7 @@ function abstractDisparity(assign, graph, options) {
     weightedDegrees[node] = 0;
   });
 
-  graph.forEachAssymetricAdjacencyEntry(function (
-    source,
-    target,
-    sa,
-    ta,
-    edge,
-    attr,
-    undirected
-  ) {
+  graph.forEachEdge(function (edge, attr, source, target, sa, ta, undirected) {
     var weight = getEdgeWeight(edge, attr, source, target, sa, ta, undirected);
 
     weightedDegrees[source] += weight;
