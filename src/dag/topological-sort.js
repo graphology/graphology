@@ -13,7 +13,7 @@
 const isGraph = require('graphology-utils/is-graph');
 const FixedDeque = require('mnemonist/fixed-deque');
 
-module.exports = function topologicalSort(graph) {
+function forEachNodeInTopologicalOrder(graph, callback) {
   if (!isGraph(graph))
     throw new Error(
       'graphology-dag/topological-sort: the given graph is not a valid graphology instance.'
@@ -30,30 +30,27 @@ module.exports = function topologicalSort(graph) {
       'graphology-dag/topological-sort: cannot work with multigraphs.'
     );
 
-  const sortedNodes = new Array(graph.order);
   const queue = new FixedDeque(Array, graph.order);
   const inDegrees = {};
   let total = 0;
 
-  graph.forEachNode(node => {
+  graph.forEachNode((node, attr) => {
     const inDegree = graph.inDegree(node);
 
     if (inDegree === 0) {
-      queue.push(node);
+      queue.push([node, attr]);
     } else {
       inDegrees[node] = inDegree;
       total += inDegree;
     }
   });
 
-  let i = 0;
-
-  function neighborCallback(neighbor) {
+  function neighborCallback(neighbor, attr) {
     const neighborInDegree = --inDegrees[neighbor];
 
     total--;
 
-    if (neighborInDegree === 0) queue.push(neighbor);
+    if (neighborInDegree === 0) queue.push([neighbor, attr]);
 
     inDegrees[neighbor] = neighborInDegree;
 
@@ -62,8 +59,9 @@ module.exports = function topologicalSort(graph) {
   }
 
   while (queue.size !== 0) {
-    const node = queue.shift();
-    sortedNodes[i++] = node;
+    const [node, attr] = queue.shift();
+
+    callback(node, attr);
 
     graph.forEachOutNeighbor(node, neighborCallback);
   }
@@ -72,6 +70,26 @@ module.exports = function topologicalSort(graph) {
     throw new Error(
       'graphology-dag/topological-sort: given graph is not acyclic.'
     );
+}
+
+function topologicalSort(graph) {
+  if (!isGraph(graph))
+    throw new Error(
+      'graphology-dag/topological-sort: the given graph is not a valid graphology instance.'
+    );
+
+  const sortedNodes = new Array(graph.order);
+  let i = 0;
+
+  forEachNodeInTopologicalOrder(graph, node => {
+    sortedNodes[i++] = node;
+  });
 
   return sortedNodes;
-};
+}
+
+/**
+ * Exporting.
+ */
+exports.topologicalSort = topologicalSort;
+exports.forEachNodeInTopologicalOrder = forEachNodeInTopologicalOrder;

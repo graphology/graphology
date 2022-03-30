@@ -13,7 +13,10 @@ const mergePath = require('graphology-utils/merge-path');
 const assert = require('assert');
 const hasCycle = require('./has-cycle.js');
 const willCreateCycle = require('./will-create-cycle.js');
-const topologicalSort = require('./topological-sort.js');
+const {
+  topologicalSort,
+  forEachNodeInTopologicalOrder
+} = require('./topological-sort.js');
 
 describe('graphology-dag', function () {
   describe('hasCycle', function () {
@@ -244,6 +247,26 @@ describe('graphology-dag', function () {
       const sorted = topologicalSort(graph);
 
       assert.deepEqual(sorted, ['0', '1', '2']);
+    });
+
+    it('should work using a callback.', function () {
+      const graph = new DirectedGraph();
+      graph.addNode('0', {color: 'red'});
+      graph.addNode('1', {color: 'blue'});
+      graph.addNode('2', {color: 'yellow'});
+      mergePath(graph, ['2', '1', 0]);
+
+      const sorted = [];
+
+      forEachNodeInTopologicalOrder(graph, (node, attr) => {
+        sorted.push([node, attr]);
+      });
+
+      assert.deepStrictEqual(sorted, [
+        ['2', {color: 'yellow'}],
+        ['1', {color: 'blue'}],
+        ['0', {color: 'red'}]
+      ]);
     });
   });
 });
