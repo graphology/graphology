@@ -1,6 +1,6 @@
 {
   "name": "graphology-dag",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Directed acyclic graph functions for graphology.",
   "main": "index.js",
   "files": [

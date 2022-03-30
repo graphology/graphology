@@ -10,7 +10,7 @@ aux_links:
 
 # Graphology DAG
 
-Functions related to directed acyclic graphs (DAGs) and to be used with [`graphology`](..).
+Functions related to Directed Acyclic Graphs (DAGs) and to be used with [`graphology`](..).
 
 ## Installation
 
@@ -22,6 +22,8 @@ npm install graphology-dag
 
 - [hasCycle](#hascycle)
 - [willCreateCycle](#willcreatecycle)
+- [topologicalSort](#topologicalsort)
+- [forEachNodeInTopologicalOrder](#foreachnodeintopologicalorder)
 
 ### hasCycle
 
@@ -70,5 +72,46 @@ willCreateCycle(graph, 3, 0);
 >>> true
 willCreateCycle(graph, 0, 2);
 >>> false
+```
+
+### topologicalSort
+
+Function returning an array of nodes representing a possible topological ordering of the given DAG.
+
+Note that this function will throw if given graph has any cycle, is able to work on mixed graphs containing only directed edges and can work on disconnected graphs (a DAG forest).
+
+```js
+import {topologicalSort} from 'graphology-dag';
+// Alternatively, to load only the relevant code:
+import {topologicalSort} from 'graphology-dag/topological-sort';
+
+const graph = new DirectedGraph();
+graph.mergeEdge(0, 1);
+graph.mergeEdge(1, 2);
+graph.mergeEdge(2, 3);
+
+topologicalSort(graph)
+>>> ['0', '1', '2', '3'];
+```
+
+### forEachNodeInTopologicalOrder
+
+Function iterating over the given DAG's nodes in topological order using a callback function.
+
+Note that this function will throw if given graph has any cycle, is able to work on mixed graphs containing only directed edges and can work on disconnected graphs (a DAG forest).
+
+```js
+import {forEachNodeInTopologicalOrder} from 'graphology-dag';
+// Alternatively, to load only the relevant code:
+import {forEachNodeInTopologicalOrder} from 'graphology-dag/topological-sort';
+
+const graph = new DirectedGraph();
+graph.mergeEdge(0, 1);
+graph.mergeEdge(1, 2);
+graph.mergeEdge(2, 3);
+
+forEachNodeInTopologicalOrder(graph, (node, attr) => {
+  console.log(node, attr);
+});
 ```
 
