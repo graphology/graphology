@@ -5,9 +5,11 @@
  * Supervisor class able to spawn a web worker to run the FA2 layout in a
  * separate thread not to block UI with heavy synchronous computations.
  */
-var workerFunction = require('./webworker.js'),
-  isGraph = require('graphology-utils/is-graph'),
-  helpers = require('./helpers.js');
+var workerFunction = require('./webworker.js');
+var isGraph = require('graphology-utils/is-graph');
+var createEdgeWeightGetter =
+  require('graphology-utils/getters').createEdgeWeightGetter;
+var helpers = require('./helpers.js');
 
 var DEFAULT_SETTINGS = require('./defaults.js');
 
@@ -28,8 +30,7 @@ function FA2LayoutSupervisor(graph, params) {
       'graphology-layout-forceatlas2/worker: the given graph is not a valid graphology instance.'
     );
 
-  var attributes = params.attributes || {};
-  var weightAttribute = params.weighted ? attributes.weight || 'weight' : null;
+  var getEdgeWeight = createEdgeWeightGetter(params.getEdgeWeight).fromEntry;
 
   // Validating settings
   var settings = helpers.assign({}, DEFAULT_SETTINGS, params.settings);
@@ -44,7 +45,7 @@ function FA2LayoutSupervisor(graph, params) {
   this.worker = null;
   this.graph = graph;
   this.settings = settings;
-  this.weightAttribute = weightAttribute;
+  this.getEdgeWeight = getEdgeWeight;
   this.matrices = null;
   this.running = false;
   this.killed = false;
@@ -154,7 +155,7 @@ FA2LayoutSupervisor.prototype.start = function () {
   if (this.running) return this;
 
   // Building matrices
-  this.matrices = helpers.graphToByteArrays(this.graph, this.weightAttribute);
+  this.matrices = helpers.graphToByteArrays(this.graph, this.getEdgeWeight);
 
   this.running = true;
   this.askForIterations(true);

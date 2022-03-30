@@ -110,11 +110,11 @@ exports.validateSettings = function (settings) {
 /**
  * Function generating a flat matrix for both nodes & edges of the given graph.
  *
- * @param  {Graph}       graph           - Target graph.
- * @param  {string|null} weightAttribute - Name of the edge weight attribute.
- * @return {object}                      - Both matrices.
+ * @param  {Graph}    graph         - Target graph.
+ * @param  {function} getEdgeWeight - Edge weight getter function.
+ * @return {object}                 - Both matrices.
  */
-exports.graphToByteArrays = function (graph, weightAttribute) {
+exports.graphToByteArrays = function (graph, getEdgeWeight) {
   var order = graph.order;
   var size = graph.size;
   var index = {};
@@ -144,22 +144,12 @@ exports.graphToByteArrays = function (graph, weightAttribute) {
   });
 
   // Iterate through edges
-  var weightGetter = function (attr) {
-    if (!weightAttribute) return 1;
-
-    var w = attr[weightAttribute];
-
-    if (typeof w !== 'number' || isNaN(w)) w = 1;
-
-    return w;
-  };
-
   j = 0;
-  graph.forEachEdge(function (_, attr, source, target) {
+  graph.forEachEdge(function (edge, attr, source, target, sa, ta, u) {
     // Populating byte array
     EdgeMatrix[j] = index[source];
     EdgeMatrix[j + 1] = index[target];
-    EdgeMatrix[j + 2] = weightGetter(attr);
+    EdgeMatrix[j + 2] = getEdgeWeight(edge, attr, source, target, sa, ta, u);
     j += PPE;
   });
 

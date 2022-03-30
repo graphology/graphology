@@ -44,7 +44,9 @@ describe('graphology-layout-forceatlas2', function () {
         graph.addEdge('John', 'Martha');
         graph.addEdge('Martha', 'Ada', {weight: 3});
 
-        var matrices = helpers.graphToByteArrays(graph, 'weight');
+        var matrices = helpers.graphToByteArrays(graph, function (_, attr) {
+          return attr.weight || 1;
+        });
 
         assert.deepEqual(
           Array.from(matrices.nodes),
@@ -56,7 +58,9 @@ describe('graphology-layout-forceatlas2', function () {
 
         assert.deepEqual(Array.from(matrices.edges), [0, 10, 1, 10, 20, 3]);
 
-        matrices = helpers.graphToByteArrays(graph, null);
+        matrices = helpers.graphToByteArrays(graph, function () {
+          return 1;
+        });
 
         assert.deepEqual(Array.from(matrices.edges), [0, 10, 1, 10, 20, 1]);
       });
@@ -280,7 +284,7 @@ describe('graphology-layout-forceatlas2', function () {
         4: {x: 105.44530487060547, y: -97.62918090820312}
       });
 
-      var result2 = layout(graph, {iterations: 5, weighted: true});
+      var result2 = layout(graph, {iterations: 5, getEdgeWeight: 'weight'});
 
       assert.deepStrictEqual(result2, {
         1: {x: 77.65608215332031, y: -59.46234130859375},
@@ -290,17 +294,14 @@ describe('graphology-layout-forceatlas2', function () {
       });
 
       var result3 = layout(graph, {
-        iterations: 5,
-        weighted: false,
-        attributes: {weight: 'custom'}
+        iterations: 5
       });
 
       assert.deepStrictEqual(result3, result1);
 
       var result4 = layout(graph, {
         iterations: 5,
-        weighted: true,
-        attributes: {weight: 'custom'}
+        getEdgeWeight: 'custom'
       });
 
       assert.deepStrictEqual(result4, {

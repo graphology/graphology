@@ -60,12 +60,12 @@ forceAtlas2.assign(graph);
 
 _Arguments_
 
-- **graph** _Graph_: target graph.
-- **options** _object_: options:
-  - **iterations** _number_: number of iterations to perform.
-  - **attributes** _?object_: an object containing custom attribute name mapping:
+- **graph** _Graph_: target graph.attributes** _?object_: an object containing custom attribute name mapping:
     - **weight** _?string_ [`weight`]: name of the edge weight attribute.
   - **weighted** _?boolean_ [`false`]: whether to consider edge weight.
+- **options** _object_: options:
+  - **iterations** _number_: number of iterations to perform.
+  - **getEdgeWeight** _?string\|function_: name of the edge weight attribute or getter function. Defaults to unweighted layout.
   - **settings** _?object_: the layout's settings (see [#settings](#settings)).
 
 ### Webworker
@@ -78,7 +78,7 @@ _Example_
 import FA2Layout from 'graphology-layout-forceatlas2/worker';
 
 // The parameters are the same as for the synchronous version, minus `iterations` of course
-const layout = new FA2Layout(graph, {settings: {gravity: 1}, weighted: true});
+const layout = new FA2Layout(graph, {settings: {gravity: 1}, getEdgeWeight: 'weight'});
 
 // To start the layout
 layout.start();

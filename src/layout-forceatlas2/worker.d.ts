@@ -1,17 +1,14 @@
-import Graph from 'graphology-types';
-import {ForceAtlas2Settings} from './index';
+import Graph, {Attributes} from 'graphology-types';
+import {ForceAtlas2LayoutParameters} from './index';
 
-export type FA2LayoutSupervisorParameters = {
-  attributes?: {
-    weight?: string;
-  };
-  settings?: ForceAtlas2Settings;
-  weighted?: boolean;
-  outputReducer?: (key: string, attributes: any) => any;
-};
-
-export default class FA2LayoutSupervisor {
-  constructor(graph: Graph, params?: FA2LayoutSupervisorParameters);
+export default class FA2LayoutSupervisor<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> {
+  constructor(
+    graph: Graph,
+    params?: ForceAtlas2LayoutParameters<NodeAttributes, EdgeAttributes>
+  );
 
   isRunning(): boolean;
   start(): void;

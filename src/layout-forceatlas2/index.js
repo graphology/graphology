@@ -4,9 +4,11 @@
  *
  * Library endpoint.
  */
-var isGraph = require('graphology-utils/is-graph'),
-  iterate = require('./iterate.js'),
-  helpers = require('./helpers.js');
+var isGraph = require('graphology-utils/is-graph');
+var createEdgeWeightGetter =
+  require('graphology-utils/getters').createEdgeWeightGetter;
+var iterate = require('./iterate.js');
+var helpers = require('./helpers.js');
 
 var DEFAULT_SETTINGS = require('./defaults.js');
 
@@ -16,9 +18,7 @@ var DEFAULT_SETTINGS = require('./defaults.js');
  * @param  {boolean}       assign          - Whether to assign positions.
  * @param  {Graph}         graph           - Target graph.
  * @param  {object|number} params          - If number, params.iterations, else:
- * @param  {object}          attributes    - Attribute names:
- * @param  {string}            weight      - Name of the edge weight attribute.
- * @param  {boolean}         weighted      - Whether to take edge weights into account.
+ * @param  {function}        getWeight     - Edge weight getter function.
  * @param  {number}          iterations    - Number of iterations.
  * @param  {function|null}   outputReducer - A node reducer
  * @param  {object}          [settings]    - Settings.
@@ -44,8 +44,7 @@ function abstractSynchronousLayout(assign, graph, params) {
       'graphology-layout-forceatlas2: you should provide a positive number of iterations.'
     );
 
-  var attributes = params.attributes || {};
-  var weightAttribute = params.weighted ? attributes.weight || 'weight' : null;
+  var getEdgeWeight = createEdgeWeightGetter(params.getEdgeWeight).fromEntry;
 
   var outputReducer =
     typeof params.outputReducer === 'function' ? params.outputReducer : null;
@@ -60,7 +59,7 @@ function abstractSynchronousLayout(assign, graph, params) {
     );
 
   // Building matrices
-  var matrices = helpers.graphToByteArrays(graph, weightAttribute);
+  var matrices = helpers.graphToByteArrays(graph, getEdgeWeight);
 
   var i;
 
