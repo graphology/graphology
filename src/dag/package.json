@@ -6,6 +6,7 @@
   "files": [
     "has-cycle.js",
     "index.js",
+    "topological-sort.js",
     "will-create-cycle.js",
     "*.d.ts"
   ],
@@ -22,7 +23,8 @@
     "graph",
     "graphology",
     "dag",
-    "directed acyclic graph"
+    "directed acyclic graph",
+    "topological sort"
   ],
   "author": {
     "name": "Guillaume Plique",
@@ -37,6 +39,7 @@
     "graphology-types": ">=0.19.0"
   },
   "dependencies": {
-    "graphology-utils": "^2.4.1"
+    "graphology-utils": "^2.4.1",
+    "mnemonist": "^0.39.0"
   }
 }

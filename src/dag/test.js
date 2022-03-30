@@ -2,11 +2,18 @@
  * Graphology DAG Unit Tests
  * ==========================
  */
-const {DirectedGraph} = require('graphology');
+const {
+  Graph,
+  UndirectedGraph,
+  DirectedGraph,
+  MultiDirectedGraph
+} = require('graphology');
 const path = require('graphology-generators/classic/path');
+const mergePath = require('graphology-utils/merge-path');
 const assert = require('assert');
 const hasCycle = require('./has-cycle.js');
 const willCreateCycle = require('./will-create-cycle.js');
+const topologicalSort = require('./topological-sort.js');
 
 describe('graphology-dag', function () {
   describe('hasCycle', function () {
@@ -149,6 +156,94 @@ describe('graphology-dag', function () {
       assert.strictEqual(willCreateCycle(graph, 3, 0), true);
       assert.strictEqual(willCreateCycle(graph, 3, 1), true);
       assert.strictEqual(willCreateCycle(graph, 3, 2), true);
+    });
+  });
+
+  describe('topologicalSort', function () {
+    it('should throw if given invalid arguments.', function () {
+      assert.throws(function () {
+        topologicalSort(null);
+      }, /graphology/);
+
+      assert.throws(function () {
+        topologicalSort(new UndirectedGraph());
+      }, /directed/);
+
+      assert.throws(function () {
+        topologicalSort(new MultiDirectedGraph());
+      }, /multi/);
+    });
+
+    it('should work on a path.', function () {
+      const P5 = path(DirectedGraph, 5);
+
+      const sorted = topologicalSort(P5);
+
+      assert.deepStrictEqual(sorted, ['0', '1', '2', '3', '4']);
+    });
+
+    it('should throw on a cycle.', function () {
+      const C5 = path(DirectedGraph, 5);
+      C5.addEdge(4, 0);
+
+      assert.throws(() => {
+        topologicalSort(C5);
+      }, /acyclic/);
+
+      const DC5 = path(DirectedGraph, 5);
+      DC5.mergeEdge(10, 11);
+      DC5.mergeEdge(11, 12);
+      DC5.mergeEdge(12, 10);
+
+      assert.throws(() => {
+        topologicalSort(DC5);
+      }, /acyclic/);
+    });
+
+    it('should work on a typical example.', function () {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(5, 11);
+      graph.mergeEdge(11, 2);
+      graph.mergeEdge(7, 11);
+      graph.mergeEdge(7, 8);
+      graph.mergeEdge(3, 8);
+      graph.mergeEdge(3, 10);
+      graph.mergeEdge(11, 9);
+      graph.mergeEdge(11, 10);
+      graph.mergeEdge(8, 9);
+
+      assert.strictEqual(graph.order, 8);
+      assert.strictEqual(graph.size, 9);
+
+      const sorted = topologicalSort(graph);
+
+      assert.deepStrictEqual(sorted, [
+        '5',
+        '7',
+        '3',
+        '11',
+        '8',
+        '2',
+        '10',
+        '9'
+      ]);
+    });
+
+    it('should work with disconnected graphs.', function () {
+      const graph = path(DirectedGraph, 4);
+      mergePath(graph, [10, 11, 12]);
+
+      const sorted = topologicalSort(graph);
+
+      assert.deepStrictEqual(sorted, ['0', '10', '1', '11', '2', '12', '3']);
+    });
+
+    it('should work on falsely mixed graphs.', function () {
+      const graph = path(Graph, 3);
+
+      const sorted = topologicalSort(graph);
+
+      assert.deepEqual(sorted, ['0', '1', '2']);
     });
   });
 });
