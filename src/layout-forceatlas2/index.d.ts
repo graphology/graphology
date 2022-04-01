@@ -53,7 +53,7 @@ interface IForceAtlas2Layout {
     EdgeAttributes extends Attributes = Attributes
   >(
     graph: Graph,
-    params: ForceAtlas2SynchronousLayoutParameterss<
+    params: ForceAtlas2SynchronousLayoutParameters<
       NodeAttributes,
       EdgeAttributes
     >

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.1
+
+- Fixing erroneous type.
+
 ## 0.9.0
 
 - Harmonizing options related to weighted computations through `getEdgeWeight`.
