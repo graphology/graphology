@@ -120,6 +120,8 @@ exports.graphToByteArrays = function (graph, getEdgeWeight) {
   var index = {};
   var j;
 
+  // NOTE: float32 could lead to issues if edge array needs to index large
+  // number of nodes.
   var NodeMatrix = new Float32Array(order * PPN);
   var EdgeMatrix = new Float32Array(size * PPE);
 
@@ -132,12 +134,12 @@ exports.graphToByteArrays = function (graph, getEdgeWeight) {
     // Populating byte array
     NodeMatrix[j] = attr.x;
     NodeMatrix[j + 1] = attr.y;
-    NodeMatrix[j + 2] = 0;
-    NodeMatrix[j + 3] = 0;
-    NodeMatrix[j + 4] = 0;
-    NodeMatrix[j + 5] = 0;
-    NodeMatrix[j + 6] = 1 + graph.degree(node);
-    NodeMatrix[j + 7] = 1;
+    NodeMatrix[j + 2] = 0; // dx
+    NodeMatrix[j + 3] = 0; // dy
+    NodeMatrix[j + 4] = 0; // old_dx
+    NodeMatrix[j + 5] = 0; // old_dy
+    NodeMatrix[j + 6] = 1; // mass
+    NodeMatrix[j + 7] = 1; // convergence
     NodeMatrix[j + 8] = attr.size || 1;
     NodeMatrix[j + 9] = attr.fixed ? 1 : 0;
     j += PPN;
@@ -146,9 +148,16 @@ exports.graphToByteArrays = function (graph, getEdgeWeight) {
   // Iterate through edges
   j = 0;
   graph.forEachEdge(function (edge, attr, source, target, sa, ta, u) {
+    var sj = index[source];
+    var tj = index[target];
+
+    // Handling node mass through degree
+    NodeMatrix[sj + 6] += 1;
+    NodeMatrix[tj + 6] += 1;
+
     // Populating byte array
-    EdgeMatrix[j] = index[source];
-    EdgeMatrix[j + 1] = index[target];
+    EdgeMatrix[j] = sj;
+    EdgeMatrix[j + 1] = tj;
     EdgeMatrix[j + 2] = getEdgeWeight(edge, attr, source, target, sa, ta, u);
     j += PPE;
   });
