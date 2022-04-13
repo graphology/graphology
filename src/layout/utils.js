@@ -4,146 +4,56 @@
  *
  * Miscellaneous utility functions used by the library.
  */
-var resolveDefaults = require('graphology-utils/defaults');
-var matrices = require('./matrices.js');
+var isGraph = require('graphology-utils/is-graph');
 
-var identity = matrices.identity;
-var multiply = matrices.multiply;
-var translate = matrices.translate;
-var scale = matrices.scale;
-var rotate = matrices.rotate;
-var multiplyVec2 = matrices.multiplyVec2;
-
-/**
- * Function taken from sigma and returning a correction factor to suit the
- * difference between the graph and the viewport's aspect ratio.
- */
-function getAspectRatioCorrection(
-  graphWidth,
-  graphHeight,
-  viewportWidth,
-  viewportHeight
-) {
-  var viewportRatio = viewportHeight / viewportWidth;
-  var graphRatio = graphHeight / graphWidth;
-
-  // If the stage and the graphs are in different directions (such as the graph being wider that tall while the stage
-  // is taller than wide), we can stop here to have indeed nodes touching opposite sides:
-  if (
-    (viewportRatio < 1 && graphRatio > 1) ||
-    (viewportRatio > 1 && graphRatio < 1)
-  ) {
-    return 1;
-  }
-
-  // Else, we need to fit the graph inside the stage:
-  // 1. If the graph is "squarer" (ie. with a ratio closer to 1), we need to make the largest sides touch;
-  // 2. If the stage is "squarer", we need to make the smallest sides touch.
-  return Math.min(
-    Math.max(graphRatio, 1 / graphRatio),
-    Math.max(1 / viewportRatio, viewportRatio)
-  );
+function isValidNumber(value) {
+  return typeof value === 'number' && !isNaN(value);
 }
 
-/**
- * Factory for a function converting from an arbitrary graph space to a
- * viewport one (like an HTML5 canvas, for instance).
- */
-var DEFAULT_CAMERA = {
-  x: 0.5,
-  y: 0.5,
-  angle: 0,
-  ratio: 1
-};
+var DEFAULT_DIMENSIONS = ['x', 'y'];
 
-var CONVERSION_FUNCTION_DEFAULTS = {
-  camera: DEFAULT_CAMERA,
-  padding: 0
-};
+function collectLayout(graph, options) {
+  options = options || {};
 
-function createGraphToViewportConversionFunction(
-  graphExtent,
-  viewportDimensions,
-  options
-) {
-  // Resolving options
-  options = resolveDefaults(options, CONVERSION_FUNCTION_DEFAULTS);
+  var dimensions = options.dimensions;
+  var exhaustive = options.exhaustive !== false;
 
-  var camera = options.camera;
+  if (!dimensions) dimensions = DEFAULT_DIMENSIONS;
 
-  // Computing graph dimensions
-  var maxGX = graphExtent.x[1];
-  var maxGY = graphExtent.y[1];
-  var minGX = graphExtent.x[0];
-  var minGY = graphExtent.y[0];
+  if (!isGraph(graph))
+    throw new Error(
+      'graphology-layout/utils.collectLayout: the given graph is not a valid graphology instance.'
+    );
 
-  var graphWidth = maxGX - minGX;
-  var graphHeight = maxGY - minGY;
+  var mapping = {};
 
-  var viewportWidth = viewportDimensions.width;
-  var viewportHeight = viewportDimensions.height;
+  graph.forEachNode(function (node, attr) {
+    var validCoordinates = 0;
+    var position = {};
 
-  // Precomputing values
-  var graphRatio = Math.max(graphWidth, graphHeight) || 1;
+    var i, l;
 
-  var gdx = (maxGX + minGX) / 2;
-  var gdy = (maxGY + minGY) / 2;
+    for (i = 0, l = dimensions.length; i < l; i++) {
+      var d = dimensions[i];
+      var v = attr[d];
 
-  var smallest = Math.min(viewportWidth, viewportHeight);
-  smallest -= 2 * options.padding;
+      if (isValidNumber(v)) {
+        position[d] = v;
+        validCoordinates++;
+      }
+    }
 
-  var correction = getAspectRatioCorrection(
-    graphWidth,
-    graphHeight,
-    viewportWidth,
-    viewportHeight
-  );
+    if (exhaustive) {
+      if (validCoordinates === l) mapping[node] = position;
+    } else if (validCoordinates) {
+      mapping[node] = position;
+    }
+  });
 
-  var matrix = identity();
-
-  // Realigning with canvas coordinates
-  multiply(matrix, scale(identity(), viewportWidth / 2, viewportHeight / 2));
-  multiply(matrix, translate(identity(), 1, 1));
-  multiply(matrix, scale(identity(), 1, -1));
-
-  // Applying camera and transforming space
-  multiply(
-    matrix,
-    scale(
-      identity(),
-      2 * (smallest / viewportWidth) * correction,
-      2 * (smallest / viewportHeight) * correction
-    )
-  );
-  multiply(matrix, rotate(identity(), -camera.angle));
-  multiply(matrix, scale(identity(), 1 / camera.ratio));
-  multiply(matrix, translate(identity(), -camera.x, -camera.y));
-
-  // Normalizing graph space to squished square
-  multiply(matrix, translate(identity(), 0.5, 0.5));
-  multiply(matrix, scale(identity(), 1 / graphRatio));
-  multiply(matrix, translate(identity(), -gdx, -gdy));
-
-  // Assignation function
-  var assign = function (pos) {
-    // Applying matrix transformation
-    multiplyVec2(matrix, pos);
-
-    return pos;
-  };
-
-  // Immutable variant
-  var graphToViewport = function (pos) {
-    return assign({x: pos.x, y: pos.y});
-  };
-
-  graphToViewport.assign = assign;
-
-  return graphToViewport;
+  return mapping;
 }
 
 /**
  * Exports.
  */
-exports.createGraphToViewportConversionFunction =
-  createGraphToViewportConversionFunction;
+exports.collectLayout = collectLayout;

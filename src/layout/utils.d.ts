@@ -1,37 +1,19 @@
-type Extent = [min: number, max: number];
+import Graph, {Attributes} from 'graphology-types';
 
-export type GraphExtent = {
-  x: Extent;
-  y: Extent;
+export type XYPosition = {x: number; y: number};
+export type Position = {[dimension: string]: number};
+export type LayoutMapping<P> = {[node: string]: P};
+
+export type CollectLayoutOptions = {
+  dimensions?: Array<string>;
+  exhaustive?: boolean;
 };
 
-export interface Coordinates {
-  x: number;
-  y: number;
-}
+export function collectLayout<NodeAttributes extends Attributes = Attributes>(
+  graph: Graph<NodeAttributes>
+): LayoutMapping<XYPosition>;
 
-export interface Dimensions {
-  width: number;
-  height: number;
-}
-
-export interface Camera extends Coordinates {
-  angle: number;
-  ratio: number;
-}
-
-type ConversionFunctionOptions = {
-  camera?: Camera;
-  padding?: number;
-};
-
-export interface CoordinateConversionFunction {
-  (coordinates: Coordinates): Coordinates;
-  assign(coordinates: Coordinates): Coordinates;
-}
-
-export function createGraphToViewportConversionFunction(
-  graphExtent: GraphExtent,
-  viewportDimensions: Dimensions,
-  options?: ConversionFunctionOptions
-): CoordinateConversionFunction;
+export function collectLayout<NodeAttributes extends Attributes = Attributes>(
+  graph: Graph<NodeAttributes>,
+  options: CollectLayoutOptions
+): LayoutMapping<Position>;

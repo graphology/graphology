@@ -3,7 +3,7 @@
  * ======================================
  */
 var assert = require('assert');
-var deepApproximatelyEqual = require('./utils.js').deepApproximatelyEqual;
+var deepApproximatelyEqual = require('./test-utils.js').deepApproximatelyEqual;
 var Graph = require('graphology');
 var rotation = require('../rotation.js');
 

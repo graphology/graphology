@@ -8,6 +8,7 @@
     "*.d.ts",
     "circlepack.js",
     "circular.js",
+    "conversion.js",
     "index.js",
     "matrices.js",
     "random.js",
