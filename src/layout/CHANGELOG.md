@@ -3,6 +3,7 @@
 ## 0.6.0
 
 - Moving `createGraphToViewportConversionFunction` to `conversion` submodule.
+- Adding `collectLayout`, `collectLayoutAsFlatArray`, `assignLayout` & `assignLayoutAsFlatArray`.
 
 ## 0.5.0
 

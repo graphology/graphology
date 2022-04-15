@@ -150,8 +150,6 @@ function assignLayoutAsFlatArray(graph, layout, options) {
   );
 }
 
-// TODO: fix missing positions
-
 /**
  * Exports.
  */

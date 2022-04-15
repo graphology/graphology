@@ -33,7 +33,7 @@ _Utilities_
 
 - [rotation](#rotation)
 
-### #.circular
+### circular
 
 Arranges the node in a circle (or an sphere/hypersphere in higher dimensions).
 
@@ -64,7 +64,7 @@ _Arguments_
   - **center** <span class="code">?number</span> <span class="default">0.5</span>: center of the layout.
   - **scale** <span class="code">?number</span> <span class="default">1</span>: scale of the layout.
 
-### #.random
+### random
 
 Random layout positioning every node by choosing each coordinates uniformly at random on the interval `[0, 1)`.
 
@@ -96,7 +96,7 @@ _Arguments_
   - **rng** <span class="code">?function</span> <span class="default">Math.random</span>: custom RNG function to use.
   - **scale** <span class="code">?number</span> <span class="default">1</span>: scale of the layout.
 
-### #.circlePack
+### circlePack
 
 Arranges the nodes as a bubble chart, according to specified attributes.
 
@@ -131,7 +131,7 @@ _Arguments_
   - **rng** <span class="code">?function</span> <span class="default">Math.random</span>: custom RNG function to use.
   - **scale** <span class="code">?number</span> <span class="default">1</span>: scale of the layout.
 
-### #.rotation
+### rotation
 
 Rotates the node coordinates of the given graph by the given angle in radians (or in degrees using an option).
 
@@ -161,4 +161,98 @@ _Arguments_
   - **dimensions** <span class="code">?array</span> <span class="default">['x', 'y']</span>: dimensions to use for the rotation. Cannot work with dimensions != 2.
   - **degrees** <span class="code">?boolean</span> <span class="default">false</span>: whether the given angle is in degrees.
   - **centeredOnZero** <span class="code">?boolean</span> <span class="default">false</span>: whether to rotate the graph around `0`, rather than the graph's center.
+
+### collectLayout
+
+Function returning the given graph's layout as `{node: {x, y}}`.
+
+_Example_
+
+```js
+import {collectLayout} from 'graphology-layout/utils';
+
+collectLayout(graph);
+
+// Custom dimensions
+collectLayout(graph, {dimensions: ['x', 'y', 'z']});
+
+// Non exhaustive (i.e. node having missing dimensions will be returned also)
+collectLayout(graph, {exhaustive: false});
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **options** <span class="code">?object</span>: options:
+  - **dimensions** <span class="code">?array</span> <span class="default">['x', 'y']</span>: array of attribute names for the dimensions.
+  - **exhaustive** <span class="code">?boolean</span> <span class="default">true</span>: whether to collect positions of nodes having all the dimensions set.
+
+### collectLayoutAsFlatArray
+
+Function returning the given graph's layout as a flat array of length `order * dimensions`.
+
+_Example_
+
+```js
+import {collectLayoutAsFlatArray} from 'graphology-layout/utils';
+
+collectLayoutAsFlatArray(graph);
+
+// Custom dimensions
+collectLayoutAsFlatArray(graph, {dimensions: ['x', 'y', 'z']});
+
+// Custom type
+collectLayoutAsFlatArray(graph, {type: Float32Array});
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **options** <span class="code">?object</span>: options:
+  - **dimensions** <span class="code">?array</span> <span class="default">['x', 'y']</span>: array of attribute names for the dimensions.
+  - **type** <span class="code">?constructor</span> <span class="default">Float64Array</span>: array class to use.
+
+### assignLayout
+
+Function assigning a `{node: {x, y}}` layout to the given graph.
+
+_Example_
+
+```js
+import {assignLayout} from 'graphology-layout/utils';
+
+assignLayout(graph, layout);
+
+// Custom dimensions
+assignLayout(graph, layout, {dimensions: ['x', 'y', 'z']});
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **layout** _object_: layout mapping.
+- **options** <span class="code">?object</span>: options:
+  - **dimensions** <span class="code">?array</span> <span class="default">['x', 'y']</span>: array of attribute names for the dimensions.
+
+### assignLayoutAsFlatArray
+
+Function assigning a flat array layout to the given graph.
+
+_Example_
+
+```js
+import {assignLayoutAsFlatArray} from 'graphology-layout/utils';
+
+assignLayoutAsFlatArray(graph, layout);
+
+// Custom dimensions
+assignLayoutAsFlatArray(graph, layout, {dimensions: ['x', 'y', 'z']});
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **layout** _array_: layout flat array.
+- **options** <span class="code">?object</span>: options:
+  - **dimensions** <span class="code">?array</span> <span class="default">['x', 'y']</span>: array of attribute names for the dimensions.
 
