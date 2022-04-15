@@ -155,7 +155,11 @@ FA2LayoutSupervisor.prototype.start = function () {
   if (this.running) return this;
 
   // Building matrices
-  this.matrices = helpers.graphToByteArrays(this.graph, this.getEdgeWeight);
+  this.matrices = helpers.graphToByteArrays(
+    this.graph,
+    this.getEdgeWeight,
+    this.settings.weightedMass
+  );
 
   this.running = true;
   this.askForIterations(true);

@@ -59,7 +59,11 @@ function abstractSynchronousLayout(assign, graph, params) {
     );
 
   // Building matrices
-  var matrices = helpers.graphToByteArrays(graph, getEdgeWeight);
+  var matrices = helpers.graphToByteArrays(
+    graph,
+    getEdgeWeight,
+    settings.weightedMass
+  );
 
   var i;
 

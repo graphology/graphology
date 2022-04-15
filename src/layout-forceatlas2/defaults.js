@@ -12,5 +12,6 @@ module.exports = {
   gravity: 1,
   slowDown: 1,
   barnesHutOptimize: false,
-  barnesHutTheta: 0.5
+  barnesHutTheta: 0.5,
+  weightedMass: false
 };

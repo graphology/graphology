@@ -104,6 +104,9 @@ exports.validateSettings = function (settings) {
   )
     return {message: 'the `barnesHutTheta` setting should be a number >= 0.'};
 
+  if ('weightedMass' in settings && typeof settings.weightedMass !== 'boolean')
+    return {message: 'the `weightedMass` setting should be a boolean'};
+
   return null;
 };
 
@@ -114,7 +117,7 @@ exports.validateSettings = function (settings) {
  * @param  {function} getEdgeWeight - Edge weight getter function.
  * @return {object}                 - Both matrices.
  */
-exports.graphToByteArrays = function (graph, getEdgeWeight) {
+exports.graphToByteArrays = function (graph, getEdgeWeight, weightedMass) {
   var order = graph.order;
   var size = graph.size;
   var index = {};
@@ -155,8 +158,10 @@ exports.graphToByteArrays = function (graph, getEdgeWeight) {
 
     // Handling node mass through degree
     if (weight > 0) {
-      NodeMatrix[sj + 6] += 1;
-      NodeMatrix[tj + 6] += 1;
+      var massIncrement = weightedMass ? weight : 1;
+
+      NodeMatrix[sj + 6] += massIncrement;
+      NodeMatrix[tj + 6] += massIncrement;
     }
 
     // Populating byte array
