@@ -4,8 +4,11 @@
  *
  * Micellaneous helper functions used throughout the library.
  */
-var utils = require('graphology-layout/utils');
+var helpers = require('graphology-layout/conversion');
 var defaults = require('./defaults.js');
+
+var createGraphToViewportConversionFunction =
+  helpers.createGraphToViewportConversionFunction;
 
 function reduceNodes(graph, settings) {
   var containerWidth = settings.width;
@@ -36,7 +39,7 @@ function reduceNodes(graph, settings) {
     if (y > yMax) yMax = y;
   });
 
-  var conversion = utils.createGraphToViewportConversionFunction(
+  var conversion = createGraphToViewportConversionFunction(
     {
       x: [xMin, xMax],
       y: [yMin, yMax]
