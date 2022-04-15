@@ -51,3 +51,9 @@ export function assignLayout(
   layout: LayoutMapping<Position>,
   options: AssignLayoutOptions
 ): void;
+
+export function assignLayoutAsFlatArray(
+  graph: Graph,
+  layout: FlatArrayLayout,
+  options?: AssignLayoutOptions
+): void;

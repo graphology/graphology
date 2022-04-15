@@ -119,6 +119,37 @@ function collectLayoutAsFlatArray(graph, options) {
   return layout;
 }
 
+function assignLayoutAsFlatArray(graph, layout, options) {
+  if (!isGraph(graph))
+    throw new Error(
+      'graphology-layout/utils.assignLayoutAsFlatArray: the given graph is not a valid graphology instance.'
+    );
+
+  options = options || {};
+
+  var dimensions = options.dimensions;
+
+  if (!dimensions) dimensions = DEFAULT_DIMENSIONS;
+
+  var l = dimensions.length;
+
+  if (layout.length !== graph.order * l)
+    throw new Error(
+      'graphology-layout/utils.assignLayoutAsFlatArray: given layout has an incorrect length wrt number of nodes & dimenions.'
+    );
+
+  var offset = 0;
+
+  graph.updateEachNodeAttributes(
+    function (node, attr) {
+      for (var i = 0; i < l; i++) attr[dimensions[i]] = layout[offset++];
+
+      return attr;
+    },
+    {attributes: dimensions}
+  );
+}
+
 // TODO: fix missing positions
 
 /**
@@ -127,3 +158,4 @@ function collectLayoutAsFlatArray(graph, options) {
 exports.collectLayout = collectLayout;
 exports.assignLayout = assignLayout;
 exports.collectLayoutAsFlatArray = collectLayoutAsFlatArray;
+exports.assignLayoutAsFlatArray = assignLayoutAsFlatArray;
