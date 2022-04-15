@@ -13,17 +13,17 @@ function isValidNumber(value) {
 var DEFAULT_DIMENSIONS = ['x', 'y'];
 
 function collectLayout(graph, options) {
+  if (!isGraph(graph))
+    throw new Error(
+      'graphology-layout/utils.collectLayout: the given graph is not a valid graphology instance.'
+    );
+
   options = options || {};
 
   var dimensions = options.dimensions;
   var exhaustive = options.exhaustive !== false;
 
   if (!dimensions) dimensions = DEFAULT_DIMENSIONS;
-
-  if (!isGraph(graph))
-    throw new Error(
-      'graphology-layout/utils.collectLayout: the given graph is not a valid graphology instance.'
-    );
 
   var layout = {};
   var l = dimensions.length;
@@ -85,10 +85,45 @@ function assignLayout(graph, layout, options) {
   );
 }
 
-// TODO: collect as flat array, fix missing positions
+function collectLayoutAsFlatArray(graph, options) {
+  if (!isGraph(graph))
+    throw new Error(
+      'graphology-layout/utils.collectLayout: the given graph is not a valid graphology instance.'
+    );
+
+  options = options || {};
+
+  var dimensions = options.dimensions;
+  var ArrayClass = options.type || Float64Array;
+
+  if (!dimensions) dimensions = DEFAULT_DIMENSIONS;
+
+  var l = dimensions.length;
+
+  var layout = new ArrayClass(graph.order * l);
+  var offset = 0;
+
+  graph.forEachNode(function (node, attr) {
+    var i;
+
+    for (i = 0; i < l; i++) {
+      var d = dimensions[i];
+      var v = attr[d];
+
+      if (!isValidNumber(v)) v = 0;
+
+      layout[offset++] = v;
+    }
+  });
+
+  return layout;
+}
+
+// TODO: fix missing positions
 
 /**
  * Exports.
  */
 exports.collectLayout = collectLayout;
 exports.assignLayout = assignLayout;
+exports.collectLayoutAsFlatArray = collectLayoutAsFlatArray;

@@ -8,6 +8,7 @@ var utils = require('../utils.js');
 
 var collectLayout = utils.collectLayout;
 var assignLayout = utils.assignLayout;
+var collectLayoutAsFlatArray = utils.collectLayoutAsFlatArray;
 
 var GRAPH = new Graph();
 GRAPH.addNode('a', {x: 1, y: 2, z: 5});
@@ -35,6 +36,34 @@ describe('utils', function () {
       layout = collectLayout(GRAPH, {exhaustive: false});
 
       assert.deepEqual(layout, {a: {x: 1, y: 2}, b: {x: 3, y: 4}, c: {y: 6}});
+    });
+  });
+
+  describe('collectLayoutAsFlatArray', function () {
+    it('should throw if provided with and invalid graph.', function () {
+      assert.throws(function () {
+        collectLayoutAsFlatArray(null);
+      }, /graphology/);
+    });
+
+    it('should return the correct layout.', function () {
+      var layout = collectLayoutAsFlatArray(GRAPH);
+
+      assert.deepStrictEqual(
+        layout,
+        new Float64Array([1, 2, 3, 4, 0, 6, 0, 0])
+      );
+
+      layout = collectLayoutAsFlatArray(GRAPH, {dimensions: ['y']});
+
+      assert.deepStrictEqual(layout, new Float64Array([2, 4, 6, 0]));
+
+      layout = collectLayoutAsFlatArray(GRAPH, {
+        dimensions: ['y'],
+        type: Uint8Array
+      });
+
+      assert.deepStrictEqual(layout, new Uint8Array([2, 4, 6, 0]));
     });
   });
 
