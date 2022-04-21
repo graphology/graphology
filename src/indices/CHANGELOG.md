@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.17.0
+
+- Improving `DFSStack`.
+- Improving `BFSQueue`.
+
 ## 0.16.6
 
 - Scaling necessary memory with selected method for `NeighborhoodIndex` and `WeightedNeighborhoodIndex`.
