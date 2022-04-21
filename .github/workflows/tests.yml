@@ -10,7 +10,6 @@ jobs:
           - 12.x
           - 14.x
           - 16.x
-          - 18.x
 
     runs-on: ubuntu-latest
 
