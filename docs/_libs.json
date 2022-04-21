@@ -15,7 +15,7 @@
   "layout-noverlap": "Noverlap anti-collision layout algorithm.",
   "metrics": "Modularity, density, centrality etc.",
   "operators": "Graph unary, binary & cast operators (reverse, union, intersection, conversion etc.)",
-  "shortest-path": "Shortest path functions (Dijkstra, A&ast; etc.)",
+  "shortest-path": "Shortest path functions (Dijkstra, A\\* etc.)",
   "simple-path": "Simple path related functions (e.g. all paths between source & target)",
   "svg": "SVG export for graphs.",
   "traversal": "Traversal functions (DFS, BFS, etc.)",

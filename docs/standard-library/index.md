@@ -24,7 +24,7 @@ has_toc: false
 * [layout-noverlap](./layout-noverlap): *Noverlap anti-collision layout algorithm.*
 * [metrics](./metrics): *Modularity, density, centrality etc.*
 * [operators](./operators): *Graph unary, binary & cast operators (reverse, union, intersection, conversion etc.)*
-* [shortest-path](./shortest-path): *Shortest path functions (Dijkstra, A&ast; etc.)*
+* [shortest-path](./shortest-path): *Shortest path functions (Dijkstra, A\* etc.)*
 * [simple-path](./simple-path): *Simple path related functions (e.g. all paths between source & target)*
 * [svg](./svg): *SVG export for graphs.*
 * [traversal](./traversal): *Traversal functions (DFS, BFS, etc.)*
