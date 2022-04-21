@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.3
+
+- Updating dependency on `graphology-indices`.
+- Improving performance.
+
 ## 1.5.2
 
 - Fixing early exit of `largestConnecteComponent`.
