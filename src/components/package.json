@@ -1,6 +1,6 @@
 {
   "name": "graphology-components",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "Connected components for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -35,7 +35,7 @@
     "graphology-types": ">=0.19.0"
   },
   "dependencies": {
-    "graphology-indices": "^0.16.2",
+    "graphology-indices": "^0.17.0",
     "graphology-utils": "^2.1.2"
   }
 }

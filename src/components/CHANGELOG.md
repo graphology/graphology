@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.4
+
+- Fixing dependency on `graphology-indices`.
+
 ## 1.5.3
 
 - Updating dependency on `graphology-indices`.
