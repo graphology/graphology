@@ -36,6 +36,8 @@ function abstractDfs(graph, startingNode, callback, options) {
   // Early termination
   if (graph.order === 0) return;
 
+  var stack = new DFSStack(graph);
+
   var forEachNeighbor =
     graph['forEach' + capitalize(options.mode || 'outbound') + 'Neighbor'].bind(
       graph
@@ -44,7 +46,7 @@ function abstractDfs(graph, startingNode, callback, options) {
   var forEachNode;
 
   if (startingNode === null) {
-    forEachNode = graph.forEachNode.bind(graph);
+    forEachNode = stack.forEachNodeYetUnseen.bind(stack);
   } else {
     forEachNode = function (fn) {
       startingNode = '' + startingNode;
@@ -52,7 +54,6 @@ function abstractDfs(graph, startingNode, callback, options) {
     };
   }
 
-  var stack = new DFSStack(graph.order);
   var record, stop;
 
   function visit(neighbor, attr) {
@@ -63,8 +64,6 @@ function abstractDfs(graph, startingNode, callback, options) {
   }
 
   forEachNode(function (node, attr) {
-    if (stack.has(node)) return;
-
     stack.pushWith(node, new TraversalRecord(node, attr, 0));
 
     while (stack.size !== 0) {

@@ -36,6 +36,8 @@ function abstractBfs(graph, startingNode, callback, options) {
   // Early termination
   if (graph.order === 0) return;
 
+  var queue = new BFSQueue(graph);
+
   var forEachNeighbor =
     graph['forEach' + capitalize(options.mode || 'outbound') + 'Neighbor'].bind(
       graph
@@ -44,7 +46,7 @@ function abstractBfs(graph, startingNode, callback, options) {
   var forEachNode;
 
   if (startingNode === null) {
-    forEachNode = graph.forEachNode.bind(graph);
+    forEachNode = queue.forEachNodeYetUnseen.bind(queue);
   } else {
     forEachNode = function (fn) {
       startingNode = '' + startingNode;
@@ -52,7 +54,6 @@ function abstractBfs(graph, startingNode, callback, options) {
     };
   }
 
-  var queue = new BFSQueue(graph.order);
   var record, stop;
 
   function visit(neighbor, attr) {
@@ -63,8 +64,6 @@ function abstractBfs(graph, startingNode, callback, options) {
   }
 
   forEachNode(function (node, attr) {
-    if (queue.has(node)) return;
-
     queue.pushWith(node, new TraversalRecord(node, attr, 0));
 
     while (queue.size !== 0) {

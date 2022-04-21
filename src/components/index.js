@@ -24,12 +24,10 @@ function forEachConnectedComponent(graph, callback) {
   // A null graph has no connected components by definition
   if (!graph.order) return;
 
-  var stack = new DFSStack(graph.order);
+  var stack = new DFSStack(graph);
   var push = stack.push.bind(stack);
 
-  graph.forEachNode(function (node) {
-    if (stack.has(node)) return;
-
+  stack.forEachNodeYetUnseen(function (node) {
     var component = [];
 
     stack.push(node);
@@ -57,12 +55,10 @@ function forEachConnectedComponentOrder(graph, callback) {
   // A null graph has no connected components by definition
   if (!graph.order) return;
 
-  var stack = new DFSStack(graph.order);
+  var stack = new DFSStack(graph);
   var push = stack.push.bind(stack);
 
-  graph.forEachNode(function (node) {
-    if (stack.has(node)) return;
-
+  stack.forEachNodeYetUnseen(function (node) {
     var order = 0;
 
     stack.push(node);
@@ -94,7 +90,7 @@ function forEachConnectedComponentOrderWithEdgeFilter(
   // A null graph has no connected components by definition
   if (!graph.order) return;
 
-  var stack = new DFSStack(graph.order);
+  var stack = new DFSStack(graph);
 
   var source;
 
@@ -106,9 +102,7 @@ function forEachConnectedComponentOrderWithEdgeFilter(
     stack.push(t);
   }
 
-  graph.forEachNode(function (node) {
-    if (stack.has(node)) return;
-
+  stack.forEachNodeYetUnseen(function (node) {
     var order = 0;
 
     stack.push(node);
@@ -166,18 +160,13 @@ function largestConnectedComponent(graph) {
 
   if (!graph.order) return [];
 
-  var order = graph.order;
-  var remaining;
-
-  var stack = new DFSStack(graph.order);
+  var stack = new DFSStack(graph);
   var push = stack.push.bind(stack);
 
   var largestComponent = [];
   var component;
 
-  graph.someNode(function (node) {
-    if (stack.has(node)) return;
-
+  stack.forEachNodeYetUnseen(function (node) {
     component = [];
 
     stack.push(node);
@@ -199,8 +188,7 @@ function largestConnectedComponent(graph) {
     // If current largest component's size is larger than the number of
     // remaining nodes to visit, we can safely assert we found the
     // overall largest component already.
-    remaining = order - stack.seen.size;
-    if (largestComponent.length > remaining) return true;
+    if (largestComponent.length > stack.countUnseenNodes()) return true;
 
     return false;
   });

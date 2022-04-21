@@ -8,11 +8,39 @@
  */
 var FixedDeque = require('mnemonist/fixed-deque');
 
-function BFSQueue(order) {
-  this.queue = new FixedDeque(Array, order);
+function BFSQueue(graph) {
+  this.graph = graph;
+  this.queue = new FixedDeque(Array, graph.order);
   this.seen = new Set();
   this.size = 0;
 }
+
+BFSQueue.prototype.hasAlreadySeenEverything = function () {
+  return this.seen.size === this.graph.order;
+};
+
+BFSQueue.prototype.countUnseenNodes = function () {
+  return this.graph.order - this.seen.size;
+};
+
+BFSQueue.prototype.forEachNodeYetUnseen = function (callback) {
+  var seen = this.seen;
+  var graph = this.graph;
+
+  graph.someNode(function (node, attr) {
+    // Useful early exit for connected graphs
+    if (seen.size === graph.order) return true; // break
+
+    // Node already seen?
+    if (seen.has(node)) return false; // continue
+
+    var shouldBreak = callback(node, attr);
+
+    if (shouldBreak) return true;
+
+    return false;
+  });
+};
 
 BFSQueue.prototype.has = function (node) {
   return this.seen.has(node);
