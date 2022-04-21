@@ -22,6 +22,10 @@ _Advanced_
 _Utilities_
 
 - [rotation](#rotation)
+- [collectLayout](#collectlayout)
+- [collectLayoutAsFlatArray](#collectlayoutasflatarray)
+- [assignLayout](#assignlayout)
+- [assignLayoutAsFlatArray](#assignlayoutasflatarray)
 
 ### circular
 
