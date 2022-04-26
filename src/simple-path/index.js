@@ -32,9 +32,17 @@ StackSet.prototype.path = function (value) {
   return this.stack.concat(value);
 };
 
-StackSet.of = function (value) {
+StackSet.of = function (value, cycle) {
   var set = new StackSet();
-  set.push(value);
+
+  if (!cycle) {
+    // Normally we add source both to set & stack
+    set.push(value);
+  } else {
+    // But in case of cycle, we only add to stack so that we may reach the
+    // source again (as it was not already visited)
+    set.stack.push(value);
+  }
 
   return set;
 };
@@ -70,9 +78,18 @@ RecordStackSet.prototype.path = function (record) {
     .concat([record[0]]);
 };
 
-RecordStackSet.of = function (value) {
+RecordStackSet.of = function (value, cycle) {
   var set = new RecordStackSet();
-  set.push([null, value]);
+  var record = [null, value];
+
+  if (!cycle) {
+    // Normally we add source both to set & stack
+    set.push(record);
+  } else {
+    // But in case of cycle, we only add to stack so that we may reach the
+    // source again (as it was not already visited)
+    set.stack.push(record);
+  }
 
   return set;
 };
@@ -112,10 +129,10 @@ function allSimplePaths(graph, source, target, maxDepth) {
   var cycle = source === target;
 
   var stack = [graph.outboundNeighbors(source)];
-  var visited = StackSet.of(cycle ? '§SOURCE§' : source);
+  var visited = StackSet.of(source, cycle);
 
-  var paths = [],
-    p;
+  var paths = [];
+  var p;
 
   var children, child;
 
@@ -131,9 +148,6 @@ function allSimplePaths(graph, source, target, maxDepth) {
 
       if (child === target) {
         p = visited.path(child);
-
-        if (cycle) p[0] = source;
-
         paths.push(p);
       }
 
@@ -224,10 +238,10 @@ function allSimpleEdgePaths(graph, source, target, maxDepth) {
   var cycle = source === target;
 
   var stack = [collectEdges(graph, source)];
-  var visited = RecordStackSet.of(cycle ? '§SOURCE§' : source);
+  var visited = RecordStackSet.of(source, cycle);
 
-  var paths = [],
-    p;
+  var paths = [];
+  var p;
 
   var record, children, child;
 
@@ -298,10 +312,10 @@ function allSimpleEdgeGroupPaths(graph, source, target, maxDepth) {
   var cycle = source === target;
 
   var stack = [collectMultiEdges(graph, source)];
-  var visited = RecordStackSet.of(cycle ? '§SOURCE§' : source);
+  var visited = RecordStackSet.of(source, cycle);
 
-  var paths = [],
-    p;
+  var paths = [];
+  var p;
 
   var record, children, child;
 
