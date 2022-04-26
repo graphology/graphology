@@ -12,7 +12,6 @@ var isGraph = require('graphology-utils/is-graph');
 function StackSet() {
   this.set = new Set();
   this.stack = [];
-  this.size = 0;
 }
 
 StackSet.prototype.has = function (value) {
@@ -23,12 +22,10 @@ StackSet.prototype.has = function (value) {
 StackSet.prototype.push = function (value) {
   this.stack.push(value);
   this.set.add(value);
-  this.size++;
 };
 
 StackSet.prototype.pop = function () {
   this.set.delete(this.stack.pop());
-  this.size--;
 };
 
 StackSet.prototype.path = function (value) {
@@ -48,7 +45,6 @@ StackSet.of = function (value) {
 function RecordStackSet() {
   this.set = new Set();
   this.stack = [];
-  this.size = 0;
 }
 
 RecordStackSet.prototype.has = function (value) {
@@ -59,12 +55,10 @@ RecordStackSet.prototype.has = function (value) {
 RecordStackSet.prototype.push = function (record) {
   this.stack.push(record);
   this.set.add(record[1]);
-  this.size++;
 };
 
 RecordStackSet.prototype.pop = function () {
   this.set.delete(this.stack.pop()[1]);
-  this.size--;
 };
 
 RecordStackSet.prototype.path = function (record) {
@@ -145,7 +139,11 @@ function allSimplePaths(graph, source, target, maxDepth) {
 
       visited.push(child);
 
-      if (!visited.has(target) && (maxDepth === undefined || stack.length < maxDepth)) stack.push(graph.outboundNeighbors(child));
+      if (
+        !visited.has(target) &&
+        (maxDepth === undefined || stack.length < maxDepth)
+      )
+        stack.push(graph.outboundNeighbors(child));
       else visited.pop();
     }
   }
@@ -252,7 +250,11 @@ function allSimpleEdgePaths(graph, source, target, maxDepth) {
 
       visited.push(record);
 
-      if (!visited.has(target) && (maxDepth === undefined || stack.length < maxDepth)) stack.push(collectEdges(graph, child));
+      if (
+        !visited.has(target) &&
+        (maxDepth === undefined || stack.length < maxDepth)
+      )
+        stack.push(collectEdges(graph, child));
       else visited.pop();
     }
   }
@@ -322,7 +324,11 @@ function allSimpleEdgeGroupPaths(graph, source, target, maxDepth) {
 
       visited.push(record);
 
-      if (!visited.has(target) && (maxDepth === undefined || stack.length < maxDepth)) stack.push(collectMultiEdges(graph, child));
+      if (
+        !visited.has(target) &&
+        (maxDepth === undefined || stack.length < maxDepth)
+      )
+        stack.push(collectMultiEdges(graph, child));
       else visited.pop();
     }
   }
