@@ -86,12 +86,13 @@ RecordStackSet.of = function (value) {
 /**
  * Function returning all the paths between source & target in the graph.
  *
- * @param  {Graph}  graph  - Target graph.
- * @param  {string} source - Source node.
- * @param  {string} target - Target node.
- * @return {array}         - The found paths.
+ * @param  {Graph}  graph    - Target graph.
+ * @param  {string} source   - Source node.
+ * @param  {string} target   - Target node.
+ * @param  {number} maxDepth - Max traversal depth (default: no limit).
+ * @return {array}           - The found paths.
  */
-function allSimplePaths(graph, source, target) {
+function allSimplePaths(graph, source, target, maxDepth) {
   if (!isGraph(graph))
     throw new Error(
       'graphology-simple-path.allSimplePaths: expecting a graphology instance.'
@@ -144,7 +145,7 @@ function allSimplePaths(graph, source, target) {
 
       visited.push(child);
 
-      if (!visited.has(target)) stack.push(graph.outboundNeighbors(child));
+      if (!visited.has(target) && (maxDepth === undefined || stack.length < maxDepth)) stack.push(graph.outboundNeighbors(child));
       else visited.pop();
     }
   }
@@ -188,12 +189,13 @@ function collectMultiEdges(graph, source) {
 /**
  * Function returning all the edge paths between source & target in the graph.
  *
- * @param  {Graph}  graph  - Target graph.
- * @param  {string} source - Source node.
- * @param  {string} target - Target node.
- * @return {array}         - The found paths.
+ * @param  {Graph}  graph    - Target graph.
+ * @param  {string} source   - Source node.
+ * @param  {string} target   - Target node.
+ * @param  {number} maxDepth - Max traversal depth (default: no limit).
+ * @return {array}           - The found paths.
  */
-function allSimpleEdgePaths(graph, source, target) {
+function allSimpleEdgePaths(graph, source, target, maxDepth) {
   if (!isGraph(graph))
     throw new Error(
       'graphology-simple-path.allSimpleEdgePaths: expecting a graphology instance.'
@@ -250,7 +252,7 @@ function allSimpleEdgePaths(graph, source, target) {
 
       visited.push(record);
 
-      if (!visited.has(target)) stack.push(collectEdges(graph, child));
+      if (!visited.has(target) && (maxDepth === undefined || stack.length < maxDepth)) stack.push(collectEdges(graph, child));
       else visited.pop();
     }
   }
@@ -262,12 +264,13 @@ function allSimpleEdgePaths(graph, source, target) {
  * Function returning all the compressed edge paths between source & target
  * in the graph.
  *
- * @param  {Graph}  graph  - Target graph.
- * @param  {string} source - Source node.
- * @param  {string} target - Target node.
- * @return {array}         - The found paths.
+ * @param  {Graph}  graph    - Target graph.
+ * @param  {string} source   - Source node.
+ * @param  {string} target   - Target node.
+ * @param  {number} maxDepth - Max traversal depth (default: no limit).
+ * @return {array}           - The found paths.
  */
-function allSimpleEdgeGroupPaths(graph, source, target) {
+function allSimpleEdgeGroupPaths(graph, source, target, maxDepth) {
   if (!isGraph(graph))
     throw new Error(
       'graphology-simple-path.allSimpleEdgeGroupPaths: expecting a graphology instance.'
@@ -319,7 +322,7 @@ function allSimpleEdgeGroupPaths(graph, source, target) {
 
       visited.push(record);
 
-      if (!visited.has(target)) stack.push(collectMultiEdges(graph, child));
+      if (!visited.has(target) && (maxDepth === undefined || stack.length < maxDepth)) stack.push(collectMultiEdges(graph, child));
       else visited.pop();
     }
   }
