@@ -38,7 +38,7 @@ const paths = allSimplePaths(graph, '1', '3');
 const cycles = allSimplePaths(graph, '1', '1');
 
 // To limit traversal to a certain depth
-const limitedPaths = allSimplePaths(graph, '1', '3', 2);
+const limitedPaths = allSimplePaths(graph, '1', '3', {maxDepth: 2});
 ```
 
 _Arguments_
@@ -46,7 +46,8 @@ _Arguments_
 - **graph** _Graph_: target graph.
 - **source** _string_: source node.
 - **target** _string_: target node.
-- **maxDepth** _number_: max traversal depth (default - no limit).
+- **options** _?object_: options:
+  - **maxDepth** _?number_: max traversal depth (default - no limit).
 
 ### allSimpleEdgePaths
 
@@ -72,7 +73,7 @@ const paths = allSimpleEdgePaths(graph, '1', '3');
 const cycles = allSimpleEdgePaths(graph, '1', '1');
 
 // To limit traversal to a certain depth
-const limitedPaths = allSimpleEdgePaths(graph, '1', '3', 2);
+const limitedPaths = allSimpleEdgePaths(graph, '1', '3', {maxDepth: 2});
 ```
 
 _Arguments_
@@ -80,7 +81,8 @@ _Arguments_
 - **graph** _Graph_: target graph.
 - **source** _string_: source node.
 - **target** _string_: target node.
-- **maxDepth** _number_: max traversal depth (default - no limit).
+- **options** _?object_: options:
+  - **maxDepth** _?number_: max traversal depth (default - no limit).
 
 ### allSimpleEdgeGroupPaths
 
@@ -107,7 +109,7 @@ const paths = allSimpleEdgeGroupPaths(graph, '1', '3');
 const cycles = allSimpleEdgeGroupPaths(graph, '1', '1');
 
 // To limit traversal to a certain depth
-const limitedPaths = allSimpleEdgeGroupPaths(graph, '1', '3', 2);
+const limitedPaths = allSimpleEdgeGroupPaths(graph, '1', '3', {maxDepth: 2});
 ```
 
 _Arguments_
@@ -115,4 +117,5 @@ _Arguments_
 - **graph** _Graph_: target graph.
 - **source** _string_: source node.
 - **target** _string_: target node.
-- **maxDepth** _number_: max traversal depth (default - no limit).
+- **options** _?object_: options:
+  - **maxDepth** _?number_: max traversal depth (default - no limit).

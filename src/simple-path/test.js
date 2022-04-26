@@ -90,6 +90,18 @@ describe('graphology-simple-path', function () {
       ]);
     });
 
+    it('should be possible to give a max depth.', function () {
+      var graph = complete(Graph.UndirectedGraph, 4);
+
+      var paths = lib.allSimplePaths(graph, '0', '3', {maxDepth: 2});
+
+      assertSamePaths(paths, [
+        ['0', '3'],
+        ['0', '2', '3'],
+        ['0', '1', '3']
+      ]);
+    });
+
     it('should work with an example.', function () {
       var graph = getSchema();
 
@@ -192,6 +204,22 @@ describe('graphology-simple-path', function () {
         ['0--1', '1--3'],
         ['0--1', '1--2', '2--3']
       ]);
+    });
+
+    it('should be possible to give a max depth.', function () {
+      var graph = new Graph.UndirectedGraph();
+
+      var i, j;
+
+      for (i = 0; i < 4; i++) {
+        for (j = i + 1; j < 4; j++) {
+          graph.mergeEdgeWithKey(i + '--' + j, i, j);
+        }
+      }
+
+      var paths = lib.allSimpleEdgePaths(graph, '0', '3', {maxDepth: 2});
+
+      assertSamePaths(paths, [['0--3'], ['0--2', '2--3'], ['0--1', '1--3']]);
     });
 
     it('should work with an example.', function () {
