@@ -1864,12 +1864,10 @@ declare abstract class AbstractGraph<
     NA extends Attributes = Attributes,
     EA extends Attributes = Attributes,
     GA extends Attributes = Attributes
-  >(data: SerializedGraph<NA, EA, GA>): AbstractGraph<NA, EA, GA>;
-  static from<
-    NA extends Attributes = Attributes,
-    EA extends Attributes = Attributes,
-    GA extends Attributes = Attributes
-  >(graph: AbstractGraph<NA, EA, GA>): AbstractGraph<NA, EA, GA>;
+  >(
+    data: SerializedGraph<NA, EA, GA> | AbstractGraph<NA, EA, GA>,
+    options?: GraphOptions
+  ): AbstractGraph<NA, EA, GA>;
 }
 
 interface GraphConstructor<
