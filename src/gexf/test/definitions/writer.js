@@ -13,6 +13,7 @@ var createBasicGraph = function () {
   graph.setAttribute('lastModifiedDate', '2105-12-23');
   graph.setAttribute('author', 'Yomguithereal');
   graph.setAttribute('title', 'Basic Graph');
+  graph.setAttribute('isTest', true);
 
   graph.addNode('Suzy', {
     label: 'Suzy, Ghost',

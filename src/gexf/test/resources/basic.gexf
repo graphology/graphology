@@ -3,6 +3,7 @@
   <meta lastmodifieddate="2105-12-23">
     <author>Yomguithereal</author>
     <title>Basic Graph</title>
+    <isTest>true</isTest>
   </meta>
   <graph defaultedgetype="directed">
     <attributes class="node">

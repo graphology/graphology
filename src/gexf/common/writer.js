@@ -172,6 +172,18 @@ function cast(type, value) {
 }
 
 /**
+ * Function that converts types that can not be serialized natively by xml-writer. 
+ *
+ * @param  {any} attribute  - Graph attribute.
+ * @return {any}
+ */
+function sanitizeGraphAttribute(attribute) {
+  if (typeof attribute === 'boolean')
+    return attribute.toString();
+  return attribute;
+}
+
+/**
  * Function used to collect data from a graph's nodes.
  *
  * @param  {Graph}    graph   - Target graph.
@@ -451,6 +463,7 @@ module.exports = function write(graph, options) {
     writer.writeAttribute('lastmodifieddate', graphAttributes.lastModifiedDate);
 
   var metaTagName;
+  var graphAttribute;
 
   for (var k in graphAttributes) {
     if (k === 'lastModifiedDate') continue;
@@ -459,7 +472,8 @@ module.exports = function write(graph, options) {
 
     if (!metaTagName) continue;
 
-    writer.writeElement(metaTagName, graphAttributes[k]);
+    graphAttribute = sanitizeGraphAttribute(graphAttributes[k]);
+    writer.writeElement(metaTagName, graphAttribute);
   }
 
   writer.endElement();
