@@ -14,6 +14,7 @@ var createBasicGraph = function () {
   graph.setAttribute('author', 'Yomguithereal');
   graph.setAttribute('title', 'Basic Graph');
   graph.setAttribute('isTest', true);
+  graph.setAttribute('list', [1, 2, 3]);
 
   graph.addNode('Suzy', {
     label: 'Suzy, Ghost',

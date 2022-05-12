@@ -172,17 +172,6 @@ function cast(type, value) {
 }
 
 /**
- * Function that converts types that can not be serialized natively by xml-writer.
- *
- * @param  {any} attribute  - Graph attribute.
- * @return {any}
- */
-function sanitizeGraphAttribute(attribute) {
-  if (typeof attribute === 'boolean') return attribute.toString();
-  return attribute;
-}
-
-/**
  * Function used to collect data from a graph's nodes.
  *
  * @param  {Graph}    graph   - Target graph.
@@ -471,8 +460,20 @@ module.exports = function write(graph, options) {
 
     if (!metaTagName) continue;
 
-    graphAttribute = sanitizeGraphAttribute(graphAttributes[k]);
-    writer.writeElement(metaTagName, graphAttribute);
+    graphAttribute = graphAttributes[k];
+
+    // NOTE: if the graph attribute is not a scalar, we do not bother writing
+    // it as metadata in the gexf output. This means the writer/parser is not
+    // idempotent, but we cannot do better because the gexf format does not
+    // allow it, since it was not meant to handle complex values as graph
+    // metadata anyway.
+    if (
+      typeof graphAttribute === 'string' ||
+      typeof graphAttribute === 'number' ||
+      typeof graphAttribute === 'boolean'
+    ) {
+      writer.writeElement(metaTagName, '' + graphAttribute);
+    }
   }
 
   writer.endElement();
