@@ -172,14 +172,13 @@ function cast(type, value) {
 }
 
 /**
- * Function that converts types that can not be serialized natively by xml-writer. 
+ * Function that converts types that can not be serialized natively by xml-writer.
  *
  * @param  {any} attribute  - Graph attribute.
  * @return {any}
  */
 function sanitizeGraphAttribute(attribute) {
-  if (typeof attribute === 'boolean')
-    return attribute.toString();
+  if (typeof attribute === 'boolean') return attribute.toString();
   return attribute;
 }
 
