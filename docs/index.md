@@ -24,7 +24,31 @@ To install `graphology` using npm, run the following command:
 npm install graphology
 ```
 
-The source repository can be found on [this](https://github.com/graphology/graphology) github repository, where you will be able to find standalone builds in the [releases](https://github.com/graphology/graphology/releases) for older JavaScript configurations.
+*Legacy bundle*
+
+Standalone builds of `graphology` and its full standard library can be found in the repository's [releases](https://github.com/graphology/graphology/releases) if you can only rely on your own `script` tags to load code.
+
+```html
+<!-- To use a Graph object -->
+<script src="graphology.min.js"></script>
+<!-- This exposes a global variable named "graphology" -->
+<script>
+  const graph = new graphology.Graph();
+
+  const {UndirectedGraph, DirectedGraph} = graphology;
+</script>
+
+<!-- To use the standard library -->
+<script src="graphology-library.min.js"></script>
+<!-- This exposes a global variable named "graphologyLibrary" -->
+<script>
+  const density = graphologyLibrary.metrics.graph.density(graph);
+</script>
+```
+
+Be warned that the standard library bundle often lags behind and is not always completely up to date.
+
+*TypeScript usage*
 
 Note that `graphology` also exports type declaration that are installed along using peer dependencies so it can be used with [TypeScript](https://www.typescriptlang.org/) out of the box.
 
