@@ -4,7 +4,8 @@ title: Instantiation
 nav_order: 3
 menu_toc:
   - Options
-  - Typed constructors
+  - Generics
+  - Specialized constructors
   - "Static #.from method"
 ---
 
@@ -37,7 +38,30 @@ _Examples_
 const graph = new Graph({multi: true, allowSelfLoops: false});
 ```
 
-## Typed constructors
+## Generics
+
+The Graph class TypeScript declaration exposes three optional generics that you can use to restrict, in this order: node attributes, edge attributes and finally graph attributes.
+
+The given types must extend `Attributes`, which is a shorthand for `{[name: string]: any}`.
+
+```ts
+type NodeAttributes = {
+  label: string;
+  color: string;
+}
+
+type EdgeAttributes = {
+  weight: number;
+}
+
+type GraphAttributes = {
+  name?: string;
+}
+
+const graph: Graph<NodeAttributes, EdgeAttributes, GraphAttributes> = new Graph();
+```
+
+## Specialized constructors
 
 Rather than providing tedious options to the constructor, one can use one of the many handy constructors provided by the implementation to create the desired graph:
 
@@ -49,8 +73,8 @@ const myCustomGraph = new MultiDirectedGraph();
 
 By default, the `Graph` object is a simple mixed graph, but here are the different naming "components" that you can use to instantiate a more complex graph:
 
-- **Type of the graph?**: `Directed`, `Undirected` or none (mixed graph).
 - **Graph with parallel edges?**: `Multi` or none (simple graph).
+- **Type of the graph?**: `Directed`, `Undirected` or none (mixed graph).
 
 Then to build the name, one must order the components likewise:
 
@@ -58,7 +82,7 @@ Then to build the name, one must order the components likewise:
 Multi? + Type? + Graph
 ```
 
-_List of all the typed constructors_
+_List of all the specialized constructors_
 
 ```
 DirectedGraph
