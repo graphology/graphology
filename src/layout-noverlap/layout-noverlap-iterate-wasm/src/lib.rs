@@ -7,6 +7,10 @@ use rand::prelude::*;
 use tinyset::Set;
 use wasm_bindgen::prelude::*;
 
+#[cfg(feature = "wee_alloc")]
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
 const NODE_X: usize = 0;
 const NODE_Y: usize = 1;
 const NODE_SIZE: usize = 2;
