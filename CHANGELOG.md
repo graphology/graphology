@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.24.2 (provisional)
+
+- Shipping source maps with package.
+
 ## 0.24.1
 
 - Improving performance and memory usage of multigraphs.

@@ -17,6 +17,7 @@
   "files": [
     "dist/*.js",
     "dist/*.ts",
+    "dist/*.map",
     "specs"
   ],
   "keywords": [
