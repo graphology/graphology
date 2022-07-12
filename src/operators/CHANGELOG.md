@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.0
+
+- Adding options to `toSimple`.
+- Improved performance of `toSimple`.
+
 ## 1.5.0
 
 - Adding `toMulti`.
