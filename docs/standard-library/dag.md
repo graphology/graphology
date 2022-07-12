@@ -90,8 +90,8 @@ graph.mergeEdge(0, 1);
 graph.mergeEdge(1, 2);
 graph.mergeEdge(2, 3);
 
-topologicalSort(graph)
->>> ['0', '1', '2', '3'];
+topologicalSort(graph);
+>>> ['0', '1', '2', '3']
 ```
 
 ### forEachNodeInTopologicalOrder

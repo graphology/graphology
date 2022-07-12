@@ -29,6 +29,8 @@ module.exports = function toUndirected(graph, options) {
     copyEdge(undirectedGraph, true, edge, source, target, attr);
   });
 
+  // TODO: one loop for better performance
+
   // Merging directed edges
   graph.forEachDirectedEdge(function (edge, attr, source, target) {
     if (!graph.multi) {

@@ -169,6 +169,8 @@ const mixedGraph = toMulti(graph);
 
 Returns the simple version of the given multigraph where we only keep a single edge of each type between nodes.
 
+Note that you can pass a function to merge edge attributes in case of mutual edges or mixed edges conflicts. This can be useful to sum weights and so on...
+
 If an already simple graph is passed, the function will only return a copy of it.
 
 ```js
@@ -177,7 +179,22 @@ import {toSimple} from 'graphology-operators';
 import toSimple from 'graphology-operators/to-simple';
 
 const simpleGraph = toSimple(multiGraph);
+
+// Using a merging function
+const simpleGraph = toSimple(graph, (currentAttr, nextAttr) => {
+  return {
+    ...currentAttr,
+    weight: currentAttr.weight + nextAttr.weight
+  };
+});
 ```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **mergeOrOptions** _?function|object_: either a merging function or an options object:
+  - **mergeEdge** _?function_: merging function to use.
+
 
 ### toUndirected
 

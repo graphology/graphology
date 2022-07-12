@@ -284,6 +284,29 @@ describe('graphology-operators', function () {
         assert.deepStrictEqual(simpleGraph.nodes(), ['one', 'two']);
         assert.strictEqual(simpleGraph.size, 1);
       });
+
+      it('should be possible to aggregate edge attributes.', function () {
+        var multiGraph = new Graph({multi: true});
+
+        multiGraph.mergeEdge('one', 'two', {weight: 2});
+        multiGraph.mergeEdge('one', 'two', {weight: 3});
+        multiGraph.mergeEdge('one', 'two', {weight: 1});
+        multiGraph.mergeEdge('two', 'three', {weight: 5});
+
+        var simpleGraph = toSimple(multiGraph, function (a1, a2) {
+          return {
+            weight: a1.weight + a2.weight
+          };
+        });
+
+        assert.strictEqual(simpleGraph.multi, false);
+
+        var expectedGraph = new Graph();
+        expectedGraph.mergeEdge('one', 'two', {weight: 6});
+        expectedGraph.mergeEdge('two', 'three', {weight: 5});
+
+        assert(areSameGraphsDeep(simpleGraph, expectedGraph));
+      });
     });
 
     describe('toDirected', function () {

@@ -70,8 +70,8 @@ forceAtlas2.assign(graph);
 
 _Arguments_
 
-- **graph** _Graph_: target graph.attributes** <span class="code">?object</span>: an object containing custom attribute name mapping:
-    - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edge weight attribute.
+- **graph** _Graph_: target graph.attributes\*\* <span class="code">?object</span>: an object containing custom attribute name mapping:
+  - **weight** <span class="code">?string</span> <span class="default">weight</span>: name of the edge weight attribute.
   - **weighted** <span class="code">?boolean</span> <span class="default">false</span>: whether to consider edge weight.
 - **options** _object_: options:
   - **iterations** _number_: number of iterations to perform.
@@ -88,7 +88,10 @@ _Example_
 import FA2Layout from 'graphology-layout-forceatlas2/worker';
 
 // The parameters are the same as for the synchronous version, minus `iterations` of course
-const layout = new FA2Layout(graph, {settings: {gravity: 1}, getEdgeWeight: 'weight'});
+const layout = new FA2Layout(graph, {
+  settings: {gravity: 1},
+  getEdgeWeight: 'weight'
+});
 
 // To start the layout
 layout.start();
