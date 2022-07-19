@@ -28,6 +28,18 @@ function basicTraversal() {
   assert.strictEqual(e, g.directedSize + g.undirectedSize * 2);
 }
 
+function betterTraversal() {
+  let e = 0;
+
+  const inc = () => e++;
+
+  g.forEachNode(node => {
+    g.forEachOutboundNeighbor(node, inc);
+  });
+
+  assert.strictEqual(e, g.directedSize + g.undirectedSize * 2);
+}
+
 function traverse(callback) {
   g._nodes.forEach(data => {
     let n;
@@ -65,6 +77,10 @@ function newTraversal() {
 console.time('basic');
 basicTraversal();
 console.timeEnd('basic');
+
+console.time('better');
+betterTraversal();
+console.timeEnd('better');
 
 console.time('flat');
 flatTraversal();
