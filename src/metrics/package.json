@@ -57,6 +57,7 @@
   "dependencies": {
     "graphology-shortest-path": "^2.0.0",
     "graphology-utils": "^2.4.4",
-    "mnemonist": "^0.39.0"
+    "mnemonist": "^0.39.0",
+    "pandemonium": "^2.3.0"
   }
 }
