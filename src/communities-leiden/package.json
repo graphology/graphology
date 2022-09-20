@@ -43,6 +43,6 @@
     "graphology-indices": "^0.17.0",
     "graphology-utils": "^2.3.0",
     "mnemonist": "^0.39.0",
-    "pandemonium": "^2.0.0"
+    "pandemonium": "^2.4.0"
   }
 }

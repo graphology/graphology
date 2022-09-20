@@ -45,6 +45,6 @@
   },
   "dependencies": {
     "graphology-utils": "^2.3.0",
-    "pandemonium": "^1.5.0"
+    "pandemonium": "^2.4.0"
   }
 }
