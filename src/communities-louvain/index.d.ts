@@ -15,6 +15,7 @@ export type LouvainOptions<
     | null;
   fastLocalMoves?: boolean;
   randomWalk?: boolean;
+  robustRandomness?: boolean;
   resolution?: number;
   rng?: RNGFunction;
 };

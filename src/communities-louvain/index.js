@@ -41,6 +41,8 @@ var inferType = require('graphology-utils/infer-type');
 var SparseMap = require('mnemonist/sparse-map');
 var SparseQueueSet = require('mnemonist/sparse-queue-set');
 var createRandomIndex = require('pandemonium/random-index').createRandomIndex;
+var FisherYatesPermutation =
+  require('pandemonium/fisher-yates-permutation').FisherYatesPermutation;
 
 var indices = require('graphology-indices/louvain');
 
@@ -52,6 +54,7 @@ var DEFAULTS = {
   getEdgeWeight: 'weight',
   fastLocalMoves: true,
   randomWalk: true,
+  robustRandomness: false,
   resolution: 1,
   rng: Math.random
 };
@@ -106,7 +109,7 @@ function undirectedLouvain(detailed, graph, options) {
   var communities = new SparseMap(Float64Array, index.C);
 
   // Traversal
-  var queue, start, end, weight, ci, ri, s, i, j, l;
+  var queue, permutation, start, end, weight, ci, ri, s, i, j, l;
 
   // Metrics
   var degree, targetCommunityDegree;
@@ -122,6 +125,8 @@ function undirectedLouvain(detailed, graph, options) {
     currentMoves;
 
   if (options.fastLocalMoves) queue = new SparseQueueSet(index.C);
+  if (options.robustRandomness)
+    permutation = new FisherYatesPermutation(index.C, options.rng);
 
   while (moveWasMade) {
     l = index.C;
@@ -133,10 +138,19 @@ function undirectedLouvain(detailed, graph, options) {
       currentMoves = 0;
 
       // Traversal of the graph
-      ri = options.randomWalk ? randomIndex(l) : 0;
+      ri = 0;
+
+      if (options.robustRandomness) permutation.reset();
+      else if (options.randomWalk) ri = randomIndex(l);
+
+      if (options.robustRandomness) console.log(permutation);
 
       for (s = 0; s < l; s++, ri++) {
-        i = ri % l;
+        if (options.robustRandomness) i = permutation.permute();
+        else i = ri % l;
+
+        if (options.robustRandomness) console.log(i);
+
         queue.enqueue(i);
       }
 
@@ -359,7 +373,13 @@ function undirectedLouvain(detailed, graph, options) {
     }
 
     // We continue working on the induced graph
-    if (moveWasMade) index.zoomOut();
+    if (moveWasMade) {
+      index.zoomOut();
+
+      if (options.robustRandomness) {
+        permutation.shrink(index.C);
+      }
+    }
   }
 
   var results = {

@@ -455,4 +455,34 @@ describe('graphology-communities-louvain', function () {
 
     assert.closeTo(result.modularity, 0.2991, 0.0001);
   });
+
+  it.skip('should be possible to use robust randomness.', function () {
+    var customRng = seedrandom('test');
+
+    var kite = new Graph({type: 'undirected'});
+    kite.addNode('0');
+    kite.addNode('1');
+    kite.addNode('2');
+
+    kite.addNode('3');
+
+    kite.addNode('4');
+    kite.addNode('5');
+    kite.addNode('6');
+
+    kite.addEdge('0', '1');
+    kite.addEdge('1', '2');
+    kite.addEdge('2', '0');
+
+    kite.addEdge('0', '3');
+    kite.addEdge('4', '3');
+
+    kite.addEdge('4', '5');
+    kite.addEdge('5', '6');
+    kite.addEdge('6', '4');
+
+    var result = louvain(kite, {robustRandomness: true, fastLocalMoves: true});
+
+    console.log(result);
+  });
 });
