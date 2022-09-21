@@ -148,7 +148,20 @@ export default function serialization(Graph, checkers) {
               edges: [{source: '1', target: '2'}]
             });
           }, notFound());
-        }
+        },
+
+      'it should import undirected graphs properly.': function () {
+        const graph = Graph.from({
+          options: {type: 'undirected', multi: false, allowSelfLoops: true},
+          attributes: {},
+          nodes: [{key: '1'}, {key: '2'}],
+          edges: [{key: '0', source: '1', target: '2'}]
+        });
+
+        assert.strictEqual(graph.order, 2);
+        assert.strictEqual(graph.size, 1);
+        assert.strictEqual(graph.hasEdge(2, 1), true);
+      }
     }
   };
 }
