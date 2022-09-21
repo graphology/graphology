@@ -38,7 +38,6 @@ import {
 import {
   assign,
   getMatchingEdge,
-  isGraph,
   isPlainObject,
   privateProperty,
   readOnlyProperty,
@@ -2615,7 +2614,7 @@ export default class Graph extends EventEmitter {
     i = 0;
 
     this._edges.forEach((data, key) => {
-      edges[i++] = serializeEdge(key, data);
+      edges[i++] = serializeEdge(this.type, key, data);
     });
 
     return {
@@ -2639,7 +2638,7 @@ export default class Graph extends EventEmitter {
    */
   import(data, merge = false) {
     // Importing a Graph instance directly
-    if (isGraph(data)) {
+    if (data instanceof Graph) {
       // Nodes
       data.forEachNode((n, a) => {
         if (merge) this.mergeNode(n, a);
@@ -2701,6 +2700,12 @@ export default class Graph extends EventEmitter {
     }
 
     if (data.edges) {
+      let undirectedByDefault = false;
+
+      if (this.type === 'undirected') {
+        undirectedByDefault = true;
+      }
+
       list = data.edges;
 
       if (!Array.isArray(list))
@@ -2715,7 +2720,12 @@ export default class Graph extends EventEmitter {
         validateSerializedEdge(edge);
 
         // Adding the edge
-        const {source, target, attributes, undirected = false} = edge;
+        const {
+          source,
+          target,
+          attributes,
+          undirected = undirectedByDefault
+        } = edge;
 
         let method;
 

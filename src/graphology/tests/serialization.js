@@ -63,7 +63,21 @@ export default function serialization(Graph, checkers) {
             type: 'mixed'
           }
         });
-      }
+      },
+
+      'it should not need to tell whether edges are undirected if the graph is.':
+        function () {
+          const graph = new Graph({type: 'undirected'});
+
+          graph.mergeEdgeWithKey(0, 1, 2);
+
+          assert.deepStrictEqual(graph.export(), {
+            options: {type: 'undirected', multi: false, allowSelfLoops: true},
+            attributes: {},
+            nodes: [{key: '1'}, {key: '2'}],
+            edges: [{key: '0', source: '1', target: '2'}]
+          });
+        }
     },
 
     '#.import': {

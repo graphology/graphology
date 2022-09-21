@@ -1,7 +1,8 @@
 # Changelog
 
-## 0.24.2 (provisional)
+## 0.25.0 (provisional)
 
+- Optimizing JSON serialization.
 - Shipping source maps with package.
 
 ## 0.24.1

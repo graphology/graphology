@@ -62,21 +62,6 @@ export function getMatchingEdge(graph, source, target, type) {
 }
 
 /**
- * Checks whether the given value is a Graph implementation instance.
- *
- * @param  {mixed}   value - Target value.
- * @return {boolean}
- */
-export function isGraph(value) {
-  return (
-    value !== null &&
-    typeof value === 'object' &&
-    typeof value.addUndirectedEdgeWithKey === 'function' &&
-    typeof value.dropNode === 'function'
-  );
-}
-
-/**
  * Checks whether the given value is a plain object.
  *
  * @param  {mixed}   value - Target value.

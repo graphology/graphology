@@ -26,11 +26,12 @@ export function serializeNode(key, data) {
 /**
  * Formats internal edge data into a serialized edge.
  *
+ * @param  {string} type - The graph's type.
  * @param  {any}    key  - The edge's key.
  * @param  {object} data - Internal edge's data.
  * @return {array}       - The serialized edge.
  */
-export function serializeEdge(key, data) {
+export function serializeEdge(type, key, data) {
   const serialized = {
     key,
     source: data.source.key,
@@ -40,7 +41,7 @@ export function serializeEdge(key, data) {
   if (!isEmpty(data.attributes))
     serialized.attributes = assign({}, data.attributes);
 
-  if (data.undirected) serialized.undirected = true;
+  if (type === 'mixed' && data.undirected) serialized.undirected = true;
 
   return serialized;
 }
