@@ -60,9 +60,7 @@ forceAtlas2.assign(graph);
 
 _Arguments_
 
-- **graph** _Graph_: target graph.attributes\*\* _?object_: an object containing custom attribute name mapping:
-  - **weight** _?string_ [`weight`]: name of the edge weight attribute.
-  - **weighted** _?boolean_ [`false`]: whether to consider edge weight.
+- **graph** _Graph_: target graph.
 - **options** _object_: options:
   - **iterations** _number_: number of iterations to perform.
   - **getEdgeWeight** _?string\|function_: name of the edge weight attribute or getter function. Defaults to unweighted layout.
