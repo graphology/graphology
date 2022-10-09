@@ -171,4 +171,4 @@ const edgePath = edgePathFromNodePath(graph, nodePath);
 _Arguments_
 
 - **graph** _Graph_: a `graphology` instance.
-- **edgePath** _Array_: edge path to convert.
+- **nodePath** _Array_: node path to convert.
