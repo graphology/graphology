@@ -347,6 +347,31 @@ describe('graphology-layout-forceatlas2', function () {
         layout(graphWithoutIrrelevantEdges, {iterations: 5})
       );
     });
+
+    it('directed graphs should be treated like multigraphs.', function () {
+      var graph = new Graph();
+      graph.mergeEdge(0, 1);
+      graph.mergeEdge(1, 0);
+      graph.mergeEdge(0, 2);
+      graph.mergeEdge(0, 3);
+      graph.mergeEdge(3, 4);
+      graph.mergeEdge(4, 3);
+      graph.mergeEdge(4, 5);
+
+      var multiGraph = new Graph({multi: true});
+      multiGraph.mergeEdge(0, 1);
+      multiGraph.mergeEdge(0, 1);
+      multiGraph.mergeEdge(0, 2);
+      multiGraph.mergeEdge(0, 3);
+      multiGraph.mergeEdge(3, 4);
+      multiGraph.mergeEdge(3, 4);
+      multiGraph.mergeEdge(4, 5);
+
+      assert.deepStrictEqual(
+        layout(graph, {iterations: 5}),
+        layout(multiGraph, {iterations: 5})
+      );
+    });
   });
 
   describe('#.inferSettings', function () {
