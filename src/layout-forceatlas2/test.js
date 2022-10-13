@@ -4,6 +4,9 @@
  */
 var assert = require('assert');
 var Graph = require('graphology');
+var toUndirected = require('graphology-operators/to-undirected');
+var randomLayout = require('graphology-layout/random');
+var layoutUtils = require('graphology-layout/utils');
 
 var helpers = require('./helpers.js');
 var layout = require('./index.js');
@@ -329,6 +332,8 @@ describe('graphology-layout-forceatlas2', function () {
       graph.mergeEdge(1, 3);
       graph.mergeEdge(0, 5, {weight: 0});
 
+      randomLayout.assign(graph);
+
       assert.strictEqual(graph.order, 5);
       assert.strictEqual(graph.size, 7);
 
@@ -358,7 +363,7 @@ describe('graphology-layout-forceatlas2', function () {
       graph.mergeEdge(4, 3);
       graph.mergeEdge(4, 5);
 
-      var multiGraph = new Graph({multi: true});
+      var multiGraph = new Graph({multi: true, type: 'undirected'});
       multiGraph.mergeEdge(0, 1);
       multiGraph.mergeEdge(0, 1);
       multiGraph.mergeEdge(0, 2);
@@ -366,6 +371,15 @@ describe('graphology-layout-forceatlas2', function () {
       multiGraph.mergeEdge(3, 4);
       multiGraph.mergeEdge(3, 4);
       multiGraph.mergeEdge(4, 5);
+
+      var l = randomLayout(graph);
+      layoutUtils.assignLayout(graph, l);
+      layoutUtils.assignLayout(multiGraph, l);
+
+      assert.notDeepStrictEqual(
+        layout(graph, {iterations: 5}),
+        layout(toUndirected(graph), {iterations: 5})
+      );
 
       assert.deepStrictEqual(
         layout(graph, {iterations: 5}),
