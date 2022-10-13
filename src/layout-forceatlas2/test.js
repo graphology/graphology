@@ -48,21 +48,27 @@ describe('graphology-layout-forceatlas2', function () {
           return attr.weight || 1;
         });
 
-        assert.deepEqual(
+        assert.deepStrictEqual(
           Array.from(matrices.nodes),
           [
-            3, 4, 0, 0, 0, 0, 2, 1, 4, 0, 10, 5, 0, 0, 0, 0, 3, 1, 1, 0, 23, -2,
-            0, 0, 0, 0, 2, 1, 1, 0
+            3, 4, 0, 0, 0, 0, 2, 1, 4, 0, 10, 5, 0, 0, 0, 0, 5, 1, 1, 0, 23, -2,
+            0, 0, 0, 0, 4, 1, 1, 0
           ]
         );
 
-        assert.deepEqual(Array.from(matrices.edges), [0, 10, 1, 10, 20, 3]);
+        assert.deepStrictEqual(
+          Array.from(matrices.edges),
+          [0, 10, 1, 10, 20, 3]
+        );
 
         matrices = helpers.graphToByteArrays(graph, function () {
           return 1;
         });
 
-        assert.deepEqual(Array.from(matrices.edges), [0, 10, 1, 10, 20, 1]);
+        assert.deepStrictEqual(
+          Array.from(matrices.edges),
+          [0, 10, 1, 10, 20, 1]
+        );
       });
     });
 
@@ -96,7 +102,7 @@ describe('graphology-layout-forceatlas2', function () {
           ]
         );
 
-        assert.deepEqual(positions, {
+        assert.deepStrictEqual(positions, {
           John: {x: 4, y: 5},
           Martha: {x: 11, y: 6},
           Ada: {x: 24, y: -1}
@@ -135,7 +141,7 @@ describe('graphology-layout-forceatlas2', function () {
           }
         );
 
-        assert.deepEqual(positions, {
+        assert.deepStrictEqual(positions, {
           John: {x: 4, y: 1},
           Martha: {x: 11, y: 2},
           Ada: {x: 24, y: 2}
@@ -178,7 +184,7 @@ describe('graphology-layout-forceatlas2', function () {
           Ada: graph.getNodeAttributes('Ada')
         };
 
-        assert.deepEqual(positions, {
+        assert.deepStrictEqual(positions, {
           John: {x: 4, y: 5},
           Martha: {x: 11, y: 6},
           Ada: {x: 24, y: -1}
@@ -216,7 +222,7 @@ describe('graphology-layout-forceatlas2', function () {
           }
         );
 
-        assert.deepEqual(
+        assert.deepStrictEqual(
           {
             John: graph.getNodeAttributes('John'),
             Martha: graph.getNodeAttributes('Martha'),
@@ -275,7 +281,7 @@ describe('graphology-layout-forceatlas2', function () {
       graph.addEdge(3, 1, {weight: 3});
       graph.addEdge(1, 4);
 
-      var result1 = layout(graph, {iterations: 5});
+      var result1 = layout(graph, {iterations: 5, getEdgeWeight: null});
 
       assert.deepStrictEqual(result1, {
         1: {x: 85.54732513427734, y: -69.85941314697266},
@@ -287,17 +293,17 @@ describe('graphology-layout-forceatlas2', function () {
       var result2 = layout(graph, {iterations: 5, getEdgeWeight: 'weight'});
 
       assert.deepStrictEqual(result2, {
-        1: {x: 77.65608215332031, y: -59.46234130859375},
-        2: {x: 68.56433868408203, y: -47.37741470336914},
-        3: {x: 72.25889587402344, y: -52.28172302246094},
-        4: {x: 101.06941986083984, y: -91.40707397460938}
+        1: {x: 71.51148223876953, y: -56.78447723388672},
+        2: {x: 62.813716888427734, y: -47.99095916748047},
+        3: {x: 62.555992126464844, y: -44.131656646728516},
+        4: {x: 94.73125457763672, y: -88.1897201538086}
       });
 
       var result3 = layout(graph, {
         iterations: 5
       });
 
-      assert.deepStrictEqual(result3, result1);
+      assert.deepStrictEqual(result2, result3);
 
       var result4 = layout(graph, {
         iterations: 5,
@@ -305,10 +311,10 @@ describe('graphology-layout-forceatlas2', function () {
       });
 
       assert.deepStrictEqual(result4, {
-        1: {x: 159.5399169921875, y: 4.618535041809082},
-        2: {x: -64.91708374023438, y: -33.298091888427734},
-        3: {x: 51.02663803100586, y: -9.252131462097168},
-        4: {x: 120.32330322265625, y: -118.17190551757812}
+        1: {x: 48.25226974487305, y: -2.7049994468688965},
+        2: {x: 46.994510650634766, y: 1.001150369644165},
+        3: {x: 37.2054443359375, y: -0.9540546536445618},
+        4: {x: 77.8389663696289, y: -37.230648040771484}
       });
     });
   });

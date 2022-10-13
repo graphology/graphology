@@ -13,7 +13,6 @@ export type ForceAtlas2Settings = {
   slowDown?: number;
   barnesHutOptimize?: boolean;
   barnesHutTheta?: number;
-  weightedMass?: boolean;
 };
 
 export type ForceAtlas2LayoutParameters<

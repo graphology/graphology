@@ -63,7 +63,7 @@ _Arguments_
 - **graph** _Graph_: target graph.
 - **options** _object_: options:
   - **iterations** _number_: number of iterations to perform.
-  - **getEdgeWeight** _?string\|function_: name of the edge weight attribute or getter function. Defaults to unweighted layout.
+  - **getEdgeWeight** _?string\|function_ [`weight`]: name of the edge weight attribute or getter function. Defaults to `weight`.
   - **settings** _?object_: the layout's settings (see [#settings](#settings)).
 
 ### Webworker
@@ -77,8 +77,7 @@ import FA2Layout from 'graphology-layout-forceatlas2/worker';
 
 // The parameters are the same as for the synchronous version, minus `iterations` of course
 const layout = new FA2Layout(graph, {
-  settings: {gravity: 1},
-  getEdgeWeight: 'weight'
+  settings: {gravity: 1}
 });
 
 // To start the layout

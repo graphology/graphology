@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10.0 (provisional)
+
+- Fixing node mass computation with weighted edges.
+- Layout is now weighted by default.
+
 ## 0.9.1
 
 - Fixing erroneous type.
