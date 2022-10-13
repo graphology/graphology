@@ -317,6 +317,36 @@ describe('graphology-layout-forceatlas2', function () {
         4: {x: 77.8389663696289, y: -37.230648040771484}
       });
     });
+
+    it('edges with weight = 0 should have to influence.', function () {
+      var graph = new Graph();
+
+      graph.mergeEdge(0, 1);
+      graph.mergeEdge(1, 2);
+      graph.mergeEdge(2, 0, {weight: 0});
+      graph.mergeEdge(2, 3);
+      graph.mergeEdge(0, 3, {weight: 0});
+      graph.mergeEdge(1, 3);
+      graph.mergeEdge(0, 5, {weight: 0});
+
+      assert.strictEqual(graph.order, 5);
+      assert.strictEqual(graph.size, 7);
+
+      var graphWithoutIrrelevantEdges = graph.emptyCopy();
+
+      graph.forEachEdge(function (_, attr, s, t) {
+        if (attr.weight === 0) return;
+        graphWithoutIrrelevantEdges.addEdge(s, t);
+      });
+
+      assert.strictEqual(graphWithoutIrrelevantEdges.order, 5);
+      assert.strictEqual(graphWithoutIrrelevantEdges.size, 4);
+
+      assert.deepStrictEqual(
+        layout(graph, {iterations: 5}),
+        layout(graphWithoutIrrelevantEdges, {iterations: 5})
+      );
+    });
   });
 
   describe('#.inferSettings', function () {
