@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.24.4 (provisional)
+
+- More useful `#.updateNode` & `#.updateEdge` type signature.
+
 ## 0.24.3
 
 - Fixing `#.updateEachNodeAttributes` & `#.updateEachEdgeAttributes` signature.

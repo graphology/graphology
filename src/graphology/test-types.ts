@@ -4,7 +4,13 @@ interface NodeAttributes {
   label: string;
 }
 
-const graph: Graph<NodeAttributes> = new Graph({type: 'directed'});
+interface EdgeAttributes {
+  weight: number;
+}
+
+const graph: Graph<NodeAttributes, EdgeAttributes> = new Graph({
+  type: 'directed'
+});
 
 graph.addNode('one', {label: 'Hello'});
 graph.getNodeAttribute('one', 'label');
@@ -26,6 +32,10 @@ function listener({
 
 graph.on('nodeAdded', listener);
 graph.off('nodeAdded', listener);
+
+graph.updateEdge('one', 'two', attr => {
+  return {weight: (attr.weight || 0) + 1};
+});
 
 const undirectedGraph: UndirectedGraph = new UndirectedGraph();
 undirectedGraph.addNode('node', {hello: 'world'});

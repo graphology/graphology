@@ -401,7 +401,7 @@ declare abstract class AbstractGraph<
   ): NodeMergeResult;
   updateNode(
     node: unknown,
-    updater?: (attributes: NodeAttributes | {}) => NodeAttributes
+    updater?: (attributes: Partial<NodeAttributes>) => NodeAttributes
   ): NodeMergeResult;
   addEdge(
     source: unknown,
@@ -416,7 +416,7 @@ declare abstract class AbstractGraph<
   updateEdge(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
+    updater?: (attributes: Partial<EdgeAttributes>) => EdgeAttributes
   ): EdgeMergeResult;
   addDirectedEdge(
     source: unknown,
@@ -431,7 +431,7 @@ declare abstract class AbstractGraph<
   updateDirectedEdge(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
+    updater?: (attributes: Partial<EdgeAttributes>) => EdgeAttributes
   ): EdgeMergeResult;
   addUndirectedEdge(
     source: unknown,
@@ -446,7 +446,7 @@ declare abstract class AbstractGraph<
   updateUndirectedEdge(
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
+    updater?: (attributes: Partial<EdgeAttributes>) => EdgeAttributes
   ): EdgeMergeResult;
   addEdgeWithKey(
     edge: unknown,
@@ -464,7 +464,7 @@ declare abstract class AbstractGraph<
     edge: unknown,
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
+    updater?: (attributes: Partial<EdgeAttributes>) => EdgeAttributes
   ): EdgeMergeResult;
   addDirectedEdgeWithKey(
     edge: unknown,
@@ -482,7 +482,7 @@ declare abstract class AbstractGraph<
     edge: unknown,
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
+    updater?: (attributes: Partial<EdgeAttributes>) => EdgeAttributes
   ): EdgeMergeResult;
   addUndirectedEdgeWithKey(
     edge: unknown,
@@ -500,7 +500,7 @@ declare abstract class AbstractGraph<
     edge: unknown,
     source: unknown,
     target: unknown,
-    updater?: (attributes: EdgeAttributes | {}) => EdgeAttributes
+    updater?: (attributes: Partial<EdgeAttributes>) => EdgeAttributes
   ): EdgeMergeResult;
   dropNode(node: unknown): void;
   dropEdge(edge: unknown): void;
