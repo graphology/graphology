@@ -1,9 +1,10 @@
 # Changelog
 
-## 0.10.0 (provisional)
+## 0.10.0
 
 - Fixing node mass computation with weighted edges.
 - Layout is now weighted by default.
+- Exporting `inferSettings` as named import for TypeScript.
 
 ## 0.9.1
 

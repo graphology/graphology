@@ -63,6 +63,9 @@ interface IForceAtlas2Layout {
   inferSettings(graph: Graph): ForceAtlas2Settings;
 }
 
+export function inferSettings(order: number): ForceAtlas2Settings;
+export function inferSettings(graph: Graph): ForceAtlas2Settings;
+
 declare const forceAtlas2: IForceAtlas2Layout;
 
 export default forceAtlas2;
