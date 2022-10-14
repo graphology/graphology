@@ -1,6 +1,6 @@
 {
   "name": "graphology-graphml",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "GRAPHML parser & writer for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -38,6 +38,6 @@
     "graphology-operators": "^1.5.0",
     "graphology-utils": "^2.4.1",
     "xml-writer": "^1.7.0",
-    "@xmldom/xmldom": "^0.7.5"
+    "@xmldom/xmldom": "^0.8.3"
   }
 }
