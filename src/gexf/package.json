@@ -1,6 +1,6 @@
 {
   "name": "graphology-gexf",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "GEXF parser & writer for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -41,6 +41,6 @@
     "graphology-operators": "^1.5.0",
     "graphology-utils": "^2.4.1",
     "xml-writer": "^1.7.0",
-    "@xmldom/xmldom": "^0.7.5"
+    "@xmldom/xmldom": "^0.8.3"
   }
 }
