@@ -524,8 +524,8 @@ module.exports = function iterate(options, NodeMatrix, EdgeMatrix) {
             NodeMatrix[n1 + NODE_DX] += xDist * factor;
             NodeMatrix[n1 + NODE_DY] += yDist * factor;
 
-            NodeMatrix[n2 + NODE_DX] += xDist * factor;
-            NodeMatrix[n2 + NODE_DY] += yDist * factor;
+            NodeMatrix[n2 + NODE_DX] -= xDist * factor;
+            NodeMatrix[n2 + NODE_DY] -= yDist * factor;
           } else if (distance < 0) {
             factor =
               100 *
