@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.1
+
+- Fixing repulsion with `adjustSizes`.
+
 ## 0.10.0
 
 - Fixing node mass computation with weighted edges.
