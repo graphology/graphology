@@ -279,12 +279,18 @@ function addEdge(
     sourceData.undirectedDegree++;
     targetData.undirectedDegree++;
 
-    if (isSelfLoop) graph._undirectedSelfLoopCount++;
+    if (isSelfLoop) {
+      sourceData.undirectedLoops++;
+      graph._undirectedSelfLoopCount++;
+    }
   } else {
     sourceData.outDegree++;
     targetData.inDegree++;
 
-    if (isSelfLoop) graph._directedSelfLoopCount++;
+    if (isSelfLoop) {
+      sourceData.directedLoops++;
+      graph._directedSelfLoopCount++;
+    }
   }
 
   // Updating relevant index
@@ -503,12 +509,18 @@ function mergeEdge(
     sourceData.undirectedDegree++;
     targetData.undirectedDegree++;
 
-    if (isSelfLoop) graph._undirectedSelfLoopCount++;
+    if (isSelfLoop) {
+      sourceData.undirectedLoops++;
+      graph._undirectedSelfLoopCount++;
+    }
   } else {
     sourceData.outDegree++;
     targetData.inDegree++;
 
-    if (isSelfLoop) graph._directedSelfLoopCount++;
+    if (isSelfLoop) {
+      sourceData.directedLoops++;
+      graph._directedSelfLoopCount++;
+    }
   }
 
   // Updating relevant index
@@ -547,12 +559,18 @@ function dropEdgeFromData(graph, edgeData) {
     sourceData.undirectedDegree--;
     targetData.undirectedDegree--;
 
-    if (isSelfLoop) graph._undirectedSelfLoopCount--;
+    if (isSelfLoop) {
+      sourceData.undirectedLoops--;
+      graph._undirectedSelfLoopCount--;
+    }
   } else {
     sourceData.outDegree--;
     targetData.inDegree--;
 
-    if (isSelfLoop) graph._directedSelfLoopCount--;
+    if (isSelfLoop) {
+      sourceData.directedLoops--;
+      graph._directedSelfLoopCount--;
+    }
   }
 
   // Clearing index
@@ -1350,10 +1368,7 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'undirected') return 0;
 
-    const self = nodeData.in[node];
-    const loops = self ? (this.multi ? self.size : 1) : 0;
-
-    return nodeData.inDegree - loops;
+    return nodeData.inDegree - nodeData.directedLoops;
   }
 
   /**
@@ -1376,10 +1391,7 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'undirected') return 0;
 
-    const self = nodeData.out[node];
-    const loops = self ? (this.multi ? self.size : 1) : 0;
-
-    return nodeData.outDegree - loops;
+    return nodeData.outDegree - nodeData.directedLoops;
   }
 
   /**
@@ -1402,10 +1414,7 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'undirected') return 0;
 
-    const self = nodeData.out[node];
-    const loops = self ? (this.multi ? self.size : 1) : 0;
-
-    return nodeData.inDegree + nodeData.outDegree - loops * 2;
+    return nodeData.inDegree + nodeData.outDegree - nodeData.directedLoops * 2;
   }
 
   /**
@@ -1428,10 +1437,7 @@ export default class Graph extends EventEmitter {
 
     if (this.type === 'directed') return 0;
 
-    const self = nodeData.undirected[node];
-    const loops = self ? (this.multi ? self.size : 1) : 0;
-
-    return nodeData.undirectedDegree - loops * 2;
+    return nodeData.undirectedDegree - nodeData.undirectedLoops * 2;
   }
 
   /**
@@ -1452,22 +1458,17 @@ export default class Graph extends EventEmitter {
         `Graph.inboundDegreeWithoutSelfLoops: could not find the "${node}" node in the graph.`
       );
 
-    let self;
     let degree = 0;
     let loops = 0;
 
     if (this.type !== 'directed') {
       degree += nodeData.undirectedDegree;
-
-      self = nodeData.undirected[node];
-      loops += (self ? (this.multi ? self.size : 1) : 0) * 2;
+      loops += nodeData.undirectedLoops * 2;
     }
 
     if (this.type !== 'undirected') {
       degree += nodeData.inDegree;
-
-      self = nodeData.out[node];
-      loops += self ? (this.multi ? self.size : 1) : 0;
+      loops += nodeData.directedLoops;
     }
 
     return degree - loops;
@@ -1491,22 +1492,17 @@ export default class Graph extends EventEmitter {
         `Graph.outboundDegreeWithoutSelfLoops: could not find the "${node}" node in the graph.`
       );
 
-    let self;
     let degree = 0;
     let loops = 0;
 
     if (this.type !== 'directed') {
       degree += nodeData.undirectedDegree;
-
-      self = nodeData.undirected[node];
-      loops += (self ? (this.multi ? self.size : 1) : 0) * 2;
+      loops += nodeData.undirectedLoops * 2;
     }
 
     if (this.type !== 'undirected') {
       degree += nodeData.outDegree;
-
-      self = nodeData.in[node];
-      loops += self ? (this.multi ? self.size : 1) : 0;
+      loops += nodeData.directedLoops;
     }
 
     return degree - loops;
@@ -1530,22 +1526,17 @@ export default class Graph extends EventEmitter {
         `Graph.degreeWithoutSelfLoops: could not find the "${node}" node in the graph.`
       );
 
-    let self;
     let degree = 0;
     let loops = 0;
 
     if (this.type !== 'directed') {
       degree += nodeData.undirectedDegree;
-
-      self = nodeData.undirected[node];
-      loops += (self ? (this.multi ? self.size : 1) : 0) * 2;
+      loops += nodeData.undirectedLoops * 2;
     }
 
     if (this.type !== 'undirected') {
       degree += nodeData.inDegree + nodeData.outDegree;
-
-      self = nodeData.out[node];
-      loops += (self ? (this.multi ? self.size : 1) : 0) * 2;
+      loops += nodeData.directedLoops * 2;
     }
 
     return degree - loops;

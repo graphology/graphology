@@ -29,6 +29,8 @@ MixedNodeData.prototype.clear = function () {
   this.inDegree = 0;
   this.outDegree = 0;
   this.undirectedDegree = 0;
+  this.undirectedLoops = 0;
+  this.directedLoops = 0;
 
   // Indices
   this.in = {};
@@ -55,6 +57,7 @@ DirectedNodeData.prototype.clear = function () {
   // Degrees
   this.inDegree = 0;
   this.outDegree = 0;
+  this.directedLoops = 0;
 
   // Indices
   this.in = {};
@@ -79,6 +82,7 @@ export function UndirectedNodeData(key, attributes) {
 UndirectedNodeData.prototype.clear = function () {
   // Degrees
   this.undirectedDegree = 0;
+  this.undirectedLoops = 0;
 
   // Indices
   this.undirected = {};

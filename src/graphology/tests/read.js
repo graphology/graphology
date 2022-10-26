@@ -988,7 +988,40 @@ export default function read(Graph, checkers) {
 
         assert.strictEqual(directedGraph.degree(1), 1);
         assert.strictEqual(undirectedGraph.degree(1), 1);
-      }
+      },
+
+      'it should correctly consider self loops in the multi case (issue #431).':
+        function () {
+          const multiGraph = new Graph({multi: true});
+
+          multiGraph.mergeDirectedEdge(0, 1);
+          multiGraph.mergeDirectedEdge(0, 1);
+          multiGraph.mergeDirectedEdge(1, 0);
+          multiGraph.mergeUndirectedEdge(0, 1);
+          multiGraph.mergeUndirectedEdge(0, 1);
+          multiGraph.mergeDirectedEdge(2, 0);
+          multiGraph.mergeDirectedEdge(0, 3);
+          multiGraph.mergeUndirectedEdge(0, 3);
+
+          multiGraph.mergeDirectedEdge(0, 0);
+          multiGraph.mergeDirectedEdge(0, 0);
+          multiGraph.mergeDirectedEdge(0, 0);
+
+          multiGraph.mergeUndirectedEdge(0, 0);
+          multiGraph.mergeUndirectedEdge(0, 0);
+
+          assert.strictEqual(multiGraph.degree(0), 18);
+          assert.strictEqual(multiGraph.directedDegree(0), 11);
+          assert.strictEqual(multiGraph.undirectedDegree(0), 7);
+          assert.strictEqual(multiGraph.outDegree(0), 6);
+          assert.strictEqual(multiGraph.inDegree(0), 5);
+
+          assert.strictEqual(multiGraph.degreeWithoutSelfLoops(0), 8);
+          assert.strictEqual(multiGraph.directedDegreeWithoutSelfLoops(0), 5);
+          assert.strictEqual(multiGraph.undirectedDegreeWithoutSelfLoops(0), 3);
+          assert.strictEqual(multiGraph.outDegreeWithoutSelfLoops(0), 3);
+          assert.strictEqual(multiGraph.inDegreeWithoutSelfLoops(0), 2);
+        }
     }
   };
 }

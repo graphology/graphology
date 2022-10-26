@@ -3,6 +3,7 @@
 ## 0.25.1 (provisional)
 
 - Fixing `#.hasEdge` methods for multigraphs.
+- Fixing `#.degreeWithoutSelfLoops` methods for multigraphs.
 
 ## 0.25.0
 
