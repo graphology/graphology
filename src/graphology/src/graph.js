@@ -741,11 +741,7 @@ export default class Graph extends EventEmitter {
       if (!nodeData) return false;
 
       // Is there a directed edge pointing toward target?
-      const edges = nodeData.out[target];
-
-      if (!edges) return false;
-
-      return this.multi ? !!edges.size : true;
+      return target in nodeData.out;
     }
 
     throw new InvalidArgumentsGraphError(
@@ -787,11 +783,7 @@ export default class Graph extends EventEmitter {
       if (!nodeData) return false;
 
       // Is there a directed edge pointing toward target?
-      const edges = nodeData.undirected[target];
-
-      if (!edges) return false;
-
-      return this.multi ? !!edges.size : true;
+      return target in nodeData.undirected;
     }
 
     throw new InvalidArgumentsGraphError(
@@ -828,16 +820,15 @@ export default class Graph extends EventEmitter {
       if (!nodeData) return false;
 
       // Is there a directed edge pointing toward target?
-      let edges = typeof nodeData.out !== 'undefined' && nodeData.out[target];
+      let edgeData =
+        typeof nodeData.out !== 'undefined' && nodeData.out[target];
 
-      if (!edges)
-        edges =
+      if (!edgeData)
+        edgeData =
           typeof nodeData.undirected !== 'undefined' &&
           nodeData.undirected[target];
 
-      if (!edges) return false;
-
-      return this.multi ? !!edges.size : true;
+      return !!edgeData;
     }
 
     throw new InvalidArgumentsGraphError(

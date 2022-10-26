@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.25.1 (provisional)
+
+- Fixing `#.hasEdge` methods for multigraphs.
+
 ## 0.25.0
 
 - Optimizing JSON serialization.

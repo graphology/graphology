@@ -156,6 +156,17 @@ export default function read(Graph, checkers) {
         assert.strictEqual(graph.hasDirectedEdge('Lucy', 'Lucy'), false);
         assert.strictEqual(graph.hasUndirectedEdge('Lucy', 'Lucy'), true);
         assert.strictEqual(graph.hasEdge('Lucy', 'Lucy'), true);
+      },
+
+      'it should work with multi graphs (issue #431).': function () {
+        const graph = new Graph({multi: true, type: 'directed'});
+        const na = graph.addNode('A');
+        const nb = graph.addNode('B');
+        const eid = graph.addEdge('A', 'B');
+
+        assert.strictEqual(graph.hasEdge('A', 'B'), true);
+        assert.strictEqual(graph.hasEdge(na, nb), true);
+        assert.strictEqual(graph.hasEdge(eid), true);
       }
     },
 
