@@ -205,7 +205,7 @@ In a multi graph, this method will therefore always add a new edge.
 
 This methods return a 4-tuple containing:
 
-1. the node's key
+1. the edge's key
 2. a boolean indicating whether an edge was actually added.
 3. a boolean indicating whether the source node was added to the graph.
 4. a boolean indicating whether the target node was added to the graph.
@@ -253,7 +253,7 @@ If one tries to add an edge with the given key and if the graph has an edge with
 
 This methods return a 4-tuple containing:
 
-1. the node's key
+1. the edge's key
 2. a boolean indicating whether an edge was actually added.
 3. a boolean indicating whether the source node was added to the graph.
 4. a boolean indicating whether the target node was added to the graph.
@@ -308,7 +308,7 @@ In a multi graph, this method will therefore always add a new edge.
 
 This methods return a 4-tuple containing:
 
-1. the node's key
+1. the edge's key
 2. a boolean indicating whether an edge was actually added.
 3. a boolean indicating whether the source node was added to the graph.
 4. a boolean indicating whether the target node was added to the graph.
@@ -365,7 +365,7 @@ If one tries to add an edge with the given key and if the graph has an edge with
 
 This methods return a 4-tuple containing:
 
-1. the node's key
+1. the edge's key
 2. a boolean indicating whether an edge was actually added.
 3. a boolean indicating whether the source node was added to the graph.
 4. a boolean indicating whether the target node was added to the graph.
