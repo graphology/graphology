@@ -300,7 +300,7 @@ declare class GraphEventEmitter<Events extends EventsMapping> {
   emit<Event extends keyof Events>(
     type: Event,
     ...args: Parameters<Events[Event]>
-  ): boolean;
+  ): boolean;AttributeUpdateType
   addListener<Event extends keyof Events>(
     type: Event,
     listener: Events[Event]
@@ -1888,6 +1888,7 @@ export {
   Attributes,
   GraphType,
   GraphOptions,
+  GraphEvents,
   AdjacencyEntry,
   NodeEntry,
   NodeMergeResult,
