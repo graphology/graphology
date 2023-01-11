@@ -23,7 +23,7 @@ jobs:
 
       - name: Install, Lint & Test
         run: |
-          npm i -g npm
+          npm i -g npm@8
           npm i
           npm run lint
           npm test
