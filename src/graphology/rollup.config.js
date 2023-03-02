@@ -8,6 +8,7 @@ import visualizer from 'rollup-plugin-visualizer';
 const INPUTS = {
   es: 'src/endpoint.esm.js',
   cjs: 'src/endpoint.cjs.js',
+  mjs: 'src/endpoint.esm.js',
   umd: 'src/endpoint.cjs.js'
 };
 
@@ -15,7 +16,7 @@ const bundle = (format, filename, options = {}) => ({
   input: INPUTS[format],
   output: {
     file: filename,
-    format: format,
+    format: format === 'mjs' ? 'es' : format,
     name: 'graphology',
     sourcemap: true,
     exports: format === 'cjs' ? 'default' : undefined
@@ -43,6 +44,7 @@ const bundle = (format, filename, options = {}) => ({
 export default [
   bundle('cjs', pkg.main, {babel: true}),
   bundle('es', pkg.module),
+  bundle('mjs', pkg.exports.import),
   bundle('umd', pkg.browser.replace('.min', ''), {
     resolve: true,
     babel: true,

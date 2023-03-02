@@ -6,6 +6,10 @@
   "module": "dist/graphology.esm.js",
   "browser": "dist/graphology.umd.min.js",
   "types": "dist/graphology.d.ts",
+  "exports": {
+    "require": "./dist/graphology.cjs.js",
+    "import": "./dist/graphology.mjs"
+  },
   "scripts": {
     "clean": "rimraf dist specs",
     "build": "npm run clean && rollup -c && babel tests --out-dir specs && cp src/endpoint.esm.d.ts dist/graphology.d.ts",
@@ -16,6 +20,7 @@
   },
   "files": [
     "dist/*.js",
+    "dist/*.mjs",
     "dist/*.ts",
     "dist/*.map",
     "specs"
