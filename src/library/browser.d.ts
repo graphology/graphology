@@ -1,4 +1,5 @@
 export * as assertions from './assertions';
+export * as canvas from './canvas';
 export * as communitiesLouvain from './communities-louvain';
 export * as components from './components';
 export * as generators from './generators';

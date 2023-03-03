@@ -5,6 +5,7 @@
  * Library endpoint.
  */
 exports.assertions = require('./assertions');
+exports.canvas = require('./canvas');
 exports.communitiesLouvain = require('./communities-louvain');
 exports.components = require('./components');
 exports.generators = require('./generators');
@@ -18,5 +19,6 @@ exports.metrics = require('./metrics');
 exports.operators = require('./operators');
 exports.shortestPath = require('./shortest-path');
 exports.simplePath = require('./simple-path');
+exports.svg = require('./svg');
 exports.traversal = require('./traversal');
 exports.utils = require('./utils');

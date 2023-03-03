@@ -5,6 +5,7 @@
  * Library endpoint for the browser.
  */
 exports.assertions = require('./assertions');
+exports.canvas = require('./canvas');
 exports.communitiesLouvain = require('./communities-louvain');
 exports.components = require('./components');
 exports.generators = require('./generators');

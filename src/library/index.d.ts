@@ -1,4 +1,5 @@
 export * as assertions from './assertions';
+export * as canvas from './canvas';
 export * as communitiesLouvain from './communities-louvain';
 export * as components from './components';
 export * as generators from './generators';
@@ -12,5 +13,6 @@ export * as metrics from './metrics';
 export * as operators from './operators';
 export * as shortestPath from './shortest-path';
 export * as simplePath from './simple-path';
+export * as svg from './svg';
 export * as traversal from './traversal';
 export * as utils from './utils';
