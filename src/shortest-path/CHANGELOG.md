@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.2
+
+- Adding missing type definitions for `undirectedSingleSourceLength`.
+
 ## 2.0.1
 
 - Updating dependency on `graphology-indices`.
