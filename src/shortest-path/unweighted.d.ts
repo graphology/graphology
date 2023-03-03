@@ -26,4 +26,9 @@ export function singleSourceLength(
   source: unknown
 ): ShortestPathLengthMapping;
 
+export function undirectedSingleSourceLength(
+  graph: Graph,
+  node: unknown
+): ShortestPathLengthMapping;
+
 export function brandes(graph: Graph, source: unknown): BrandesResult;

@@ -5,6 +5,7 @@ export {
   singleSource,
   singleSourceLength,
   bidirectional,
+  undirectedSingleSourceLength,
   brandes
 } from './unweighted';
 
