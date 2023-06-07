@@ -4,7 +4,7 @@
 
 GEXF parser & writer for [`graphology`](https://graphology.github.io).
 
-For more information about the GEXF file format, you can head [there](https://gephi.org/gexf/format/).
+For more information about the GEXF file format, you can head [there](https://gexf.net).
 
 ## Installation
 
