@@ -36,7 +36,7 @@ detailed_menu_toc:
   - label: "#.removeEdgeAttribute"
   - label: "#.replaceEdgeAttributes"
   - label: "#.mergeEdgeAttributes"
-  - label: "#.udpateEdgeAttributes"
+  - label: "#.updateEdgeAttributes"
   - label: "#.updateEachEdgeAttributes"
 ---
 
