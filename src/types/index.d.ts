@@ -98,6 +98,12 @@ type NodeIterationCallback<NodeAttributes extends Attributes = Attributes> = (
   attributes: NodeAttributes
 ) => void;
 
+type NodeIterationCallbackWithGenerations<NodeAttributes extends Attributes = Attributes> = (
+  node: string,
+  attributes: NodeAttributes,
+  generation: number
+) => void;
+
 type NodePredicate<NodeAttributes extends Attributes = Attributes> = (
   node: string,
   attributes: NodeAttributes
