@@ -59,13 +59,14 @@ function forEachNodeInTopologicalOrder(graph, callback) {
   }
 
   while (generation.length !== 0) {
-    let current_generation = generation
-    generation = []
+    const currentGenerationLevel = generationLevel;
+    const currentGeneration = generation
+    generation = [];
 
-    current_generation.forEach(nobject => {
-        [node, attr] = nobject;
+    currentGeneration.forEach(nobject => {
+        const [node, attr] = nobject;
         graph.forEachOutNeighbor(node, neighborCallback);
-        callback(node, attr, generationLevel);
+        callback(node, attr, currentGenerationLevel);
     });
 
     generationLevel++;
@@ -99,20 +100,20 @@ function forEachTopologicalGeneration(graph, callback) {
         'graphology-dag/topological-generations: the given graph is not a valid graphology instance.'
       );
 
-    let last_gen_level = 0;
-    let last_gen = new Set();
+    let lastGenLevel = 0;
+    let lastGen = new Set();
 
     forEachNodeInTopologicalOrder(graph, (node, _, gen) => {
-      if (gen > last_gen_level) {
-        callback(last_gen);
-        last_gen_level = gen;
-        last_gen = new Set();
+      if (gen > lastGenLevel) {
+        callback(lastGen);
+        lastGenLevel = gen;
+        lastGen = new Set();
       }
 
-      last_gen.add(node);
+      lastGen.add(node);
     });
 
-    callback(last_gen);
+    callback(lastGen);
 }
 
 function topologicalGenerations(graph) {
@@ -123,20 +124,20 @@ function topologicalGenerations(graph) {
 
   const generations = [];
 
-  let last_gen_level = 0;
-  let last_gen = new Set();
+  let lastGenLevel = 0;
+  let lastGen = new Set();
 
   forEachNodeInTopologicalOrder(graph, (node, _, gen) => {
-    if (gen > last_gen_level) {
-      generations.push(last_gen);
-      last_gen_level = gen;
-      last_gen = new Set();
+    if (gen > lastGenLevel) {
+      generations.push(lastGen);
+      lastGenLevel = gen;
+      lastGen = new Set();
     }
 
-    last_gen.add(node);
+    lastGen.add(node);
   });
 
-  generations.push(last_gen);
+  generations.push(lastGen);
   return generations;
 }
 
