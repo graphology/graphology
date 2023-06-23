@@ -11,7 +11,6 @@
  * https://en.wikipedia.org/wiki/Topological_sorting
  */
 const isGraph = require('graphology-utils/is-graph');
-const FixedDeque = require('mnemonist/fixed-deque');
 
 function forEachNodeInTopologicalOrder(graph, callback) {
   if (!isGraph(graph))
@@ -30,15 +29,16 @@ function forEachNodeInTopologicalOrder(graph, callback) {
       'graphology-dag/topological-sort: cannot work with multigraphs.'
     );
 
-  const queue = new FixedDeque(Array, graph.order);
   const inDegrees = {};
+  let generation = [];
+  let generationLevel = 0;
   let total = 0;
 
   graph.forEachNode((node, attr) => {
     const inDegree = graph.inDegree(node);
 
     if (inDegree === 0) {
-      queue.push([node, attr]);
+      generation.push([node, attr]);
     } else {
       inDegrees[node] = inDegree;
       total += inDegree;
@@ -50,7 +50,7 @@ function forEachNodeInTopologicalOrder(graph, callback) {
 
     total--;
 
-    if (neighborInDegree === 0) queue.push([neighbor, attr]);
+    if (neighborInDegree === 0) generation.push([neighbor, attr]);
 
     inDegrees[neighbor] = neighborInDegree;
 
@@ -58,12 +58,17 @@ function forEachNodeInTopologicalOrder(graph, callback) {
     // we just skip it for performance reasons
   }
 
-  while (queue.size !== 0) {
-    const [node, attr] = queue.shift();
+  while (generation.length !== 0) {
+    let current_generation = generation
+    generation = []
 
-    callback(node, attr);
+    current_generation.forEach(nobject => {
+        [node, attr] = nobject;
+        graph.forEachOutNeighbor(node, neighborCallback);
+        callback(node, attr, generationLevel);
+    });
 
-    graph.forEachOutNeighbor(node, neighborCallback);
+    generationLevel++;
   }
 
   if (total !== 0)
@@ -88,8 +93,57 @@ function topologicalSort(graph) {
   return sortedNodes;
 }
 
+function forEachTopologicalGeneration(graph, callback) {
+    if (!isGraph(graph))
+      throw new Error(
+        'graphology-dag/topological-generations: the given graph is not a valid graphology instance.'
+      );
+
+    let last_gen_level = 0;
+    let last_gen = new Set();
+
+    forEachNodeInTopologicalOrder(graph, (node, _, gen) => {
+      if (gen > last_gen_level) {
+        callback(last_gen);
+        last_gen_level = gen;
+        last_gen = new Set();
+      }
+
+      last_gen.add(node);
+    });
+
+    callback(last_gen);
+}
+
+function topologicalGenerations(graph) {
+  if (!isGraph(graph))
+    throw new Error(
+      'graphology-dag/topological-generations: the given graph is not a valid graphology instance.'
+    );
+
+  const generations = [];
+
+  let last_gen_level = 0;
+  let last_gen = new Set();
+
+  forEachNodeInTopologicalOrder(graph, (node, _, gen) => {
+    if (gen > last_gen_level) {
+      generations.push(last_gen);
+      last_gen_level = gen;
+      last_gen = new Set();
+    }
+
+    last_gen.add(node);
+  });
+
+  generations.push(last_gen);
+  return generations;
+}
+
 /**
  * Exporting.
  */
 exports.topologicalSort = topologicalSort;
 exports.forEachNodeInTopologicalOrder = forEachNodeInTopologicalOrder;
+exports.topologicalGenerations = topologicalGenerations;
+exports.forEachTopologicalGeneration = forEachTopologicalGeneration;

@@ -17,6 +17,8 @@ const {
   topologicalSort,
   forEachNodeInTopologicalOrder
 } = require('./topological-sort.js');
+const { topologicalGenerations } = require('./topological-sort.js');
+const { forEachTopologicalGeneration } = require('./topological-sort.js');
 
 describe('graphology-dag', function () {
   describe('hasCycle', function () {
@@ -268,5 +270,83 @@ describe('graphology-dag', function () {
         ['0', {color: 'red'}]
       ]);
     });
+
+    it('should return good topological generations', function() {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(5, 11);
+      graph.mergeEdge(11, 2);
+      graph.mergeEdge(7, 11);
+      graph.mergeEdge(7, 8);
+      graph.mergeEdge(3, 8);
+      graph.mergeEdge(3, 10);
+      graph.mergeEdge(11, 9);
+      graph.mergeEdge(11, 10);
+      graph.mergeEdge(8, 9);
+
+      assert.strictEqual(graph.order, 8);
+      assert.strictEqual(graph.size, 9);
+
+      const generations = topologicalGenerations(graph);
+
+      assert.deepStrictEqual(generations, [
+        new Set(['5', '7', '3']),
+        new Set(['11', '8']),
+        new Set(['2', '9', '10']),
+      ]);
+    });
+
+    it('should return good topological generations with disconnected graphs', function () {
+      const graph = new DirectedGraph();
+      graph.addNode(3);
+
+      graph.mergeEdge(5, 11);
+      graph.mergeEdge(11, 2);
+      graph.mergeEdge(7, 11);
+      graph.mergeEdge(7, 8);
+      graph.mergeEdge(11, 9);
+      graph.mergeEdge(11, 10);
+      graph.mergeEdge(8, 9);
+
+      assert.strictEqual(graph.order, 8);
+      assert.strictEqual(graph.size, 7);
+
+      const generations = topologicalGenerations(graph);
+
+      assert.deepStrictEqual(generations, [
+        new Set(['5', '7', '3']),
+        new Set(['11', '8']),
+        new Set(['2', '9', '10']),
+      ]);
+    });
+
+    it('should return topological generations using a callback', function() {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(5, 11);
+      graph.mergeEdge(11, 2);
+      graph.mergeEdge(7, 11);
+      graph.mergeEdge(7, 8);
+      graph.mergeEdge(3, 8);
+      graph.mergeEdge(3, 10);
+      graph.mergeEdge(11, 9);
+      graph.mergeEdge(11, 10);
+      graph.mergeEdge(8, 9);
+
+      assert.strictEqual(graph.order, 8);
+      assert.strictEqual(graph.size, 9);
+
+      const generations = [];
+
+      forEachTopologicalGeneration(graph, gen => {
+        generations.push(gen);
+      })
+
+      assert.deepStrictEqual(generations, [
+        new Set(['5', '7', '3']),
+        new Set(['11', '8']),
+        new Set(['2', '9', '10']),
+      ]);
+    });
+
   });
+
 });
