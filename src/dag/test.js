@@ -273,25 +273,30 @@ describe('graphology-dag', function () {
 
     it('should return good topological generations', function() {
       const graph = new DirectedGraph();
-      graph.mergeEdge(5, 11);
-      graph.mergeEdge(11, 2);
-      graph.mergeEdge(7, 11);
-      graph.mergeEdge(7, 8);
-      graph.mergeEdge(3, 8);
-      graph.mergeEdge(3, 10);
-      graph.mergeEdge(11, 9);
-      graph.mergeEdge(11, 10);
-      graph.mergeEdge(8, 9);
 
-      assert.strictEqual(graph.order, 8);
-      assert.strictEqual(graph.size, 9);
+      graph.mergeEdge(1, 2);
+      graph.mergeEdge(2, 3);
+      graph.mergeEdge(3, 4);
+      graph.mergeEdge(4, 5);
+      graph.mergeEdge(5, 6);
+
+      assert.strictEqual(graph.order, 6);
+      assert.strictEqual(graph.size, 5);
 
       const generations = topologicalGenerations(graph);
+      const generations_set = generations.map(gen => {
+        return new Set(gen)
+      })
 
-      assert.deepStrictEqual(generations, [
-        new Set(['5', '7', '3']),
-        new Set(['11', '8']),
-        new Set(['2', '9', '10']),
+      console.log(generations_set);
+
+      assert.deepStrictEqual(generations_set, [
+        new Set(['1']),
+        new Set(['2']),
+        new Set(['3']),
+        new Set(['4']),
+        new Set(['5']),
+        new Set(['6']),
       ]);
     });
 
@@ -311,8 +316,11 @@ describe('graphology-dag', function () {
       assert.strictEqual(graph.size, 7);
 
       const generations = topologicalGenerations(graph);
+      const generations_set = generations.map(gen => {
+        return new Set(gen)
+      })
 
-      assert.deepStrictEqual(generations, [
+      assert.deepStrictEqual(generations_set, [
         new Set(['5', '7', '3']),
         new Set(['11', '8']),
         new Set(['2', '9', '10']),
@@ -337,7 +345,7 @@ describe('graphology-dag', function () {
       const generations = [];
 
       forEachTopologicalGeneration(graph, gen => {
-        generations.push(gen);
+        generations.push(new Set(gen));
       })
 
       assert.deepStrictEqual(generations, [
