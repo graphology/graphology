@@ -11,6 +11,7 @@
  * https://en.wikipedia.org/wiki/Topological_sorting
  */
 const isGraph = require('graphology-utils/is-graph');
+const FixedDeque = require('mnemonist/fixed-deque');
 
 function forEachNodeInTopologicalOrder(graph, callback) {
   if (!isGraph(graph))
@@ -29,28 +30,27 @@ function forEachNodeInTopologicalOrder(graph, callback) {
       'graphology-dag/topological-sort: cannot work with multigraphs.'
     );
 
+  const queue = new FixedDeque(Array, graph.order);
   const inDegrees = {};
-  let generation = [];
-  let generationLevel = 0;
   let total = 0;
 
   graph.forEachNode((node, attr) => {
     const inDegree = graph.inDegree(node);
 
     if (inDegree === 0) {
-      generation.push([node, attr]);
+      queue.push([node, attr, 0]);
     } else {
       inDegrees[node] = inDegree;
       total += inDegree;
     }
   });
 
-  function neighborCallback(neighbor, attr) {
+  function neighborCallback(neighbor, attr, gen) {
     const neighborInDegree = --inDegrees[neighbor];
 
     total--;
 
-    if (neighborInDegree === 0) generation.push([neighbor, attr]);
+    if (neighborInDegree === 0) queue.push([neighbor, attr, gen + 1]);
 
     inDegrees[neighbor] = neighborInDegree;
 
@@ -58,18 +58,14 @@ function forEachNodeInTopologicalOrder(graph, callback) {
     // we just skip it for performance reasons
   }
 
-  while (generation.length !== 0) {
-    const currentGenerationLevel = generationLevel;
-    const currentGeneration = generation
-    generation = [];
+  while (queue.size !== 0) {
+    const [node, attr, gen] = queue.shift();
 
-    currentGeneration.forEach(nobject => {
-        const [node, attr] = nobject;
-        graph.forEachOutNeighbor(node, neighborCallback);
-        callback(node, attr, currentGenerationLevel);
+    callback(node, attr, gen);
+
+    graph.forEachOutNeighbor(node, (node, attr) => {
+      neighborCallback(node, attr, gen);
     });
-
-    generationLevel++;
   }
 
   if (total !== 0)
@@ -101,16 +97,16 @@ function forEachTopologicalGeneration(graph, callback) {
       );
 
     let lastGenLevel = 0;
-    let lastGen = new Set();
+    let lastGen = [];
 
     forEachNodeInTopologicalOrder(graph, (node, _, gen) => {
       if (gen > lastGenLevel) {
         callback(lastGen);
         lastGenLevel = gen;
-        lastGen = new Set();
+        lastGen = [];
       }
 
-      lastGen.add(node);
+      lastGen.push(node);
     });
 
     callback(lastGen);
@@ -124,20 +120,10 @@ function topologicalGenerations(graph) {
 
   const generations = [];
 
-  let lastGenLevel = 0;
-  let lastGen = new Set();
+  forEachTopologicalGeneration(graph, generation => {
+    generations.push(generation);
+  })
 
-  forEachNodeInTopologicalOrder(graph, (node, _, gen) => {
-    if (gen > lastGenLevel) {
-      generations.push(lastGen);
-      lastGenLevel = gen;
-      lastGen = new Set();
-    }
-
-    lastGen.add(node);
-  });
-
-  generations.push(lastGen);
   return generations;
 }
 
