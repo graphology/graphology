@@ -15,10 +15,10 @@ const hasCycle = require('./has-cycle.js');
 const willCreateCycle = require('./will-create-cycle.js');
 const {
   topologicalSort,
-  forEachNodeInTopologicalOrder
+  forEachNodeInTopologicalOrder,
+  topologicalGenerations,
+  forEachTopologicalGeneration
 } = require('./topological-sort.js');
-const { topologicalGenerations } = require('./topological-sort.js');
-const { forEachTopologicalGeneration } = require('./topological-sort.js');
 
 describe('graphology-dag', function () {
   describe('hasCycle', function () {
@@ -284,13 +284,11 @@ describe('graphology-dag', function () {
       assert.strictEqual(graph.size, 5);
 
       const generations = topologicalGenerations(graph);
-      const generations_set = generations.map(gen => {
+      const generationsSet = generations.map(gen => {
         return new Set(gen)
       })
 
-      console.log(generations_set);
-
-      assert.deepStrictEqual(generations_set, [
+      assert.deepStrictEqual(generationsSet, [
         new Set(['1']),
         new Set(['2']),
         new Set(['3']),
@@ -316,11 +314,11 @@ describe('graphology-dag', function () {
       assert.strictEqual(graph.size, 7);
 
       const generations = topologicalGenerations(graph);
-      const generations_set = generations.map(gen => {
+      const generationsSet = generations.map(gen => {
         return new Set(gen)
-      })
+      });
 
-      assert.deepStrictEqual(generations_set, [
+      assert.deepStrictEqual(generationsSet, [
         new Set(['5', '7', '3']),
         new Set(['11', '8']),
         new Set(['2', '9', '10']),
@@ -353,6 +351,24 @@ describe('graphology-dag', function () {
         new Set(['11', '8']),
         new Set(['2', '9', '10']),
       ]);
+    });
+
+    it('should return good topological generations if there\'s only one generation', function() {
+      const graph = new DirectedGraph();
+      graph.mergeNode(1);
+      graph.mergeNode(2);
+      graph.mergeNode(3);
+
+
+      const generations = [];
+      forEachTopologicalGeneration(graph, gen => {
+        generations.push(new Set(gen));
+      })
+
+      assert.deepStrictEqual(generations, [
+        new Set(['1', '2', '3']),
+      ]);
+
     });
 
   });

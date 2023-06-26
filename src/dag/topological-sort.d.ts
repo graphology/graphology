@@ -1,4 +1,4 @@
-import Graph, {Attributes, NodeIterationCallback, NodeIterationCallbackWithGenerations} from 'graphology-types';
+import Graph, {Attributes, NodeIterationCallback, NodeIterationCallbackWithGeneration} from 'graphology-types';
 
 export function forEachNodeInTopologicalOrder<
   NodeAttributes extends Attributes = Attributes
@@ -11,6 +11,6 @@ export function forEachTopologicalGeneration<
   NodeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes>,
-  callback: NodeIterationCallbackWithGenerations<NodeAttributes>
+  callback: Array<string>
 ): void;
-export function topologicalGenerations(graph: Graph): string[];
+export function topologicalGenerations(graph: Graph): Array<string>;

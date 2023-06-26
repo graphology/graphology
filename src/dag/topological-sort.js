@@ -30,6 +30,11 @@ function forEachNodeInTopologicalOrder(graph, callback) {
       'graphology-dag/topological-sort: cannot work with multigraphs.'
     );
 
+  if (graph.order === 0)
+    throw new Error(
+      'graphology-dag/topological-sort: the given graph has no node.'
+    );
+
   const queue = new FixedDeque(Array, graph.order);
   const inDegrees = {};
   let total = 0;
@@ -45,12 +50,14 @@ function forEachNodeInTopologicalOrder(graph, callback) {
     }
   });
 
-  function neighborCallback(neighbor, attr, gen) {
+  let currentGeneration = 0;
+
+  function neighborCallback(neighbor, attr) {
     const neighborInDegree = --inDegrees[neighbor];
 
     total--;
 
-    if (neighborInDegree === 0) queue.push([neighbor, attr, gen + 1]);
+    if (neighborInDegree === 0) queue.push([neighbor, attr, currentGeneration + 1]);
 
     inDegrees[neighbor] = neighborInDegree;
 
@@ -60,12 +67,11 @@ function forEachNodeInTopologicalOrder(graph, callback) {
 
   while (queue.size !== 0) {
     const [node, attr, gen] = queue.shift();
+    currentGeneration = gen;
 
     callback(node, attr, gen);
 
-    graph.forEachOutNeighbor(node, (node, attr) => {
-      neighborCallback(node, attr, gen);
-    });
+    graph.forEachOutNeighbor(node, neighborCallback);
   }
 
   if (total !== 0)
