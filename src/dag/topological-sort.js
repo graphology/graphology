@@ -30,10 +30,7 @@ function forEachNodeInTopologicalOrder(graph, callback) {
       'graphology-dag/topological-sort: cannot work with multigraphs.'
     );
 
-  if (graph.order === 0)
-    throw new Error(
-      'graphology-dag/topological-sort: the given graph has no node.'
-    );
+  if (graph.order === 0) return
 
   const queue = new FixedDeque(Array, graph.order);
   const inDegrees = {};
@@ -101,6 +98,8 @@ function forEachTopologicalGeneration(graph, callback) {
       throw new Error(
         'graphology-dag/topological-generations: the given graph is not a valid graphology instance.'
       );
+
+    if (graph.order === 0) return
 
     let lastGenLevel = 0;
     let lastGen = [];

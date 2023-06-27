@@ -353,7 +353,7 @@ describe('graphology-dag', function () {
       ]);
     });
 
-    it('should return good topological generations if there\'s only one generation', function() {
+    it('should return good topological generations if the graph has only one generation', function() {
       const graph = new DirectedGraph();
       graph.mergeNode(1);
       graph.mergeNode(2);
@@ -363,12 +363,23 @@ describe('graphology-dag', function () {
       const generations = [];
       forEachTopologicalGeneration(graph, gen => {
         generations.push(new Set(gen));
-      })
+      });
 
       assert.deepStrictEqual(generations, [
         new Set(['1', '2', '3']),
       ]);
 
+    });
+
+    it('should return no topological generation if the graph is empty', function() {
+      const graph = new DirectedGraph();
+
+      const generations = [];
+      forEachTopologicalGeneration(graph, gen => {
+        generations.push(gen);
+      });
+
+      assert.deepStrictEqual(generations, []);
     });
 
   });
