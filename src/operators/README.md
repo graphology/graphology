@@ -195,7 +195,6 @@ _Arguments_
 - **mergeOrOptions** _?function|object_: either a merging function or an options object:
   - **mergeEdge** _?function_: merging function to use.
 
-
 ### toUndirected
 
 Returns the undirected version of the given graph where any directed edge will be now considered as undirected.

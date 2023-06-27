@@ -260,45 +260,39 @@ describe('graphology-dag', function () {
 
       const sorted = [];
 
-      forEachNodeInTopologicalOrder(graph, (node, attr) => {
-        sorted.push([node, attr]);
+      forEachNodeInTopologicalOrder(graph, (node, attr, gen) => {
+        sorted.push([node, attr, gen]);
       });
 
       assert.deepStrictEqual(sorted, [
-        ['2', {color: 'yellow'}],
-        ['1', {color: 'blue'}],
-        ['0', {color: 'red'}]
+        ['2', {color: 'yellow'}, 0],
+        ['1', {color: 'blue'}, 1],
+        ['0', {color: 'red'}, 2]
       ]);
     });
 
-    it('should return good topological generations', function() {
-      const graph = new DirectedGraph();
+    it('should return the correct topological generations of a path.', function () {
+      const P6 = path(DirectedGraph, 6);
 
-      graph.mergeEdge(1, 2);
-      graph.mergeEdge(2, 3);
-      graph.mergeEdge(3, 4);
-      graph.mergeEdge(4, 5);
-      graph.mergeEdge(5, 6);
+      assert.strictEqual(P6.order, 6);
+      assert.strictEqual(P6.size, 5);
 
-      assert.strictEqual(graph.order, 6);
-      assert.strictEqual(graph.size, 5);
-
-      const generations = topologicalGenerations(graph);
+      const generations = topologicalGenerations(P6);
       const generationsSet = generations.map(gen => {
-        return new Set(gen)
-      })
+        return new Set(gen);
+      });
 
       assert.deepStrictEqual(generationsSet, [
+        new Set(['0']),
         new Set(['1']),
         new Set(['2']),
         new Set(['3']),
         new Set(['4']),
-        new Set(['5']),
-        new Set(['6']),
+        new Set(['5'])
       ]);
     });
 
-    it('should return good topological generations with disconnected graphs', function () {
+    it('should return correct topological generations with disconnected graphs.', function () {
       const graph = new DirectedGraph();
       graph.addNode(3);
 
@@ -315,18 +309,19 @@ describe('graphology-dag', function () {
 
       const generations = topologicalGenerations(graph);
       const generationsSet = generations.map(gen => {
-        return new Set(gen)
+        return new Set(gen);
       });
 
       assert.deepStrictEqual(generationsSet, [
         new Set(['5', '7', '3']),
         new Set(['11', '8']),
-        new Set(['2', '9', '10']),
+        new Set(['2', '9', '10'])
       ]);
     });
 
-    it('should return topological generations using a callback', function() {
+    it('should be possible to iterate over generations using a callback.', function () {
       const graph = new DirectedGraph();
+
       graph.mergeEdge(5, 11);
       graph.mergeEdge(11, 2);
       graph.mergeEdge(7, 11);
@@ -344,44 +339,47 @@ describe('graphology-dag', function () {
 
       forEachTopologicalGeneration(graph, gen => {
         generations.push(new Set(gen));
-      })
+      });
 
       assert.deepStrictEqual(generations, [
         new Set(['5', '7', '3']),
         new Set(['11', '8']),
-        new Set(['2', '9', '10']),
+        new Set(['2', '9', '10'])
       ]);
     });
 
-    it('should return good topological generations if the graph has only one generation', function() {
+    it('should work even if the graph has only one generation.', function () {
       const graph = new DirectedGraph();
       graph.mergeNode(1);
       graph.mergeNode(2);
       graph.mergeNode(3);
-
 
       const generations = [];
       forEachTopologicalGeneration(graph, gen => {
         generations.push(new Set(gen));
       });
 
-      assert.deepStrictEqual(generations, [
-        new Set(['1', '2', '3']),
-      ]);
-
+      assert.deepStrictEqual(generations, [new Set(['1', '2', '3'])]);
     });
 
-    it('should return no topological generation if the graph is empty', function() {
+    it('should do nothing if the graph is empty.', function () {
       const graph = new DirectedGraph();
 
+      const nodes = [];
+
+      forEachNodeInTopologicalOrder(graph, node => {
+        nodes.push(node);
+      });
+
+      assert.deepStrictEqual(nodes, []);
+
       const generations = [];
+
       forEachTopologicalGeneration(graph, gen => {
         generations.push(gen);
       });
 
       assert.deepStrictEqual(generations, []);
     });
-
   });
-
 });
