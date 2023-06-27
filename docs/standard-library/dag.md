@@ -23,7 +23,9 @@ npm install graphology-dag
 - [hasCycle](#hascycle)
 - [willCreateCycle](#willcreatecycle)
 - [topologicalSort](#topologicalsort)
+- [topologicalGenerations](#topologicalgenerations)
 - [forEachNodeInTopologicalOrder](#foreachnodeintopologicalorder)
+- [forEachTopologicalGeneration](#foreachtopologicalgeneration)
 
 ### hasCycle
 
@@ -94,6 +96,26 @@ topologicalSort(graph);
 >>> ['0', '1', '2', '3']
 ```
 
+### topologicalGenerations
+
+Function returning an array of array of nodes representing the successive generations of the topological ordering of the given DAG.
+
+Note that this function will throw if given graph has any cycle, is able to work on mixed graphs containing only directed edges and can work on disconnected graphs (a DAG forest).
+
+```js
+import {topologicalGenerations} from 'graphology-dag';
+// Alternatively, to load only the relevant code:
+import {topologicalGenerations} from 'graphology-dag/topological-sort';
+
+const graph = new DirectedGraph();
+graph.mergeEdge(0, 1);
+graph.mergeEdge(1, 2);
+graph.mergeEdge(0, 3);
+
+topologicalGenerations(graph);
+>>> [[ '0' ], ['1', '3'], ['2']]
+```
+
 ### forEachNodeInTopologicalOrder
 
 Function iterating over the given DAG's nodes in topological order using a callback function.
@@ -110,8 +132,30 @@ graph.mergeEdge(0, 1);
 graph.mergeEdge(1, 2);
 graph.mergeEdge(2, 3);
 
-forEachNodeInTopologicalOrder(graph, (node, attr) => {
-  console.log(node, attr);
+forEachNodeInTopologicalOrder(graph, (node, attr, generationIndex) => {
+  // Note that generationIndex will be monotonically increasing from 0 to n.
+  console.log(node, attr, generationIndex);
+});
+```
+
+### forEachTopologicalGeneration
+
+Function iterating over the given DAG's generations, represented by an array of node keys, using a callback function.
+
+Note that this function will throw if given graph has any cycle, is able to work on mixed graphs containing only directed edges and can work on disconnected graphs (a DAG forest).
+
+```js
+import {forEachTopologicalGeneration} from 'graphology-dag';
+// Alternatively, to load only the relevant code:
+import {forEachTopologicalGeneration} from 'graphology-dag/topological-sort';
+
+const graph = new DirectedGraph();
+graph.mergeEdge(0, 1);
+graph.mergeEdge(1, 2);
+graph.mergeEdge(2, 3);
+
+forEachTopologicalGeneration(graph, generation => {
+  console.log(generation);
 });
 ```
 

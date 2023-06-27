@@ -205,7 +205,6 @@ _Arguments_
 - **mergeOrOptions** <span class="code">?function|object</span>: either a merging function or an options object:
   - **mergeEdge** <span class="code">?function</span>: merging function to use.
 
-
 ### toUndirected
 
 Returns the undirected version of the given graph where any directed edge will be now considered as undirected.
