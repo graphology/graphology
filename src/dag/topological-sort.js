@@ -30,6 +30,8 @@ function forEachNodeInTopologicalOrder(graph, callback) {
       'graphology-dag/topological-sort: cannot work with multigraphs.'
     );
 
+  if (graph.order === 0) return;
+
   const queue = new FixedDeque(Array, graph.order);
   const inDegrees = {};
   let total = 0;
@@ -38,19 +40,22 @@ function forEachNodeInTopologicalOrder(graph, callback) {
     const inDegree = graph.inDegree(node);
 
     if (inDegree === 0) {
-      queue.push([node, attr]);
+      queue.push([node, attr, 0]);
     } else {
       inDegrees[node] = inDegree;
       total += inDegree;
     }
   });
 
+  let currentGeneration = 0;
+
   function neighborCallback(neighbor, attr) {
     const neighborInDegree = --inDegrees[neighbor];
 
     total--;
 
-    if (neighborInDegree === 0) queue.push([neighbor, attr]);
+    if (neighborInDegree === 0)
+      queue.push([neighbor, attr, currentGeneration + 1]);
 
     inDegrees[neighbor] = neighborInDegree;
 
@@ -59,9 +64,10 @@ function forEachNodeInTopologicalOrder(graph, callback) {
   }
 
   while (queue.size !== 0) {
-    const [node, attr] = queue.shift();
+    const [node, attr, gen] = queue.shift();
+    currentGeneration = gen;
 
-    callback(node, attr);
+    callback(node, attr, gen);
 
     graph.forEachOutNeighbor(node, neighborCallback);
   }
@@ -88,8 +94,49 @@ function topologicalSort(graph) {
   return sortedNodes;
 }
 
+function forEachTopologicalGeneration(graph, callback) {
+  if (!isGraph(graph))
+    throw new Error(
+      'graphology-dag/topological-generations: the given graph is not a valid graphology instance.'
+    );
+
+  if (graph.order === 0) return;
+
+  let lastGenLevel = 0;
+  let lastGen = [];
+
+  forEachNodeInTopologicalOrder(graph, (node, _, gen) => {
+    if (gen > lastGenLevel) {
+      callback(lastGen);
+      lastGenLevel = gen;
+      lastGen = [];
+    }
+
+    lastGen.push(node);
+  });
+
+  callback(lastGen);
+}
+
+function topologicalGenerations(graph) {
+  if (!isGraph(graph))
+    throw new Error(
+      'graphology-dag/topological-generations: the given graph is not a valid graphology instance.'
+    );
+
+  const generations = [];
+
+  forEachTopologicalGeneration(graph, generation => {
+    generations.push(generation);
+  });
+
+  return generations;
+}
+
 /**
  * Exporting.
  */
 exports.topologicalSort = topologicalSort;
 exports.forEachNodeInTopologicalOrder = forEachNodeInTopologicalOrder;
+exports.topologicalGenerations = topologicalGenerations;
+exports.forEachTopologicalGeneration = forEachTopologicalGeneration;

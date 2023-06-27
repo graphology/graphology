@@ -26,10 +26,16 @@
     "directed acyclic graph",
     "topological sort"
   ],
-  "author": {
-    "name": "Guillaume Plique",
-    "url": "http://github.com/Yomguithereal"
-  },
+  "contributors": [
+    {
+      "name": "Guillaume Plique",
+      "url": "http://github.com/Yomguithereal"
+    },
+    {
+      "name": "César Pichon",
+      "url": "http://github.com/16arpi"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/graphology/graphology/issues"
