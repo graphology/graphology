@@ -30,10 +30,10 @@ function isReallyNaN(value) {
  * @return {string}
  */
 function toRGBString(element) {
-  var a = element.getAttribute('a'),
-    r = element.getAttribute('r'),
-    g = element.getAttribute('g'),
-    b = element.getAttribute('b');
+  var a = element.getAttribute('a');
+  var r = element.getAttribute('r');
+  var g = element.getAttribute('g');
+  var b = element.getAttribute('b');
 
   return a
     ? 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')'
@@ -65,9 +65,9 @@ function getFirstMatchingVizTag(element, name) {
  * @return {object}
  */
 function collectMeta(elements) {
-  var meta = {},
-    element,
-    value;
+  var meta = {};
+  var element;
+  var value;
 
   for (var i = 0, l = elements.length; i < l; i++) {
     element = elements[i];
@@ -89,11 +89,11 @@ function collectMeta(elements) {
  * @return {array}                - The model & default attributes.
  */
 function extractModel(elements) {
-  var model = {},
-    defaults = {},
-    element,
-    defaultElement,
-    id;
+  var model = {};
+  var defaults = {};
+  var element;
+  var defaultElement;
+  var id;
 
   for (var i = 0, l = elements.length; i < l; i++) {
     element = elements[i];
@@ -121,34 +121,55 @@ function extractModel(elements) {
 /**
  * Function used to collect an element's attributes.
  *
- * @param  {object} model    - Data model to use.
- * @param  {object} defaults - Default values.
- * @param  {Node}   element  - Target DOM element.
- * @return {object}          - The collected attributes.
+ * @param  {object}  model    - Data model to use.
+ * @param  {object}  defaults - Default values.
+ * @param  {Node}    element  - Target DOM element.
+ * @param  {boolean} allowUndeclaredAttributes - Whether to allow undeclared attributes.
+ * @return {object}           - The collected attributes.
  */
-function collectAttributes(model, defaults, element) {
-  var data = {},
-    label = element.getAttribute('label'),
-    weight = element.getAttribute('weight');
+function collectAttributes(
+  model,
+  defaults,
+  element,
+  allowUndeclaredAttributes
+) {
+  var data = {};
+  var label = element.getAttribute('label');
+  var weight = element.getAttribute('weight');
 
   if (label) data.label = label;
 
   if (weight) data.weight = +weight;
 
-  var valueElements = element.getElementsByTagName('attvalue'),
-    valueElement,
-    id;
+  var valueElements = element.getElementsByTagName('attvalue');
+  var valueElement;
+  var attr;
+  var title;
+  var value;
+  var type;
+  var id;
 
   for (var i = 0, l = valueElements.length; i < l; i++) {
     valueElement = valueElements[i];
     id = valueElement.getAttribute('id') || valueElement.getAttribute('for');
+    value = valueElement.getAttribute('value');
+    attr = model[id];
 
-    if(!model[id]) throw new Error('graphology-gexf/parser: Found undeclared attribute "' + id + '"');
+    if (!attr) {
+      if (allowUndeclaredAttributes) {
+        title = id;
+        type = 'string';
+      } else {
+        throw new Error(
+          'graphology-gexf/parser: Found undeclared attribute "' + id + '"'
+        );
+      }
+    } else {
+      title = attr.title;
+      type = attr.type;
+    }
 
-    data[model[id].title] = cast(
-      model[id].type,
-      valueElement.getAttribute('value')
-    );
+    data[title] = cast(type, value);
   }
 
   // Applying default values
@@ -220,6 +241,7 @@ module.exports = function createParserFunction(DOMParser, Document) {
     options = options || {};
 
     var addMissingNodes = options.addMissingNodes === true;
+    var allowUndeclaredAttributes = options.allowUndeclaredAttributes === true;
     var mergeResult;
 
     var xmlDoc = source;
@@ -239,14 +261,14 @@ module.exports = function createParserFunction(DOMParser, Document) {
       );
 
     // Finding useful elements
-    var GRAPH_ELEMENT = xmlDoc.getElementsByTagName('graph')[0],
-      META_ELEMENT = xmlDoc.getElementsByTagName('meta')[0],
-      META_ELEMENTS = (META_ELEMENT && META_ELEMENT.childNodes) || [],
-      NODE_ELEMENTS = xmlDoc.getElementsByTagName('node'),
-      EDGE_ELEMENTS = xmlDoc.getElementsByTagName('edge'),
-      MODEL_ELEMENTS = xmlDoc.getElementsByTagName('attributes'),
-      NODE_MODEL_ELEMENTS = [],
-      EDGE_MODEL_ELEMENTS = [];
+    var GRAPH_ELEMENT = xmlDoc.getElementsByTagName('graph')[0];
+    var META_ELEMENT = xmlDoc.getElementsByTagName('meta')[0];
+    var META_ELEMENTS = (META_ELEMENT && META_ELEMENT.childNodes) || [];
+    var NODE_ELEMENTS = xmlDoc.getElementsByTagName('node');
+    var EDGE_ELEMENTS = xmlDoc.getElementsByTagName('edge');
+    var MODEL_ELEMENTS = xmlDoc.getElementsByTagName('attributes');
+    var NODE_MODEL_ELEMENTS = [];
+    var EDGE_MODEL_ELEMENTS = [];
 
     for (i = 0, l = MODEL_ELEMENTS.length; i < l; i++) {
       element = MODEL_ELEMENTS[i];
@@ -266,13 +288,13 @@ module.exports = function createParserFunction(DOMParser, Document) {
     // Computing models
     result = extractModel(NODE_MODEL_ELEMENTS);
 
-    var NODE_MODEL = result[0],
-      NODE_DEFAULT_ATTRIBUTES = result[1];
+    var NODE_MODEL = result[0];
+    var NODE_DEFAULT_ATTRIBUTES = result[1];
 
     result = extractModel(EDGE_MODEL_ELEMENTS);
 
-    var EDGE_MODEL = result[0],
-      EDGE_DEFAULT_ATTRIBUTES = result[1];
+    var EDGE_MODEL = result[0];
+    var EDGE_DEFAULT_ATTRIBUTES = result[1];
 
     // Polling the first edge to guess the type of the edges
     var graphType = EDGE_ELEMENTS[0]
@@ -285,9 +307,9 @@ module.exports = function createParserFunction(DOMParser, Document) {
     });
 
     // Collecting meta
-    var meta = collectMeta(META_ELEMENTS),
-      lastModifiedDate =
-        META_ELEMENT && META_ELEMENT.getAttribute('lastmodifieddate');
+    var meta = collectMeta(META_ELEMENTS);
+    var lastModifiedDate =
+      META_ELEMENT && META_ELEMENT.getAttribute('lastmodifieddate');
 
     graph.replaceAttributes(meta);
 
@@ -300,7 +322,12 @@ module.exports = function createParserFunction(DOMParser, Document) {
 
       graph.addNode(
         element.getAttribute('id'),
-        collectAttributes(NODE_MODEL, NODE_DEFAULT_ATTRIBUTES, element)
+        collectAttributes(
+          NODE_MODEL,
+          NODE_DEFAULT_ATTRIBUTES,
+          element,
+          allowUndeclaredAttributes
+        )
       );
     }
 
@@ -315,7 +342,8 @@ module.exports = function createParserFunction(DOMParser, Document) {
       attributes = collectAttributes(
         EDGE_MODEL,
         EDGE_DEFAULT_ATTRIBUTES,
-        element
+        element,
+        allowUndeclaredAttributes
       );
 
       // If we encountered an edge with a different type, we upgrade the graph

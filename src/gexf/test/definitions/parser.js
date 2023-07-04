@@ -68,6 +68,37 @@ module.exports = [
     }
   },
   {
+    title: 'Graph with Undeclared Attributes',
+    gexf: 'undeclared_attribute',
+    options: {
+      allowUndeclaredAttributes: true
+    },
+    basics: {
+      type: 'directed',
+      multi: false,
+      version: '1.2',
+      mode: 'static',
+      defaultEdgeType: 'directed',
+      meta: {},
+      order: 2,
+      node: {
+        key: 0,
+        attributes: {
+          label: 'Gephi',
+          url: 'http://gephi.org'
+        }
+      },
+      size: 1,
+      edge: {
+        source: 0,
+        target: 1,
+        attributes: {
+          count: '43'
+        }
+      }
+    }
+  },
+  {
     title: 'Mixed Graph',
     gexf: 'mixed',
     basics: {

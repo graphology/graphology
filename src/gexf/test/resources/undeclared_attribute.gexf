@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
-  <meta lastmodifieddate="2009-03-20">
-    <creator>Gephi.org</creator>
-    <description>A Web network</description>
-  </meta>
   <graph defaultedgetype="directed">
     <attributes class="node">
+    </attributes>
+    <attributes class="edge">
     </attributes>
     <nodes>
       <node id="0" label="Gephi">
@@ -13,8 +11,18 @@
           <attvalue for="url" value="http://gephi.org"/>
         </attvalues>
       </node>
+      <node id="1" label="Nansi">
+        <attvalues>
+          <attvalue for="url" value="http://medialab.github.io/nansi"/>
+        </attvalues>
+      </node>
     </nodes>
     <edges>
+      <edge source="0" target="1">
+        <attvalues>
+          <attvalue for="count" value="43"></attvalue>
+        </attvalues>
+      </edge>
     </edges>
   </graph>
 </gexf>

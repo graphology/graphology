@@ -58,9 +58,7 @@ exports.testAllFiles = function (parser) {
         assert.deepStrictEqual(attributes, edge.attributes || {});
       }
     );
-   
   });
-
 };
 
 /**

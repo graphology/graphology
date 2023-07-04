@@ -2,6 +2,7 @@ import {Attributes} from 'graphology-types';
 
 export type GexfParserOptions = {
   addMissingNodes?: boolean;
+  allowUndeclaredAttributes?: boolean;
 };
 
 type RGBAColor = {

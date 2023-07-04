@@ -14,6 +14,10 @@
  */
 exports.cast = function (type, value) {
   switch (type) {
+    case 'string':
+      // NOTE: this is quite common so having this here
+      // can speed things up a bit.
+      return value;
     case 'boolean':
       value = value === 'true';
       break;
