@@ -46,6 +46,7 @@ _Arguments_
 - **source** _string\|Document_: source data to parse.
 - **options** _?object_: parsing options:
   - **addMissingNodes** _?boolean_ [`false`]: whether to add missing nodes referenced in the file's edges.
+  - **allowUndeclaredAttributes** _?boolean_ [`false`]: whether to allow undeclared attributes for both nodes & edges, which will be considered as strings.
 
 ### Writer
 

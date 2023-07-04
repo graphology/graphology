@@ -56,6 +56,7 @@ _Arguments_
 - **source** _string\|Document_: source data to parse.
 - **options** <span class="code">?object</span>: parsing options:
   - **addMissingNodes** <span class="code">?boolean</span> <span class="default">false</span>: whether to add missing nodes referenced in the file's edges.
+  - **allowUndeclaredAttributes** <span class="code">?boolean</span> <span class="default">false</span>: whether to allow undeclared attributes for both nodes & edges, which will be considered as strings.
 
 ### Writer
 
