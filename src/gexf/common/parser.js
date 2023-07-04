@@ -143,7 +143,7 @@ function collectAttributes(model, defaults, element) {
     valueElement = valueElements[i];
     id = valueElement.getAttribute('id') || valueElement.getAttribute('for');
 
-    if(!model[id]) throw new Error('Found attribut \'' + id + '\' which is not defined');
+    if(!model[id]) throw new Error('graphology-gexf/parser: Found undeclared attribute "' + id + '"');
 
     data[model[id].title] = cast(
       model[id].type,

@@ -29,17 +29,11 @@ describe('Parser', function () {
     }, /inexisting/);
   });
 
-  it('should throw if an edge points to an inexisting node.', function () {
-    assert.throws(function () {
-      parser(Graph, resources.missing_nodes);
-    }, /inexisting/);
-  });
-
    it('should throw an error if an attribut definition is missing',
       function () {
       assert.throws(function () {
-        parser(Graph, resources.missing_attribut_def);
-      }, /Found attribut 'url' which is not defined/
+        parser(Graph, resources.undeclared_attribute);
+      }, /graphology-gexf\/parser: Found undeclared attribute "url"/
       );
     }
   )
