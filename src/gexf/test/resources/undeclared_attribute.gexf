@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2009-03-20">
+    <creator>Gephi.org</creator>
+    <description>A Web network</description>
+  </meta>
+  <graph defaultedgetype="directed">
+    <attributes class="node">
+    </attributes>
+    <nodes>
+      <node id="0" label="Gephi">
+        <attvalues>
+          <attvalue for="url" value="http://gephi.org"/>
+        </attvalues>
+      </node>
+    </nodes>
+    <edges>
+    </edges>
+  </graph>
+</gexf>
+

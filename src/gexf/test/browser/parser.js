@@ -29,5 +29,14 @@ describe('Parser', function () {
     }, /inexisting/);
   });
 
+   it('should throw an error if an attribut definition is missing',
+      function () {
+      assert.throws(function () {
+        parser(Graph, resources.undeclared_attribute);
+      }, /graphology-gexf\/parser: Found undeclared attribute "url"/
+      );
+    }
+  )
+
   common.testAllFiles(parser);
 });

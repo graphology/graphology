@@ -18,6 +18,7 @@ var FILES = [
   'liststring',
   'minimal',
   'missing_nodes',
+  'undeclared_attribute',
   'mixed',
   'rio',
   'sanitized',
