@@ -14,8 +14,14 @@ var createDijkstraIndexedBrandes = lib.createDijkstraIndexedBrandes;
 /**
  * Defaults.
  */
-var DEFAULTS = {
-  nodeCentralityAttribute: 'betweennessCentrality',
+var DEFAULTS_NODE = {
+  nodeCentralityAttribute: 'nodeBetweennessCentrality',
+  getEdgeWeight: 'weight',
+  normalized: true
+};
+
+var DEFAULTS_EDGE = {
+  edgeCentralityAttribute: 'edgeBetweennessCentrality',
   getEdgeWeight: 'weight',
   normalized: true
 };
@@ -23,9 +29,9 @@ var DEFAULTS = {
 /**
  * Abstract function computing beetweenness centrality for the given graph.
  *
- * @param  {boolean} assign                      - Assign the results to node attributes?
- * @param  {Graph}   graph                       - Target graph.
- * @param  {object}  [options]                   - Options:
+ * @param  {boolean}   assign                      - Assign the results to node attributes?
+ * @param  {Graph}     graph                       - Target graph.
+ * @param  {object}    [options]                   - Options:
  * @param  {object}    [nodeCentralityAttribute] - Name of the attribute to assign.
  * @param  {string}    [getEdgeWeight]           - Name of the weight attribute or getter function.
  * @param  {boolean}   [normalized]              - Should the centrality be normalized?
@@ -38,7 +44,7 @@ function abstractBetweennessCentrality(assign, graph, options) {
     );
 
   // Solving options
-  options = resolveDefaults(options, DEFAULTS);
+  options = resolveDefaults(options, DEFAULTS_NODE);
 
   var outputName = options.nodeCentralityAttribute;
   var normalized = options.normalized;
@@ -96,9 +102,117 @@ function abstractBetweennessCentrality(assign, graph, options) {
 }
 
 /**
+ * Abstract function computing edge beetweenness centrality for the given graph.
+ *
+ * @param  {boolean}   assign                      - Assign the results to node attributes?
+ * @param  {Graph}     graph                       - Target graph.
+ * @param  {object}    [options]                   - Options:
+ * @param  {object}    [edgeCentralityAttribute] - Name of the attribute to assign.
+ * @param  {string}    [getEdgeWeight]           - Name of the weight attribute or getter function.
+ * @param  {boolean}   [normalized]              - Should the centrality be normalized?
+ * @param  {object}
+ */
+function abstractEdgeBetweennessCentrality(assign, graph, options) {
+  if (!isGraph(graph)) {
+    throw new Error(
+      'graphology-centrality/beetweenness-centrality: the given graph is not a valid graphology instance.'
+    );
+  }
+
+  // Solving options
+  options = resolveDefaults(options, DEFAULTS_EDGE);
+
+  var outputName = options.edgeCentralityAttribute;
+  var normalized = options.normalized;
+
+  var brandes = options.getEdgeWeight
+    ? createDijkstraIndexedBrandes(graph, options.getEdgeWeight)
+    : createUnweightedIndexedBrandes(graph);
+
+  var N = graph.order;
+  var S = graph.size;
+
+  var result, S, P, sigma, coefficient, i, j, m, v, c, w;
+
+  var delta = new Float64Array(N);
+  var edgeCentralities = {};
+
+  graph.forEachEdge(edge => {
+    edgeCentralities[edge] = 0.0;
+  });
+
+  var nodes = brandes.index.nodes;
+
+  // Iterating over each node
+  for (i = 0; i < N; i++) {
+    result = brandes(i);
+
+    S = result[0];
+    P = result[1];
+    sigma = result[2];
+
+    // Accumulating
+    j = S.size;
+
+    while (j--) delta[S.items[S.size - j]] = 0;
+
+    // accumulate edges
+    while (S.size !== 0) {
+      w = S.pop();
+      coefficient = (1 + delta[w]) / sigma[w];
+      for (j = 0, m = P[w].length; j < m; j++) {
+        v = P[w][j];
+        c = sigma[v] * coefficient;
+
+        let vw = graph.edge(nodes[v], nodes[w]);
+        let wv = graph.edge(nodes[w], nodes[v]);
+
+        if (vw === undefined) {
+          edgeCentralities[wv] += c;
+        } else {
+          edgeCentralities[vw] += c;
+        }
+        delta[v] += c;
+      }
+    }
+  }
+
+  // Rescaling
+  var scale = null;
+
+  if (normalized) scale = N <= 1 ? null : 1 / (N * (N - 1));
+  else scale = graph.type === 'undirected' ? 0.5 : null;
+
+  if (scale !== null) {
+    graph.forEachEdge(edge => {
+      edgeCentralities[edge] *= scale;
+    });
+  }
+
+  if (assign) {
+    return graph.updateEachEdgeAttributes((edge, attr) => {
+      attr[outputName] = edgeCentralities[edge];
+      return attr;
+    });
+  }
+
+  return edgeCentralities;
+}
+
+/**
  * Exporting.
  */
 var betweennessCentrality = abstractBetweennessCentrality.bind(null, false);
 betweennessCentrality.assign = abstractBetweennessCentrality.bind(null, true);
 
-module.exports = betweennessCentrality;
+var edgeBetweennessCentrality = abstractEdgeBetweennessCentrality.bind(
+  null,
+  false
+);
+edgeBetweennessCentrality.assign = abstractEdgeBetweennessCentrality.bind(
+  null,
+  true
+);
+
+exports.betweennessCentrality = betweennessCentrality;
+exports.edgeBetweennessCentrality = edgeBetweennessCentrality;
