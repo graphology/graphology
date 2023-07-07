@@ -27,7 +27,7 @@ function getEdgeKey(n1, n2) {
 function labelizeEdgeCentrality(graph, edgeCentrality) {
   var labelizedCentrality = {};
 
-  graph.forEachEdge((edge, _, src, trg) => {
+  graph.forEachEdge(function (edge, _, src, trg) {
     var centrality = edgeCentrality[edge];
     var label = getEdgeKey(src, trg);
     labelizedCentrality[label] = centrality;
@@ -495,7 +495,7 @@ describe('edge betweenness centrality', function () {
       'y->v': 1
     };
 
-    graph.forEachEdge((edge, _, src, trg) => {
+    graph.forEachEdge(function (edge, _, src, trg) {
       var key = getEdgeKey(src, trg);
       assert.strictEqual(graph.getEdgeAttribute(edge, 'centrality'), test[key]);
     });

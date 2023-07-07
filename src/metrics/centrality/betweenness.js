@@ -129,22 +129,20 @@ function abstractEdgeBetweennessCentrality(assign, graph, options) {
     ? createDijkstraIndexedBrandes(graph, options.getEdgeWeight)
     : createUnweightedIndexedBrandes(graph);
 
-  var N = graph.order;
-  var S = graph.size;
-
+  var order = graph.order;
   var result, S, P, sigma, coefficient, i, j, m, v, c, w;
 
-  var delta = new Float64Array(N);
+  var delta = new Float64Array(order);
   var edgeCentralities = {};
 
-  graph.forEachEdge(edge => {
+  graph.forEachEdge(function (edge) {
     edgeCentralities[edge] = 0.0;
   });
 
   var nodes = brandes.index.nodes;
 
   // Iterating over each node
-  for (i = 0; i < N; i++) {
+  for (i = 0; i < order; i++) {
     result = brandes(i);
 
     S = result[0];
@@ -164,8 +162,8 @@ function abstractEdgeBetweennessCentrality(assign, graph, options) {
         v = P[w][j];
         c = sigma[v] * coefficient;
 
-        let vw = graph.edge(nodes[v], nodes[w]);
-        let wv = graph.edge(nodes[w], nodes[v]);
+        var vw = graph.edge(nodes[v], nodes[w]);
+        var wv = graph.edge(nodes[w], nodes[v]);
 
         if (vw === undefined) {
           edgeCentralities[wv] += c;
@@ -180,17 +178,17 @@ function abstractEdgeBetweennessCentrality(assign, graph, options) {
   // Rescaling
   var scale = null;
 
-  if (normalized) scale = N <= 1 ? null : 1 / (N * (N - 1));
+  if (normalized) scale = order <= 1 ? null : 1 / (order * (order - 1));
   else scale = graph.type === 'undirected' ? 0.5 : null;
 
   if (scale !== null) {
-    graph.forEachEdge(edge => {
+    graph.forEachEdge(function (edge) {
       edgeCentralities[edge] *= scale;
     });
   }
 
   if (assign) {
-    return graph.updateEachEdgeAttributes((edge, attr) => {
+    return graph.updateEachEdgeAttributes(function (edge, attr) {
       attr[outputName] = edgeCentralities[edge];
       return attr;
     });
