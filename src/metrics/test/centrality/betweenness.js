@@ -74,16 +74,14 @@ function getWeightedGraph2(w) {
 describe('betweenness centrality', function () {
   it('should throw if passed an invalid graph.', function () {
     assert.throws(function () {
-      betweenness.betweennessCentrality(null);
+      betweenness(null);
     }, /graphology/);
   });
 
   it('Complete graph', function () {
     var graph = complete(5);
 
-    var centralities = betweenness.betweennessCentrality(graph, {
-      normalized: false
-    });
+    var centralities = betweenness(graph, {normalized: false});
 
     assert.deepEqual(centralities, {
       0: 0,
@@ -93,9 +91,7 @@ describe('betweenness centrality', function () {
       4: 0
     });
 
-    centralities = betweenness.betweennessCentrality(graph, {
-      normalized: false
-    });
+    centralities = betweenness(graph, {normalized: false});
 
     assert.deepEqual(centralities, {
       0: 0,
@@ -109,9 +105,7 @@ describe('betweenness centrality', function () {
   it('Path', function () {
     var graph = path(3);
 
-    var centralities = betweenness.betweennessCentrality(graph, {
-      normalized: false
-    });
+    var centralities = betweenness(graph, {normalized: false});
 
     assert.deepEqual(centralities, {
       0: 0,
@@ -119,9 +113,7 @@ describe('betweenness centrality', function () {
       2: 0
     });
 
-    centralities = betweenness.betweennessCentrality(graph, {
-      normalized: false
-    });
+    centralities = betweenness(graph, {normalized: false});
 
     assert.deepEqual(centralities, {
       0: 0,
@@ -133,9 +125,7 @@ describe('betweenness centrality', function () {
     graph.mergeEdge('John', 'Jane');
     graph.mergeEdge('Jane', 'Edna');
 
-    centralities = betweenness.betweennessCentrality(graph, {
-      normalized: false
-    });
+    centralities = betweenness(graph, {normalized: false});
 
     assert.deepEqual(centralities, {
       John: 0,
@@ -147,9 +137,7 @@ describe('betweenness centrality', function () {
   it('Path normalized', function () {
     var graph = path(3);
 
-    var centralities = betweenness.betweennessCentrality(graph, {
-      normalized: true
-    });
+    var centralities = betweenness(graph, {normalized: true});
 
     assert.deepEqual(centralities, {
       0: 0,
@@ -157,7 +145,7 @@ describe('betweenness centrality', function () {
       2: 0
     });
 
-    centralities = betweenness.betweennessCentrality(graph, {normalized: true});
+    centralities = betweenness(graph, {normalized: true});
 
     assert.deepEqual(centralities, {
       0: 0,
@@ -169,9 +157,7 @@ describe('betweenness centrality', function () {
   it('Krackhardt kite', function () {
     var graph = generators.small.krackhardtKite(UndirectedGraph);
 
-    var centralities = betweenness.betweennessCentrality(graph, {
-      normalized: false
-    });
+    var centralities = betweenness(graph, {normalized: false});
 
     var test = {
       Andre: 0.833,
@@ -188,9 +174,7 @@ describe('betweenness centrality', function () {
 
     deepApproximatelyEqual(centralities, test, 1e-3);
 
-    centralities = betweenness.betweennessCentrality(graph, {
-      normalized: false
-    });
+    centralities = betweenness(graph, {normalized: false});
 
     deepApproximatelyEqual(centralities, test, 1e-3);
   });
@@ -198,9 +182,7 @@ describe('betweenness centrality', function () {
   it('Krackhardt kite normalized', function () {
     var graph = generators.small.krackhardtKite(UndirectedGraph);
 
-    var centralities = betweenness.betweennessCentrality(graph, {
-      normalized: true
-    });
+    var centralities = betweenness(graph, {normalized: true});
 
     var test = {
       Andre: 0.023,
@@ -217,7 +199,7 @@ describe('betweenness centrality', function () {
 
     deepApproximatelyEqual(centralities, test, 1e-3);
 
-    centralities = betweenness.betweennessCentrality(graph);
+    centralities = betweenness(graph);
 
     deepApproximatelyEqual(centralities, test, 1e-3);
   });
@@ -225,7 +207,7 @@ describe('betweenness centrality', function () {
   it('Florentine families', function () {
     var graph = generators.social.florentineFamilies(UndirectedGraph);
 
-    var centralities = betweenness.betweennessCentrality(graph);
+    var centralities = betweenness(graph);
 
     var test = {
       Acciaiuoli: 0.0,
@@ -247,7 +229,7 @@ describe('betweenness centrality', function () {
 
     deepApproximatelyEqual(centralities, test, 1e-3);
 
-    centralities = betweenness.betweennessCentrality(graph);
+    centralities = betweenness(graph);
 
     deepApproximatelyEqual(centralities, test, 1e-3);
   });
@@ -255,9 +237,7 @@ describe('betweenness centrality', function () {
   it('Ladder graph', function () {
     var graph = ladder(3);
 
-    var centralities = betweenness.betweennessCentrality(graph, {
-      normalized: false
-    });
+    var centralities = betweenness(graph, {normalized: false});
 
     var test = {
       0: 0.833,
@@ -270,9 +250,7 @@ describe('betweenness centrality', function () {
 
     deepApproximatelyEqual(centralities, test, 1e-3);
 
-    centralities = betweenness.betweennessCentrality(graph, {
-      normalized: false
-    });
+    centralities = betweenness(graph, {normalized: false});
 
     deepApproximatelyEqual(centralities, test, 1e-3);
   });
@@ -282,9 +260,7 @@ describe('betweenness centrality', function () {
     mergePath(graph, [0, 1, 2]);
     mergePath(graph, [3, 4, 5, 6]);
 
-    var centralities = betweenness.betweennessCentrality(graph, {
-      normalized: false
-    });
+    var centralities = betweenness(graph, {normalized: false});
 
     assert.deepEqual(centralities, {
       0: 0,
@@ -300,9 +276,7 @@ describe('betweenness centrality', function () {
   it('Directed path', function () {
     var graph = directedPath(3);
 
-    var centralities = betweenness.betweennessCentrality(graph, {
-      normalized: false
-    });
+    var centralities = betweenness(graph, {normalized: false});
 
     assert.deepEqual(centralities, {
       0: 0,
@@ -314,9 +288,7 @@ describe('betweenness centrality', function () {
   it('Directed path normalized', function () {
     var graph = directedPath(3);
 
-    var centralities = betweenness.betweennessCentrality(graph, {
-      normalized: true
-    });
+    var centralities = betweenness(graph, {normalized: true});
 
     assert.deepEqual(centralities, {
       0: 0,
@@ -328,7 +300,7 @@ describe('betweenness centrality', function () {
   it('Weighted graph 1', function () {
     var graph = getWeightedGraph1();
 
-    var centralities = betweenness.betweennessCentrality(graph, {
+    var centralities = betweenness(graph, {
       normalized: false
     });
 
@@ -345,9 +317,7 @@ describe('betweenness centrality', function () {
   it('Unweighted graph 1', function () {
     var graph = getWeightedGraph1();
 
-    var centralities = betweenness.betweennessCentrality(graph, {
-      getEdgeWeight: null
-    });
+    var centralities = betweenness(graph, {getEdgeWeight: null});
 
     deepApproximatelyEqual(
       centralities,
@@ -366,7 +336,7 @@ describe('betweenness centrality', function () {
   it('Weighted graph 2', function () {
     var graph = getWeightedGraph2();
 
-    var centralities = betweenness.betweennessCentrality(graph, {
+    var centralities = betweenness(graph, {
       normalized: false
     });
 
@@ -382,7 +352,7 @@ describe('betweenness centrality', function () {
   it('Assining', function () {
     var graph = getWeightedGraph2('w');
 
-    betweenness.betweennessCentrality.assign(graph, {
+    betweenness.assign(graph, {
       normalized: false,
       getEdgeWeight: 'w',
       nodeCentralityAttribute: 'centrality'
