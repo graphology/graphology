@@ -378,7 +378,9 @@ const centralities = edgeBetweennessCentrality(graph);
 edgeBetweennessCentrality.assign(graph);
 
 // To directly map the result onto a custom attribute:
-edgeBetweennessCentrality.assign(graph, {edgeCentralityAttribute: 'myCentrality'});
+edgeBetweennessCentrality.assign(graph, {
+  edgeCentralityAttribute: 'myCentrality'
+});
 
 // To ignore weights
 const centralities = edgeBetweennessCentrality(graph, {getEdgeWeight: null});
