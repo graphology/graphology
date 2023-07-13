@@ -83,13 +83,8 @@ function abstractEdgeBetweennessCentrality(assign, graph, options) {
         c = sigma[v] * coefficient;
 
         var vw = graph.edge(nodes[v], nodes[w]);
-        var wv = graph.edge(nodes[w], nodes[v]);
+        edgeCentralities[vw] += c;
 
-        if (vw === undefined) {
-          edgeCentralities[wv] += c;
-        } else {
-          edgeCentralities[vw] += c;
-        }
         delta[v] += c;
       }
     }
