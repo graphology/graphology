@@ -395,7 +395,7 @@ _Arguments_
 
 - **graph** _Graph_: target graph.
 - **options** _?object_: options:
-  - **edgeCentralityAttribute** _?string_ [`edgeBetweennessCentrality`]: Name of the centrality attribute to assign.
+  - **edgeCentralityAttribute** _?string_ [`betweennessCentrality`]: Name of the centrality attribute to assign.
   - **getEdgeWeight** _?string\|function_ [`weight`]: Name of the edge weight attribute or getter function.
   - **normalized** _?boolean_ [`true`]: should the result be normalized?
 

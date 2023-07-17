@@ -16,7 +16,7 @@ var createDijkstraIndexedBrandes = lib.createDijkstraIndexedBrandes;
  */
 
 var DEFAULTS = {
-  edgeCentralityAttribute: 'edgeBetweennessCentrality',
+  edgeCentralityAttribute: 'betweennessCentrality',
   getEdgeWeight: 'weight',
   normalized: true
 };
