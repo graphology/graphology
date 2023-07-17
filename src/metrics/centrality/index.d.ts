@@ -1,4 +1,5 @@
 export {default as betweenness} from './betweenness';
+export {default as edgeBetweenness} from './edge-betweenness';
 export {default as closeness} from './closeness';
 export {
   degreeCentrality as degree,
