@@ -46,8 +46,8 @@ coreNumber.assign(graph, 'core');
 
 _Arguments_
 
-* **graph** _Graph_: target graph.
-* **coreAttribute** _?string_ : the name of the attribute to use if core numbers are assigned to the nodes.
+- **graph** _Graph_: target graph.
+- **coreAttribute** _?string_ : the name of the attribute to use if core numbers are assigned to the nodes.
 
 ### kCore
 
@@ -65,9 +65,9 @@ const core = kCore(graph, 4);
 
 _Arguments_
 
-* **graph** _Graph_: target graph.
-* **k** _?number_: custom k value to use.
-* **customCore** _?object_: custom core numbers to use.
+- **graph** _Graph_: target graph.
+- **k** _?number_: custom k value to use.
+- **customCore** _?object_: custom core numbers to use.
 
 ### kShell
 
@@ -85,9 +85,9 @@ const shell = kShell(graph, 5);
 
 _Arguments_
 
-* **graph** _Graph_: target graph.
-* **k** _?number_: custom k value to use.
-* **customCore** _?object_: custom core numbers to use.
+- **graph** _Graph_: target graph.
+- **k** _?number_: custom k value to use.
+- **customCore** _?object_: custom core numbers to use.
 
 ### kCrust
 
@@ -105,9 +105,9 @@ const crust = kCrust(graph, 4);
 
 _Arguments_
 
-* **graph** _Graph_: target graph.
-* **k** _?number_: custom k value to use.
-* **customCore** _?object_: custom core numbers to use.
+- **graph** _Graph_: target graph.
+- **k** _?number_: custom k value to use.
+- **customCore** _?object_: custom core numbers to use.
 
 ### kCorona
 
@@ -125,9 +125,9 @@ const corona = kCorona(graph, 4);
 
 _Arguments_
 
-* **graph** _Graph_: target graph.
-* **k** _?number_: custom k value to use.
-* **customCore** _?object_: custom core numbers to use.
+- **graph** _Graph_: target graph.
+- **k** _?number_: custom k value to use.
+- **customCore** _?object_: custom core numbers to use.
 
 ### onionLayers
 
@@ -150,6 +150,5 @@ onionLayers.assign(graph, 'onion');
 
 _Arguments_
 
-* **graph** _Graph_: target graph.
-* **onionLayerAttribute** _?string_ : the name of the attribute to use if onion layers are assigned to the nodes.
-
+- **graph** _Graph_: target graph.
+- **onionLayerAttribute** _?string_ : the name of the attribute to use if onion layers are assigned to the nodes.
