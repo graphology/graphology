@@ -374,7 +374,7 @@ import edgeBetweennessCentrality from 'graphology-metrics/centrality/edge-betwee
 // To compute centrality for every edge:
 const centralities = edgeBetweennessCentrality(graph);
 
-// To directly map the result onto nodes' attributes (`edgeBetweennessCentrality`):
+// To directly map the result onto edges' attributes (`edgeBetweennessCentrality`):
 edgeBetweennessCentrality.assign(graph);
 
 // To directly map the result onto a custom attribute:
