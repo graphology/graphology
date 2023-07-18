@@ -8,13 +8,6 @@
 const isGraph = require('graphology-utils/is-graph');
 const subgraph = require('graphology-operators/subgraph');
 
-/**
- * Abstract function computing core order for every node of a graph.
- *
- * @param  {boolean} assign                      - Assign the results to node attributes?
- * @param  {Graph}   graph                       - Target graph.
- * @param  {object}  onionLayerAttribute         - Name of the attribute to assign.
- */
 function coreNumber(assign, graph, coreAttribute) {
   coreAttribute = coreAttribute || 'core';
 
@@ -139,14 +132,14 @@ function kCore(graph, k, customCore) {
   );
 }
 
-function kShell(graph, k, core) {
+function kShell(graph, k, customCore) {
   return coreSubgraph(
     graph,
     (cv, ck, cc) => {
       return cc[cv] === ck;
     },
     k,
-    core
+    customCore
   );
 }
 
@@ -183,13 +176,6 @@ function kCorona(graph, k, customCore) {
   );
 }
 
-/**
- * Abstract function computing onion lyers of the given graph.
- *
- * @param  {boolean} assign                      - Assign the results to node attributes?
- * @param  {Graph}   graph                       - Target graph.
- * @param  {object}  onionLayerAttribute         - Name of the attribute to assign.
- */
 function onionLayers(assign, graph, onionLayerAttribute) {
   onionLayerAttribute = onionLayerAttribute || 'onionLayer';
 
