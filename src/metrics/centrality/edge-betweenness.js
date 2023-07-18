@@ -50,7 +50,7 @@ function abstractEdgeBetweennessCentrality(assign, graph, options) {
     : createUnweightedIndexedBrandes(graph);
 
   var order = graph.order;
-  var result, S, P, sigma, coefficient, i, j, m, v, c, w;
+  var result, S, P, sigma, coefficient, i, j, m, v, c, w, wn;
 
   var delta = new Float64Array(order);
   var edgeCentralities = {};
@@ -78,11 +78,16 @@ function abstractEdgeBetweennessCentrality(assign, graph, options) {
     while (S.size !== 0) {
       w = S.pop();
       coefficient = (1 + delta[w]) / sigma[w];
+      wn = nodes[w];
       for (j = 0, m = P[w].length; j < m; j++) {
         v = P[w][j];
         c = sigma[v] * coefficient;
 
-        var vw = graph.edge(nodes[v], nodes[w]);
+        // TODO: this is hardly optimal, but the good
+        // solution implies to add some variant of the
+        // neighboorhood index and brandes routine which
+        // will be quite time-consuming.
+        var vw = graph.edge(nodes[v], wn);
         edgeCentralities[vw] += c;
 
         delta[v] += c;
