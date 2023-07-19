@@ -23,6 +23,7 @@ npm install graphology-cores
 - [kShell](#kshell)
 - [kCrust](#kcrust)
 - [kCorona](#kcorona)
+- [kTruss](#ktruss)
 - [onionLayers](#onionlayers)
 
 ### coreNumber
@@ -47,7 +48,7 @@ coreNumber.assign(graph, 'core');
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **coreAttribute** _?string_ : the name of the attribute to use if core numbers are assigned to the nodes.
+- **nodeCoreAttribute** _?string_ : the name of the attribute to use if core numbers are assigned to the nodes.
 
 ### kCore
 
@@ -129,6 +130,24 @@ _Arguments_
 - **k** _?number_: custom k value to use.
 - **customCore** _?object_: custom core numbers to use.
 
+### kTruss
+
+Returns the k-truss subgraph. K-Truss subgraph contains at least three nodes for which every edge is incident to at least `k-2` triangles.
+
+K-Truss is not implemented for directed graphs and multigraphs.
+
+```js
+import kTruss from 'graphology-cores/kTruss';
+
+// Return the k-truss of the graph with k = 4
+const truss = kTruss(graph, 4);
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **k** _number_: k value to use.
+
 ### onionLayers
 
 Computes the onion decomposition of a given graph. Onion layers can't be calculated if the graph is directed.
@@ -151,4 +170,4 @@ onionLayers.assign(graph, 'onion');
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **onionLayerAttribute** _?string_ : the name of the attribute to use if onion layers are assigned to the nodes.
+- **nodeOnionLayerAttribute** _?string_ : the name of the attribute to use if onion layers are assigned to the nodes.

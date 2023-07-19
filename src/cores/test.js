@@ -3,7 +3,7 @@ const core = require('./index');
 const assert = require('assert');
 
 function prepareGraphG() {
-  const G = new graphology.Graph();
+  const G = new graphology.UndirectedGraph();
   G.mergeEdge(4, 1);
   G.mergeEdge(4, 2);
   G.mergeEdge(4, 3);
@@ -45,7 +45,7 @@ function prepareGraphG() {
 }
 
 function prepareGraphH() {
-  const H = new graphology.Graph();
+  const H = new graphology.UndirectedGraph();
   H.addNode(0);
   H.mergeEdge(1, 3);
   H.mergeEdge(3, 6);
@@ -58,7 +58,7 @@ function prepareGraphH() {
 }
 
 function prepareCycle() {
-  const G = new graphology.Graph();
+  const G = new graphology.UndirectedGraph();
   G.mergeEdge(1, 2);
   G.mergeEdge(2, 3);
   G.mergeEdge(3, 1);
@@ -74,6 +74,14 @@ function prepareDiGraphI() {
   I.mergeEdge(3, 4);
   I.mergeEdge(4, 3);
   return I;
+}
+
+function range(s, e) {
+  const set = new Set();
+  for (let i = s; i < e; ++i) {
+    set.add(i);
+  }
+  return set;
 }
 
 describe('Core', function () {
@@ -207,7 +215,7 @@ describe('Core', function () {
     assert.deepEqual(new Set(nodes), new Set([2, 4, 5, 6]));
   });
 
-  it('should return the subgraph of any k shell', function () {
+  it('should return the subgraph of any k shell.', function () {
     let graph = prepareGraphH();
     let subgraph = core.kShell(graph, 0);
     let nodes = subgraph.mapNodes(a => a);
@@ -224,7 +232,7 @@ describe('Core', function () {
     assert.deepEqual(new Set(nodes), new Set([2, 4, 5, 6]));
   });
 
-  it('should return the subgraph of any k corona', function () {
+  it('should return the subgraph of any k corona.', function () {
     let graph = prepareGraphH();
     let subgraph = core.kCorona(graph, 0);
     let nodes = subgraph.mapNodes(a => a);
@@ -239,6 +247,60 @@ describe('Core', function () {
     subgraph = core.kCorona(graph, 2);
     nodes = subgraph.mapNodes(a => a);
     assert.deepEqual(new Set(nodes), new Set([2, 4, 5, 6]));
+  });
+
+  it('should return the subgraph of any k truss.', function () {
+    const graph = prepareGraphG();
+
+    let subgraph = undefined;
+    let nodes = undefined;
+
+    subgraph = core.kTruss(graph, -1);
+    nodes = subgraph.nodes();
+    assert.deepEqual(new Set(nodes), range(1, 21));
+
+    subgraph = core.kTruss(graph, 0);
+    nodes = subgraph.nodes();
+    assert.deepEqual(new Set(nodes), range(1, 21));
+
+    subgraph = core.kTruss(graph, 1);
+    nodes = subgraph.nodes();
+    assert.deepEqual(new Set(nodes), range(1, 21));
+
+    subgraph = core.kTruss(graph, 2);
+    nodes = subgraph.nodes();
+    assert.deepEqual(new Set(nodes), range(1, 21));
+
+    subgraph = core.kTruss(graph, 3);
+    nodes = subgraph.nodes();
+    assert.deepEqual(new Set(nodes), range(1, 13));
+
+    subgraph = core.kTruss(graph, 4);
+    nodes = subgraph.nodes();
+    assert.deepEqual(new Set(nodes), range(1, 9));
+
+    subgraph = core.kTruss(graph, 5);
+    nodes = subgraph.nodes();
+    assert.deepEqual(new Set(nodes), new Set());
+  });
+
+  it('should not return k truss if k is null.', function () {
+    const graph = prepareGraphG();
+    assert.throws(function () {
+      core.kTruss(graph);
+    }, /graphology/);
+  });
+
+  it('should not return k truss if the graph is directed or multigraph.', function () {
+    const graphA = new graphology.DirectedGraph();
+    assert.throws(function () {
+      core.kTruss(graphA);
+    }, /graphology/);
+
+    const graphB = new graphology.MultiGraph();
+    assert.throws(function () {
+      core.kTruss(graphB);
+    }, /graphology/);
   });
 
   it('should not calculate onion layers if the graph is directed.', function () {

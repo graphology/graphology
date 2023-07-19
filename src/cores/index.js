@@ -13,12 +13,12 @@ function coreNumber(assign, graph, coreAttribute) {
 
   if (!isGraph(graph))
     throw new Error(
-      'graphology-metrics/core: the given graph is not a valid graphology instance.'
+      'graphology-cores: the given graph is not a valid graphology instance.'
     );
 
   if (graph.selfLoopCount > 0)
     throw new Error(
-      'graphology-metrics/core: the given graph has self loops which is not permitted.'
+      'graphology-cores: the given graph has self loops which is not permitted.'
     );
 
   const degrees = {};
@@ -63,12 +63,18 @@ function coreNumber(assign, graph, coreAttribute) {
   const nbrs = {};
   nodes.forEach(node => {
     nbrs[node] = [];
-    graph.forEachInboundNeighbor(node, nbr => {
-      nbrs[node].push(nbr);
-    });
-    graph.forEachOutboundNeighbor(node, nbr => {
-      nbrs[node].push(nbr);
-    });
+    if (graph.type === 'directed') {
+      graph.forEachInboundNeighbor(node, nbr => {
+        nbrs[node].push(nbr);
+      });
+      graph.forEachOutboundNeighbor(node, nbr => {
+        nbrs[node].push(nbr);
+      });
+    } else {
+      graph.forEachNeighbor(node, nbr => {
+        nbrs[node].push(nbr);
+      });
+    }
   });
 
   const removed = new Set();
@@ -162,18 +168,87 @@ function kCorona(graph, k, customCore) {
   return coreSubgraph(
     graph,
     (cv, ck, cc) => {
-      const nbrsSum =
-        graph.inboundNeighbors(cv).reduce((acc, nb) => {
-          return cc[nb] >= ck ? acc + 1 : acc;
-        }, 0) +
-        graph.outboundNeighbors(cv).reduce((acc, nb) => {
+      let nbrsSum = null;
+      if (graph.type === 'directed') {
+        nbrsSum =
+          graph.inboundNeighbors(cv).reduce((acc, nb) => {
+            return cc[nb] >= ck ? acc + 1 : acc;
+          }, 0) +
+          graph.outboundNeighbors(cv).reduce((acc, nb) => {
+            return cc[nb] >= ck ? acc + 1 : acc;
+          }, 0);
+      } else {
+        nbrsSum = graph.neighbors(cv).reduce((acc, nb) => {
           return cc[nb] >= ck ? acc + 1 : acc;
         }, 0);
+      }
       return cc[cv] === ck && ck === nbrsSum;
     },
     k,
     customCore
   );
+}
+
+function kTruss(graph, k) {
+  if (!isGraph(graph)) {
+    throw new Error(
+      'graphology-cores: the given graph is not a valid graphology instance.'
+    );
+  }
+
+  if (k === undefined) {
+    throw Error('graphology-cores : missing parameter k.');
+  }
+
+  if (graph.type === 'directed' || graph.multi) {
+    throw Error(
+      'graphology-cores : unimplemented metric for directed graphs and multigraphs.'
+    );
+  }
+
+  if (graph.selfLoopCount > 0) {
+    throw Error(
+      'graphology-cores : onion loyers not available for graphs with self-loops.'
+    );
+  }
+
+  const H = graph.copy();
+  let nDropped = 1;
+  while (nDropped > 0) {
+    nDropped = 0;
+    const toDrop = [];
+    const seen = new Set();
+
+    H.forEachNode(node => {
+      const nbrs = new Set(H.neighbors(node));
+      seen.add(node);
+      const newNbrs = [...nbrs].reduce((acc, v) => {
+        if (!seen.has(v)) acc.push(v);
+        return acc;
+      }, []);
+
+      newNbrs.forEach(nbr => {
+        const nbrNbrs = new Set(H.neighbors(nbr));
+        const intersection = new Set();
+
+        for (const x of nbrs) if (nbrNbrs.has(x)) intersection.add(x);
+        if (intersection.size < k - 2) {
+          toDrop.push(graph.edge(node, nbr));
+        }
+      });
+    });
+
+    toDrop.forEach(edge => {
+      if (edge) H.dropEdge(edge);
+    });
+    nDropped = toDrop.length;
+    H.forEachNode(node => {
+      if (H.degree(node) === 0) {
+        H.dropNode(node);
+      }
+    });
+  }
+  return H;
 }
 
 function onionLayers(assign, graph, onionLayerAttribute) {
@@ -188,13 +263,13 @@ function onionLayers(assign, graph, onionLayerAttribute) {
 
   if (graph.type === 'directed' || graph.multi) {
     throw Error(
-      'graphology-metrics/core : unimplemented metric for directed graphs and multigraphs.'
+      'graphology-cores : unimplemented metric for directed graphs and multigraphs.'
     );
   }
 
   if (graph.selfLoopCount > 0) {
     throw Error(
-      'graphology-metrics/core : onion loyers not available for graphs with self-loops.'
+      'graphology-cores : onion loyers not available for graphs with self-loops.'
     );
   }
 
@@ -277,3 +352,4 @@ exports.kCore = kCore;
 exports.kShell = kShell;
 exports.kCrust = kCrust;
 exports.kCorona = kCorona;
+exports.kTruss = kTruss;

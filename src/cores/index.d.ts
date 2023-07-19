@@ -1,12 +1,8 @@
 import Graph, {Attributes} from 'graphology-types';
 
-export function coreNumber<
-  NodeAttributes extends Attributes = Attributes,
-  EdgeAttributes extends Attributes = Attributes,
-  GraphAttributes extends Attributes = Attributes
->(
+export function coreNumber(
   assign: boolean,
-  graph: Graph<NodeAttributes, EdgeAttributes, GraphAttributes>,
+  graph: Graph,
   coreAttributes?: string
 ): Record<string, number>;
 
@@ -15,47 +11,52 @@ export function kCore<
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
 >(
-  graph: Graph<EdgeAttributes, NodeAttributes, GraphAttributes>,
+  graph: Graph<NodeAttributes, EdgeAttributes, GraphAttributes>,
   k?: number,
   customCore?: Record<string, number>
-): Graph<EdgeAttributes, NodeAttributes, GraphAttributes>;
+): Graph<NodeAttributes, EdgeAttributes, GraphAttributes>;
 
 export function kShell<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
 >(
-  graph: Graph<EdgeAttributes, NodeAttributes, GraphAttributes>,
+  graph: Graph<NodeAttributes, EdgeAttributes, GraphAttributes>,
   k?: number,
   customCore?: Record<string, number>
-): Graph<EdgeAttributes, NodeAttributes, GraphAttributes>;
+): Graph<NodeAttributes, EdgeAttributes, GraphAttributes>;
 
 export function kCrust<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
 >(
-  graph: Graph<EdgeAttributes, NodeAttributes, GraphAttributes>,
+  graph: Graph<NodeAttributes, EdgeAttributes, GraphAttributes>,
   k?: number,
   customCore?: Record<string, number>
-): Graph<EdgeAttributes, NodeAttributes, GraphAttributes>;
+): Graph<NodeAttributes, EdgeAttributes, GraphAttributes>;
 
 export function kCorona<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
 >(
-  graph: Graph<EdgeAttributes, NodeAttributes, GraphAttributes>,
+  graph: Graph<NodeAttributes, EdgeAttributes, GraphAttributes>,
   k?: number,
   customCore?: Record<string, number>
-): Graph<EdgeAttributes, NodeAttributes, GraphAttributes>;
+): Graph<NodeAttributes, EdgeAttributes, GraphAttributes>;
 
-export function onionLayers<
+export function kTruss<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes,
   GraphAttributes extends Attributes = Attributes
 >(
-  assign: boolean,
   graph: Graph<NodeAttributes, EdgeAttributes, GraphAttributes>,
+  k: number
+): Graph<NodeAttributes, EdgeAttributes, GraphAttributes>;
+
+export function onionLayers(
+  assign: boolean,
+  graph: Graph,
   onionLayerAttribute?: string
 ): Record<string, number>;
