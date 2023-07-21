@@ -22,31 +22,28 @@ function coreNumber(assign, graph, coreAttribute) {
     );
 
   const degrees = {};
+  let maxDegree = 0;
   graph.forEachNode(node => {
-    degrees[node] = graph.degree(node);
+    const nd = graph.degree(node);;
+    degrees[node] = nd;
+    if (nd > maxDegree) maxDegree = nd;
   });
 
-  // Sort nodes by degree
-  const nodes = Object.entries(degrees)
-    .sort((a, b) => {
-      const d1 = a[1];
-      const d2 = b[1];
-      return d1 - d2;
-    })
-    .map(a => {
-      return a[0];
-    });
+  const nodes = graph.nodes().sort((a, b) => graph.degree(a) - graph.degree(b));
 
-  const binBounderie = [0];
+  const binBoundaries = new Array(nodes.length * maxDegree);
+  binBoundaries[0] = 0;
+
   let currDegree = 0;
 
-  // Preparing bin_bounderie
+  // Preparing binBoundaries
+  let bi = 1;
   for (let i = 0; i < nodes.length; ++i) {
     const node = nodes[i];
     const nd = degrees[node];
     if (nd > currDegree) {
       let l = nd - currDegree;
-      while (l--) binBounderie.push(i);
+      while (l--) binBoundaries[bi++] = i;
       currDegree = nd;
     }
   }
@@ -64,10 +61,10 @@ function coreNumber(assign, graph, coreAttribute) {
   nodes.forEach(node => {
     nbrs[node] = [];
     if (graph.type === 'directed') {
-      graph.forEachInboundNeighbor(node, nbr => {
+      graph.forEachInNeighbor(node, nbr => {
         nbrs[node].push(nbr);
       });
-      graph.forEachOutboundNeighbor(node, nbr => {
+      graph.forEachOutNeighbor(node, nbr => {
         nbrs[node].push(nbr);
       });
     } else {
@@ -85,7 +82,7 @@ function coreNumber(assign, graph, coreAttribute) {
         if (removed.has([node, nbr])) return;
         removed.add([nbr, node]);
         const pos = nodePos[nbr];
-        const binStart = binBounderie[core[nbr]];
+        const binStart = binBoundaries[core[nbr]];
         nodePos[nbr] = binStart;
         nodePos[nodes[binStart]] = pos;
 
@@ -93,15 +90,16 @@ function coreNumber(assign, graph, coreAttribute) {
         nodes[binStart] = nodes[pos];
         nodes[pos] = stemp;
 
-        binBounderie[core[nbr]] += 1;
+        binBoundaries[core[nbr]] += 1;
         core[nbr] -= 1;
       }
     });
   });
 
   if (assign) {
-    graph.forEachNode(node => {
-      graph.setNodeAttribute(node, coreAttribute, core[node]);
+    graph.updateEachNodeAttributes((node, attr) => {
+      attr[coreAttribute] = core[node]
+      return attr;
     });
   }
 
@@ -113,15 +111,17 @@ function coreSubgraph(graph, filter, k, customCore) {
     customCore = coreNumber(false, graph);
   }
   if (k === undefined) {
-    k = Math.max.apply(Math, Object.values(customCore));
+    k = 0;
+    for (const field in customCore) {
+      if (customCore[field] > k) k = customCore[field]
+    }
   }
   const nodes = [];
-  Object.entries(customCore).forEach(pair => {
-    const node = pair[0];
-    if (filter(node, k, customCore)) {
-      nodes.push(node);
+  for (const field in customCore) {
+    if (filter(field, k, customCore)) {
+      nodes.push(field);
     }
-  });
+  }
   return subgraph(graph, nodes);
 }
 
@@ -130,8 +130,8 @@ function coreSubgraph(graph, filter, k, customCore) {
 function kCore(graph, k, customCore) {
   return coreSubgraph(
     graph,
-    (cv, ck, cc) => {
-      return cc[cv] >= ck;
+    (node, resultK, resultCore) => {
+      return resultCore[node] >= resultK;
     },
     k,
     customCore
@@ -141,8 +141,8 @@ function kCore(graph, k, customCore) {
 function kShell(graph, k, customCore) {
   return coreSubgraph(
     graph,
-    (cv, ck, cc) => {
-      return cc[cv] === ck;
+    (node, resultK, resultCore) => {
+      return resultCore[node] === resultK;
     },
     k,
     customCore
@@ -154,35 +154,38 @@ function kCrust(graph, k, customCore) {
     customCore = coreNumber(false, graph);
   }
   if (k === undefined) {
-    k = Math.max.apply(Math, Object.values(customCore)) - 1;
+    k = 0;
+    for (const field in customCore) {
+      if (customCore[field] - 1 > k) k = customCore[field] - 1;
+    }
   }
   const nodes = [];
-  Object.entries(customCore).forEach(pair => {
-    const [node, cn] = pair;
-    if (cn <= k) nodes.push(node);
-  });
+  for (const field in customCore) {
+    const ccf = customCore[field];
+    if (ccf <= k) nodes.push(field);
+  }
   return subgraph(graph, nodes);
 }
 
 function kCorona(graph, k, customCore) {
   return coreSubgraph(
     graph,
-    (cv, ck, cc) => {
+    (node, resultK, resultCore) => {
       let nbrsSum = null;
       if (graph.type === 'directed') {
         nbrsSum =
-          graph.inboundNeighbors(cv).reduce((acc, nb) => {
-            return cc[nb] >= ck ? acc + 1 : acc;
+          graph.inNeighbors(node).reduce((acc, nb) => {
+            return resultCore[nb] >= resultK ? acc + 1 : acc;
           }, 0) +
-          graph.outboundNeighbors(cv).reduce((acc, nb) => {
-            return cc[nb] >= ck ? acc + 1 : acc;
+          graph.outNeighbors(node).reduce((acc, nb) => {
+            return resultCore[nb] >= resultK ? acc + 1 : acc;
           }, 0);
       } else {
-        nbrsSum = graph.neighbors(cv).reduce((acc, nb) => {
-          return cc[nb] >= ck ? acc + 1 : acc;
+        nbrsSum = graph.neighbors(node).reduce((acc, nb) => {
+          return resultCore[nb] >= resultK ? acc + 1 : acc;
         }, 0);
       }
-      return cc[cv] === ck && ck === nbrsSum;
+      return resultCore[node] === resultK && resultK === nbrsSum;
     },
     k,
     customCore
@@ -255,11 +258,17 @@ function onionLayers(assign, graph, onionLayerAttribute) {
   onionLayerAttribute = onionLayerAttribute || 'onionLayer';
 
   const remove = function (degrees, key) {
-    return Object.keys(degrees).reduce((acc, k) => {
-      if (k !== key) acc[k] = degrees[k];
-      return acc;
-    }, {});
+    const newDegrees = {}
+    for (const k in degrees)  if (k !== key) newDegrees[k] = degrees[k];
+    return newDegrees;
   };
+
+  const lengthOf = function(dict) {
+    let size = 0;
+    // eslint-disable-next-line
+    for (const _ in dict) size++;
+    return size;
+  }
 
   if (graph.type === 'directed' || graph.multi) {
     throw Error(
@@ -298,19 +307,19 @@ function onionLayers(assign, graph, onionLayerAttribute) {
     });
     currentLayer += 1;
   }
+
   // Others
-  let degreesEntries = null;
-  while ((degreesEntries = Object.entries(degrees)).length > 0) {
-    const nodes = degreesEntries
-      .sort((a, b) => {
-        const d1 = a[1];
-        const d2 = b[1];
-        return d1 - d2;
-      })
-      .map(a => {
-        const n = a[0];
-        return n;
-      });
+  const compareDegrees = (a, b) => {
+    return degrees[a] - degrees[b];
+  }
+
+  while (lengthOf(degrees) > 0) {
+    const degreeSize = lengthOf(degrees);
+    let n = 0;
+    const nodes = new Array(degreeSize);
+    for (const k in degrees) nodes[n++] = k;
+
+    nodes.sort(compareDegrees);
 
     const minDegree = degrees[nodes[0]];
     if (minDegree > currentCore) currentCore = minDegree;
@@ -323,8 +332,8 @@ function onionLayers(assign, graph, onionLayerAttribute) {
     for (let i = 0; i < thisLayer.length; ++i) {
       const node = thisLayer[i];
       odLayers[node] = currentLayer;
-      for (let n = 0; n < neighbors[node].length; ++n) {
-        const nbr = neighbors[node][n];
+      for (let nb = 0; nb < neighbors[node].length; ++nb) {
+        const nbr = neighbors[node][nb];
         neighbors[nbr].splice(neighbors[nbr].indexOf(node), 1);
         degrees[nbr] -= 1;
       }
@@ -335,9 +344,10 @@ function onionLayers(assign, graph, onionLayerAttribute) {
   }
 
   if (assign) {
-    graph.forEachNode(node => {
-      graph.setNodeAttribute(node, onionLayerAttribute, odLayers[node]);
-    });
+    graph.updateEachNodeAttributes((node, attr) => {
+      attr[onionLayerAttribute] = odLayers[node]
+      return attr;
+    })
   }
 
   return odLayers;
