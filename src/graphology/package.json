@@ -8,7 +8,8 @@
   "types": "dist/graphology.d.ts",
   "exports": {
     "require": "./dist/graphology.cjs.js",
-    "import": "./dist/graphology.mjs"
+    "import": "./dist/graphology.mjs",
+    "types": "./dist/graphology.d.ts"
   },
   "scripts": {
     "clean": "rimraf dist specs",
