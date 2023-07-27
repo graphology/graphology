@@ -5,6 +5,7 @@
   "main": "dist/graphology.cjs.js",
   "module": "dist/graphology.esm.js",
   "browser": "dist/graphology.umd.min.js",
+  "types": "dist/graphology.d.ts",
   "exports": {
     "require": "./dist/graphology.cjs.js",
     "import": "./dist/graphology.mjs",
