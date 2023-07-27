@@ -189,6 +189,28 @@ describe('graphology-traversal', function () {
 
       assert.deepStrictEqual(path, ['2', '1', '0']);
     });
+
+    it.skip('should have a valid depth wrt DFS constraints (issue #481).', function () {
+      var graph = new Graph.DirectedGraph();
+      graph.addNode('1');
+      graph.addNode('2');
+      graph.addNode('3');
+      graph.addDirectedEdge('1', '3');
+      graph.addDirectedEdge('3', '2');
+      graph.addDirectedEdge('1', '2');
+
+      var traversal = [];
+
+      dfsFromNode(graph, '1', function (node, attr, depth) {
+        traversal.push([node, depth]);
+      });
+
+      assert.deepStrictEqual(traversal, [
+        ['1', 0],
+        ['2', 1],
+        ['3', 2]
+      ]);
+    });
   });
 
   describe('bfs', function () {
