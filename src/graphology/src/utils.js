@@ -68,9 +68,13 @@ export function getMatchingEdge(graph, source, target, type) {
  * @return {boolean}
  */
 export function isPlainObject(value) {
-  return (
-    typeof value === 'object' && value !== null && value.constructor === Object
-  );
+  // NOTE: as per https://github.com/graphology/graphology/issues/149
+  // this function has been loosened not to reject object instances
+  // coming from other JavaScript contexts. It has also been chosen
+  // not to improve it to avoid obvious false positives and avoid
+  // taking a performance hit. People should really use TypeScript
+  // if they want to avoid feeding subtly irrelvant attribute objects.
+  return typeof value === 'object' && value !== null;
 }
 
 /**
