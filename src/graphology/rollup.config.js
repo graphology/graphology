@@ -44,7 +44,7 @@ const bundle = (format, filename, options = {}) => ({
 export default [
   bundle('cjs', pkg.main, {babel: true}),
   bundle('es', pkg.module),
-  bundle('mjs', pkg.exports.import),
+  bundle('mjs', pkg.module.replace('.esm.js', '.mjs')),
   bundle('umd', pkg.browser.replace('.min', ''), {
     resolve: true,
     babel: true,
