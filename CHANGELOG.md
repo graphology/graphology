@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.25.4
+
+- Reverting to `0.25.1` package semantics to avoid partial ESM-first support issues.
+
+## 0.25.3
+
+- Fixing missing `types` declaration in package's `exports` key.
+
+## 0.25.2
+
+- Loosening plain object tests to avoid issues with objects coming from different JavaScript contexts.
+
 ## 0.25.1
 
 - Fixing `#.hasEdge` methods for multigraphs.
