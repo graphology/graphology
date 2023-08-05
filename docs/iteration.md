@@ -206,13 +206,12 @@ These methods iterate over the graph's edges.
 ```js
 const graph = new Graph();
 
-graph.addNodesFrom(['Thomas', 'Rosaline', 'Emmett', 'Catherine', 'John', 'Daniel']);
-graph.addEdgeWithKey('T->R', 'Thomas', 'Rosaline');
-graph.addEdgeWithKey('T->E', 'Thomas', 'Emmett');
-graph.addEdgeWithKey('C->T', 'Catherine', 'Thomas');
-graph.addEdgeWithKey('R->C', 'Rosaline', 'Catherine');
-graph.addEdgeWithKey('J->D1', 'John', 'Daniel');
-graph.addEdgeWithKey('J->D2', 'John', 'Daniel');
+graph.mergeEdgeWithKey('T->R', 'Thomas', 'Rosaline');
+graph.mergeEdgeWithKey('T->E', 'Thomas', 'Emmett');
+graph.mergeEdgeWithKey('C->T', 'Catherine', 'Thomas');
+graph.mergeEdgeWithKey('R->C', 'Rosaline', 'Catherine');
+graph.mergeEdgeWithKey('J->D1', 'John', 'Daniel');
+graph.mergeEdgeWithKey('J->D2', 'John', 'Daniel');
 
 // Using the array-returning methods:
 graph.edges();
@@ -576,13 +575,12 @@ These methods iterate over the neighbors of the given node or nodes.
 ```js
 const graph = new Graph();
 
-graph.addNodesFrom(['Thomas', 'Rosaline', 'Emmett', 'Catherine', 'John', 'Daniel']);
-graph.addEdge('Thomas', 'Rosaline');
-graph.addEdge('Thomas', 'Emmett');
-graph.addEdge('Catherine', 'Thomas');
-graph.addEdge('Rosaline', 'Catherine');
-graph.addEdge('John', 'Daniel');
-graph.addEdge('John', 'Daniel');
+graph.mergeEdge('Thomas', 'Rosaline');
+graph.mergeEdge('Thomas', 'Emmett');
+graph.mergeEdge('Catherine', 'Thomas');
+graph.mergeEdge('Rosaline', 'Catherine');
+graph.mergeEdge('John', 'Daniel');
+graph.mergeEdge('John', 'Daniel');
 
 // Using the array-returning methods
 graph.neighbors('Thomas');

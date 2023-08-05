@@ -260,7 +260,9 @@ This methods return a 4-tuple containing:
 
 ```js
 const graph = new UndirectedGraph();
-graph.addNodesFrom(['John', 'Martha', 'Thomas']);
+graph.addNode('John');
+graph.addNode('Martha');
+graph.addNode('Thomas');
 
 // Since the edge does not exist, it will be added
 graph.mergeEdgeWithKey('J->M', 'John', 'Martha');

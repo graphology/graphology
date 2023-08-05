@@ -89,7 +89,9 @@ In addition, this method won't work on a multi graph and will throw because the 
 *Example*
 
 ```js
-graph.addNodesFrom(['Timothy', 'Clarice', 'Olivia']);
+graph.addNode('Timothy');
+graph.addNode('Clarice');
+graph.addNode('Olivia');
 graph.addEdgeWithKey('C->T' 'Clarice', 'Timothy');
 
 graph.edge('Clarice', 'Timothy');

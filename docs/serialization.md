@@ -34,8 +34,7 @@ An edge is serialized as an object containing the following keys:
   * **undirected** <span class="code">[boolean]</span> Whether the edge is undirected (can be omitted or null).
 
 ```js
-graph.addNodesFrom(['Thomas', 'Eric']);
-graph.addEdgeWithKey('T->E', 'Thomas', 'Eric', {type: 'KNOWS'});
+graph.mergeEdgeWithKey('T->E', 'Thomas', 'Eric', {type: 'KNOWS'});
 // Serialized would be:
 >>> {
   key: 'T->E',
@@ -111,8 +110,7 @@ Exports the whole instance's data as a serialized graph.
 *Example*
 
 ```js
-graph.addNodesFrom(['Thomas', 'Eric']);
-graph.addEdgeWithKey('T->E', 'Thomas', 'Eric', {type: 'KNOWS'});
+graph.mergeEdgeWithKey('T->E', 'Thomas', 'Eric', {type: 'KNOWS'});
 graph.setAttribute('name', 'My Graph');
 graph.export();
 >>> {

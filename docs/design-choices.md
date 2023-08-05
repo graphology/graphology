@@ -83,7 +83,8 @@ Rather than failing silently, `graphology` API will often throw errors to notify
 import {DirectedGraph} from 'graphology';
 
 const graph = new DirectedGraph();
-graph.addNodesFrom(['Lucy', 'Catherine']);
+graph.addNode('Lucy');
+graph.addNode('Catherine');
 graph.addUndirectedEdge('Lucy', 'Catherine');
 >>> Error `DirectedGraph.addUndirectedEdge: You cannot add an undirected edge.
 to a directed graph Use the #.addEdge or #.addDirectedEdge method instead.`
@@ -123,8 +124,9 @@ Note that two different ways are generally accessible to you when targeting edge
 Note however that, since graph instances can support parallel edges, you might sometimes want to avoid using the second way since it will throw if you handle a multi-graph.
 
 ```js
-cons graph = new Graph();
-graph.addNodesFrom(['Eric', 'Martha']);
+const graph = new Graph();
+graph.addNode('Eric');
+graph.addNode('Martha');
 
 // Adding our edge
 const edge = graph.addEdge('Eric', 'Martha');

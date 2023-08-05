@@ -17,8 +17,7 @@ Returns a copy of the current instance.
 *Example*
 
 ```js
-graph.addNodesFrom(['Thomas', 'Eric']);
-graph.addEdgeWithKey('T->E', 'Thomas', 'Eric', {type: 'KNOWS'});
+graph.mergeEdgeWithKey('T->E', 'Thomas', 'Eric', {type: 'KNOWS'});
 
 const newGraph = graph.copy();
 newGraph.hasNode('Eric');
@@ -42,8 +41,7 @@ Returns a null copy, i.e. a copy of the graph without nodes nor edges, of the cu
 *Example*
 
 ```js
-graph.addNodesFrom(['Thomas', 'Eric']);
-graph.addEdgeWithKey('T->E', 'Thomas', 'Eric', {type: 'KNOWS'});
+graph.mergeEdgeWithKey('T->E', 'Thomas', 'Eric', {type: 'KNOWS'});
 
 const newGraph = graph.nullCopy();
 newGraph.hasNode('Eric');
@@ -69,8 +67,7 @@ This is useful to functions needing to return subgraphs or near identical copies
 *Example*
 
 ```js
-graph.addNodesFrom(['Thomas', 'Eric']);
-graph.addEdgeWithKey('T->E', 'Thomas', 'Eric', {type: 'KNOWS'});
+graph.mergeEdgeWithKey('T->E', 'Thomas', 'Eric', {type: 'KNOWS'});
 
 const newGraph = graph.emptyCopy();
 newGraph.hasNode('Eric');
