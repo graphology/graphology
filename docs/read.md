@@ -92,7 +92,7 @@ In addition, this method won't work on a multi graph and will throw because the 
 graph.addNode('Timothy');
 graph.addNode('Clarice');
 graph.addNode('Olivia');
-graph.addEdgeWithKey('C->T' 'Clarice', 'Timothy');
+graph.addEdgeWithKey('C->T', 'Clarice', 'Timothy');
 
 graph.edge('Clarice', 'Timothy');
 >>> 'C->T'
