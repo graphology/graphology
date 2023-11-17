@@ -37,7 +37,7 @@
 - Fixing edge iteration wrt. self loops.
 - Dropping some irrelevant arities for edge attribute updates.
 - Improving performance of edge iteration.
-- Improving perfromance of neighbor iteration.
+- Improving performance of neighbor iteration.
 - Improving performance of node deletion.
 - Improving performance of edge attribute edition.
 - Improving performance of internal edge key generator.
@@ -91,7 +91,7 @@ This release should only affect you in the following cases:
 - Changing `#.forEach*Until` methods to `#.find*` methods.
 - Dropping `#.hasGeneratedKey`.
 - Dropping the `generated` last argument to edge & adjacency iterations.
-- Dropping the `edgeKeyGenerator` instanciation option.
+- Dropping the `edgeKeyGenerator` instantiation option.
 - Dropping second argument of `#.degree`.
 - Changing `#.neighbors(source, target)` to `#.areNeighbors`.
 - Changing iterator entries to objects rather than arrays.
@@ -100,7 +100,7 @@ This release should only affect you in the following cases:
 - Fixing adjacency iterator items missing `undirected`.
 - Fixing edge iterator items missing `undirected`.
 - Fixing bug related to instance counters and `#.clear`, `#.clearEdges`.
-- Improving `#.copy` peformance.
+- Improving `#.copy` performance.
 - Improving `#.areNeighbors` performance.
 - Improving `#.forEachNode` performance.
 - Upgrading `obliterator` and improving iterator-based methods.
@@ -180,7 +180,7 @@ This release should only affect you in the following use-cases:
 - Adding `#.selfLoopCount`, `#.directedSelfLoopCount` & `#.undirectedSelfLoopCount`.
 - Adding `#.hasGeneratedKey`.
 - Renaming `#.directed` & `#.undirected` to `#.isDirected` & `#.isUndirected`.
-- Renanming `#.selfLoop` to `#.isSelfLoop`.
+- Renaming `#.selfLoop` to `#.isSelfLoop`.
 - Serializing options & accepting them with `#.from` static methods.
 - Improving performance of `#.opposite`.
 - Improving serialization performance.
