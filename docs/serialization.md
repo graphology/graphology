@@ -53,7 +53,6 @@ A graph is serialized as an object containing an `attributes`, a `nodes` & an `e
   * <span class="code">object</span> `edges`: containing a list of serialized edges (can be omitted).
 
 ```js
-graph.addNodesFrom(['Thomas', 'Eric']);
 graph.addEdgeWithKey('T->E', 'Thomas', 'Eric', {type: 'KNOWS'});
 graph.setAttribute('name', 'My Graph');
 graph.export();
