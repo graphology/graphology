@@ -13,6 +13,16 @@
 const isGraph = require('graphology-utils/is-graph');
 const FixedDeque = require('mnemonist/fixed-deque');
 
+function simpleInDegree(graph, node) {
+  let degree = 0;
+
+  graph.forEachInNeighbor(node, () => {
+    degree++;
+  });
+
+  return degree;
+}
+
 function forEachNodeInTopologicalOrder(graph, callback) {
   if (!isGraph(graph))
     throw new Error(
@@ -25,11 +35,6 @@ function forEachNodeInTopologicalOrder(graph, callback) {
       'graphology-dag/topological-sort: cannot work if graph is not directed.'
     );
 
-  if (graph.multi)
-    throw new Error(
-      'graphology-dag/topological-sort: cannot work with multigraphs.'
-    );
-
   if (graph.order === 0) return;
 
   const queue = new FixedDeque(Array, graph.order);
@@ -37,7 +42,9 @@ function forEachNodeInTopologicalOrder(graph, callback) {
   let total = 0;
 
   graph.forEachNode((node, attr) => {
-    const inDegree = graph.inDegree(node);
+    const inDegree = graph.multi
+      ? simpleInDegree(graph, node)
+      : graph.inDegree(node);
 
     if (inDegree === 0) {
       queue.push([node, attr, 0]);

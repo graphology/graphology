@@ -173,10 +173,6 @@ describe('graphology-dag', function () {
       assert.throws(function () {
         topologicalSort(new UndirectedGraph());
       }, /directed/);
-
-      assert.throws(function () {
-        topologicalSort(new MultiDirectedGraph());
-      }, /multi/);
     });
 
     it('should work on a path.', function () {
@@ -249,6 +245,26 @@ describe('graphology-dag', function () {
       const sorted = topologicalSort(graph);
 
       assert.deepEqual(sorted, ['0', '1', '2']);
+    });
+
+    it('should work on a multi graphs.', function () {
+      const multiGraph = new MultiDirectedGraph();
+      multiGraph.mergeEdge(0, 1);
+      multiGraph.mergeEdge(0, 1);
+      multiGraph.mergeEdge(0, 1);
+      multiGraph.mergeEdge(1, 2);
+      multiGraph.mergeEdge(1, 2);
+      multiGraph.mergeEdge(0, 3);
+
+      const simpleGraph = new DirectedGraph();
+      simpleGraph.mergeEdge(0, 1);
+      simpleGraph.mergeEdge(1, 2);
+      simpleGraph.mergeEdge(0, 3);
+
+      const multiSorted = topologicalSort(multiGraph);
+      const simpleSorted = topologicalSort(simpleGraph);
+
+      assert.deepStrictEqual(multiSorted, simpleSorted);
     });
 
     it('should work using a callback.', function () {
