@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0
+
+- Adding multi graph support to topological sorting functions.
+
+## 0.3.0
+
+- Adding topological generations-related functions & utilities.
+
 ## 0.2.0
 
 - Adding `topologicalSort`.
