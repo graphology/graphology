@@ -24,12 +24,18 @@ function isReallyNaN(value) {
 }
 
 /**
- * Function used to convert a viz:color attribute into a CSS rgba? string.
+ * Function used to convert a viz:color attribute into a CSS rgba? or hex string.
  *
  * @param  {Node}   element - DOM element.
  * @return {string}
  */
-function toRGBString(element) {
+function getVizColor(element) {
+  var hex = element.getAttribute('hex');
+
+  if (hex) {
+    return hex;
+  }
+
   var a = element.getAttribute('a');
   var r = element.getAttribute('r');
   var g = element.getAttribute('g');
@@ -186,7 +192,7 @@ function collectAttributes(
   //-- 1) Color
   var vizElement = getFirstMatchingVizTag(element, 'color');
 
-  if (vizElement) data.color = toRGBString(vizElement);
+  if (vizElement) data.color = getVizColor(vizElement);
 
   //-- 2) Size
   vizElement = getFirstMatchingVizTag(element, 'size');

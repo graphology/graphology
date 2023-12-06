@@ -2,8 +2,8 @@
  * Graphology GEXF Unit Tests Resources
  * =====================================
  */
-var fs = require('fs'),
-  path = require('path');
+var fs = require('fs');
+var path = require('path');
 
 var FILES = [
   'arctic',
@@ -23,6 +23,7 @@ var FILES = [
   'pedantic',
   'rio',
   'sanitized',
+  'v1_3',
   'yeast'
 ];
 

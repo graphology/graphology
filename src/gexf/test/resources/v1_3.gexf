@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://gexf.net/1.3" xmlns:viz="http://gexf.net/1.3/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://gexf.net/1.3 http://gexf.net/1.3/gexf.xsd" version="1.3">
+  <graph>
+    <attributes class="node">
+    </attributes>
+    <attributes class="edge">
+    </attributes>
+    <nodes>
+      <node id="Suzy" label="Suzy">
+        <attvalues>
+        </attvalues>
+        <viz:color hex="#ff00ff" />
+      </node>
+      <node id="John" label="John">
+        <attvalues>
+        </attvalues>
+        <viz:color hex="#ee00cc" />
+      </node>
+    </nodes>
+    <edges>
+      <edge source="John" target="Suzy" kind="likes">
+        <attvalues>
+        </attvalues>
+      </edge>
+    </edges>
+  </graph>
+</gexf>

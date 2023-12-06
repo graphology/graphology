@@ -478,5 +478,30 @@ module.exports = [
         target: 1
       }
     }
+  },
+  {
+    title: 'Gexf 1.3 Graph',
+    gexf: 'v1_3',
+    basics: {
+      type: 'undirected',
+      multi: false,
+      version: '1.3',
+      mode: 'static',
+      defaultEdgeType: 'undirected',
+      meta: {},
+      order: 2,
+      node: {
+        key: 'Suzy',
+        attributes: {
+          label: 'Suzy',
+          color: '#ff00ff'
+        }
+      },
+      size: 1,
+      edge: {
+        source: 'John',
+        target: 'Suzy'
+      }
+    }
   }
 ];
