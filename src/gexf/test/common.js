@@ -4,11 +4,11 @@
  *
  * Testing utilities used by both the browser & the node version.
  */
-var assert = require('assert'),
-  parserDefinitions = require('./definitions/parser.js'),
-  writerDefinitions = require('./definitions/writer.js'),
-  resources = require('./resources'),
-  Graph = require('graphology');
+var assert = require('assert');
+var parserDefinitions = require('./definitions/parser.js');
+var writerDefinitions = require('./definitions/writer.js');
+var resources = require('./resources');
+var Graph = require('graphology');
 
 /**
  * Testing the parser on all of our test files.
@@ -72,6 +72,12 @@ exports.testWriter = function (writer, parser) {
       }, /graphology/);
     });
 
+    it('should throw when given an invalid gexf version.', function () {
+      assert.throws(function () {
+        writer(new Graph(), {version: '0.6'});
+      }, /version/);
+    });
+
     writerDefinitions.forEach(function (definition) {
       if (definition.skip) return;
 
@@ -125,6 +131,18 @@ exports.testWriter = function (writer, parser) {
       assert.strictEqual(parsed.type, 'mixed');
       assert.strictEqual(parsed.directedSize, 1);
       assert.strictEqual(parsed.undirectedSize, 1);
+    });
+
+    it('should be able to produce a gexf version 1.3.', function () {
+      var graph = new Graph();
+
+      var gexf = writer(graph, {version: '1.3'});
+
+      assert(
+        gexf.includes(
+          '<gexf version="1.3" xmlns="http://gexf.net/1.3" xmlns:viz="http://gexf.net/1.3/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://gexf.net/1.3 http://gexf.net/1.3/gexf.xsd">'
+        )
+      );
     });
   });
 };

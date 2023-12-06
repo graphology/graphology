@@ -106,7 +106,8 @@ _Arguments_
   - **formatNode** _?function_: function returning the node's data to write.
   - **formatEdge** _?function_: function returning the edge's data to write.
   - **pretty** _?boolean_ [`true`]: pretty-print output?
+  - **version** _?string_ [`1.2`]: gexf version to emit. Should be one of `1.2` or `1.3`.
 
 ### Notes
 
-Currently, `mutual` edges are parsed as undirected ones rather than two directed ones because it could produce a key conflict. An option to deal differently with this may be added in the future if it becomes a problem.
+Currently, `mutual` (a specific gexf type for edges that is seldom used in practice) edges are parsed as undirected ones rather than two directed ones because it could produce a key conflict. An option to deal differently with this may be added in the future if it becomes a problem.

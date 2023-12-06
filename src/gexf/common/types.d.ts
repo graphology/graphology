@@ -51,6 +51,8 @@ export type EdgeFormatter<
   attributes: EdgeAttributes
 ) => FormattedEdge<FormattedAttributes>;
 
+export type GexfVersion = '1.2' | '1.3';
+
 export type GexfWriterOptions<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes,
@@ -59,6 +61,7 @@ export type GexfWriterOptions<
 > = {
   encoding?: string;
   pretty?: boolean;
+  version?: GexfVersion;
   formatNode?: NodeFormatter<NodeAttributes, FormattedNodeAttributes>;
   formatEdge?: EdgeFormatter<EdgeAttributes, FormattedEdgeAttributes>;
 };

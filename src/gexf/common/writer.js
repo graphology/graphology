@@ -15,9 +15,6 @@ var isGraph = require('graphology-utils/is-graph'),
 /**
  * Constants.
  */
-var GEXF_NAMESPACE = 'http://www.gexf.net/1.2draft',
-  GEXF_VIZ_NAMESPACE = 'http:///www.gexf.net/1.1draft/viz';
-
 var VIZ_RESERVED_NAMES = new Set([
   'color',
   'size',
@@ -28,9 +25,9 @@ var VIZ_RESERVED_NAMES = new Set([
   'thickness'
 ]);
 
-var RGBA_TEST = /^\s*rgba?\s*\(/i,
-  RGBA_MATCH =
-    /^\s*rgba?\s*\(\s*([0-9]*)\s*,\s*([0-9]*)\s*,\s*([0-9]*)\s*(?:,\s*([.0-9]*))?\)\s*$/;
+var RGBA_TEST = /^\s*rgba?\s*\(/i;
+var RGBA_MATCH =
+  /^\s*rgba?\s*\(\s*([0-9]*)\s*,\s*([0-9]*)\s*,\s*([0-9]*)\s*(?:,\s*([.0-9]*))?\)\s*$/;
 
 /**
  * Function used to transform a CSS color into a RGBA object.
@@ -418,6 +415,7 @@ var DEFAULTS = {
  * @param  {object} options      - Options:
  * @param  {string}   [encoding]   - Character encoding.
  * @param  {boolean}  [pretty]     - Whether to pretty print output.
+ * @param  {string}   [version]    - Gexf version to emit.
  * @param  {function} [formatNode] - Function formatting nodes' output.
  * @param  {function} [formatEdge] - Function formatting edges' output.
  * @return {string}              - GEXF string.
@@ -430,18 +428,42 @@ module.exports = function write(graph, options) {
 
   var indent = options.pretty === false ? false : '  ';
 
-  var formatNode = options.formatNode || DEFAULTS.formatNode,
-    formatEdge = options.formatEdge || DEFAULTS.formatEdge;
+  var formatNode = options.formatNode || DEFAULTS.formatNode;
+  var formatEdge = options.formatEdge || DEFAULTS.formatEdge;
 
   var writer = new XMLWriter(indent);
 
   writer.startDocument('1.0', options.encoding || DEFAULTS.encoding);
 
   // Starting gexf
+  var version = options.version || '1.2';
+
+  if (version !== '1.2' && version !== '1.3') {
+    throw new Error(
+      'graphology-gexf/writer: invalid gexf version "' +
+        version +
+        '". Expecting 1.2 or 1.3.'
+    );
+  }
+
   writer.startElement('gexf');
-  writer.writeAttribute('version', '1.2');
-  writer.writeAttribute('xmlns', GEXF_NAMESPACE);
-  writer.writeAttribute('xmlns:viz', GEXF_VIZ_NAMESPACE);
+  writer.writeAttribute('version', version);
+
+  if (version === '1.2') {
+    writer.writeAttribute('xmlns', 'http://www.gexf.net/1.2draft');
+    writer.writeAttribute('xmlns:viz', 'http:///www.gexf.net/1.1draft/viz');
+  } else if (version === '1.3') {
+    writer.writeAttribute('xmlns', 'http://gexf.net/1.3');
+    writer.writeAttribute('xmlns:viz', 'http://gexf.net/1.3/viz');
+    writer.writeAttribute(
+      'xmlns:xsi',
+      'http://www.w3.org/2001/XMLSchema-instance'
+    );
+    writer.writeAttribute(
+      'xsi:schemaLocation',
+      'http://gexf.net/1.3 http://gexf.net/1.3/gexf.xsd'
+    );
+  }
 
   // Processing meta
   writer.startElement('meta');
@@ -486,8 +508,8 @@ module.exports = function write(graph, options) {
   writer.writeAttribute('defaultedgetype', writer.defaultEdgeType);
 
   // Processing model
-  var nodes = collectNodeData(graph, formatNode),
-    edges = collectEdgeData(graph, formatEdge);
+  var nodes = collectNodeData(graph, formatNode);
+  var edges = collectEdgeData(graph, formatEdge);
 
   var nodeModel = inferModel(nodes);
 
