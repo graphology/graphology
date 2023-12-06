@@ -500,7 +500,10 @@ module.exports = [
       size: 1,
       edge: {
         source: 'John',
-        target: 'Suzy'
+        target: 'Suzy',
+        attributes: {
+          kind: 'likes'
+        }
       }
     }
   }

@@ -142,10 +142,11 @@ function collectAttributes(
   var data = {};
   var label = element.getAttribute('label');
   var weight = element.getAttribute('weight');
+  var kind = element.getAttribute('kind');
 
   if (label) data.label = label;
-
   if (weight) data.weight = +weight;
+  if (kind) data.kind = kind;
 
   var valueElements = element.getElementsByTagName('attvalue');
   var valueElement;
