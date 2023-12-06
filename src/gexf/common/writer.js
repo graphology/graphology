@@ -5,10 +5,10 @@
  *
  * GEXF writer working for both node.js & the browser.
  */
-var isGraph = require('graphology-utils/is-graph'),
-  inferType = require('graphology-utils/infer-type'),
-  XMLWriter = require('xml-writer'),
-  sanitizeTagName = require('./helpers.js').sanitizeTagName;
+var isGraph = require('graphology-utils/is-graph');
+var inferType = require('graphology-utils/infer-type');
+var XMLWriter = require('xml-writer');
+var sanitizeTagName = require('./helpers.js').sanitizeTagName;
 
 // TODO: handle object in color, position with object for viz
 

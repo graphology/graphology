@@ -7,8 +7,6 @@
  */
 var isGraphConstructor = require('graphology-utils/is-graph-constructor');
 var mergeEdge = require('graphology-utils/add-edge').mergeEdge;
-var toMixed = require('graphology-operators/to-mixed');
-var toMulti = require('graphology-operators/to-multi');
 var helpers = require('../common/helpers.js');
 
 var cast = helpers.cast;
@@ -355,7 +353,7 @@ module.exports = function createParserFunction(DOMParser, Document) {
 
       // If we encountered an edge with a different type, we upgrade the graph
       if (type !== graph.type && graph.type !== 'mixed') {
-        graph = toMixed(graph);
+        graph = graph.copy({type: 'mixed'});
       }
 
       // If we encountered twice the same edge, we upgrade the graph
@@ -364,7 +362,7 @@ module.exports = function createParserFunction(DOMParser, Document) {
         ((type === 'directed' && graph.hasDirectedEdge(s, t)) ||
           graph.hasUndirectedEdge(s, t))
       ) {
-        graph = toMulti(graph);
+        graph = graph.copy({multi: true});
       }
 
       mergeResult = mergeEdge(
