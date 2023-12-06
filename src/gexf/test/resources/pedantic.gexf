@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http:///www.gexf.net/1.1draft/viz">
+  <meta>
+    <creator>Test</creator>
+  </meta>
+  <graph defaultedgetype="directed">
+    <nodes/>
+    <edges/>
+  </graph>
+</gexf>

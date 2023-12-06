@@ -62,6 +62,7 @@ export type GexfWriterOptions<
   encoding?: string;
   pretty?: boolean;
   version?: GexfVersion;
+  pedantic?: boolean;
   formatNode?: NodeFormatter<NodeAttributes, FormattedNodeAttributes>;
   formatEdge?: EdgeFormatter<EdgeAttributes, FormattedEdgeAttributes>;
 };

@@ -20,6 +20,7 @@ var FILES = [
   'missing_nodes',
   'undeclared_attribute',
   'mixed',
+  'pedantic',
   'rio',
   'sanitized',
   'yeast'

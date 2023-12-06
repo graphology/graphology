@@ -404,6 +404,8 @@ function writeElements(writer, type, model, elements) {
 var DEFAULTS = {
   encoding: 'UTF-8',
   pretty: true,
+  version: '1.2',
+  pedantic: false,
   formatNode: DEFAULT_NODE_FORMATTER,
   formatEdge: DEFAULT_EDGE_FORMATTER
 };
@@ -416,6 +418,7 @@ var DEFAULTS = {
  * @param  {string}   [encoding]   - Character encoding.
  * @param  {boolean}  [pretty]     - Whether to pretty print output.
  * @param  {string}   [version]    - Gexf version to emit.
+ * @param  {boolean}  [pedantic]   - Pedantic output?
  * @param  {function} [formatNode] - Function formatting nodes' output.
  * @param  {function} [formatEdge] - Function formatting edges' output.
  * @return {string}              - GEXF string.
@@ -427,6 +430,7 @@ module.exports = function write(graph, options) {
   options = options || {};
 
   var indent = options.pretty === false ? false : '  ';
+  var pedantic = options.pedantic === true;
 
   var formatNode = options.formatNode || DEFAULTS.formatNode;
   var formatEdge = options.formatEdge || DEFAULTS.formatEdge;
@@ -436,7 +440,7 @@ module.exports = function write(graph, options) {
   writer.startDocument('1.0', options.encoding || DEFAULTS.encoding);
 
   // Starting gexf
-  var version = options.version || '1.2';
+  var version = options.version || DEFAULTS.version;
 
   if (version !== '1.2' && version !== '1.3') {
     throw new Error(
@@ -477,6 +481,9 @@ module.exports = function write(graph, options) {
 
   for (var k in graphAttributes) {
     if (k === 'lastModifiedDate') continue;
+
+    if (pedantic && k !== 'creator' && k !== 'description' && k !== 'keywords')
+      continue;
 
     metaTagName = sanitizeTagName(k);
 

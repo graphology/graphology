@@ -144,5 +144,14 @@ exports.testWriter = function (writer, parser) {
         )
       );
     });
+
+    it('should be able to be pedantic.', function () {
+      var graph = new Graph();
+      graph.replaceAttributes({creator: 'Test', title: 'Not Included!'});
+
+      var gexf = writer(graph, {pedantic: true});
+
+      assert.strictEqual(gexf, resources.pedantic);
+    });
   });
 };
