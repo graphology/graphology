@@ -8,6 +8,7 @@ var assert = require('assert');
 var parserDefinitions = require('./definitions/parser.js');
 var writerDefinitions = require('./definitions/writer.js');
 var resources = require('./resources');
+var helpers = require('../common/helpers.js');
 var Graph = require('graphology');
 
 /**
@@ -152,6 +153,31 @@ exports.testWriter = function (writer, parser) {
       var gexf = writer(graph, {pedantic: true});
 
       assert.strictEqual(gexf, resources.pedantic);
+    });
+  });
+};
+
+/**
+ * Testing critical helpers.
+ */
+exports.testHelpers = function () {
+  describe('Helpers', function () {
+    describe('parseListPieces', function () {
+      it('should work as expected.', function () {
+        var tests = [
+          ['one,   two,three', ['one', 'two', 'three']],
+          ['"one", \'two\', "\\"three\\""   ', ['one', 'two', '"three"']],
+          ['true, false, ,,, ', ['true', 'false']],
+          ['3, 3.5, 14', ['3', '3.5', '14']],
+          ['"\\r\\t\\n"', ['\r\t\n']],
+          ['"\\\\"', ['\\']]
+        ];
+
+        tests.forEach(function (test) {
+          var pieces = helpers.parseListPieces(test[0]);
+          assert.deepStrictEqual(pieces, test[1]);
+        });
+      });
     });
   });
 };

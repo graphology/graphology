@@ -15,4 +15,5 @@ describe('Browser', function () {
     require('../../browser/writer.js'),
     require('../../browser/parser.js')
   );
+  require('../common.js').testHelpers();
 });
