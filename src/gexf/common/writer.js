@@ -126,16 +126,23 @@ function isEmptyValue(value) {
   );
 }
 
+var TYPE_PRIORITIES = {
+  string: 0,
+  boolean: 1,
+  integer: 2,
+  long: 3,
+  double: 4,
+  empty: 5
+};
+
 /**
  * Function used to detect a JavaScript's value type in the GEXF model.
  *
  * @param  {any}    value - Target value.
  * @return {string}
  */
-function inferValueType(value) {
+function inferScalarValueType(value) {
   if (isEmptyValue(value)) return 'empty';
-
-  if (Array.isArray(value)) return 'liststring';
 
   if (typeof value === 'boolean') return 'boolean';
 
@@ -156,6 +163,33 @@ function inferValueType(value) {
   return 'string';
 }
 
+function inferListValueType(values) {
+  var type = 'empty';
+  var priority = TYPE_PRIORITIES[type];
+  var value, t, p;
+
+  for (var i = 0, l = values.length; i < l; i++) {
+    value = values[i];
+    t = inferScalarValueType(value);
+    p = TYPE_PRIORITIES[t];
+
+    if (p < priority) {
+      type = t;
+      priority = p;
+    }
+  }
+
+  return type;
+}
+
+function inferValueType(value) {
+  if (Array.isArray(value)) {
+    return 'list' + inferListValueType(value);
+  }
+
+  return inferScalarValueType(value);
+}
+
 /**
  * Function used to cast the given value into the given type.
  *
@@ -163,8 +197,15 @@ function inferValueType(value) {
  * @param  {any}    value - Value to cast.
  * @return {string}
  */
-function cast(type, value) {
-  if (type === 'liststring' && Array.isArray(value)) return value.join('|');
+function cast(version, type, value) {
+  if (type.startsWith('list') && Array.isArray(value)) {
+    if (version === '1.3') {
+      return JSON.stringify(value);
+    } else {
+      return value.join('|');
+    }
+  }
+
   return '' + value;
 }
 
@@ -228,10 +269,10 @@ function collectEdgeData(graph, reducer) {
 
 // TODO: on large graph, we could also sample or let the user indicate the types
 function inferModel(elements) {
-  var model = {},
-    attributes,
-    type,
-    k;
+  var model = {};
+  var attributes;
+  var type;
+  var k;
 
   // Testing every attributes
   for (var i = 0, l = elements.length; i < l; i++) {
@@ -246,8 +287,9 @@ function inferModel(elements) {
 
       if (!model[k]) model[k] = type;
       else {
-        if (model[k] === 'integer' && type === 'long') model[k] = type;
-        else if (model[k] !== type) model[k] = 'string';
+        if (TYPE_PRIORITIES[type] < TYPE_PRIORITIES[model[k]]) {
+          model[k] = type;
+        }
       }
     }
   }
@@ -337,7 +379,7 @@ function writeElements(version, writer, type, model, elements) {
 
           writer.startElement('attvalue');
           writer.writeAttribute('for', name);
-          writer.writeAttribute('value', cast(model[name], value));
+          writer.writeAttribute('value', cast(version, model[name], value));
           writer.endElement();
         }
       }
