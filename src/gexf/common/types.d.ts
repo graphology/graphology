@@ -33,6 +33,7 @@ type FormattedEdge<FormattedAttributes> = {
   viz?: VizRecord;
   weight?: number;
   attributes?: FormattedAttributes;
+  kind?: string;
 };
 
 export type NodeFormatter<

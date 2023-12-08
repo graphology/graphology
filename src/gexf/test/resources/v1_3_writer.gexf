@@ -16,7 +16,10 @@
         </attvalues>
         <viz:color hex="#fff"/>
       </node>
+      <node id="suzy"/>
     </nodes>
-    <edges/>
+    <edges>
+      <edge id="js" source="john" target="suzy" kind="likes"/>
+    </edges>
   </graph>
 </gexf>

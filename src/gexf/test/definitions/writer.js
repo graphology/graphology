@@ -120,6 +120,8 @@ module.exports = [
         numbers: [1, 3.5],
         colors: ['yellow', 'red', '"blue"', "'orange'", '\'purple"', '\n\r\t']
       });
+      graph.addNode('suzy');
+      graph.addEdgeWithKey('js', 'john', 'suzy', {kind: 'likes'});
       return graph;
     },
     options: {

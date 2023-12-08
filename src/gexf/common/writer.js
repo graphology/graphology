@@ -10,8 +10,6 @@ var inferType = require('graphology-utils/infer-type');
 var XMLWriter = require('xml-writer');
 var sanitizeTagName = require('./helpers.js').sanitizeTagName;
 
-// TODO: handle object in color, position with object for viz
-
 /**
  * Constants.
  */
@@ -86,6 +84,8 @@ function DEFAULT_ELEMENT_FORMATTER(type, key, attributes) {
       output.label = attributes.label;
     } else if (type === 'edge' && name === 'weight') {
       output.weight = attributes.weight;
+    } else if (type === 'edge' && name === 'kind') {
+      output.kind = attributes.kind;
     } else if (VIZ_RESERVED_NAMES.has(name)) {
       output.viz = output.viz || {};
       output.viz[name] = attributes[name];
@@ -98,8 +98,8 @@ function DEFAULT_ELEMENT_FORMATTER(type, key, attributes) {
   return output;
 }
 
-var DEFAULT_NODE_FORMATTER = DEFAULT_ELEMENT_FORMATTER.bind(null, 'node'),
-  DEFAULT_EDGE_FORMATTER = DEFAULT_ELEMENT_FORMATTER.bind(null, 'edge');
+var DEFAULT_NODE_FORMATTER = DEFAULT_ELEMENT_FORMATTER.bind(null, 'node');
+var DEFAULT_EDGE_FORMATTER = DEFAULT_ELEMENT_FORMATTER.bind(null, 'edge');
 
 /**
  * Function used to check whether the given integer is 32 bits or not.
@@ -393,6 +393,10 @@ function writeElements(version, writer, type, model, elements) {
         typeof weight === 'string'
       )
         writer.writeAttribute('weight', element.weight);
+
+      if (element.kind) {
+        writer.writeAttribute('kind', element.kind);
+      }
     }
 
     if (element.label) writer.writeAttribute('label', element.label);
