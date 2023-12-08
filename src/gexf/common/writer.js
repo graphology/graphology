@@ -190,6 +190,26 @@ function inferValueType(value) {
   return inferScalarValueType(value);
 }
 
+var TO_SANITIZE_PATTERN = /[\r\t\n]/g;
+
+var SINGLE_QUOTE = "'";
+var DOUBLE_QUOTE = '"';
+
+function serializeValue(type, value) {
+  if (type !== 'string' || TO_SANITIZE_PATTERN.test(value)) {
+    return JSON.stringify(value);
+  }
+
+  if (!value.includes(SINGLE_QUOTE)) {
+    if (!value.includes(DOUBLE_QUOTE)) {
+      return value;
+    }
+    return SINGLE_QUOTE + value + SINGLE_QUOTE;
+  }
+
+  return JSON.stringify(value);
+}
+
 /**
  * Function used to cast the given value into the given type.
  *
@@ -199,8 +219,17 @@ function inferValueType(value) {
  */
 function cast(version, type, value) {
   if (type.startsWith('list') && Array.isArray(value)) {
+    var subtype = type.slice(4);
     if (version === '1.3') {
-      return JSON.stringify(value);
+      return (
+        '[' +
+        value
+          .map(function (v) {
+            return serializeValue(subtype, v);
+          })
+          .join(', ') +
+        ']'
+      );
     } else {
       return value.join('|');
     }

@@ -5,12 +5,14 @@
     <attributes class="node">
       <attribute id="booleans" title="booleans" type="listboolean"/>
       <attribute id="numbers" title="numbers" type="listinteger"/>
+      <attribute id="colors" title="colors" type="liststring"/>
     </attributes>
     <nodes>
       <node id="john">
         <attvalues>
-          <attvalue for="booleans" value="[true,false]"/>
-          <attvalue for="numbers" value="[1,3.5]"/>
+          <attvalue for="booleans" value="[true, false]"/>
+          <attvalue for="numbers" value="[1, 3.5]"/>
+          <attvalue for="colors" value="[yellow, red, '&quot;blue&quot;', &quot;'orange'&quot;, &quot;'purple\&quot;&quot;, &quot;\n\r\t&quot;]"/>
         </attvalues>
         <viz:color hex="#fff"/>
       </node>

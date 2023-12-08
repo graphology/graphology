@@ -117,8 +117,8 @@ module.exports = [
       graph.addNode('john', {
         color: '#fff',
         booleans: [true, false],
-        numbers: [1, 3.5]
-        // colors: ['yellow', 'red']
+        numbers: [1, 3.5],
+        colors: ['yellow', 'red', '"blue"', "'orange'", '\'purple"', '\n\r\t']
       });
       return graph;
     },
