@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf version="1.3" xmlns="http://gexf.net/1.3" xmlns:viz="http://gexf.net/1.3/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://gexf.net/1.3 http://gexf.net/1.3/gexf.xsd">
+  <meta/>
+  <graph defaultedgetype="directed">
+    <nodes>
+      <node id="john">
+        <viz:color hex="#fff"/>
+      </node>
+    </nodes>
+    <edges/>
+  </graph>
+</gexf>

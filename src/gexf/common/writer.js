@@ -132,7 +132,7 @@ function isEmptyValue(value) {
  * @param  {any}    value - Target value.
  * @return {string}
  */
-function detectValueType(value) {
+function inferValueType(value) {
   if (isEmptyValue(value)) return 'empty';
 
   if (Array.isArray(value)) return 'liststring';
@@ -240,7 +240,7 @@ function inferModel(elements) {
     if (!attributes) continue;
 
     for (k in attributes) {
-      type = detectValueType(attributes[k]);
+      type = inferValueType(attributes[k]);
 
       if (type === 'empty') continue;
 
@@ -282,19 +282,19 @@ function writeModel(writer, model, modelClass) {
   writer.endElement();
 }
 
-function writeElements(writer, type, model, elements) {
-  var emptyModel = !Object.keys(model).length,
-    element,
-    name,
-    color,
-    value,
-    edgeType,
-    attributes,
-    weight,
-    viz,
-    k,
-    i,
-    l;
+function writeElements(version, writer, type, model, elements) {
+  var emptyModel = !Object.keys(model).length;
+  var element;
+  var name;
+  var color;
+  var value;
+  var edgeType;
+  var attributes;
+  var weight;
+  var viz;
+  var k;
+  var i;
+  var l;
 
   writer.startElement(type + 's');
 
@@ -348,12 +348,15 @@ function writeElements(writer, type, model, elements) {
     if (viz) {
       //-- 1) Color
       if (viz.color) {
-        color = CSSColorToRGBA(viz.color);
-
         writer.startElementNS('viz', 'color');
 
-        for (k in color) writer.writeAttribute(k, color[k]);
+        if (version === '1.3' && viz.color.startsWith('#')) {
+          writer.writeAttribute('hex', viz.color);
+        } else {
+          color = CSSColorToRGBA(viz.color);
 
+          for (k in color) writer.writeAttribute(k, color[k]);
+        }
         writer.endElement();
       }
 
@@ -527,10 +530,10 @@ module.exports = function write(graph, options) {
   writeModel(writer, edgeModel, 'edge');
 
   // Processing nodes
-  writeElements(writer, 'node', nodeModel, nodes);
+  writeElements(version, writer, 'node', nodeModel, nodes);
 
   // Processing edges
-  writeElements(writer, 'edge', edgeModel, edges);
+  writeElements(version, writer, 'edge', edgeModel, edges);
 
   return writer.toString();
 };

@@ -82,13 +82,15 @@ exports.testWriter = function (writer, parser) {
     writerDefinitions.forEach(function (definition) {
       if (definition.skip) return;
 
-      var resource = resources[definition.gexf],
-        graph = definition.graph();
+      var resource = resources[definition.gexf];
+      var graph = definition.graph();
 
       it(
         'should correctly write the "' + definition.title + '" graph.',
         function () {
           var string = writer(graph, definition.options);
+
+          // console.log(string);
 
           assert.strictEqual(string, resource);
         }

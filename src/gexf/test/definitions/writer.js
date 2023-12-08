@@ -114,6 +114,7 @@ module.exports = [
     gexf: 'v1_3_writer',
     graph: function () {
       var graph = new Graph();
+      graph.addNode('john', {color: '#fff'});
       return graph;
     },
     options: {
