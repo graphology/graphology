@@ -106,7 +106,7 @@ _Arguments_
   - **formatNode** _?function_: function returning the node's data to write.
   - **formatEdge** _?function_: function returning the edge's data to write.
   - **pretty** _?boolean_ [`true`]: pretty-print output?
-  - **pedantic** _?boolean_ [`false`]: whether to output a stricter gexf file to make sure it can be validated using the most restrictive gexf xsv schemas. Note that the output may lose some graph attributes when doing so.
+  - **pedantic** _?boolean_ [`false`]: whether to output a stricter gexf file to make sure it can be validated using the most restrictive gexf xsd schemas. Note that the output may lose some graph attributes when doing so.
   - **version** _?string_ [`1.2`]: gexf version to emit. Should be one of `1.2` or `1.3`.
 
 ### Notes
