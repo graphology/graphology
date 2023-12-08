@@ -133,27 +133,6 @@ exports.testWriter = function (writer, parser) {
       assert.strictEqual(parsed.directedSize, 1);
       assert.strictEqual(parsed.undirectedSize, 1);
     });
-
-    it('should be able to produce a gexf version 1.3.', function () {
-      var graph = new Graph();
-
-      var gexf = writer(graph, {version: '1.3'});
-
-      assert(
-        gexf.includes(
-          '<gexf version="1.3" xmlns="http://gexf.net/1.3" xmlns:viz="http://gexf.net/1.3/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://gexf.net/1.3 http://gexf.net/1.3/gexf.xsd">'
-        )
-      );
-    });
-
-    it('should be able to be pedantic.', function () {
-      var graph = new Graph();
-      graph.replaceAttributes({creator: 'Test', title: 'Not Included!'});
-
-      var gexf = writer(graph, {pedantic: true});
-
-      assert.strictEqual(gexf, resources.pedantic);
-    });
   });
 };
 

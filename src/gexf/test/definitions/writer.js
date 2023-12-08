@@ -96,5 +96,28 @@ module.exports = [
         };
       }
     }
+  },
+  {
+    title: 'Pedantic',
+    gexf: 'pedantic',
+    graph: function () {
+      var graph = new Graph();
+      graph.replaceAttributes({creator: 'Test', title: 'Not Included!'});
+      return graph;
+    },
+    options: {
+      pedantic: true
+    }
+  },
+  {
+    title: 'v1.3',
+    gexf: 'v1_3_writer',
+    graph: function () {
+      var graph = new Graph();
+      return graph;
+    },
+    options: {
+      version: '1.3'
+    }
   }
 ];

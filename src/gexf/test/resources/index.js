@@ -24,6 +24,7 @@ var FILES = [
   'rio',
   'sanitized',
   'v1_3',
+  'v1_3_writer',
   'yeast'
 ];
 
