@@ -494,7 +494,15 @@ module.exports = [
         key: 'Suzy',
         attributes: {
           label: 'Suzy',
-          color: '#ff00ff'
+          color: '#ff00ff',
+          pipe: ['a', 'b', 'c'],
+          comma: ['a', 'b', 'c'],
+          raw: ['a', 'b', 'c'],
+          single: ['a', "'b'", 'c'],
+          double: ['a', 'b', 'c'],
+          mixed: ['a', 'b', 'c'],
+          booleans: [true, false, false],
+          numbers: [1, 1.5, 2]
         }
       },
       size: 1,

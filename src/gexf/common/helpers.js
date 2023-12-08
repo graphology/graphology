@@ -137,7 +137,7 @@ function parseValue(type, string) {
       string[0] === '[' &&
       string[string.length - 1] === ']'
     ) {
-      pieces = parseListPieces(string);
+      pieces = parseListPieces(string.slice(1, -1));
     } else if (string.includes('|')) {
       pieces = string.split(PIPE_SPLITTER);
     } else if (string.includes(',')) {

@@ -2,12 +2,28 @@
 <gexf xmlns="http://gexf.net/1.3" xmlns:viz="http://gexf.net/1.3/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://gexf.net/1.3 http://gexf.net/1.3/gexf.xsd" version="1.3">
   <graph>
     <attributes class="node">
+      <attribute id="0" title="pipe" type="liststring"/>
+      <attribute id="1" title="comma" type="liststring"/>
+      <attribute id="2" title="raw" type="liststring"/>
+      <attribute id="3" title="single" type="liststring"/>
+      <attribute id="4" title="double" type="liststring"/>
+      <attribute id="5" title="mixed" type="liststring"/>
+      <attribute id="6" title="booleans" type="listboolean"/>
+      <attribute id="7" title="numbers" type="listfloat"/>
     </attributes>
     <attributes class="edge">
     </attributes>
     <nodes>
       <node id="Suzy" label="Suzy">
         <attvalues>
+          <attvalue for="0" value="a |b | c"/>
+          <attvalue for="1" value="a ,b , c"/>
+          <attvalue for="2" value="[a, b, c]"/>
+          <attvalue for="3" value="['a', '\'b\'', 'c']"/>
+          <attvalue for="4" value="[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]"/>
+          <attvalue for="5" value="['a', &quot;b&quot;, 'c']"/>
+          <attvalue for="6" value="[true, false, false]"/>
+          <attvalue for="7" value="[1, 1.5, 2]"/>
         </attvalues>
         <viz:color hex="#ff00ff" />
       </node>
