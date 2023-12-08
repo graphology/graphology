@@ -116,8 +116,10 @@ _Arguments_
   - **formatNode** <span class="code">?function</span>: function returning the node's data to write.
   - **formatEdge** <span class="code">?function</span>: function returning the edge's data to write.
   - **pretty** <span class="code">?boolean</span> <span class="default">true</span>: pretty-print output?
+  - **pedantic** <span class="code">?boolean</span> <span class="default">false</span>: whether to output a stricter gexf file to make sure it can be validated using the most restrictive gexf xsv schemas. Note that the output may lose some graph attributes when doing so.
+  - **version** <span class="code">?string</span> <span class="default">1.2</span>: gexf version to emit. Should be one of `1.2` or `1.3`.
 
 ### Notes
 
-Currently, `mutual` edges are parsed as undirected ones rather than two directed ones because it could produce a key conflict. An option to deal differently with this may be added in the future if it becomes a problem.
+Currently, `mutual` (a specific gexf type for edges that is seldom used in practice) edges are parsed as undirected ones rather than two directed ones because it could produce a key conflict. An option to deal differently with this may be added in the future if it becomes a problem.
 
