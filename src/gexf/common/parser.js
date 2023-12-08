@@ -9,7 +9,7 @@ var isGraphConstructor = require('graphology-utils/is-graph-constructor');
 var mergeEdge = require('graphology-utils/add-edge').mergeEdge;
 var helpers = require('../common/helpers.js');
 
-var cast = helpers.cast;
+var parseValue = helpers.parseValue;
 
 /**
  * Function checking whether the given value is a NaN.
@@ -113,7 +113,7 @@ function extractModel(elements) {
     defaultElement = element.getElementsByTagName('default')[0];
 
     if (defaultElement)
-      defaults[model[id].title] = cast(
+      defaults[model[id].title] = parseValue(
         model[id].type,
         defaultElement.textContent
       );
@@ -174,7 +174,7 @@ function collectAttributes(
       type = attr.type;
     }
 
-    data[title] = cast(type, value);
+    data[title] = parseValue(type, value);
   }
 
   // Applying default values

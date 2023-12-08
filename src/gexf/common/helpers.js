@@ -6,8 +6,8 @@
  */
 
 var SPACE_PATTERN = /^\s$/;
-// var COMMA_SPLITTER = /\s*,\s*/;
-// var PIPE_SPLITTER = /\s*\|\s*/;
+var COMMA_SPLITTER = /\s*,\s*/;
+var PIPE_SPLITTER = /\s*\|\s*/;
 
 function isSpace(char) {
   return SPACE_PATTERN.test(char);
@@ -101,41 +101,62 @@ function parseListPieces(string) {
   return pieces;
 }
 
-exports.parseListPieces = parseListPieces;
-
-/**
- * Function used to cast a string value to the desired type.
- *
- * @param  {string} type - Value type.
- * @param  {string} type - String value.
- * @return {any}         - Parsed type.
- */
-exports.cast = function (type, value) {
-  switch (type) {
-    case 'string':
-      // NOTE: this is quite common so having this here
-      // can speed things up a bit.
-      return value;
-    case 'boolean':
-      value = value === 'true';
-      break;
-
-    case 'integer':
-    case 'long':
-    case 'float':
-    case 'double':
-      value = +value;
-      break;
-
-    case 'liststring':
-      value = value ? value.split('|') : [];
-      break;
-
-    default:
+function parseScalarValue(type, string) {
+  if (!type || type === 'string') {
+    return string;
   }
 
-  return value;
-};
+  if (type === 'boolean') {
+    return string === 'true';
+  }
+
+  // NOTE: long might cause issues at some point because
+  // JavaScript does not handle 64bit integers.
+  if (
+    type === 'byte' ||
+    type === 'short' ||
+    type === 'integer' ||
+    type === 'long' ||
+    type === 'float' ||
+    type === 'double'
+  ) {
+    return +string;
+  }
+
+  // NOTE: we fallback to raw string value
+  return string;
+}
+
+function parseValue(type, string) {
+  if (type.startsWith('list')) {
+    var subtype = type.slice(4);
+    var pieces;
+
+    if (
+      string.length >= 2 &&
+      string[0] === '[' &&
+      string[string.length - 1] === ']'
+    ) {
+      pieces = parseListPieces(string);
+    } else if (string.includes('|')) {
+      pieces = string.split(PIPE_SPLITTER);
+    } else if (string.includes(',')) {
+      pieces = string.split(COMMA_SPLITTER);
+    } else {
+      pieces = [string];
+    }
+
+    return pieces.map(function (piece) {
+      return parseScalarValue(subtype, piece);
+    });
+  } else {
+    return parseScalarValue(type, string);
+  }
+}
+
+exports.parseListPieces = parseListPieces;
+exports.parseScalarValue = parseScalarValue;
+exports.parseValue = parseValue;
 
 /**
  * Function deleting illegal characters from a potential tag name to avoid
