@@ -127,12 +127,17 @@ function isEmptyValue(value) {
 }
 
 var TYPE_PRIORITIES = {
-  string: 0,
-  boolean: 1,
-  integer: 2,
-  long: 3,
-  double: 4,
-  empty: 5
+  liststring: 0,
+  listdouble: 1,
+  listlong: 2,
+  listinteger: 3,
+  listboolean: 4,
+  string: 5,
+  double: 6,
+  long: 7,
+  integer: 8,
+  boolean: 9,
+  empty: 10
 };
 
 /**
@@ -184,7 +189,11 @@ function inferListValueType(values) {
 
 function inferValueType(value) {
   if (Array.isArray(value)) {
-    return 'list' + inferListValueType(value);
+    var type = inferListValueType(value);
+
+    if (type === 'empty') return 'empty';
+
+    return 'list' + type;
   }
 
   return inferScalarValueType(value);
@@ -218,7 +227,9 @@ function serializeValue(type, value) {
  * @return {string}
  */
 function cast(version, type, value) {
-  if (type.startsWith('list') && Array.isArray(value)) {
+  if (type.startsWith('list')) {
+    value = Array.isArray(value) ? value : [value];
+
     var subtype = type.slice(4);
     if (version === '1.3') {
       return (
@@ -300,7 +311,7 @@ function collectEdgeData(graph, reducer) {
 function inferModel(elements) {
   var model = {};
   var attributes;
-  var type;
+  var type, currentType;
   var k;
 
   // Testing every attributes
@@ -314,9 +325,14 @@ function inferModel(elements) {
 
       if (type === 'empty') continue;
 
-      if (!model[k]) model[k] = type;
+      currentType = model[k];
+
+      if (!currentType) model[k] = type;
       else {
-        if (TYPE_PRIORITIES[type] < TYPE_PRIORITIES[model[k]]) {
+        if (
+          type !== currentType &&
+          TYPE_PRIORITIES[type] < TYPE_PRIORITIES[currentType]
+        ) {
           model[k] = type;
         }
       }

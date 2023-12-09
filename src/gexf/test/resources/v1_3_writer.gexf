@@ -4,7 +4,7 @@
   <graph defaultedgetype="directed">
     <attributes class="node">
       <attribute id="booleans" title="booleans" type="listboolean"/>
-      <attribute id="numbers" title="numbers" type="listinteger"/>
+      <attribute id="numbers" title="numbers" type="listdouble"/>
       <attribute id="colors" title="colors" type="liststring"/>
     </attributes>
     <nodes>
