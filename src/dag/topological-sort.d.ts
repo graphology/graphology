@@ -17,4 +17,4 @@ export function forEachTopologicalGeneration<
   graph: Graph<NodeAttributes>,
   callback: (generation: Array<string>) => void
 ): void;
-export function topologicalGenerations(graph: Graph): Array<string>;
+export function topologicalGenerations(graph: Graph): Array<Array<string>>;
