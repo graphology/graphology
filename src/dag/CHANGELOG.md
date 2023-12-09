@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+- Fixing `topologicalGenerations` type declarations.
+
 ## 0.4.0
 
 - Adding multi graph support to topological sorting functions.
