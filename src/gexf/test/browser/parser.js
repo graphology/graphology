@@ -36,7 +36,7 @@ describe('Parser', function () {
   });
 
   it('should respect the given typed constructor when asked.', function () {
-    const graph = parser(Graph, resources.les_miserables, {
+    var graph = parser(Graph, resources.les_miserables, {
       respectInputGraphType: true
     });
 
