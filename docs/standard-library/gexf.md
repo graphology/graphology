@@ -57,6 +57,7 @@ _Arguments_
 - **options** <span class="code">?object</span>: parsing options:
   - **addMissingNodes** <span class="code">?boolean</span> <span class="default">false</span>: whether to add missing nodes referenced in the file's edges.
   - **allowUndeclaredAttributes** <span class="code">?boolean</span> <span class="default">false</span>: whether to allow undeclared attributes for both nodes & edges, which will be considered as strings.
+  - **respectInputGraphType** <span class="code">?boolean</span> <span class="default">false</span>: whether to make sure the output graph type is the same as the passed constructor. By default the parser will try to optimize the graph representation to avoid wasting time and memory. But if `respectInputGraphType` is `true` the output graph is guaranteed to be an instance of the typed constructor you gave as first argument. This also means the parser will throw when reading a graph that cannot be represented with the given typed constructor.
 
 ### Writer
 

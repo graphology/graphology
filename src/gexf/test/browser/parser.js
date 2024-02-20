@@ -35,5 +35,25 @@ describe('Parser', function () {
     }, /graphology-gexf\/parser: Found undeclared attribute "url"/);
   });
 
+  it('should respect the given typed constructor when asked.', function () {
+    const graph = parser(Graph, resources.les_miserables, {
+      respectInputGraphType: true
+    });
+
+    assert.strictEqual(graph.type, 'mixed');
+  });
+
+  it('should throw when typed constructor must be respected and the parsed graph has an invalid type.', function () {
+    assert.throws(function () {
+      parser(Graph, resources.celegans, {respectInputGraphType: true});
+    }, /parallel/);
+
+    assert.throws(function () {
+      parser(Graph.DirectedGraph, resources.basic, {
+        respectInputGraphType: true
+      });
+    }, /respect/);
+  });
+
   common.testAllFiles(parser);
 });

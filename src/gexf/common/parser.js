@@ -247,6 +247,7 @@ module.exports = function createParserFunction(DOMParser, Document) {
 
     var addMissingNodes = options.addMissingNodes === true;
     var allowUndeclaredAttributes = options.allowUndeclaredAttributes === true;
+    var respectInputGraphType = options.respectInputGraphType === true;
     var mergeResult;
 
     var xmlDoc = source;
@@ -307,9 +308,9 @@ module.exports = function createParserFunction(DOMParser, Document) {
       : 'mixed';
 
     // Instantiating our graph
-    var graph = new Graph({
-      type: graphType
-    });
+    var graphOptions = respectInputGraphType ? {} : {type: graphType};
+
+    var graph = new Graph(graphOptions);
 
     // Collecting meta
     var meta = collectMeta(META_ELEMENTS);
@@ -353,6 +354,13 @@ module.exports = function createParserFunction(DOMParser, Document) {
 
       // If we encountered an edge with a different type, we upgrade the graph
       if (type !== graph.type && graph.type !== 'mixed') {
+        if (respectInputGraphType)
+          throw new Error(
+            "graphology-gexf/parser: one of the file's edges does not respect the input graph type: " +
+              graph.type +
+              '.'
+          );
+
         graph = graph.copy({type: 'mixed'});
       }
 
@@ -362,6 +370,11 @@ module.exports = function createParserFunction(DOMParser, Document) {
         ((type === 'directed' && graph.hasDirectedEdge(s, t)) ||
           graph.hasUndirectedEdge(s, t))
       ) {
+        if (respectInputGraphType)
+          throw new Error(
+            'graphology-gexf/parser: the file contains parallel edges that the input graph type does not allow.'
+          );
+
         graph = graph.copy({multi: true});
       }
 
