@@ -23,7 +23,7 @@ function simpleInDegree(graph, node) {
   return degree;
 }
 
-function topologicalWalk_full(graph, callback) {
+function topologicalWalkFull(graph, callback) {
   const queue = new FixedDeque(Array, graph.order);
   const inDegrees = {};
   let total = 0;
@@ -72,7 +72,7 @@ function topologicalWalk_full(graph, callback) {
     );
 }
 
-function topologicalWalk_internal(graph, root, callback) {
+function topologicalWalkInternal(graph, root, callback) {
   const queue = new FixedDeque(Array, graph.order);
   const inDegrees = {};
 
@@ -131,9 +131,9 @@ function forEachNodeInTopologicalOrder(graph, callback, root) {
   if (graph.order === 0) return;
 
   if (root === undefined) {
-    topologicalWalk_full(graph, callback); // O(n * b)
+    topologicalWalkFull(graph, callback); // O(n * b)
   } else {
-    topologicalWalk_internal(graph, '' + root, callback); // O(n * b^2) but n might be smaller
+    topologicalWalkInternal(graph, '' + root, callback); // O(n * b^2) but n might be smaller
   }
 }
 
