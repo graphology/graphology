@@ -131,9 +131,9 @@ function forEachNodeInTopologicalOrder(graph, callback, root) {
   if (graph.order === 0) return;
 
   if (root === undefined) {
-    topologicalWalk_full(graph, callback);  // O(n * b)
+    topologicalWalk_full(graph, callback); // O(n * b)
   } else {
-    topologicalWalk_internal(graph, '' + root, callback);  // O(n * b^2) but n might be smaller
+    topologicalWalk_internal(graph, '' + root, callback); // O(n * b^2) but n might be smaller
   }
 }
 
@@ -187,11 +187,7 @@ function topologicalGenerations(graph, root) {
 
   const generations = [];
 
-  forEachTopologicalGeneration(
-    graph,
-    generations.push.bind(generations),
-    root
-  );
+  forEachTopologicalGeneration(graph, generations.push.bind(generations), root);
 
   return generations;
 }

@@ -400,7 +400,6 @@ describe('graphology-dag', function () {
   });
 
   describe('topologicalGenerations', () => {
-
     it('should return nothing for an empty graph', () => {
       const graph = new DirectedGraph();
       assert.deepStrictEqual(topologicalGenerations(graph), []);
@@ -423,7 +422,11 @@ describe('graphology-dag', function () {
       graph.mergeEdge(0, 1);
       graph.mergeEdge(1, 2);
       graph.mergeEdge(0, 2);
-      assert.deepStrictEqual(topologicalGenerations(graph), [['0'], ['1'], ['2']]);
+      assert.deepStrictEqual(topologicalGenerations(graph), [
+        ['0'],
+        ['1'],
+        ['2']
+      ]);
     });
 
     it('should return the correct number of generations for an internal node', () => {
@@ -438,8 +441,15 @@ describe('graphology-dag', function () {
       graph.mergeEdge(1, 2);
       graph.mergeEdge(10, 2);
       graph.mergeNode(20);
-      assert.deepStrictEqual(topologicalGenerations(graph, 0), [['0'], ['1'], ['2']]);
-      assert.deepStrictEqual(topologicalGenerations(graph, 10), [['10'], ['2']] );
+      assert.deepStrictEqual(topologicalGenerations(graph, 0), [
+        ['0'],
+        ['1'],
+        ['2']
+      ]);
+      assert.deepStrictEqual(topologicalGenerations(graph, 10), [
+        ['10'],
+        ['2']
+      ]);
       assert.deepStrictEqual(topologicalGenerations(graph, 20), [['20']]);
     });
   });
