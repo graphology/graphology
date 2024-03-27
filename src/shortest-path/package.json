@@ -1,11 +1,12 @@
 {
   "name": "graphology-shortest-path",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "Shortest path functions for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
   "files": [
     "*.d.ts",
+    "astar.js",
     "dijkstra.js",
     "index.js",
     "indexed-brandes.js",
