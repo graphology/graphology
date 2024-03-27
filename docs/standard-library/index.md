@@ -14,6 +14,7 @@ has_toc: false
 * [communities-louvain](./communities-louvain): *Louvain method for community detection.*
 * [components](./components): *Connected components (strong, weak etc.).*
 * [dag](./dag): *Functions related to directed acyclic graphs (cycle detection, topological sorting etc.).*
+* [cores](./cores): *Various utilities related to k-cores.*
 * [generators](./generators): *Graph generators (random graphs, complete graphs etc.).*
 * [gexf](./gexf): *Parsers & writers for the GEXF file format.*
 * [graphml](./graphml): *Parsers & writers for the GRAPHML file format.*

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: layout-noverlap
-nav_order: 13
+nav_order: 14
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/layout-noverlap"

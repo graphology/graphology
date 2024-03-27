@@ -1,7 +1,7 @@
 ---
 layout: default
 title: layout-forceatlas2
-nav_order: 12
+nav_order: 13
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/layout-forceatlas2"

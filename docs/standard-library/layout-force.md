@@ -1,7 +1,7 @@
 ---
 layout: default
 title: layout-force
-nav_order: 11
+nav_order: 12
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/layout-force"

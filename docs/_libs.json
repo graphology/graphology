@@ -5,6 +5,7 @@
   "communities-louvain": "Louvain method for community detection.",
   "components": "Connected components (strong, weak etc.).",
   "dag": "Functions related to directed acyclic graphs (cycle detection, topological sorting etc.).",
+  "cores": "Various utilities related to k-cores.",
   "generators": "Graph generators (random graphs, complete graphs etc.).",
   "gexf": "Parsers & writers for the GEXF file format.",
   "graphml": "Parsers & writers for the GRAPHML file format.",
