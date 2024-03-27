@@ -58,5 +58,5 @@ export function kTruss<
 export function onionLayers(
   assign: boolean,
   graph: Graph,
-  onionLayerAttribute?: string
+  nodeOnionLayerAttribute?: string
 ): Record<string, number>;

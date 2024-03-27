@@ -1,7 +1,7 @@
 {
   "name": "graphology-cores",
   "version": "0.0.1",
-  "description": "Functions computing the metrics related to the degeneracy.",
+  "description": "Graphology utilities related to k-cores.",
   "main": "index.js",
   "files": [
     "index.js",
@@ -19,8 +19,7 @@
   "keywords": [
     "graph",
     "graphology",
-    "core",
-    "degeneracy"
+    "core"
   ],
   "contributors": [
     {
@@ -41,6 +40,6 @@
     "graphology-types": ">=0.19.0"
   },
   "dependencies": {
-    "graphology-utils": "^2.4.1"
+    "graphology-utils": "^2.5.2"
   }
 }

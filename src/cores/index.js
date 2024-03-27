@@ -24,7 +24,7 @@ function coreNumber(assign, graph, coreAttribute) {
   const degrees = {};
   let maxDegree = 0;
   graph.forEachNode(node => {
-    const nd = graph.degree(node);;
+    const nd = graph.degree(node);
     degrees[node] = nd;
     if (nd > maxDegree) maxDegree = nd;
   });
@@ -98,7 +98,7 @@ function coreNumber(assign, graph, coreAttribute) {
 
   if (assign) {
     graph.updateEachNodeAttributes((node, attr) => {
-      attr[coreAttribute] = core[node]
+      attr[coreAttribute] = core[node];
       return attr;
     });
   }
@@ -113,7 +113,7 @@ function coreSubgraph(graph, filter, k, customCore) {
   if (k === undefined) {
     k = 0;
     for (const field in customCore) {
-      if (customCore[field] > k) k = customCore[field]
+      if (customCore[field] > k) k = customCore[field];
     }
   }
   const nodes = [];
@@ -254,21 +254,21 @@ function kTruss(graph, k) {
   return H;
 }
 
-function onionLayers(assign, graph, onionLayerAttribute) {
-  onionLayerAttribute = onionLayerAttribute || 'onionLayer';
+function onionLayers(assign, graph, nodeOnionLayerAttribute) {
+  nodeOnionLayerAttribute = nodeOnionLayerAttribute || 'onionLayer';
 
   const remove = function (degrees, key) {
-    const newDegrees = {}
-    for (const k in degrees)  if (k !== key) newDegrees[k] = degrees[k];
+    const newDegrees = {};
+    for (const k in degrees) if (k !== key) newDegrees[k] = degrees[k];
     return newDegrees;
   };
 
-  const lengthOf = function(dict) {
+  const lengthOf = function (dict) {
     let size = 0;
     // eslint-disable-next-line
     for (const _ in dict) size++;
     return size;
-  }
+  };
 
   if (graph.type === 'directed' || graph.multi) {
     throw Error(
@@ -278,7 +278,7 @@ function onionLayers(assign, graph, onionLayerAttribute) {
 
   if (graph.selfLoopCount > 0) {
     throw Error(
-      'graphology-cores : onion loyers not available for graphs with self-loops.'
+      'graphology-cores : onion layers not available for graphs with self-loops.'
     );
   }
 
@@ -311,7 +311,7 @@ function onionLayers(assign, graph, onionLayerAttribute) {
   // Others
   const compareDegrees = (a, b) => {
     return degrees[a] - degrees[b];
-  }
+  };
 
   while (lengthOf(degrees) > 0) {
     const degreeSize = lengthOf(degrees);
@@ -345,9 +345,9 @@ function onionLayers(assign, graph, onionLayerAttribute) {
 
   if (assign) {
     graph.updateEachNodeAttributes((node, attr) => {
-      attr[onionLayerAttribute] = odLayers[node]
+      attr[nodeOnionLayerAttribute] = odLayers[node];
       return attr;
-    })
+    });
   }
 
   return odLayers;

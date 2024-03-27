@@ -1,6 +1,6 @@
 # Graphology Cores
 
-Various functions related to the k-core of graphs to be used with [graphology](https://graphology.github.io).
+Various functions related to k-cores of graphs and to be used with [graphology](https://graphology.github.io).
 
 The k-core of a graph is the maximal connected subgraph in which all nodes have a degree of k or more. The main core of a graph is the k-core subgraph with the highest possible k.
 
