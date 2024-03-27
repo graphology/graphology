@@ -168,17 +168,12 @@ import {astar} from 'graphology-shortest-path';
 import astar from 'graphology-shortest-path/astar';
 
 // Returning the shortest path between source & target
-const path = astar.bidirectional(graph, source, target);
-
-// If you store edges' weight in custom attribute
-const path = astar.bidirectional(graph, source, target, 'customWeight');
-
-// Using a custom weight getter function
 const path = astar.bidirectional(
   graph,
   source,
   target,
   (_, attr) => attr.importance
+  (node, finalTarget) => euclideanDistance(points[node], points[finalTarget])
 );
 ```
 
@@ -188,6 +183,7 @@ _Arguments_
 - **source** _any_: source node.
 - **target** _any_: target node.
 - **getEdgeWeight** _?string\|function_ [`weight`]: name of the weight attribute or getter function.
+- **heuristic** _?function_: heuristic function to compute distance between current node and final target.
 
 ## Utilities
 
