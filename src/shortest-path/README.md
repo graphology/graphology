@@ -18,6 +18,8 @@ npm install graphology-shortest-path
 - [Dijkstra](#dijkstra)
   - [bidirectional](#dijkstra-bidirectional)
   - [singleSource](#dijkstra-singlesource)
+- [A-star](#a-star)
+  - [bidirectional](#astar-bidirectional)
 - [Utilities](#utilities)
   - [edgePathFromNodePath](#edgepathfromnodepath)
 
@@ -152,6 +154,39 @@ _Arguments_
 
 - **graph** _Graph_: a `graphology` instance.
 - **source** _any_: source node.
+- **getEdgeWeight** _?string\|function_ [`weight`]: name of the weight attribute or getter function.
+
+## A-star
+
+<h3 id="astar-bidirectional">bidirectional</h3>
+
+Returns the shortest path in the weighted graph between source & target or `null` if such a path does not exist.
+
+```js
+import {astar} from 'graphology-shortest-path';
+// Alternatively, if you want to load only the relevant code
+import astar from 'graphology-shortest-path/astar';
+
+// Returning the shortest path between source & target
+const path = astar.bidirectional(graph, source, target);
+
+// If you store edges' weight in custom attribute
+const path = astar.bidirectional(graph, source, target, 'customWeight');
+
+// Using a custom weight getter function
+const path = astar.bidirectional(
+  graph,
+  source,
+  target,
+  (_, attr) => attr.importance
+);
+```
+
+_Arguments_
+
+- **graph** _Graph_: a `graphology` instance.
+- **source** _any_: source node.
+- **target** _any_: target node.
 - **getEdgeWeight** _?string\|function_ [`weight`]: name of the weight attribute or getter function.
 
 ## Utilities

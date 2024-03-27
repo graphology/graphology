@@ -1,6 +1,8 @@
 import Graph, {Attributes} from 'graphology-types';
 import {MinimalEdgeMapper} from 'graphology-utils/getters';
 
+type BidirectionalAstarResult = string[];
+
 export function bidirectional<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
@@ -11,8 +13,8 @@ export function bidirectional<
   getEdgeWeight?:
     | keyof EdgeAttributes
     | MinimalEdgeMapper<number, EdgeAttributes>,
-  heuristic?: (node: unknown, target) => number,
+  heuristic?: (node: string, target: string) => number,
   options?: {
-    cutoff?: number
+    cutoff?: number;
   }
-): BidirectionalDijstraResult;
+): BidirectionalAstarResult;

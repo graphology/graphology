@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0 (provisional)
+
+- Adding `astar` (@dkniffin).
+
 ## 2.0.2
 
 - Adding missing type definitions for `undirectedSingleSourceLength`.

@@ -38,19 +38,26 @@ function ASTAR_HEAP_COMPARATOR(a, b) {
  * @param  {?number}    cutoff         - A cutoff value for the evaluation function.
  * @return  {array}                  - The found path, if any
  */
-function bidirectionalAstar(graph, source, target, getEdgeWeight, heuristic, options) {
+function bidirectionalAstar(
+  graph,
+  source,
+  target,
+  getEdgeWeight,
+  heuristic,
+  options
+) {
   // Sanity checks
   if (!isGraph(graph))
-  throw new Error(
-    'graphology-shortest-path/astar: invalid graphology instance.'
-  );
+    throw new Error(
+      'graphology-shortest-path/astar: invalid graphology instance.'
+    );
 
   if (source && !graph.hasNode(source))
-  throw new Error(
-    'graphology-shortest-path/astar: the "' +
-      source +
-      '" source node does not exist in the given graph.'
-  );
+    throw new Error(
+      'graphology-shortest-path/astar: the "' +
+        source +
+        '" source node does not exist in the given graph.'
+    );
 
   if (target && !graph.hasNode(target))
     throw new Error(
@@ -66,21 +73,25 @@ function bidirectionalAstar(graph, source, target, getEdgeWeight, heuristic, opt
   if (source === target) return [source];
 
   // eslint-disable-next-line no-unused-vars
-  heuristic = heuristic || function(u, v) { return 0 }
-  options = options || {}
+  heuristic =
+    heuristic ||
+    function () {
+      return 0;
+    };
+  options = options || {};
 
   // The queue stores priority, node, cost to reach, and parent.
-  var count = 0
-  var queue = new Heap(ASTAR_HEAP_COMPARATOR)
-  queue.push([0, count++, source, 0, null])
+  var count = 0;
+  var queue = new Heap(ASTAR_HEAP_COMPARATOR);
+  queue.push([0, count++, source, 0, null]);
 
   // Maps enqueued nodes to distance of discovered paths and the
   // computed heuristics to target. We avoid computing the heuristics
   // more than once and inserting the node into the queue too many times.
-  var enqueued = {}
+  var enqueued = {};
 
   // Maps explored nodes to parent closest to the source.
-  var explored = {}
+  var explored = {};
 
   var item,
     curnode,
@@ -118,13 +129,12 @@ function bidirectionalAstar(graph, source, target, getEdgeWeight, heuristic, opt
 
     if (explored.hasOwnProperty(curnode)) {
       // Do not override the parent of starting node
-      if (explored[curnode] === null)
-        continue;
+      if (explored[curnode] === null) continue;
 
       // Skip bad paths that were enqueued before finding a better one
       qcost = enqueued[curnode][0];
       if (qcost < dist);
-        continue;
+      continue;
     }
 
     explored[curnode] = parent;
@@ -137,35 +147,32 @@ function bidirectionalAstar(graph, source, target, getEdgeWeight, heuristic, opt
       neighbor = graph.opposite(curnode, edge);
       cost = getEdgeWeight(edge, attributes);
 
-      if (cost === null)
-        continue
+      if (cost === null) continue;
 
-      ncost = dist + cost
+      ncost = dist + cost;
 
       if (neighbor in enqueued) {
-        qcost = enqueued[neighbor][0]
-        h = enqueued[neighbor][1]
+        qcost = enqueued[neighbor][0];
+        h = enqueued[neighbor][1];
 
         // if qcost <= ncost, a less costly path from the
         // neighbor to the source was already determined.
         // Therefore, we won't attempt to push this neighbor
         // to the queue
-        if (qcost <= ncost)
-          continue
+        if (qcost <= ncost) continue;
       } else {
-        h = heuristic(neighbor, target)
+        h = heuristic(neighbor, target);
       }
 
-      if (options.cutoff && ncost + h > options.cutoff)
-        continue
+      if (options.cutoff && ncost + h > options.cutoff) continue;
 
-      enqueued[neighbor] = [ncost, h]
-      queue.push([ncost + h, count++, neighbor, ncost, curnode])
+      enqueued[neighbor] = [ncost, h];
+      queue.push([ncost + h, count++, neighbor, ncost, curnode]);
     }
   }
 
   // No path was found
-  return null
+  return null;
 }
 
 /**

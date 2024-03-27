@@ -24,7 +24,9 @@ var EDGES = [
 ];
 
 // eslint-disable-next-line no-unused-vars
-var heuristic = function(a, b) { return 0; }
+var heuristic = function (a, b) {
+  return 0;
+};
 
 describe('astar', function () {
   var graph = new UndirectedGraph();
@@ -55,7 +57,13 @@ describe('astar', function () {
       otherGraph.mergeEdge('1', '3');
       otherGraph.mergeEdge('3', '2');
 
-      var path = library.bidirectional(otherGraph, '1', '2', "weight", heuristic);
+      var path = library.bidirectional(
+        otherGraph,
+        '1',
+        '2',
+        'weight',
+        heuristic
+      );
 
       assert.deepStrictEqual(path, ['1', '3', '2']);
     });
@@ -70,7 +78,13 @@ describe('astar', function () {
       otherGraph.addEdge('A', 'C', {weight: 0});
       otherGraph.addEdge('B', 'C', {weight: 1});
 
-      var path = library.bidirectional(otherGraph, 'A', 'C', "weight", heuristic);
+      var path = library.bidirectional(
+        otherGraph,
+        'A',
+        'C',
+        'weight',
+        heuristic
+      );
 
       assert.deepStrictEqual(path, ['A', 'C']);
     });
