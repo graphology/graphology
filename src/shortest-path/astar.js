@@ -95,6 +95,7 @@ function bidirectionalAstar(
 
   var item;
   var curnode;
+  var entry;
   var dist;
   var parent;
   var path;
@@ -103,11 +104,35 @@ function bidirectionalAstar(
   var h;
   var cost;
   var ncost;
-  var edge;
   var neighbor;
-  var attributes;
-  var i;
-  var edges;
+
+  function edgeCallback(edge, attr, s, t) {
+    neighbor = curnode === s ? t : s;
+    cost = getEdgeWeight(edge, attr);
+
+    if (cost === null) return;
+
+    ncost = dist + cost;
+
+    if (enqueued.hasOwnProperty(neighbor)) {
+      entry = enqueued[neighbor];
+      qcost = entry[0];
+      h = entry[1];
+
+      // if qcost <= ncost, a less costly path from the
+      // neighbor to the source was already determined.
+      // Therefore, we won't attempt to push this neighbor
+      // to the queue
+      if (qcost <= ncost) return;
+    } else {
+      h = heuristic(neighbor, target);
+    }
+
+    if (options.cutoff && ncost + h > options.cutoff) return;
+
+    enqueued[neighbor] = [ncost, h];
+    queue.push([ncost + h, count++, neighbor, ncost, curnode]);
+  }
 
   while (queue.size !== 0) {
     // Pop the smallest item from queue.
@@ -138,36 +163,7 @@ function bidirectionalAstar(
 
     explored[curnode] = parent;
 
-    edges = graph.outboundEdges(curnode);
-
-    for (i = 0; i < edges.length; i++) {
-      edge = edges[i];
-      attributes = graph.getEdgeAttributes(edge);
-      neighbor = graph.opposite(curnode, edge);
-      cost = getEdgeWeight(edge, attributes);
-
-      if (cost === null) continue;
-
-      ncost = dist + cost;
-
-      if (neighbor in enqueued) {
-        qcost = enqueued[neighbor][0];
-        h = enqueued[neighbor][1];
-
-        // if qcost <= ncost, a less costly path from the
-        // neighbor to the source was already determined.
-        // Therefore, we won't attempt to push this neighbor
-        // to the queue
-        if (qcost <= ncost) continue;
-      } else {
-        h = heuristic(neighbor, target);
-      }
-
-      if (options.cutoff && ncost + h > options.cutoff) continue;
-
-      enqueued[neighbor] = [ncost, h];
-      queue.push([ncost + h, count++, neighbor, ncost, curnode]);
-    }
+    graph.forEachOutboundEdge(curnode, edgeCallback);
   }
 
   // No path was found
