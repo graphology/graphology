@@ -29,14 +29,14 @@ function ASTAR_HEAP_COMPARATOR(a, b) {
  *
  * Note that this implementation was basically copied from networkx.
  *
- * @param  {Graph}    graph          - The graphology instance.
- * @param  {string}   source         - Source node.
- * @param  {string}   target         - Target node.
- * @param  {string}   getEdgeWeight  - Name of the weight attribute or getter function.
- * @param  {?function} heuristic     - A function to estimate the distance between any node and the target. The function takes two nodes as arguments and must return a number. If the function is omitted, it is evaluated to 0, which is the same as Dijkstra's algorithm
- * @param  {?object}  options         - Options:
- * @param  {?number}    cutoff         - A cutoff value for the evaluation function.
- * @return  {array}                  - The found path, if any
+ * @param  {Graph}     graph          - The graphology instance.
+ * @param  {string}    source         - Source node.
+ * @param  {string}    target         - Target node.
+ * @param  {?function} getEdgeWeight  - Name of the weight attribute or getter function.
+ * @param  {?function} heuristic      - A function to estimate the distance between any node and the target. The function takes two nodes as arguments and must return a number. If the function is omitted, it is evaluated to 0, which is the same as Dijkstra's algorithm
+ * @param  {?object}   options        - Options:
+ * @param  {?number}     cutoff         - A cutoff value for the evaluation function.
+ * @return {array}                    - The found path, if any
  */
 function bidirectionalAstar(
   graph,
@@ -72,12 +72,12 @@ function bidirectionalAstar(
 
   if (source === target) return [source];
 
-  // eslint-disable-next-line no-unused-vars
   heuristic =
     heuristic ||
     function () {
       return 0;
     };
+
   options = options || {};
 
   // The queue stores priority, node, cost to reach, and parent.
@@ -93,23 +93,23 @@ function bidirectionalAstar(
   // Maps explored nodes to parent closest to the source.
   var explored = {};
 
-  var item,
-    curnode,
-    dist,
-    parent,
-    path,
-    node,
-    qcost,
-    h,
-    cost,
-    ncost,
-    edge,
-    neighbor,
-    attributes,
-    i,
-    edges;
+  var item;
+  var curnode;
+  var dist;
+  var parent;
+  var path;
+  var node;
+  var qcost;
+  var h;
+  var cost;
+  var ncost;
+  var edge;
+  var neighbor;
+  var attributes;
+  var i;
+  var edges;
 
-  while (queue.size) {
+  while (queue.size !== 0) {
     // Pop the smallest item from queue.
     item = queue.pop();
     curnode = item[2];
@@ -133,8 +133,7 @@ function bidirectionalAstar(
 
       // Skip bad paths that were enqueued before finding a better one
       qcost = enqueued[curnode][0];
-      if (qcost < dist);
-      continue;
+      if (qcost < dist) continue;
     }
 
     explored[curnode] = parent;
