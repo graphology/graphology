@@ -14,7 +14,7 @@ Various functions related to k-cores of graphs and to be used with [graphology](
 
 The k-core of a graph is the maximal connected subgraph in which all nodes have a degree of k or more. The main core of a graph is the k-core subgraph with the highest possible k.
 
-If the graph is directed, nodes' degree are considered as the sum of all the inbound and outbound neighbors of the node.
+If the graph is directed, node degrees are considered to be the sum of all the inbound and outbound neighbors of the node.
 
 > An O(m) Algorithm for Cores Decomposition of Networks Vladimir Batagelj and Matjaz Zaversnik, 2003. [https://arxiv.org/abs/cs.DS/0310049](https://arxiv.org/abs/cs.DS/0310049)
 
@@ -82,7 +82,7 @@ _Arguments_
 
 ### kShell
 
-Returns the k-shell subgraph. K-Shell subgraph is the maximal connected subgraph containing the nodes with k degree.
+Returns the k-shell subgraph. The k-shell subgraph is the maximal connected subgraph containing the nodes with k degree.
 
 ```js
 import kShell from 'graphology-cores/kShell';
@@ -102,7 +102,7 @@ _Arguments_
 
 ### kCrust
 
-Returns the k-crust subgraph. K-Crust subgraph is the maximal connected subgraph containing nodes with less than k degree.
+Returns the k-crust subgraph. The k-crust subgraph is the maximal connected subgraph containing nodes with less than k degree.
 
 ```js
 import kCrust from 'graphology-cores/kCrust';
@@ -122,7 +122,7 @@ _Arguments_
 
 ### kCorona
 
-Returns the k-corona subgraph. K-Corona subgraph contains nodes in the k-core with exactly k neighbors in the k-core.
+Returns the k-corona subgraph. The k-corona subgraph contains nodes in the k-core with exactly k neighbors in the k-core.
 
 ```js
 import kCorona from 'graphology-cores/kCorona';
@@ -142,7 +142,7 @@ _Arguments_
 
 ### kTruss
 
-Returns the k-truss subgraph. K-Truss subgraph contains at least three nodes for which every edge is incident to at least `k-2` triangles.
+Returns the k-truss subgraph. The k-truss subgraph contains at least three nodes for which every edge is incident to at least `k-2` triangles.
 
 K-Truss is not implemented for directed graphs and multigraphs.
 
