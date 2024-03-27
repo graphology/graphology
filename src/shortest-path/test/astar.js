@@ -2,12 +2,12 @@
  * Graphology A* Shortest Path Unit Tests
  * =============================================
  */
-var assert = require('assert'),
-  library = require('../astar.js'),
-  graphology = require('graphology');
+var assert = require('assert');
+var library = require('../astar.js');
+var graphology = require('graphology');
 
-var UndirectedGraph = graphology.UndirectedGraph,
-  DirectedGraph = graphology.DirectedGraph;
+var UndirectedGraph = graphology.UndirectedGraph;
+var DirectedGraph = graphology.DirectedGraph;
 
 var EDGES = [
   ['1', '2', 1],
@@ -23,8 +23,7 @@ var EDGES = [
   ['10', '11', 3]
 ];
 
-// eslint-disable-next-line no-unused-vars
-var heuristic = function (a, b) {
+var heuristic = function () {
   return 0;
 };
 
