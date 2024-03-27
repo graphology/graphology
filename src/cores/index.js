@@ -21,12 +21,35 @@ function coreNumber(assign, graph, coreAttribute) {
       'graphology-cores: the given graph has self loops which is not permitted.'
     );
 
-  const degrees = {};
+  // NOTE: keeping neighbors in lists means deletion is O(n)
+  // This looks hardly optimal, I am sure we can do better than networkx' implementation
+  const core = {};
+  const neighbors = {};
   let maxDegree = 0;
+
   graph.forEachNode(node => {
-    const nd = graph.degree(node);
-    degrees[node] = nd;
-    if (nd > maxDegree) maxDegree = nd;
+    const n = [];
+    const d = graph.degree(node);
+
+    if (graph.type !== 'undirected') {
+      graph.forEachInNeighbor(node, nbr => {
+        n.push(nbr);
+      });
+      graph.forEachOutNeighbor(node, nbr => {
+        n.push(nbr);
+      });
+    }
+
+    if (graph.type !== 'directed') {
+      graph.forEachUndirectedNeighbor(node, nbr => {
+        n.push(nbr);
+      });
+    }
+
+    core[node] = d;
+    if (d > maxDegree) maxDegree = d;
+
+    neighbors[node] = n;
   });
 
   const nodes = graph.nodes().sort((a, b) => graph.degree(a) - graph.degree(b));
@@ -34,13 +57,18 @@ function coreNumber(assign, graph, coreAttribute) {
   const binBoundaries = new Array(nodes.length * maxDegree);
   binBoundaries[0] = 0;
 
-  let currDegree = 0;
+  const nodePos = {};
 
   // Preparing binBoundaries
+  let currDegree = 0;
   let bi = 1;
-  for (let i = 0; i < nodes.length; ++i) {
+
+  for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
-    const nd = degrees[node];
+    nodePos[node] = i;
+
+    const nd = core[node];
+
     if (nd > currDegree) {
       let l = nd - currDegree;
       while (l--) binBoundaries[bi++] = i;
@@ -48,59 +76,41 @@ function coreNumber(assign, graph, coreAttribute) {
     }
   }
 
-  // Node positions
-  const nodePos = {};
-
-  for (let i = 0; i < nodes.length; ++i) {
-    const nd = nodes[i];
-    nodePos[nd] = i;
-  }
-
-  // Neighbors
-  const nbrs = {};
   nodes.forEach(node => {
-    nbrs[node] = [];
-    if (graph.type === 'directed') {
-      graph.forEachInNeighbor(node, nbr => {
-        nbrs[node].push(nbr);
-      });
-      graph.forEachOutNeighbor(node, nbr => {
-        nbrs[node].push(nbr);
-      });
-    } else {
-      graph.forEachNeighbor(node, nbr => {
-        nbrs[node].push(nbr);
-      });
+    const n = neighbors[node];
+    const nd = core[node];
+
+    for (let i = 0, l = n.length; i < l; i++) {
+      const nbr = n[i];
+      const nbrd = core[nbr];
+
+      if (nbrd <= nd) continue;
+
+      const nbrnbr = neighbors[nbr];
+      nbrnbr.splice(nbrnbr.indexOf(node), 1);
+
+      const pos = nodePos[nbr];
+      const binStart = binBoundaries[nbrd];
+      nodePos[nbr] = binStart;
+      nodePos[nodes[binStart]] = pos;
+
+      const stemp = nodes[binStart];
+      nodes[binStart] = nodes[pos];
+      nodes[pos] = stemp;
+
+      binBoundaries[nbrd] += 1;
+      core[nbr] -= 1;
     }
   });
 
-  const removed = new Set();
-  const core = degrees;
-  nodes.forEach(node => {
-    nbrs[node].forEach(nbr => {
-      if (core[nbr] > core[node]) {
-        if (removed.has([node, nbr])) return;
-        removed.add([nbr, node]);
-        const pos = nodePos[nbr];
-        const binStart = binBoundaries[core[nbr]];
-        nodePos[nbr] = binStart;
-        nodePos[nodes[binStart]] = pos;
-
-        const stemp = nodes[binStart];
-        nodes[binStart] = nodes[pos];
-        nodes[pos] = stemp;
-
-        binBoundaries[core[nbr]] += 1;
-        core[nbr] -= 1;
-      }
-    });
-  });
-
   if (assign) {
-    graph.updateEachNodeAttributes((node, attr) => {
-      attr[coreAttribute] = core[node];
-      return attr;
-    });
+    graph.updateEachNodeAttributes(
+      (node, attr) => {
+        attr[coreAttribute] = core[node];
+        return attr;
+      },
+      {attributes: [coreAttribute]}
+    );
   }
 
   return core;
@@ -325,11 +335,11 @@ function onionLayers(assign, graph, nodeOnionLayerAttribute) {
     if (minDegree > currentCore) currentCore = minDegree;
 
     const thisLayer = [];
-    for (let i = 0; i < nodes.length; ++i) {
+    for (let i = 0; i < nodes.length; i++) {
       if (degrees[nodes[i]] > currentCore) break;
       thisLayer.push(nodes[i]);
     }
-    for (let i = 0; i < thisLayer.length; ++i) {
+    for (let i = 0; i < thisLayer.length; i++) {
       const node = thisLayer[i];
       odLayers[node] = currentLayer;
       for (let nb = 0; nb < neighbors[node].length; ++nb) {
