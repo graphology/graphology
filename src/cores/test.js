@@ -84,14 +84,14 @@ function range(s, e) {
   return set;
 }
 
-describe('Core', function () {
+describe('graphology-cores', function () {
   it('should work on empty graph.', function () {
     const empty = new graphology.Graph();
     const coreNumber = core.coreNumber(empty);
     assert.deepEqual(coreNumber, {});
   });
 
-  it('should return good nodes by core.', function () {
+  it('should return correct nodes by core.', function () {
     const graph = prepareGraphG();
     const coreNumber = core.coreNumber(graph);
     const byCores = Object.entries(coreNumber).reduce((obj, entry) => {
@@ -107,7 +107,7 @@ describe('Core', function () {
     assert.deepEqual(byCores[3], new Set([1, 2, 3, 4, 5, 6, 7, 8]));
   });
 
-  it('should return good nodes by core again.', function () {
+  it('should return correct nodes by core again.', function () {
     const graph = prepareGraphH();
     const coreNumber = core.coreNumber(graph);
     const byCores = Object.entries(coreNumber).reduce(function (obj, entry) {
@@ -122,7 +122,7 @@ describe('Core', function () {
     assert.deepEqual(byCores[2], new Set([2, 4, 5, 6]));
   });
 
-  it('should not work if the grah has self loops.', function () {
+  it('should not work if the graph has self loops.', function () {
     const graph = prepareCycle();
     graph.mergeEdge(1, 1);
     assert.throws(function () {
@@ -130,7 +130,7 @@ describe('Core', function () {
     }, /graphology/);
   });
 
-  it('should return good nodes by core with directed graph.', function () {
+  it('should return correct nodes by core with directed graph.', function () {
     const graph = prepareDiGraphI();
     let coreNumber = core.coreNumber(graph);
 
@@ -310,7 +310,7 @@ describe('Core', function () {
     }, /graphology/);
   });
 
-  it('should return good onion layers.', function () {
+  it('should return correct onion layers.', function () {
     const graph = prepareGraphG();
     const onion = core.onionLayers(graph);
     const nodesByLayer = [];

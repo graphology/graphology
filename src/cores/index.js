@@ -1,8 +1,8 @@
 /**
- * Graphology Core Metrics
- * ===========================
+ * Graphology Cores
+ * =================
  *
- * Functions computing the metrics related to the core
+ * Functions computing the metrics related to the k-cores
  * of a given graph.
  */
 const isGraph = require('graphology-utils/is-graph');
@@ -169,15 +169,16 @@ function kCrust(graph, k, customCore) {
       if (customCore[field] - 1 > k) k = customCore[field] - 1;
     }
   }
-  const nodes = [];
-  for (const field in customCore) {
-    const ccf = customCore[field];
-    if (ccf <= k) nodes.push(field);
-  }
-  return subgraph(graph, nodes);
+
+  return subgraph(graph, node => {
+    const ccf = customCore[node];
+
+    return ccf <= k;
+  });
 }
 
 function kCorona(graph, k, customCore) {
+  // TODO: can be optimized to leverage the AND short-circuit
   return coreSubgraph(
     graph,
     (node, resultK, resultCore) => {
@@ -202,6 +203,7 @@ function kCorona(graph, k, customCore) {
   );
 }
 
+// TODO: can be wildly optimized
 function kTruss(graph, k) {
   if (!isGraph(graph)) {
     throw new Error(
@@ -264,6 +266,7 @@ function kTruss(graph, k) {
   return H;
 }
 
+// TODO: can be wildly optimized
 function onionLayers(assign, graph, nodeOnionLayerAttribute) {
   nodeOnionLayerAttribute = nodeOnionLayerAttribute || 'onionLayer';
 

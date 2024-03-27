@@ -1,10 +1,15 @@
 import Graph, {Attributes} from 'graphology-types';
 
-export function coreNumber(
-  assign: boolean,
-  graph: Graph,
-  coreAttributes?: string
-): Record<string, number>;
+interface ICoreNumber {
+  (assign: boolean, graph: Graph, coreAttributes?: string): Record<
+    string,
+    number
+  >;
+  assign(assign: boolean, graph: Graph, coreAttributes?: string): void;
+}
+
+declare const coreNumber: ICoreNumber;
+export {coreNumber};
 
 export function kCore<
   NodeAttributes extends Attributes = Attributes,
@@ -55,8 +60,13 @@ export function kTruss<
   k: number
 ): Graph<NodeAttributes, EdgeAttributes, GraphAttributes>;
 
-export function onionLayers(
-  assign: boolean,
-  graph: Graph,
-  nodeOnionLayerAttribute?: string
-): Record<string, number>;
+interface IOnionLayers {
+  (assign: boolean, graph: Graph, nodeOnionLayerAttribute?: string): Record<
+    string,
+    number
+  >;
+  assign(assign: boolean, graph: Graph, nodeOnionLayerAttribute?: string): void;
+}
+
+declare const onionLayers: IOnionLayers;
+export {onionLayers};
