@@ -1,4 +1,4 @@
-var merge = require('lodash/merge');
+var resolveDefaults = require('graphology-utils/defaults');
 
 var DEFAULTS = {
   batchSize: 500,
@@ -31,7 +31,8 @@ exports.refineSettings = function refineSettings(settings) {
   if (dimensions.height && !dimensions.width)
     dimensions.width = dimensions.height;
 
-  settings = merge({}, DEFAULTS, settings, dimensions);
+  settings = resolveDefaults(settings, dimensions);
+  settings = resolveDefaults(settings, DEFAULTS);
 
   if (!settings.width && !settings.height)
     throw new Error(
