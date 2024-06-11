@@ -12,8 +12,8 @@
  */
 var isGraph = require('graphology-utils/is-graph');
 
-module.exports = function edgeUniformity(graph) {
-  if (!isGraph(graph))
+module.exports = function connectedCloseness(g, settings) {
+  if (!isGraph(g))
     throw new Error(
       'graphology-metrics/layout-quality/connected-closeness: given graph is not a valid graphology instance.'
     );
