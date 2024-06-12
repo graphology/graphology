@@ -14,12 +14,12 @@
 var isGraph = require('graphology-utils/is-graph');
 
 function max(values, getter) {
-  if (values.length < 2)
+  if (values.length < 1)
     throw new Error(
       'graphology-metrics/layout-quality/connected-closeness.max: not enough values!'
     );
 
-  var m = values[0];
+  var m = undefined;
   var v;
 
   for (var i = 1, l = values.length; i < l; i++) {
@@ -27,19 +27,19 @@ function max(values, getter) {
 
     if (getter !== undefined) v = getter(v);
 
-    if (v > m) m = v;
+    if (m === undefined || v > m) m = v;
   }
 
   return m;
 }
 
 function min(values, getter) {
-  if (values.length < 2)
+  if (values.length < 1)
     throw new Error(
       'graphology-metrics/layout-quality/connected-closeness.min: not enough values!'
     );
 
-  var m = values[0];
+  var m = undefined;
   var v;
 
   for (var i = 1, l = values.length; i < l; i++) {
@@ -47,7 +47,7 @@ function min(values, getter) {
 
     if (getter !== undefined) v = getter(v);
 
-    if (v < m) m = v;
+    if (m === undefined || v < m) m = v;
   }
 
   return m;
@@ -69,9 +69,12 @@ module.exports = function connectedCloseness(g, settings) {
     };
 
   // Default settings
+  // TODO: don't mutate the user's object
   settings = settings || {};
   settings.epsilon = settings.epsilon || 0.03; // 3%
   settings.gridSize = settings.gridSize || 10; // This is an optimization thing, it's not the graphical grid
+
+  var rng = settings.rng || Math.random;
 
   var pairsOfNodesSampled = samplePairsOfNodes();
   var connectedPairs = g.edges().map(function (eid) {
@@ -202,9 +205,9 @@ module.exports = function connectedCloseness(g, settings) {
     var samplesCount = g.size; // We want as many samples as edges
     if (samplesCount < 1) return [];
     for (var i = 0; i < samplesCount; i++) {
-      node1 = g.nodes()[Math.floor(Math.random() * g.order)];
+      node1 = g.nodes()[Math.floor(rng() * g.order)];
       do {
-        node2 = g.nodes()[Math.floor(Math.random() * g.order)];
+        node2 = g.nodes()[Math.floor(rng() * g.order)];
       } while (node1 === node2);
       n1 = g.getNodeAttributes(node1);
       n2 = g.getNodeAttributes(node2);
@@ -218,6 +221,7 @@ module.exports = function connectedCloseness(g, settings) {
     var CMax = max(indicatorsOverDelta, function (d) {
       return d.C;
     });
+
     var deltaMax = min(
       indicatorsOverDelta.filter(function (d) {
         return d.C >= (1 - epsilon) * CMax;

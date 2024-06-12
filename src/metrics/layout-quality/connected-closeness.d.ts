@@ -1,8 +1,11 @@
 import Graph from 'graphology-types';
 
+type RNGFunction = () => number;
+
 export type ConnectedClosenessSettings = {
   epsilon?: number;
   gridSize?: number;
+  rng?: RNGFunction;
 };
 
 export type ConnectedClosenessResult =
