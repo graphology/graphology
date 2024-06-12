@@ -12,7 +12,46 @@
  * https://www.jgaa.info/index.php/jgaa/article/view/paper626
  */
 var isGraph = require('graphology-utils/is-graph');
-var d3 = undefined;
+
+function max(values, getter) {
+  if (values.length < 2)
+    throw new Error(
+      'graphology-metrics/layout-quality/connected-closeness.max: not enough values!'
+    );
+
+  var m = values[0];
+  var v;
+
+  for (var i = 1, l = values.length; i < l; i++) {
+    v = values[i];
+
+    if (getter !== undefined) v = getter(v);
+
+    if (v > m) m = v;
+  }
+
+  return m;
+}
+
+function min(values, getter) {
+  if (values.length < 2)
+    throw new Error(
+      'graphology-metrics/layout-quality/connected-closeness.min: not enough values!'
+    );
+
+  var m = values[0];
+  var v;
+
+  for (var i = 1, l = values.length; i < l; i++) {
+    v = values[i];
+
+    if (getter !== undefined) v = getter(v);
+
+    if (v < m) m = v;
+  }
+
+  return m;
+}
 
 module.exports = function connectedCloseness(g, settings) {
   if (!isGraph(g))
@@ -44,10 +83,7 @@ module.exports = function connectedCloseness(g, settings) {
 
   // Grid search for CMax
 
-  var range = [
-    0,
-    Math.max(d3.max(pairsOfNodesSampled), d3.max(connectedPairs))
-  ];
+  var range = [0, Math.max(max(pairsOfNodesSampled), max(connectedPairs))];
 
   var CMax = 0;
   var distancesIndex = {};
@@ -178,10 +214,10 @@ module.exports = function connectedCloseness(g, settings) {
   }
 
   function findDeltaMax(indicatorsOverDelta, epsilon) {
-    var CMax = d3.max(indicatorsOverDelta, function (d) {
+    var CMax = max(indicatorsOverDelta, function (d) {
       return d.C;
     });
-    var deltaMax = d3.min(
+    var deltaMax = min(
       indicatorsOverDelta.filter(function (d) {
         return d.C >= (1 - epsilon) * CMax;
       }),
