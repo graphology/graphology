@@ -83,11 +83,12 @@ module.exports = function connectedCloseness(g, settings) {
 
   // Grid search for CMax
 
-  var range = [0, Math.max(max(pairsOfNodesSampled), max(connectedPairs))];
+  var range = [0, Math.max(max(pairsOfNodesSampled), max(connectedPairs) || 0)];
 
   var CMax = 0;
   var distancesIndex = {};
-  var Delta, oldCMax, C, i, targetIndex, indicatorsOverDelta;
+  var Delta, oldCMax, C, i, indicatorsOverDelta;
+  var targetIndex = -1;
   do {
     for (i = 0; i <= settings.gridSize; i++) {
       Delta = range[0] + ((range[1] - range[0]) * i) / settings.gridSize;
