@@ -41,6 +41,7 @@ _Centrality_
 
 _Layout quality metrics_
 
+- [Connected Closeness](#connected-closeness)
 - [Edge Uniformity](#edge-uniformity)
 - [Neighborhood Preservation](#neighborhood-preservation)
 - [Stress](#stress)
@@ -538,6 +539,10 @@ _Arguments_
   - **tolerance** _?number_ [`1.e-6`]: convergence error tolerance.
 
 ## Layout quality metrics
+
+### Connected Closeness
+
+TODO...
 
 ### Edge Uniformity
 

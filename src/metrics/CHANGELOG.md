@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.3.0 (provisional)
+
+- Adding `connectedCloseness`.
+
+## 2.2.0
+
+- Adding `edgeBetweennessCentrality`.
+- Improving `disparity` performance.
+
 ## 2.1.0
 
 - Adding edge `disparity` metric.
