@@ -70,6 +70,9 @@ module.exports = function connectedCloseness(g, settings) {
 
   // Default settings
   // TODO: don't mutate the user's object
+  // TODO: lint
+  // TODO: fix directedness, infer types etc.
+  // TODO: add non sampling option
   settings = settings || {};
   settings.epsilon = settings.epsilon || 0.03; // 3%
   settings.gridSize = settings.gridSize || 10; // This is an optimization thing, it's not the graphical grid
