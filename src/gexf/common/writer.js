@@ -452,21 +452,21 @@ function writeElements(version, writer, type, model, elements) {
       }
 
       //-- 2) Size
-      if ('size' in viz) {
+      if (viz.size !== undefined) {
         writer.startElementNS('viz', 'size');
         writer.writeAttribute('value', viz.size);
         writer.endElement();
       }
 
       //-- 3) Position
-      if ('x' in viz || 'y' in viz || 'z' in viz) {
+      if (viz.x !== undefined || viz.y !== undefined || viz.z !== undefined) {
         writer.startElementNS('viz', 'position');
 
-        if ('x' in viz) writer.writeAttribute('x', viz.x);
+        if (viz.x !== undefined) writer.writeAttribute('x', viz.x);
 
-        if ('y' in viz) writer.writeAttribute('y', viz.y);
+        if (viz.y !== undefined) writer.writeAttribute('y', viz.y);
 
-        if ('z' in viz) writer.writeAttribute('z', viz.z);
+        if (viz.z !== undefined) writer.writeAttribute('z', viz.z);
 
         writer.endElement();
       }
@@ -479,7 +479,7 @@ function writeElements(version, writer, type, model, elements) {
       }
 
       //-- 5) Thickness
-      if ('thickness' in viz) {
+      if (viz.thickness !== undefined) {
         writer.startElementNS('viz', 'thickness');
         writer.writeAttribute('value', viz.thickness);
         writer.endElement();

@@ -135,6 +135,15 @@ exports.testWriter = function (writer, parser) {
       assert.strictEqual(parsed.directedSize, 1);
       assert.strictEqual(parsed.undirectedSize, 1);
     });
+
+    it('should not write empty viz elements (issue #513).', function () {
+      var graph = new Graph();
+      graph.addNode('test', {size: undefined});
+
+      var gexf = writer(graph);
+
+      assert(!gexf.includes('viz:size'));
+    });
   });
 };
 
