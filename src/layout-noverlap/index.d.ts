@@ -15,6 +15,7 @@ export type NoverlapSettings = {
   expansion?: number;
   ratio?: number;
   speed?: number;
+  wasm?: boolean;
 };
 
 export type NoverlapLayoutParameters = {
