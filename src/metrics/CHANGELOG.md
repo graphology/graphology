@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.1
+
+- Adding explicit dependency on `graphology-indices`.
+
 ## 2.3.0
 
 - Adding `connectedCloseness`.
