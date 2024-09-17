@@ -13,6 +13,7 @@
       <attribute id="mixed" title="mixed" type="string"/>
     </attributes>
     <attributes class="edge">
+      <attribute id="set" title="set" type="liststring"/>
       <attribute id="number" title="number" type="integer"/>
     </attributes>
     <nodes>
@@ -43,6 +44,7 @@
     <edges>
       <edge id="J-S" source="John" target="Suzy" weight="456" label="Fine edge">
         <attvalues>
+          <attvalue for="set" value="truc|machin"/>
           <attvalue for="number" value="12"/>
         </attvalues>
         <viz:color r="204" g="207" b="255"/>

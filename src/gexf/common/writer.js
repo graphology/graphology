@@ -188,8 +188,8 @@ function inferListValueType(values) {
 }
 
 function inferValueType(value) {
-  if (Array.isArray(value)) {
-    var type = inferListValueType(value);
+  if (Array.isArray(value) || value instanceof Set) {
+    var type = inferListValueType(Array.from(value));
 
     if (type === 'empty') return 'empty';
 
@@ -228,13 +228,14 @@ function serializeValue(type, value) {
  */
 function cast(version, type, value) {
   if (type.startsWith('list')) {
-    value = Array.isArray(value) ? value : [value];
+    var arrayValue = Array.isArray(value) ? value : [value];
+    if (value instanceof Set) arrayValue = Array.from(value);
 
     var subtype = type.slice(4);
     if (version === '1.3') {
       return (
         '[' +
-        value
+        arrayValue
           .map(function (v) {
             return serializeValue(subtype, v);
           })
@@ -242,7 +243,7 @@ function cast(version, type, value) {
         ']'
       );
     } else {
-      return value.join('|');
+      return arrayValue.join('|');
     }
   }
 

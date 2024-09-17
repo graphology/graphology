@@ -49,6 +49,7 @@ var createBasicGraph = function () {
     thickness: 34,
     shape: 'dotted',
     label: 'Fine edge',
+    set: new Set(['truc', 'machin']),
     number: 12,
     useless: ''
   });
@@ -88,7 +89,8 @@ module.exports = [
           label: attributes.label ? '(Edge) - ' + attributes.label : '',
           weight: attributes.weight / 2,
           attributes: {
-            number: attributes.number
+            number: attributes.number,
+            set: attributes.set
           },
           viz: {
             shape: attributes.shape
