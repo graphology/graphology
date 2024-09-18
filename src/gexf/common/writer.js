@@ -188,8 +188,15 @@ function inferListValueType(values) {
 }
 
 function inferValueType(value) {
-  if (Array.isArray(value) || value instanceof Set) {
-    var type = inferListValueType(Array.from(value));
+  // NOTE: at some point we might need a frame-independent test for this...
+  // NOTE: it would be nice not to have to reallocate the Set as an Array
+  // but good enough for the time being.
+  if (value instanceof Set) {
+    value = Array.from(value);
+  }
+
+  if (Array.isArray(value)) {
+    var type = inferListValueType(value);
 
     if (type === 'empty') return 'empty';
 
@@ -228,8 +235,8 @@ function serializeValue(type, value) {
  */
 function cast(version, type, value) {
   if (type.startsWith('list')) {
+    if (value instanceof Set) value = Array.from(value);
     var arrayValue = Array.isArray(value) ? value : [value];
-    if (value instanceof Set) arrayValue = Array.from(value);
 
     var subtype = type.slice(4);
     if (version === '1.3') {
