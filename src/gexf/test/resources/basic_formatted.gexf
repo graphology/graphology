@@ -12,6 +12,7 @@
     </attributes>
     <attributes class="edge">
       <attribute id="number" title="number" type="integer"/>
+      <attribute id="set" title="set" type="liststring"/>
     </attributes>
     <nodes>
       <node id="Suzy" label="(Node) - Suzy, Ghost">
@@ -35,6 +36,7 @@
       <edge id="J-S" source="John" target="Suzy" weight="228" label="(Edge) - Fine edge">
         <attvalues>
           <attvalue for="number" value="12"/>
+          <attvalue for="set" value="truc|machin"/>
         </attvalues>
         <viz:shape value="dotted"/>
       </edge>
