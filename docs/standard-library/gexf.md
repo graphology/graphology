@@ -5,7 +5,7 @@ nav_order: 8
 parent: Standard library
 aux_links:
   "Library directory": "https://github.com/graphology/graphology/tree/master/src/gexf"
-  
+  "Changelog": "https://github.com/graphology/graphology/tree/master/src/gexf/CHANGELOG.md"
 ---
 
 [![Build Status](/standard-library/gexf/workflows/Tests/badge.svg)](/standard-library/gexf/actions)
