@@ -1,5 +1,6 @@
 exports.hasCycle = require('./has-cycle.js');
 exports.willCreateCycle = require('./will-create-cycle.js');
+exports.bypassNode = require('./bypass.js');
 
 const sort = require('./topological-sort');
 exports.forEachNodeInTopologicalOrder = sort.forEachNodeInTopologicalOrder;

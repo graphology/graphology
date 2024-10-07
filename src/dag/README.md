@@ -148,3 +148,43 @@ forEachTopologicalGeneration(graph, generation => {
   console.log(generation);
 });
 ```
+
+### bypassNode
+
+Function that fully connects each of a node's in-neighbors to its
+out-neighbors, so that the node can be dropped while preserving its
+neighbors' relative order with one another.
+
+This function is m*n in time and space, where m is the node's in-degree
+and n is the node's out-degree.
+
+```js
+import {bypassNode} from 'graphology-dag';
+// Alternatively, to load only the relevant code:
+import bypassNode from 'graphology-dag/bypass';
+
+const graph = new DirectedGraph();
+graph.mergeEdge(0, 2);
+graph.mergeEdge(1, 2);
+graph.mergeEdge(2, 3);
+graph.mergeEdge(2, 4);
+
+/* Now the graph looks like:
+1    2
+ \  /
+  3
+ / \
+4   5
+(source nodes on top)
+*/
+
+bypassNode(graph, 3);
+graph.dropNode(3);
+
+/* After dropping 3:
+1  2
+ \/
+ /\
+4  5
+*/
+```

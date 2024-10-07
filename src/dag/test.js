@@ -19,6 +19,18 @@ const {
   topologicalGenerations,
   forEachTopologicalGeneration
 } = require('./topological-sort.js');
+const bypassNode = require('./bypass.js');
+const {NotFoundGraphError} = require("graphology");
+
+function allEdges(graph) {
+  return graph
+    .edges()
+    .map(graph.extremities.bind(graph))
+    .sort(([src1, tg1], [src2, tg2]) => {
+      const srcCmp = src1 - src2;
+      return srcCmp !== 0 ? srcCmp : tg1 - tg2;
+    });
+}
 
 describe('graphology-dag', function () {
   describe('hasCycle', function () {
@@ -397,5 +409,111 @@ describe('graphology-dag', function () {
 
       assert.deepStrictEqual(generations, []);
     });
+  });
+
+  describe('bypassNode', function () {
+    it('should throw error if the node is not in the graph', function () {
+      const graph = new DirectedGraph();
+      assert.throws(() => bypassNode(graph, '0'), NotFoundGraphError);
+    });
+
+    it('should do nothing on disconnected nodes', () => {
+      const graph = new DirectedGraph();
+      graph.addNode(0)
+      graph.addNode(1)
+      bypassNode(graph, 0);
+      assert.deepStrictEqual(graph.nodes().sort(), ['0', '1']);
+      assert.deepStrictEqual(graph.edges(), []);
+    });
+
+    it('should do nothing on root nodes', () => {
+      const graph = new DirectedGraph();
+      const [edgeKey] = graph.mergeEdge(0, 1);
+      bypassNode(graph, 0);
+      assert.deepStrictEqual(graph.nodes().sort(), ['0', '1']);
+      assert.deepStrictEqual(graph.edges(), [edgeKey]);
+    });
+
+    it('should do nothing on leaf nodes', () => {
+      const graph = new DirectedGraph();
+      const [edgeKey] = graph.mergeEdge(0, 1);
+      bypassNode(graph, 1);
+      assert.deepStrictEqual(graph.nodes().sort(), ['0', '1']);
+      assert.deepStrictEqual(graph.edges(), [edgeKey]);
+    });
+
+    it('should patch through 1-1 nodes', () => {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(0, 1);
+      graph.mergeEdge(1, 2);
+      bypassNode(graph, 1);
+      graph.dropNode(1);
+
+      assert.deepStrictEqual(graph.nodes().sort(), ['0', '2']);
+      assert.deepStrictEqual(allEdges(graph), [['0', '2']]
+      )
+    });
+
+    it('should patch through many-to-1 nodes', () => {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(0, 2);
+      graph.mergeEdge(1, 2);
+      graph.mergeEdge(2, 3);
+      bypassNode(graph, 2);
+      graph.dropNode(2);
+
+      assert.deepStrictEqual(graph.nodes().sort(), ['0', '1', '3']);
+      assert.deepStrictEqual(allEdges(graph), [['0', '3'], ['1', '3']]);
+    });
+
+    it('should patch through 1-to-many nodes', () => {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(0, 1);
+      graph.mergeEdge(1, 2);
+      graph.mergeEdge(1, 3);
+      bypassNode(graph, 1);
+      graph.dropNode(1);
+
+      assert.deepStrictEqual(graph.nodes().sort(), ['0', '2', '3']);
+      assert.deepStrictEqual(allEdges(graph), [['0', '2'], ['0', '3']]);
+    });
+
+    it('should cross-connect many-to-many nodes', () => {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(0, 2);
+      graph.mergeEdge(1, 2);
+      graph.mergeEdge(2, 3);
+      graph.mergeEdge(2, 4);
+      bypassNode(graph, 2);
+      graph.dropNode(2);
+
+      assert.deepStrictEqual(graph.nodes().sort(), ['0', '1', '3', '4']);
+      assert.deepStrictEqual(allEdges(graph), [
+        ['0', '3'],
+        ['0', '4'],
+        ['1', '3'],
+        ['1', '4'],
+      ]);
+    });
+
+    it('should respect pre-existing edges', () => {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(0, 1);
+      graph.mergeEdge(0, 2, { preexistingAttr: 'abcd' });
+      graph.mergeEdge(1, 2);
+      bypassNode(graph, 1);
+      graph.dropNode(1);
+      assert.strictEqual(graph.edges(0, 2).length, 1);
+    });
+
+    it('should not create new edges even in a MultiGraph', () => {
+      const graph = new MultiDirectedGraph();
+      graph.mergeEdge(0, 1);
+      graph.mergeEdge(0, 2, { preexistingAttr: 'abcd' });
+      graph.mergeEdge(1, 2);
+      bypassNode(graph, 1);
+      graph.dropNode(1);
+      assert.strictEqual(graph.edges(0, 2).length, 1);
+    })
   });
 });
