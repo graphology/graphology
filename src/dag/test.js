@@ -19,8 +19,9 @@ const {
   topologicalGenerations,
   forEachTopologicalGeneration
 } = require('./topological-sort.js');
-const bypassNode = require('./bypass.js');
-const {NotFoundGraphError} = require("graphology");
+const {forEachTransitiveRelation, bypassNode} = require('./transitive.js');
+const {NotFoundGraphError} = require('graphology');
+const sinon = require('sinon');
 
 function allEdges(graph) {
   return graph
@@ -411,6 +412,129 @@ describe('graphology-dag', function () {
     });
   });
 
+  describe('forEachTransitiveRelation', function () {
+    it('should throw error if the node is not in the graph', function () {
+      const graph = new DirectedGraph();
+      assert.throws(() => bypassNode(graph, '0'), NotFoundGraphError);
+    });
+
+    it('should do nothing on disconnected nodes', function () {
+      const graph = new DirectedGraph();
+      graph.addNode(0);
+      graph.addNode(1);
+      const callback = sinon.spy();
+      forEachTransitiveRelation(graph, 0, callback);
+      assert.strictEqual(callback.callCount, 0);
+    });
+
+    it('should do nothing on root nodes', function () {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(0, 1);
+      const callback = sinon.spy();
+      forEachTransitiveRelation(graph, 0, callback);
+      assert.strictEqual(callback.callCount, 0);
+    });
+
+    it('should do nothing on leaf nodes', function () {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(0, 1);
+      const callback = sinon.spy();
+      forEachTransitiveRelation(graph, 1, callback);
+      assert.strictEqual(callback.callCount, 0);
+    });
+
+    it('should patch through 1-1 nodes', function () {
+      const graph = new DirectedGraph();
+      const [edge01] = graph.mergeEdge(0, 1);
+      const [edge12] = graph.mergeEdge(1, 2);
+      const callback = sinon.spy();
+      forEachTransitiveRelation(graph, 1, callback);
+      assert.strictEqual(callback.callCount, 1);
+      assert.strictEqual(callback.calledWith(edge01, edge12), true);
+    });
+
+    it('should patch through many-to-1 nodes', function () {
+      const graph = new DirectedGraph();
+      const [edge01] = graph.mergeEdge(0, 1);
+      const [edge12] = graph.mergeEdge(1, 2);
+      const [edge13] = graph.mergeEdge(1, 3);
+      const callback = sinon.spy();
+      forEachTransitiveRelation(graph, 1, callback);
+      assert.strictEqual(callback.callCount, 2);
+      assert.strictEqual(callback.calledWith(edge01, edge12), true);
+      assert.strictEqual(callback.calledWith(edge01, edge13), true);
+    });
+
+    it('should patch through 1-to-many nodes', function () {
+      const graph = new DirectedGraph();
+      const [edge02] = graph.mergeEdge(0, 2);
+      const [edge12] = graph.mergeEdge(1, 2);
+      const [edge23] = graph.mergeEdge(2, 3);
+      const callback = sinon.spy();
+      forEachTransitiveRelation(graph, 2, callback);
+      assert.strictEqual(callback.callCount, 2);
+      assert.strictEqual(callback.calledWith(edge02, edge23), true);
+      assert.strictEqual(callback.calledWith(edge12, edge23), true);
+    });
+
+    it('should cross-connect many-to-many nodes', function () {
+      const graph = new DirectedGraph();
+      const [edge02] = graph.mergeEdge(0, 2);
+      const [edge12] = graph.mergeEdge(1, 2);
+      const [edge23] = graph.mergeEdge(2, 3);
+      const [edge24] = graph.mergeEdge(2, 4);
+      const callback = sinon.spy();
+      forEachTransitiveRelation(graph, 2, callback);
+      assert.strictEqual(callback.callCount, 4);
+      assert.strictEqual(callback.calledWith(edge02, edge23), true);
+      assert.strictEqual(callback.calledWith(edge12, edge23), true);
+      assert.strictEqual(callback.calledWith(edge02, edge24), true);
+      assert.strictEqual(callback.calledWith(edge12, edge24), true);
+    });
+
+    it('should pass node and edge attributes', () => {
+      const graph = new DirectedGraph();
+      graph.addNode(0, {node0attr: '0'});
+      graph.addNode(1, {node1attr: '1'});
+      graph.addNode(2, {node2attr: '2'});
+      const [inEdge] = graph.mergeEdge(0, 1, {edge01attr: '0-1'});
+      const [outEdge] = graph.mergeEdge(1, 2, {edge12attr: '1-2'});
+
+      const callback = sinon.spy();
+      forEachTransitiveRelation(graph, 1, callback);
+      assert.strictEqual(callback.callCount, 1);
+      assert.deepStrictEqual(callback.getCall(0).args, [
+        inEdge,
+        outEdge,
+        {edge01attr: '0-1'},
+        {edge12attr: '1-2'},
+        '0',
+        '1',
+        '2',
+        {node0attr: '0'},
+        {node1attr: '1'},
+        {node2attr: '2'}
+      ]);
+    });
+
+    it('should connect all edges on a multi-graph', function () {
+      const graph = new MultiDirectedGraph();
+      const [in0] = graph.mergeEdge(0, 1);
+      const [in1] = graph.mergeEdge(0, 1);
+      const [out0] = graph.mergeEdge(1, 2);
+      const [out1] = graph.mergeEdge(1, 2);
+
+      const callback = sinon.spy();
+      forEachTransitiveRelation(graph, 1, callback);
+
+      assert.strictEqual(callback.callCount, 4);
+      assert.strictEqual(callback.calledWith(in0, out0), true);
+      assert.strictEqual(callback.calledWith(in0, out1), true);
+      assert.strictEqual(callback.calledWith(in1, out0), true);
+      assert.strictEqual(callback.calledWith(in1, out1), true);
+    });
+  });
+
   describe('bypassNode', function () {
     it('should throw error if the node is not in the graph', function () {
       const graph = new DirectedGraph();
@@ -419,8 +543,8 @@ describe('graphology-dag', function () {
 
     it('should do nothing on disconnected nodes', () => {
       const graph = new DirectedGraph();
-      graph.addNode(0)
-      graph.addNode(1)
+      graph.addNode(0);
+      graph.addNode(1);
       bypassNode(graph, 0);
       assert.deepStrictEqual(graph.nodes().sort(), ['0', '1']);
       assert.deepStrictEqual(graph.edges(), []);
@@ -450,8 +574,7 @@ describe('graphology-dag', function () {
       graph.dropNode(1);
 
       assert.deepStrictEqual(graph.nodes().sort(), ['0', '2']);
-      assert.deepStrictEqual(allEdges(graph), [['0', '2']]
-      )
+      assert.deepStrictEqual(allEdges(graph), [['0', '2']]);
     });
 
     it('should patch through many-to-1 nodes', () => {
@@ -463,7 +586,10 @@ describe('graphology-dag', function () {
       graph.dropNode(2);
 
       assert.deepStrictEqual(graph.nodes().sort(), ['0', '1', '3']);
-      assert.deepStrictEqual(allEdges(graph), [['0', '3'], ['1', '3']]);
+      assert.deepStrictEqual(allEdges(graph), [
+        ['0', '3'],
+        ['1', '3']
+      ]);
     });
 
     it('should patch through 1-to-many nodes', () => {
@@ -475,7 +601,10 @@ describe('graphology-dag', function () {
       graph.dropNode(1);
 
       assert.deepStrictEqual(graph.nodes().sort(), ['0', '2', '3']);
-      assert.deepStrictEqual(allEdges(graph), [['0', '2'], ['0', '3']]);
+      assert.deepStrictEqual(allEdges(graph), [
+        ['0', '2'],
+        ['0', '3']
+      ]);
     });
 
     it('should cross-connect many-to-many nodes', () => {
@@ -492,14 +621,14 @@ describe('graphology-dag', function () {
         ['0', '3'],
         ['0', '4'],
         ['1', '3'],
-        ['1', '4'],
+        ['1', '4']
       ]);
     });
 
     it('should respect pre-existing edges', () => {
       const graph = new DirectedGraph();
       graph.mergeEdge(0, 1);
-      graph.mergeEdge(0, 2, { preexistingAttr: 'abcd' });
+      graph.mergeEdge(0, 2, {preexistingAttr: 'abcd'});
       graph.mergeEdge(1, 2);
       bypassNode(graph, 1);
       graph.dropNode(1);
@@ -509,11 +638,11 @@ describe('graphology-dag', function () {
     it('should not create new edges even in a MultiGraph', () => {
       const graph = new MultiDirectedGraph();
       graph.mergeEdge(0, 1);
-      graph.mergeEdge(0, 2, { preexistingAttr: 'abcd' });
+      graph.mergeEdge(0, 2, {preexistingAttr: 'abcd'});
       graph.mergeEdge(1, 2);
       bypassNode(graph, 1);
       graph.dropNode(1);
       assert.strictEqual(graph.edges(0, 2).length, 1);
-    })
+    });
   });
 });
