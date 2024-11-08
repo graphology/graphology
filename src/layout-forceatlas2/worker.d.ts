@@ -7,7 +7,9 @@ export default class FA2LayoutSupervisor<
 > {
   constructor(
     graph: Graph,
-    params?: ForceAtlas2LayoutParameters<NodeAttributes, EdgeAttributes>
+    params?: ForceAtlas2LayoutParameters<NodeAttributes, EdgeAttributes> & {
+      backgroundIterations: number;
+    }
   );
 
   isRunning(): boolean;

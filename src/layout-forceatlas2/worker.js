@@ -47,6 +47,7 @@ function FA2LayoutSupervisor(graph, params) {
   this.worker = null;
   this.graph = graph;
   this.settings = settings;
+  this.backgroundIterations = params.backgroundIterations || 1;
   this.getEdgeWeight = getEdgeWeight;
   this.matrices = null;
   this.running = false;
@@ -128,7 +129,8 @@ FA2LayoutSupervisor.prototype.askForIterations = function (withEdges) {
 
   var payload = {
     settings: this.settings,
-    nodes: matrices.nodes.buffer
+    nodes: matrices.nodes.buffer,
+    iterations: this.backgroundIterations
   };
 
   var buffers = [matrices.nodes.buffer];

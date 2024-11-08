@@ -17,13 +17,14 @@ module.exports = function worker() {
 
   self.addEventListener('message', function (event) {
     var data = event.data;
+    var iterations = data.iterations;
 
     NODES = new Float32Array(data.nodes);
 
     if (data.edges) EDGES = new Float32Array(data.edges);
 
     // Running the iteration
-    iterate(data.settings, NODES, EDGES);
+    for (var i = 0; i < iterations; i++) iterate(data.settings, NODES, EDGES);
 
     // Sending result to supervisor
     self.postMessage(
