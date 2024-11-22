@@ -226,13 +226,13 @@ type AttributeUpdatePayload<ItemAttributes extends Attributes = Attributes> =
       type: 'set';
       key: string;
       attributes: ItemAttributes;
-      name: string;
+      name: keyof ItemAttributes;
     }
   | {
       type: 'remove';
       key: string;
       attributes: ItemAttributes;
-      name: string;
+      name: keyof ItemAttributes;
     }
   | {
       type: 'replace';
