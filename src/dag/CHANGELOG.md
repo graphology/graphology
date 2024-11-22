@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Adding `bypassNode`.
+
 ## 0.4.1
 
 - Fixing `topologicalGenerations` type declarations.
