@@ -155,3 +155,99 @@ export function incrementalIdStartingFromRandomByte() {
     return i++;
   };
 }
+
+/**
+ * Takes the first `n` items from the given iterable.
+ * @param {Iterable} iterable
+ * @param {number} n
+ * @returns {Array}
+ */
+export function take(iterable, n) {
+  let i = 0;
+
+  const iterator = iterable[Symbol.iterator]();
+
+  const array = new Array(n);
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    if (i === n) return array;
+
+    const step = iterator.next();
+
+    if (step.done) {
+      if (i !== n) array.length = i;
+
+      return array;
+    }
+
+    array[i++] = step.value;
+  }
+}
+
+/**
+ * Chains multiple iterators into a single iterator.
+ *
+ * @param {...Iterator} iterables
+ * @returns {Iterator}
+ */
+export function chain() {
+  const iterables = arguments;
+  let current = null;
+  let i = -1;
+
+  return {
+    [Symbol.iterator]() {
+      return this;
+    },
+    next() {
+      let step = null;
+
+      do {
+        if (current === null) {
+          i++;
+          if (i >= iterables.length) return {done: true};
+          current = iterables[i][Symbol.iterator]();
+        }
+        step = current.next();
+        if (step.done) {
+          current = null;
+          continue;
+        }
+        break;
+        // eslint-disable-next-line no-constant-condition
+      } while (true);
+
+      return step;
+    }
+  };
+}
+
+/**
+ * Maps the given iterable using the provided function.
+ *
+ * @param {Iterable} iterable
+ * @param {Function} fn
+ * @returns {Iterator}
+ */
+export function map(iterable, fn) {
+  return {
+    [Symbol.iterator]() {
+      return this;
+    },
+    next() {
+      const step = iterable.next();
+      if (step.done) return step;
+      return {value: fn(step.value), done: false};
+    }
+  };
+}
+
+export const emptyIterator = {
+  [Symbol.iterator]() {
+    return this;
+  },
+  next() {
+    return {done: true};
+  }
+};
