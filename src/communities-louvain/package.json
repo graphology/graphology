@@ -6,7 +6,8 @@
   "types": "index.d.ts",
   "files": [
     "*.d.ts",
-    "index.js"
+    "index.js",
+    "experimental"
   ],
   "scripts": {
     "prepublishOnly": "npm test",
