@@ -5,8 +5,7 @@
  * Testing the edges iteration-related methods of the graph.
  */
 import assert from 'assert';
-import take from 'obliterator/take';
-import map from 'obliterator/map';
+import {take, map} from '../../src/utils';
 import {deepMerge, sameMembers, addNodesFrom} from '../helpers';
 
 const METHODS = [

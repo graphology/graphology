@@ -52,8 +52,7 @@
   },
   "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
-    "events": "^3.3.0",
-    "obliterator": "^2.0.2"
+    "events": "^3.3.0"
   },
   "peerDependencies": {
     "graphology-types": ">=0.24.0"
@@ -82,5 +81,10 @@
         }
       ]
     ]
+  },
+  "exports": {
+    "require": "./dist/graphology.cjs.js",
+    "import": "./dist/graphology.mjs",
+    "types": "./dist/graphology.d.ts"
   }
 }
