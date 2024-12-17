@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.1
+
+- Improved performance of `reverse`.
+
 ## 1.6.0
 
 - Adding options to `toSimple`.
