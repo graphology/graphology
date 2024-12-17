@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.0 (provisional)
+
+- Adding `clusteringAmbiguity`.
+
 ## 2.3.1
 
 - Adding explicit dependency on `graphology-indices`.

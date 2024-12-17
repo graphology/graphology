@@ -1,5 +1,6 @@
 var wd = require('./weighted-degree.js');
 
+exports.clusteringAmbiguity = require('./clustering-ambiguity.js');
 exports.eccentricity = require('./eccentricity.js');
 
 exports.weightedDegree = wd.weightedDegree;

@@ -7,7 +7,7 @@ var Graph = require('graphology');
 var empty = require('graphology-generators/classic/empty');
 var complete = require('graphology-generators/classic/complete');
 var louvain = require('graphology-communities-louvain');
-var ambiguity = require('../../node/clustering-ambiguity.js');
+var clusteringAmbiguity = require('../../node/clustering-ambiguity.js');
 
 var UndirectedGraph = Graph.UndirectedGraph;
 var DirectedGraph = Graph.DirectedGraph;
@@ -46,35 +46,35 @@ function nlouvain(graph, n) {
 describe('ambiguity', function () {
   it('should throw if the graph is directed.', function () {
     assert.throws(function () {
-      ambiguity(new DirectedGraph(), []);
+      clusteringAmbiguity(new DirectedGraph(), []);
     });
   });
 
   it('should throw if the graph is multi.', function () {
     assert.throws(function () {
-      ambiguity(new MultiGraph(), []);
+      clusteringAmbiguity(new MultiGraph(), []);
     });
   });
 
   it('should throw if there is no clustering.', function () {
     assert.throws(function () {
-      ambiguity(new UndirectedGraph(), []);
+      clusteringAmbiguity(new UndirectedGraph(), []);
     });
   });
 
   it('should throw if there is only one clustering.', function () {
     assert.throws(function () {
-      ambiguity(new UndirectedGraph(), [{}]);
+      clusteringAmbiguity(new UndirectedGraph(), [{}]);
     });
   });
 
   it('should return empty object if the graph is empty.', function () {
     var graph = new UndirectedGraph();
-    assert.deepStrictEqual(ambiguity(graph, [{}, {}]), {});
+    assert.deepStrictEqual(clusteringAmbiguity(graph, [{}, {}]), {});
   });
 
   var clusterings = nlouvain(undirected500, 50);
-  var ambiguities = ambiguity(undirected500, clusterings);
+  var ambiguities = clusteringAmbiguity(undirected500, clusterings);
 
   it('should return an object with each node as a key.', function () {
     var nodesList = undirected500.nodes().sort();
@@ -95,7 +95,7 @@ describe('ambiguity', function () {
       clusterings[0],
       clusterings[0]
     ];
-    ambiguities = ambiguity(undirected500, identicalClusterings);
+    ambiguities = clusteringAmbiguity(undirected500, identicalClusterings);
     Object.values(ambiguities).forEach(function (v) {
       assert(v === 0);
     });
@@ -103,7 +103,7 @@ describe('ambiguity', function () {
 
   it('should return only ambiguities equal to 0 when given a complete graph.', function () {
     var graph = complete(UndirectedGraph, 10);
-    ambiguities = ambiguity(graph, nlouvain(graph, 50));
+    ambiguities = clusteringAmbiguity(graph, nlouvain(graph, 50));
     Object.values(ambiguities).forEach(function (v) {
       assert(v === 0);
     });
@@ -111,7 +111,7 @@ describe('ambiguity', function () {
 
   it('should return only ambiguities equal to 0 when given a graph composed of isolated nodes.', function () {
     var graph = empty(UndirectedGraph, 100);
-    ambiguities = ambiguity(graph, nlouvain(graph, 50));
+    ambiguities = clusteringAmbiguity(graph, nlouvain(graph, 50));
     Object.values(ambiguities).forEach(function (v) {
       assert(v === 0);
     });
@@ -119,7 +119,7 @@ describe('ambiguity', function () {
 
   it('should return only ambiguities equal to 0 when given a graph composed of connex cliques.', function () {
     var graph = createConnectedCliques();
-    ambiguities = ambiguity(graph, nlouvain(graph, 50));
+    ambiguities = clusteringAmbiguity(graph, nlouvain(graph, 50));
     Object.values(ambiguities).forEach(function (v) {
       assert(v === 0);
     });
@@ -128,7 +128,7 @@ describe('ambiguity', function () {
   it('should return only ambiguities equal to 0 when given a graph composed of cliques only connected through 2 nodes.', function () {
     var graph = createConnectedCliques();
     graph.addUndirectedEdge(1, 6);
-    ambiguities = ambiguity(graph, nlouvain(graph, 50));
+    ambiguities = clusteringAmbiguity(graph, nlouvain(graph, 50));
     Object.values(ambiguities).forEach(function (v) {
       assert(v === 0);
     });
@@ -142,7 +142,7 @@ describe('ambiguity', function () {
     graph.addUndirectedEdge(7, 8);
     graph.addUndirectedEdge(8, 6);
     console.log(nlouvain(graph, 100));
-    ambiguities = ambiguity(graph, nlouvain(graph, 50));
+    ambiguities = clusteringAmbiguity(graph, nlouvain(graph, 50));
     Object.values(ambiguities).forEach(function(v) {
       assert(v === 0);
     });

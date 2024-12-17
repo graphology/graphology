@@ -11,6 +11,10 @@ var isGraph = require('graphology-utils/is-graph');
 var inferType = require('graphology-utils/infer-type');
 var randomOrderedPair = require('pandemonium/random-ordered-pair');
 
+// TODO: docs
+// TODO: export
+// TODO: assign variant
+
 function processNodePair(
   n1,
   n2,
@@ -49,25 +53,25 @@ function processNodePair(
  *
  * @return {object}                       - A map of ambiguities computed for each node
  */
-module.exports = function ambiguity(graph, clusterings) {
+module.exports = function clusteringAmbiguity(graph, clusterings) {
   if (!isGraph(graph))
     throw new Error(
-      'graphology-metrics/clustering-ambiguity: given graph is not a valid graphology instance.'
+      'graphology-metrics/node/clustering-ambiguity: given graph is not a valid graphology instance.'
     );
 
   if (graph.multi)
     throw new Error(
-      'graphology-metrics/clustering-ambiguity: ambiguity is not implemented yet for multi graphs.'
+      'graphology-metrics/node/clustering-ambiguity: ambiguity is not implemented yet for multi graphs.'
     );
 
   if (inferType(graph) !== 'undirected')
     throw new Error(
-      'graphology-metrics/clustering-ambiguity: ambiguity is not implemented yet for directed and mixt graphs.'
+      'graphology-metrics/node/clustering-ambiguity: ambiguity is not implemented yet for directed and mixt graphs.'
     );
 
   if (clusterings.length < 2)
     throw new Error(
-      'graphology-metrics/clustering-ambiguity: given set of clusterings should have at least 2 clusterings.'
+      'graphology-metrics/node/clustering-ambiguity: given set of clusterings should have at least 2 clusterings.'
     );
 
   if (graph.order === 0) return {};
