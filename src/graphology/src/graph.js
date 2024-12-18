@@ -6,8 +6,7 @@
  * Reference implementation of the graphology specs.
  */
 import {EventEmitter} from 'events';
-import Iterator from 'obliterator/iterator';
-import take from 'obliterator/take';
+import {take} from './utils';
 
 import {
   InvalidArgumentsGraphError,
@@ -2555,18 +2554,20 @@ export default class Graph extends EventEmitter {
   nodeEntries() {
     const iterator = this._nodes.values();
 
-    return new Iterator(() => {
-      const step = iterator.next();
-
-      if (step.done) return step;
-
-      const data = step.value;
-
-      return {
-        value: {node: data.key, attributes: data.attributes},
-        done: false
-      };
-    });
+    return {
+      [Symbol.iterator]() {
+        return this;
+      },
+      next() {
+        const step = iterator.next();
+        if (step.done) return step;
+        const data = step.value;
+        return {
+          value: {node: data.key, attributes: data.attributes},
+          done: false
+        };
+      }
+    };
   }
 
   /**---------------------------------------------------------------------------

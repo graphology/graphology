@@ -21,16 +21,7 @@ const bundle = (format, filename, options = {}) => ({
     sourcemap: true,
     exports: format === 'cjs' ? 'default' : undefined
   },
-  external: [
-    ...(!options.resolve
-      ? [
-          ...Object.keys(pkg.dependencies),
-          'obliterator/iterator',
-          'obliterator/take',
-          'obliterator/chain'
-        ]
-      : [])
-  ],
+  external: [...(!options.resolve ? Object.keys(pkg.dependencies) : [])],
   plugins: [
     ...(options.resolve ? [resolve({preferBuiltins: false}), commonjs()] : []),
     ...(options.babel ? [babel({exclude: 'node_modules/**'})] : []),

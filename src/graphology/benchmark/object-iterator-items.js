@@ -1,41 +1,49 @@
 const randomString = require('pandemonium/random-string');
-const Iterator = require('obliterator/iterator');
-const consume = require('obliterator/consume');
 
 const N = 1000000;
 let i;
 
 const string = () => randomString(2, 15);
 
-const arrayItemsIterator = new Iterator(() => {
-  return {
-    done: false,
-    value: [
-      string(),
-      {name: string()},
-      string(),
-      string(),
-      {sourceData: string()},
-      {targetData: string()},
-      false
-    ]
-  };
-});
+const arrayItemsIterator = {
+  [Symbol.iterator]() {
+    return this;
+  },
+  next() {
+    return {
+      done: false,
+      value: [
+        string(),
+        {name: string()},
+        string(),
+        string(),
+        {sourceData: string()},
+        {targetData: string()},
+        false
+      ]
+    };
+  }
+};
 
-const objectItemsIterator = new Iterator(() => {
-  return {
-    done: false,
-    value: {
-      key: string(),
-      attributes: {name: string()},
-      source: string(),
-      target: string(),
-      sourceAttributes: {sourceData: string()},
-      targetAttributes: {targetData: string()},
-      undirected: false
-    }
-  };
-});
+const objectItemsIterator = {
+  [Symbol.iterator]() {
+    return this;
+  },
+  next() {
+    return {
+      done: false,
+      value: {
+        key: string(),
+        attributes: {name: string()},
+        source: string(),
+        target: string(),
+        sourceAttributes: {sourceData: string()},
+        targetAttributes: {targetData: string()},
+        undirected: false
+      }
+    };
+  }
+};
 
 const forEachWithArgs = (n, callback) => {
   for (let j = 0; j < n; j++)
@@ -64,11 +72,23 @@ const forEachWithObjects = (n, callback) => {
 };
 
 console.time('consume array');
-consume(arrayItemsIterator, N);
+i = 0;
+while (true) {
+  if (i === N) break;
+  const {done} = arrayItemsIterator.next();
+  if (done) break;
+  i++;
+}
 console.timeEnd('consume array');
 
 console.time('consume object');
-consume(objectItemsIterator, N);
+i = 0;
+while (true) {
+  if (i === N) break;
+  const {done} = objectItemsIterator.next();
+  if (done) break;
+  i++;
+}
 console.timeEnd('consume object');
 
 console.time('for of array');
