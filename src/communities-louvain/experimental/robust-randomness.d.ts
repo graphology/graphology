@@ -25,7 +25,7 @@ export type DetailedRobustRandomnessLouvainOutput = {
   deltaComputations: number;
   dendrogram: Array<PointerArray>;
   modularity: number;
-  moves: Array<Array<number>> | Array<number>;
+  moves: Array<Array<number>>;
   nodesVisited: number;
   resolution: number;
 };
