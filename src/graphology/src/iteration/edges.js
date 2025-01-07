@@ -6,7 +6,6 @@
  * graph's edges.
  */
 import {chain, emptyIterator} from '../utils';
-import {take} from '../utils';
 
 import {InvalidArgumentsGraphError, NotFoundGraphError} from '../errors';
 
@@ -295,7 +294,7 @@ function createEdgeArray(graph, type) {
     if (typeof Array.from === 'function')
       return Array.from(graph._edges.keys());
 
-    return take(graph._edges.keys(), graph._edges.size);
+    return Array.from(graph._edges.keys());
   }
 
   const size =

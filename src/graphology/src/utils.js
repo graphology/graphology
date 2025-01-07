@@ -157,35 +157,6 @@ export function incrementalIdStartingFromRandomByte() {
 }
 
 /**
- * Takes the first `n` items from the given iterable.
- * @param {Iterable} iterable
- * @param {number} n
- * @returns {Array}
- */
-export function take(iterable, n) {
-  let i = 0;
-
-  const iterator = iterable[Symbol.iterator]();
-
-  const array = new Array(n);
-
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    if (i === n) return array;
-
-    const step = iterator.next();
-
-    if (step.done) {
-      if (i !== n) array.length = i;
-
-      return array;
-    }
-
-    array[i++] = step.value;
-  }
-}
-
-/**
  * Chains multiple iterators into a single iterator.
  *
  * @param {...Iterator} iterables
