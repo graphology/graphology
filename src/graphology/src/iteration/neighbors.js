@@ -18,7 +18,7 @@ const NEIGHBORS_ITERATION = [
     type: 'mixed'
   },
   {
-    /*  */ name: 'inNeighbors',
+    name: 'inNeighbors',
     type: 'directed',
     direction: 'in'
   },
