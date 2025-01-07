@@ -249,7 +249,7 @@ function createNeighborIterator(type, direction, nodeData) {
       return createDedupedObjectIterator(null, nodeData, nodeData[direction]);
   }
 
-  let iterator = emptyIterator;
+  let iterator = emptyIterator();
 
   // Else we need to keep a set of neighbors not to return duplicates
   // We cheat by querying the other adjacencies
@@ -541,7 +541,7 @@ function attachNeighborIteratorCreator(Class, description) {
   Class.prototype[iteratorName] = function (node) {
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
-      return emptyIterator;
+      return emptyIterator();
 
     node = '' + node;
 

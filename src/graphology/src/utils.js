@@ -243,11 +243,13 @@ export function map(iterable, fn) {
   };
 }
 
-export const emptyIterator = {
-  [Symbol.iterator]() {
-    return this;
-  },
-  next() {
-    return {done: true};
-  }
-};
+export function emptyIterator() {
+  return {
+    [Symbol.iterator]() {
+      return this;
+    },
+    next() {
+      return {done: true};
+    }
+  };
+}

@@ -367,7 +367,7 @@ function forEachEdge(breakable, graph, type, callback) {
  * @return {Iterator}
  */
 function createEdgeIterator(graph, type) {
-  if (graph.size === 0) return emptyIterator;
+  if (graph.size === 0) return emptyIterator();
 
   const shouldFilter = type !== 'mixed' && type !== graph.type;
   const mask = type === 'undirected';
@@ -485,7 +485,7 @@ function createEdgeArrayForNode(multi, type, direction, nodeData) {
  * @return {Iterator}
  */
 function createEdgeIteratorForNode(type, direction, nodeData) {
-  let iterator = emptyIterator;
+  let iterator = emptyIterator();
 
   if (type !== 'undirected') {
     if (direction !== 'out' && typeof nodeData.in !== 'undefined')
@@ -595,7 +595,7 @@ function createEdgeArrayForPath(type, multi, direction, sourceData, target) {
  * @param  {function} callback   - Function to call.
  */
 function createEdgeIteratorForPath(type, direction, sourceData, target) {
-  let iterator = emptyIterator;
+  let iterator = emptyIterator();
 
   if (type !== 'undirected') {
     if (
@@ -1178,7 +1178,7 @@ function attachEdgeIteratorCreator(Class, description) {
   Class.prototype[name] = function (source, target) {
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
-      return emptyIterator;
+      return emptyIterator();
 
     if (!arguments.length) return createEdgeIterator(this, type);
 
