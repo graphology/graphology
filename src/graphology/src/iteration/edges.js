@@ -291,9 +291,6 @@ function createEdgeArray(graph, type) {
   if (graph.size === 0) return [];
 
   if (type === 'mixed' || type === graph.type) {
-    if (typeof Array.from === 'function')
-      return Array.from(graph._edges.keys());
-
     return Array.from(graph._edges.keys());
   }
 
