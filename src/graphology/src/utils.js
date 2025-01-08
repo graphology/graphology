@@ -155,3 +155,72 @@ export function incrementalIdStartingFromRandomByte() {
     return i++;
   };
 }
+
+/**
+ * Chains multiple iterators into a single iterator.
+ *
+ * @param {...Iterator} iterables
+ * @returns {Iterator}
+ */
+export function chain() {
+  const iterables = arguments;
+  let current = null;
+  let i = -1;
+
+  return {
+    [Symbol.iterator]() {
+      return this;
+    },
+    next() {
+      let step = null;
+
+      do {
+        if (current === null) {
+          i++;
+          if (i >= iterables.length) return {done: true};
+          current = iterables[i][Symbol.iterator]();
+        }
+        step = current.next();
+        if (step.done) {
+          current = null;
+          continue;
+        }
+        break;
+        // eslint-disable-next-line no-constant-condition
+      } while (true);
+
+      return step;
+    }
+  };
+}
+
+/**
+ * Maps the given iterable using the provided function.
+ *
+ * @param {Iterable} iterable
+ * @param {Function} fn
+ * @returns {Iterator}
+ */
+export function map(iterable, fn) {
+  return {
+    [Symbol.iterator]() {
+      return this;
+    },
+    next() {
+      const step = iterable.next();
+      if (step.done) return step;
+      return {value: fn(step.value), done: false};
+    }
+  };
+}
+
+export function emptyIterator() {
+  return {
+    [Symbol.iterator]() {
+      return this;
+    },
+    next() {
+      return {done: true};
+    }
+  };
+}

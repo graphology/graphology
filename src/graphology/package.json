@@ -1,6 +1,6 @@
 {
   "name": "graphology",
-  "version": "0.25.4",
+  "version": "0.26.0",
   "description": "A robust and multipurpose Graph object for JavaScript.",
   "main": "dist/graphology.cjs.js",
   "module": "dist/graphology.esm.js",
@@ -52,8 +52,7 @@
   },
   "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
-    "events": "^3.3.0",
-    "obliterator": "^2.0.2"
+    "events": "^3.3.0"
   },
   "peerDependencies": {
     "graphology-types": ">=0.24.0"
@@ -82,5 +81,10 @@
         }
       ]
     ]
+  },
+  "exports": {
+    "require": "./dist/graphology.cjs.js",
+    "import": "./dist/graphology.mjs",
+    "types": "./dist/graphology.d.ts"
   }
 }

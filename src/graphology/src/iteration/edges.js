@@ -5,9 +5,7 @@
  * Attaching some methods to the Graph class to be able to iterate over a
  * graph's edges.
  */
-import Iterator from 'obliterator/iterator';
-import chain from 'obliterator/chain';
-import take from 'obliterator/take';
+import {chain, emptyIterator} from '../utils';
 
 import {InvalidArgumentsGraphError, NotFoundGraphError} from '../errors';
 
@@ -125,37 +123,42 @@ function createIterator(object, avoid) {
   let edgeData;
   let i = 0;
 
-  return new Iterator(function next() {
-    do {
-      if (!edgeData) {
-        if (i >= l) return {done: true};
+  return {
+    [Symbol.iterator]() {
+      return this;
+    },
+    next() {
+      do {
+        if (!edgeData) {
+          if (i >= l) return {done: true};
 
-        const k = keys[i++];
+          const k = keys[i++];
 
-        if (k === avoid) {
-          edgeData = undefined;
-          continue;
+          if (k === avoid) {
+            edgeData = undefined;
+            continue;
+          }
+
+          edgeData = object[k];
+        } else {
+          edgeData = edgeData.next;
         }
+      } while (!edgeData);
 
-        edgeData = object[k];
-      } else {
-        edgeData = edgeData.next;
-      }
-    } while (!edgeData);
-
-    return {
-      done: false,
-      value: {
-        edge: edgeData.key,
-        attributes: edgeData.attributes,
-        source: edgeData.source.key,
-        target: edgeData.target.key,
-        sourceAttributes: edgeData.source.attributes,
-        targetAttributes: edgeData.target.attributes,
-        undirected: edgeData.undirected
-      }
-    };
-  });
+      return {
+        done: false,
+        value: {
+          edge: edgeData.key,
+          attributes: edgeData.attributes,
+          source: edgeData.source.key,
+          target: edgeData.target.key,
+          sourceAttributes: edgeData.source.attributes,
+          targetAttributes: edgeData.target.attributes,
+          undirected: edgeData.undirected
+        }
+      };
+    }
+  };
 }
 
 /**
@@ -226,37 +229,55 @@ function createIteratorForKey(object, k) {
   let edgeData = object[k];
 
   if (edgeData.next !== undefined) {
-    return new Iterator(function () {
-      if (!edgeData) return {done: true};
+    return {
+      [Symbol.iterator]() {
+        return this;
+      },
+      next() {
+        if (!edgeData) return {done: true};
 
-      const value = {
-        edge: edgeData.key,
-        attributes: edgeData.attributes,
-        source: edgeData.source.key,
-        target: edgeData.target.key,
-        sourceAttributes: edgeData.source.attributes,
-        targetAttributes: edgeData.target.attributes,
-        undirected: edgeData.undirected
-      };
+        const value = {
+          edge: edgeData.key,
+          attributes: edgeData.attributes,
+          source: edgeData.source.key,
+          target: edgeData.target.key,
+          sourceAttributes: edgeData.source.attributes,
+          targetAttributes: edgeData.target.attributes,
+          undirected: edgeData.undirected
+        };
 
-      edgeData = edgeData.next;
+        edgeData = edgeData.next;
 
-      return {
-        done: false,
-        value
-      };
-    });
+        return {
+          done: false,
+          value
+        };
+      }
+    };
   }
 
-  return Iterator.of({
-    edge: edgeData.key,
-    attributes: edgeData.attributes,
-    source: edgeData.source.key,
-    target: edgeData.target.key,
-    sourceAttributes: edgeData.source.attributes,
-    targetAttributes: edgeData.target.attributes,
-    undirected: edgeData.undirected
-  });
+  let done = false;
+  return {
+    [Symbol.iterator]() {
+      return this;
+    },
+    next() {
+      if (done === true) return {done: true};
+      done = true;
+      return {
+        done: false,
+        value: {
+          edge: edgeData.key,
+          attributes: edgeData.attributes,
+          source: edgeData.source.key,
+          target: edgeData.target.key,
+          sourceAttributes: edgeData.source.attributes,
+          targetAttributes: edgeData.target.attributes,
+          undirected: edgeData.undirected
+        }
+      };
+    }
+  };
 }
 
 /**
@@ -270,10 +291,7 @@ function createEdgeArray(graph, type) {
   if (graph.size === 0) return [];
 
   if (type === 'mixed' || type === graph.type) {
-    if (typeof Array.from === 'function')
-      return Array.from(graph._edges.keys());
-
-    return take(graph._edges.keys(), graph._edges.size);
+    return Array.from(graph._edges.keys());
   }
 
   const size =
@@ -345,41 +363,46 @@ function forEachEdge(breakable, graph, type, callback) {
  * @return {Iterator}
  */
 function createEdgeIterator(graph, type) {
-  if (graph.size === 0) return Iterator.empty();
+  if (graph.size === 0) return emptyIterator();
 
   const shouldFilter = type !== 'mixed' && type !== graph.type;
   const mask = type === 'undirected';
 
   const iterator = graph._edges.values();
 
-  return new Iterator(function next() {
-    let step, data;
+  return {
+    [Symbol.iterator]() {
+      return this;
+    },
+    next() {
+      let step, data;
 
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      step = iterator.next();
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        step = iterator.next();
 
-      if (step.done) return step;
+        if (step.done) return step;
 
-      data = step.value;
+        data = step.value;
 
-      if (shouldFilter && data.undirected !== mask) continue;
+        if (shouldFilter && data.undirected !== mask) continue;
 
-      break;
+        break;
+      }
+
+      const value = {
+        edge: data.key,
+        attributes: data.attributes,
+        source: data.source.key,
+        target: data.target.key,
+        sourceAttributes: data.source.attributes,
+        targetAttributes: data.target.attributes,
+        undirected: data.undirected
+      };
+
+      return {value, done: false};
     }
-
-    const value = {
-      edge: data.key,
-      attributes: data.attributes,
-      source: data.source.key,
-      target: data.target.key,
-      sourceAttributes: data.source.attributes,
-      targetAttributes: data.target.attributes,
-      undirected: data.undirected
-    };
-
-    return {value, done: false};
-  });
+  };
 }
 
 /**
@@ -458,7 +481,7 @@ function createEdgeArrayForNode(multi, type, direction, nodeData) {
  * @return {Iterator}
  */
 function createEdgeIteratorForNode(type, direction, nodeData) {
-  let iterator = Iterator.empty();
+  let iterator = emptyIterator();
 
   if (type !== 'undirected') {
     if (direction !== 'out' && typeof nodeData.in !== 'undefined')
@@ -568,7 +591,7 @@ function createEdgeArrayForPath(type, multi, direction, sourceData, target) {
  * @param  {function} callback   - Function to call.
  */
 function createEdgeIteratorForPath(type, direction, sourceData, target) {
-  let iterator = Iterator.empty();
+  let iterator = emptyIterator();
 
   if (type !== 'undirected') {
     if (
@@ -1151,7 +1174,7 @@ function attachEdgeIteratorCreator(Class, description) {
   Class.prototype[name] = function (source, target) {
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
-      return Iterator.empty();
+      return emptyIterator();
 
     if (!arguments.length) return createEdgeIterator(this, type);
 

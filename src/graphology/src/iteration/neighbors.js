@@ -5,8 +5,7 @@
  * Attaching some methods to the Graph class to be able to iterate over
  * neighbors.
  */
-import Iterator from 'obliterator/iterator';
-import chain from 'obliterator/chain';
+import {chain, emptyIterator} from '../utils';
 
 import {NotFoundGraphError, InvalidArgumentsGraphError} from '../errors';
 
@@ -206,33 +205,38 @@ function createDedupedObjectIterator(visited, nodeData, object) {
 
   let i = 0;
 
-  return new Iterator(function next() {
-    let neighborData = null;
+  return {
+    [Symbol.iterator]() {
+      return this;
+    },
+    next() {
+      let neighborData = null;
 
-    do {
-      if (i >= l) {
-        if (visited) visited.wrap(object);
-        return {done: true};
-      }
+      do {
+        if (i >= l) {
+          if (visited) visited.wrap(object);
+          return {done: true};
+        }
 
-      const edgeData = object[keys[i++]];
+        const edgeData = object[keys[i++]];
 
-      const sourceData = edgeData.source;
-      const targetData = edgeData.target;
+        const sourceData = edgeData.source;
+        const targetData = edgeData.target;
 
-      neighborData = sourceData === nodeData ? targetData : sourceData;
+        neighborData = sourceData === nodeData ? targetData : sourceData;
 
-      if (visited && visited.has(neighborData.key)) {
-        neighborData = null;
-        continue;
-      }
-    } while (neighborData === null);
+        if (visited && visited.has(neighborData.key)) {
+          neighborData = null;
+          continue;
+        }
+      } while (neighborData === null);
 
-    return {
-      done: false,
-      value: {neighbor: neighborData.key, attributes: neighborData.attributes}
-    };
-  });
+      return {
+        done: false,
+        value: {neighbor: neighborData.key, attributes: neighborData.attributes}
+      };
+    }
+  };
 }
 
 function createNeighborIterator(type, direction, nodeData) {
@@ -245,7 +249,7 @@ function createNeighborIterator(type, direction, nodeData) {
       return createDedupedObjectIterator(null, nodeData, nodeData[direction]);
   }
 
-  let iterator = Iterator.empty();
+  let iterator = emptyIterator();
 
   // Else we need to keep a set of neighbors not to return duplicates
   // We cheat by querying the other adjacencies
@@ -537,7 +541,7 @@ function attachNeighborIteratorCreator(Class, description) {
   Class.prototype[iteratorName] = function (node) {
     // Early termination
     if (type !== 'mixed' && this.type !== 'mixed' && type !== this.type)
-      return Iterator.empty();
+      return emptyIterator();
 
     node = '' + node;
 

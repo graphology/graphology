@@ -5,8 +5,7 @@
  * Testing the edges iteration-related methods of the graph.
  */
 import assert from 'assert';
-import take from 'obliterator/take';
-import map from 'obliterator/map';
+import {map} from '../../src/utils';
 import {deepMerge, sameMembers, addNodesFrom} from '../helpers';
 
 const METHODS = [
@@ -822,7 +821,7 @@ export default function edgesIteration(Graph, checkers) {
             const iterator = graph[iteratorName]();
 
             assert.deepStrictEqual(
-              take(iterator),
+              Array.from(iterator),
               data.all.map(edge => {
                 const [source, target] = graph.extremities(edge);
 
@@ -844,7 +843,7 @@ export default function edgesIteration(Graph, checkers) {
             const iterator = graph[iteratorName](data.node.key);
 
             assert.deepStrictEqual(
-              take(iterator),
+              Array.from(iterator),
               data.node.edges.map(edge => {
                 const [source, target] = graph.extremities(edge);
 
@@ -869,7 +868,7 @@ export default function edgesIteration(Graph, checkers) {
             );
 
             assert.deepStrictEqual(
-              take(iterator),
+              Array.from(iterator),
               data.path.edges.map(edge => {
                 const [source, target] = graph.extremities(edge);
 
@@ -1012,7 +1011,7 @@ export default function edgesIteration(Graph, checkers) {
         assert.deepStrictEqual(loopy.directedEdges('n', 'n'), ['e2', 'e1']);
 
         // Iterators
-        const mapKeys = it => take(map(it, e => e.edge));
+        const mapKeys = it => Array.from(map(it, e => e.edge));
 
         assert.deepStrictEqual(mapKeys(loopy.edgeEntries('n')), [
           'e2',

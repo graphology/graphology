@@ -5,7 +5,6 @@
  * Testing the edges iteration-related methods of the graph.
  */
 import assert from 'assert';
-import take from 'obliterator/take';
 import {deepMerge, addNodesFrom} from '../helpers';
 
 const METHODS = [
@@ -273,7 +272,7 @@ export default function neighborsIteration(Graph, checkers) {
             const iterator = graph[iteratorName](data.node.key);
 
             assert.deepStrictEqual(
-              take(iterator),
+              Array.from(iterator),
               data.node.neighbors.map(neighbor => {
                 return {
                   neighbor,
