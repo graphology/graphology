@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.26.0 (provisional)
+
+- Removing `obliterator` dependency.
+- Stopping to shim `Array.from`.
+- ESM support.
+
 ## 0.25.4
 
 - Reverting to `0.25.1` package semantics to avoid partial ESM-first support issues.
