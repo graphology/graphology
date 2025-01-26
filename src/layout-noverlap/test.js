@@ -230,10 +230,16 @@ describe('graphology-layout-forceatlas2', function () {
 
       var result = layout(graph);
 
+      result = {
+        John: {x: result.John.x.toFixed(4), y: result.John.y.toFixed(4)},
+        Mary: {x: result.Mary.x.toFixed(4), y: result.Mary.y.toFixed(4)},
+        Lala: {x: result.Lala.x.toFixed(4), y: result.Lala.y.toFixed(4)}
+      }
+
       assert.deepEqual(result, {
-        John: {x: 0, y: 1},
-        Mary: {x: 19, y: 1},
-        Lala: {x: -6.163533687591553, y: -16.03751564025879}
+        John: {x: (0).toFixed(4), y: (1).toFixed(4)},
+        Mary: {x: (19).toFixed(4), y: (1).toFixed(4)},
+        Lala: {x: (-6.163533687591553).toFixed(4), y: (-16.03751564025879).toFixed(4)}
       });
     });
 
@@ -264,10 +270,85 @@ describe('graphology-layout-forceatlas2', function () {
         outputReducer: outputReducer
       });
 
+      result = {
+        John: {x: result.John.x.toFixed(4), y: result.John.y.toFixed(4)},
+        Mary: {x: result.Mary.x.toFixed(4), y: result.Mary.y.toFixed(4)},
+        Lala: {x: result.Lala.x.toFixed(4), y: result.Lala.y.toFixed(4)}
+      }
+
       assert.deepEqual(result, {
-        John: {x: 20, y: 30},
-        Mary: {x: 128.40000915527344, y: 30},
-        Lala: {x: 1.1669960021972656, y: -54.814414978027344}
+        John: {x: (20).toFixed(4), y: (30).toFixed(4)},
+        Mary: {x: (128.40000915527344).toFixed(4), y: (30).toFixed(4)},
+        Lala: {x: (1.1669960021972656).toFixed(4), y: (-54.814414978027344).toFixed(4)}
+      });
+    });
+
+    it('should work properly in wasm.', function () {
+      var graph = new Graph();
+
+      graph.addNode('John', {x: 0, y: 1, size: 4});
+      graph.addNode('Mary', {x: 1, y: 1, size: 5});
+      graph.addNode('Lala', {x: 0.5, y: 0.5, size: 3});
+
+      var result = layout(graph, {
+        settings: {
+          wasm: true
+        }
+      });
+
+      result = {
+        John: {x: result.John.x.toFixed(4), y: result.John.y.toFixed(4)},
+        Mary: {x: result.Mary.x.toFixed(4), y: result.Mary.y.toFixed(4)},
+        Lala: {x: result.Lala.x.toFixed(4), y: result.Lala.y.toFixed(4)}
+      }
+
+      assert.deepEqual(result, {
+        John: {x: (0).toFixed(4), y: (1).toFixed(4)},
+        Mary: {x: (19).toFixed(4), y: (1).toFixed(4)},
+        Lala: {x: (-6.163533687591553).toFixed(4), y: (-16.03751564025879).toFixed(4)}
+      });
+    });
+
+    it('should work properly with a reducers in wasm.', function () {
+      var graph = new Graph();
+
+      graph.addNode('John', {x: 0, y: 1, size: 4});
+      graph.addNode('Mary', {x: 1, y: 1, size: 5});
+      graph.addNode('Lala', {x: 0.5, y: 0.5, size: 3});
+
+      function inputReducer(_, attr) {
+        return {
+          x: attr.x * 10,
+          y: attr.y * 10,
+          size: attr.size * 10
+        };
+      }
+
+      function outputReducer(_, pos) {
+        return {
+          x: pos.x + 20,
+          y: pos.y + 20
+        };
+      }
+
+      var result = layout(graph, {
+        inputReducer: inputReducer,
+        outputReducer: outputReducer,
+        settings: {
+          wasm: true
+        }
+      });
+
+      result = {
+        John: {x: result.John.x.toFixed(4), y: result.John.y.toFixed(4)},
+        Mary: {x: result.Mary.x.toFixed(4), y: result.Mary.y.toFixed(4)},
+        Lala: {x: result.Lala.x.toFixed(4), y: result.Lala.y.toFixed(4)}
+      }
+
+      assert.deepEqual(result, {
+        John: {x: (20).toFixed(4), y: (30).toFixed(4)},
+        Mary: {x: (128.40000915527344).toFixed(4), y: (30).toFixed(4)},
+        Lala: {x: (1.1669960021972656).toFixed(4), y: (-54.814414978027344).toFixed(4)}
       });
     });
   });
