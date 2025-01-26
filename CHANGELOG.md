@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.26.0 (provisional)
+## 0.26.0
 
 - Removing `obliterator` dependency.
 - Stopping to shim `Array.from`.
