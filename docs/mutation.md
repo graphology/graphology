@@ -23,7 +23,7 @@ menu_toc:
 
 ## #.addNode
 
-Adds a single node to the graph with optional attributes and returns the node.
+Adds a single node to the graph with optional attributes and returns the node's key.
 
 Will throw if the node already exists in the graph.
 
