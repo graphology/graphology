@@ -6,7 +6,6 @@
  * which an edge stands, for each edge in a given graph.
  */
 var isGraph = require('graphology-utils/is-graph');
-var weightedDegree = require('../node/weighted-degree');
 
 
 /**
@@ -116,17 +115,18 @@ function abstractChiSquareGSquare(assign, graph, getEdgeWeight) {
       attr,
       undirected
     ) {
+      var weight =  typeof getEdgeWeight === 'function'
+      ? getEdgeWeight(edge, attr, source, target, sa, ta, undirected)
+      : attr[getEdgeWeight];
       // sum all weights
-      totalWeights += typeof getEdgeWeight === 'function'
-        ? getEdgeWeight(edge, attr, source, target, sa, ta, undirected)
-        : attr[getEdgeWeight];
+      totalWeights += weight;
       
       // compute nodes weighted degrees
-      [source, target].forEach(function (node) {
-        if(!weightedDegrees[node])
-          weightedDegrees[node] = weightedDegree.weightedDegree(graph, node, getEdgeWeight);
-      })
-    })
+      // source !== target because of possible self loops
+      (source !== target ? [source, target] : [source]).forEach(function (node) {
+        weightedDegrees[node] = (weightedDegrees[node] || 0) + weight;
+      }); 
+    });
 
   var edgeChiSquareGSquareMeasures = {};
   graph.forEachAssymetricAdjacencyEntry(function (
@@ -142,8 +142,8 @@ function abstractChiSquareGSquare(assign, graph, getEdgeWeight) {
       ? getEdgeWeight(edge, attr, source, target, sa, ta, undirected)
       : attr[getEdgeWeight]
       var measures = chiSquareGSquareMeasures(
-        weightedDegrees[source],
-        weightedDegrees[target],
+        weightedDegrees[source] || 0,
+        weightedDegrees[target] || 0,
         weight, 
         totalWeights)
       edgeChiSquareGSquareMeasures[edge] = measures
