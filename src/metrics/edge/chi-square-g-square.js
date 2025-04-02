@@ -1,12 +1,13 @@
 /**
- * CHI-square test
- * ===============
+ * CHI-square G-square tests
+ * =========================
  *
- * Function computing the Simmelian strength, i.e. the number of triangles in
- * which an edge stands, for each edge in a given graph.
+ * Function computing the chi-square and g-square significance measures 
+ * for each edge in a given graph.
+ * Thresholds to filter out edges which fails the significance test are provided but edges are not filtered by default.
+ * 
  */
 var isGraph = require('graphology-utils/is-graph');
-
 
 /**
  * Defaults.
@@ -14,23 +15,25 @@ var isGraph = require('graphology-utils/is-graph');
 var DEFAULT_WEIGHT_ATTRIBUTE = 'weight';
 
 
-//   # compute_chi2_and_g2
-// # test significance using chi2 and g2 metrics
-// # implementation copied from https://github.com/medialab/xan/blob/master/src/cmd/vocab.rs#L924-L1000
-// # gf = global frequency gf (total of token dimension row)
-// # nb_token_in_doc = number of tokens in doc (total of doc dimension coloumn) 
-// # tf = term frequency in document (token x document cell)
-// # token_count = somme de tous les tf (grand total)
+/**
+ * chiSquareGSquareMeasures
+ * implementation copied from https://github.com/medialab/xan/blob/master/src/cmd/vocab.rs#L924-L1000
+ * @param {number} sourceWeightedDegree 
+ * @param {number} targetWeightedDegree 
+ * @param {number} edgeWeight 
+ * @param {number} sumAllEdgesWeights 
+ * @returns Record<edge, {chiSquare:number, gSquare:number}>
+ */
 function chiSquareGSquareMeasures(sourceWeightedDegree, targetWeightedDegree, edgeWeight, sumAllEdgesWeights){
     
     if (sumAllEdgesWeights <= 0)
-        throw new Error('token_count has to be >0')
+        throw new Error('sumAllEdgesWeights has to be >0')
     if (sourceWeightedDegree <= 0)
-        throw new Error('gf has to be >0')
+        throw new Error('sourceWeightedDegree has to be >0')
     if (edgeWeight <= 0)
-        throw new Error('tf has to be >0')
+        throw new Error('edgeWeight has to be >0')
     if (targetWeightedDegree <= 0)
-        throw new Error('nb_tokens_in_doc has to be >0')
+        throw new Error('sumAllEdgesWeights has to be >0')
 
     // This can be 0 if some item is present in all co-occurrences!
     var notGf = sumAllEdgesWeights - sourceWeightedDegree
@@ -87,7 +90,7 @@ function chiSquareGSquareMeasures(sourceWeightedDegree, targetWeightedDegree, ed
 }
 
 /**
- * Asbtract function to perform chiSquare tests measures.
+ * Asbtract function to perform chi-square adn g-square tests measures.
  *
  * @param  {Graph}           graph         - A graphology instance.
  * @param  {string|function} getEdgeWeight - Name of edge weight attribute or getter function.
@@ -142,8 +145,8 @@ function abstractChiSquareGSquare(assign, graph, getEdgeWeight) {
       ? getEdgeWeight(edge, attr, source, target, sa, ta, undirected)
       : attr[getEdgeWeight]
       var measures = chiSquareGSquareMeasures(
-        weightedDegrees[source] || 0,
-        weightedDegrees[target] || 0,
+        weightedDegrees[source],
+        weightedDegrees[target],
         weight, 
         totalWeights)
       edgeChiSquareGSquareMeasures[edge] = measures
