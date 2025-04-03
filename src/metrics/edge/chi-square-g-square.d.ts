@@ -1,16 +1,12 @@
 import Graph, {Attributes, EdgeMapper} from 'graphology-types';
 
-export type ChiGSquareOptions<
+export type EdgeWeightOption<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
-> = {
-  getEdgeWeight?:
-    | keyof EdgeAttributes
-    | EdgeMapper<number, NodeAttributes, EdgeAttributes>;
-};
+> = keyof EdgeAttributes | EdgeMapper<number, NodeAttributes, EdgeAttributes>;
 
 export type ChiGSquareMapping = {
-  [edge: string]: {chiSquare: number | undefined; GSquare: number | undefined};
+  [edge: string]: number | undefined;
 };
 
 export interface Thresholds {
@@ -29,7 +25,7 @@ interface IChiGSquare {
     EdgeAttributes extends Attributes = Attributes
   >(
     graph: Graph<NodeAttributes, EdgeAttributes>,
-    options?: ChiGSquareOptions<NodeAttributes, EdgeAttributes>
+    weight?: EdgeWeightOption<NodeAttributes, EdgeAttributes>
   ): ChiGSquareMapping;
 
   assign<
@@ -37,12 +33,16 @@ interface IChiGSquare {
     EdgeAttributes extends Attributes = Attributes
   >(
     graph: Graph<NodeAttributes, EdgeAttributes>,
-    options?: ChiGSquareOptions<NodeAttributes, EdgeAttributes>
+    weight?: EdgeWeightOption<NodeAttributes, EdgeAttributes>
   ): void;
 
   thresholds: Thresholds;
 }
 
-declare const chiSquareGSquare: IChiGSquare;
+declare const chiSquare: IChiGSquare;
+declare const gSquare: IChiGSquare;
 
-export default chiSquareGSquare;
+module.exports = {
+  chiSquare: IChiGSquare,
+  gSquare: IChiGSquare
+};
