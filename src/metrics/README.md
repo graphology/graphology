@@ -28,6 +28,8 @@ _Edge metrics_
 
 - [Disparity](#disparity)
 - [Simmelian strength](#simmelian-strength)
+- [Chi square](#chi-square)
+- [G square](#g-square)
 
 _Centrality_
 
@@ -79,7 +81,9 @@ import {abstractDensity} from 'graphology-metric/graph/density';
 abstractDensity('directed', true, 10, 24);
 ```
 
-_Arguments_
+_Arguments_- [Chi square](#chi-square)
+
+- [G square](#g-square)
 
 Either:
 
@@ -329,6 +333,74 @@ const strengths = simmelianStrength(graph);
 // To directly map the result onto edge attributes (`simmelianStrength`):
 simmelianStrength.assign(graph);
 ```
+
+### Chi square
+
+Function computing a `chi square` significance test for each edge.
+
+The test results are a `number` or `undefined`. `undefined` means the test could not be fully computed due to observed weight being less than expected. Those cases should be filtered out.
+
+To ease filtering the edges based on the results one can use the provided `thresholds`: this object gives the minimum value of `chi square` for each level of significance expressed as `p values`.
+
+```js
+import chiSquare from 'graphology-metrics/edge/chi-square';
+
+// To compute strength for every edge using weight attribute:
+const chiSquareResults = chiSquare(graph);
+// To compute strength for every edge using weight custom attribute:
+const chiSquareResults = chiSquare(graph, 'cooccurrences');
+// To compute strength for every edge defining weight as an edge function:
+const chiSquareResults = chiSquare(graph, (_, attr) => attr.cooccurrences);
+
+// To directly map the result onto edge attribute `chiSquare`:
+chiSquare.assign(graph);
+
+// Filtering out unsignificant edges
+graph
+  .filterEdges((_, atts) => atts.chiSquare < chiSquare.thresholds['0.01'])
+  .forEach(e => {
+    graph.dropEdge(e);
+  });
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **getEdgeWeight** <span class="code">?string\|function</span> <span class="default">weight</span>: Name of the edge weight attribute or getter function.
+
+### G square
+
+Function computing a `g square` significance test for each edge.
+
+The test results are a `number` or `undefined`. `undefined` means the test could not be fully computed due to observed weight being less than expected. Those cases should be filtered out.
+
+To ease filtering the edges based on the results one can use the provided `thresholds`: this object gives the minimum value of `g square` for each level of significance expressed as `p values`.
+
+```js
+import gSquare from 'graphology-metrics/edge/g-square';
+
+// To compute strength for every edge using weight attribute:
+const gSquareResults = gSquare(graph);
+// To compute strength for every edge using weight custom attribute:
+const gSquareResults = gSquare(graph, 'cooccurrences');
+// To compute strength for every edge defining weight as an edge function:
+const gSquareResults = gSquare(graph, (_, attr) => attr.cooccurrences);
+
+// To directly map the result onto edge attribute `gSquare`:
+gSquare.assign(graph);
+
+// Filter out unsignificant edges
+graph
+  .filterEdges((_, atts) => atts.gSquare < gSquare.thresholds['0.01'])
+  .forEach(e => {
+    graph.dropEdge(e);
+  });
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph.
+- **getEdgeWeight** <span class="code">?string\|function</span> <span class="default">weight</span>: Name of the edge weight attribute or getter function.
 
 ## Centrality
 

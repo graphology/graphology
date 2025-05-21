@@ -1,4 +1,4 @@
-var chiSquareGSquare = require("./chi-square-g-square");
+var chiSquareGSquare = require('./chi-square-g-square');
 
 var chiSquare = chiSquareGSquare.bind(null, false, 'chiSquare');
 chiSquare.assign = chiSquareGSquare.bind(null, true, 'chiSquare');

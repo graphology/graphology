@@ -10,13 +10,13 @@ export type ChiGSquareMapping = {
 };
 
 export interface Thresholds {
-  'pValue<0.5': number;
-  'pValue<0.1': number;
-  'pValue<0.05': number;
-  'pValue<0.025': number;
-  'pValue<0.01': number;
-  'pValue<0.005': number;
-  'pValue<0.001': number;
+  0.5: number;
+  0.1: number;
+  0.05: number;
+  0.025: number;
+  0.01: number;
+  0.005: number;
+  0.001: number;
 }
 
 interface IChiGSquare {
@@ -42,7 +42,4 @@ interface IChiGSquare {
 declare const chiSquare: IChiGSquare;
 declare const gSquare: IChiGSquare;
 
-module.exports = {
-  chiSquare: IChiGSquare,
-  gSquare: IChiGSquare
-};
+export {chiSquare, gSquare};

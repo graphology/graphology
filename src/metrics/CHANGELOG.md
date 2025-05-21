@@ -2,7 +2,9 @@
 
 ## 2.4.0 (provisional)
 
-- Adding `clusteringAmbiguity`.
+- Adding `node/clusteringAmbiguity`.
+- Adding `edge/chiSquare`.
+- Adding `edge/gSquare`.
 
 ## 2.3.1
 

@@ -91,7 +91,9 @@ import {abstractDensity} from 'graphology-metric/graph/density';
 abstractDensity('directed', true, 10, 24);
 ```
 
-_Arguments_
+_Arguments_- [Chi square](#chi-square)
+
+- [G square](#g-square)
 
 Either:
 
@@ -344,14 +346,11 @@ simmelianStrength.assign(graph);
 
 ### Chi square
 
-Function computing `chi square` significance tests on each edge.
-The test results are a `number` or `undefined`.
-`undefined` means the test could not be fully computed due to observed weight being less than expected.
-Those cases should be filter out.
+Function computing a `chi square` significance test for each edge.
 
-To ease filtering the edges based on the results one can use the provided `thresholds`.
-This hashmap gives the minimum value of `chi square` for each level of significance expressed as `p values`.
+The test results are a `number` or `undefined`. `undefined` means the test could not be fully computed due to observed weight being less than expected. Those cases should be filtered out.
 
+To ease filtering the edges based on the results one can use the provided `thresholds`: this object gives the minimum value of `chi square` for each level of significance expressed as `p values`.
 
 ```js
 import chiSquare from 'graphology-metrics/edge/chi-square';
@@ -366,10 +365,14 @@ const chiSquareResults = chiSquare(graph, (_, attr) => attr.cooccurrences);
 // To directly map the result onto edge attribute `chiSquare`:
 chiSquare.assign(graph);
 
-// filter out unsignificant edges
-graph.filterEdges((_, atts) => atts.chiSquare < chiSquare.thresholds['pValue<0.01']).forEach(e => {graph.dropEdge(e)})
-
+// Filtering out unsignificant edges
+graph
+  .filterEdges((_, atts) => atts.chiSquare < chiSquare.thresholds['0.01'])
+  .forEach(e => {
+    graph.dropEdge(e);
+  });
 ```
+
 _Arguments_
 
 - **graph** _Graph_: target graph.
@@ -377,14 +380,11 @@ _Arguments_
 
 ### G square
 
-Function computing `g square` significance tests on each edge.
-The test results are a `number` or `undefined`.
-`undefined` means the test could not be fully computed due to observed weight being less than expected.
-Those cases should be filter out.
+Function computing a `g square` significance test for each edge.
 
-To ease filtering the edges based on the results one can use the provided `thresholds`.
-This hashmap gives the minimum value of `g square` for each level of significance expressed as `p values`.
+The test results are a `number` or `undefined`. `undefined` means the test could not be fully computed due to observed weight being less than expected. Those cases should be filtered out.
 
+To ease filtering the edges based on the results one can use the provided `thresholds`: this object gives the minimum value of `g square` for each level of significance expressed as `p values`.
 
 ```js
 import gSquare from 'graphology-metrics/edge/g-square';
@@ -399,9 +399,14 @@ const gSquareResults = gSquare(graph, (_, attr) => attr.cooccurrences);
 // To directly map the result onto edge attribute `gSquare`:
 gSquare.assign(graph);
 
-// filter out unsignificant edges
-graph.filterEdges((_, atts) => atts.gSquare < gSquare.thresholds['pValue<0.01']).forEach(e => {graph.dropEdge(e)})
+// Filter out unsignificant edges
+graph
+  .filterEdges((_, atts) => atts.gSquare < gSquare.thresholds['0.01'])
+  .forEach(e => {
+    graph.dropEdge(e);
+  });
 ```
+
 _Arguments_
 
 - **graph** _Graph_: target graph.
