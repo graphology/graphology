@@ -21,6 +21,7 @@ var toMixed = require('./to-mixed.js');
 var toMulti = require('./to-multi.js');
 var toSimple = require('./to-simple.js');
 var toUndirected = require('./to-undirected.js');
+var induce = require('./induce.js');
 
 function addNodesFrom(graph, nodes) {
   nodes.forEach(function (node) {
@@ -141,6 +142,223 @@ describe('graphology-operators', function () {
         assert.strictEqual(sub.hasEdge(0, 1), true);
         assert.strictEqual(sub.hasEdge(1, 2), false);
         assert.strictEqual(sub.size, 1);
+      });
+    });
+
+    describe('induce', function () {
+      it('should throw when given an invalid graph.', function () {
+        assert.throws(function () {
+          induce('test', 'test');
+        }, /graphology/);
+      });
+
+      it('should return the correct results.', function () {
+        var graph = new Graph({type: 'undirected'});
+
+        graph.mergeNode(1, {community: 'first'});
+        graph.mergeNode(2, {community: 'second'});
+        graph.mergeNode(3, {community: 'third'});
+        graph.mergeNode(4, {community: 'fourth'});
+        graph.mergeNode(5, {community: 'first'});
+
+        graph.mergeEdge(1, 2, {weight: 2});
+        graph.mergeEdge(2, 1, {weight: 3});
+        graph.mergeEdge(3, 2, {weight: 3});
+        graph.mergeEdge(3, 3, {weight: 7});
+        graph.mergeEdge(5, 2, {weight: 1});
+        var inducedGraph = induce(graph, 'community');
+
+        var resultGraph = new Graph({type: 'undirected'});
+
+        resultGraph.mergeNode('first');
+        resultGraph.mergeNode('second');
+        resultGraph.mergeNode('third');
+        resultGraph.mergeNode('fourth');
+
+        resultGraph.mergeEdge('first', 'second');
+        resultGraph.mergeEdge('third', 'second');
+        resultGraph.mergeEdge('third', 'third');
+
+        var result = areSameGraphsDeep(resultGraph, inducedGraph);
+
+        assert.strictEqual(result, true);
+      });
+
+      it('should be possible to pass an options object containing a `mergeEdge` function and a `mergeNode` function.', function () {
+        var graph = new Graph({type: 'undirected'});
+
+        graph.mergeNode(1, {community: 'first', weight: 1});
+        graph.mergeNode(2, {community: 'second', weight: 1});
+        graph.mergeNode(3, {community: 'third', weight: 1});
+        graph.mergeNode(4, {community: 'fourth', weight: 1});
+        graph.mergeNode(5, {community: 'first', weight: 1});
+
+        graph.mergeEdge(1, 2, {weight: 2});
+        graph.mergeEdge(2, 1, {weight: 3});
+        graph.mergeEdge(3, 2, {weight: 3});
+        graph.mergeEdge(3, 3, {weight: 7});
+        graph.mergeEdge(5, 2, {weight: 1});
+
+        var inducedGraph = induce(graph, 'community', {
+          mergeNode: function (current, next) {
+            current.weight += next.weight;
+
+            return current;
+          },
+          mergeEdge: function (current, next) {
+            current.weight += next.weight;
+
+            return current;
+          }
+        });
+
+        var resultGraph = new Graph({type: 'undirected'});
+
+        resultGraph.mergeNode('first', {community: 'first', weight: 2});
+        resultGraph.mergeNode('second', {community: 'second', weight: 1});
+        resultGraph.mergeNode('third', {community: 'third', weight: 1});
+        resultGraph.mergeNode('fourth', {community: 'fourth', weight: 1});
+
+        resultGraph.mergeEdge('third', 'second', {weight: 3});
+        resultGraph.mergeEdge('third', 'third', {weight: 7});
+        resultGraph.mergeEdge('first', 'second', {weight: 4});
+
+        var result = areSameGraphsDeep(resultGraph, inducedGraph);
+
+        assert.strictEqual(result, true);
+      });
+
+      it('should handle directed graphs.', function () {
+        var graph = new Graph({type: 'directed'});
+
+        graph.mergeNode(1, {community: 'first'});
+        graph.mergeNode(2, {community: 'second'});
+        graph.mergeNode(3, {community: 'third'});
+        graph.mergeNode(4, {community: 'fourth'});
+        graph.mergeNode(5, {community: 'first'});
+        graph.mergeNode(6, {community: 'fifth'});
+
+        graph.mergeEdge(1, 2, {weight: 2});
+        graph.mergeEdge(2, 1, {weight: 3});
+        graph.mergeEdge(3, 2, {weight: 3});
+        graph.mergeEdge(3, 3, {weight: 7});
+        graph.mergeEdge(5, 2, {weight: 1});
+
+        var inducedGraph = induce(graph, 'community', {
+          mergeEdge: function (current, next) {
+            current.weight += next.weight;
+
+            return current;
+          },
+          createSelfLoops: false
+        });
+
+        var resultGraph = new Graph({type: 'directed'});
+
+        resultGraph.mergeNode('first');
+        resultGraph.mergeNode('second');
+        resultGraph.mergeNode('third');
+        resultGraph.mergeNode('fourth');
+        resultGraph.mergeNode('fifth');
+
+        resultGraph.mergeEdge('third', 'second', {weight: 3});
+        resultGraph.mergeEdge('first', 'second', {weight: 3});
+        resultGraph.mergeEdge('second', 'first', {weight: 3});
+
+        var result = areSameGraphsDeep(resultGraph, inducedGraph);
+
+        assert.strictEqual(result, true);
+      });
+
+      it('should work with mixed type graphs.', function () {
+        var graph = new Graph({type: 'mixed'});
+
+        graph.mergeNode(1, {community: 'first'});
+        graph.mergeNode(2, {community: 'second'});
+        graph.mergeNode(3, {community: 'third'});
+        graph.mergeNode(4, {community: 'fourth'});
+        graph.mergeNode(5, {community: 'first'});
+        graph.mergeNode(6, {community: 'fifth'});
+
+        graph.addDirectedEdge(1, 2, {weight: 2});
+        graph.addUndirectedEdge(2, 1, {weight: 3});
+        graph.addUndirectedEdge(3, 2, {weight: 3});
+        graph.addDirectedEdge(3, 3, {weight: 7});
+        graph.addDirectedEdge(5, 2, {weight: 1});
+
+        var inducedGraph = induce(graph, 'community', {
+          mergeEdge: function (current, next) {
+            current.weight += next.weight;
+
+            return current;
+          },
+          createSelfLoops: false
+        });
+
+        var resultGraph = new Graph({type: 'mixed'});
+
+        resultGraph.mergeNode('first');
+        resultGraph.mergeNode('second');
+        resultGraph.mergeNode('third');
+        resultGraph.mergeNode('fourth');
+        resultGraph.mergeNode('fifth');
+
+        resultGraph.addUndirectedEdge('third', 'second', {weight: 3});
+        resultGraph.mergeEdge('first', 'second', {weight: 3});
+        resultGraph.addUndirectedEdge('second', 'first', {weight: 3});
+
+        var result = areSameGraphsDeep(resultGraph, inducedGraph);
+
+        assert.strictEqual(result, true);
+      });
+
+      it('should work with multi graphs.', function () {
+        var graph = new Graph({multi: true, type: 'mixed'});
+
+        graph.mergeNode(1, {community: 'first'});
+        graph.mergeNode(2, {community: 'second'});
+        graph.mergeNode(3, {community: 'third'});
+        graph.mergeNode(4, {community: 'fourth'});
+        graph.mergeNode(5, {community: 'first'});
+        graph.mergeNode(6, {community: 'fifth'});
+
+        graph.addDirectedEdge(1, 2, {weight: 2});
+        graph.addDirectedEdge(1, 2, {weight: 3});
+        graph.addUndirectedEdge(2, 1, {weight: 3});
+        graph.addUndirectedEdge(3, 2, {weight: 3});
+        graph.addUndirectedEdge(3, 2, {weight: 4});
+        graph.addDirectedEdge(3, 2, {weight: 5});
+        graph.addDirectedEdge(3, 3, {weight: 7});
+        graph.addDirectedEdge(3, 3, {weight: 1});
+        graph.addDirectedEdge(5, 2, {weight: 1});
+        graph.addUndirectedEdge(5, 2, {weight: 6});
+
+        var inducedGraph = induce(graph, 'community', {
+          mergeEdge: function (current, next) {
+            current.weight += next.weight;
+
+            return current;
+          },
+          createSelfLoops: true
+        });
+
+        var resultGraph = new Graph({multi: false, type: 'mixed'});
+
+        resultGraph.mergeNode('first');
+        resultGraph.mergeNode('second');
+        resultGraph.mergeNode('third');
+        resultGraph.mergeNode('fourth');
+        resultGraph.mergeNode('fifth');
+
+        resultGraph.addDirectedEdge('first', 'second', {weight: 6});
+        resultGraph.addUndirectedEdge('second', 'first', {weight: 9});
+        resultGraph.addUndirectedEdge('third', 'second', {weight: 7});
+        resultGraph.addDirectedEdge('third', 'second', {weight: 5});
+        resultGraph.addDirectedEdge('third', 'third', {weight: 8});
+
+        var result = areSameGraphsDeep(resultGraph, inducedGraph);
+
+        assert.strictEqual(result, true);
       });
     });
   });

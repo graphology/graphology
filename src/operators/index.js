@@ -13,3 +13,4 @@ exports.toMulti = require('./to-multi.js');
 exports.toSimple = require('./to-simple.js');
 exports.toUndirected = require('./to-undirected.js');
 exports.union = require('./union.js');
+exports.induce = require('./induce.js');

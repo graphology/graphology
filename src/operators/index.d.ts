@@ -7,3 +7,4 @@ export {default as toMulti} from './to-multi';
 export {default as toSimple} from './to-simple';
 export {default as toUndirected} from './to-undirected';
 export {default as union} from './union';
+export {default as induce} from './induce';
