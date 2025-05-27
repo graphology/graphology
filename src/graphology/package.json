@@ -52,7 +52,7 @@
   },
   "homepage": "https://github.com/graphology/graphology#readme",
   "dependencies": {
-    "events": "^3.3.0"
+    "eventemitter3": "^5.0.1"
   },
   "peerDependencies": {
     "graphology-types": ">=0.24.0"
