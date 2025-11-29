@@ -20,19 +20,20 @@ exports.DEFAULTS = DEFAULTS;
 exports.refineSettings = function refineSettings(settings) {
   settings = settings || {};
 
-  var dimensions = {
-    width: settings.width,
-    height: settings.height
-  };
+  var widthWithFallback = settings.width;
+  var heightWithFallback = settings.height;
 
-  if (dimensions.width && !dimensions.height)
-    dimensions.height = dimensions.width;
+  if (widthWithFallback && !heightWithFallback)
+    heightWithFallback = widthWithFallback;
 
-  if (dimensions.height && !dimensions.width)
-    dimensions.width = dimensions.height;
+  if (heightWithFallback && !widthWithFallback)
+    widthWithFallback = heightWithFallback;
 
-  settings = resolveDefaults(settings, dimensions);
-  settings = resolveDefaults(settings, DEFAULTS);
+  settings = resolveDefaults({
+    ...settings,
+    width: widthWithFallback,
+    height: heightWithFallback,
+  }, DEFAULTS);
 
   if (!settings.width && !settings.height)
     throw new Error(
