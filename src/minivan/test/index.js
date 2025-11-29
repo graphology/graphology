@@ -6,7 +6,7 @@
 require('util').inspect.defaultOptions.depth = null;
 
 var chai = require('chai');
-chai.use(require('chai-roughly'));
+chai.use(require('chai-roughly-v2'));
 var assert = chai.assert;
 var expect = chai.expect;
 var deepclone = require('lodash/cloneDeep');
