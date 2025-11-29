@@ -29,7 +29,7 @@
     "@yomguithereal/eslint-config": "^4.4.0",
     "@yomguithereal/prettier-config": "^1.2.0",
     "chai": "^4.3.6",
-    "chai-roughly": "^1.0.0",
+    "chai-roughly-v2": "^2.0.13",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.5.0",
     "lerna": "^4.0.0",
