@@ -1,6 +1,6 @@
 {
   "name": "graphology-canvas",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Canvas rendering routines for graphology.",
   "main": "index.js",
   "types": "index.d.ts",

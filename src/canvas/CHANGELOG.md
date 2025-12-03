@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.3
+
+- Fixing settings not being merged properly.
+
 ## 0.4.2
 
 - Fixing erroneous usage of `lodash/merge`.
