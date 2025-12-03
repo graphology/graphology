@@ -29,11 +29,13 @@ exports.refineSettings = function refineSettings(settings) {
   if (heightWithFallback && !widthWithFallback)
     widthWithFallback = heightWithFallback;
 
-  settings = resolveDefaults({
-    ...settings,
-    width: widthWithFallback,
-    height: heightWithFallback,
-  }, DEFAULTS);
+  settings = resolveDefaults(
+    Object.assign({}, settings, {
+      width: widthWithFallback,
+      height: heightWithFallback
+    }),
+    DEFAULTS
+  );
 
   if (!settings.width && !settings.height)
     throw new Error(
