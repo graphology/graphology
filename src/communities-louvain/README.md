@@ -1,6 +1,6 @@
 # Graphology Communities Louvain
 
-Implementation of the [Louvain algorihtm](https://en.wikipedia.org/wiki/Louvain_modularity) for community detection to be used with [`graphology`](https://graphology.github.io).
+Implementation of the [Louvain algorithm](https://en.wikipedia.org/wiki/Louvain_modularity) for community detection to be used with [`graphology`](https://graphology.github.io).
 
 ## References
 
