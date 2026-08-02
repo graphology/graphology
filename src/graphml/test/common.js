@@ -6,6 +6,7 @@
  */
 var assert = require('assert'),
   parserDefinitions = require('./definitions/parser.js'),
+  writerDefinitions = require('./definitions/writer.js'),
   resources = require('./resources'),
   Graph = require('graphology');
 
@@ -66,5 +67,73 @@ exports.testAllFiles = function (parser) {
         );
       }
     );
+  });
+};
+
+/**
+ * Testing the writer on all of our test graphs.
+ */
+exports.testWriter = function (writer, parser) {
+  describe('Writer', function () {
+    it('should throw when given an invalid graphology instance.', function () {
+      assert.throws(function () {
+        writer(null);
+      }, /graphology/);
+    });
+
+    writerDefinitions.forEach(function (definition) {
+      if (definition.skip) return;
+
+      var resource = resources[definition.graphml];
+      var graph = definition.graph();
+
+      it(
+        'should correctly write the "' + definition.title + '" graph.',
+        function () {
+          var string = writer(graph, definition.options);
+
+          assert.strictEqual(string, resource);
+        }
+      );
+
+      if (definition.roundtrip === false) return;
+
+      it(
+        'should write a "' +
+          definition.title +
+          '" graph that the parser can read back.',
+        function () {
+          var string = writer(graph, definition.options);
+          var parsed = parser(Graph, string);
+
+          assert.deepStrictEqual(parsed.getAttributes(), graph.getAttributes());
+          assert.strictEqual(parsed.order, graph.order);
+          assert.strictEqual(parsed.size, graph.size);
+          assert.strictEqual(parsed.type, graph.type);
+          assert.strictEqual(parsed.multi, graph.multi);
+
+          graph.forEachNode(function (node, attributes) {
+            assert.strictEqual(parsed.hasNode(node), true);
+            assert.deepStrictEqual(parsed.getNodeAttributes(node), attributes);
+          });
+
+          graph.forEachEdge(function (
+            edge,
+            attributes,
+            source,
+            target,
+            _sa,
+            _ta,
+            undirected
+          ) {
+            assert.strictEqual(parsed.hasEdge(edge), true);
+            assert.strictEqual(parsed.source(edge), source);
+            assert.strictEqual(parsed.target(edge), target);
+            assert.strictEqual(parsed.isDirected(edge), !undirected);
+            assert.deepStrictEqual(parsed.getEdgeAttributes(edge), attributes);
+          });
+        }
+      );
+    });
   });
 };
