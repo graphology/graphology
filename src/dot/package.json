@@ -1,0 +1,54 @@
+{
+  "name": "graphology-dot",
+  "version": "0.0.0-canary.1",
+  "description": "DOT parser & writer for graphology.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "*.d.ts",
+    "index.js",
+    "browser",
+    "common",
+    "node"
+  ],
+  "scripts": {
+    "prepublishOnly": "npm test",
+    "test:browser": "mocha ./test/browser/endpoint.js",
+    "test": "npm run test:browser"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology.git"
+  },
+  "keywords": [
+    "graph",
+    "graphology",
+    "dot",
+    "graphviz"
+  ],
+  "author": {
+    "name": "Ethan Zhang",
+    "email": "me@dreams.plus",
+    "url": "https://dreams.plus"
+  },
+  "contributors": [
+    {
+      "name": "Ethan Zhang",
+      "email": "me@dreams.plus",
+      "url": "https://dreams.plus"
+    },
+    {
+      "name": "Guillaume Plique",
+      "url": "http://github.com/Yomguithereal"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology#readme",
+  "dependencies": {
+    "graphology-operators": "^1.5.0",
+    "graphology-utils": "^2.4.1"
+  }
+}

@@ -1,0 +1,158 @@
+/**
+ * Graphology Browser DOT Unit Tests Common Utilities
+ * ===================================================
+ *
+ * Testing utilities used by both the browser & the node version.
+ */
+var assert = require('assert'),
+  parserDefinitions = require('./definitions/parser.js'),
+  writerDefinitions = require('./definitions/writer.js'),
+  resources = require('./resources'),
+  Graph = require('graphology');
+
+/**
+ * Testing the parser on all of our test files.
+ */
+exports.testAllFiles = function (parser) {
+  parserDefinitions.forEach(function (definition) {
+    if (definition.skip) return;
+
+    var resource = resources[definition.dot],
+      info = definition.basics;
+
+    it(
+      'should properly parse the "' + definition.title + '" file.',
+      function () {
+        var graph = parser(Graph, resource, definition.options || {});
+        // console.log(graph);
+
+        assert.deepStrictEqual(graph.getAttributes(), info.meta);
+        assert.strictEqual(graph.order, info.order);
+        assert.strictEqual(graph.size, info.size);
+        assert.strictEqual(graph.type, info.type);
+        assert.strictEqual(graph.multi, info.multi);
+
+        var node = info.node;
+
+        assert.strictEqual(graph.hasNode(node.key), true);
+        assert.deepStrictEqual(
+          graph.getNodeAttributes(node.key),
+          node.attributes || {}
+        );
+
+        var edge = info.edge;
+
+        if (edge.key) assert.strictEqual(graph.hasEdge(edge.key), true);
+        else assert.strictEqual(graph.hasEdge(edge.source, edge.target), true);
+
+        if (edge.key) {
+          assert.strictEqual(graph.source(edge.key), '' + edge.source);
+          assert.strictEqual(graph.target(edge.key), '' + edge.target);
+          assert.strictEqual(
+            graph.isDirected(edge.key),
+            !edge.undirected,
+            'Wrong edge type for "' + edge.key + '"!'
+          );
+        }
+
+        var attributes;
+
+        if (edge.key) attributes = graph.getEdgeAttributes(edge.key);
+        else attributes = graph.getEdgeAttributes(edge.source, edge.target);
+
+        assert.deepStrictEqual(
+          attributes,
+          edge.attributes || {},
+          'Edge attributes mismatch!'
+        );
+      }
+    );
+  });
+};
+
+/**
+ * Testing the writer on all of our test graphs.
+ */
+exports.testWriter = function (writer, parser) {
+  describe('Writer', function () {
+    it('should throw when given an invalid graphology instance.', function () {
+      assert.throws(function () {
+        writer(null);
+      }, /graphology/);
+    });
+
+    writerDefinitions.forEach(function (definition) {
+      if (definition.skip) return;
+
+      var resource = resources[definition.dot];
+      var graph = definition.graph();
+
+      it(
+        'should correctly write the "' + definition.title + '" graph.',
+        function () {
+          var string = writer(graph, definition.options);
+
+          assert.strictEqual(string, resource);
+        }
+      );
+
+      if (definition.roundtrip === false) return;
+
+      it(
+        'should write a "' +
+          definition.title +
+          '" graph that the parser can read back.',
+        function () {
+          var string = writer(graph, definition.options);
+          var parsed = parser(Graph, string);
+
+          assert.deepStrictEqual(parsed.getAttributes(), graph.getAttributes());
+          assert.strictEqual(parsed.order, graph.order);
+          assert.strictEqual(parsed.size, graph.size);
+          assert.strictEqual(parsed.type, graph.type);
+          assert.strictEqual(parsed.multi, graph.multi);
+
+          graph.forEachNode(function (node, attributes) {
+            assert.strictEqual(parsed.hasNode(node), true);
+            assert.deepStrictEqual(parsed.getNodeAttributes(node), attributes);
+          });
+
+          graph.forEachEdge(function (
+            edge,
+            attributes,
+            source,
+            target,
+            _sa,
+            _ta,
+            undirected
+          ) {
+            // DOT format doesn't have edge IDs, so we can't compare by key.
+            // Instead, check that an edge with the same source, target,
+            // direction and attributes exists.
+            var found = false;
+            parsed.forEachEdge(function (
+              parsedEdge,
+              parsedAttributes,
+              parsedSource,
+              parsedTarget,
+              _psa,
+              _pta,
+              parsedUndirected
+            ) {
+              if (
+                parsedSource === source &&
+                parsedTarget === target &&
+                parsedUndirected === undirected
+              ) {
+                assert.deepStrictEqual(parsedAttributes, attributes);
+                found = true;
+              }
+            });
+
+            assert.strictEqual(found, true);
+          });
+        }
+      );
+    });
+  });
+};
