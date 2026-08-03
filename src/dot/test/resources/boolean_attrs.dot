@@ -1,0 +1,5 @@
+graph G {
+  n0 [active=true, visible=false, count=0];
+  n1 [active=false];
+  n0 -- n1 [highlighted=true, weight=2];
+}

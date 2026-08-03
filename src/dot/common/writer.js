@@ -29,12 +29,30 @@ function isEmptyValue(value) {
 
 /**
  * Function used to escape a string value for DOT output.
+ * Escapes backslash, double quotes, and whitespace control characters
+ * so the output is valid for Graphviz rendering.
+ *
+ * DOT recognizes the following escape sequences inside quoted strings:
+ *   \\  -> backslash
+ *   \"  -> double quote
+ *   \n  -> newline
+ *   \r  -> carriage return
+ *   \t  -> tab
  *
  * @param  {string} value - Target value.
  * @return {string}
  */
 function escapeString(value) {
-  return '"' + String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+  return (
+    '"' +
+    String(value)
+      .replace(/\\/g, '\\\\')
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '\\r')
+      .replace(/\t/g, '\\t') +
+    '"'
+  );
 }
 
 /**

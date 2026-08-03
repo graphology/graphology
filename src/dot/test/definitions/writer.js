@@ -49,6 +49,45 @@ function createDirectedGraph() {
   return graph;
 }
 
+function createEscapedAttrsGraph() {
+  var graph = new Graph({type: 'undirected'});
+
+  graph.setAttribute('id', 'G');
+
+  graph.addNode('n0', {color: '#FF0000', label: 'say "hello"'});
+  graph.addNode('n1', {path: 'C:\\Users\\test'});
+  graph.addEdge('n0', 'n1', {note: 'File: "test.txt" #1'});
+
+  return graph;
+}
+
+function createBooleanAttrsGraph() {
+  var graph = new Graph({type: 'undirected'});
+
+  graph.setAttribute('id', 'G');
+
+  graph.addNode('n0', {active: true, visible: false, count: 0});
+  graph.addNode('n1', {active: false});
+  graph.addEdge('n0', 'n1', {highlighted: true, weight: 2});
+
+  return graph;
+}
+
+function createMixedGraph() {
+  var graph = new Graph({type: 'mixed'});
+
+  graph.setAttribute('id', 'G');
+
+  graph.addNode('n0');
+  graph.addNode('n1');
+  graph.addNode('n2');
+
+  graph.addEdgeWithKey('e0', 'n0', 'n1');
+  graph.addUndirectedEdgeWithKey('e1', 'n0', 'n2');
+
+  return graph;
+}
+
 module.exports = [
   {
     title: 'Basic',
@@ -59,5 +98,20 @@ module.exports = [
     title: 'Directed',
     dot: 'directed_writer',
     graph: createDirectedGraph
+  },
+  {
+    title: 'Escaped Attributes',
+    dot: 'escaped_attrs_writer',
+    graph: createEscapedAttrsGraph
+  },
+  {
+    title: 'Boolean Attributes',
+    dot: 'boolean_attrs_writer',
+    graph: createBooleanAttrsGraph
+  },
+  {
+    title: 'Mixed',
+    dot: 'mixed_writer',
+    graph: createMixedGraph
   }
 ];

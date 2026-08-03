@@ -10,7 +10,17 @@ var FILES = [
   'directed',
   'attributes',
   'basic_writer',
-  'directed_writer'
+  'directed_writer',
+  'escaped_attrs',
+  'boolean_attrs',
+  'edge_chain',
+  'subgraph',
+  'default_attrs',
+  'mixed',
+  'implicit_nodes',
+  'escaped_attrs_writer',
+  'boolean_attrs_writer',
+  'mixed_writer'
 ];
 
 function loadFile(name) {

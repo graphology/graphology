@@ -1,0 +1,9 @@
+graph {
+  node [color=red, shape=box];
+  edge [weight=1];
+  a;
+  b;
+  c;
+  a -- b;
+  b -- c [weight=3];
+}

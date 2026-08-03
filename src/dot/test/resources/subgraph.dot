@@ -1,0 +1,9 @@
+graph {
+  a [color=red];
+  subgraph S {
+    b [color=blue];
+    c;
+    b -- c;
+  }
+  a -- b;
+}
