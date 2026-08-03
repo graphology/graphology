@@ -1,6 +1,6 @@
 {
   "name": "graphology-dot",
-  "version": "0.0.0-canary.1",
+  "version": "0.0.0-canary.2",
   "description": "DOT parser & writer for graphology.",
   "main": "index.js",
   "types": "index.d.ts",

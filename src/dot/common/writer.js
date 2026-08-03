@@ -10,7 +10,6 @@ var inferType = require('graphology-utils/infer-type');
 /**
  * Constants.
  */
-var SPECIAL_ID_REGEX = /[\s"{}[\],;=:-><#]/;
 var SIMPLE_ID_REGEX = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 
 /**
@@ -76,16 +75,20 @@ function formatAttributeValue(value) {
 
 /**
  * Function used to format a node/edge id for DOT output.
- * Quoted if it contains special characters.
+ * Quoted if it contains any non-alphanumeric characters (except underscore),
+ * starts with a digit, or is a pure number.
+ *
+ * Per DOT spec, a bare ID must match: [a-zA-Z_][a-zA-Z0-9_]*
  *
  * @param  {string} id - Node or edge id.
  * @return {string}
  */
 function formatId(id) {
-  if (SPECIAL_ID_REGEX.test(String(id)) || /^\d/.test(String(id))) {
-    return escapeString(String(id));
+  var str = String(id);
+  if (SIMPLE_ID_REGEX.test(str)) {
+    return str;
   }
-  return String(id);
+  return escapeString(str);
 }
 
 /**

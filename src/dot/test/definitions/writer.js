@@ -88,6 +88,21 @@ function createMixedGraph() {
   return graph;
 }
 
+function createSpecialNodeIdsGraph() {
+  var graph = new Graph({type: 'directed'});
+
+  graph.setAttribute('id', 'G');
+
+  graph.addNode('++_2036923609960', {node_kind: '++', is_named: false, text: '++'});
+  graph.addNode(')_2036923547800', {node_kind: ')', is_named: false, text: ')'});
+  graph.addNode('normal_node', {label: 'Normal'});
+
+  graph.addEdge('++_2036923609960', ')_2036923547800');
+  graph.addEdge('++_2036923609960', 'normal_node');
+
+  return graph;
+}
+
 module.exports = [
   {
     title: 'Basic',
@@ -113,5 +128,10 @@ module.exports = [
     title: 'Mixed',
     dot: 'mixed_writer',
     graph: createMixedGraph
+  },
+  {
+    title: 'Special Node IDs',
+    dot: 'special_node_ids_writer',
+    graph: createSpecialNodeIdsGraph
   }
 ];

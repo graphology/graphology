@@ -246,5 +246,32 @@ module.exports = [
         attributes: {}
       }
     }
+  },
+  {
+    title: 'Special Node IDs',
+    dot: 'special_node_ids',
+    basics: {
+      type: 'directed',
+      multi: false,
+      meta: {
+        id: 'G'
+      },
+      order: 3,
+      node: {
+        key: '++_2036923609960',
+        attributes: {
+          node_kind: '++',
+          is_named: false,
+          text: '++'
+        }
+      },
+      size: 2,
+      edge: {
+        source: '++_2036923609960',
+        target: ')_2036923547800',
+        undirected: false,
+        attributes: {}
+      }
+    }
   }
 ];

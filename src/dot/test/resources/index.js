@@ -20,7 +20,9 @@ var FILES = [
   'implicit_nodes',
   'escaped_attrs_writer',
   'boolean_attrs_writer',
-  'mixed_writer'
+  'mixed_writer',
+  'special_node_ids',
+  'special_node_ids_writer'
 ];
 
 function loadFile(name) {
