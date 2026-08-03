@@ -136,7 +136,7 @@ function hits(assign, graph, options) {
 
         hubs[node] += authorities[neighbor] * weights[edge];
 
-        if (hubs[neighbor] > maxHub) maxHub = hubs[neighbor];
+        if (hubs[node] > maxHub) maxHub = hubs[node];
       }
     }
 

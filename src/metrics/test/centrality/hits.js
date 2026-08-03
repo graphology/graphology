@@ -42,6 +42,35 @@ var HUBS = {
   6: 0.211325
 };
 
+var BIPARTITE_EDGES = [
+  ['h1', 'a1'],
+  ['h1', 'a2'],
+  ['h2', 'a1'],
+  ['h2', 'a2']
+];
+
+var BIPARTITE_GRAPH = new Graph();
+['h1', 'h2', 'a1', 'a2'].forEach(function (node) {
+  BIPARTITE_GRAPH.addNode(node);
+});
+BIPARTITE_EDGES.forEach(function (pair) {
+  BIPARTITE_GRAPH.addEdge(pair[0], pair[1]);
+});
+
+var BIPARTITE_AUTHORITIES = {
+  h1: 0,
+  h2: 0,
+  a1: 0.5,
+  a2: 0.5
+};
+
+var BIPARTITE_HUBS = {
+  h1: 0.5,
+  h2: 0.5,
+  a1: 0,
+  a2: 0
+};
+
 describe('hits', function () {
   it('should throw if provided with something which is not a graph.', function () {
     assert.throws(function () {
@@ -124,6 +153,23 @@ describe('hits', function () {
         HUBS[node],
         0.0001
       );
+    }
+  });
+
+  it('should converge on a bipartite hubs-to-authorities graph.', function () {
+    var result = hits(BIPARTITE_GRAPH, {tolerance: 1e-8}),
+      node;
+
+    for (node in result.authorities) {
+      assert.approximately(
+        result.authorities[node],
+        BIPARTITE_AUTHORITIES[node],
+        0.0001
+      );
+    }
+
+    for (node in result.hubs) {
+      assert.approximately(result.hubs[node], BIPARTITE_HUBS[node], 0.0001);
     }
   });
 });
