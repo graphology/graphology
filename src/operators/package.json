@@ -1,11 +1,12 @@
 {
   "name": "graphology-operators",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "Miscellaneous operators for graphology.",
   "main": "index.js",
   "types": "index.d.ts",
   "files": [
     "*.d.ts",
+    "complement.js",
     "disjoint-union.js",
     "index.js",
     "reverse.js",
@@ -36,6 +37,12 @@
     "name": "Guillaume Plique",
     "url": "http://github.com/Yomguithereal"
   },
+  "contributors": [
+    {
+      "name": "Ethan Zhang",
+      "url": "https://dreams.plus"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/graphology/graphology/issues"
