@@ -1,3 +1,13 @@
+---
+layout: default
+title: dot
+nav_order: 6
+parent: Standard library
+aux_links:
+  "Library directory": "https://github.com/graphology/graphology/tree/master/src/dot"
+---
+
+
 # Graphology DOT Utilities
 
 Graphviz DOT parser & writer for [`graphology`](https://graphology.github.io).
