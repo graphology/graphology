@@ -135,9 +135,9 @@ function hits(assign, graph, options) {
         neighbor = graph.opposite(node, edge);
 
         hubs[node] += authorities[neighbor] * weights[edge];
-
-        if (hubs[node] > maxHub) maxHub = hubs[node];
       }
+
+      if (hubs[node] > maxHub) maxHub = hubs[node];
     }
 
     // Normalizing
