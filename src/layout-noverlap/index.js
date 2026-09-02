@@ -8,6 +8,8 @@ var isGraph = require('graphology-utils/is-graph');
 var iterate = require('./iterate.js');
 var helpers = require('./helpers.js');
 
+var { create_computer_ctx, iterate: wasm_iterate, get_node_matrix, get_converged } = require('./layout-noverlap-iterate-wasm/pkg/layout_noverlap_iterate_wasm.js')
+
 var DEFAULT_SETTINGS = require('./defaults.js');
 var DEFAULT_MAX_ITERATIONS = 500;
 
@@ -49,9 +51,18 @@ function abstractSynchronousLayout(assign, graph, params) {
     converged = false,
     i;
 
-  // Iterating
-  for (i = 0; i < maxIterations && !converged; i++)
-    converged = iterate(settings, matrix).converged;
+  if (settings.wasm) {
+    var ctxPtr = create_computer_ctx(matrix)
+    for (i = 0; i < maxIterations && !converged; i++) {
+      wasm_iterate(settings.margin, settings.ratio, settings.expansion, settings.gridSize, settings.speed, ctxPtr);
+      converged = get_converged(ctxPtr)
+    }
+    matrix = get_node_matrix(ctxPtr)
+  } else {
+    for (i = 0; i < maxIterations && !converged; i++) {
+      converged = iterate(settings, matrix).converged;
+    }
+  }
 
   // Applying
   if (assign) {
