@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.0
+
+- Adding `complement`
+
 ## 1.6.1
 
 - Improved performance of `reverse`.

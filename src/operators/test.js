@@ -12,6 +12,7 @@ var assertions = require('graphology-assertions');
 var areSameGraphsDeep = assertions.areSameGraphsDeep;
 var haveSameEdgesDeep = assertions.haveSameEdgesDeep;
 
+var complement = require('./complement.js');
 var reverse = require('./reverse.js');
 var subgraph = require('./subgraph');
 var union = require('./union.js');
@@ -39,6 +40,89 @@ function sortedEdgePairs(graph) {
 
 describe('graphology-operators', function () {
   describe('unary', function () {
+    describe('complement', function () {
+      it('should throw if graph is invalid.', function () {
+        assert.throws(function () {
+          complement(null);
+        }, /invalid/);
+      });
+
+      it('should throw if graph is not undirected.', function () {
+        assert.throws(function () {
+          complement(new Graph({type: 'directed'}));
+        }, /undirected/);
+      });
+
+      it('should throw if graph is multi.', function () {
+        assert.throws(function () {
+          complement(new Graph({multi: true, type: 'undirected'}));
+        }, /simple/);
+      });
+
+      it('should return an empty graph for a complete graph.', function () {
+        var graph = new Graph({type: 'undirected'});
+        mergeClique(graph, [0, 1, 2, 3]);
+
+        var comp = complement(graph);
+
+        assert.strictEqual(comp.order, 4);
+        assert.strictEqual(comp.size, 0);
+      });
+
+      it('should return a complete graph for an empty graph.', function () {
+        var graph = new Graph({type: 'undirected'});
+        addNodesFrom(graph, [0, 1, 2, 3]);
+
+        var comp = complement(graph);
+
+        assert.strictEqual(comp.order, 4);
+        // Complete graph K4 has n*(n-1)/2 = 6 edges
+        assert.strictEqual(comp.size, 6);
+        assert.strictEqual(comp.hasEdge('0', '1'), true);
+        assert.strictEqual(comp.hasEdge('0', '2'), true);
+        assert.strictEqual(comp.hasEdge('0', '3'), true);
+        assert.strictEqual(comp.hasEdge('1', '2'), true);
+        assert.strictEqual(comp.hasEdge('1', '3'), true);
+        assert.strictEqual(comp.hasEdge('2', '3'), true);
+      });
+
+      it('should correctly compute the complement of a partially connected graph.', function () {
+        var graph = new Graph({type: 'undirected'});
+        addNodesFrom(graph, [0, 1, 2, 3]);
+        graph.addEdge(0, 1);
+        graph.addEdge(0, 2);
+
+        var comp = complement(graph);
+
+        assert.strictEqual(comp.order, 4);
+        // K4 has 6 edges, original has 2, complement should have 4
+        assert.strictEqual(comp.size, 4);
+
+        // These edges should NOT exist (they were in the original)
+        assert.strictEqual(comp.hasEdge('0', '1'), false);
+        assert.strictEqual(comp.hasEdge('0', '2'), false);
+
+        // These edges SHOULD exist (they were NOT in the original)
+        assert.strictEqual(comp.hasEdge('0', '3'), true);
+        assert.strictEqual(comp.hasEdge('1', '2'), true);
+        assert.strictEqual(comp.hasEdge('1', '3'), true);
+        assert.strictEqual(comp.hasEdge('2', '3'), true);
+      });
+
+      it('should copy node attributes.', function () {
+        var graph = new Graph({type: 'undirected'});
+        graph.addNode(0, {label: 'A'});
+        graph.addNode(1, {label: 'B'});
+        graph.addEdge(0, 1);
+
+        var comp = complement(graph);
+
+        assert.strictEqual(comp.getNodeAttribute(0, 'label'), 'A');
+        assert.strictEqual(comp.getNodeAttribute(1, 'label'), 'B');
+        assert.strictEqual(comp.size, 0);
+      });
+    });
+
     describe('reverse', function () {
       it('should throw if graph is invalid.', function () {
         assert.throws(function () {
