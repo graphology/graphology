@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+  <key id="d0" for="node" attr.name="label" attr.type="string"/>
+  <key id="d1" for="node" attr.name="color" attr.type="string"/>
+  <key id="d2" for="edge" attr.name="weight" attr.type="int"/>
+  <graph edgedefault="undirected">
+    <node id="n0">
+      <data key="d0">Node n0</data>
+      <data key="d1">green</data>
+    </node>
+    <node id="n1">
+      <data key="d0">Node n1</data>
+      <data key="d1">blue</data>
+    </node>
+    <edge id="e0" source="n0" target="n1">
+      <data key="d2">4</data>
+    </edge>
+  </graph>
+</graphml>

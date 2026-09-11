@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+  <key id="d0" for="node" attr.name="name" attr.type="string"/>
+  <key id="d1" for="edge" attr.name="note" attr.type="string"/>
+  <graph edgedefault="undirected">
+    <node id="a">
+      <data key="d0">Tom &amp; Jerry</data>
+    </node>
+    <node id="b">
+      <data key="d0">&lt;b&gt;bold&lt;/b&gt;</data>
+    </node>
+    <edge id="e" source="a" target="b">
+      <data key="d1">say "hi"</data>
+    </edge>
+  </graph>
+</graphml>

@@ -8,11 +8,15 @@ var fs = require('fs'),
 var FILES = [
   'attributes',
   'basic',
+  'basic_writer',
+  'escaping_writer',
+  'formatted_writer',
   'miserables',
   'miserables_broken',
   'multigraph',
   'mixed_multigraph',
-  'missing_nodes'
+  'missing_nodes',
+  'mixed_writer'
 ];
 
 function loadFile(name) {

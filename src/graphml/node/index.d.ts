@@ -1,5 +1,5 @@
 import Graph, {Attributes, GraphConstructor} from 'graphology-types';
-import {GraphmlParserOptions} from '../common/types';
+import {GraphmlParserOptions, GraphmlWriterOptions} from '../common/types';
 
 export function parse<
   NodeAttributes extends Attributes = Attributes,
@@ -10,3 +10,18 @@ export function parse<
   source: string | Document,
   options?: GraphmlParserOptions
 ): Graph<NodeAttributes, EdgeAttributes, GraphAttributes>;
+
+export function write<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes,
+  FormattedNodeAttributes extends Attributes = Attributes,
+  FormattedEdgeAttributes extends Attributes = Attributes
+>(
+  graph: Graph<NodeAttributes, EdgeAttributes>,
+  options?: GraphmlWriterOptions<
+    NodeAttributes,
+    EdgeAttributes,
+    FormattedNodeAttributes,
+    FormattedEdgeAttributes
+  >
+): string;
