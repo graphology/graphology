@@ -1,0 +1,5 @@
+graph G {
+  n0 [color="#FF0000", label="say \"hello\""];
+  n1 [path="C:\\Users\\test"];
+  n0 -- n1 [note="File: \"test.txt\" #1"];
+}

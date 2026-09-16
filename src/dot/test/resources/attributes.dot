@@ -1,0 +1,16 @@
+graph G {
+  graph [mode=static];
+  n0 [color=green];
+  n1;
+  n2 [color=blue];
+  n3 [color=red];
+  n4;
+  n5 [color=turquoise];
+  n0 -- n2 [weight=1.0];
+  n0 -- n1 [weight=1.0];
+  n1 -- n3 [weight=2.0];
+  n3 -- n2;
+  n2 -- n4;
+  n3 -- n5;
+  n5 -- n4 [weight=1.1];
+}
