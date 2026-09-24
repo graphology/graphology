@@ -398,4 +398,59 @@ describe('graphology-dag', function () {
       assert.deepStrictEqual(generations, []);
     });
   });
+
+  describe('topologicalGenerations', () => {
+    it('should return nothing for an empty graph', () => {
+      const graph = new DirectedGraph();
+      assert.deepStrictEqual(topologicalGenerations(graph), []);
+    });
+
+    it('should return one generation for a single node', () => {
+      const graph = new DirectedGraph();
+      graph.mergeNode(0);
+      assert.deepStrictEqual(topologicalGenerations(graph), [['0']]);
+    });
+
+    it('should return correct number of generations for a multi-generation graph', () => {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(0, 1);
+      assert.deepStrictEqual(topologicalGenerations(graph), [['0'], ['1']]);
+    });
+
+    it('should use the greater height for skip-level generations', () => {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(0, 1);
+      graph.mergeEdge(1, 2);
+      graph.mergeEdge(0, 2);
+      assert.deepStrictEqual(topologicalGenerations(graph), [
+        ['0'],
+        ['1'],
+        ['2']
+      ]);
+    });
+
+    it('should return the correct number of generations for an internal node', () => {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(0, 1);
+      assert.deepStrictEqual(topologicalGenerations(graph, 1), [['1']]);
+    });
+
+    it('should return the correct number of generations for the given root', () => {
+      const graph = new DirectedGraph();
+      graph.mergeEdge(0, 1);
+      graph.mergeEdge(1, 2);
+      graph.mergeEdge(10, 2);
+      graph.mergeNode(20);
+      assert.deepStrictEqual(topologicalGenerations(graph, 0), [
+        ['0'],
+        ['1'],
+        ['2']
+      ]);
+      assert.deepStrictEqual(topologicalGenerations(graph, 10), [
+        ['10'],
+        ['2']
+      ]);
+      assert.deepStrictEqual(topologicalGenerations(graph, 20), [['20']]);
+    });
+  });
 });
