@@ -5,7 +5,7 @@ export default function updateGraphKeys<
   EdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  nodeKeyUpdater: (key: string, attributes: NodeAttributes) => unknown,
+  nodeKeyUpdater: (key: string, attributes: NodeAttributes) => string,
   edgeKeyUpdater: (
     key: string,
     attributes: EdgeAttributes,
@@ -14,5 +14,5 @@ export default function updateGraphKeys<
     sourceAttributes: NodeAttributes,
     targetAttributes: NodeAttributes,
     undirected: boolean
-  ) => unknown
+  ) => string
 ): Graph;

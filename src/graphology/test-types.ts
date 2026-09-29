@@ -57,3 +57,7 @@ weighted.on('edgeAttributesUpdated', payload => {
 });
 
 weighted.emit('nodeAdded', {key: 'fake', attributes: {weight: 24}});
+
+// A number is not a key. The caller converts it before addNode.
+// @ts-expect-error
+graph.addNode(1);
