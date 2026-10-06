@@ -353,160 +353,160 @@ declare abstract class AbstractGraph<
   undirectedSelfLoopCount: number;
 
   // Read methods
-  hasNode(node: string): boolean;
-  hasDirectedEdge(edge: string): boolean;
-  hasDirectedEdge(source: string, target: string): boolean;
-  hasUndirectedEdge(edge: string): boolean;
-  hasUndirectedEdge(source: string, target: string): boolean;
-  hasEdge(edge: string): boolean;
-  hasEdge(source: string, target: string): boolean;
-  directedEdge(source: string, target: string): string | undefined;
-  undirectedEdge(source: string, target: string): string | undefined;
-  edge(source: string, target: string): string | undefined;
-  inDegree(node: string): number;
-  outDegree(node: string): number;
-  inboundDegree(node: string): number;
-  outboundDegree(node: string): number;
-  directedDegree(node: string): number;
-  undirectedDegree(node: string): number;
-  degree(node: string): number;
-  inDegreeWithoutSelfLoops(node: string): number;
-  outDegreeWithoutSelfLoops(node: string): number;
-  inboundDegreeWithoutSelfLoops(node: string): number;
-  outboundDegreeWithoutSelfLoops(node: string): number;
-  directedDegreeWithoutSelfLoops(node: string): number;
-  undirectedDegreeWithoutSelfLoops(node: string): number;
-  degreeWithoutSelfLoops(node: string): number;
-  source(edge: string): string;
-  target(edge: string): string;
-  extremities(edge: string): [string, string];
-  opposite(node: string, edge: string): string;
-  isUndirected(edge: string): boolean;
-  isDirected(edge: string): boolean;
-  isSelfLoop(edge: string): boolean;
-  hasExtremity(edge: string, node: string): boolean;
-  areNeighbors(source: string, target: string): boolean;
-  areUndirectedNeighbors(source: string, target: string): boolean;
-  areDirectedNeighbors(source: string, target: string): boolean;
-  areInNeighbors(source: string, target: string): boolean;
-  areOutNeighbors(source: string, target: string): boolean;
-  areInboundNeighbors(source: string, target: string): boolean;
-  areOutboundNeighbors(source: string, target: string): boolean;
+  hasNode(node: string | number): boolean;
+  hasDirectedEdge(edge: string | number): boolean;
+  hasDirectedEdge(source: string | number, target: string | number): boolean;
+  hasUndirectedEdge(edge: string | number): boolean;
+  hasUndirectedEdge(source: string | number, target: string | number): boolean;
+  hasEdge(edge: string | number): boolean;
+  hasEdge(source: string | number, target: string | number): boolean;
+  directedEdge(source: string | number, target: string | number): string | undefined;
+  undirectedEdge(source: string | number, target: string | number): string | undefined;
+  edge(source: string | number, target: string | number): string | undefined;
+  inDegree(node: string | number): number;
+  outDegree(node: string | number): number;
+  inboundDegree(node: string | number): number;
+  outboundDegree(node: string | number): number;
+  directedDegree(node: string | number): number;
+  undirectedDegree(node: string | number): number;
+  degree(node: string | number): number;
+  inDegreeWithoutSelfLoops(node: string | number): number;
+  outDegreeWithoutSelfLoops(node: string | number): number;
+  inboundDegreeWithoutSelfLoops(node: string | number): number;
+  outboundDegreeWithoutSelfLoops(node: string | number): number;
+  directedDegreeWithoutSelfLoops(node: string | number): number;
+  undirectedDegreeWithoutSelfLoops(node: string | number): number;
+  degreeWithoutSelfLoops(node: string | number): number;
+  source(edge: string | number): string;
+  target(edge: string | number): string;
+  extremities(edge: string | number): [string, string];
+  opposite(node: string | number, edge: string | number): string;
+  isUndirected(edge: string | number): boolean;
+  isDirected(edge: string | number): boolean;
+  isSelfLoop(edge: string | number): boolean;
+  hasExtremity(edge: string | number, node: string | number): boolean;
+  areNeighbors(source: string | number, target: string | number): boolean;
+  areUndirectedNeighbors(source: string | number, target: string | number): boolean;
+  areDirectedNeighbors(source: string | number, target: string | number): boolean;
+  areInNeighbors(source: string | number, target: string | number): boolean;
+  areOutNeighbors(source: string | number, target: string | number): boolean;
+  areInboundNeighbors(source: string | number, target: string | number): boolean;
+  areOutboundNeighbors(source: string | number, target: string | number): boolean;
 
   // Mutation methods
-  addNode(node: string, attributes?: NodeAttributes): string;
+  addNode(node: string | number, attributes?: NodeAttributes): string;
   mergeNode(
-    node: string,
+    node: string | number,
     attributes?: Partial<NodeAttributes>
   ): NodeMergeResult;
   updateNode(
-    node: string,
+    node: string | number,
     updater?: (attributes: Partial<NodeAttributes>) => NodeAttributes
   ): NodeMergeResult;
   addEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     attributes?: EdgeAttributes
   ): string;
   mergeEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     attributes?: Partial<EdgeAttributes>
   ): EdgeMergeResult;
   updateEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     updater?: (attributes: Partial<EdgeAttributes>) => EdgeAttributes
   ): EdgeMergeResult;
   addDirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     attributes?: EdgeAttributes
   ): string;
   mergeDirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     attributes?: Partial<EdgeAttributes>
   ): EdgeMergeResult;
   updateDirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     updater?: (attributes: Partial<EdgeAttributes>) => EdgeAttributes
   ): EdgeMergeResult;
   addUndirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     attributes?: EdgeAttributes
   ): string;
   mergeUndirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     attributes?: Partial<EdgeAttributes>
   ): EdgeMergeResult;
   updateUndirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     updater?: (attributes: Partial<EdgeAttributes>) => EdgeAttributes
   ): EdgeMergeResult;
   addEdgeWithKey(
-    edge: string,
-    source: string,
-    target: string,
+    edge: string | number,
+    source: string | number,
+    target: string | number,
     attributes?: EdgeAttributes
   ): string;
   mergeEdgeWithKey(
-    edge: string,
-    source: string,
-    target: string,
+    edge: string | number,
+    source: string | number,
+    target: string | number,
     attributes?: Partial<EdgeAttributes>
   ): EdgeMergeResult;
   updateEdgeWithKey(
-    edge: string,
-    source: string,
-    target: string,
+    edge: string | number,
+    source: string | number,
+    target: string | number,
     updater?: (attributes: Partial<EdgeAttributes>) => EdgeAttributes
   ): EdgeMergeResult;
   addDirectedEdgeWithKey(
-    edge: string,
-    source: string,
-    target: string,
+    edge: string | number,
+    source: string | number,
+    target: string | number,
     attributes?: EdgeAttributes
   ): string;
   mergeDirectedEdgeWithKey(
-    edge: string,
-    source: string,
-    target: string,
+    edge: string | number,
+    source: string | number,
+    target: string | number,
     attributes?: Partial<EdgeAttributes>
   ): EdgeMergeResult;
   updateDirectedEdgeWithKey(
-    edge: string,
-    source: string,
-    target: string,
+    edge: string | number,
+    source: string | number,
+    target: string | number,
     updater?: (attributes: Partial<EdgeAttributes>) => EdgeAttributes
   ): EdgeMergeResult;
   addUndirectedEdgeWithKey(
-    edge: string,
-    source: string,
-    target: string,
+    edge: string | number,
+    source: string | number,
+    target: string | number,
     attributes?: EdgeAttributes
   ): string;
   mergeUndirectedEdgeWithKey(
-    edge: string,
-    source: string,
-    target: string,
+    edge: string | number,
+    source: string | number,
+    target: string | number,
     attributes?: Partial<EdgeAttributes>
   ): EdgeMergeResult;
   updateUndirectedEdgeWithKey(
-    edge: string,
-    source: string,
-    target: string,
+    edge: string | number,
+    source: string | number,
+    target: string | number,
     updater?: (attributes: Partial<EdgeAttributes>) => EdgeAttributes
   ): EdgeMergeResult;
-  dropNode(node: string): void;
-  dropEdge(edge: string): void;
-  dropEdge(source: string, target: string): void;
-  dropDirectedEdge(source: string, target: string): void;
-  dropUndirectedEdge(source: string, target: string): void;
+  dropNode(node: string | number): void;
+  dropEdge(edge: string | number): void;
+  dropEdge(source: string | number, target: string | number): void;
+  dropDirectedEdge(source: string | number, target: string | number): void;
+  dropUndirectedEdge(source: string | number, target: string | number): void;
   clear(): void;
   clearEdges(): void;
 
@@ -539,150 +539,150 @@ declare abstract class AbstractGraph<
 
   // Node attribute methods
   getNodeAttribute<AttributeName extends keyof NodeAttributes>(
-    node: string,
+    node: string | number,
     name: AttributeName
   ): NodeAttributes[AttributeName];
-  getNodeAttributes(node: string): NodeAttributes;
+  getNodeAttributes(node: string | number): NodeAttributes;
   hasNodeAttribute<AttributeName extends keyof NodeAttributes>(
-    node: string,
+    node: string | number,
     name: AttributeName
   ): boolean;
   setNodeAttribute<AttributeName extends keyof NodeAttributes>(
-    node: string,
+    node: string | number,
     name: AttributeName,
     value: NodeAttributes[AttributeName]
   ): this;
   updateNodeAttribute<AttributeName extends keyof NodeAttributes>(
-    node: string,
+    node: string | number,
     name: AttributeName,
     updater: (
       value: NodeAttributes[AttributeName] | undefined
     ) => NodeAttributes[AttributeName]
   ): this;
   removeNodeAttribute<AttributeName extends keyof NodeAttributes>(
-    node: string,
+    node: string | number,
     name: AttributeName
   ): this;
-  replaceNodeAttributes(node: string, attributes: NodeAttributes): this;
-  mergeNodeAttributes(node: string, attributes: Partial<NodeAttributes>): this;
+  replaceNodeAttributes(node: string | number, attributes: NodeAttributes): this;
+  mergeNodeAttributes(node: string | number, attributes: Partial<NodeAttributes>): this;
   updateNodeAttributes(
-    node: string,
+    node: string | number,
     updater: (attributes: NodeAttributes) => NodeAttributes
   ): this;
 
   getSourceAttribute<AttributeName extends keyof NodeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName
   ): NodeAttributes[AttributeName];
-  getSourceAttributes(edge: string): NodeAttributes;
+  getSourceAttributes(edge: string | number): NodeAttributes;
   hasSourceAttribute<AttributeName extends keyof NodeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName
   ): boolean;
   setSourceAttribute<AttributeName extends keyof NodeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName,
     value: NodeAttributes[AttributeName]
   ): this;
   updateSourceAttribute<AttributeName extends keyof NodeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName,
     updater: (
       value: NodeAttributes[AttributeName] | undefined
     ) => NodeAttributes[AttributeName]
   ): this;
   removeSourceAttribute<AttributeName extends keyof NodeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName
   ): this;
-  replaceSourceAttributes(edge: string, attributes: NodeAttributes): this;
+  replaceSourceAttributes(edge: string | number, attributes: NodeAttributes): this;
   mergeSourceAttributes(
-    edge: string,
+    edge: string | number,
     attributes: Partial<NodeAttributes>
   ): this;
   updateSourceAttributes(
-    edge: string,
+    edge: string | number,
     updater: (attributes: NodeAttributes) => NodeAttributes
   ): this;
 
   getTargetAttribute<AttributeName extends keyof NodeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName
   ): NodeAttributes[AttributeName];
-  getTargetAttributes(edge: string): NodeAttributes;
+  getTargetAttributes(edge: string | number): NodeAttributes;
   hasTargetAttribute<AttributeName extends keyof NodeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName
   ): boolean;
   setTargetAttribute<AttributeName extends keyof NodeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName,
     value: NodeAttributes[AttributeName]
   ): this;
   updateTargetAttribute<AttributeName extends keyof NodeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName,
     updater: (
       value: NodeAttributes[AttributeName] | undefined
     ) => NodeAttributes[AttributeName]
   ): this;
   removeTargetAttribute<AttributeName extends keyof NodeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName
   ): this;
-  replaceTargetAttributes(edge: string, attributes: NodeAttributes): this;
+  replaceTargetAttributes(edge: string | number, attributes: NodeAttributes): this;
   mergeTargetAttributes(
-    edge: string,
+    edge: string | number,
     attributes: Partial<NodeAttributes>
   ): this;
   updateTargetAttributes(
-    edge: string,
+    edge: string | number,
     updater: (attributes: NodeAttributes) => NodeAttributes
   ): this;
 
   getOppositeAttribute<AttributeName extends keyof NodeAttributes>(
-    node: string,
-    edge: string,
+    node: string | number,
+    edge: string | number,
     name: AttributeName
   ): NodeAttributes[AttributeName];
-  getOppositeAttributes(node: string): NodeAttributes;
+  getOppositeAttributes(node: string | number): NodeAttributes;
   hasOppositeAttribute<AttributeName extends keyof NodeAttributes>(
-    node: string,
-    edge: string,
+    node: string | number,
+    edge: string | number,
     name: AttributeName
   ): boolean;
   setOppositeAttribute<AttributeName extends keyof NodeAttributes>(
-    node: string,
-    edge: string,
+    node: string | number,
+    edge: string | number,
     name: AttributeName,
     value: NodeAttributes[AttributeName]
   ): this;
   updateOppositeAttribute<AttributeName extends keyof NodeAttributes>(
-    node: string,
-    edge: string,
+    node: string | number,
+    edge: string | number,
     name: AttributeName,
     updater: (
       value: NodeAttributes[AttributeName] | undefined
     ) => NodeAttributes[AttributeName]
   ): this;
   removeOppositeAttribute<AttributeName extends keyof NodeAttributes>(
-    node: string,
-    edge: string,
+    node: string | number,
+    edge: string | number,
     name: AttributeName
   ): this;
   replaceOppositeAttributes(
-    node: string,
-    edge: string,
+    node: string | number,
+    edge: string | number,
     attributes: NodeAttributes
   ): this;
   mergeOppositeAttributes(
-    node: string,
-    edge: string,
+    node: string | number,
+    edge: string | number,
     attributes: Partial<NodeAttributes>
   ): this;
   updateOppositeAttributes(
-    node: string,
-    edge: string,
+    node: string | number,
+    edge: string | number,
     updater: (attributes: NodeAttributes) => NodeAttributes
   ): this;
 
@@ -693,34 +693,34 @@ declare abstract class AbstractGraph<
 
   // Edge attribute methods
   getEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName
   ): EdgeAttributes[AttributeName];
-  getEdgeAttributes(edge: string): EdgeAttributes;
+  getEdgeAttributes(edge: string | number): EdgeAttributes;
   hasEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName
   ): boolean;
   setEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName,
     value: EdgeAttributes[AttributeName]
   ): this;
   updateEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName,
     updater: (
       value: EdgeAttributes[AttributeName] | undefined
     ) => EdgeAttributes[AttributeName]
   ): this;
   removeEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    edge: string,
+    edge: string | number,
     name: AttributeName
   ): this;
-  replaceEdgeAttributes(edge: string, attributes: EdgeAttributes): this;
-  mergeEdgeAttributes(edge: string, attributes: Partial<EdgeAttributes>): this;
+  replaceEdgeAttributes(edge: string | number, attributes: EdgeAttributes): this;
+  mergeEdgeAttributes(edge: string | number, attributes: Partial<EdgeAttributes>): this;
   updateEdgeAttributes(
-    edge: string,
+    edge: string | number,
     updater: (attributes: EdgeAttributes) => EdgeAttributes
   ): this;
 
@@ -731,140 +731,140 @@ declare abstract class AbstractGraph<
 
   // Edge attribute methods (source, target)
   getEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName
   ): EdgeAttributes[AttributeName];
-  getEdgeAttributes(source: string, target: string): EdgeAttributes;
+  getEdgeAttributes(source: string | number, target: string | number): EdgeAttributes;
   hasEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName
   ): boolean;
   setEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName,
     value: EdgeAttributes[AttributeName]
   ): this;
   updateEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName,
     updater: (
       value: EdgeAttributes[AttributeName] | undefined
     ) => EdgeAttributes[AttributeName]
   ): this;
   removeEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName
   ): this;
   replaceEdgeAttributes(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     attributes: EdgeAttributes
   ): this;
   mergeEdgeAttributes(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     attributes: Partial<EdgeAttributes>
   ): this;
   updateEdgeAttributes(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     updater: (attributes: EdgeAttributes) => EdgeAttributes
   ): this;
 
   getDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName
   ): EdgeAttributes[AttributeName];
-  getDirectedEdgeAttributes(source: string, target: string): EdgeAttributes;
+  getDirectedEdgeAttributes(source: string | number, target: string | number): EdgeAttributes;
   hasDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName
   ): boolean;
   setDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName,
     value: EdgeAttributes[AttributeName]
   ): this;
   updateDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName,
     updater: (
       value: EdgeAttributes[AttributeName] | undefined
     ) => EdgeAttributes[AttributeName]
   ): this;
   removeDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName
   ): this;
   replaceDirectedEdgeAttributes(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     attributes: EdgeAttributes
   ): this;
   mergeDirectedEdgeAttributes(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     attributes: Partial<EdgeAttributes>
   ): this;
   updateDirectedEdgeAttributes(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     updater: (attributes: EdgeAttributes) => EdgeAttributes
   ): this;
 
   getUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName
   ): EdgeAttributes[AttributeName];
-  getUndirectedEdgeAttributes(source: string, target: string): EdgeAttributes;
+  getUndirectedEdgeAttributes(source: string | number, target: string | number): EdgeAttributes;
   hasUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName
   ): boolean;
   setUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName,
     value: EdgeAttributes[AttributeName]
   ): this;
   updateUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName,
     updater: (
       value: EdgeAttributes[AttributeName] | undefined
     ) => EdgeAttributes[AttributeName]
   ): this;
   removeUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     name: AttributeName
   ): this;
   replaceUndirectedEdgeAttributes(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     attributes: EdgeAttributes
   ): this;
   mergeUndirectedEdgeAttributes(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     attributes: Partial<EdgeAttributes>
   ): this;
   updateUndirectedEdgeAttributes(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     updater: (attributes: EdgeAttributes) => EdgeAttributes
   ): this;
 
@@ -899,109 +899,109 @@ declare abstract class AbstractGraph<
   nodeEntries(): IterableIterator<NodeEntry<NodeAttributes>>;
 
   edges(): Array<string>;
-  edges(node: string): Array<string>;
-  edges(source: string, target: string): Array<string>;
+  edges(node: string | number): Array<string>;
+  edges(source: string | number, target: string | number): Array<string>;
   undirectedEdges(): Array<string>;
-  undirectedEdges(node: string): Array<string>;
-  undirectedEdges(source: string, target: string): Array<string>;
+  undirectedEdges(node: string | number): Array<string>;
+  undirectedEdges(source: string | number, target: string | number): Array<string>;
   directedEdges(): Array<string>;
-  directedEdges(node: string): Array<string>;
-  directedEdges(source: string, target: string): Array<string>;
+  directedEdges(node: string | number): Array<string>;
+  directedEdges(source: string | number, target: string | number): Array<string>;
   inEdges(): Array<string>;
-  inEdges(node: string): Array<string>;
-  inEdges(source: string, target: string): Array<string>;
+  inEdges(node: string | number): Array<string>;
+  inEdges(source: string | number, target: string | number): Array<string>;
   outEdges(): Array<string>;
-  outEdges(node: string): Array<string>;
-  outEdges(source: string, target: string): Array<string>;
+  outEdges(node: string | number): Array<string>;
+  outEdges(source: string | number, target: string | number): Array<string>;
   inboundEdges(): Array<string>;
-  inboundEdges(node: string): Array<string>;
-  inboundEdges(source: string, target: string): Array<string>;
+  inboundEdges(node: string | number): Array<string>;
+  inboundEdges(source: string | number, target: string | number): Array<string>;
   outboundEdges(): Array<string>;
-  outboundEdges(node: string): Array<string>;
-  outboundEdges(source: string, target: string): Array<string>;
+  outboundEdges(node: string | number): Array<string>;
+  outboundEdges(source: string | number, target: string | number): Array<string>;
 
   forEachEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachEdge(
-    node: string,
+    node: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachUndirectedEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachUndirectedEdge(
-    node: string,
+    node: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachUndirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachDirectedEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachDirectedEdge(
-    node: string,
+    node: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachDirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachInEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachInEdge(
-    node: string,
+    node: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachInEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachOutEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachOutEdge(
-    node: string,
+    node: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachOutEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachInboundEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachInboundEdge(
-    node: string,
+    node: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachInboundEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachOutboundEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachOutboundEdge(
-    node: string,
+    node: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
   forEachOutboundEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
 
@@ -1009,84 +1009,84 @@ declare abstract class AbstractGraph<
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapUndirectedEdges<T>(
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapUndirectedEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapUndirectedEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapDirectedEdges<T>(
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapDirectedEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapDirectedEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapInEdges<T>(
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapInEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapInEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapOutEdges<T>(
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapOutEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapOutEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapInboundEdges<T>(
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapInboundEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapInboundEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapOutboundEdges<T>(
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapOutboundEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
   mapOutboundEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeMapper<T, NodeAttributes, EdgeAttributes>
   ): Array<T>;
 
@@ -1094,84 +1094,84 @@ declare abstract class AbstractGraph<
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterEdges(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterEdges(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterUndirectedEdges(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterUndirectedEdges(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterUndirectedEdges(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterDirectedEdges(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterDirectedEdges(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterDirectedEdges(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterInEdges(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterInEdges(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterInEdges(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterOutEdges(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterOutEdges(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterOutEdges(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterInboundEdges(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterInboundEdges(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterInboundEdges(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterOutboundEdges(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterOutboundEdges(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
   filterOutboundEdges(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): Array<string>;
 
@@ -1180,13 +1180,13 @@ declare abstract class AbstractGraph<
     initialValue: T
   ): T;
   reduceEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
   reduceEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
@@ -1195,13 +1195,13 @@ declare abstract class AbstractGraph<
     initialValue: T
   ): T;
   reduceUndirectedEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
   reduceUndirectedEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
@@ -1210,13 +1210,13 @@ declare abstract class AbstractGraph<
     initialValue: T
   ): T;
   reduceDirectedEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
   reduceDirectedEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
@@ -1225,13 +1225,13 @@ declare abstract class AbstractGraph<
     initialValue: T
   ): T;
   reduceInEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
   reduceInEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
@@ -1240,13 +1240,13 @@ declare abstract class AbstractGraph<
     initialValue: T
   ): T;
   reduceOutEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
   reduceOutEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
@@ -1255,13 +1255,13 @@ declare abstract class AbstractGraph<
     initialValue: T
   ): T;
   reduceInboundEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
   reduceInboundEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
@@ -1270,13 +1270,13 @@ declare abstract class AbstractGraph<
     initialValue: T
   ): T;
   reduceOutboundEdges<T>(
-    node: string,
+    node: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
   reduceOutboundEdges<T>(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgeReducer<T, NodeAttributes, EdgeAttributes>,
     initialValue: T
   ): T;
@@ -1285,550 +1285,550 @@ declare abstract class AbstractGraph<
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findUndirectedEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findUndirectedEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findUndirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findDirectedEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findDirectedEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findDirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findInEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findInEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findInEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findOutEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findOutEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findOutEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findInboundEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findInboundEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findInboundEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findOutboundEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findOutboundEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
   findOutboundEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): string | undefined;
 
   someEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
   someEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someUndirectedEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someUndirectedEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someUndirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someDirectedEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someDirectedEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someDirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someInEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
   someInEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someInEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someOutEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
   someOutEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someOutEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someInboundEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someInboundEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someInboundEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someOutboundEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someOutboundEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   someOutboundEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
 
   everyEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
   everyEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyUndirectedEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyUndirectedEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyUndirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyDirectedEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyDirectedEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyDirectedEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyInEdge(callback: EdgePredicate<NodeAttributes, EdgeAttributes>): boolean;
   everyInEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyInEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyOutEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyOutEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyOutEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyInboundEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyInboundEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyInboundEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyOutboundEdge(
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyOutboundEdge(
-    node: string,
+    node: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
   everyOutboundEdge(
-    source: string,
-    target: string,
+    source: string | number,
+    target: string | number,
     callback: EdgePredicate<NodeAttributes, EdgeAttributes>
   ): boolean;
 
   edgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   edgeEntries(
-    node: string
+    node: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   edgeEntries(
-    source: string,
-    target: string
+    source: string | number,
+    target: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   undirectedEdgeEntries(): IterableIterator<
     EdgeEntry<NodeAttributes, EdgeAttributes>
   >;
   undirectedEdgeEntries(
-    node: string
+    node: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   undirectedEdgeEntries(
-    source: string,
-    target: string
+    source: string | number,
+    target: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   directedEdgeEntries(): IterableIterator<
     EdgeEntry<NodeAttributes, EdgeAttributes>
   >;
   directedEdgeEntries(
-    node: string
+    node: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   directedEdgeEntries(
-    source: string,
-    target: string
+    source: string | number,
+    target: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   inEdgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   inEdgeEntries(
-    node: string
+    node: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   inEdgeEntries(
-    source: string,
-    target: string
+    source: string | number,
+    target: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   outEdgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   outEdgeEntries(
-    node: string
+    node: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   outEdgeEntries(
-    source: string,
-    target: string
+    source: string | number,
+    target: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   inboundEdgeEntries(): IterableIterator<
     EdgeEntry<NodeAttributes, EdgeAttributes>
   >;
   inboundEdgeEntries(
-    node: string
+    node: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   inboundEdgeEntries(
-    source: string,
-    target: string
+    source: string | number,
+    target: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   outboundEdgeEntries(): IterableIterator<
     EdgeEntry<NodeAttributes, EdgeAttributes>
   >;
   outboundEdgeEntries(
-    node: string
+    node: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   outboundEdgeEntries(
-    source: string,
-    target: string
+    source: string | number,
+    target: string | number
   ): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
 
-  neighbors(node: string): Array<string>;
-  undirectedNeighbors(node: string): Array<string>;
-  directedNeighbors(node: string): Array<string>;
-  inNeighbors(node: string): Array<string>;
-  outNeighbors(node: string): Array<string>;
-  inboundNeighbors(node: string): Array<string>;
-  outboundNeighbors(node: string): Array<string>;
+  neighbors(node: string | number): Array<string>;
+  undirectedNeighbors(node: string | number): Array<string>;
+  directedNeighbors(node: string | number): Array<string>;
+  inNeighbors(node: string | number): Array<string>;
+  outNeighbors(node: string | number): Array<string>;
+  inboundNeighbors(node: string | number): Array<string>;
+  outboundNeighbors(node: string | number): Array<string>;
 
   forEachNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachUndirectedNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachDirectedNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachInNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachOutNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachInboundNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborIterationCallback<NodeAttributes>
   ): void;
   forEachOutboundNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborIterationCallback<NodeAttributes>
   ): void;
 
   mapNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborMapper<T, NodeAttributes>
   ): Array<T>;
   mapUndirectedNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborMapper<T, NodeAttributes>
   ): Array<T>;
   mapDirectedNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborMapper<T, NodeAttributes>
   ): Array<T>;
   mapInNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborMapper<T, NodeAttributes>
   ): Array<T>;
   mapOutNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborMapper<T, NodeAttributes>
   ): Array<T>;
   mapInboundNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborMapper<T, NodeAttributes>
   ): Array<T>;
   mapOutboundNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborMapper<T, NodeAttributes>
   ): Array<T>;
 
   filterNeighbors(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): Array<string>;
   filterUndirectedNeighbors(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): Array<string>;
   filterDirectedNeighbors(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): Array<string>;
   filterInNeighbors(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): Array<string>;
   filterOutNeighbors(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): Array<string>;
   filterInboundNeighbors(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): Array<string>;
   filterOutboundNeighbors(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): Array<string>;
 
   reduceNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborReducer<T, NodeAttributes>,
     initialValue: T
   ): T;
   reduceUndirectedNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborReducer<T, NodeAttributes>,
     initialValue: T
   ): T;
   reduceDirectedNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborReducer<T, NodeAttributes>,
     initialValue: T
   ): T;
   reduceInNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborReducer<T, NodeAttributes>,
     initialValue: T
   ): T;
   reduceOutNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborReducer<T, NodeAttributes>,
     initialValue: T
   ): T;
   reduceInboundNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborReducer<T, NodeAttributes>,
     initialValue: T
   ): T;
   reduceOutboundNeighbors<T>(
-    node: string,
+    node: string | number,
     callback: NeighborReducer<T, NodeAttributes>,
     initialValue: T
   ): T;
 
   findNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
   findUndirectedNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
   findDirectedNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
   findInNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
   findOutNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
   findInboundNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
   findOutboundNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): string | undefined;
 
   someNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
   someUndirectedNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
   someDirectedNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
   someInNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
   someOutNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
   someInboundNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
   someOutboundNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
 
   everyNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
   everyUndirectedNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
   everyDirectedNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
   everyInNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
   everyOutNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
   everyInboundNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
   everyOutboundNeighbor(
-    node: string,
+    node: string | number,
     callback: NeighborPredicate<NodeAttributes>
   ): boolean;
 
   neighborEntries(
-    node: string
+    node: string | number
   ): IterableIterator<NeighborEntry<NodeAttributes>>;
   undirectedNeighborEntries(
-    node: string
+    node: string | number
   ): IterableIterator<NeighborEntry<NodeAttributes>>;
   directedNeighborEntries(
-    node: string
+    node: string | number
   ): IterableIterator<NeighborEntry<NodeAttributes>>;
   inNeighborEntries(
-    node: string
+    node: string | number
   ): IterableIterator<NeighborEntry<NodeAttributes>>;
   outNeighborEntries(
-    node: string
+    node: string | number
   ): IterableIterator<NeighborEntry<NodeAttributes>>;
   inboundNeighborEntries(
-    node: string
+    node: string | number
   ): IterableIterator<NeighborEntry<NodeAttributes>>;
   outboundNeighborEntries(
-    node: string
+    node: string | number
   ): IterableIterator<NeighborEntry<NodeAttributes>>;
 
   // Serialization methods

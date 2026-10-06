@@ -16,7 +16,7 @@ export type MinimalEdgeMapper<
 > = (edge: string, attributes: EdgeAttributes) => T;
 
 interface NodeValueGetter<T, NodeAttributes extends Attributes = Attributes> {
-  fromGraph(graph: Graph<NodeAttributes>, node: string): T;
+  fromGraph(graph: Graph<NodeAttributes>, node: string | number): T;
   fromAttributes(attributes: NodeAttributes): T;
   fromEntry: NodeMapper<T, NodeAttributes>;
 }
@@ -26,21 +26,21 @@ interface EdgeValueGetter<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > {
-  fromGraph(graph: Graph<NodeAttributes, EdgeAttributes>, edge: string): T;
+  fromGraph(graph: Graph<NodeAttributes, EdgeAttributes>, edge: string | number): T;
   // fromPath(
   //   graph: Graph<NodeAttributes, EdgeAttributes>,
-  //   source: string,
-  //   target: string
+  //   source: unknown,
+  //   target: unknown
   // ): T;
   // fromDirectedPath(
   //   graph: Graph<NodeAttributes, EdgeAttributes>,
-  //   source: string,
-  //   target: string
+  //   source: unknown,
+  //   target: unknown
   // ): T;
   // fromUndirectedPath(
   //   graph: Graph<NodeAttributes, EdgeAttributes>,
-  //   source: string,
-  //   target: string
+  //   source: unknown,
+  //   target: unknown
   // ): T;
   fromAttributes(attributes: EdgeAttributes): T;
   fromEntry: EdgeMapper<T, NodeAttributes, EdgeAttributes>;

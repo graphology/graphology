@@ -6,19 +6,19 @@ export type AllSimplePathsOptions = {
 
 export function allSimplePaths(
   graph: Graph,
-  source: string,
-  target: string,
+  source: string | number,
+  target: string | number,
   options?: AllSimplePathsOptions
 ): Array<Array<string>>;
 export function allSimpleEdgePaths(
   graph: Graph,
-  source: string,
-  target: string,
+  source: string | number,
+  target: string | number,
   options?: AllSimplePathsOptions
 ): Array<Array<string>>;
 export function allSimpleEdgeGroupPaths(
   graph: Graph,
-  source: string,
-  target: string,
+  source: string | number,
+  target: string | number,
   options?: AllSimplePathsOptions
 ): Array<Array<Array<string>>>;

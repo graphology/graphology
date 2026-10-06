@@ -14,8 +14,8 @@ export function bidirectional<
   EdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  source: string,
-  target: string,
+  source: string | number,
+  target: string | number,
   getEdgeWeight?:
     | keyof EdgeAttributes
     | MinimalEdgeMapper<number, EdgeAttributes>
@@ -26,7 +26,7 @@ export function singleSource<
   EdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  source: string,
+  source: string | number,
   getEdgeWeight?:
     | keyof EdgeAttributes
     | MinimalEdgeMapper<number, EdgeAttributes>
@@ -37,7 +37,7 @@ export function brandes<
   EdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  source: string,
+  source: string | number,
   getEdgeWeight?:
     | keyof EdgeAttributes
     | MinimalEdgeMapper<number, EdgeAttributes>

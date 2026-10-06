@@ -10,7 +10,7 @@ export function weightedDegree<
   EdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  node: string,
+  node: string | number,
   getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
 ): number;
 
@@ -19,7 +19,7 @@ export function weightedInDegree<
   EdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  node: string,
+  node: string | number,
   getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
 ): number;
 
@@ -28,7 +28,7 @@ export function weightedOutDegree<
   EdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  node: string,
+  node: string | number,
   getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
 ): number;
 
@@ -37,7 +37,7 @@ export function weightedInboundDegree<
   EdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  node: string,
+  node: string | number,
   getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
 ): number;
 
@@ -46,7 +46,7 @@ export function weightedOutboundDegree<
   EdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  node: string,
+  node: string | number,
   getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
 ): number;
 
@@ -55,7 +55,7 @@ export function weightedUndirectedDegree<
   EdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  node: string,
+  node: string | number,
   getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
 ): number;
 
@@ -64,6 +64,6 @@ export function weightedDirectedDegree<
   EdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  node: string,
+  node: string | number,
   getEdgeWeight?: EdgeWeightGetter<NodeAttributes, EdgeAttributes>
 ): number;

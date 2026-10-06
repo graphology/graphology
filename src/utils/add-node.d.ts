@@ -2,6 +2,6 @@ import Graph, {Attributes} from 'graphology-types';
 
 export function copyNode<NodeAttributes extends Attributes = Attributes>(
   graph: Graph,
-  key: string,
+  key: string | number,
   attributes?: NodeAttributes
 ): string;

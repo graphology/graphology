@@ -12,7 +12,7 @@ nav_order: 2
 
 ## Keys
 
-Both nodes & edges are represented by keys in the graph. For simplicity's sake, like JavaScript's native objects, the graph will always coerce the given keys as strings. TypeScript declarations accept only `string` keys, so that conversion happens in the caller's code. JavaScript still coerces other values.
+Both nodes & edges are represented by keys in the graph. For simplicity's sake, like JavaScript's native objects, the graph will always coerce the given keys as strings. TypeScript declarations accept `string | number` keys, matching the common numeric-key usage while preserving the runtime coercion. Other values are still coerced by JavaScript.
 
 We could technically handle references as keys but finally decided against it for the following reasons:
 

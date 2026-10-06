@@ -8,7 +8,7 @@ export function dfs<N extends Attributes = Attributes>(
 ): void;
 export function dfsFromNode<N extends Attributes = Attributes>(
   graph: Graph<N>,
-  node: string,
+  node: string | number,
   callback: TraversalCallback<N>,
   options?: TraversalOptions
 ): void;
