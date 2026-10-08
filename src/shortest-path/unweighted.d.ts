@@ -12,23 +12,23 @@ type BrandesResult = [
 
 export function bidirectional(
   graph: Graph,
-  source: unknown,
-  target: unknown
+  source: string | number,
+  target: string | number
 ): ShortestPath | null;
 
 export function singleSource(
   graph: Graph,
-  source: unknown
+  source: string | number
 ): ShortestPathMapping;
 
 export function singleSourceLength(
   graph: Graph,
-  source: unknown
+  source: string | number
 ): ShortestPathLengthMapping;
 
 export function undirectedSingleSourceLength(
   graph: Graph,
-  node: unknown
+  node: string | number
 ): ShortestPathLengthMapping;
 
-export function brandes(graph: Graph, source: unknown): BrandesResult;
+export function brandes(graph: Graph, source: string | number): BrandesResult;

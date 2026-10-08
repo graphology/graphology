@@ -8,8 +8,8 @@ export function bidirectional<
   EdgeAttributes extends Attributes = Attributes
 >(
   graph: Graph<NodeAttributes, EdgeAttributes>,
-  source: unknown,
-  target: unknown,
+  source: string | number,
+  target: string | number,
   getEdgeWeight?:
     | keyof EdgeAttributes
     | MinimalEdgeMapper<number, EdgeAttributes>,
