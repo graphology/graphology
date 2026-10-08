@@ -26,7 +26,10 @@ interface EdgeValueGetter<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > {
-  fromGraph(graph: Graph<NodeAttributes, EdgeAttributes>, edge: string | number): T;
+  fromGraph(
+    graph: Graph<NodeAttributes, EdgeAttributes>,
+    edge: string | number
+  ): T;
   // fromPath(
   //   graph: Graph<NodeAttributes, EdgeAttributes>,
   //   source: unknown,

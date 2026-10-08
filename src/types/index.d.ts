@@ -360,8 +360,14 @@ declare abstract class AbstractGraph<
   hasUndirectedEdge(source: string | number, target: string | number): boolean;
   hasEdge(edge: string | number): boolean;
   hasEdge(source: string | number, target: string | number): boolean;
-  directedEdge(source: string | number, target: string | number): string | undefined;
-  undirectedEdge(source: string | number, target: string | number): string | undefined;
+  directedEdge(
+    source: string | number,
+    target: string | number
+  ): string | undefined;
+  undirectedEdge(
+    source: string | number,
+    target: string | number
+  ): string | undefined;
   edge(source: string | number, target: string | number): string | undefined;
   inDegree(node: string | number): number;
   outDegree(node: string | number): number;
@@ -386,12 +392,24 @@ declare abstract class AbstractGraph<
   isSelfLoop(edge: string | number): boolean;
   hasExtremity(edge: string | number, node: string | number): boolean;
   areNeighbors(source: string | number, target: string | number): boolean;
-  areUndirectedNeighbors(source: string | number, target: string | number): boolean;
-  areDirectedNeighbors(source: string | number, target: string | number): boolean;
+  areUndirectedNeighbors(
+    source: string | number,
+    target: string | number
+  ): boolean;
+  areDirectedNeighbors(
+    source: string | number,
+    target: string | number
+  ): boolean;
   areInNeighbors(source: string | number, target: string | number): boolean;
   areOutNeighbors(source: string | number, target: string | number): boolean;
-  areInboundNeighbors(source: string | number, target: string | number): boolean;
-  areOutboundNeighbors(source: string | number, target: string | number): boolean;
+  areInboundNeighbors(
+    source: string | number,
+    target: string | number
+  ): boolean;
+  areOutboundNeighbors(
+    source: string | number,
+    target: string | number
+  ): boolean;
 
   // Mutation methods
   addNode(node: string | number, attributes?: NodeAttributes): string;
@@ -563,8 +581,14 @@ declare abstract class AbstractGraph<
     node: string | number,
     name: AttributeName
   ): this;
-  replaceNodeAttributes(node: string | number, attributes: NodeAttributes): this;
-  mergeNodeAttributes(node: string | number, attributes: Partial<NodeAttributes>): this;
+  replaceNodeAttributes(
+    node: string | number,
+    attributes: NodeAttributes
+  ): this;
+  mergeNodeAttributes(
+    node: string | number,
+    attributes: Partial<NodeAttributes>
+  ): this;
   updateNodeAttributes(
     node: string | number,
     updater: (attributes: NodeAttributes) => NodeAttributes
@@ -595,7 +619,10 @@ declare abstract class AbstractGraph<
     edge: string | number,
     name: AttributeName
   ): this;
-  replaceSourceAttributes(edge: string | number, attributes: NodeAttributes): this;
+  replaceSourceAttributes(
+    edge: string | number,
+    attributes: NodeAttributes
+  ): this;
   mergeSourceAttributes(
     edge: string | number,
     attributes: Partial<NodeAttributes>
@@ -630,7 +657,10 @@ declare abstract class AbstractGraph<
     edge: string | number,
     name: AttributeName
   ): this;
-  replaceTargetAttributes(edge: string | number, attributes: NodeAttributes): this;
+  replaceTargetAttributes(
+    edge: string | number,
+    attributes: NodeAttributes
+  ): this;
   mergeTargetAttributes(
     edge: string | number,
     attributes: Partial<NodeAttributes>
@@ -717,8 +747,14 @@ declare abstract class AbstractGraph<
     edge: string | number,
     name: AttributeName
   ): this;
-  replaceEdgeAttributes(edge: string | number, attributes: EdgeAttributes): this;
-  mergeEdgeAttributes(edge: string | number, attributes: Partial<EdgeAttributes>): this;
+  replaceEdgeAttributes(
+    edge: string | number,
+    attributes: EdgeAttributes
+  ): this;
+  mergeEdgeAttributes(
+    edge: string | number,
+    attributes: Partial<EdgeAttributes>
+  ): this;
   updateEdgeAttributes(
     edge: string | number,
     updater: (attributes: EdgeAttributes) => EdgeAttributes
@@ -735,7 +771,10 @@ declare abstract class AbstractGraph<
     target: string | number,
     name: AttributeName
   ): EdgeAttributes[AttributeName];
-  getEdgeAttributes(source: string | number, target: string | number): EdgeAttributes;
+  getEdgeAttributes(
+    source: string | number,
+    target: string | number
+  ): EdgeAttributes;
   hasEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
     source: string | number,
     target: string | number,
@@ -781,7 +820,10 @@ declare abstract class AbstractGraph<
     target: string | number,
     name: AttributeName
   ): EdgeAttributes[AttributeName];
-  getDirectedEdgeAttributes(source: string | number, target: string | number): EdgeAttributes;
+  getDirectedEdgeAttributes(
+    source: string | number,
+    target: string | number
+  ): EdgeAttributes;
   hasDirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
     source: string | number,
     target: string | number,
@@ -827,7 +869,10 @@ declare abstract class AbstractGraph<
     target: string | number,
     name: AttributeName
   ): EdgeAttributes[AttributeName];
-  getUndirectedEdgeAttributes(source: string | number, target: string | number): EdgeAttributes;
+  getUndirectedEdgeAttributes(
+    source: string | number,
+    target: string | number
+  ): EdgeAttributes;
   hasUndirectedEdgeAttribute<AttributeName extends keyof EdgeAttributes>(
     source: string | number,
     target: string | number,
@@ -903,10 +948,16 @@ declare abstract class AbstractGraph<
   edges(source: string | number, target: string | number): Array<string>;
   undirectedEdges(): Array<string>;
   undirectedEdges(node: string | number): Array<string>;
-  undirectedEdges(source: string | number, target: string | number): Array<string>;
+  undirectedEdges(
+    source: string | number,
+    target: string | number
+  ): Array<string>;
   directedEdges(): Array<string>;
   directedEdges(node: string | number): Array<string>;
-  directedEdges(source: string | number, target: string | number): Array<string>;
+  directedEdges(
+    source: string | number,
+    target: string | number
+  ): Array<string>;
   inEdges(): Array<string>;
   inEdges(node: string | number): Array<string>;
   inEdges(source: string | number, target: string | number): Array<string>;
@@ -918,7 +969,10 @@ declare abstract class AbstractGraph<
   inboundEdges(source: string | number, target: string | number): Array<string>;
   outboundEdges(): Array<string>;
   outboundEdges(node: string | number): Array<string>;
-  outboundEdges(source: string | number, target: string | number): Array<string>;
+  outboundEdges(
+    source: string | number,
+    target: string | number
+  ): Array<string>;
 
   forEachEdge(
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>

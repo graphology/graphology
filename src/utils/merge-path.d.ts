@@ -1,3 +1,6 @@
 import Graph from 'graphology-types';
 
-export default function mergePath(graph: Graph, nodes: Array<string | number>): void;
+export default function mergePath(
+  graph: Graph,
+  nodes: Array<string | number>
+): void;
