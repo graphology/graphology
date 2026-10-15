@@ -53,7 +53,7 @@ function NeighborhoodIndex(graph, method) {
   }
 
   // NOTE: we keep one more index as upper bound to simplify iteration
-  this.starts[i] = upperBound;
+  this.starts[i] = n;
 }
 
 NeighborhoodIndex.prototype.bounds = function (i) {
@@ -150,7 +150,7 @@ function WeightedNeighborhoodIndex(graph, getEdgeWeight, method) {
   }
 
   // NOTE: we keep one more index as upper bound to simplify iteration
-  this.starts[i] = upperBound;
+  this.starts[i] = n;
 }
 
 WeightedNeighborhoodIndex.prototype.bounds = NeighborhoodIndex.prototype.bounds;
