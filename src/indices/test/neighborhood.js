@@ -10,6 +10,30 @@ var neighborhoodIndices = require('../neighborhood.js');
 var NeighborhoodIndex = neighborhoodIndices.NeighborhoodIndex;
 var WeightedNeighborhoodIndex = neighborhoodIndices.WeightedNeighborhoodIndex;
 
+describe('Neighborhood indices', function () {
+  it('should not include unused capacity in node neighborhoods.', function () {
+    var graph = new Graph.MultiUndirectedGraph();
+    graph.addNode('a');
+    graph.addNode('b');
+    graph.addNode('c');
+    graph.addEdge('a', 'b');
+    graph.addEdge('a', 'b');
+    graph.addEdge('a', 'a');
+
+    var index = new NeighborhoodIndex(graph);
+
+    assert.deepEqual(index.project(), {a: ['b', 'a'], b: ['a'], c: []});
+
+    index = new WeightedNeighborhoodIndex(graph);
+
+    assert.deepEqual(index.project(), {
+      a: ['b', 'b', 'a'],
+      b: ['a', 'a'],
+      c: []
+    });
+  });
+});
+
 describe('NeighborhoodIndex', function () {
   it('should properly index the outbound neighborhood of the given graph.', function () {
     var graph = new Graph();
