@@ -10,30 +10,6 @@ var neighborhoodIndices = require('../neighborhood.js');
 var NeighborhoodIndex = neighborhoodIndices.NeighborhoodIndex;
 var WeightedNeighborhoodIndex = neighborhoodIndices.WeightedNeighborhoodIndex;
 
-describe('Neighborhood indices', function () {
-  it('should not include unused capacity in node neighborhoods.', function () {
-    var graph = new Graph.MultiUndirectedGraph();
-    graph.addNode('a');
-    graph.addNode('b');
-    graph.addNode('c');
-    graph.addEdge('a', 'b');
-    graph.addEdge('a', 'b');
-    graph.addEdge('a', 'a');
-
-    var index = new NeighborhoodIndex(graph);
-
-    assert.deepEqual(index.project(), {a: ['b', 'a'], b: ['a'], c: []});
-
-    index = new WeightedNeighborhoodIndex(graph);
-
-    assert.deepEqual(index.project(), {
-      a: ['b', 'b', 'a'],
-      b: ['a', 'a'],
-      c: []
-    });
-  });
-});
-
 describe('NeighborhoodIndex', function () {
   it('should properly index the outbound neighborhood of the given graph.', function () {
     var graph = new Graph();
@@ -104,6 +80,21 @@ describe('NeighborhoodIndex', function () {
     var reverseIndex = new NeighborhoodIndex(reverse(graph));
 
     assert.deepStrictEqual(index, reverseIndex);
+  });
+
+  it('should not include unused capacity in node neighborhoods.', function () {
+    var graph = new Graph.MultiUndirectedGraph();
+    graph.addNode('a');
+    graph.addNode('b');
+    graph.addNode('c');
+    graph.addEdge('a', 'b');
+    graph.addEdge('a', 'b');
+    graph.addEdge('a', 'a');
+
+    var index = new NeighborhoodIndex(graph);
+
+    assert.deepEqual(index.project(), {a: ['b', 'a'], b: ['a'], c: []});
+    assert.deepEqual(index.starts, new Uint8Array([0, 2, 3, 3]));
   });
 });
 
@@ -181,5 +172,25 @@ describe('WeightedNeighborhoodIndex', function () {
     });
 
     assert.deepStrictEqual(Array.from(index.weights), [3, 5]);
+  });
+
+  it('should not include unused capacity in node neighborhoods.', function () {
+    var graph = new Graph.MultiUndirectedGraph();
+    graph.addNode('a');
+    graph.addNode('b');
+    graph.addNode('c');
+    graph.addEdge('a', 'b', {weight: 2});
+    graph.addEdge('a', 'b', {weight: 3});
+    graph.addEdge('a', 'a', {weight: 5});
+
+    var index = new WeightedNeighborhoodIndex(graph, 'weight');
+
+    assert.deepEqual(index.project(), {
+      a: ['b', 'b', 'a'],
+      b: ['a', 'a'],
+      c: []
+    });
+    assert.deepEqual(index.starts, new Uint8Array([0, 3, 5, 5]));
+    assert.deepEqual(index.outDegrees, new Float64Array([10, 5, 0]));
   });
 });
