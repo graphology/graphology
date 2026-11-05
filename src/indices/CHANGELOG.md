@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.17.1
+
+- Fixing `NeighborhoodIndex` & `WeightedNeighborhoodIndex` wrt multi graphs.
+
 ## 0.17.0
 
 - Improving `DFSStack`.
