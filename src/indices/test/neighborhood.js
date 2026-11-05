@@ -81,6 +81,21 @@ describe('NeighborhoodIndex', function () {
 
     assert.deepStrictEqual(index, reverseIndex);
   });
+
+  it('should not include unused capacity in node neighborhoods.', function () {
+    var graph = new Graph.MultiUndirectedGraph();
+    graph.addNode('a');
+    graph.addNode('b');
+    graph.addNode('c');
+    graph.addEdge('a', 'b');
+    graph.addEdge('a', 'b');
+    graph.addEdge('a', 'a');
+
+    var index = new NeighborhoodIndex(graph);
+
+    assert.deepEqual(index.project(), {a: ['b', 'a'], b: ['a'], c: []});
+    assert.deepEqual(index.starts, new Uint8Array([0, 2, 3, 3]));
+  });
 });
 
 describe('WeightedNeighborhoodIndex', function () {
@@ -157,5 +172,25 @@ describe('WeightedNeighborhoodIndex', function () {
     });
 
     assert.deepStrictEqual(Array.from(index.weights), [3, 5]);
+  });
+
+  it('should not include unused capacity in node neighborhoods.', function () {
+    var graph = new Graph.MultiUndirectedGraph();
+    graph.addNode('a');
+    graph.addNode('b');
+    graph.addNode('c');
+    graph.addEdge('a', 'b', {weight: 2});
+    graph.addEdge('a', 'b', {weight: 3});
+    graph.addEdge('a', 'a', {weight: 5});
+
+    var index = new WeightedNeighborhoodIndex(graph, 'weight');
+
+    assert.deepEqual(index.project(), {
+      a: ['b', 'b', 'a'],
+      b: ['a', 'a'],
+      c: []
+    });
+    assert.deepEqual(index.starts, new Uint8Array([0, 3, 5, 5]));
+    assert.deepEqual(index.outDegrees, new Float64Array([10, 5, 0]));
   });
 });
