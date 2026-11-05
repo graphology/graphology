@@ -57,3 +57,8 @@ weighted.on('edgeAttributesUpdated', payload => {
 });
 
 weighted.emit('nodeAdded', {key: 'fake', attributes: {weight: 24}});
+
+// Numeric keys are accepted and coerced by the JavaScript implementation.
+graph.addNode(1, {label: 'Numeric one'});
+graph.addNode(2, {label: 'Numeric two'});
+graph.addEdge(1, 2, {weight: 1});
