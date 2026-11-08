@@ -124,6 +124,120 @@ describe('pagerank', function () {
     deepApproximatelyEqual(p, weighted, 1e-3);
   });
 
+  it('should treat nodes with only zero-weight outbound edges as dangling.', function () {
+    var graph = new DirectedGraph();
+    graph.mergeEdge('a', 'b', {weight: 0});
+    graph.mergeEdge('b', 'c', {weight: 1});
+    graph.mergeEdge('c', 'a', {weight: 1});
+
+    // Stationary distribution with the dangling node's mass spread uniformly.
+    var expected = {
+      a: 0.47441217150760717,
+      b: 0.18441678192715535,
+      c: 0.34117104656523745
+    };
+
+    deepApproximatelyEqual(
+      pagerank(graph, {tolerance: 1e-12}),
+      expected,
+      1e-10
+    );
+
+    pagerank.assign(graph, {nodePagerankAttribute: 'score', tolerance: 1e-12});
+
+    for (var node in expected)
+      assert.approximately(
+        graph.getNodeAttribute(node, 'score'),
+        expected[node],
+        1e-10
+      );
+  });
+
+  [Graph.DirectedGraph, Graph.UndirectedGraph, Graph.MultiGraph].forEach(
+    function (GraphClass) {
+      it(
+        'should ignore zero-weight edges in a ' + GraphClass.name + '.',
+        function () {
+          var graph = new GraphClass();
+          graph.mergeEdge('a', 'b', {weight: 0});
+          graph.mergeEdge('b', 'c', {weight: 2});
+          graph.mergeEdge('c', 'b', {weight: 3});
+          graph.mergeEdge('d', 'd', {weight: 0});
+          graph.addNode('isolated');
+
+          if (graph.multi) {
+            graph.addEdge('a', 'b', {weight: 0});
+            graph.addUndirectedEdge('a', 'd', {weight: 0});
+          }
+
+          var withoutZeroEdges = graph.copy();
+          withoutZeroEdges.forEachEdge(function (edge, attr) {
+            if (attr.weight === 0) withoutZeroEdges.dropEdge(edge);
+          });
+
+          var result = pagerank(graph);
+          deepApproximatelyEqual(result, pagerank(withoutZeroEdges), 1e-10);
+
+          var sum = 0;
+          for (var node in result) {
+            assert.isAtLeast(result[node], 0);
+            sum += result[node];
+          }
+          assert.approximately(sum, 1, 1e-10);
+        }
+      );
+    }
+  );
+
+  it('should return uniform scores when all edge weights are zero.', function () {
+    var graph = new DirectedGraph();
+    graph.mergeEdge('a', 'b', {weight: 0});
+    graph.mergeEdge('b', 'a', {weight: 0});
+    graph.mergeEdge('c', 'c', {weight: 0});
+    graph.addNode('d');
+
+    assert.deepEqual(pagerank(graph), {a: 0.25, b: 0.25, c: 0.25, d: 0.25});
+  });
+
+  it('should handle zero weights returned by a custom getter.', function () {
+    var graph = new DirectedGraph();
+    graph.mergeEdge('a', 'b', {customWeight: 0});
+    graph.mergeEdge('b', 'c', {customWeight: 2});
+
+    var options = {getEdgeWeight: 'customWeight'};
+    var expectedGraph = graph.copy();
+    expectedGraph.dropEdge('a', 'b');
+    var expected = pagerank(expectedGraph, options);
+
+    deepApproximatelyEqual(pagerank(graph, options), expected, 1e-10);
+    deepApproximatelyEqual(
+      pagerank(graph, {
+        getEdgeWeight: function (_, attr) {
+          return attr.customWeight;
+        }
+      }),
+      expected,
+      1e-10
+    );
+  });
+
+  it('should preserve unweighted behavior when zero weights are ignored.', function () {
+    var graph = new DirectedGraph();
+    graph.mergeEdge('a', 'b', {weight: 0});
+    graph.mergeEdge('b', 'c', {weight: 0});
+
+    var unweighted = graph.copy();
+    unweighted.forEachEdge(function (edge) {
+      unweighted.setEdgeAttribute(edge, 'weight', 1);
+    });
+
+    deepApproximatelyEqual(
+      pagerank(graph, {getEdgeWeight: null}),
+      pagerank(unweighted),
+      1e-10
+    );
+  });
+
   it('should work with a multi graph.', function () {
     var graph = new DirectedGraph();
     graph.mergeEdge('A', 'B', {weight: 2});
