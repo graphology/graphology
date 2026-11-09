@@ -7,5 +7,6 @@ module.exports = {
   margin: 5,
   expansion: 1.1,
   ratio: 1.0,
-  speed: 3
+  speed: 3,
+  wasm: false
 };
