@@ -5,7 +5,7 @@
  *
  * Reference implementation of the graphology specs.
  */
-import {EventEmitter} from 'events';
+import {EventEmitter} from 'eventemitter3';
 
 import {
   InvalidArgumentsGraphError,
