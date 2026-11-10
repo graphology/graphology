@@ -71,7 +71,10 @@ function abstractPagerank(assign, graph, options) {
     l = index.starts[i + 1];
     d = index.outDegrees[i];
 
-    if (d === 0) danglingNodes.push(i);
+    if (d === 0) {
+      danglingNodes.push(i);
+      continue;
+    }
 
     for (j = index.starts[i]; j < l; j++) {
       normalizedEdgeWeights[j] = index.weights[j] / d;

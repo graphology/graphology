@@ -155,4 +155,17 @@ describe('pagerank', function () {
 
     deepApproximatelyEqual(result, mixedResult, 1e-7);
   });
+
+  it('should work with 0 weights.', function () {
+    var graph = new DirectedGraph();
+    graph.mergeEdge('A', 'B', {weight: 0});
+    graph.mergeEdge('B', 'C', {weight: 1});
+    graph.mergeEdge('C', 'A', {weight: 1});
+
+    assert.deepStrictEqual(pagerank(graph), {
+      A: 0.47441161634059753,
+      B: 0.1844167633067642,
+      C: 0.3411716203526378
+    });
+  });
 });

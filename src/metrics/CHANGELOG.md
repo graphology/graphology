@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.3 (provisional)
+
+- Fixing `centrality/pagerank` with 0 weights.
+
 ## 2.4.2
 
 - Fixing `centrality/hits` convergence issues.
