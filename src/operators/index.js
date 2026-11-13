@@ -4,6 +4,7 @@
  *
  * Library endpoint.
  */
+exports.complement = require('./complement.js');
 exports.disjointUnion = require('./disjoint-union.js');
 exports.reverse = require('./reverse.js');
 exports.subgraph = require('./subgraph.js');

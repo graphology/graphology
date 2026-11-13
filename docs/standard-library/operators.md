@@ -10,7 +10,7 @@ aux_links:
 
 # Graphology Operators
 
-Miscellaneous operators to be used with [`graphology`](..).
+Miscellaneous operators to be used with [`graphology`](https://graphology.github.io).
 
 ## Installation
 
@@ -22,8 +22,9 @@ npm install graphology-operators
 
 _Unary_
 
-- [subgraph](#subgraph)
+- [complement](#complement)
 - [reverse](#reverse)
+- [subgraph](#subgraph)
 
 _Binary_
 
@@ -32,11 +33,19 @@ _Binary_
 
 _Cast_
 
-- [toDirected](#todirected)
-- [toMixed](#tomixed)
-- [toMulti](#tomulti)
-- [toSimple](#tosimple)
-- [toUndirected](#toundirected)
+- [Graphology Operators](#graphology-operators)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [subgraph](#subgraph)
+    - [complement](#complement)
+    - [reverse](#reverse)
+    - [disjointUnion](#disjointunion)
+    - [union](#union)
+    - [toDirected](#todirected)
+    - [toMixed](#tomixed)
+    - [toMulti](#tomulti)
+    - [toSimple](#tosimple)
+    - [toUndirected](#toundirected)
 
 ### subgraph
 
@@ -63,6 +72,27 @@ _Arguments_
 
 - **graph** _Graph_: target graph.
 - **nodes** _array\|Set\|function_: either an array of nodes to keep, or a set of nodes to keep or a function taking a node's key and its attributes and tasked to filter the nodes to keep.
+
+### complement
+
+Returns the complement of the given undirected simple graph. The complement graph has
+the same nodes but edges exist between two nodes if and only if they are not connected
+in the original graph.
+
+The graph must be undirected and simple (not multi). Self-loops are not created in the
+complement graph.
+
+```js
+import {complement} from 'graphology-operators';
+// Alternatively, to load only the relevant code:
+import complement from 'graphology-operators/complement';
+
+const complementGraph = complement(graph);
+```
+
+_Arguments_
+
+- **graph** _Graph_: target graph (must be an undirected simple graph).
 
 ### reverse
 
@@ -144,8 +174,8 @@ const directedGraph = toDirected(graph, (currentAttr, nextAttr) => {
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **mergeOrOptions** <span class="code">?function\|object</span>: either a merging function or an options object:
-  - **mergeEdge** <span class="code">?function</span>: merging function to use.
+- **mergeOrOptions** _?function\|object_: either a merging function or an options object:
+  - **mergeEdge** _?function_: merging function to use.
 
 ### toMixed
 
@@ -202,8 +232,8 @@ const simpleGraph = toSimple(graph, (currentAttr, nextAttr) => {
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **mergeOrOptions** <span class="code">?function|object</span>: either a merging function or an options object:
-  - **mergeEdge** <span class="code">?function</span>: merging function to use.
+- **mergeOrOptions** _?function|object_: either a merging function or an options object:
+  - **mergeEdge** _?function_: merging function to use.
 
 ### toUndirected
 
@@ -234,6 +264,5 @@ const undirectedGraph = toUndirected(graph, (currentAttr, nextAttr) => {
 _Arguments_
 
 - **graph** _Graph_: target graph.
-- **mergeOrOptions** <span class="code">?function|object</span>: either a merging function or an options object:
-  - **mergeEdge** <span class="code">?function</span>: merging function to use.
-
+- **mergeOrOptions** _?function|object_: either a merging function or an options object:
+  - **mergeEdge** _?function_: merging function to use.
