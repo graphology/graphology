@@ -9,7 +9,7 @@ import {
 type IndexedBrandesResult = [
   FixedStack<number>,
   Array<Array<number>>,
-  Uint32Array
+  Float64Array
 ];
 
 type IndexedBrandesFunction = (sourceIndex: number) => IndexedBrandesResult;

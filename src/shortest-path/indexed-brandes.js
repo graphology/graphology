@@ -31,10 +31,12 @@ exports.createUnweightedIndexedBrandes =
     var neighborhood = neighborhoodIndex.neighborhood,
       starts = neighborhoodIndex.starts;
 
+    // Path multiplicities can exceed 32 bits even on small layered graphs.
+    // Keep counts as Numbers, like the dependency ratios using them.
     var order = graph.order;
 
     var S = new FixedStack(typed.getPointerArray(order), order),
-      sigma = new Uint32Array(order),
+      sigma = new Float64Array(order),
       P = new Array(order),
       D = new Int32Array(order);
 
@@ -130,7 +132,7 @@ exports.createDijkstraIndexedBrandes = function createDijkstraIndexedBrandes(
   var order = graph.order;
 
   var S = new FixedStack(typed.getPointerArray(order), order),
-    sigma = new Uint32Array(order),
+    sigma = new Float64Array(order),
     P = new Array(order),
     D = new Float64Array(order),
     seen = new Float64Array(order);
